@@ -10,7 +10,7 @@ import {
   Navbar,
 } from "ionic-angular";
 
-@IonicPage({ name: "Iframepage" })
+@IonicPage({ name: "iframepage" })
 @Component({
   selector: "page-iframepage",
   templateUrl: "iframepage.html",

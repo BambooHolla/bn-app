@@ -8,7 +8,7 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
  * Ionic pages and navigation.
  */
 
-@IonicPage({ name: "SignInAndSignUpPage" })
+@IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
 	selector: "page-sign-in-and-sign-up",
 	templateUrl: "sign-in-and-sign-up.html",

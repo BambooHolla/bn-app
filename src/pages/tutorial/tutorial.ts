@@ -15,7 +15,7 @@ export interface Slide {
   image: string;
 }
 
-@IonicPage({ name: "TutorialPage" })
+@IonicPage({ name: "tutorial" })
 @Component({
   selector: "page-tutorial",
   templateUrl: "tutorial.html",

@@ -1,13 +1,13 @@
 // The page the user lands on after opening the app and without a session
-export const FirstRunPage = "TutorialPage";
-export const LoginPage = "SignInAndSignUpPage";
+export const FirstRunPage = "tutorial";
+export const LoginPage = "sign-in-and-sign-up";
 
 // The main page the user will see as they use the app over a long period of time.
 // Change this if not using tabs
-export const MainPage = "TabsPage";
+export const MainPage = "tabs";
 
 // The initial root pages for our tabs (remove if not using tabs)
-export const Tab1Root = "TabVote";
-export const Tab2Root = "TabChain";
-export const Tab3Root = "TabPay";
-export const Tab4Root = "TabAccount";
+export const Tab1Root = "tab-vote";
+export const Tab2Root = "tab-chain";
+export const Tab3Root = "tab-pay";
+export const Tab4Root = "tab-account";

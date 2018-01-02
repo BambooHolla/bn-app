@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
-@IonicPage({ name: "TabChain" })
+@IonicPage({ name: "tab-chain" })
 @Component({
 	selector: "page-tab-chain",
 	templateUrl: "tab-chain.html",

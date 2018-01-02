@@ -7,7 +7,7 @@ import { Tab2Root } from "../pages";
 import { Tab3Root } from "../pages";
 import { Tab4Root } from "../pages";
 
-@IonicPage({ name: "TabsPage" })
+@IonicPage({ name: "tabs" })
 @Component({
   selector: "page-tabs",
   templateUrl: "tabs.html",

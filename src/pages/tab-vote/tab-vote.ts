@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
-@IonicPage({ name: "TabVote" })
+@IonicPage({ name: "tab-vote" })
 @Component({
 	selector: "page-tab-vote",
 	templateUrl: "tab-vote.html",

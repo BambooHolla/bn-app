@@ -24,37 +24,11 @@ without duplicating code.
 
 ## Table of Contents
 
-1. [Getting Started](#getting-started)
 2. [Pages](#pages)
 3. [Providers](#providers)
 4. [i18n](#i18n) (adding languages)
 
-## <a name="getting-started"></a>Getting Started
-
-To test this starter out, install the latest version of the Ionic CLI and run:
-
-```bash
-ionic start mySuperApp super
-```
-
 ## Pages
-
-一共有三个主要界面：欢迎页、登录注册页、主界面
-一个辅助页面：Iframepage（打开第三方网页时使用）
-
-项目所有页面都采用动态加载的方案。
-
-### 新的页面
-创建新的页面时，使用命令行：
-
-```
-ionic g page yourPageName
-```
-
-然后在`your-page-name.ts`中，将`@IonicPage()`修改为：`@IonicPage({name:yourPageName"})`，统一使用峰驼命名写法，如：`@IonicPage({ name: "TabChain" })`
-
-然后引入`bnqkl-framework/SecondLevelPage`
-
 
 The Super Starter comes with a variety of ready-made pages. These pages help
 you assemble common building blocks for your app so you can focus on your
@@ -80,20 +54,54 @@ Please read the
 readme, and the readme for each page in the source for more documentation on
 each.
 
-## Providers
+一共有三个主要界面：欢迎页（教程页面、广告页面、解锁页面）、登录注册页、主界面
+一个辅助页面：Iframepage（打开第三方网页时使用）
 
-The Super Starter comes with some basic implementations of common providers.
+项目所有页面都采用动态加载的方案。
 
-### User
+### 新的页面
+创建新的页面时，使用命令行：
 
-The `User` provider is used to authenticate users through its
-`login(accountInfo)` and `signup(accountInfo)` methods, which perform `POST`
-requests to an API endpoint that you will need to configure.
+```
+ionic g page yourPageName
+```
 
-### Api
+然后在`your-page-name.ts`中，将`@IonicPage()`修改为：`@IonicPage({name:your-page-name"})`，统一使用小写+连接号的写法，如：`@IonicPage({ name: "tab-chain" })`
 
-The `Api` provider is a simple CRUD frontend to an API. Simply put the root of
-your API url in the Api class and call get/post/put/patch/delete 
+然后引入`bnqkl-framework/SecondLevelPage`：
+```ts
+import { SecondLevelPage } from "../../bnqkl-framework/SecondLevelPage";
+import { TabsPage } from "../tabs/tabs";
+export class YourPageName extends SecondLevelPage {
+	constructor(public navCtrl: NavController, public navParams: NavParams,public tabs: TabsPage) {
+		super(navCtrl, navParams, true, tabs);
+	}
+```
+注意，在添加页面后可能需要重启项目。
+
+再有，一般添加页面是添加二级页面，就如同上面的代码，项目中建议将二级页面进行归类，比如“我的联系人”页面：`account-my-contacts`，使用`account`开头，命名上对应`tab-account`的子页面，并且将这个页面转移到`pages/account`文件夹下。只有一些通用的页面，则是归类到`pages/common`中。
+
+### 页面的跳转与拦截
+
+在基于`SecondLevelPage`与`FirstLevelPage`的页面中，跳转统一使用`.routeTo(page_name)`来进行跳转，有的页面在进入前需要做一些判断，这类页面的拦截统一写在`FLP_Route.ts`中，使用`.registerRouteToBeforeCheck`进行注册拦截器。
+
+### 页面的任务
+
+有的页面是用来完成一些任务的，比如表单的提交，在这类页面执行完成完任务后，需要统一执行一次`.finishJob()`，来告知与其关联的页面自己的任务已经完成。
+
+### 生命周期
+
+使用`@YourPageName.willEnter/didEnter/willLeval/didLeval/onInit/onDestory`这些修饰器来修饰函数，从而赋予这些函数在对应的时间段自动执行的行为。
+
+### 异步任务
+
+建议使用async/await来描述，除非是简单的调度接口，然后使用`asyncCtrlGenerator.loading/error/success`来修饰这些返回Promise的方法。
+
+## Api
+
+所有请求都基于`providers/app-fetch`，对于频繁请求并且可以缓存的数据，使用`TB_AB_Generator(Token Base AsyncBehaviorSubjuet Generator)`基于用户登录Token的异步缓存生成器 来生成可缓存。
+
+对于处理网络异常时，保证页面不为空的时候，可以用`.fetch.autoCatch(true).get/post`来强制缓存请求的数据，从而在网络异常的时候，能使用最近一次缓存数据进行显示（会伴随错误提示，如果有使用`@asyncCtrlGenerator.error`进行错误捕捉）。
 
 ## i18n
 

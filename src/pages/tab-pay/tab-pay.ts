@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
-@IonicPage({ name: "TabPay" })
+@IonicPage({ name: "tab-pay" })
 @Component({
 	selector: "page-tab-pay",
 	templateUrl: "tab-pay.html",
