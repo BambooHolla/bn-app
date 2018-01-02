@@ -10,13 +10,13 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
-	selector: "page-sign-in-and-sign-up",
-	templateUrl: "sign-in-and-sign-up.html",
+  selector: "page-sign-in-and-sign-up",
+  templateUrl: "sign-in-and-sign-up.html",
 })
 export class SignInAndSignUpPage {
-	constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
-	ionViewDidLoad() {
-		console.log("ionViewDidLoad SignInAndSignUpPage");
-	}
+  ionViewDidLoad() {
+    console.log("ionViewDidLoad SignInAndSignUpPage");
+  }
 }

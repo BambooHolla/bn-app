@@ -4,12 +4,11 @@ import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
 @IonicPage({ name: "tab-vote" })
 @Component({
-	selector: "page-tab-vote",
-	templateUrl: "tab-vote.html",
+  selector: "page-tab-vote",
+  templateUrl: "tab-vote.html",
 })
 export class TabVotePage extends FirstLevelPage {
-	constructor(public navCtrl: NavController, public navParams: NavParams) {
-		super(navCtrl, navParams);
-	}
-
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+    super(navCtrl, navParams);
+  }
 }

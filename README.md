@@ -1,58 +1,16 @@
-# The Ionic Super Starter 🎮
-
-<img src="https://user-images.githubusercontent.com/236501/32385619-bddac0ac-c08c-11e7-9ee4-9c892197191f.png" width="400" />
-
-The Ionic Super Starter is a batteries-included starter project for Ionic apps
-complete with pre-built pages, providers, and best practices for Ionic
-development.
-
-The goal of the Super Starter is to get you from zero to app store faster than
-before, with a set of opinions from the Ionic team around page layout,
-data/user management, and project structure.
-
-The way to use this starter is to pick and choose the various page types you
-want use, and remove the ones you don't. If you want a blank slate, this
-starter isn't for you (use the `blank` type instead).
-
-One of the big advances in Ionic was moving from a rigid route-based navigation
-system to a flexible push/pop navigation system modeled off common native SDKs.
-We've embraced this pattern to provide a set of reusable pages that can be
-navigated to anywhere in the app. Take a look at the [Settings
-page](https://github.com/ionic-team/starters/blob/master/ionic-angular/official/super/src/pages/settings/settings.html)
-for a cool example of a page navigating to itself to provide a different UI
-without duplicating code.
-
 ## Table of Contents
 
 2. [Pages](#pages)
 3. [Providers](#providers)
 4. [i18n](#i18n) (adding languages)
 
+## Git 提交
+
+进行新的任务的时候，`checkout -b`出一个新的分支：`feature/fixbug/release`一般是这三类。完成后合并到`develop`分支，最后上传`develop`分支。具体怎么搞@吴祖贤
+在进行正式提交前，建议运行`npm run format:diff`来统一风格格式化那些变动的、新增的文件。
+在release的时候，运行`npm run fotmat:all`来格式化所有文件。
+
 ## Pages
-
-The Super Starter comes with a variety of ready-made pages. These pages help
-you assemble common building blocks for your app so you can focus on your
-unique features and branding.
-
-The app loads with the `FirstRunPage` set to `TutorialPage` as the default. If
-the user has already gone through this page once, it will be skipped the next
-time they load the app.
-
-If the tutorial is skipped but the user hasn't logged in yet, the Welcome page
-will be displayed which is a "splash" prompting the user to log in or create an
-account.
-
-Once the user is authenticated, the app will load with the `MainPage` which is
-set to be the `TabsPage` as the default.
-
-The entry and main pages can be configured easily by updating the corresponding
-variables in
-[src/pages/pages.ts](https://github.com/ionic-team/starters/blob/master/ionic-angular/official/super/src/pages/pages.ts).
-
-Please read the
-[Pages](https://github.com/ionic-team/starters/tree/master/ionic-angular/official/super/src/pages)
-readme, and the readme for each page in the source for more documentation on
-each.
 
 一共有三个主要界面：欢迎页（教程页面、广告页面、解锁页面）、登录注册页、主界面
 一个辅助页面：Iframepage（打开第三方网页时使用）

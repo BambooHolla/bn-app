@@ -4,15 +4,15 @@ import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
 @IonicPage({ name: "tab-chain" })
 @Component({
-	selector: "page-tab-chain",
-	templateUrl: "tab-chain.html",
+  selector: "page-tab-chain",
+  templateUrl: "tab-chain.html",
 })
 export class TabChainPage extends FirstLevelPage {
-	constructor(public navCtrl: NavController, public navParams: NavParams) {
-		super(navCtrl, navParams);
-	}
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+    super(navCtrl, navParams);
+  }
 
-	ionViewDidLoad() {
-		console.log("ionViewDidLoad TabChainPage");
-	}
+  ionViewDidLoad() {
+    console.log("ionViewDidLoad TabChainPage");
+  }
 }

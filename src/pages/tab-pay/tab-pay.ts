@@ -4,15 +4,15 @@ import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
 @IonicPage({ name: "tab-pay" })
 @Component({
-	selector: "page-tab-pay",
-	templateUrl: "tab-pay.html",
+  selector: "page-tab-pay",
+  templateUrl: "tab-pay.html",
 })
 export class TabPayPage extends FirstLevelPage {
-	constructor(public navCtrl: NavController, public navParams: NavParams) {
-		super(navCtrl, navParams);
-	}
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+    super(navCtrl, navParams);
+  }
 
-	ionViewDidLoad() {
-		console.log("ionViewDidLoad TabPayPage");
-	}
+  ionViewDidLoad() {
+    console.log("ionViewDidLoad TabPayPage");
+  }
 }

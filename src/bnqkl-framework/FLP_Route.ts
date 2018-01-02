@@ -221,7 +221,7 @@ export class FLP_Route extends FLP_Lifecycle {
     }
     this.modalCtrl
       .create(
-        'iframepage',
+        "iframepage",
         Object.assign(
           {
             title,

@@ -14,12 +14,12 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 .header-no-border {
-	.toolbar-background {
-		border: none !important;
-	}
-	> ion-content {
-		> .scroll-content {
-			top: -0.55px;
-		}
-	}
+  .toolbar-background {
+    border: none !important;
+  }
+  > ion-content {
+    > .scroll-content {
+      top: -0.55px;
+    }
+  }
 }

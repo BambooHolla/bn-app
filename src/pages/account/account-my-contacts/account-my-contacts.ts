@@ -5,19 +5,19 @@ import { TabsPage } from "../../tabs/tabs";
 
 @IonicPage({ name: "account-my-contacts" })
 @Component({
-	selector: "page-account-my-contacts",
-	templateUrl: "account-my-contacts.html",
+  selector: "page-account-my-contacts",
+  templateUrl: "account-my-contacts.html",
 })
 export class AccountMyContactsPage extends SecondLevelPage {
-	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		public tabs: TabsPage,
-	) {
-		super(navCtrl, navParams, true, tabs);
-	}
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public tabs: TabsPage,
+  ) {
+    super(navCtrl, navParams, true, tabs);
+  }
 
-	ionViewDidLoad() {
-		console.log("ionViewDidLoad AccountMyContactsPage");
-	}
+  ionViewDidLoad() {
+    console.log("ionViewDidLoad AccountMyContactsPage");
+  }
 }
