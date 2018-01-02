@@ -1,0 +1,8 @@
+{
+  "name": "ifm-app-v2",
+  "app_id": "27ca1a09",
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
+}
