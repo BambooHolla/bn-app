@@ -7,11 +7,18 @@ import {
   Executor,
 } from "../../bnqkl-framework/RxExtends";
 
+export class AppUrl {
+  constructor(public path) {}
+  toString() {
+    return AppSettingProvider.SERVER_URL + this.path;
+  }
+}
+
 @Injectable()
 export class AppSettingProvider {
   static SERVER_URL = "http://bjs.bnqkl.cn/api/v1/bngj/";
   APP_URL(path: string) {
-    return AppSettingProvider.SERVER_URL + path;
+    return new AppUrl(path);
   }
   constructor(public http: Http) {
     console.log("Hello AppSettingProvider Provider");

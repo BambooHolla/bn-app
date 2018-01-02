@@ -1,60 +1,57 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, OnInit } from "@angular/core";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { Config, Nav, Platform } from "ionic-angular";
+import {
+  Config,
+  Nav,
+  Platform,
+  AlertController,
+  LoadingController,
+  ToastController,
+  ModalController,
+} from "ionic-angular";
 
-import { FirstRunPage } from "../pages/pages";
-import { Settings } from "../providers/providers";
+import { Storage } from "@ionic/storage";
+import { Keyboard } from "@ionic-native/keyboard";
+import { Toast } from "@ionic-native/toast";
+
+import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
+import { SettingsProvider } from "../providers/settings/settings";
+import { AccountServiceProvider } from "../providers/account-service/account-service";
+import { LoginServiceProvider } from "../providers/login-service/login-service";
+import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 
 @Component({
-  template: `<ion-menu [content]="content">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Pages</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content>
-      <ion-list>
-        <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-          {{p.title}}
-        </button>
-      </ion-list>
-    </ion-content>
-
-  </ion-menu>
-  <ion-nav #content [root]="rootPage"></ion-nav>`,
+  template: `<ion-nav #content></ion-nav>`, // [root]="rootPage"
 })
-export class MyApp {
-  rootPage = FirstRunPage;
-
-  @ViewChild(Nav) nav: Nav;
-
-  pages: any[] = [
-    { title: "Tutorial", component: "TutorialPage" },
-    { title: "Welcome", component: "WelcomePage" },
-    { title: "Tabs", component: "TabsPage" },
-    { title: "Cards", component: "CardsPage" },
-    { title: "Content", component: "ContentPage" },
-    { title: "Login", component: "LoginPage" },
-    { title: "Signup", component: "SignupPage" },
-    { title: "Master Detail", component: "ListMasterPage" },
-    { title: "Menu", component: "MenuPage" },
-    { title: "Settings", component: "SettingsPage" },
-    { title: "Search", component: "SearchPage" },
-  ];
-
+export class MyApp implements OnInit {
   constructor(
-    private translate: TranslateService,
-    platform: Platform,
-    settings: Settings,
-    private config: Config,
-    private statusBar: StatusBar,
-    private splashScreen: SplashScreen,
+    public translate: TranslateService,
+    public platform: Platform,
+    public settings: SettingsProvider,
+    public config: Config,
+    public statusBar: StatusBar,
+    public splashScreen: SplashScreen,
+    public accountService: AccountServiceProvider,
+    public loginService: LoginServiceProvider,
+    public storage: Storage,
+    public keyboard: Keyboard,
+    public toast: Toast,
+    public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController,
+    public toastCtrl: ToastController,
+    public modalController: ModalController,
   ) {
     window["translate"] = translate;
     window["platform"] = platform;
+    window["alertCtrl"] = alertCtrl;
+    window["loadingCtrl"] = loadingCtrl;
+    window["toastCtrl"] = toastCtrl;
+    window["toast"] = toast;
+    window["modalCtrl"] = modalController;
+    window["accountService"] = accountService;
+    window["myapp"] = this;
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -62,6 +59,15 @@ export class MyApp {
       this.splashScreen.hide();
     });
     this.initTranslate();
+    if (!localStorage.getItem("HIDE_WELCOME")) {
+      localStorage.setItem("HIDE_WELCOME", "1");
+      this.openPage(FirstRunPage);
+    }
+
+    loginService.loginStatus.subscribe(isLogined => {
+      console.log("isLogined", isLogined);
+      this.openPage(isLogined ? MainPage : LoginPage);
+    });
   }
 
   initTranslate() {
@@ -89,9 +95,34 @@ export class MyApp {
     });
   }
 
-  openPage(page) {
+  @ViewChild(Nav) nav: Nav;
+  private _onNavInitedPromise = new PromiseOut();
+  ngOnInit() {
+    this._onNavInitedPromise.resolve(this.nav);
+  }
+
+  currentPage: any;
+  tryInPage: any;
+  openPage(page: string, force = false) {
+    this.tryInPage = page;
+    if (!force) {
+      if (this.currentPage == FirstRunPage) {
+        return;
+      }
+    }
+    this._openPage(page);
+  }
+  private _openPage(page: string) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
+    if (this.nav) {
+      this.nav.setRoot(page);
+      this.currentPage = page;
+    } else {
+      this._onNavInitedPromise.promise.then(() => {
+        this.nav.setRoot(page);
+        this.currentPage = page;
+      });
+    }
   }
 }

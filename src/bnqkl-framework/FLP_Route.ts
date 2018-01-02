@@ -7,7 +7,6 @@ import {
 } from "ionic-angular";
 import { asyncCtrlGenerator } from "./Decorator";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
-import { IframepagePage } from "../pages/iframepage/iframepage";
 import { PAGE_STATUS } from "./const";
 
 export class FLP_Route extends FLP_Lifecycle {
@@ -222,7 +221,7 @@ export class FLP_Route extends FLP_Lifecycle {
     }
     this.modalCtrl
       .create(
-        IframepagePage,
+        'Iframepage',
         Object.assign(
           {
             title,
@@ -240,138 +239,6 @@ export class FLP_Route extends FLP_Lifecycle {
   }
 }
 
-FLP_Route.registerRouteToBeforeCheck(
-  [
-    "roll-out",
-    "buy-in",
-    "bind-credit-card",
-    "plan-add-wages-mission",
-    "plan-add-interest-mission",
-  ],
-  async (self, to_next_params, { path, params, opts }) => {
-    self.hide_jump_loading = false; // 在await前，设置这个属性，让loading显示
-    FLP_Route.jump_loading_message.msg = "检测实名认证"; //修改LOGIN显示的信息
-    FLP_Route.jump_error_title.title = "实名认证检测异常";
-    const real_info = await self.accountService.realInfo.getPromise();
-    console.log("real_info", real_info);
-    if (real_info && real_info.status === "101") {
-      // 认证通过
-      // // 告知下一级的页面不用再检查是否设置过实名认证了
-      // to_next_params.ignore_check_set_real_info = true;
-    } else {
-      self._navCtrlPush("real-info", {
-        remove_view_after_finish: true,
-        after_finish_job: () => {
-          self.routeTo(path, params, opts);
-        },
-      });
-      return true;
-    }
-  },
-  0,
-  "实名认证检测",
-);
-FLP_Route.registerRouteToBeforeCheck(
-  ["buy-in", "roll-out", "plan-add-wages-mission", "plan-add-interest-mission"],
-  async (self, to_next_params, { path, params, opts }) => {
-    const bank_list = await self.accountService.bankcards.getPromise();
-    if (!bank_list.length) {
-      self._navCtrlPush("bind-credit-card", {
-        remove_view_after_finish: true,
-        after_finish_job: () => {
-          self.routeTo(path, params, opts);
-        },
-      });
-      return true;
-    }
-  },
-  1,
-  "检测银行卡绑定",
-);
-
-FLP_Route.registerRouteToBeforeCheck(
-  ["buy-in", "roll-out", "plan-add-wages-mission", "plan-add-interest-mission"],
-  async (self, to_next_params, { path, params, opts }) => {
-    const is_settd_pay_pwd = await self.accountService.isSettedPayPWD.getPromise();
-    console.log("is_settd_pay_pwd", is_settd_pay_pwd);
-    if (!is_settd_pay_pwd) {
-      self._navCtrlPush("set-pay-pwd", {
-        remove_view_after_finish: true,
-        after_finish_job: () => {
-          self.routeTo(path, params, opts);
-        },
-      });
-
-      return true;
-    }
-  },
-  2,
-  "检测支付密码是否已经设置",
-);
-FLP_Route.registerRouteToBeforeCheck(
-  ["buy-in", "plan-add-wages-mission", "plan-add-interest-mission"],
-  async (self, to_next_params, { path, params, opts }) => {
-    const is_withhold_authority = await self.accountService.isWithholdAuthority.getPromise();
-    if (!is_withhold_authority) {
-      const goWithholdAuthority = () =>
-        self._navCtrlPush("account-withhold-authorize", {
-          remove_view_after_finish: true,
-          after_finish_job: () => {
-            self.routeTo(path, params, opts);
-          },
-        });
-      self.alertCtrl
-        .create(
-          Object.assign({
-            title: "授权请求",
-            subTitle: "请授权“委托余额扣款”<br>来确保买入流程的进行",
-            buttons: [
-              "取消",
-              {
-                text: "去授权",
-                handler: goWithholdAuthority,
-              },
-            ],
-          }),
-        )
-        .present();
-      return true;
-    }
-  },
-  3,
-  "检测委托扣款协议",
-);
-FLP_Route.registerRouteToBeforeCheck(
-  ["bind-credit-card"],
-  async (self, to_next_params, { path, params, opts }) => {
-    const bankcards = await self.accountService.bankcards.getPromise();
-    if (bankcards.length) {
-      self.alertCtrl
-        .create({
-          title: "您已经绑定过银行卡",
-          subTitle: "不需要绑定额外的银行卡，如果有需要，请先解除绑定旧卡",
-          buttons: [
-            "知道了",
-            {
-              text: "去解绑",
-              handler: () => {
-                if (self.viewCtrl && self.viewCtrl.id === "my-credit-cards") {
-                  // 在当前页面，不需要跳转
-                  self["openUnbindCardSlide"]();
-                } else {
-                  self.routeTo("my-credit-cards", {
-                    open_unbind_card_slide: true,
-                  });
-                }
-              },
-            },
-          ],
-        })
-        .present();
-      return true;
-    }
-  },
-);
 type RouteToBeforeCheck = {
   name: string;
   match: RouteToBeforeCheck_Match;

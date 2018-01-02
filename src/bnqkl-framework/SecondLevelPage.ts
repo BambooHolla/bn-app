@@ -1,4 +1,4 @@
-import { FirstLevelPage } from "./FirsetLevelPage";
+import { FirstLevelPage } from "./FirstLevelPage";
 import { TabsPage } from "../pages/tabs/tabs";
 import { NavController, NavParams } from "ionic-angular";
 

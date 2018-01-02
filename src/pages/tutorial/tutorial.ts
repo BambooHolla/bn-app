@@ -7,6 +7,7 @@ import {
 } from "ionic-angular";
 
 import { TranslateService } from "@ngx-translate/core";
+import { MyApp } from "../../app/app.component";
 
 export interface Slide {
   title: string;
@@ -14,7 +15,7 @@ export interface Slide {
   image: string;
 }
 
-@IonicPage()
+@IonicPage({ name: "TutorialPage" })
 @Component({
   selector: "page-tutorial",
   templateUrl: "tutorial.html",
@@ -29,6 +30,7 @@ export class TutorialPage {
     public menu: MenuController,
     translate: TranslateService,
     public platform: Platform,
+    public myapp: MyApp,
   ) {
     this.dir = platform.dir();
     translate
@@ -63,14 +65,7 @@ export class TutorialPage {
   }
 
   startApp() {
-    this.navCtrl.setRoot(
-      "WelcomePage",
-      {},
-      {
-        animate: true,
-        direction: "forward",
-      },
-    );
+    this.myapp.openPage(this.myapp.tryInPage, true);
   }
 
   onSlideChangeStart(slider) {

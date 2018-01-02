@@ -7,6 +7,7 @@ import {
   ModalController,
 } from "ionic-angular";
 export class FLP_Tool {
+  constructor() {}
   // 全局弹出层控制器
   @FLP_Tool.FromGlobal alertCtrl: AlertController;
   @FLP_Tool.FromGlobal loadingCtrl: LoadingController;

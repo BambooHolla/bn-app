@@ -2,7 +2,8 @@ import { Storage } from "@ionic/storage";
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptionsArgs } from "@angular/http";
 
-import "rxjs/add/operator/map";
+import { AppUrl } from "../app-setting/app-setting";
+
 import { AppSettingProvider } from "../app-setting/app-setting";
 
 export class ServerResError extends Error {
@@ -56,15 +57,15 @@ export class AppFetchProvider {
       this._user_token = val;
     });
 
-    const methods = [
-      "get",
-      "delete",
-      "head",
-      "options",
-      "post",
-      "put",
-      "patch",
-    ];
+    // const methods = [
+    //   "get",
+    //   "delete",
+    //   "head",
+    //   "options",
+    //   "post",
+    //   "put",
+    //   "patch",
+    // ];
   }
 
   private _handleResThen(res) {
@@ -214,38 +215,66 @@ export class AppFetchProvider {
     return this._handlePromise(req.toPromise(), auto_cache, catch_key);
   }
   get<T>(
-    url: string,
+    url: string | AppUrl,
     options: RequestOptionsArgs = {},
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request("get", url, void 0, options, no_token, auto_cache);
+    return this._request(
+      "get",
+      url.toString(),
+      void 0,
+      options,
+      no_token,
+      auto_cache,
+    );
   }
   post<T>(
-    url: string,
+    url: string | AppUrl,
     body: any = {},
     options: RequestOptionsArgs = {},
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request("post", url, body, options, no_token, auto_cache);
+    return this._request(
+      "post",
+      url.toString(),
+      body,
+      options,
+      no_token,
+      auto_cache,
+    );
   }
   put<T>(
-    url: string,
+    url: string | AppUrl,
     body: any = {},
     options: RequestOptionsArgs = {},
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request("put", url, body, options, no_token, auto_cache);
+    return this._request(
+      "put",
+      url.toString(),
+      body,
+      options,
+      no_token,
+      auto_cache,
+    );
   }
   delete<T>(
-    url: string,
+    url: string | AppUrl,
     options: RequestOptionsArgs = {},
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request("delete", url, void 0, options, no_token, auto_cache);
+    return this._request(
+      "delete",
+      url.toString(),
+      void 0,
+      options,
+      no_token,
+      auto_cache,
+    );
   }
   private _auto_cache;
   private get auto_cache() {

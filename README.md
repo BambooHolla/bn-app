@@ -39,6 +39,23 @@ ionic start mySuperApp super
 
 ## Pages
 
+一共有三个主要界面：欢迎页、登录注册页、主界面
+一个辅助页面：Iframepage（打开第三方网页时使用）
+
+项目所有页面都采用动态加载的方案。
+
+### 新的页面
+创建新的页面时，使用命令行：
+
+```
+ionic g page yourPageName
+```
+
+然后在`your-page-name.ts`中，将`@IonicPage()`修改为：`@IonicPage({name:yourPageName"})`，统一使用峰驼命名写法，如：`@IonicPage({ name: "TabChain" })`
+
+然后引入`bnqkl-framework/SecondLevelPage`
+
+
 The Super Starter comes with a variety of ready-made pages. These pages help
 you assemble common building blocks for your app so you can focus on your
 unique features and branding.

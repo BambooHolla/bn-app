@@ -1,4 +1,4 @@
-import { FirstLevelPage } from "../../bnqkl-framework/FirsetLevelPage";
+import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { Component, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import {
@@ -10,7 +10,7 @@ import {
   Navbar,
 } from "ionic-angular";
 
-@IonicPage()
+@IonicPage({ name: "Iframepage" })
 @Component({
   selector: "page-iframepage",
   templateUrl: "iframepage.html",
