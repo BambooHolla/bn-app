@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Injectable } from "@angular/core";
+import { Storage } from "@ionic/storage";
 
 /**
  * A simple settings/config class for storing key/value pairs with persistence.
  */
 @Injectable()
 export class Settings {
-  private SETTINGS_KEY: string = '_settings';
+  private SETTINGS_KEY: string = "_settings";
 
   settings: any;
 
@@ -18,14 +18,14 @@ export class Settings {
   }
 
   load() {
-    return this.storage.get(this.SETTINGS_KEY).then((value) => {
+    return this.storage.get(this.SETTINGS_KEY).then(value => {
       if (value) {
         this.settings = value;
         return this._mergeDefaults(this._defaults);
       } else {
-        return this.setAll(this._defaults).then((val) => {
+        return this.setAll(this._defaults).then(val => {
           this.settings = val;
-        })
+        });
       }
     });
   }
@@ -56,10 +56,9 @@ export class Settings {
   }
 
   getValue(key: string) {
-    return this.storage.get(this.SETTINGS_KEY)
-      .then(settings => {
-        return settings[key];
-      });
+    return this.storage.get(this.SETTINGS_KEY).then(settings => {
+      return settings[key];
+    });
   }
 
   save() {

@@ -1,0 +1,7 @@
+export enum PAGE_STATUS {
+  UNLOAD = 0,
+  WILL_ENTER,
+  DID_ENTER,
+  WILL_LEAVE,
+  DID_LEAVE,
+}
