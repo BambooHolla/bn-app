@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-navbar [color]="navbar_color">
+    <ion-buttons left>
+      <button *ngIf="!canGoBack" ion-button icon-only (click)="closeModal()">
+        <ion-icon name="ios-close"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>{{titleContent}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <iframe class="redirect-frame" *ngIf="redirect_url" [src]="redirect_url" (load)="onIframeLoad($event)"></iframe>
+</ion-content>
