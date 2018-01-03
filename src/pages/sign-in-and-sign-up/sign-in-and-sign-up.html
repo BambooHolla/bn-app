@@ -5,9 +5,7 @@
     <h1 class="title">IFMCHAIN</h1>
     <earth-net-mesh id="bg"></earth-net-mesh>
     <div class="password-inputer-container">
-      <input class="password-inputer" placeholder="请输入密码" />
-      <input class="password-inputer" />
-      <input class="password-inputer" />
+      <textarea class="password-textareaer" placeholder="请输入密码" [(ngModel)]="formData.pwd" (input)="autoReHeightPWDTextArea($event)"></textarea>
     </div>
     <div class="remember-pwd">
       <label for="remember-pwd">

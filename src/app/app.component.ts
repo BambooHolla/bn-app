@@ -58,6 +58,7 @@ export class MyApp implements OnInit {
       // this.statusBar.styleDefault();
       this.statusBar.styleBlackTranslucent();
       this.statusBar.overlaysWebView(true);
+      this.statusBar.hide();
       this.splashScreen.hide();
     });
     this.initTranslate();

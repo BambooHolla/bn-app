@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, ElementRef } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
@@ -18,5 +18,16 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   initEarchPos() {
     this.earth.camera.position.y = 10 * this.earth.devicePixelRatio;
     this.earth.camera.position.z /= 1.6;
+  }
+
+  formData = {
+    pwd: "",
+  };
+
+  autoReHeightPWDTextArea(e) {
+    e.target.style.height = "";
+    if (e.target.clientHeight < e.target.scrollHeight) {
+      e.target.style.height = e.target.scrollHeight + "px";
+    }
   }
 }
