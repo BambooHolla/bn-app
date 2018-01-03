@@ -1,2 +1,46 @@
 page-sign-in-and-sign-up {
+  #bg {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+  .login-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(#006792, 0.5) 0%,
+      rgba(#006792, 0.1) 90%,
+      rgba(0, 0, 0, 0) 95%
+    );
+    .title {
+      color: #fff;
+      font-weight: normal;
+      font-size: 2.5rem;
+    }
+    .password-inputer-container {
+      width: 80vw;
+      .password-inputer {
+        line-height: 2rem;
+        margin-top: 2.5rem;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(#fff, 0.5);
+        display: block;
+        width: 100%;
+        font-size: 1.3rem;
+        color: #fff;
+        &::-webkit-input-placeholder {
+          color: rgba(#fff, 0.8);
+          font-size: 1.3rem;
+        }
+      }
+    }
+  }
 }
