@@ -4,7 +4,7 @@
   <div class="form-wrapper">
     <h1 class="title">IFMCHAIN</h1>
     <earth-net-mesh id="bg"></earth-net-mesh>
-    <div class="login-form" [hidden]="page_status!=='login'">
+    <div class="login-form" [@login-in-out]="page_status">
       <div class="inputer-container">
         <textarea class="password-textareaer" [class.show-pwd]="show_pwd" type="password" placeholder="请输入密码" [(ngModel)]="formData.pwd" (input)="autoReHeightPWDTextArea($event)"></textarea>
         <button (touchstart)="showPWD()" (touchend)="hidePWD()">显示</button>
@@ -14,12 +14,16 @@
           <input id="remember-pwd" type="checkbox"> 记住密码
         </label>
       </div>
-      <button (click)="doLogin()">立即登录</button>
-      <div>
-        <button (click)="gotoRegister()">注册新账户</button>
+      <button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
+        <div class="inner">立即开始</div>
+      </button>
+      <div class="goto-container">
+        <span class="dot"></span>
+        <button class="goto-button" (click)="gotoRegister()">注册新账户</button>
+        <span class="dot"></span>
       </div>
     </div>
-    <div class="register-form" [hidden]="page_status!=='register'">
+    <div class="register-form" [@register-in-out]="page_status">
       <div class="inputer-container">
         <input class="password-inputer" type="email" placeholder="请输入常用邮箱" [(ngModel)]="formData.email" />
         <input class="password-inputer" type="tel" placeholder="请输入常用手机" [(ngModel)]="formData.phone" />
@@ -27,9 +31,11 @@
         <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.pwd" />
       </div>
       <div class="info">仅用于生成密码数据不会保存在区块链上</div>
-      <button>注册</button>
-      <div>
-        <button (click)="gotoLogin()">我已有账户 立即登录</button>
+      <button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">注册</button>
+      <div class="goto-container">
+        <span class="dot"></span>
+        <button class="goto-button" (click)="gotoLogin()">我已有账户 立即登录</button>
+        <span class="dot"></span>
       </div>
     </div>
   </div>

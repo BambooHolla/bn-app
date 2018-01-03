@@ -2,6 +2,10 @@ import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule,
+} from "@angular/platform-browser/animations";
 import { Camera } from "@ionic-native/camera";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Keyboard } from "@ionic-native/keyboard";
@@ -45,6 +49,7 @@ export function provideSettings(storage: Storage) {
   declarations: [MyApp],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     HttpModule,
     TranslateModule.forRoot({

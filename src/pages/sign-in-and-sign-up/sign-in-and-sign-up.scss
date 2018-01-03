@@ -12,17 +12,18 @@ page-sign-in-and-sign-up {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     background: radial-gradient(
       ellipse at center,
-      rgba(#006792, 0.5) 0%,
-      rgba(#006792, 0.1) 90%,
+      rgba(#006792, 0.8) 0%,
+      rgba(#006792, 0.5) 90%,
       rgba(0, 0, 0, 0) 95%
     );
     .title {
       color: #fff;
       font-weight: normal;
-      font-size: 2.5rem;
+      font-size: 3rem;
+      margin-top: 10.5rem;
     }
     .login-form,
     .register-form {
@@ -80,5 +81,75 @@ page-sign-in-and-sign-up {
         }
       }
     }
+  }
+
+  .submit-button {
+    border-radius: 0.8rem;
+    padding: 1.2rem;
+    width: 75vw;
+    font-size: 1.8rem;
+    color: #fff;
+    background: linear-gradient(to bottom, rgba(#02e5f6, 1), rgba(#01acdd, 1));
+    box-shadow: 0 0 0.2rem rgba(#333, 0.5);
+    transition-duration: 250ms;
+    &:disabled {
+      opacity: 1;
+      background: #fff;
+      color: #00c5f2;
+      .inner {
+        background-image: linear-gradient(top, #02e5f6 20%, #01acdd 80%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+  }
+  .info {
+    font-size: 1.2rem;
+    color: #fff;
+  }
+
+  .goto-container {
+    width: 74vw;
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+    > .dot {
+      flex: 1;
+      flex-grow: 1;
+      flex-shrink: 1;
+      background: linear-gradient(
+        to left,
+        rgba(#fff, 0.5) 0%,
+        rgba(#fff, 0.5) 20%,
+        transparent 20%,
+        transparent 100%
+      );
+      background-size: 0.5rem 0.1rem;
+      background-repeat: repeat-x;
+      background-position: 50%;
+    }
+    .goto-button {
+      flex-grow: 0;
+      flex-shrink: 0;
+      background-image: linear-gradient(top, #02e5f6 20%, #01acdd 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+  }
+
+  /* 3d效果 */
+  .form-wrapper {
+    transform-style: preserve-3d;
+    perspective: 2020px;
+    perspective-origin: 50% 100px;
+    position: relative;
+  }
+  .register-form,
+  .login-form {
+    position: absolute;
+    top: 14rem;
+    -webkit-transform-origin-z: -230px;
   }
 }

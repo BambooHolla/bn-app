@@ -123,6 +123,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
         line;
       };
       scene.add(line);
+      this._mesh_list.push(line);
 
       const vertices = geometry.vertices;
 
@@ -159,12 +160,12 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // const colors = [];
       // for (let i = 0; i < BaseX.length; i += 1) {
-      // 	colors[i] = new THREE.Color(0xffffff);
-      // 	colors[i].setHSL(
-      // 		0.6,
-      // 		1.0,
-      // 		Math.max(0, (200 - BaseX[i]) / 400) * 0.5 + 0.5,
-      // 	);
+      //   colors[i] = new THREE.Color(0xffffff);
+      //   colors[i].setHSL(
+      //     0.6,
+      //     1.0,
+      //     Math.max(0, (200 - BaseX[i]) / 400) * 0.5 + 0.5,
+      //   );
       // }
       // geometry.addAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
@@ -172,7 +173,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
       line.rotation.x = -Math.PI / 2;
 
       var animate = function() {
-        line.rotation.x -= 0.001;
+        // line.rotation.x -= 0.001;
         // p = f % CHANGE_FRAME_NUM;
         // if (p === 0) {
         for (let i = 0; i < vertices.length; i += 1) {
@@ -245,6 +246,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     });
   }
+  private _mesh_list: THREE.Mesh[] = [];
 
   ngAfterViewInit() {
     this._init();
@@ -273,4 +275,66 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this._isStarted && requestAnimationFrame(this._loop);
   }
+
+  rotateMeshsY = this._rotateMeshsDir("y");
+  rotateMeshsX = this._rotateMeshsDir("x");
+  rotateMeshsZ = this._rotateMeshsDir("z");
+  private _rotateMeshsDir(key: "x" | "y" | "z") {
+    const upKey = key.toLocaleUpperCase();
+    const loop_runer_key = "_route_mesh_loop_runer_" + key;
+
+    const stoper = (this["stopRotateMeshs" + upKey] = () => {
+      var old_i = this._loop_runs.indexOf(this[loop_runer_key]);
+      if (old_i > -1) {
+        this._loop_runs.splice(old_i, 1);
+      }
+    });
+    return (to_deg: number, time = 200, direction: 1 | -1 = 1) => {
+      stoper();
+
+      var from_deg = this._mesh_list[0].rotation[key] % (Math.PI * 2);
+      to_deg = to_deg % (Math.PI * 2);
+      var start_time = performance.now();
+      var progress = 0;
+
+      var dif_deg;
+      if (direction == -1) {
+        dif_deg = to_deg - from_deg;
+        if (dif_deg > 0) {
+          from_deg += Math.PI * 2;
+        }
+        dif_deg = to_deg - from_deg;
+      } else {
+        dif_deg = to_deg - from_deg;
+        if (dif_deg < 0) {
+          from_deg -= Math.PI * 2;
+        }
+        dif_deg = to_deg - from_deg;
+      }
+      console.log("dif_deg", dif_deg);
+
+      this[loop_runer_key] = () => {
+        var cur_time = performance.now();
+        progress = (cur_time - start_time) / time;
+
+        var end = false;
+        for (let mesh of this._mesh_list) {
+          if (progress >= 1) {
+            // 动画结束
+            mesh.rotation[key] = to_deg;
+            end = true;
+          } else {
+            mesh.rotation[key] = from_deg + dif_deg * progress;
+          }
+        }
+        if (end) {
+          stoper();
+        }
+      };
+      this._loop_runs.push(this[loop_runer_key]);
+    };
+  }
+  stopRotateMeshsY: () => void;
+  stopRotateMeshsX: () => void;
+  stopRotateMeshsZ: () => void;
 }

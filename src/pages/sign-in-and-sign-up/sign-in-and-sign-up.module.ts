@@ -4,7 +4,10 @@ import { SignInAndSignUpPage } from "./sign-in-and-sign-up";
 import { ComponentsModule } from "../../components/components.module";
 
 @NgModule({
-  declarations: [SignInAndSignUpPage],
-  imports: [IonicPageModule.forChild(SignInAndSignUpPage), ComponentsModule],
+	declarations: [SignInAndSignUpPage],
+	imports: [
+		IonicPageModule.forChild(SignInAndSignUpPage),
+		ComponentsModule,
+	],
 })
 export class SignInAndSignUpPageModule {}
