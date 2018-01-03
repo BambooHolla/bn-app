@@ -10,11 +10,13 @@ import {
 } from "ionic-angular";
 import { PAGE_STATUS } from "./const";
 import { Toast } from "@ionic-native/toast";
+import { TranslateService } from "@ngx-translate/core";
+import { FLP_Tool } from "./FLP_Tool";
 
 export const ERROR_FROM_ASYNCERROR = { NAME: "CATCHED_ERROR" };
 
 export function asyncErrorWrapGenerator(
-  error_title: any = "错误",
+  error_title: any = () => FLP_Tool.getTranslate("ERROR"),
   opts?: AlertOptions,
   hidden_when_page_leaved = true,
 ) {
@@ -62,18 +64,25 @@ export function asyncErrorWrapGenerator(
             );
             alert(err_msg);
           } else {
-            alertCtrl
-              .create(
-                Object.assign(
-                  {
-                    title: String(error_title),
-                    subTitle: err_msg,
-                    buttons: ["确定"],
-                  },
-                  opts,
-                ),
-              )
-              .present();
+            if (error_title instanceof Function) {
+              error_title = error_title(err);
+            }
+            Promise.all([error_title, err_msg]).then(
+              ([error_title, err_msg]) => {
+                alertCtrl
+                  .create(
+                    Object.assign(
+                      {
+                        title: String(error_title),
+                        subTitle: String(err_msg),
+                        buttons: ["确定"],
+                      },
+                      opts,
+                    ),
+                  )
+                  .present();
+              },
+            );
           }
           return ERROR_FROM_ASYNCERROR;
         });
@@ -83,7 +92,7 @@ export function asyncErrorWrapGenerator(
   };
 }
 export function asyncSuccessWrapGenerator(
-  success_msg: any = "成功",
+  success_msg: any = () => FLP_Tool.getTranslate("SUCCESS"),
   position = "bottom",
   duration = 3000,
   hidden_when_page_leaved = true,
@@ -104,10 +113,16 @@ export function asyncSuccessWrapGenerator(
           console.log("不弹出成功提示因为页面的切换");
           return data;
         }
-        const message = String(success_msg);
+
+        if (success_msg instanceof Function) {
+          success_msg = success_msg(data);
+        }
+
         if ("plugins" in window && "toast" in window["plugins"]) {
           const toast = window["toast"] as Toast;
-          toast.show(message, duration + "", position).toPromise();
+          Promise.resolve(success_msg).then(message => {
+            toast.show(String(message), duration + "", position).toPromise();
+          });
         } else {
           const toastCtrl: ToastController = this.toastCtrl;
           if (!(toastCtrl instanceof ToastController)) {
@@ -118,13 +133,15 @@ export function asyncSuccessWrapGenerator(
             );
             alert(String(success_msg));
           } else {
-            toastCtrl
-              .create({
-                message,
-                position,
-                duration,
-              })
-              .present();
+            Promise.resolve(success_msg).then(message => {
+              toastCtrl
+                .create({
+                  message: String(message),
+                  position,
+                  duration,
+                })
+                .present();
+            });
           }
         }
         return data;
@@ -144,7 +161,7 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
   }
 >());
 export function asyncLoadingWrapGenerator(
-  loading_msg: any = "请稍后",
+  loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
   opts?: LoadingOptions,
   id?: string,
@@ -181,6 +198,14 @@ export function asyncLoadingWrapGenerator(
         // 加入到集合中
         id_info.promises.add(res);
       }
+
+      if (loading_msg instanceof Function) {
+        loading_msg = loading_msg();
+      }
+      Promise.resolve(loading_msg).then(loading_msg => {
+        loading.setContent(String(loading_msg));
+      });
+
       const loadingOpts = Object.assign(
         {
           content: String(loading_msg),
@@ -189,6 +214,7 @@ export function asyncLoadingWrapGenerator(
         opts,
       );
       const loading = loadingCtrl.create(loadingOpts);
+
       loading.onWillDismiss(() => {
         loading["_is_dissmissed"] = true;
       });

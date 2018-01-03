@@ -8,6 +8,10 @@
   "LOGIN": "登 录",
   "SIGNUP": "注 册",
 
+  "SUCCESS":"成功",
+  "ERROR":"错误",
+  "PLEASE_WAIT":"请稍后",
+
   "TAB1_TITLE": "挖矿",
   "TAB2_TITLE": "区块链",
   "TAB3_TITLE": "支付",

@@ -1,3 +1,4 @@
+import { TranslateService } from "@ngx-translate/core";
 import {
   AlertController,
   Platform,
@@ -14,6 +15,7 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal toastCtrl: ToastController;
   @FLP_Tool.FromGlobal modalCtrl: ModalController;
   @FLP_Tool.FromGlobal platform: Platform;
+  @FLP_Tool.FromGlobal translate: TranslateService;
 
   /**
    * 用于管理loading对象的对象池
@@ -83,6 +85,18 @@ export class FLP_Tool {
       };
       Object.defineProperty(target, name, descriptor);
     }
+  }
+  static getTranslate(key: string | string[], interpolateParams?: Object){
+     return (window['translate'] as TranslateService)
+      .get(key, interpolateParams)
+      .take(1)
+      .toPromise();
+  }
+  getTranslate(key: string | string[], interpolateParams?: Object) {
+    return this.translate
+      .get(key, interpolateParams)
+      .take(1)
+      .toPromise();
   }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;

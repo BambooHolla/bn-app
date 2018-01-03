@@ -52,7 +52,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   gotoLogin() {
     this.page_status = "login";
   }
-  @asyncCtrlGenerator.error("LOGIN ERROR")
+  @asyncCtrlGenerator.error(()=>SignInAndSignUpPage.getTranslate('LOGIN ERROR'))
   @asyncCtrlGenerator.loading()
   async doLogin() {
     await this.loginService.doLogin(this.formData.pwd);
