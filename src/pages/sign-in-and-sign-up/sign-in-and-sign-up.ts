@@ -30,4 +30,12 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       e.target.style.height = e.target.scrollHeight + "px";
     }
   }
+
+  show_pwd = false;
+  showPWD(){
+    this.show_pwd = true;
+  }
+  hidePWD(){
+    this.show_pwd = false;
+  }
 }

@@ -62,9 +62,14 @@ page-sign-in-and-sign-up {
         background-size: 100% 4rem;
         background-position: 0 3rem;
         background-attachment: local;
+        -webkit-text-security: disc;
+        letter-spacing: 0.2rem;
         &::-webkit-input-placeholder {
           color: rgba(#fff, 0.8);
           font-size: 1.3rem;
+        }
+        &.show-pwd {
+          -webkit-text-security: unset;
         }
       }
     }
