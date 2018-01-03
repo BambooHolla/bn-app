@@ -3,6 +3,9 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
+import { asyncCtrlGenerator} from '../../bnqkl-framework/Decorator';
+import { MyApp } from '../../app/app.component';
+import { MainPage } from '../pages';
 
 @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -14,6 +17,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public loginService: LoginServiceProvider,
+    public myApp : MyApp,
   ) {
     super(navCtrl, navParams);
   }
@@ -48,7 +52,12 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   gotoLogin() {
     this.page_status = "login";
   }
-  doLogin() {}
+  @asyncCtrlGenerator.error("LOGIN ERROR")
+  @asyncCtrlGenerator.loading()
+  async doLogin() {
+    await this.loginService.doLogin(this.formData.pwd);
+    this.myApp.openPage( MainPage );
+  }
   gotoRegister() {
     this.page_status = "register";
   }

@@ -1,6 +1,7 @@
 import { Storage } from "@ionic/storage";
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptionsArgs } from "@angular/http";
+import { TranslateService } from "@ngx-translate/core";
 
 import { AppUrl } from "../app-setting/app-setting";
 
@@ -50,6 +51,7 @@ export class AppFetchProvider {
     public http: Http,
     public appSetting: AppSettingProvider,
     public storage: Storage,
+    public translateService : TranslateService,
   ) {
     console.log("Hello AppFetchProvider Provider");
     window["FETCH"] = this;
@@ -70,20 +72,14 @@ export class AppFetchProvider {
 
   private _handleResThen(res) {
     const data = res.json();
-    // console.log('login:', data);
-    const err = data.error || data.err;
-    if (!err) {
-      if (typeof data.data !== "object") {
-        return Promise.reject(new TypeError("服务器响应的数据有误"));
-      }
-      // 传递来自缓存功能的隐藏异常
-      data.__source_err__ && (data.data.__source_err__ = data.__source_err__);
-      return data.data;
-    } else {
-      debugger;
+
+    if (data.success) {
+      return data;
+    }else {
       return Promise.reject(
-        ServerResError.parseErrorMessage(err.code, err.message),
-      );
+        //返回的错误在reject中统一处理，翻译后返回
+        this.translateService.get(data.error).take(1).toPromise()
+      )
     }
   }
   private _handleResCatch(res) {
@@ -163,7 +159,6 @@ export class AppFetchProvider {
   ) {
     if (!without_token) {
       const headers = options.headers || (options.headers = new Headers());
-      headers.append("X-AUTH-TOKEN", this._user_token);
     }
     const params = options.params as { [key: string]: any };
     if (params && params.constructor === Object) {

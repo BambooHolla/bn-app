@@ -16,7 +16,8 @@ export class AppUrl {
 
 @Injectable()
 export class AppSettingProvider {
-  static SERVER_URL = "http://bjs.bnqkl.cn/api/v1/bngj/";
+  static SERVER_URL = "http://mainnet.ifmchain.org";
+  static NET_VERSION = "mainnet";
   APP_URL(path: string) {
     return new AppUrl(path);
   }
@@ -29,20 +30,20 @@ export class AppSettingProvider {
   private _token_timeout_ti: any;
   getUserToken() {
     try {
-      clearTimeout(this._token_timeout_ti);
+      // clearTimeout(this._token_timeout_ti);
       var tokenJson = localStorage.getItem(this.USER_TOKEN_STORE_KEY);
-      if (!tokenJson) {
-        return "";
-      }
+      // if (!tokenJson) {
+      //   return "";
+      // }
       var obj = JSON.parse(tokenJson);
-      if (obj.expiredTime && obj.expiredTime < Date.now()) {
-        return "";
-      }
-      this._token_timeout_ti = setTimeout(() => {
-        console.log("User Token 过期：", obj);
-        this._setUserToken("");
-      }, obj.expiredTime - Date.now());
-      return obj.token || "";
+      // if (obj.expiredTime && obj.expiredTime < Date.now()) {
+      //   return "";
+      // }
+      // this._token_timeout_ti = setTimeout(() => {
+      //   console.log("User Token 过期：", obj);
+      //   this._setUserToken("");
+      // }, obj.expiredTime - Date.now());
+      return obj || "";
     } catch (e) {
       return "";
     }

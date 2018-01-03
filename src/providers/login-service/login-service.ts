@@ -6,10 +6,11 @@ import {
   TB_AB_Generator,
 } from "../app-setting/app-setting";
 import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
+import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import  * as FIM from 'ifmchain-ibt'
+import  * as IFM from 'ifmchain-ibt';
 
 export type UserModel = {
   name: string;
@@ -19,10 +20,12 @@ export type UserModel = {
 @Injectable()
 export class LoginServiceProvider {
   loginStatus: Observable<boolean>;
+  ifmJs : any;
   constructor(
     public http: Http,
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
+    public storage: Storage,
   ) {
     console.group("Hello LoginServiceProvider Provider");
     window["LoginServiceProviderInstance"] = this;
@@ -30,12 +33,13 @@ export class LoginServiceProvider {
       console.log("USER TOKEN:", val);
       return !!val;
     });
+    this.ifmJs = IFM(AppSettingProvider.NET_VERSION);
     console.groupEnd();
   }
   readonly GET_LOGINER_DATA_URL = this.appSetting.APP_URL(
     "user/getCustomersData",
   );
-  readonly LOGIN_URL = this.appSetting.APP_URL("user/login");
+  readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
   readonly CHECK_REG_ACCOUNT_URL = this.appSetting.APP_URL(
     "user/checkRegAccount",
   );
@@ -43,7 +47,6 @@ export class LoginServiceProvider {
     "user/sendSmsToAppointed",
   );
   readonly REGISTER_URL = this.appSetting.APP_URL("bnlcbiz/member/create");
-
   // _loginerInfo: AsyncBehaviorSubject<CommonResponseData<UserModel>>
   // // 按需生成，否则直接生成的话发起请求，在返回的末端没有其它地方接手这个请求catch错误的话，会导致异常抛出到全局
   // get loginerInfo() {
@@ -80,27 +83,28 @@ export class LoginServiceProvider {
    * @returns
    * @memberof LoginServiceProvider
    */
-  doLogin(account: string, password: string, savePwd = true) {
-    return this.fetch
-      .post(
-        this.LOGIN_URL,
-        {
-          type: 1,
-          account,
-          password,
-        },
-        void 0,
-        true,
-      )
-      .then(data => {
-        // 登录成功自动保存密码
-        if (savePwd) {
-          localStorage.setItem(this.USER_PWD_STORE_KEY, password);
-        }
-        console.log("登录成功：", data);
-        this.appSetting.setUserToken(data);
-        return data;
-      });
+  async doLogin(password: string, savePwd = true) {
+    let flag = this.ifmJs.Mnemonic.isValid(password);
+    if(flag) {
+      let keypair = this.ifmJs.keypairHelper.create(password);
+      let req = {
+        "publicKey": keypair.publicKey.toString('hex')
+      }
+
+      let data = await this.fetch.put<any>(this.LOGIN_URL, req);
+      let loginObj = {
+        password,
+        "publicKey" : data.account.publicKey,
+        "address" : data.account.address,
+        "username" : data.account.username || "",
+        "balance" : data.account.balance,
+        "remember" : savePwd,
+        "secondPublickey" : data.account.secondPublicKey ? data.account.secondPublicKey : ""
+      }
+      await this.storage.set("loginObj", loginObj);
+      this.appSetting.setUserToken(loginObj);
+      return data;
+    }
   }
 
   /**
@@ -142,25 +146,25 @@ export class LoginServiceProvider {
     });
   }
 
-  registerAccount(
-    account: string,
-    password: string,
-    code: string,
-    recommendCode?: string,
-    savePwd = true,
-  ) {
-    return this.fetch
-      .post(this.REGISTER_URL, {
-        phoneNo: account,
-        password,
-        code,
-        recommendCode,
-      })
-      .then(data => {
-        console.log("注册成功：", data);
-        return this.doLogin(account, password);
-      });
-  }
+  // registerAccount(
+  //   account: string,
+  //   password: string,
+  //   code: string,
+  //   recommendCode?: string,
+  //   savePwd = true,
+  // ) {
+  //   return this.fetch
+  //     .post(this.REGISTER_URL, {
+  //       phoneNo: account,
+  //       password,
+  //       code,
+  //       recommendCode,
+  //     })
+  //     .then(data => {
+  //       // console.log("注册成功：", data);
+  //       return this.doLogin(account, password);
+  //     });
+  // }
   loginOut() {
     this.appSetting.clearUserToken();
     return this.loginerInfo.toPromise();
