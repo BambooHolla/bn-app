@@ -19,6 +19,7 @@ import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 
+import { ComponentsModule } from "../components/components.module";
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
@@ -53,8 +54,18 @@ export function provideSettings(storage: Storage) {
         deps: [HttpClient],
       },
     }),
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, {
+      backButtonText: "",
+      iconMode: "ios",
+      mode: "ios",
+      scrollPadding: false,
+      scrollAssist: false,
+      autoFocusAssist: false,
+      statusbarPadding: false,
+      swipeBackEnabled: true,
+    }),
     IonicStorageModule.forRoot(),
+    ComponentsModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [MyApp],
