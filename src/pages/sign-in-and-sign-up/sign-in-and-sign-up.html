@@ -1,21 +1,36 @@
 <ion-header>
 </ion-header>
 <ion-content>
-  <div class="login-form">
+  <div class="form-wrapper">
     <h1 class="title">IFMCHAIN</h1>
     <earth-net-mesh id="bg"></earth-net-mesh>
-    <div class="password-inputer-container">
-      <textarea class="password-textareaer" [class.show-pwd]="show_pwd" type="password" placeholder="请输入密码" [(ngModel)]="formData.pwd" (input)="autoReHeightPWDTextArea($event)"></textarea>
-      <button (touchstart)="showPWD()" (touchend)="hidePWD()">显示</button>
+    <div class="login-form" [hidden]="page_status!=='login'">
+      <div class="inputer-container">
+        <textarea class="password-textareaer" [class.show-pwd]="show_pwd" type="password" placeholder="请输入密码" [(ngModel)]="formData.pwd" (input)="autoReHeightPWDTextArea($event)"></textarea>
+        <button (touchstart)="showPWD()" (touchend)="hidePWD()">显示</button>
+      </div>
+      <div class="remember-pwd">
+        <label for="remember-pwd">
+          <input id="remember-pwd" type="checkbox"> 记住密码
+        </label>
+      </div>
+      <button (click)="doLogin()">立即登录</button>
+      <div>
+        <button (click)="gotoRegister()">注册新账户</button>
+      </div>
     </div>
-    <div class="remember-pwd">
-      <label for="remember-pwd">
-        <input id="remember-pwd" type="checkbox"> 记住密码
-      </label>
-    </div>
-    <button>立即登录</button>
-    <div>
-      <button>注册新账户</button>
+    <div class="register-form" [hidden]="page_status!=='register'">
+      <div class="inputer-container">
+        <input class="password-inputer" type="email" placeholder="请输入常用邮箱" [(ngModel)]="formData.email" />
+        <input class="password-inputer" type="tel" placeholder="请输入常用手机" [(ngModel)]="formData.phone" />
+        <input class="password-inputer" type="text" placeholder="我的个性签名" [(ngModel)]="formData.remark" />
+        <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.pwd" />
+      </div>
+      <div class="info">仅用于生成密码数据不会保存在区块链上</div>
+      <button>注册</button>
+      <div>
+        <button (click)="gotoLogin()">我已有账户 立即登录</button>
+      </div>
     </div>
   </div>
 </ion-content>

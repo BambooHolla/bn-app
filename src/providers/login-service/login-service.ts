@@ -9,6 +9,7 @@ import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
+import  * as FIM from 'ifmchain-ibt'
 
 export type UserModel = {
   name: string;
