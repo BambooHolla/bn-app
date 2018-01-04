@@ -71,7 +71,8 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   @asyncCtrlGenerator.loading()
   async doLogin() {
     await this.loginService.doLogin(this.formData.pwd);
-    this.myApp.openPage(MainPage);
+    // this.myApp.openPage(MainPage);
+    this.routeTo("scan-nodes");
   }
   gotoRegister() {
     this.page_status = "register";

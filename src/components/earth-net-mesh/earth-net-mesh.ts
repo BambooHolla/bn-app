@@ -23,6 +23,30 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
+  private _floorMaterial: THREE.MeshPhongMaterial;
+
+  @Input("background-color")
+  get bgColor() {
+    return this._bg_color;
+  }
+  _bg_color: THREE.Color = new THREE.Color(0x005a89);
+  set bgColor(v) {
+    this._bg_color = v;
+    if (this._floorMaterial) {
+      this._floorMaterial.color = this._bg_color;
+    }
+  }
+  setBgColor(v: number | string | number[] | THREE.Color) {
+    if (v instanceof Array) {
+      this.bgColor = new THREE.Color(...v);
+    } else if (typeof v === "string") {
+      this.bgColor = new THREE.Color(v);
+    } else if (typeof v === "number") {
+      this.bgColor = new THREE.Color(v);
+    } else {
+      this.bgColor = v;
+    }
+  }
 
   @Input("width")
   get width() {
@@ -85,10 +109,11 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
     // ---------------------------
     // 背景面板
     var floorMaterial = new THREE.MeshPhongMaterial({
-      color: 0x005a89,
-      specular: 0x005a89,
+      color: this._bg_color,
+      specular: this._bg_color,
       side: THREE.DoubleSide,
     });
+    this._floorMaterial = floorMaterial;
     var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.position.z = -100;

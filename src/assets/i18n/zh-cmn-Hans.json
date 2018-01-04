@@ -8,9 +8,9 @@
   "LOGIN": "登 录",
   "SIGNUP": "注 册",
 
-  "SUCCESS":"成功",
-  "ERROR":"错误",
-  "PLEASE_WAIT":"请稍后",
+  "SUCCESS": "成功",
+  "ERROR": "错误",
+  "PLEASE_WAIT": "请稍后",
 
   "TAB1_TITLE": "挖矿",
   "TAB2_TITLE": "区块链",
@@ -23,13 +23,16 @@
   "TUTORIAL_CONTINUE_BUTTON": "继续",
 
   "TUTORIAL_SLIDE1_TITLE": "欢迎来到 Ionic Super Starter",
-  "TUTORIAL_SLIDE1_DESCRIPTION": "<b>Ionic Super Starter</b> 是一个功能全面，内置多个页面以及最佳实践的 Ionic 入门教程。",
+  "TUTORIAL_SLIDE1_DESCRIPTION":
+    "<b>Ionic Super Starter</b> 是一个功能全面，内置多个页面以及最佳实践的 Ionic 入门教程。",
 
   "TUTORIAL_SLIDE2_TITLE": "如何使用 Super 入门教程",
-  "TUTORIAL_SLIDE2_DESCRIPTION": "使用你需要的多种多样的页面删除你不需要的页面。我们提供许多常见移动 app 页面，如登录、注册页面，tabs 标签页，以及本教程页面。",
+  "TUTORIAL_SLIDE2_DESCRIPTION":
+    "使用你需要的多种多样的页面删除你不需要的页面。我们提供许多常见移动 app 页面，如登录、注册页面，tabs 标签页，以及本教程页面。",
 
   "TUTORIAL_SLIDE3_TITLE": "开始",
-  "TUTORIAL_SLIDE3_DESCRIPTION": "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
+  "TUTORIAL_SLIDE3_DESCRIPTION":
+    "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
 
   "TUTORIAL_SLIDE4_TITLE": "开始学习？",
 
@@ -69,5 +72,11 @@
   "CARDS_TITLE": "社交",
 
   "SEARCH_TITLE": "搜索",
-  "SEARCH_PLACEHOLDER": "搜索项目列表, 比如：\"Donald Duck\""
+  "SEARCH_PLACEHOLDER": "搜索项目列表, 比如：\"Donald Duck\"",
+
+  "//": "link-node-page",
+  "LINKING_PEER_NODE": "节点连接中",
+  "LINK_PEER_NODE_ERROR": "节点连接失败",
+
+  "//": "OVER"
 }

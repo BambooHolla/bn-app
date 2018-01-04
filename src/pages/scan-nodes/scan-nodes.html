@@ -1,0 +1,25 @@
+<ion-header>
+  <!-- 扫描节点 -->
+</ion-header>
+<ion-content>
+  <earth-net-mesh id="bg" background-color="#ed554a"></earth-net-mesh>
+  <div class="scan-panel">
+    <div class="ani-circles-wrapper">
+      <div class="inner-ani">
+        <div #wave1 class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+      	<div class="scan-bar"></div>
+      </div>
+      <div class="peer-list">
+      	<div class="peer-node" *ngFor="let node of nodes" [style.top]="node._pos_top+'%'" [style.left]="node._pos_left+'%'">     		
+      	</div>
+      </div>
+    </div>
+    <div class="info" [hidden]="!nodes.length">
+      已扫描到{{nodes.length}}个节点
+    </div>
+  </div>
+</ion-content>
