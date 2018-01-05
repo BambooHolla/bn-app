@@ -1,18 +1,38 @@
-<!--
-  Generated template for the TabVotePage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>TabVote</ion-title>
-  </ion-navbar>
-
+  <!-- 挖矿 -->
 </ion-header>
-
-
-<ion-content padding>
-
+<ion-content>
+  <div class="bootstrap-page" [hidden]="page_status!='bootstrap'">
+    <div class="main-container">
+      <div class="auto-start-button-wrapper">
+        <div class="auto-start-button" (click)="routeToVoteDetail()"></div>
+      </div>
+    </div>
+    <div class="assets-info">
+      <div class="balance">
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <linearGradient id="gradient-1" x2="1" y2="0">
+            <stop stop-color="#f8846f" offset="0" />
+            <stop stop-color="#ffc85e" offset="1" />
+          </linearGradient>
+          <text y="2.4rem" font-size="2.4rem" x="12.4rem" fill="url(#gradient-1)">
+            {{account_info?.balance}}
+          </text>
+        </svg>
+      </div>
+      <div class="history-logs">
+        <a class="linker" (click)="routeTo('history-logs')">历史挖矿收益</a>
+      </div>
+    </div>
+  </div>
+  <div class="vote-detail-page" [hidden]="page_status!='vote-detail'">
+    <div class="ani-wrapper" #aniWrapper>
+      <div class="ani-progress"></div>
+      <div class="ani-container" #aniContainer>
+        <div class="gold-pos-container" *ngFor="let coin of progress_coins" [ngStyle]="coin.pos">
+          <gold-coin class="coin" [ani-count]="coin.count" [ani-speed]="coin.speed"></gold-coin>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>
