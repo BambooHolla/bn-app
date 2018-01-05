@@ -6,6 +6,7 @@ import {
   AsyncBehaviorSubject,
   Executor,
 } from "../../bnqkl-framework/RxExtends";
+import * as IFM from "ifmchain-ibt";
 
 export class AppUrl {
   constructor(public path) {}
@@ -17,7 +18,12 @@ export class AppUrl {
 @Injectable()
 export class AppSettingProvider {
   static SERVER_URL = "http://mainnet.ifmchain.org";
+  static SERVER_TIMEOUT = 1000;
   static NET_VERSION = "mainnet";
+  // static HTTP_PROVIDER = new IFM(AppSettingProvider.NET_VERSION).HttpProvider(
+  //   AppSettingProvider.SERVER_URL,
+  //   AppSettingProvider.SERVER_TIMEOUT
+  // )
   APP_URL(path: string) {
     return new AppUrl(path);
   }
