@@ -27,7 +27,7 @@
         <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.pwd" />
       </div>
       <div class="info">仅用于生成密码数据不会保存在区块链上</div>
-      <button>注册</button>
+      <button (click)="doRegister()">注册</button>
       <div>
         <button (click)="gotoLogin()">我已有账户 立即登录</button>
       </div>

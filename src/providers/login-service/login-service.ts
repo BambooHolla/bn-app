@@ -6,10 +6,12 @@ import {
   TB_AB_Generator,
 } from "../app-setting/app-setting";
 import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
+import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
+import { AlertController } from "ionic-angular";
 import  * as IFM from 'ifmchain-ibt';
 
 export type UserModel = {
@@ -26,6 +28,8 @@ export class LoginServiceProvider {
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public storage: Storage,
+    public alertController: AlertController,
+    public translateService : TranslateService,
   ) {
     console.group("Hello LoginServiceProvider Provider");
     window["LoginServiceProviderInstance"] = this;
@@ -34,19 +38,11 @@ export class LoginServiceProvider {
       return !!val;
     });
     this.ifmJs = IFM(AppSettingProvider.NET_VERSION);
+    //用于生成随机语句
+    this.Mnemonic = this.ifmJs.Mnemonic;
     console.groupEnd();
   }
-  readonly GET_LOGINER_DATA_URL = this.appSetting.APP_URL(
-    "user/getCustomersData",
-  );
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
-  readonly CHECK_REG_ACCOUNT_URL = this.appSetting.APP_URL(
-    "user/checkRegAccount",
-  );
-  readonly SEND_SMS_TO_UNRESISTER_URL = this.appSetting.APP_URL(
-    "user/sendSmsToAppointed",
-  );
-  readonly REGISTER_URL = this.appSetting.APP_URL("bnlcbiz/member/create");
   // _loginerInfo: AsyncBehaviorSubject<CommonResponseData<UserModel>>
   // // 按需生成，否则直接生成的话发起请求，在返回的末端没有其它地方接手这个请求catch错误的话，会导致异常抛出到全局
   // get loginerInfo() {
@@ -84,8 +80,7 @@ export class LoginServiceProvider {
    * @memberof LoginServiceProvider
    */
   async doLogin(password: string, savePwd = true) {
-    let flag = this.ifmJs.Mnemonic.isValid(password);
-    if(flag) {
+    if(this.checkAccountLoginAble(password)) {
       let keypair = this.ifmJs.keypairHelper.create(password);
       let req = {
         "publicKey": keypair.publicKey.toString('hex')
@@ -104,46 +99,38 @@ export class LoginServiceProvider {
       await this.storage.set("loginObj", loginObj);
       this.appSetting.setUserToken(loginObj);
       return data;
+    }else {
+      let alert = this.alertController.create({
+        title: 'error',
+        subTitle: 'Your passphrase is incorrect.',
+        buttons: ['OK']
+      })
+      alert.present();
+      return false;
     }
   }
 
   /**
    * 检测帐号是否可直接登录
    *
-   * @param {string} telephone
+   * @param {string} password
    * @returns
    * @memberof LoginServiceProvider
    */
-  checkAccountLoginAble(telephone: string) {
-    return this.fetch
-      .get<any>(
-        this.CHECK_REG_ACCOUNT_URL,
-        {
-          search: { telephone },
-        },
-        true,
-      )
-      .then(data => {
-        console.log("check res account", data);
-        if (data.status === "error") {
-          return false;
-        } else {
-          return true;
-        }
-      });
+  checkAccountLoginAble(password: string) {
+    return this.ifmJs.Mnemonic.isValid(password);
   }
 
   /**
-   * 发送注册账户用的验证码
+   * 创建一个新的账号，根据当前语言获得不同的主密码语言
    *
-   * @param {string} telephone
-   * @returns
-   * @memberof LoginServiceProvider
    */
-  sendSms(telephone: string) {
-    return this.fetch.get(this.SEND_SMS_TO_UNRESISTER_URL, {
-      search: { telephone },
-    });
+  generateNewPassphrase() {
+    if(TranslateService.currentLang && TranslateService.currentLang === 'cn') {
+      return new this.Mnemonic(256, this.Mnemonic.Words.CHINESE);
+    }else {
+      return new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH);
+    }
   }
 
   // registerAccount(
