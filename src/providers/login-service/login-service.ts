@@ -23,6 +23,7 @@ export type UserModel = {
 export class LoginServiceProvider {
   loginStatus: Observable<boolean>;
   ifmJs : any;
+  Mnemonic: any;
   constructor(
     public http: Http,
     public appSetting: AppSettingProvider,
@@ -66,7 +67,7 @@ export class LoginServiceProvider {
     return promise_pro.follow(
       this.fetch
         .autoCache(true)
-        .get(this.GET_LOGINER_DATA_URL, { search: { type: "1" } }),
+        .get(this.LOGIN_URL, { search: { type: "1" } }),
     );
   }
   private USER_PWD_STORE_KEY = "IFM_USER_LOGIN_PWD";
@@ -81,20 +82,27 @@ export class LoginServiceProvider {
    */
   async doLogin(password: string, savePwd = true) {
     if(this.checkAccountLoginAble(password)) {
-      let keypair = this.ifmJs.keypairHelper.create(password);
-      let req = {
-        "publicKey": keypair.publicKey.toString('hex')
-      }
+      let flag = this.ifmJs.Mnemonic.isValid(password);
+      if(flag) {
+        let keypair = this.ifmJs.keypairHelper.create(password);
+        let req = {
+          "publicKey": keypair.publicKey.toString('hex')
+        }
 
-      let data = await this.fetch.put<any>(this.LOGIN_URL, req);
-      let loginObj = {
-        password,
-        "publicKey" : data.account.publicKey,
-        "address" : data.account.address,
-        "username" : data.account.username || "",
-        "balance" : data.account.balance,
-        "remember" : savePwd,
-        "secondPublickey" : data.account.secondPublicKey ? data.account.secondPublicKey : ""
+        let data = await this.fetch.put<any>(this.LOGIN_URL, req);
+        let loginObj = {
+          password,
+          "publicKey" : data.account.publicKey,
+          "address" : data.account.address,
+          "username" : data.account.username || "",
+          "balance" : data.account.balance,
+          "remember" : savePwd,
+          "secondPublickey" : data.account.secondPublicKey ? data.account.secondPublicKey : ""
+        }
+        await this.storage.set(data.account.address, loginObj);
+        localStorage.setItem("address", data.account.address);
+        this.appSetting.setUserToken(loginObj);
+        return data;
       }
       await this.storage.set("loginObj", loginObj);
       this.appSetting.setUserToken(loginObj);
@@ -107,6 +115,18 @@ export class LoginServiceProvider {
       })
       alert.present();
       return false;
+    }
+  }
+
+  /**
+   * 获取最新登录的账号
+   */
+  async getRecentAccount() {
+    let address = localStorage.getItem("address");
+
+    let accountInfo = await this.storage.get(address);
+    if(accountInfo && accountInfo.remember) {
+      return accountInfo.password;
     }
   }
 
@@ -126,10 +146,10 @@ export class LoginServiceProvider {
    *
    */
   generateNewPassphrase() {
-    if(TranslateService.currentLang && TranslateService.currentLang === 'cn') {
-      return new this.Mnemonic(256, this.Mnemonic.Words.CHINESE);
+    if(TranslateService.defaultLang && TranslateService.defaultLang === 'en') {
+      return new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH)['phrase'];
     }else {
-      return new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH);
+      return new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
     }
   }
 

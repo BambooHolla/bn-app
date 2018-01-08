@@ -9,15 +9,20 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from 'ifmchain-ibt';
 
-/*
-  Generated class for the AccountServiceProvider provider.
 
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class AccountServiceProvider {
-  constructor(public http: HttpClient) {
+  constructor(
+    public http: HttpClient,
+    public translateService: TranslateService,
+    public storage : Storage,
+    public appSetting: AppSettingProvider,
+    public fetch: AppFetchProvider,
+  ) {
     console.log("Hello AccountServiceProvider Provider");
+  }
+
+  getAccountByAddress(address) {
+
   }
 }

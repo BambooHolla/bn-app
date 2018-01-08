@@ -31,7 +31,7 @@ export class BlockServiceProvider {
     this.ifmJs = IFM(AppSettingProvider.NET_VERSION);
     this.provider = new this.ifmJs.HttpProvider(
       AppSettingProvider.SERVER_URL,
-      AppSettingProvider.SERVER_TIMEOUT
+      AppSettingProvider.SERVER_TIMEOUT,
     );
     // this.provider = AppSettingProvider.HTTP_PROVIDER;
     this.block = this.ifmJs.Api(this.provider).block;
@@ -42,8 +42,13 @@ export class BlockServiceProvider {
   //获取当前区块链的块高度
   async getLastBlock() {
     let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
-
-    return data;
+    if(data.success) {
+      return data.block;
+    }else {
+      return {};
+    }
+    //data: {success, block:{id, height, timestamp}}
+    // return data;
   }
 
   //根据块ID获取块信息
@@ -55,8 +60,9 @@ export class BlockServiceProvider {
 
   //获取块
   async getBlocks(query) {
+    let data = {};
     if(typeof(query) === 'object' || typeof(query) === undefined) {
-      let data = this.block.getBlocks(query);
+      data = this.block.getBlocks(query);
     }
 
     return data;

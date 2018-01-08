@@ -6,6 +6,7 @@ import { LoginServiceProvider } from "../../providers/login-service/login-servic
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { asyncCtrlGenerator} from '../../bnqkl-framework/Decorator';
 import { MyApp } from '../../app/app.component';
+import { MainPage } from '../pages';
 import {
   LoginFormInOut,
   RegisterFormInOut,
@@ -72,9 +73,10 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
   )
   @asyncCtrlGenerator.loading()
   async doLogin() {
-    await this.loginService.doLogin(this.formData.pwd);
-    // this.myApp.openPage(MainPage);
-    this.routeTo("scan-nodes");
+    let result = await this.loginService.doLogin(this.formData.pwd);
+    if(result) {
+      this.routeTo("scan-nodes");
+    }
   }
   gotoRegister() {
     this.page_status = "register";
@@ -83,12 +85,18 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
   get canDoRegister() {
     return this.allHaveValues(this.formData);
   }
-  doRegister() {
+  async doRegister() {
+    let a = await this.blockService.getLastBlock();
+    console.log(a);
     let passphrase = this.loginService.generateNewPassphrase();
     console.log(passphrase);
   }
 
   ngOnInit() {
-    // console.log(this.blockService.getLastBlock());
+    console.log('------------------------------------');
+    console.log(this.loginService.getRecentAccount());
+    console.log(this.blockService.getBlockById('05963d5f2b543b2aae053498633b43fb244b1f9c99918e6bb05bd705b3a5427c'));
+    console.log(this.blockService.getLastBlock());
+    console.log('---------------------------------------');
   }
 }
