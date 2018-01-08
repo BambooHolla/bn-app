@@ -1,0 +1,24 @@
+gold-coin {
+	display: inline-block;
+	width: 96px;
+	height: 96px;
+	.gold {
+		width: 100%;
+		height: 100%;
+		background-image: url("../assets/img/gold-coin/s36.png");
+		animation-name: gold-coin-bg-ani;
+		animation-duration: 1s;
+		animation-iteration-count: infinite;
+		animation-fill-mode: both;
+		animation-timing-function: steps(36);
+		background-size: cover;
+	}
+}
+@keyframes gold-coin-bg-ani {
+	0% {
+		background-position-y: 0px;
+	}
+	100% {
+		background-position-y: 3456px;
+	}
+}

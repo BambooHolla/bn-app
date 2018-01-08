@@ -23,6 +23,99 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
   scene: THREE.Scene;
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
+  private _floorMaterial: THREE.MeshPhongMaterial;
+  @Input("auto-start") auto_start = true;
+  _body_material: THREE.MeshPhongMaterial;
+  _line_material: THREE.MeshPhongMaterial;
+  _line_color = 0xffffff;
+  _body_color = 0xffffff;
+  _line_opacity = 0.25;
+  _body_opacity = 0.4;
+  @Input("body-color")
+  set body_color(v) {
+    if (v !== this._body_color && isFinite(v)) {
+      this._body_color = v;
+      const { _body_material } = this;
+      if (_body_material) {
+        const color = new THREE.Color(v);
+        _body_material.color = color;
+        _body_material.emissive = color;
+        _body_material.specular = color;
+        _body_material.needsUpdate = true;
+      }
+    }
+  }
+  get body_color() {
+    return this._body_color;
+  }
+  @Input("body-opacity")
+  set body_opacity(v) {
+    if (v !== this._body_opacity && isFinite(v)) {
+      this._body_opacity = v;
+      const { _body_material } = this;
+      if (_body_material) {
+        _body_material.opacity = v;
+        _body_material.needsUpdate = true;
+      }
+    }
+  }
+  get body_opacity() {
+    return this._body_opacity;
+  }
+  @Input("line-color")
+  set line_color(v) {
+    if (v !== this._line_color && isFinite(v)) {
+      this._line_color = v;
+      const { _line_material } = this;
+      if (_line_material) {
+        const color = new THREE.Color(v);
+        _line_material.color = color;
+        _line_material.emissive = color;
+        _line_material.specular = color;
+        _line_material.needsUpdate = true;
+      }
+    }
+  }
+  get line_color() {
+    return this._line_color;
+  }
+  @Input("line-opacity")
+  set line_opacity(v) {
+    if (v !== this._line_opacity && isFinite(v)) {
+      this._line_opacity = v;
+      const { _line_material } = this;
+      if (_line_material) {
+        _line_material.opacity = v;
+        _line_material.needsUpdate = true;
+      }
+    }
+  }
+  get line_opacity() {
+    return this._line_opacity;
+  }
+
+  @Input("background-color")
+  get bgColor() {
+    return this._bg_color;
+  }
+  _bg_color: THREE.Color = new THREE.Color(0x005a89);
+  set bgColor(v) {
+    this._bg_color = v;
+    if (this._floorMaterial) {
+      this._floorMaterial.color = this._bg_color;
+    }
+  }
+  setBgColor(v: number | string | number[] | THREE.Color) {
+    if (v instanceof Array) {
+      this.bgColor = new THREE.Color(...v);
+    } else if (typeof v === "string") {
+      this.bgColor = new THREE.Color(v);
+    } else if (typeof v === "number") {
+      this.bgColor = new THREE.Color(v);
+    } else {
+      this.bgColor = v;
+    }
+  }
 
   @Input("width")
   get width() {
@@ -78,6 +171,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
       Math.min(this.width, this.height) / (1.4 * this.devicePixelRatio);
 
     const renderer = (this.renderer = new THREE.WebGLRenderer({
+      alpha: true,
       canvas,
     }));
     renderer.setSize(this.width, this.height);
@@ -85,15 +179,16 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
     // ---------------------------
     // 背景面板
     var floorMaterial = new THREE.MeshPhongMaterial({
-      color: 0x005a89,
-      specular: 0x005a89,
+      color: this._bg_color,
+      specular: this._bg_color,
       side: THREE.DoubleSide,
     });
+    this._floorMaterial = floorMaterial;
     var floorGeometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.position.z = -100;
     // floor.rotation.x = Math.PI / 2;
-    scene.add(floor);
+    // scene.add(floor);
 
     const lights = [];
     {
@@ -123,6 +218,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
         line;
       };
       scene.add(line);
+      this._mesh_list.push(line);
 
       const vertices = geometry.vertices;
 
@@ -159,12 +255,12 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // const colors = [];
       // for (let i = 0; i < BaseX.length; i += 1) {
-      // 	colors[i] = new THREE.Color(0xffffff);
-      // 	colors[i].setHSL(
-      // 		0.6,
-      // 		1.0,
-      // 		Math.max(0, (200 - BaseX[i]) / 400) * 0.5 + 0.5,
-      // 	);
+      //   colors[i] = new THREE.Color(0xffffff);
+      //   colors[i].setHSL(
+      //     0.6,
+      //     1.0,
+      //     Math.max(0, (200 - BaseX[i]) / 400) * 0.5 + 0.5,
+      //   );
       // }
       // geometry.addAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
 
@@ -172,7 +268,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
       line.rotation.x = -Math.PI / 2;
 
       var animate = function() {
-        line.rotation.x -= 0.001;
+        // line.rotation.x -= 0.001;
         // p = f % CHANGE_FRAME_NUM;
         // if (p === 0) {
         for (let i = 0; i < vertices.length; i += 1) {
@@ -203,14 +299,15 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
 
     newIcosahedronGeometry(() => {
       const geometry = new THREE.IcosahedronGeometry(95, 4);
-      window["geometry2"] = geometry;
+
       const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        emissive: 0xffffff,
-        specular: 0xffffff,
+        color: this._body_color,
+        emissive: this._body_color,
+        specular: this._body_color,
         transparent: true,
-        opacity: 0.4,
+        opacity: this._body_opacity,
       });
+      this._body_material = material;
 
       const line = new THREE.Mesh(geometry, material);
       return {
@@ -222,20 +319,21 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
 
     newIcosahedronGeometry(() => {
       const geometry = new THREE.IcosahedronGeometry(100, 4);
-      window["geometry1"] = geometry;
+
       const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        emissive: 0xffffff,
-        specular: 0xffffff,
+        color: this._line_color,
+        emissive: this._line_color,
+        specular: this._line_color,
         shininess: 1,
         side: THREE.DoubleSide,
         // flatShading: false,
         transparent: true,
         wireframe: true,
-        opacity: 0.25,
+        opacity: this._line_opacity,
         wireframeLinecap: "miter",
         shading: THREE.SmoothShading,
       });
+      this._line_material = material;
 
       const line = new THREE.Mesh(geometry, material);
       return {
@@ -245,10 +343,13 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     });
   }
+  private _mesh_list: THREE.Mesh[] = [];
 
   ngAfterViewInit() {
     this._init();
-    this.startAnimation();
+    if (this.auto_start) {
+      this.startAnimation();
+    }
   }
   ngOnDestroy() {
     this.stopAnimation();
@@ -273,4 +374,66 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this._isStarted && requestAnimationFrame(this._loop);
   }
+
+  rotateMeshsY = this._rotateMeshsDir("y");
+  rotateMeshsX = this._rotateMeshsDir("x");
+  rotateMeshsZ = this._rotateMeshsDir("z");
+  private _rotateMeshsDir(key: "x" | "y" | "z") {
+    const upKey = key.toLocaleUpperCase();
+    const loop_runer_key = "_route_mesh_loop_runer_" + key;
+
+    const stoper = (this["stopRotateMeshs" + upKey] = () => {
+      var old_i = this._loop_runs.indexOf(this[loop_runer_key]);
+      if (old_i > -1) {
+        this._loop_runs.splice(old_i, 1);
+      }
+    });
+    return (to_deg: number, time = 200, direction: 1 | -1 = 1) => {
+      stoper();
+
+      var from_deg = this._mesh_list[0].rotation[key] % (Math.PI * 2);
+      to_deg = to_deg % (Math.PI * 2);
+      var start_time = performance.now();
+      var progress = 0;
+
+      var dif_deg;
+      if (direction == -1) {
+        dif_deg = to_deg - from_deg;
+        if (dif_deg > 0) {
+          from_deg += Math.PI * 2;
+        }
+        dif_deg = to_deg - from_deg;
+      } else {
+        dif_deg = to_deg - from_deg;
+        if (dif_deg < 0) {
+          from_deg -= Math.PI * 2;
+        }
+        dif_deg = to_deg - from_deg;
+      }
+      console.log("dif_deg", dif_deg);
+
+      this[loop_runer_key] = () => {
+        var cur_time = performance.now();
+        progress = (cur_time - start_time) / time;
+
+        var end = false;
+        for (let mesh of this._mesh_list) {
+          if (progress >= 1) {
+            // 动画结束
+            mesh.rotation[key] = to_deg;
+            end = true;
+          } else {
+            mesh.rotation[key] = from_deg + dif_deg * progress;
+          }
+        }
+        if (end) {
+          stoper();
+        }
+      };
+      this._loop_runs.push(this[loop_runer_key]);
+    };
+  }
+  stopRotateMeshsY: () => void;
+  stopRotateMeshsX: () => void;
+  stopRotateMeshsZ: () => void;
 }
