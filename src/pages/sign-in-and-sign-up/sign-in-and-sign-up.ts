@@ -3,20 +3,14 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
-<<<<<<< HEAD
-import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
-import { MyApp } from "../../app/app.component";
-import { MainPage } from "../pages";
+import { BlockServiceProvider } from "../../providers/block-service/block-service";
+import { asyncCtrlGenerator} from '../../bnqkl-framework/Decorator';
+import { MyApp } from '../../app/app.component';
 import {
   LoginFormInOut,
   RegisterFormInOut,
 } from "./sign-in-and-sign-up.animations";
-=======
-import { BlockServiceProvider } from "../../providers/block-service/block-service";
-import { asyncCtrlGenerator} from '../../bnqkl-framework/Decorator';
-import { MyApp } from '../../app/app.component';
 import { MainPage } from '../pages';
->>>>>>> create block and transaction service add some new functions
 
 @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -29,12 +23,8 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     public navCtrl: NavController,
     public navParams: NavParams,
     public loginService: LoginServiceProvider,
-<<<<<<< HEAD
-    public myApp: MyApp,
-=======
     public myApp : MyApp,
     public blockService: BlockServiceProvider,
->>>>>>> create block and transaction service add some new functions
   ) {
     super(navCtrl, navParams);
   }
