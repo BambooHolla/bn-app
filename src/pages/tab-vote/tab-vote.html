@@ -2,7 +2,8 @@
   <!-- 挖矿 -->
 </ion-header>
 <ion-content>
-  <div class="bootstrap-page" [hidden]="page_status!='bootstrap'">
+  <earth-net-mesh [ngClass]="page_status" id="bg" [auto-start]="false" [line-color]="earth_config.line_color" [body-color]="earth_config.body_color" [line-opacity]="earth_config.line_opacity" [body-opacity]="earth_config.body_opacity"></earth-net-mesh>
+  <div class="bootstrap-page" [ngClass]="page_status">
     <div class="main-container">
       <div class="auto-start-button-wrapper">
         <div class="auto-start-button" (click)="routeToVoteDetail()"></div>
@@ -11,10 +12,12 @@
     <div class="assets-info">
       <div class="balance">
         <svg xmlns="http://www.w3.org/2000/svg">
-          <linearGradient id="gradient-1" x2="1" y2="0">
-            <stop stop-color="#f8846f" offset="0" />
-            <stop stop-color="#ffc85e" offset="1" />
-          </linearGradient>
+          <defs>
+            <linearGradient id="gradient-1" x2="1" y2="0">
+              <stop stop-color="#f8846f" offset="0" />
+              <stop stop-color="#ffc85e" offset="1" />
+            </linearGradient>
+          </defs>
           <text y="2.4rem" font-size="2.4rem" x="12.4rem" fill="url(#gradient-1)">
             {{account_info?.balance}}
           </text>
@@ -25,13 +28,12 @@
       </div>
     </div>
   </div>
-  <div class="vote-detail-page" [hidden]="page_status!='vote-detail'">
-    <div class="ani-wrapper" #aniWrapper>
-      <div class="ani-progress"></div>
-      <div class="ani-container" #aniContainer>
-        <div class="gold-pos-container" *ngFor="let coin of progress_coins" [ngStyle]="coin.pos">
-          <gold-coin class="coin" [ani-count]="coin.count" [ani-speed]="coin.speed"></gold-coin>
-        </div>
+  <div class="vote-detail-page" [ngClass]="page_status">
+    <div class="ani-wrapper" #aniWrapper (click)="routeToBootstrap()">
+      <satellite-pixi class="ani-progress" [class.show]="is_show.satellite_pixi"></satellite-pixi>
+      <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
+      <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
+      <div class="ani-container">
       </div>
     </div>
   </div>

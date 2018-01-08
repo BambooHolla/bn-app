@@ -1,10 +1,35 @@
 page-tab-vote {
+	#bg {
+		position: fixed;
+		height: 100%;
+		width: 100%;
+		left: 0;
+		top: 0;
+		z-index: -1;
+		/* background-color: purple; */
+		transition-duration: 0.5s;
+		&.bootstrap {
+			transform: scale(0.8) translateY(-5%);
+		}
+		&.vote-detail {
+			transform: scale(0.86) translateY(-15%);
+		}
+	}
 	.bootstrap-page {
 		height: 100%;
 		width: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		opacity: 0;
+		pointer-events: none;
+		transition-duration: 0.5s;
+		transform: scale(3);
+		&.bootstrap {
+			opacity: 1;
+			transform: scale(1);
+			pointer-events: all;
+		}
 	}
 	.main-container {
 		height: 100%;
@@ -17,7 +42,7 @@ page-tab-vote {
 			width: 76vw;
 			height: 76vw;
 			border-radius: 50%;
-			box-shadow: 0 0 2rem rgba(0, 0, 0, 0.6);
+			/* box-shadow: 0 0 2rem rgba(0, 0, 0, 0.6); */
 			display: flex;
 			flex-direction: column;
 			align-items: center;
@@ -67,9 +92,19 @@ page-tab-vote {
 		left: 0;
 		width: 100%;
 		height: 100%;
+		/**/
+		opacity: 0;
+		pointer-events: none;
+		transition-duration: 0.5s;
+		transform: scale(0);
+		&.vote-detail {
+			opacity: 1;
+			transform: scale(1);
+			pointer-events: all;
+		}
 		.ani-wrapper {
 			position: relative;
-			top: 20vw;
+			top: 16vw;
 			left: 10vw;
 			width: 31.6rem;
 			height: 31.6rem;
@@ -79,34 +114,82 @@ page-tab-vote {
 		}
 		.ani-progress {
 			position: absolute;
-			width: 100%;
-			height: 100%;
+			width: calc(100% + 5rem);
+			height: calc(100% + 5rem);
 			box-sizing: content-box;
-			top: -1rem;
-			left: -1rem;
-			padding: 1rem;
-			border-style: dashed;
-			border-width: 1px;
+			top: -2.5rem;
+			left: -2.5rem;
+			/**/
+			display: none;
+			opacity: 0;
+			transition-duration: 0.25s;
+			&.show{
+				display: block;
+				opacity: 1;
+			}
+		}
+		.ani-glow {
+			contain: strict;
+			position: absolute;
+			width: 94%;
+			height: 94%;
+			top: 3%;
+			left: 3%;
 			border-radius: 50%;
-			border-color: #000;
+			overflow: hidden;
+			background: radial-gradient(
+				ellipse at 50% 10%,
+				rgba(#fff, 0) 0%,
+				rgba(#fdcd47, 0) 60%,
+				rgba(#fdcd47, 1) 70%
+			);
+			/**/
+			display: none;
+			opacity: 0;
+			transition-duration: 0.75s;
+			&.show{
+				display: block;
+				opacity: 1;
+			}
+		}
+		.ani-fall-coins {
+			contain: strict;
+			position: absolute;
+			width: 94%;
+			height: 94%;
+			top: 3%;
+			left: 3%;
+			border-radius: 50%;
+			overflow: hidden;
+			/**/
+			display: none;
+			opacity: 0;
+			transition-duration: 0.25s;
+			&.show{
+				display: block;
+				opacity: 1;
+			}
 		}
 		.ani-container {
 			contain: strict;
 			position: absolute;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
+			width: 94%;
+			height: 94%;
+			top: 3%;
+			left: 3%;
 			perspective: 800px;
 			border-radius: 50%;
 			overflow: hidden;
 			background: radial-gradient(
 				ellipse at center,
 				rgba(#fff, 0) 0%,
-				rgba(#fff, 0) 60%,
-				rgba(#fdcd47, 0.1) 60%,
-				rgba(#fdcd47, 1) 76%
+				rgba(#fdcd47, 0) 60%,
+				rgba(#fdcd47, 1) 70%
 			);
+			.ani {
+				width: 100%;
+				height: 100%;
+			}
 			.gold-pos-container {
 				transition-property: transform;
 				transition-timing-function: ease-in;

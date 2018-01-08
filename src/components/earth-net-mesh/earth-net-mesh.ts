@@ -24,6 +24,75 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
   camera: THREE.PerspectiveCamera;
   renderer: THREE.WebGLRenderer;
   private _floorMaterial: THREE.MeshPhongMaterial;
+  @Input("auto-start") auto_start = true;
+  _body_material: THREE.MeshPhongMaterial;
+  _line_material: THREE.MeshPhongMaterial;
+  _line_color = 0xffffff;
+  _body_color = 0xffffff;
+  _line_opacity = 0.25;
+  _body_opacity = 0.4;
+  @Input("body-color")
+  set body_color(v) {
+    if (v !== this._body_color && isFinite(v)) {
+      this._body_color = v;
+      const { _body_material } = this;
+      if (_body_material) {
+        const color = new THREE.Color(v);
+        _body_material.color = color;
+        _body_material.emissive = color;
+        _body_material.specular = color;
+        _body_material.needsUpdate = true;
+      }
+    }
+  }
+  get body_color() {
+    return this._body_color;
+  }
+  @Input("body-opacity")
+  set body_opacity(v) {
+    if (v !== this._body_opacity && isFinite(v)) {
+      this._body_opacity = v;
+      const { _body_material } = this;
+      if (_body_material) {
+        _body_material.opacity = v;
+        _body_material.needsUpdate = true;
+      }
+    }
+  }
+  get body_opacity() {
+    return this._body_opacity;
+  }
+  @Input("line-color")
+  set line_color(v) {
+    if (v !== this._line_color && isFinite(v)) {
+      this._line_color = v;
+      const { _line_material } = this;
+      if (_line_material) {
+        const color = new THREE.Color(v);
+        _line_material.color = color;
+        _line_material.emissive = color;
+        _line_material.specular = color;
+        _line_material.needsUpdate = true;
+      }
+    }
+  }
+  get line_color() {
+    return this._line_color;
+  }
+  @Input("line-opacity")
+  set line_opacity(v) {
+    if (v !== this._line_opacity && isFinite(v)) {
+      this._line_opacity = v;
+      const { _line_material } = this;
+      if (_line_material) {
+        _line_material.opacity = v;
+        _line_material.needsUpdate = true;
+      }
+    }
+  }
+  get line_opacity() {
+    return this._line_opacity;
+  }
 
   @Input("background-color")
   get bgColor() {
@@ -102,6 +171,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
       Math.min(this.width, this.height) / (1.4 * this.devicePixelRatio);
 
     const renderer = (this.renderer = new THREE.WebGLRenderer({
+      alpha: true,
       canvas,
     }));
     renderer.setSize(this.width, this.height);
@@ -118,7 +188,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.position.z = -100;
     // floor.rotation.x = Math.PI / 2;
-    scene.add(floor);
+    // scene.add(floor);
 
     const lights = [];
     {
@@ -229,14 +299,15 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
 
     newIcosahedronGeometry(() => {
       const geometry = new THREE.IcosahedronGeometry(95, 4);
-      window["geometry2"] = geometry;
+
       const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        emissive: 0xffffff,
-        specular: 0xffffff,
+        color: this._body_color,
+        emissive: this._body_color,
+        specular: this._body_color,
         transparent: true,
-        opacity: 0.4,
+        opacity: this._body_opacity,
       });
+      this._body_material = material;
 
       const line = new THREE.Mesh(geometry, material);
       return {
@@ -248,20 +319,21 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
 
     newIcosahedronGeometry(() => {
       const geometry = new THREE.IcosahedronGeometry(100, 4);
-      window["geometry1"] = geometry;
+
       const material = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        emissive: 0xffffff,
-        specular: 0xffffff,
+        color: this._line_color,
+        emissive: this._line_color,
+        specular: this._line_color,
         shininess: 1,
         side: THREE.DoubleSide,
         // flatShading: false,
         transparent: true,
         wireframe: true,
-        opacity: 0.25,
+        opacity: this._line_opacity,
         wireframeLinecap: "miter",
         shading: THREE.SmoothShading,
       });
+      this._line_material = material;
 
       const line = new THREE.Mesh(geometry, material);
       return {
@@ -275,7 +347,9 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this._init();
-    this.startAnimation();
+    if (this.auto_start) {
+      this.startAnimation();
+    }
   }
   ngOnDestroy() {
     this.stopAnimation();
