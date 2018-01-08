@@ -82,29 +82,23 @@ export class LoginServiceProvider {
    */
   async doLogin(password: string, savePwd = true) {
     if(this.checkAccountLoginAble(password)) {
-      let flag = this.ifmJs.Mnemonic.isValid(password);
-      if(flag) {
-        let keypair = this.ifmJs.keypairHelper.create(password);
-        let req = {
-          "publicKey": keypair.publicKey.toString('hex')
-        }
-
-        let data = await this.fetch.put<any>(this.LOGIN_URL, req);
-        let loginObj = {
-          password,
-          "publicKey" : data.account.publicKey,
-          "address" : data.account.address,
-          "username" : data.account.username || "",
-          "balance" : data.account.balance,
-          "remember" : savePwd,
-          "secondPublickey" : data.account.secondPublicKey ? data.account.secondPublicKey : ""
-        }
-        await this.storage.set(data.account.address, loginObj);
-        localStorage.setItem("address", data.account.address);
-        this.appSetting.setUserToken(loginObj);
-        return data;
+      let keypair = this.ifmJs.keypairHelper.create(password);
+      let req = {
+        "publicKey": keypair.publicKey.toString('hex')
       }
-      await this.storage.set("loginObj", loginObj);
+
+      let data = await this.fetch.put<any>(this.LOGIN_URL, req);
+      let loginObj = {
+        password,
+        "publicKey" : data.account.publicKey,
+        "address" : data.account.address,
+        "username" : data.account.username || "",
+        "balance" : data.account.balance,
+        "remember" : savePwd,
+        "secondPublickey" : data.account.secondPublicKey ? data.account.secondPublicKey : ""
+      }
+      await this.storage.set(data.account.address, loginObj);
+      localStorage.setItem("address", data.account.address);
       this.appSetting.setUserToken(loginObj);
       return data;
     }else {

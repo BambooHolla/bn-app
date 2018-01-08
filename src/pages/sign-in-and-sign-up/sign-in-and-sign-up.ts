@@ -6,7 +6,6 @@ import { LoginServiceProvider } from "../../providers/login-service/login-servic
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { asyncCtrlGenerator} from '../../bnqkl-framework/Decorator';
 import { MyApp } from '../../app/app.component';
-import { MainPage } from '../pages';
 import {
   LoginFormInOut,
   RegisterFormInOut,
