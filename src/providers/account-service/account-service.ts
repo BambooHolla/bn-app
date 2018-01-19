@@ -12,6 +12,8 @@ import * as IFM from 'ifmchain-ibt';
 
 @Injectable()
 export class AccountServiceProvider {
+  ifmJs: any;
+  account: any;
   constructor(
     public http: HttpClient,
     public translateService: TranslateService,
@@ -19,10 +21,12 @@ export class AccountServiceProvider {
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
   ) {
-    console.log("Hello AccountServiceProvider Provider");
+    this.ifmJs = AppSettingProvider.IFMJS;
+    this.account = AppSettingProvider.IFMJS.Api(AppSettingProvider.HTTP_PROVIDER).account;
   }
 
-  getAccountByAddress(address) {
-
+  async getAccountByAddress(address) {
+    let data = await this.account.getUserByAddress(address);
+    console.log(data);
   }
 }

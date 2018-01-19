@@ -5,6 +5,8 @@ import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
+import { TransactionServiceProvider } from "../../providers/transaction-service/transaction-service";
+import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { asyncCtrlGenerator} from '../../bnqkl-framework/Decorator';
 import { MyApp } from '../../app/app.component';
 import {
@@ -26,6 +28,7 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     public loginService: LoginServiceProvider,
     public myApp : MyApp,
     public blockService: BlockServiceProvider,
+    public transactionService: TransactionServiceProvider,
   ) {
     super(navCtrl, navParams);
   }
@@ -118,6 +121,17 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     return this.allHaveValues(this.formData);
   }
   async doRegister() {
+    debugger
+    let txData = {
+      "typeName" : "SEND",
+      "amount" : "0.00000001",
+      "secret" : "乳 率 审 抚 省 登 难 田 币 编 纺 飘 设 绒 昏 怎 念 赴 秩 尺 天 硫 浆 品",
+      "publicKey" : "3761a909e935c8417acaee42919df8e83445c9a2d1c7360deb9e8a17487357e5",
+      "recipientId" : "cAs4B1DhDpnKDBbXdCBhbyFjo7np8z6fCR",
+      "fee" : "0.00000001"
+    }
+    this.transactionService.putTransaction(txData);
+    console.log(this.accountService.getAccountByAddress(localStorage.address));
     let a = await this.blockService.getLastBlock();
     console.log(a);
     let passphrase = this.loginService.generateNewPassphrase();
@@ -129,6 +143,8 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     console.log(this.loginService.getRecentAccount());
     console.log(this.blockService.getBlockById('05963d5f2b543b2aae053498633b43fb244b1f9c99918e6bb05bd705b3a5427c'));
     console.log(this.blockService.getLastBlock());
+    console.log(this.blockService.getBlocks());
+
     console.log('---------------------------------------');
   }
 }

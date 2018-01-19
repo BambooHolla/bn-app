@@ -140,11 +140,7 @@ export class LoginServiceProvider {
    *
    */
   generateNewPassphrase() {
-    if(this.translateService.defaultLang && this.translateService.defaultLang === 'en') {
       return new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH)['phrase'];
-    }else {
-      return new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
-    }
   }
 
   // registerAccount(

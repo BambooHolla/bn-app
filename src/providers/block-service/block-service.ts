@@ -18,7 +18,6 @@ import * as IFM from 'ifmchain-ibt';
 @Injectable()
 export class BlockServiceProvider {
   ifmJs: any;
-  provider: any;
   block: any;
   constructor(
     public http: HttpClient,
@@ -28,27 +27,19 @@ export class BlockServiceProvider {
     public translateService: TranslateService
   ) {
     console.log('Hello BlockServiceProvider Provider');
-    this.ifmJs = IFM(AppSettingProvider.NET_VERSION);
-    this.provider = new this.ifmJs.HttpProvider(
-      AppSettingProvider.SERVER_URL,
-      AppSettingProvider.SERVER_TIMEOUT,
-    );
-    // this.provider = AppSettingProvider.HTTP_PROVIDER;
-    this.block = this.ifmJs.Api(this.provider).block;
+    this.ifmJs = AppSettingProvider.IFMJS;
+    this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
     console.groupEnd();
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL("/api/blocks/getLastBlock");
+  readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
+
 
   //获取当前区块链的块高度
   async getLastBlock() {
-    let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
-    if(data.success) {
-      return data.block;
-    }else {
-      return {};
-    }
+    let data = this.block.getLastBlock();
     //data: {success, block:{id, height, timestamp}}
-    // return data;
+    return data;
   }
 
   //根据块ID获取块信息
