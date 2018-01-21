@@ -1,8 +1,56 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>tab-account</ion-title>
-  </ion-navbar>
+  <!-- 我的 -->
 </ion-header>
-<ion-content padding>
-  <div (click)="routeTo('account-my-contacts')">我的联系人</div>
+<ion-content>
+  <div class="account-header">
+    <div class="toolbar">
+      <ali-icon name="ifm-settings"></ali-icon>
+    </div>
+    <div class="assets-info">
+      <div class="ibt-value">
+        <ali-icon name="ifm-coins"></ali-icon>
+        <span class="value">8.88888888</span>
+        <span class="unit">IBT</span>
+      </div>
+      <div class="dollar-value">
+        <ali-icon name="ifm-ketoujineicon"></ali-icon>
+        <span class="value">321238.88888888</span>
+        <span class="unit">$</span>
+      </div>
+      <div class="address">oxkXRpj8bprKUJicfHCxbSSMub8vH511</div>
+    </div>
+  </div>
+  <div class="nav-list">
+    <common-wave-bg class="bg"></common-wave-bg>
+    <div class="nav-item">
+      <ali-icon class="left" name="ifm-account-message"></ali-icon>
+      <div class="title">我的联系人</div>
+      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+    </div>
+    <div class="nav-item">
+      <ali-icon class="left" name="ifm--target-"></ali-icon>
+      <div class="title">网络节点</div>
+      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+    </div>
+    <div class="nav-item">
+      <ali-icon class="left" name="ifm-apps"></ali-icon>
+      <div class="title">我的应用</div>
+      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+    </div>
+    <div class="nav-item">
+      <ali-icon class="left" name="ifm-tran-history"></ali-icon>
+      <div class="title">交易数据</div>
+      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+    </div>
+    <div class="nav-item">
+      <ali-icon class="left" name="ifm-auction"></ali-icon>
+      <div class="title">矿工列表</div>
+      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+    </div>
+    <div class="nav-item">
+      <ali-icon class="left" name="ifm-share"></ali-icon>
+      <div class="title">我要分享</div>
+      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+    </div>
+  </div>
 </ion-content>

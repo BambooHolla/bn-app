@@ -7,6 +7,7 @@ import { SatellitePixiComponent } from './satellite-pixi/satellite-pixi';
 import { FallCoinsComponent } from './fall-coins/fall-coins';
 import { BuddhaGlowComponent } from './buddha-glow/buddha-glow';
 import { ChainMeshComponent } from './chain-mesh/chain-mesh';
+import { CommonWaveBgComponent } from './common-wave-bg/common-wave-bg';
 @NgModule({
 	declarations: [
 		EarthNetMeshComponent,
@@ -17,6 +18,7 @@ import { ChainMeshComponent } from './chain-mesh/chain-mesh';
     FallCoinsComponent,
     BuddhaGlowComponent,
     ChainMeshComponent,
+    CommonWaveBgComponent,
 	],
 	imports: [],
 	exports: [
@@ -28,6 +30,7 @@ import { ChainMeshComponent } from './chain-mesh/chain-mesh';
     FallCoinsComponent,
     BuddhaGlowComponent,
     ChainMeshComponent,
+    CommonWaveBgComponent,
 	],
 })
 export class ComponentsModule {}
