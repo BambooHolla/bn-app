@@ -66,7 +66,7 @@ export class SatellitePixiComponent extends AniBase {
 			const deg = u_deg * i;
 			const x = Math.sin(deg) * circle_width;
 			const y = Math.cos(deg) * circle_width;
-			root_circle.drawCircle(x, y, pt(0.6));
+			root_circle.drawCircle(x, y, pt(0.8));
 		}
 		root_circle.endFill();
 		root_circle.cacheAsBitmap = true;

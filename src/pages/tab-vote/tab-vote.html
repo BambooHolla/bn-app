@@ -2,38 +2,90 @@
   <!-- 挖矿 -->
 </ion-header>
 <ion-content>
-  <earth-net-mesh [ngClass]="page_status" id="bg" [auto-start]="false" [line-color]="earth_config.line_color" [body-color]="earth_config.body_color" [line-opacity]="earth_config.line_opacity" [body-opacity]="earth_config.body_opacity"></earth-net-mesh>
-  <div class="bootstrap-page" [ngClass]="page_status">
-    <div class="main-container">
-      <div class="auto-start-button-wrapper">
-        <div class="auto-start-button" (click)="routeToVoteDetail()"></div>
+  <!-- <earth-net-mesh [ngClass]="page_status" id="bg" [auto-start]="false" [line-color]="earth_config.line_color" [body-color]="earth_config.body_color" [line-opacity]="earth_config.line_opacity" [body-opacity]="earth_config.body_opacity"></earth-net-mesh> -->
+  <chain-mesh id="bg2" [ngClass]="page_status" [tint]="earth_config.body_color"></chain-mesh>
+  <div class="pages-container">
+    <div class="bootstrap-page" [ngClass]="page_status">
+      <div class="main-container">
+        <div class="auto-start-button-wrapper">
+          <div class="auto-start-button" (click)="routeToVoteDetail()"></div>
+        </div>
+      </div>
+      <div class="assets-info">
+        <div class="balance">
+          <svg xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="gradient-1" x2="1" y2="0">
+                <stop stop-color="#f8846f" offset="0" />
+                <stop stop-color="#ffc85e" offset="1" />
+              </linearGradient>
+            </defs>
+            <text y="2.4rem" font-size="2.4rem" x="12.4rem" fill="url(#gradient-1)">
+              {{account_info?.balance}}
+            </text>
+          </svg>
+        </div>
+        <div class="history-logs">
+          <a class="linker" (click)="routeTo('history-logs')">历史挖矿收益</a>
+        </div>
       </div>
     </div>
-    <div class="assets-info">
-      <div class="balance">
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="gradient-1" x2="1" y2="0">
-              <stop stop-color="#f8846f" offset="0" />
-              <stop stop-color="#ffc85e" offset="1" />
-            </linearGradient>
-          </defs>
-          <text y="2.4rem" font-size="2.4rem" x="12.4rem" fill="url(#gradient-1)">
-            {{account_info?.balance}}
-          </text>
-        </svg>
+    <div class="vote-detail-page" [ngClass]="page_status">
+      <div class="ani-wrapper" #aniWrapper (click)="routeToBootstrap()">
+        <satellite-pixi class="ani-progress" [class.show]="is_show.satellite_pixi"></satellite-pixi>
+        <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
+        <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
+        <div class="ani-container">
+        </div>
       </div>
-      <div class="history-logs">
-        <a class="linker" (click)="routeTo('history-logs')">历史挖矿收益</a>
-      </div>
-    </div>
-  </div>
-  <div class="vote-detail-page" [ngClass]="page_status">
-    <div class="ani-wrapper" #aniWrapper (click)="routeToBootstrap()">
-      <satellite-pixi class="ani-progress" [class.show]="is_show.satellite_pixi"></satellite-pixi>
-      <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
-      <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
-      <div class="ani-container">
+      <div class="extends-panel">
+        <ion-slides class="panel-list">
+          <ion-slide class="panel-item">
+            <div class="income-ranking">
+              <div class="header">
+                <div class="title">
+                  <ali-icon name="ifm-income-ranking"></ali-icon>
+                  本轮收益排名
+                </div>
+                <div class="my-income-assets">
+                  IBT 8.88888888
+                </div>
+              </div>
+              <div class="rank-info">
+                <div class="pre-item">
+                  <div class="ranking-val">9</div>
+                  <div class="ip-address">192.**.**.106</div>
+                </div>
+                <div class="cur-item">
+                  <div class="ranking-val">10</div>
+                  <div class="ip-address">192.**.**.106</div>
+                </div>
+                <div class="aft-item">
+                  <div class="ranking-val">11</div>
+                  <div class="ip-address">192.**.**.106</div>
+                </div>
+              </div>
+            </div>
+          </ion-slide>
+          <ion-slide class="panel-item">
+            <div class="income-trend">
+              <div class="header">
+                <div class="title">
+                  <ali-icon name="ifm-income-trend"></ali-icon>
+                  收益趋势图
+                </div>
+                <div class="my-income-assets">
+                  IBT 8.88888888
+                </div>
+              </div>
+              <div class="chart-wrapper"></div>
+            </div>
+          </ion-slide>
+        </ion-slides>
+        <div class="wave-1">
+          <div class="font-end"></div>
+          <div class="showdown"></div>
+        </div>
       </div>
     </div>
   </div>

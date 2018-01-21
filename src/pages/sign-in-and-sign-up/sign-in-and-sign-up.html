@@ -3,15 +3,29 @@
 <ion-content>
   <div class="form-wrapper">
     <h1 class="title">IFMCHAIN</h1>
-    <earth-net-mesh id="bg"></earth-net-mesh>
+    <div class="bg-mask"></div>
+    <!-- <earth-net-mesh id="bg"></earth-net-mesh> -->
+    <chain-mesh id="bg2" [auto-start]="true"></chain-mesh>
+    <!--     <div class="bg-prefix-wrapper">
+      <div class="bg-prefix"></div>
+    </div> -->
     <div class="login-form" [@login-in-out]="page_status">
       <div class="inputer-container">
-        <textarea class="password-textareaer" [class.show-pwd]="show_pwd" type="password" placeholder="请输入密码" [(ngModel)]="formData.pwd" (input)="autoReHeightPWDTextArea($event)"></textarea>
-        <button (touchstart)="showPWD()" (touchend)="hidePWD()">显示</button>
+        <ali-icon class="lock-icon" name="ifm-lock"></ali-icon>
+        <textarea class="password-textarear" [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="请输入密码" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (input)="autoReHeightPWDTextArea($event)"></textarea>
+        <div class="password-textarear-mask" [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" [innerHTML]="formData.pwd_disc"></div>
+        <button class="show-pwd-button" (touchstart)="showPWD()" (touchend)="hidePWD()">
+          <ali-icon class="show-pad-icon" name="ifm-show-pwd"></ali-icon>
+        </button>
       </div>
       <div class="remember-pwd">
-        <label for="remember-pwd">
-          <input id="remember-pwd" type="checkbox"> 记住密码
+        <label for="remember-pwd-checkbox" class="radio-label">
+          <span class="radio-button checkbox-wrapper">
+            <input id="remember-pwd-checkbox" type="checkbox" [(ngModel)]="formData.selected_node_id" />
+              <span class="checked"></span>
+          </span>
+          <span class="checked"></span>
+          <span class="label-text">记住密码</span>
         </label>
       </div>
       <button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
@@ -25,12 +39,26 @@
     </div>
     <div class="register-form" [@register-in-out]="page_status">
       <div class="inputer-container">
-        <input class="password-inputer" type="email" placeholder="请输入常用邮箱" [(ngModel)]="formData.email" />
-        <input class="password-inputer" type="tel" placeholder="请输入常用手机" [(ngModel)]="formData.phone" />
-        <input class="password-inputer" type="text" placeholder="我的个性签名" [(ngModel)]="formData.remark" />
-        <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.pwd" />
+        <div class="password-inputer-wrapper">
+          <ali-icon name="ifm-email"></ali-icon>
+          <input class="password-inputer" type="email" placeholder="请输入常用邮箱" [(ngModel)]="formData.email" />
+        </div>
+        <div class="password-inputer-wrapper">
+          <ali-icon name="ifm-cellphone"></ali-icon>
+          <input class="password-inputer" type="tel" placeholder="请输入常用手机" [(ngModel)]="formData.phone" />
+        </div>
+        <div class="password-inputer-wrapper">
+          <ali-icon name="ifm-signup-account"></ali-icon>
+          <input class="password-inputer" type="text" placeholder="我的个性签名" [(ngModel)]="formData.remark" />
+        </div>
+        <div class="password-inputer-wrapper">
+          <ali-icon name="ifm-lock"></ali-icon>
+          <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.pwd" />
+        </div>
       </div>
-      <div class="info">仅用于生成密码数据不会保存在区块链上</div>
+      <div class="info">
+        <ali-icon name="ifm-info"></ali-icon>
+        仅用于生成密码数据不会保存在区块链上</div>
       <button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">注册</button>
       <div class="goto-container">
         <span class="dot"></span>

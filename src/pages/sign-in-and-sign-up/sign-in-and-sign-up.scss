@@ -6,6 +6,78 @@ page-sign-in-and-sign-up {
     top: 0;
     left: 0;
     z-index: -1;
+    /* background-color: #005687; */
+    /* opacity: 0.8; */
+    mask-image: radial-gradient(
+      circle at 50% 70%,
+      rgba(#000, 0) 0%,
+      rgba(#000, 0.1) 50%,
+      rgba(#000, 1) 100%
+    );
+  }
+  #bg2 {
+    position: fixed;
+    width: 110vh;
+    height: 110vh;
+    left: calc(50vw - 55vh);
+    top: 8vh;
+    z-index: -1;
+  }
+  .bg-mask {
+    // background: radial-gradient(
+    //   ellipse at center,
+    //   rgba(#0f608b, 0.85) 0%,
+    //   rgba(#0f608b, 0.5) 40%,
+    //   rgba(#0f608b, 0.05) 95%
+    // );
+    background-image: url("../assets/imgs/sign-in-up/bg.jpg");
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+  }
+  .bg-prefix-wrapper {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(#000, 0) 0%,
+      rgba(#000, 0) 10%,
+      rgba(#000, 0.8) 50%,
+      rgba(#000, 1) 100%
+    );
+  }
+  .bg-prefix {
+    background-image: url(../assets/imgs/net-circle.png);
+    position: fixed;
+    top: 11vh;
+    left: calc(50vw - 60vh);
+    height: 120vh;
+    width: 120vh;
+    margin: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: -1;
+    animation-name: inf-rotate;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    opacity: 0.9;
+    /*     mask-image */
+  }
+  @keyframes inf-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
   .form-wrapper {
     height: 100%;
@@ -13,12 +85,12 @@ page-sign-in-and-sign-up {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    background: radial-gradient(
+    /*     background: radial-gradient(
       ellipse at center,
       rgba(#006792, 0.8) 0%,
       rgba(#006792, 0.5) 90%,
       rgba(0, 0, 0, 0) 95%
-    );
+    ); */
     .title {
       color: #fff;
       font-weight: normal;
@@ -32,8 +104,29 @@ page-sign-in-and-sign-up {
       align-items: center;
       justify-content: center;
       .inputer-container {
-        width: 80vw;
+        position: relative;
+        width: 72vw;
+        .password-inputer-wrapper {
+          position: relative;
+          ali-icon {
+            position: absolute;
+            bottom: 0.3rem;
+            font-size: 1.8rem;
+            color: #fff;
+            &[name="ifm-cellphone"] {
+              font-size: 2.1rem;
+              bottom: 0.5rem;
+            }
+            &[name="ifm-signup-account"] {
+              bottom: 0.6rem;
+            }
+            &[name="ifm-lock"] {
+              bottom: 0.5rem;
+            }
+          }
+        }
         .password-inputer {
+          text-indent: 2rem;
           line-height: 2rem;
           margin-top: 2.5rem;
           background: transparent;
@@ -48,36 +141,152 @@ page-sign-in-and-sign-up {
             font-size: 1.3rem;
           }
         }
-        .password-textareaer {
+        .lock-icon {
+          position: absolute;
+          top: 3.8rem;
+          left: 0.4rem;
+          font-size: 1.7rem;
+          color: #fff;
+          transform: scaleX(1.2);
+        }
+        .password-textarear,
+        .password-textarear-mask {
+          /* text-indent: 2.7rem; */
+          text-indent: 32.4px;
           line-height: 4rem;
           margin-top: 2.5rem;
           background: transparent;
           border: none;
           display: block;
           width: 100%;
-          font-size: 1.3rem;
+          /* font-size: 1.3rem; */
+          font-size: 13px;
           resize: none;
-          color: #fff;
           height: 10rem;
+          min-height: 12.5rem;
+          color: #fff;
+        }
+        .password-textarear {
+          -webkit-text-security: disc;
+          /* color: transparent; */
+          /* caret-color: #fff; */
           background: linear-gradient(
             rgba(#fff, 0.5) 0%,
             rgba(#fff, 0.5) 2%,
             transparent 2%,
             transparent 100%
           );
-          min-height: 12rem;
           background-size: 100% 4rem;
           background-position: 0 3rem;
           background-attachment: local;
-          -webkit-text-security: disc;
-          letter-spacing: 0.2rem;
+          /* letter-spacing: 1rem; */
+          letter-spacing: 12px;
+          -webkit-text-fill-color: transparent;
+          &.show-pwd {
+            /* color: transparent; */
+            /* -webkit-text-security: unset; */
+          }
+          &::selection {
+            color: transparent;
+            background: rgba(#0f608b, 0.6);
+          }
           &::-webkit-input-placeholder {
-            color: rgba(#fff, 0.8);
+            color: rgba(#fff, 0.8) !important;
+            /* font-size: 1.3rem; */
+            -webkit-text-fill-color: unset !important;
             font-size: 1.3rem;
+            /* letter-spacing: 0rem; */
+          }
+        }
+        .password-textarear-mask {
+          z-index: -1;
+          position: absolute;
+          top: 0rem;
+          .dot {
+            text-indent: 0;
+
+            /* width: 1.37rem; */
+            /* width: 16.5px; */
+            width: 16.6px;
+            height: 2.2rem;
+            line-height: 2.2rem;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            /* left: 0.2rem; */
+            left: 2.4px;
+            /* overflow: hidden; */
+            color: transparent;
+            position: relative;
+            &::after {
+              content: "·";
+              text-align: center;
+              position: absolute;
+              left: 0rem;
+              font-size: 3rem;
+              color: #fff;
+              width: 100%;
+              height: 100%;
+            }
           }
           &.show-pwd {
-            -webkit-text-security: unset;
+            opacity: 1;
+            .dot {
+              color: #fff;
+              &::after {
+                content: none;
+              }
+            }
           }
+        }
+        .show-pwd-button {
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 2.5rem;
+          position: absolute;
+          bottom: 1.2rem;
+          right: 0;
+          padding: 0.5rem;
+        }
+      }
+      .remember-pwd {
+        align-self: flex-start;
+        margin-top: 0.3rem;
+        margin-bottom: 2rem;
+        color: #fff;
+        font-size: 1.4rem;
+        font-weight: lighter;
+        .checkbox-wrapper {
+          display: inline-block;
+          position: relative;
+          width: 1.4rem;
+          height: 1.4rem;
+          border-radius: 50%;
+          color: #0f608b;
+          transform: scale(0.8);
+          transform-origin: 100% 100%;
+          .checked {
+            background-color: rgba(#fff, 0.6);
+          }
+          > input:checked + .checked {
+            background-color: currentColor;
+          }
+
+          #remember-pwd-checkbox {
+            position: absolute;
+            transform: scale(0.9285);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* color: #4deb99; */
+            opacity: 0;
+          }
+        }
+        .label-text {
+          display: inline-block;
+          width: 50vw;
         }
       }
     }
@@ -89,10 +298,12 @@ page-sign-in-and-sign-up {
     width: 75vw;
     font-size: 1.8rem;
     color: #fff;
+    font-weight: bolder;
     background: linear-gradient(to bottom, rgba(#02e5f6, 1), rgba(#01acdd, 1));
     box-shadow: 0 0 0.2rem rgba(#333, 0.5);
     transition-duration: 250ms;
     &:disabled {
+      font-weight: bold;
       opacity: 1;
       background: #fff;
       color: #00c5f2;
@@ -104,15 +315,22 @@ page-sign-in-and-sign-up {
     }
   }
   .info {
+    /* font-weight: lighter; */
     font-size: 1.2rem;
     color: #fff;
+    margin: 1.8rem 0 1rem 1rem;
+    align-self: flex-start;
+    ali-icon {
+      font-size: 1.5rem;
+      transform: rotateX(180deg);
+    }
   }
 
   .goto-container {
     width: 74vw;
     display: flex;
     flex-direction: row;
-    margin-top: 1rem;
+    margin-top: 1.7rem;
     > .dot {
       flex: 1;
       flex-grow: 1;
@@ -135,7 +353,6 @@ page-sign-in-and-sign-up {
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       font-size: 1.6rem;
-      font-weight: bold;
     }
   }
 

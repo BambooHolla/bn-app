@@ -52,14 +52,20 @@ export class MyApp implements OnInit {
     window["modalCtrl"] = modalController;
     window["accountService"] = accountService;
     window["myapp"] = this;
+    statusBar.hide();
     platform.ready().then(() => {
+      statusBar.show();
+      keyboard.disableScroll(true);
+      keyboard.hideKeyboardAccessoryBar(true);
+      statusBar.styleDefault();
+      statusBar.overlaysWebView(true);
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       // this.statusBar.styleDefault();
-      this.statusBar.styleBlackTranslucent();
-      this.statusBar.overlaysWebView(true);
-      this.statusBar.hide();
-      this.splashScreen.hide();
+      statusBar.styleBlackTranslucent();
+      statusBar.overlaysWebView(true);
+      statusBar.hide();
+      splashScreen.hide();
     });
     this.initTranslate();
     if (!localStorage.getItem("HIDE_WELCOME")) {

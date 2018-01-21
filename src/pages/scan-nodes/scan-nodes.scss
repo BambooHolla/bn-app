@@ -1,11 +1,20 @@
 page-scan-nodes {
-	#bg {
+	.bg-wrapper{
 		height: 100vh;
 		width: 100vw;
 		position: fixed;
 		top: 0;
 		left: 0;
 		z-index: -1;
+		background-color: #ed554a;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	#bg {
+		width: 100vw;
+		height: 100vw;
+		margin-bottom: 14vw;
 	}
 	.scan-panel {
 		display: flex;

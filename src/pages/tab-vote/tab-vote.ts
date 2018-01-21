@@ -6,6 +6,7 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { SatellitePixiComponent } from "../../components/satellite-pixi/satellite-pixi";
 import { FallCoinsComponent } from "../../components/fall-coins/fall-coins";
 import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
+import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
 import { AniBase } from "../../components/AniBase";
 
@@ -63,7 +64,8 @@ export class TabVotePage extends FirstLevelPage {
 			}, 100);
 		}
 
-		this.earth_net_mesh.startAnimation();
+		this.earth_net_mesh && this.earth_net_mesh.startAnimation();
+		this.chain_mesh && this.chain_mesh.startAnimation();
 		const { _earth_enabled_config, earth_config } = this;
 		for (const key in _earth_enabled_config) {
 			const from = earth_config[key];
@@ -99,7 +101,8 @@ export class TabVotePage extends FirstLevelPage {
 			const from = earth_config[key];
 			const to = _earth_disabled_config[key];
 			const finish_fun = () => {
-				this.earth_net_mesh.stopAnimation();
+				this.earth_net_mesh && this.earth_net_mesh.stopAnimation();
+				this.chain_mesh && this.chain_mesh.stopAnimation();
 			};
 			if (key.indexOf("_color") != -1) {
 				AniBase.animateColor(from, to, 500)(v => {
@@ -118,24 +121,38 @@ export class TabVotePage extends FirstLevelPage {
 	@ViewChild(SatellitePixiComponent) satellite_pixi: SatellitePixiComponent;
 	@ViewChild(BuddhaGlowComponent) buddha_glow: BuddhaGlowComponent;
 	@ViewChild(EarthNetMeshComponent) earth_net_mesh: EarthNetMeshComponent;
+	@ViewChild(ChainMeshComponent) chain_mesh: ChainMeshComponent;
 
 	_earth_disabled_config = {
-		body_color: 0x666666,
+		body_color: 0xececec,
+		// body_color: 0x333333,
 		body_opacity: 0.8,
 		line_color: 0x666666,
 		line_opacity: 0.6,
 	};
 	_earth_enabled_config = {
-		body_color: 0xffd800,
-		body_opacity: 0.4,
+		body_color: 0xfdcd47,
+		body_opacity: 1,
 		line_color: 0xffd246,
-		line_opacity: 0.25,
+		line_opacity: 1,
 	};
 	earth_config = { ...this._earth_disabled_config };
 	@TabVotePage.didEnter
 	initEarchNetMesh() {
 		// 执行一帧，并停止
-		this.earth_net_mesh._loop();
+		this.earth_net_mesh && this.earth_net_mesh._loop();
+		if (this.chain_mesh) {
+			const _loop = () => {
+				requestAnimationFrame(() => {
+					this.chain_mesh.app.ticker.update();
+				});
+			};
+			if (this.chain_mesh.is_app_ready) {
+				_loop();
+			} else {
+				this.chain_mesh.once("app-ready", _loop);
+			}
+		}
 	}
 
 	is_show = {

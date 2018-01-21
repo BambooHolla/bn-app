@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
-import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
+import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 
 @IonicPage({ name: "scan-nodes" })
 @Component({
@@ -12,13 +12,14 @@ export class ScanNodesPage extends FirstLevelPage {
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
 		super(navCtrl, navParams);
 	}
-	@ViewChild(EarthNetMeshComponent) earth: EarthNetMeshComponent;
+	// @ViewChild(ChainMeshComponent) cmesh: ChainMeshComponent;
 
-	@ScanNodesPage.didEnter
-	initEarchPos() {
-		this.earth.camera.position.y = -10 * this.earth.devicePixelRatio;
-		// this.earth.camera.position.z /= 1.6;
-	}
+	// @ScanNodesPage.didEnter
+	// initEarchPos() {
+	// 	this.cmesh.startAnimation();
+	// 	// this.earth.camera.position.y = -10 * this.earth.devicePixelRatio;
+	// 	// this.earth.camera.position.z /= 1.6;
+	// }
 
 	nodes = [];
 	@ScanNodesPage.willEnter

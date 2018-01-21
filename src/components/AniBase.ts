@@ -76,6 +76,9 @@ export class AniBase extends EventEmitter {
 			this._loop_runs.splice(index, 1);
 		}
 	}
+	addLoop(cb: Function) {
+		this._loop_runs.push(cb);
+	}
 	static OnInit(target, name) {
 		target.on("init-start", () => {
 			target[name]();

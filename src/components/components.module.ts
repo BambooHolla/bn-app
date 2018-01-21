@@ -6,6 +6,7 @@ import { GoldCoinComponent } from "./gold-coin/gold-coin";
 import { SatellitePixiComponent } from './satellite-pixi/satellite-pixi';
 import { FallCoinsComponent } from './fall-coins/fall-coins';
 import { BuddhaGlowComponent } from './buddha-glow/buddha-glow';
+import { ChainMeshComponent } from './chain-mesh/chain-mesh';
 @NgModule({
 	declarations: [
 		EarthNetMeshComponent,
@@ -15,6 +16,7 @@ import { BuddhaGlowComponent } from './buddha-glow/buddha-glow';
     SatellitePixiComponent,
     FallCoinsComponent,
     BuddhaGlowComponent,
+    ChainMeshComponent,
 	],
 	imports: [],
 	exports: [
@@ -25,6 +27,7 @@ import { BuddhaGlowComponent } from './buddha-glow/buddha-glow';
     SatellitePixiComponent,
     FallCoinsComponent,
     BuddhaGlowComponent,
+    ChainMeshComponent,
 	],
 })
 export class ComponentsModule {}

@@ -27,6 +27,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input("auto-start") auto_start = true;
   _body_material: THREE.MeshPhongMaterial;
   _line_material: THREE.MeshPhongMaterial;
+  _line_width = 1; //this.devicePixelRatio;
   _line_color = 0xffffff;
   _body_color = 0xffffff;
   _line_opacity = 0.25;
@@ -61,6 +62,20 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   get body_opacity() {
     return this._body_opacity;
+  }
+  @Input("line-width")
+  set line_width(v) {
+    if (v !== this._line_width && isFinite(v)) {
+      this._line_width = v;
+      const { _line_material } = this;
+      if (_line_material) {
+        _line_material.wireframeLinewidth = v * this.devicePixelRatio;
+        _line_material.needsUpdate = true;
+      }
+    }
+  }
+  get line_width() {
+    return this._line_width;
   }
   @Input("line-color")
   set line_color(v) {
@@ -326,6 +341,7 @@ export class EarthNetMeshComponent implements OnInit, AfterViewInit, OnDestroy {
         specular: this._line_color,
         shininess: 1,
         side: THREE.DoubleSide,
+        wireframeLinewidth: this._line_width * this.devicePixelRatio,
         // flatShading: false,
         transparent: true,
         wireframe: true,
