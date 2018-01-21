@@ -1,18 +1,76 @@
-<!--
-  Generated template for the TabChainPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
   <ion-navbar>
-    <ion-title>tab-chain</ion-title>
+    <ion-title>区块链</ion-title>
+    <ion-buttons right>
+      <!-- <ion-icon name="human-servicer" style="color:#4fb8d8;font-size:32px"></ion-icon> -->
+      <ali-icon name="ifm-sousuo"></ali-icon>
+    </ion-buttons>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-
+<ion-content>
+  <div class="unconfirm-block">
+    <div class="blur-bg"></div>
+    <div class="bg-image">
+      <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
+    </div>
+    <div class="content">
+      <div class="left">
+        <div class="fee">
+          <div class="value">{{unconfirm_block.fee|number:'1.4-8'}}</div>
+          <span class="title"><ali-icon name="ifm-wallet"></ali-icon>预期手续费</span>
+        </div>
+      </div>
+      <div class="center">
+        <div class="trans_num">
+          <div class="value">{{unconfirm_block.trans_num}}</div>
+          <span class="title"><ali-icon name="ifm-tran"></ali-icon>预期交易量</span>
+        </div>
+        <div class="reward">
+          <div class="value">{{unconfirm_block.reward|number:'1.4-8'}}</div>
+          <span class="title"><ali-icon name="ifm-reward"></ali-icon>预期奖励</span>
+        </div>
+      </div>
+      <div class="right">
+        <div class="height">
+          <div class="value">{{unconfirm_block.height}}</div>
+          <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>预期高度</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="block-list">
+    <div *ngFor="let block of block_list" class="block-item">
+      <div class="header">
+        <div class="reward">
+          <div class="value">{{block.reward|number:'1.0-0'}}</div>
+          <span class="title"><ali-icon name="ifm-reward"></ali-icon>区块奖励</span>
+        </div>
+        <div class="trans_num">
+          <div class="value">{{block.trans_num}}</div>
+          <span class="title"><ali-icon name="ifm-tran"></ali-icon>交易量</span>
+        </div>
+      </div>
+      <div class="info">
+        <div class="delay" [ngClass]="block.is_delay?'true':''">
+          <ali-icon name="ifm-chain-tran-error"></ali-icon>
+        </div>
+        <div class="height">
+          <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>高度</span>
+          <div class="value">{{block.height}}</div>
+        </div>
+        <div class="fee">
+          <span class="title"><ali-icon name="ifm-wallet"></ali-icon>手续费</span>
+          <div class="value">{{block.fee|number:'1.4-8'}}</div>
+        </div>
+      </div>
+      <div class="footer">
+        查看区块
+        <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+      </div>
+      <div class="chain-container">
+        <div class="left chain"></div>
+        <div class="right chain"></div>
+      </div>
+    </div>
+  </div>
 </ion-content>

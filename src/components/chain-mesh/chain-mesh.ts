@@ -14,6 +14,22 @@ import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import * as THREE from "three";
 // import { SimplexNoise } from "../SimplexNoise";
 import * as SimplexNoise from "simplex-noise";
+export const loader = new PIXI.loaders.Loader();
+export const _load_resource_promiseout = new PromiseOut<
+	PIXI.loaders.ResourceDictionary
+>();
+export const FRAMES_NUM = 60;
+for (let i = 0; i < FRAMES_NUM; ++i) {
+	const i_str = ("00000" + i).substr(-5);
+	loader.add(
+		"img" + i_str,
+		"assets/imgs/1200-60/earth-" + i_str + ".png",
+	);
+}
+loader.onError.add(err => _load_resource_promiseout.reject(err));
+loader.load((loader, resources) => {
+	_load_resource_promiseout.resolve(resources);
+});
 
 @Component({
 	selector: "chain-mesh",
@@ -22,11 +38,6 @@ import * as SimplexNoise from "simplex-noise";
 export class ChainMeshComponent extends AniBase {
 	@ViewChild("canvas") canvasRef: ElementRef;
 	app: PIXI.Application;
-	private _load_resource_promiseout: PromiseOut<
-		PIXI.loaders.ResourceDictionary
-	>;
-	frames_num = 60;
-	loader: PIXI.loaders.Loader;
 	@Input("auto-start") auto_start = false;
 	@Input("tint")
 	set tint(v) {
@@ -44,23 +55,6 @@ export class ChainMeshComponent extends AniBase {
 		return this._tint;
 	}
 	_init() {
-		if (!this._load_resource_promiseout) {
-			this.loader = new PIXI.loaders.Loader();
-			this._load_resource_promiseout = new PromiseOut();
-			for (let i = 0; i < this.frames_num; ++i) {
-				const i_str = ("00000" + i).substr(-5);
-				this.loader.add(
-					"img" + i_str,
-					"assets/imgs/1200-60/earth-" + i_str + ".png",
-				);
-			}
-			this.loader.onError.add(err =>
-				this._load_resource_promiseout.reject(err),
-			);
-			this.loader.load((loader, resources) => {
-				this._load_resource_promiseout.resolve(resources);
-			});
-		}
 		this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
 		return super._init();
 	}
@@ -85,13 +79,13 @@ export class ChainMeshComponent extends AniBase {
 			width: pt(canvasNode.clientWidth),
 			autoStart: this.auto_start,
 		}));
-		const resources = await this._load_resource_promiseout.promise;
+		const resources = await _load_resource_promiseout.promise;
 		console.log("resources", resources);
 		// 处理resource成动画帧
 		const { stage, renderer, ticker } = app;
 		const wh_size = Math.min(renderer.width, renderer.height);
 		const frames_list: PIXI.Texture[] = (window["frames_list"] = []);
-		for (let i = 0; i < this.frames_num; ++i) {
+		for (let i = 0; i < FRAMES_NUM; ++i) {
 			const i_str = ("00000" + i).substr(-5);
 			const resource = resources["img" + i_str] as PIXI.loaders.Resource;
 			frames_list.push(resource.texture);

@@ -14,12 +14,41 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 .header-no-border {
-  .toolbar-background {
-    border: none !important;
-  }
-  > ion-content {
-    > .scroll-content {
-      top: -0.55px;
-    }
-  }
+	.toolbar-background {
+		border: none !important;
+	}
+	> ion-content {
+		> .scroll-content {
+			top: -0.55px;
+		}
+	}
+}
+
+// $toolbar-ios-height: 1.8rem;
+$navbar-height: 65px;
+ion-loading {
+	&.can-goback {
+		margin-top: $navbar-height;
+	}
+	&.can-tap {
+		pointer-events: none;
+		background-color: transparent;
+	}
+}
+ion-navbar,
+ion-title {
+	padding-top: 26px !important;
+}
+ion-navbar.toolbar-ios {
+	min-height: $navbar-height;
+	padding: 0 1.1rem;
+	.toolbar-title-ios {
+		color: #7a7a7a;
+	}
+	.bar-buttons {
+		ali-icon {
+			color: #7a7a7a;
+			font-size: 1.95rem;
+		}
+	}
 }
