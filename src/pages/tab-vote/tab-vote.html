@@ -4,6 +4,19 @@
 <ion-content>
   <!-- <earth-net-mesh [ngClass]="page_status" id="bg" [auto-start]="false" [line-color]="earth_config.line_color" [body-color]="earth_config.body_color" [line-opacity]="earth_config.line_opacity" [body-opacity]="earth_config.body_opacity"></earth-net-mesh> -->
   <chain-mesh id="bg2" [ngClass]="page_status" [tint]="earth_config.body_color"></chain-mesh>
+  <div id="bg3" [ngClass]="page_status"></div>
+  <div class="wave-container"  [ngClass]="page_status">
+    <div class="wave-1">
+      <div class="font-end"></div>
+      <div class="showdown"></div>
+    </div>
+    <div class="wave-2">
+      <div class="font-end"></div>
+    </div>
+    <div class="wave-3">
+      <div class="font-end"></div>
+    </div>
+  </div>
   <div class="pages-container">
     <div class="bootstrap-page" [ngClass]="page_status">
       <div class="main-container">
@@ -35,6 +48,7 @@
         <satellite-pixi class="ani-progress" [class.show]="is_show.satellite_pixi"></satellite-pixi>
         <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
         <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
+        <div class="wakuang-person"></div>
         <div class="ani-container">
         </div>
       </div>
@@ -46,9 +60,6 @@
                 <div class="title">
                   <ali-icon name="ifm-income-ranking"></ali-icon>
                   本轮收益排名
-                </div>
-                <div class="my-income-assets">
-                  IBT 8.88888888
                 </div>
               </div>
               <div class="rank-info">
@@ -82,10 +93,6 @@
             </div>
           </ion-slide>
         </ion-slides>
-        <div class="wave-1">
-          <div class="font-end"></div>
-          <div class="showdown"></div>
-        </div>
       </div>
     </div>
   </div>

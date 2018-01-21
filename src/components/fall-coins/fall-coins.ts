@@ -150,7 +150,7 @@ export class FallCoinsComponent extends AniBase {
 			/*可以推算出帧数，要超出终点才停止，所以多出来的一帧*/
 			const ani_frame_num = Math.ceil(total_time * 1000 / u_frame_ms);
 			/*总帧数 36, 目标帧为24,可以算出起始的帧*/
-			const start_frame = 36 - (ani_frame_num - 24) % 36;
+			const start_frame = 36 - (ani_frame_num - 26) % 36;
 
 			ani.gotoAndStop(start_frame);
 

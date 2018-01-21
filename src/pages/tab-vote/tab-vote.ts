@@ -131,7 +131,7 @@ export class TabVotePage extends FirstLevelPage {
 		line_opacity: 0.6,
 	};
 	_earth_enabled_config = {
-		body_color: 0xfdcd47,
+		body_color: 0xfbc62b,
 		body_opacity: 1,
 		line_color: 0xffd246,
 		line_opacity: 1,
