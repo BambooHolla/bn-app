@@ -1,16 +1,17 @@
-import { Component, ViewChild, ElementRef } from "@angular/core";
+import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
-import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
-import { MyApp } from "../../app/app.component";
-import { MainPage } from "../pages";
+import { BlockServiceProvider } from "../../providers/block-service/block-service";
+import { asyncCtrlGenerator} from '../../bnqkl-framework/Decorator';
+import { MyApp } from '../../app/app.component';
 import {
   LoginFormInOut,
   RegisterFormInOut,
 } from "./sign-in-and-sign-up.animations";
+import { MainPage } from '../pages';
 
 @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -18,12 +19,13 @@ import {
   templateUrl: "sign-in-and-sign-up.html",
   animations: [LoginFormInOut, RegisterFormInOut],
 })
-export class SignInAndSignUpPage extends FirstLevelPage {
+export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public loginService: LoginServiceProvider,
-    public myApp: MyApp,
+    public myApp : MyApp,
+    public blockService: BlockServiceProvider,
   ) {
     super(navCtrl, navParams);
   }
@@ -103,9 +105,10 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   )
   @asyncCtrlGenerator.loading()
   async doLogin() {
-    await this.loginService.doLogin(this.formData.pwd);
-    // this.myApp.openPage(MainPage);
-    this.routeTo("scan-nodes");
+    let result = await this.loginService.doLogin(this.formData.pwd);
+    if(result) {
+      this.routeTo("scan-nodes");
+    }
   }
   gotoRegister() {
     this.page_status = "register";
@@ -114,5 +117,18 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   get canDoRegister() {
     return this.allHaveValues(this.formData);
   }
-  doRegister() {}
+  async doRegister() {
+    let a = await this.blockService.getLastBlock();
+    console.log(a);
+    let passphrase = this.loginService.generateNewPassphrase();
+    console.log(passphrase);
+  }
+
+  ngOnInit() {
+    console.log('------------------------------------');
+    console.log(this.loginService.getRecentAccount());
+    console.log(this.blockService.getBlockById('05963d5f2b543b2aae053498633b43fb244b1f9c99918e6bb05bd705b3a5427c'));
+    console.log(this.blockService.getLastBlock());
+    console.log('---------------------------------------');
+  }
 }
