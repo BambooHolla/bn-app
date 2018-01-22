@@ -1,18 +1,64 @@
-<!--
-  Generated template for the TabPayPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>tab-pay</ion-title>
+  <ion-navbar color="transparent">
+    <ion-title>支付</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-
+<ion-content>
+  <div class="toolbar">
+    <button class="tool-item qr-scan">
+      <ali-icon name="ifm-scan"></ali-icon>
+    </button>
+    <button class="tool-item contact-book">
+      <ali-icon name="ifm-tongxunlu"></ali-icon>
+    </button>
+    <button class="tool-item ibt">
+      <ali-icon name="ifm-IBT"></ali-icon>
+    </button>
+  </div>
+  <div class="transfer">
+    <div class="input-container">
+      <ali-icon class="left" name="ifm-account-detail"></ali-icon>
+      <input type="text" [(ngModel)]="formData.transfer_address" placeholder="请输入地址" />
+      <button class="right">
+        <ali-icon name="ifm-scan"></ali-icon>
+      </button>
+    </div>
+    <div class="input-container">
+      <ali-icon class="left" name="ifm-amount"></ali-icon>
+      <input type="text" [(ngModel)]="formData.transfer_amount" placeholder="请输入数量" />
+    </div>
+    <div class="input-container">
+      <ali-icon class="left" name="ifm-duihua"></ali-icon>
+      <input type="text" [(ngModel)]="formData.transfer_mark" placeholder="请输入附言" />
+    </div>
+    <div class="fee">
+      <ali-icon class="left" name="ifm-info"></ali-icon>
+      <span class="value">0.000000001</span>
+    </div>
+    <div class="submit-button">确认转出</div>
+  </div>
+  <div class="roll-out-logs">
+    <div class="title">
+      <ali-icon class="left" name="ifm-roll-out-logs"></ali-icon>
+      最近转出记录
+      <ali-icon class="right" name="ifm-arrow-dot-dot"></ali-icon>
+    </div>
+    <ion-content class="log-list">
+      <ion-refresher (ionRefresh)="loadRollOutLogs($event)">
+        <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新转出记录……"></ion-refresher-content>
+      </ion-refresher>
+      <div class="log-item" *ngFor="let log of roll_out_logs">
+        <!-- <div class="create-time">{{log.create_time|amLocal:localName|amTimeAgo}}</div> -->
+        <div class="create-time">{{log.create_time|amLocale:localName|amTimeAgo}}</div>
+        <div class="address" [innerHTML]="log.address|mask:'@address'"></div>
+        <div class="amount">{{log.amount|number:'1.8-8'}}</div>
+      </div>
+      <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreRollOutLogs())" [enabled]="roll_out_config.has_more">
+        <ion-infinite-scroll-content loadingText="加载更多转出记录中……"></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-content>
+  </div>
+  <div class="button-bg">
+    <chain-mesh [auto-start]="true"></chain-mesh>
+  </div>
 </ion-content>

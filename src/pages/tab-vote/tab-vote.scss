@@ -1,4 +1,11 @@
 page-tab-vote {
+	background-color: #FFF;
+	background-image: url('../assets/imgs/net-circle-gray.png');
+	background-size: 128vh 128vh;
+	background-position: center;
+	>.content-ios{
+		background:none;
+	}
 	.scroll-content {
 		overflow: hidden;
 	}
@@ -104,13 +111,16 @@ page-tab-vote {
 			align-items: center;
 			justify-content: center;
 			.auto-start-button {
-				box-shadow: -0.05rem 0rem 0rem 0.05rem rgba(255, 255, 255, 0.8),
-					0 0.8rem 2rem rgba(0, 0, 0, 0.3),
-					0 0rem 3rem rgba(0, 0, 0, 0.3);
-				width: 84.21%;
-				height: 84.21%;
-				background-color: #fdde66;
+				// box-shadow: -0.05rem 0rem 0rem 0.05rem rgba(255, 255, 255, 0.8),
+				// 	0 0.8rem 2rem rgba(0, 0, 0, 0.3),
+				// 	0 0rem 3rem rgba(0, 0, 0, 0.3);
+				width: 105.2625%;
+				height: 105.2625%;
+				// background-color: #fdde66;
 				border-radius: 50%;
+				background-image: url("../assets/imgs/tab-vote/start-button.png");
+				background-size: 100%;
+				background-position: center;
 			}
 		}
 	}

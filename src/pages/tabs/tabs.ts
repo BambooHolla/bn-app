@@ -53,4 +53,19 @@ export class TabsPage {
   getTabsHidden(key: string) {
     return this._hidden_tabs.size > 0;
   }
+
+  private _transparent_tabs = new Set();
+  transparent_tab_bg = false;
+  setBgTransparent(is_tran: boolean, key: string) {
+    if (this.tabs) {
+      if (is_tran) {
+        this._transparent_tabs.add(key);
+      } else {
+        this._transparent_tabs.delete(key);
+      }
+    }
+  }
+  getBgTransparent() {
+    return this._transparent_tabs.size > 0;
+  }
 }

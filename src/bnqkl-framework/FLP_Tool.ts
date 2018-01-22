@@ -16,6 +16,16 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal modalCtrl: ModalController;
   @FLP_Tool.FromGlobal platform: Platform;
   @FLP_Tool.FromGlobal translate: TranslateService;
+  get localName() {
+    const { currentLang } = this.translate;
+    if (currentLang === "zh-cmn-Hans") {
+      return "zh-cn"; // 使用国际化标准
+    }
+    if (currentLang === "zh-cmn-Hant") {
+      return "zh-tw";
+    }
+    return currentLang;
+  }
 
   /**
    * 用于管理loading对象的对象池
@@ -86,8 +96,8 @@ export class FLP_Tool {
       Object.defineProperty(target, name, descriptor);
     }
   }
-  static getTranslate(key: string | string[], interpolateParams?: Object){
-     return (window['translate'] as TranslateService)
+  static getTranslate(key: string | string[], interpolateParams?: Object) {
+    return (window["translate"] as TranslateService)
       .get(key, interpolateParams)
       .take(1)
       .toPromise();

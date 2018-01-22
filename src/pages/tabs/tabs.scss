@@ -1,2 +1,8 @@
 page-tabs {
+	.transparent-bg {
+		.tabbar {
+			border-top-color: transparent;
+			background: transparent;
+		}
+	}
 }

@@ -115,7 +115,7 @@ export class BuddhaGlowComponent extends AniBase {
 
 			let _p_speed = Math.random() * 0.0001;
 			this._loop_runs.push(() => {
-				_i_y += 0.0001;
+				_i_y += 0.0005;
 
 				// _p = Math.abs(noise.noise2D(i, _i_y));
 				_p = _p + _p_speed;

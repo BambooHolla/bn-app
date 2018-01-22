@@ -149,7 +149,7 @@ export class ChainMeshComponent extends AniBase {
 			sp.height = wh_size;
 			stage.addChild(sp);
 			let i = 0;
-			const skip_num = 2; //* 2;
+			const skip_num = 0//2; //* 2;
 			let cur_skip = 0;
 
 			let get_aplha = p => {

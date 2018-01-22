@@ -9,6 +9,7 @@ import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
 import { AniBase } from "../../components/AniBase";
+import { TabsPage } from "../tabs/tabs";
 
 @IonicPage({ name: "tab-vote" })
 @Component({
@@ -20,12 +21,22 @@ export class TabVotePage extends FirstLevelPage {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		public sanitizer: DomSanitizer,
+		public tabs: TabsPage,
 	) {
 		super(navCtrl, navParams);
 	}
 	account_info = {
 		balance: 8.88888888,
 	};
+	@TabVotePage.didEnter
+	hiddenTabBg() {
+		this.tabs.setBgTransparent(true, this.cname);
+	}
+	@TabVotePage.didLeave
+	recoverTabBg() {
+		this.tabs.setBgTransparent(false, this.cname);
+	}
+
 	@ViewChild("aniWrapper") aniWrapper: ElementRef;
 	@TabVotePage.onInit
 	initAniContainerSize() {

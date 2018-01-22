@@ -26,6 +26,7 @@ import { AccountServiceProvider } from "../providers/account-service/account-ser
 import { ComponentsModule } from "../components/components.module";
 import { BlockServiceProvider } from '../providers/block-service/block-service';
 import { TransactionServiceProvider } from '../providers/transaction-service/transaction-service';
+import { TransferProvider } from '../providers/transfer/transfer';
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
@@ -91,6 +92,7 @@ export function provideSettings(storage: Storage) {
     AccountServiceProvider,
     BlockServiceProvider,
     TransactionServiceProvider,
+    TransferProvider,
   ],
 })
 export class AppModule {}
