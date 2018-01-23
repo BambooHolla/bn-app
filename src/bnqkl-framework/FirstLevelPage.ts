@@ -59,4 +59,32 @@ export class FirstLevelPage extends FLP_Data {
       }
     }
   }
+
+  auto_header_shadow_when_scroll_down = false;
+  header_shadow_color = {
+    from: [0, 0, 0, 0],
+    to: [0, 0, 0, 0.3],
+  };
+  header_shadow_distance = 50;
+  // 页面滚动自动添加阴影
+  @FirstLevelPage.onInit
+  _autoAddHeaderShadowWhenScrollDown() {
+    this.content.ionScroll.subscribe(() => {
+      if (this.auto_header_shadow_when_scroll_down) {
+        const process = Math.min(
+          this.content.scrollTop / this.header_shadow_distance,
+          1,
+        );
+        const { from, to } = this.header_shadow_color;
+        const cur_color = from.map((from_v, i) => {
+          const to_v = to[i];
+          return (to_v - from_v) * process + from_v;
+        });
+        this.header.setElementStyle(
+          "box-shadow",
+          `0 0 0.4rem rgba(${cur_color})`,
+        );
+      }
+    });
+  }
 }

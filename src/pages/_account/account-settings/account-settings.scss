@@ -1,0 +1,39 @@
+page-account-settings {
+	@extend .header-no-border;
+	> .content {
+		background-color: #eeeeee;
+	}
+	.settings-list {
+		margin-top: 1rem;
+		margin-bottom: 1.1rem;
+		> .item {
+			height: 4.6rem;
+			padding: 0 1.4rem;
+			background-color: #fff;
+			display: flex;
+			align-items: center;
+			margin-bottom: 1px;
+			font-size: 1.45rem;
+			color: #707070;
+			ali-icon[name="ifm-arrow-to-right"] {
+				font-size: 1.4rem;
+				color: #989898;
+			}
+			> .left {
+				margin-left: auto;
+				justify-self: flex-end;
+			}
+		}
+	}
+	.quit-app{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		background: #FFF;
+		color: #7a7a7a;
+		height: 4.8rem;
+		font-size: 1.6rem;
+		margin-bottom: 1rem;
+	}
+}

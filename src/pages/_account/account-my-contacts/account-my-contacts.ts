@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Optional } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
@@ -12,7 +12,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public tabs: TabsPage,
+    @Optional() public tabs: TabsPage,
   ) {
     super(navCtrl, navParams, true, tabs);
   }

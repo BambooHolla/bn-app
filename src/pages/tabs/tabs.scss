@@ -6,6 +6,7 @@ page-tabs {
 		}
 		&.transparent-bg {
 			.tabbar {
+				transition-duration: 250ms;
 				border-top-color: transparent;
 				background: transparent;
 			}
@@ -45,6 +46,8 @@ page-tabs {
 				animation-name: rotate-tab-bg;
 				animation-timing-function: linear;
 				animation-iteration-count: infinite;
+				animation-fill-mode: forwards;
+				animation-direction: normal;
 			}
 			@keyframes rotate-tab-bg {
 				0%{

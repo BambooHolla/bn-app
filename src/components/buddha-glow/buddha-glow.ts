@@ -130,7 +130,11 @@ export class BuddhaGlowComponent extends AniBase {
 		}
 	}
 	lights: PIXI.Sprite[] = [];
-	static createLinearGradient(x1 = 300, y1 = 0, stops = [[0, "#FFF"], [1, "#000"]]) {
+	static createLinearGradient(
+		x1 = 300,
+		y1 = 0,
+		stops = [[0, "#FFF"], [1, "#000"]],
+	) {
 		var canvas = document.createElement("canvas");
 		const size = Math.max(x1, y1);
 		const min = Math.min(x1, y1);
@@ -182,11 +186,11 @@ export class BuddhaGlowComponent extends AniBase {
 		return canvas;
 	}
 	startPixiApp() {
-		this.app.start();
+		this.app && this.app.start();
 	}
 
 	stopPixiApp() {
-		this.app.stop();
+		this.app && this.app.stop();
 	}
 	static radialGradientCacheMap = new Map<number, PIXI.Texture>();
 	static getRadialGradientTexture(color_num: number) {
@@ -199,10 +203,10 @@ export class BuddhaGlowComponent extends AniBase {
 			.split(/(..)/g)
 			.filter(v => v)
 			.map(v => parseInt(v, 16));
-		const gradient_r_canvas = BuddhaGlowComponent.createRadialGradient(window.innerWidth, [
-			[1, `rgba(${RGB},1)`],
-			[0, `rgba(${RGB},0)`],
-		]);
+		const gradient_r_canvas = BuddhaGlowComponent.createRadialGradient(
+			window.innerWidth,
+			[[1, `rgba(${RGB},1)`], [0, `rgba(${RGB},0)`]],
+		);
 
 		const texture = PIXI.Texture.fromCanvas(gradient_r_canvas);
 

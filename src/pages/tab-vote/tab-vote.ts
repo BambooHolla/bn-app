@@ -49,6 +49,7 @@ export class TabVotePage extends FirstLevelPage {
 
 	page_status = "bootstrap";
 	routeToVoteDetail() {
+		this.tabs.setBgTransparent(false, this.cname);
 		this.page_status = "vote-detail";
 		this.fall_coin &&
 			this.fall_coin.is_inited &&
@@ -96,6 +97,7 @@ export class TabVotePage extends FirstLevelPage {
 		}
 	}
 	routeToBootstrap() {
+		this.tabs.setBgTransparent(true, this.cname);
 		this.page_status = "bootstrap";
 		this.fall_coin &&
 			this.fall_coin.is_inited &&

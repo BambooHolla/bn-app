@@ -8,6 +8,7 @@ import { FallCoinsComponent } from './fall-coins/fall-coins';
 import { BuddhaGlowComponent } from './buddha-glow/buddha-glow';
 import { ChainMeshComponent } from './chain-mesh/chain-mesh';
 import { CommonWaveBgComponent } from './common-wave-bg/common-wave-bg';
+import { TextGradientComponent } from './text-gradient/text-gradient';
 @NgModule({
 	declarations: [
 		EarthNetMeshComponent,
@@ -19,6 +20,7 @@ import { CommonWaveBgComponent } from './common-wave-bg/common-wave-bg';
     BuddhaGlowComponent,
     ChainMeshComponent,
     CommonWaveBgComponent,
+    TextGradientComponent,
 	],
 	imports: [],
 	exports: [
@@ -31,6 +33,7 @@ import { CommonWaveBgComponent } from './common-wave-bg/common-wave-bg';
     BuddhaGlowComponent,
     ChainMeshComponent,
     CommonWaveBgComponent,
+    TextGradientComponent,
 	],
 })
 export class ComponentsModule {}

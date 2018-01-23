@@ -21,10 +21,7 @@ export const _load_resource_promiseout = new PromiseOut<
 export const FRAMES_NUM = 60;
 for (let i = 0; i < FRAMES_NUM; ++i) {
 	const i_str = ("00000" + i).substr(-5);
-	loader.add(
-		"img" + i_str,
-		"assets/imgs/1200-60/earth-" + i_str + ".png",
-	);
+	loader.add("img" + i_str, "assets/imgs/1200-60/earth-" + i_str + ".png");
 }
 loader.onError.add(err => _load_resource_promiseout.reject(err));
 loader.load((loader, resources) => {
@@ -149,7 +146,7 @@ export class ChainMeshComponent extends AniBase {
 			sp.height = wh_size;
 			stage.addChild(sp);
 			let i = 0;
-			const skip_num = 0//2; //* 2;
+			const skip_num = 0; //2; //* 2;
 			let cur_skip = 0;
 
 			let get_aplha = p => {
@@ -200,10 +197,10 @@ export class ChainMeshComponent extends AniBase {
 		} while (true);
 	}
 	startPixiApp() {
-		this.app.start();
+		this.app && this.app.start();
 	}
 	stopPixiApp() {
-		this.app.stop();
+		this.app && this.app.stop();
 	}
 	static createRadialGradient(r = 300, stops = [[0, "#FFF"], [1, "#000"]]) {
 		var canvas = document.createElement("canvas");

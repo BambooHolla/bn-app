@@ -139,10 +139,10 @@ export class SatellitePixiComponent extends AniBase {
 	}
 
 	startPixiApp() {
-		this.app.start();
+		this.app && this.app.start();
 	}
 
 	stopPixiApp() {
-		this.app.stop();
+		this.app && this.app.stop();
 	}
 }

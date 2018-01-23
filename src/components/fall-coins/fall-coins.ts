@@ -192,11 +192,11 @@ export class FallCoinsComponent extends AniBase {
 		this._loop_runs.push(auto_fall_down);
 	}
 	startPixiApp() {
-		this.app.start();
+		this.app && this.app.start();
 	}
 
 	stopPixiApp() {
-		this.app.stop();
+		this.app && this.app.stop();
 	}
 
 	private _progress_coins_config = {
