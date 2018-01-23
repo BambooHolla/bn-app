@@ -1,12 +1,45 @@
 <ion-header>
-
-  <ion-navbar>
+  <ion-navbar color="white">
     <ion-title>我的联系人</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E6%88%91%E7%9A%84%E8%81%94%E7%B3%BB%E4%BA%BA%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt="">
+<ion-content>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E6%88%91%E7%9A%84%E8%81%94%E7%B3%BB%E4%BA%BA%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
+  <div class="unconfim-list list">
+    <div class="header-divider">
+      <ali-icon name="ifm-dengdai"></ali-icon>
+      等待确认列表
+    </div>
+    <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list">
+      <div class="left">
+        <div class="username">吴祖贤</div>
+        <div class="address" [innerHTML]="'lsdop2o3p4ifhiashfdjfsd'|mask:'@address'"></div>
+      </div>
+      <div class="right">
+        <button class="button cancel">
+          <ali-icon name="ifm-cancel"></ali-icon>
+        </button>
+        <button class="button confirm">
+          <ali-icon name="ifm-confirm"></ali-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="contact-list list">
+    <ng-container *ngFor="let letter_contacts of my_contact_list">
+      <div class="divider">{{letter_contacts.letter}}</div>
+      <div class="item" *ngFor="let contact of letter_contacts.list">
+        <div class="left">
+          <div class="username">吴祖贤</div>
+          <div class="address" [innerHTML]="'lsdop2o3p4ifhiashfdjfsd'|mask:'@address'"></div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="fast-nav">
+  	<ali-icon name="ifm-sousuo"></ali-icon>
+    <div class="item" *ngFor="let letter_contacts of my_contact_list">
+      {{letter_contacts.letter}}
+    </div>
+  </div>
 </ion-content>

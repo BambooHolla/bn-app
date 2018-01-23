@@ -66,6 +66,7 @@ export class FirstLevelPage extends FLP_Data {
     from_color: [0, 0, 0, 0],
     to_color: [0, 0, 0, 0.3],
     blur_rem: 1,
+    pre_scroll_process: 0,
   };
 
   // 页面滚动自动添加阴影
@@ -78,12 +79,25 @@ export class FirstLevelPage extends FLP_Data {
           to_color,
           distance,
           blur_rem,
+          pre_scroll_process,
         } = this.header_shadow_config;
         const process = Math.min(this.content.scrollTop / distance, 1);
-        const cur_color = from_color.map((from_v, i) => {
-          const to_v = to_color[i];
-          return (to_v - from_v) * process + from_v;
-        });
+        if (process === pre_scroll_process) {
+          return;
+        }
+        this.header_shadow_config.pre_scroll_process = process;
+
+        let cur_color;
+        if (process === 0) {
+          cur_color = from_color;
+        } else if (process === 1) {
+          cur_color = to_color;
+        } else {
+          cur_color = from_color.map((from_v, i) => {
+            const to_v = to_color[i];
+            return (to_v - from_v) * process + from_v;
+          });
+        }
         this.header.setElementStyle(
           "box-shadow",
           `0 0 ${blur_rem}rem rgba(${cur_color})`,
