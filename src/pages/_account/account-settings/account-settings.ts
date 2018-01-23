@@ -1,5 +1,5 @@
 import { Component, Optional } from "@angular/core";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { Config, IonicPage, NavController, NavParams } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 
@@ -12,9 +12,10 @@ export class AccountSettingsPage extends SecondLevelPage {
 	constructor(
 		public navCtrl: NavController,
 		public navParams: NavParams,
+		public ionicConfig: Config,
 		@Optional() public tabs: TabsPage,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
-	auto_header_shadow_when_scroll_down = true
+	auto_header_shadow_when_scroll_down = true;
 }

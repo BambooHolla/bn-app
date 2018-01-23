@@ -17,7 +17,5 @@ export class AccountMyContactsPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
   }
 
-  ionViewDidLoad() {
-    console.log("ionViewDidLoad AccountMyContactsPage");
-  }
+  
 }

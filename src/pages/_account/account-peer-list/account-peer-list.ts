@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, Optional } from "@angular/core";
+import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { TabsPage } from "../../tabs/tabs";
+import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 /**
  * Generated class for the AccountPeerListPage page.
@@ -8,18 +10,17 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
  * Ionic pages and navigation.
  */
 
-@IonicPage({name:"account-peer-list"})
+@IonicPage({ name: "account-peer-list" })
 @Component({
-  selector: 'page-account-peer-list',
-  templateUrl: 'account-peer-list.html',
+	selector: "page-account-peer-list",
+	templateUrl: "account-peer-list.html",
 })
-export class AccountPeerListPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad AccountPeerListPage');
-  }
-
+export class AccountPeerListPage extends SecondLevelPage {
+	constructor(
+		public navCtrl: NavController,
+		public navParams: NavParams,
+		@Optional() public tabs: TabsPage,
+	) {
+		super(navCtrl, navParams, true, tabs);
+	}
 }

@@ -1,4 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, Optional } from "@angular/core";
+import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 /**
@@ -13,10 +15,14 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 	selector: "page-vote-list",
 	templateUrl: "vote-list.html",
 })
-export class VoteListPage {
-	constructor(public navCtrl: NavController, public navParams: NavParams) {}
-
-	ionViewDidLoad() {
-		console.log("ionViewDidLoad VoteListPage");
+export class VoteListPage extends SecondLevelPage {
+	constructor(
+		public navCtrl: NavController,
+		public navParams: NavParams,
+		@Optional() public tabs: TabsPage,
+	) {
+		super(navCtrl, navParams, true, tabs);
 	}
+
+	
 }

@@ -62,6 +62,7 @@ export function provideSettings(storage: Storage) {
         deps: [HttpClient],
       },
     }),
+    IonicStorageModule.forRoot(),
     IonicModule.forRoot(MyApp, {
       backButtonText: "",
       iconMode: "ios",
@@ -72,7 +73,6 @@ export function provideSettings(storage: Storage) {
       statusbarPadding: false,
       swipeBackEnabled: true,
     }),
-    IonicStorageModule.forRoot(),
     ComponentsModule,
   ],
   bootstrap: [IonicApp],

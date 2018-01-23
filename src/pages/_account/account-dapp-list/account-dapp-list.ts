@@ -1,4 +1,6 @@
-import { Component } from "@angular/core";
+import { Component, Optional } from "@angular/core";
+import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 /**
@@ -13,10 +15,14 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 	selector: "page-account-dapp-list",
 	templateUrl: "account-dapp-list.html",
 })
-export class AccountDappListPage {
-	constructor(public navCtrl: NavController, public navParams: NavParams) {}
-
-	ionViewDidLoad() {
-		console.log("ionViewDidLoad AccountDappListPage");
+export class AccountDappListPage extends SecondLevelPage {
+	constructor(
+		public navCtrl: NavController,
+		public navParams: NavParams,
+		@Optional() public tabs: TabsPage,
+	) {
+		super(navCtrl, navParams, true, tabs);
 	}
+
+	
 }

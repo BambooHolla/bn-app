@@ -4,8 +4,18 @@ ali-icon {
 	height: 1em;
 	vertical-align: -0.15em;
 	fill: currentColor;
+	color: currentColor;
 	overflow: hidden;
-	svg {
+	> .ifmicon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+		font-size: inherit;
+
+	}
+	> svg {
 		width: 100%;
 		height: 100%;
 	}

@@ -3,19 +3,12 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 
-/**
- * Generated class for the AccountSetUsernamePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-@IonicPage({ name: "account-set-username" })
+@IonicPage({ name: "settings-set-pay-pwd" })
 @Component({
-	selector: "page-account-set-username",
-	templateUrl: "account-set-username.html",
+	selector: "page-settings-set-pay-pwd",
+	templateUrl: "settings-set-pay-pwd.html",
 })
-export class AccountSetUsernamePage extends SecondLevelPage {
+export class SettingsSetPayPwdPage extends SecondLevelPage {
 	constructor(
 		public navCtrl: NavController,
 		public navParams: NavParams,

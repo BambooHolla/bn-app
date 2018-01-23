@@ -6,7 +6,7 @@
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AE%BE%E7%BD%AE%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="settings-list">
-    <div class="item">
+    <div class="item" (click)="routeTo('settings-set-pay-pwd')">
       <span class="title">设置支付密码</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
@@ -42,7 +42,7 @@
       <span class="title">语言设置</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
-    <div class="item">
+    <div class="item" (click)="routeTo('settings-cache-manage')">
       <span class="title">清空本地缓存</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>

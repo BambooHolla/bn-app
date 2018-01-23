@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Optional } from "@angular/core";
+import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 /**
@@ -18,8 +20,6 @@ export class SettingsCacheManagePage {
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SettingsCacheManagePage');
-  }
+  
 
 }

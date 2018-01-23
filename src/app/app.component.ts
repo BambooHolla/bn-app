@@ -99,9 +99,9 @@ export class MyApp implements OnInit {
       this.translate.use("en"); // Set your language here
     }
 
-    this.translate.get(["BACK_BUTTON_TEXT"]).subscribe(values => {
-      this.config.set("ios", "backButtonText", values.BACK_BUTTON_TEXT);
-    });
+    // this.translate.get(["BACK_BUTTON_TEXT"]).subscribe(values => {
+    //   this.config.set("ios", "backButtonText", values.BACK_BUTTON_TEXT);
+    // });
   }
 
   @ViewChild(Nav) nav: Nav;
