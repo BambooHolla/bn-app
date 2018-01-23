@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { IonicPage, NavController, Tabs } from "ionic-angular";
 
@@ -12,7 +12,7 @@ import { Tab4Root } from "../pages";
   selector: "page-tabs",
   templateUrl: "tabs.html",
 })
-export class TabsPage {
+export class TabsPage implements OnInit {
   tab1Root: any = Tab1Root;
   tab2Root: any = Tab2Root;
   tab3Root: any = Tab3Root;
@@ -35,6 +35,12 @@ export class TabsPage {
         this.tab3Title = values["TAB3_TITLE"];
         this.tab4Title = values["TAB4_TITLE"];
       });
+  }
+  ngOnInit() {
+    this.tabs.ionChange.subscribe(() => {
+      const selected_index = this.tabs.getIndex(this.tabs.getSelected());
+      this.tabs.setElementAttribute("select-index", selected_index);
+    });
   }
 
   private _hidden_tabs = new Set();

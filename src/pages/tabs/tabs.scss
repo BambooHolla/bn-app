@@ -1,8 +1,144 @@
 page-tabs {
-	.transparent-bg {
+	> .tabs {
 		.tabbar {
-			border-top-color: transparent;
-			background: transparent;
+			border-top-color: #d2d2d2;
+			background: #FFF;
 		}
+		&.transparent-bg {
+			.tabbar {
+				border-top-color: transparent;
+				background: transparent;
+			}
+		}
+		.tab-button.has-title{
+			.tab-button-text{
+				color: #7b7b7b;
+				position: relative;
+				top: -0.6rem;
+			}
+		}
+		.tab-button[aria-selected="true"] {
+			&::before {
+				content: " ";
+				width: 40%;
+				height: 0%;
+				padding-bottom: 40%;
+				font-size: 0;
+				position: absolute;
+				transform: rotate(45deg);
+				border-radius: 38%;
+				z-index: -1;
+			}
+			&::after {
+				content: " ";
+				width: 41%;
+				height: 0%;
+				padding-bottom: 41%;
+				font-size: 0;
+				position: absolute;
+				top: 13%;
+				left: 30%;
+				transform: rotate(0deg);
+				border-radius: 38%;
+				z-index: -2;
+				animation-duration: 8s;
+				animation-name: rotate-tab-bg;
+				animation-timing-function: linear;
+				animation-iteration-count: infinite;
+			}
+			@keyframes rotate-tab-bg {
+				0%{
+					transform: rotate(0deg);
+				}
+				50%{
+					opacity: 0.8;
+					transform: scale(1.1) rotate(180deg);
+				}
+				100%{
+					transform: rotate(360deg);
+				}
+			}
+			.tab-button-text{
+				color: #FFF;
+			}
+		}
+
+		.tab-button[aria-selected="true"] {
+			&:nth-child(1) {
+				&::before {
+					background: linear-gradient(
+						to right bottom,
+						#fec849 0%,
+						#f78566 100%
+					);
+				}
+				&::after {
+					background: rgba(#ffdb55, 0.6);
+				}
+			}
+		}
+
+		.tab-button[aria-selected="true"] {
+			&:nth-child(2) {
+				&::before {
+					background: linear-gradient(
+						to right bottom,
+						#67f4e0 0%,
+						#67e2ef 50%,
+						#66d2fc 100%
+					);
+				}
+				&::after {
+					background: rgba(#54e9ef, 0.6);
+				}
+			}
+		}
+
+		.tab-button[aria-selected="true"] {
+			&:nth-child(3) {
+				&::before {
+					background: linear-gradient(
+						to right bottom,
+						#3cdfdc 0%,
+						#7cddad 50%,
+						#eeda64 100%
+					);
+				}
+				&::after {
+					background: rgba(#73e2cc, 0.6);
+				}
+			}
+		}
+
+		.tab-button[aria-selected="true"] {
+			&:nth-child(4) {
+				&::before {
+					background: linear-gradient(
+						to right bottom,
+						#ff5b5a 0%,
+						#ff7b67 50%,
+						#ff9f77 100%
+					);
+				}
+				&::after {
+					background: rgba(#ff5b5a, 0.6);
+				}
+			}
+		}
+
+	}
+	.ion-ios-tab-vote {
+		background: url('data:image/svg+xml;utf8,<svg width="25" height="25"><use xlink:href="#ifm-web__anquan"></use></svg>');
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: auto;
+	}
+	.ion-ios-tab-chain {
+	}
+	.ion-ios-tab-pay {
+	}
+	.ion-ios-tab-account {
 	}
 }
