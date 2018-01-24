@@ -9,6 +9,7 @@ import { BuddhaGlowComponent } from './buddha-glow/buddha-glow';
 import { ChainMeshComponent } from './chain-mesh/chain-mesh';
 import { CommonWaveBgComponent } from './common-wave-bg/common-wave-bg';
 import { TextGradientComponent } from './text-gradient/text-gradient';
+import { KjuaQrcodeComponent } from './kjua-qrcode/kjua-qrcode';
 @NgModule({
 	declarations: [
 		EarthNetMeshComponent,
@@ -21,6 +22,7 @@ import { TextGradientComponent } from './text-gradient/text-gradient';
     ChainMeshComponent,
     CommonWaveBgComponent,
     TextGradientComponent,
+    KjuaQrcodeComponent,
 	],
 	imports: [],
 	exports: [
@@ -34,6 +36,7 @@ import { TextGradientComponent } from './text-gradient/text-gradient';
     ChainMeshComponent,
     CommonWaveBgComponent,
     TextGradientComponent,
+    KjuaQrcodeComponent,
 	],
 })
 export class ComponentsModule {}

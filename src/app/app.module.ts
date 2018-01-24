@@ -71,7 +71,7 @@ export function provideSettings(storage: Storage) {
       scrollAssist: false,
       autoFocusAssist: false,
       statusbarPadding: false,
-      swipeBackEnabled: true,
+      swipeBackEnabled: false,
     }),
     ComponentsModule,
   ],
