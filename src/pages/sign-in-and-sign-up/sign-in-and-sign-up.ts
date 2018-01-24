@@ -14,6 +14,7 @@ import {
   RegisterFormInOut,
 } from "./sign-in-and-sign-up.animations";
 import { MainPage } from '../pages';
+import {AppSettingProvider} from "../../providers/app-setting/app-setting";
 
 @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -22,6 +23,8 @@ import { MainPage } from '../pages';
   animations: [LoginFormInOut, RegisterFormInOut],
 })
 export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
+  ifmJs : any;
+  transactionType : object;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -31,6 +34,8 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     public transactionService: TransactionServiceProvider,
   ) {
     super(navCtrl, navParams);
+    this.ifmJs = AppSettingProvider.IFMJS;
+    this.transactionType = this.ifmJs.transactionTypes;
   }
   @ViewChild(EarthNetMeshComponent) earth: EarthNetMeshComponent;
   @ViewChild(ChainMeshComponent) cmesh: ChainMeshComponent;
@@ -121,30 +126,29 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     return this.allHaveValues(this.formData);
   }
   async doRegister() {
-    debugger
     let txData = {
-      "typeName" : "SEND",
+      // "typeName" : "SEND",
+      "type" : this.transactionType.SEND,
       "amount" : "0.00000001",
-      "secret" : "乳 率 审 抚 省 登 难 田 币 编 纺 飘 设 绒 昏 怎 念 赴 秩 尺 天 硫 浆 品",
-      "publicKey" : "3761a909e935c8417acaee42919df8e83445c9a2d1c7360deb9e8a17487357e5",
-      "recipientId" : "cAs4B1DhDpnKDBbXdCBhbyFjo7np8z6fCR",
+      "secret" : "decorate soap volcano lizard original leaf evolve vibrant protect maple enough together weapon erase orphan eye blue spoil verb more credit garbage barrel age",
+      "publicKey" : "38e70075fc1054bfbb29cb550932a719f88c1c34f2ed897f1ae74a328ab9a21e",
+      "recipientId" : "c2B5D921U9sbLfQCBAWhyFMnJcHEcc3ij2",
       "fee" : "0.00000001"
     }
     this.transactionService.putTransaction(txData);
-    console.log(this.accountService.getAccountByAddress(localStorage.address));
     let a = await this.blockService.getLastBlock();
-    console.log(a);
+    this.blockService.getTopBlocks(true);
     let passphrase = this.loginService.generateNewPassphrase();
     console.log(passphrase);
   }
 
   ngOnInit() {
     console.log('------------------------------------');
-    console.log(this.loginService.getRecentAccount());
-    console.log(this.blockService.getBlockById('05963d5f2b543b2aae053498633b43fb244b1f9c99918e6bb05bd705b3a5427c'));
-    console.log(this.blockService.getLastBlock());
-    console.log(this.blockService.getBlocks());
-
+    // console.log(this.loginService.getRecentAccount());
+    // console.log(this.blockService.getBlockById('05963d5f2b543b2aae053498633b43fb244b1f9c99918e6bb05bd705b3a5427c'));
+    // console.log(this.blockService.getLastBlock());
+    // console.log(this.blockService.getBlocks());
+    // console.log(this.blockService.getTopBlocks(true));
     console.log('---------------------------------------');
   }
 }

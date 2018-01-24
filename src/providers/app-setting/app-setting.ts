@@ -11,7 +11,11 @@ import * as IFM from "ifmchain-ibt";
 export class AppUrl {
   constructor(public path) {}
   toString() {
-    return AppSettingProvider.SERVER_URL + this.path;
+    if(this.path[0] === '/') {
+      return AppSettingProvider.SERVER_URL + this.path;
+    }else {
+      return AppSettingProvider.SERVER_URL + '/api/' + this.path;
+    }
   }
 }
 
