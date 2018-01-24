@@ -309,7 +309,7 @@ export class AppFetchProvider {
     this._timeout_ms = undefined;
     return res;
   }
-  Timeout(timeout_ms?: boolean): AppFetchProvider {
+  timeout(timeout_ms?: boolean): AppFetchProvider {
     this._timeout_ms = timeout_ms;
     return this;
   }
