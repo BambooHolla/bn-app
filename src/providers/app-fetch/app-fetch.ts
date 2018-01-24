@@ -51,7 +51,7 @@ export class AppFetchProvider {
     public http: Http,
     public appSetting: AppSettingProvider,
     public storage: Storage,
-    public translateService : TranslateService,
+    public translateService: TranslateService,
   ) {
     console.log("Hello AppFetchProvider Provider");
     window["FETCH"] = this;
@@ -75,11 +75,14 @@ export class AppFetchProvider {
 
     if (data.success) {
       return data;
-    }else {
+    } else {
       return Promise.reject(
         //返回的错误在reject中统一处理，翻译后返回
-        this.translateService.get(data.error).take(1).toPromise()
-      )
+        this.translateService
+          .get(data.error)
+          .take(1)
+          .toPromise(),
+      );
     }
   }
   private _handleResCatch(res) {
@@ -179,11 +182,16 @@ export class AppFetchProvider {
     options: RequestOptionsArgs = {},
     without_token?: boolean,
     auto_cache?: boolean,
+    timeout_ms?: number,
   ) {
     // 获取外部的默认值并自动重置，一定要触发getter
     const default_auto_cache = this.auto_cache;
     if (auto_cache === undefined) {
       auto_cache = default_auto_cache;
+    }
+    const default_timeout_ms = this.timeout_ms;
+    if (timeout_ms === undefined) {
+      timeout_ms = default_timeout_ms;
     }
     if (auto_cache) {
       const url_info = new URL(url);
@@ -207,7 +215,19 @@ export class AppFetchProvider {
         req = this.http[method](reqInfo.url, body, reqInfo.options);
         break;
     }
-    return this._handlePromise(req.toPromise(), auto_cache, catch_key);
+    var req_promise = req.toPromise();
+    if (isFinite(timeout_ms) && timeout_ms > 0) {
+      req_promise = Promise.race([
+        req_promise,
+        new Promise((resolve, reject) =>
+          setTimeout(() => {
+            // TOOO: 国际化
+            reject(new Error("TIME OUT"));
+          }, timeout_ms),
+        ),
+      ]);
+    }
+    return this._handlePromise(req_promise, auto_cache, catch_key);
   }
   get<T>(
     url: string | AppUrl,
@@ -280,6 +300,17 @@ export class AppFetchProvider {
   }
   autoCache(auto_cache?: boolean): AppFetchProvider {
     this._auto_cache = auto_cache;
+    return this;
+  }
+  private _timeout_ms;
+  private get timeout_ms() {
+    const res = this._timeout_ms;
+    // 一次性取值，取完就不用了
+    this._timeout_ms = undefined;
+    return res;
+  }
+  Timeout(timeout_ms?: boolean): AppFetchProvider {
+    this._timeout_ms = timeout_ms;
     return this;
   }
 }
