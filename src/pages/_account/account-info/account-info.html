@@ -1,12 +1,28 @@
 <ion-header>
-
-  <ion-navbar>
+  <ion-navbar color="white">
     <ion-title>账户信息</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%B4%A6%E6%88%B7%E4%BF%A1%E6%81%AF%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt="">
+<ion-content>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%B4%A6%E6%88%B7%E4%BF%A1%E6%81%AF%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
+  <div class="address-info">
+    <div class="title">
+      <ali-icon name="ifm-account-detail"></ali-icon>
+      账户地址
+    </div>
+    <div class="address-qrcode">
+      <kjua-qrcode [text]="account_info.address" fill="#7b7b7b"></kjua-qrcode>
+    </div>
+    <div class="address-text">{{account_info.address}}</div>
+  </div>
+  <div class="extends-list common-list">
+    <div class="common-item" (click)="routeTo('account-set-username')">
+      <div class="left">
+        设置用户名
+      </div>
+      <div class="right">
+        <ali-icon name="ifm-arrow-to-right"></ali-icon>
+      </div>
+    </div>
+  </div>
 </ion-content>

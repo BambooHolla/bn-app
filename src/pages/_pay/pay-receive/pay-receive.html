@@ -19,7 +19,7 @@
     <div class="title">
       最近
     </div>
-    <ion-content class="log-list">
+    <ion-content #logsContent class="log-list">
       <ion-refresher (ionRefresh)="loadReceiveLogs($event)">
         <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新转入记录……"></ion-refresher-content>
       </ion-refresher>

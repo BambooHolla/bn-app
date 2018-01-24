@@ -1,3 +1,36 @@
 page-account-set-username {
-
+	@extend .header-no-border;
+	.scroll-content {
+		background-color: #eeeeee;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.common-form {
+		margin-top: 1rem;
+		margin-bottom: 2rem;
+	}
+	.fee-info {
+		width: 86%;
+		font-size: 1.2rem;
+		color: #ff605d;
+		ali-icon {
+			font-size: 1.5rem;
+			margin-right: 0.2rem;
+		}
+		.fee {
+			font-size: 1.25rem;
+		}
+	}
+	.submit-button{
+		width: 88%;
+		margin-top: 0.5rem;
+		box-shadow: 0 0.2rem 1rem rgba(99, 99, 99, 0.3);
+		background: linear-gradient(
+			to bottom,
+			#fe595d 0%,
+			#ff7766 50%,
+			#fda171 100%
+		);
+	}
 }
