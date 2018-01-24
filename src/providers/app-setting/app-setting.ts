@@ -11,19 +11,25 @@ import * as IFM from "ifmchain-ibt";
 export class AppUrl {
   constructor(public path) {}
   toString() {
-    return AppSettingProvider.SERVER_URL + this.path;
+    if(this.path[0] === '/') {
+      return AppSettingProvider.SERVER_URL + this.path;
+    }else {
+      return AppSettingProvider.SERVER_URL + '/api/' + this.path;
+    }
   }
 }
 
 @Injectable()
 export class AppSettingProvider {
-  static SERVER_URL = "http://mainnet.ifmchain.org";
+  // static SERVER_URL = "http://mainnet.ifmchain.org";
+  static SERVER_URL = "http://test1.ifmchain.org:6060";
   static SERVER_TIMEOUT = 1000;
-  static NET_VERSION = "mainnet";
-  // static HTTP_PROVIDER = new IFM(AppSettingProvider.NET_VERSION).HttpProvider(
-  //   AppSettingProvider.SERVER_URL,
-  //   AppSettingProvider.SERVER_TIMEOUT
-  // )
+  static NET_VERSION = "testnet";
+  static IFMJS = IFM(AppSettingProvider.NET_VERSION);
+  static HTTP_PROVIDER = new (AppSettingProvider.IFMJS.HttpProvider)(
+    AppSettingProvider.SERVER_URL,
+    AppSettingProvider.SERVER_TIMEOUT
+  );
   APP_URL(path: string) {
     return new AppUrl(path);
   }
@@ -31,7 +37,7 @@ export class AppSettingProvider {
     console.log("Hello AppSettingProvider Provider");
     this.user_token = new BehaviorSubject<string>(this.getUserToken());
   }
-  private USER_TOKEN_STORE_KEY = "BNGJ_USER_LOGIN_TOKEN";
+  private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
   user_token: BehaviorSubject<string>;
   private _token_timeout_ti: any;
   getUserToken() {
