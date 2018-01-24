@@ -3,13 +3,6 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 
-/**
- * Generated class for the AccountAddContactPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage({ name: "account-add-contact" })
 @Component({
 	selector: "page-account-add-contact",
@@ -24,5 +17,8 @@ export class AccountAddContactPage extends SecondLevelPage {
 		super(navCtrl, navParams, true, tabs);
 	}
 
-	
+	account_info = {
+		username: undefined,
+		address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
+	};
 }

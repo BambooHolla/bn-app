@@ -75,7 +75,7 @@ export class MyApp implements OnInit {
 
     loginService.loginStatus.subscribe(isLogined => {
       console.log("isLogined", isLogined);
-      this.openPage(isLogined ? MainPage : LoginPage);
+      this.openPage(isLogined ? MainPage : MainPage);
     });
   }
 

@@ -19,9 +19,9 @@ export const _load_resource_promiseout = new PromiseOut<
 	PIXI.loaders.ResourceDictionary
 >();
 export const FRAMES_NUM = 60;
-for (let i = 0; i < FRAMES_NUM; ++i) {
+for (let i = 0; i < FRAMES_NUM; i+=1) {
 	const i_str = ("00000" + i).substr(-5);
-	loader.add("img" + i_str, "assets/imgs/1200-60/earth-" + i_str + ".png");
+	loader.add("img" + i_str, "assets/imgs/400-60/earth-" + i_str + ".png");
 }
 loader.onError.add(err => _load_resource_promiseout.reject(err));
 loader.load((loader, resources) => {
@@ -82,7 +82,7 @@ export class ChainMeshComponent extends AniBase {
 		const { stage, renderer, ticker } = app;
 		const wh_size = Math.min(renderer.width, renderer.height);
 		const frames_list: PIXI.Texture[] = (window["frames_list"] = []);
-		for (let i = 0; i < FRAMES_NUM; ++i) {
+		for (let i = 0; i < FRAMES_NUM; i+=1) {
 			const i_str = ("00000" + i).substr(-5);
 			const resource = resources["img" + i_str] as PIXI.loaders.Resource;
 			frames_list.push(resource.texture);
@@ -193,6 +193,7 @@ export class ChainMeshComponent extends AniBase {
 				sp.texture = frames_list[cur_frame_num];
 			};
 			ticker.add(loop);
+			// ticker.FPS = 30;
 			await po.promise;
 		} while (true);
 	}

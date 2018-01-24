@@ -15,10 +15,10 @@
     </div>
     <div class="content">
       <div class="left">
-        <div class="fee">
+        <!-- <div class="fee">
           <div class="value">{{unconfirm_block.fee|number:'1.4-8'}}</div>
           <span class="title"><ali-icon name="ifm-wallet"></ali-icon>预期手续费</span>
-        </div>
+        </div> -->
       </div>
       <div class="center">
         <div class="trans_num">
@@ -31,9 +31,12 @@
         </div>
       </div>
       <div class="right">
-        <div class="height">
+        <!-- <div class="height">
           <div class="value">{{unconfirm_block.height}}</div>
           <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>预期高度</span>
+        </div> -->
+        <div class="height">
+          <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block.height}}
         </div>
       </div>
     </div>

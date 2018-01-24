@@ -3,6 +3,34 @@ import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { AniBase } from "../AniBase";
 import * as PIXI from "pixi.js";
 
+export const loader = new PIXI.loaders.Loader();
+export const _load_resource_promiseout = new PromiseOut<
+	PIXI.loaders.ResourceDictionary
+>();
+
+export const _is_load_resource = false;
+export const _coin_assets = [
+	"./assets/img/gold-coin/s36-114.png",
+	"./assets/img/gold-coin/s36-152.png",
+	"./assets/img/gold-coin/s36-177.png",
+	"./assets/img/gold-coin/s36-208.png",
+	"./assets/img/gold-coin/s36-226.png",
+	"./assets/img/gold-coin/s36-79.png",
+	"./assets/img/gold-coin/s36.png",
+].map((url, i) => ({
+	name: "img" + i,
+	url,
+	info: { width: 96, height: 3456, frame_num: 36 },
+}));
+for (const asset of _coin_assets) {
+	loader.add(asset.name, asset.url);
+}
+loader.onLoad.add(() => {
+	_load_resource_promiseout.resolve(loader.resources);
+});
+loader.onError.add(err => _load_resource_promiseout.reject(err));
+loader.load();
+
 @Component({
 	selector: "fall-coins",
 	templateUrl: "fall-coins.html",
@@ -12,19 +40,6 @@ export class FallCoinsComponent extends AniBase {
 	@ViewChild("canvas") canvasRef: ElementRef;
 
 	_init() {
-		if (!this._load_resource_promiseout) {
-			this._load_resource_promiseout = new PromiseOut();
-			for (const asset of this._coin_assets) {
-				PIXI.loader.add(asset.name, asset.url);
-			}
-			PIXI.loader.onLoad.add(() => {
-				this._load_resource_promiseout.resolve(PIXI.loader.resources);
-			});
-			PIXI.loader.onError.add(err =>
-				this._load_resource_promiseout.reject(err),
-			);
-			PIXI.loader.load();
-		}
 		this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
 		return super._init();
 	}
@@ -48,7 +63,6 @@ export class FallCoinsComponent extends AniBase {
 			px,
 			canvasNode,
 			_progress_coins_config,
-			_coin_assets,
 			progress_coins,
 			gravity,
 		} = this;
@@ -59,11 +73,11 @@ export class FallCoinsComponent extends AniBase {
 			width: pt(canvasNode.clientWidth),
 			autoStart: false,
 		}));
-		const resources = await this._load_resource_promiseout.promise;
+		const resources = await _load_resource_promiseout.promise;
 		console.log("resources", resources);
 		// 处理resource成动画帧
 		const frames_list: Array<PIXI.Texture[]> = [];
-		for (let asset of this._coin_assets) {
+		for (let asset of _coin_assets) {
 			const resource = resources[asset.name];
 			const baseTexture = new PIXI.BaseTexture(resource.data);
 			const frames: PIXI.Texture[] = [];
@@ -276,22 +290,4 @@ export class FallCoinsComponent extends AniBase {
 		full_lines: [],
 	};
 	progress_coins = [];
-
-	private _load_resource_promiseout: PromiseOut<
-		PIXI.loaders.ResourceDictionary
-	>;
-	private _is_load_resource = false;
-	private _coin_assets = [
-		"./assets/img/gold-coin/s36-114.png",
-		"./assets/img/gold-coin/s36-152.png",
-		"./assets/img/gold-coin/s36-177.png",
-		"./assets/img/gold-coin/s36-208.png",
-		"./assets/img/gold-coin/s36-226.png",
-		"./assets/img/gold-coin/s36-79.png",
-		"./assets/img/gold-coin/s36.png",
-	].map((url, i) => ({
-		name: "img" + i,
-		url,
-		info: { width: 96, height: 3456, frame_num: 36 },
-	}));
 }

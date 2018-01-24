@@ -7,7 +7,7 @@ page-tab-account {
 	.account-header {
 		flex-grow: 0;
 		flex-shrink: 0;
-		height: 16rem;
+		// height: 16rem;
 		width: 100%;
 		background: linear-gradient(to bottom, #f35454 0%, #ff9d72 100%);
 		color: #fff;
@@ -53,6 +53,7 @@ page-tab-account {
 		}
 		> .assets-info {
 			text-align: center;
+			padding-bottom: 3rem;
 			> .ibt-value {
 				margin-bottom: 1rem;
 				font-size: 2.9rem;

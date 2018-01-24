@@ -103,7 +103,11 @@ page-tab-chain {
 				}
 			}
 			.right {
+				align-self: flex-start;
 				flex: 1;
+				>.height{
+					text-align: right;
+				}
 			}
 		}
 	}
