@@ -43,6 +43,16 @@ export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
 			return;
 		}
 		this.content_shadow_config.is_inited = true;
+		const shadow_box_ele = this._r2.createElement("div");
+		this._r2.setStyle(shadow_box_ele, "position", "absolute");
+		this._r2.setStyle(shadow_box_ele, "width", "100%");
+		this._r2.setStyle(shadow_box_ele, "height", "100%");
+		this._r2.setStyle(shadow_box_ele, "top", "0");
+		this._r2.setStyle(shadow_box_ele, "left", "0");
+		this._r2.setStyle(shadow_box_ele, "z-index", "1000000");
+		this._r2.setStyle(shadow_box_ele, "pointer-events", "none");
+
+		this._r2.appendChild(this.content.getElementRef().nativeElement, shadow_box_ele);
 
 		this._sub = this.content.ionScroll.subscribe(() => {
 			const {
@@ -66,11 +76,12 @@ export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
 			} else {
 				cur_color = from_color.map((from_v, i) => {
 					const to_v = to_color[i];
-					return (to_v - from_v) * process + from_v;
+					const res = (to_v - from_v) * process + from_v;
+					return i === 3 ? res : res | 0;
 				});
 			}
 			this._r2.setStyle(
-				this.content.getScrollElement(),
+				shadow_box_ele,
 				"box-shadow",
 				`${shadow_style} rgba(${cur_color})`,
 			);

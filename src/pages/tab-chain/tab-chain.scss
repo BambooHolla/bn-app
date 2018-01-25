@@ -228,6 +228,7 @@ page-tab-chain {
 			}
 			$chain-item-space: 1.4;
 			> .chain-container {
+				pointer-events: none;
 				z-index: 3;
 				position: absolute;
 				width: 100%;

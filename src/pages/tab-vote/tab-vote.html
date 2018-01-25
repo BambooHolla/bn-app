@@ -39,7 +39,7 @@
           </svg>
         </div>
         <div class="history-logs">
-          <a class="linker" (click)="routeTo('history-logs')">历史挖矿收益</a>
+          <a class="linker" (click)="routeTo('vote-list')">历史挖矿收益</a>
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="extends-panel">
-        <ion-slides class="panel-list">
+        <ion-slides class="panel-list" [initialSlide]="1">
           <ion-slide class="panel-item">
             <div class="income-ranking">
               <div class="header">
