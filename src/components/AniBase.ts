@@ -1,4 +1,8 @@
 import { EventEmitter } from "eventemitter3";
+import * as PIXI from "pixi.js";
+// PIXI.settings.TARGET_FPMS = 0.03;
+const _raf = requestAnimationFrame;
+window["requestAnimationFrame"] = cb => _raf(() => _raf(cb));
 export class AniBase extends EventEmitter {
 	cname = this.constructor.name;
 	constructor() {

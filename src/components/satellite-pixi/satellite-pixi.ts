@@ -112,16 +112,16 @@ export class SatellitePixiComponent extends AniBase {
 
 		stage.addChild(ship);
 
-		// 推进器火焰动画
-		this._loop_runs.push(() => {
-			for (let tail of tails) {
-				if (tail.scale.x > 1) {
-					tail.scale.x -= 0.05;
-				} else {
-					tail.scale.x += Math.random();
-				}
-			}
-		});
+		// // 推进器火焰动画
+		// this._loop_runs.push(() => {
+		// 	for (let tail of tails) {
+		// 		if (tail.scale.x > 1) {
+		// 			tail.scale.x -= 0.05;
+		// 		} else {
+		// 			tail.scale.x += Math.random();
+		// 		}
+		// 	}
+		// });
 
 		// 沿轨道运动动画
 		this._loop_runs.push((t, dif_ms) => {
