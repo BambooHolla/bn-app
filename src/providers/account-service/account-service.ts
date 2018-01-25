@@ -17,9 +17,9 @@ import * as IFM from 'ifmchain-ibt';
 
 @Injectable()
 export class AccountServiceProvider {
-  ifmJs: any;
-  Mnemonic: any;
-  account: any;
+  ifmJs = AppSettingProvider.IFMJS;
+  Mnemonic = this.ifmJs.Mnemonic;
+  account = AppSettingProvider.IFMJS.Api(AppSettingProvider.HTTP_PROVIDER).account;
   userInfo: any;
   md5: any;
   sha: any;
@@ -32,11 +32,8 @@ export class AccountServiceProvider {
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
   ) {
-    this.ifmJs = AppSettingProvider.IFMJS;
-    this.account = AppSettingProvider.IFMJS.Api(AppSettingProvider.HTTP_PROVIDER).account;
-    this.Mnemonic = this.ifmJs.Mnemonic;
-    this.md5 = Crypto.createHash('md5');
-    this.sha = Crypto.createHash('sha256');
+    this.md5 = {};//Crypto.createHash('md5');
+    this.sha = {};//Crypto.createHash('sha256');
     //console.log(this.md5.update('11111').digest('hex'));
   }
 
