@@ -86,6 +86,7 @@ export class AppFetchProvider {
     }
   }
   private _handleResCatch(res) {
+    debugger
     const data = res.json();
     const error = res.json().error;
     debugger;

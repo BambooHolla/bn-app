@@ -12,6 +12,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AlertController } from "ionic-angular";
+import { AccountServiceProvider } from "../account-service/account-service"
 import  * as IFM from 'ifmchain-ibt';
 
 export type UserModel = {
@@ -31,6 +32,7 @@ export class LoginServiceProvider {
     public storage: Storage,
     public alertController: AlertController,
     public translateService : TranslateService,
+    public accountService : AccountServiceProvider,
   ) {
     console.group("Hello LoginServiceProvider Provider");
     window["LoginServiceProviderInstance"] = this;
@@ -117,10 +119,11 @@ export class LoginServiceProvider {
    */
   async getRecentAccount() {
     let address = localStorage.getItem("address");
-
-    let accountInfo = await this.storage.get(address);
-    if(accountInfo && accountInfo.remember) {
-      return accountInfo.password;
+    if(address) {
+      let accountInfo = await this.storage.get(address);
+      if(accountInfo && accountInfo.remember) {
+        return accountInfo.password;
+      }
     }
   }
 
@@ -141,31 +144,17 @@ export class LoginServiceProvider {
    */
   generateNewPassphrase() {
     if(this.translateService.defaultLang && this.translateService.defaultLang === 'en') {
-      return new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH)['phrase'];
+      return this.accountService.generateCryptoPassword({}, 'en');
     }else {
-      return new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
+      return this.accountService.generateCryptoPassword({
+        "phone" : "123",
+        "email" : "aaa@qaa.com",
+        "mark" : "my secret"
+      }, 'cn');
     }
   }
 
-  // registerAccount(
-  //   account: string,
-  //   password: string,
-  //   code: string,
-  //   recommendCode?: string,
-  //   savePwd = true,
-  // ) {
-  //   return this.fetch
-  //     .post(this.REGISTER_URL, {
-  //       phoneNo: account,
-  //       password,
-  //       code,
-  //       recommendCode,
-  //     })
-  //     .then(data => {
-  //       // console.log("注册成功：", data);
-  //       return this.doLogin(account, password);
-  //     });
-  // }
+
   loginOut() {
     this.appSetting.clearUserToken();
     return this.loginerInfo.toPromise();
