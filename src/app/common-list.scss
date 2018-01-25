@@ -16,10 +16,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      flex-shrink: 0;
     }
     >.right {
       margin-left: auto;
       justify-self: flex-end;
+      display: flex;
+      align-items: center;
     }
   }
 }

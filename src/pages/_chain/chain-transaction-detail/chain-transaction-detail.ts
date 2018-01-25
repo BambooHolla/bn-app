@@ -22,5 +22,15 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
 		@Optional() public tabs: TabsPage,
 	) {
 		super(navCtrl, navParams, true, tabs);
+		this.auto_header_shadow_when_scroll_down = true;
 	}
+	transaction = {
+		transfer_id: "qtransfer_idaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
+		block_id: "qblock_idaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
+		amount: Math.random() * 10,
+		fee: Math.random() / 10,
+		transfer_time: new Date(Date.now()-10*24*60*60*1000*Math.random()),
+		sender_address: "qsender_addressaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
+		receiver_address: "qreceiver_addressaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
+	};
 }

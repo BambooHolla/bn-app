@@ -69,7 +69,7 @@
       交易记录
     </div>
     <ion-content #listContent class="list" [ion-content-scroll-shadow]="listContent">
-      <div class="item" *ngFor="let tran of block_info.tran_logs">
+      <div class="item" *ngFor="let tran of block_info.tran_logs" (click)="routeTo('chain-transaction-detail',{id:'qaq'})">
         <div class="left">
           <div class="tran-type">转账 （Gaubee）</div>
           <div class="create-time">

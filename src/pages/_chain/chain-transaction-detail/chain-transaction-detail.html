@@ -1,12 +1,84 @@
 <ion-header>
-
-  <ion-navbar>
+  <ion-navbar color="white">
     <ion-title>交易明细</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E4%BA%A4%E6%98%93%E6%98%8E%E7%BB%86%E7%95%8C%E9%9D%A2.jpg" alt="">
+<ion-content>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E4%BA%A4%E6%98%93%E6%98%8E%E7%BB%86%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
+  <div class="common-list base-info">
+    <div class="common-item transfer-id">
+      <div class="left">
+        交易ID
+      </div>
+      <div class="right">
+        {{transaction.transfer_id}}
+      </div>
+    </div>
+    <div class="common-item block-id">
+      <div class="left">
+        所属区块ID
+      </div>
+      <div class="right">
+        {{transaction.block_id}}
+      </div>
+    </div>
+    <div class="common-item amount">
+      <div class="left">
+        交易数量
+      </div>
+      <div class="right">
+        {{transaction.amount|number:'1.8-8'}}
+        <div class="unit">IBT</div>
+      </div>
+    </div>
+    <div class="common-item fee">
+      <div class="left">
+        手续费
+      </div>
+      <div class="right">
+        {{transaction.fee|number:'1.8-8'}}
+        <div class="unit">IBT</div>
+      </div>
+    </div>
+    <div class="common-item transfer-time">
+      <div class="left">
+        交易时间
+      </div>
+      <div class="right">
+        {{transaction.transfer_time|amDateFormat:"YYYY.MM.DD hh:mm:ss"}}
+      </div>
+    </div>
+    <div class="common-item dapp">
+      <div class="left">
+        所属应用
+      </div>
+      <div class="right">
+        <div class="dapp-name">
+          本能理财
+          <img src="" alt="" class="app-icon">
+        </div>
+        <ali-icon name="ifm-arrow-to-right"></ali-icon>
+      </div>
+    </div>
+    <div class="common-item extend-data">
+      <details>
+        <summary>附加数据</summary>
+        <content>穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷</content>
+      </details>
+    </div>
+  </div>
+  <div class="common-list detail-info">
+    <div class="common-item sender">
+      <div class="left">
+        <div class="title">发送者</div>
+        <div class="content">{{transaction.sender_address}}</div>
+      </div>
+    </div>
+    <div class="common-item receiver">
+      <div class="left">
+        <div class="title">接收者</div>
+        <div class="content">{{transaction.receiver_address}}</div>
+      </div>
+    </div>
+  </div>
 </ion-content>
