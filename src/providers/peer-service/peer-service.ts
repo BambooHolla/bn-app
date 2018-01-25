@@ -17,6 +17,7 @@ import * as IFM from 'ifmchain-ibt';
 */
 @Injectable()
 export class PeerServiceProvider {
+  static DEFAULT_TIMEOUT : 2000;
   ifmJs: any;
   peer: any;
   peerList: any[];
@@ -84,7 +85,7 @@ export class PeerServiceProvider {
       let configPeers: Array<string> = await this.getPeersConfig();
       //异步执行异步的循环
       await Promise.all(configPeers.map(async (peer) => {
-        let data = await this.appFetch.get<{ peers: any[] }>(peer + PEERS_URL);
+        let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ peers: any[] }>(peer + PEERS_URL);
         for (let i of data.peers) {
           //状态为1的才进行插入
           if (i.state === 1) {
@@ -96,10 +97,10 @@ export class PeerServiceProvider {
     }
 
     //获取保存的节点列表中的每一个节点的连接时间和高度
-    //TODO:当n秒时放弃连接
+    //TODO:当TIMEOUT秒时放弃连接
     await Promise.all(peers.map(async (peer) => {
       let startTimestamp = new Date().getTime();
-      let data = await this.appFetch.get<{ height: number }>(peer + PING_URL);
+      let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);
       let endTimestamp = new Date().getTime();
       let during = endTimestamp - startTimestamp;
       peersArray.push({
