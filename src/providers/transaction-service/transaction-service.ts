@@ -6,6 +6,7 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject} from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
+import * as TYPE from "./transaction.types";
 import * as IFM from 'ifmchain-ibt';
 
 /*
@@ -85,7 +86,7 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTransactionById (id: string) {
-    let data = this.transaction.getTransactionById(id);
+    let data : TYPE.transactionsModel = this.transaction.getTransactionById(id);
 
     return data.transactions[0];
   }
