@@ -23,6 +23,27 @@
 		}
 	}
 }
+.clip-text {
+	-webkit-background-clip: text !important;
+	background-clip: text !important;
+	// -webkit-text-fill-color: transparent;
+	color: transparent !important;
+	ali-icon {
+		background-image: inherit;
+		-webkit-background-clip: text !important;
+		background-clip: text !important;
+	}
+	// .ifmicon {
+	// 		// background-image: inherit;
+	// 	&::before {
+	// 		// background-image: inherit;
+	// 		-webkit-background-clip: text !important;
+	// 		background-clip: text !important;
+	// 		// -webkit-text-fill-color: transparent;
+	// 		color: transparent !important;
+	// 	}
+	// }
+}
 
 // $toolbar-ios-height: 1.8rem;
 $navbar-height: 60px;
@@ -49,10 +70,10 @@ ion-navbar.toolbar-ios {
 				display: flex;
 				align-items: flex-end;
 				&::before {
-					font-family:"ifmicon" !important;
+					font-family: "ifmicon" !important;
 					content: "\e607";
 					font-size: 1.6rem;
-					color:#7b7b7b;
+					color: #7b7b7b;
 					transform: rotate(180deg);
 					position: relative;
 					top: -0.2rem;
@@ -65,7 +86,7 @@ ion-navbar.toolbar-ios {
 		color: #7a7a7a;
 	}
 	.bar-buttons {
-		button{
+		button {
 			background-color: transparent;
 			border: none;
 		}
