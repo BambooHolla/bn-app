@@ -56,7 +56,7 @@ export class TabsPage implements OnInit {
       this.tabs.setTabbarHidden(this._hidden_tabs.size > 0);
     }
   }
-  getTabsHidden(key: string) {
+  getTabsHidden() {
     return this._hidden_tabs.size > 0;
   }
 

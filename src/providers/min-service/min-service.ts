@@ -16,7 +16,6 @@ import * as IFM from 'ifmchain-ibt';
 */
 @Injectable()
 export class MinServiceProvider {
-  ifmJs: any;
   constructor(
     public http: HttpClient,
     public appFetch: AppFetchProvider,
@@ -34,9 +33,9 @@ export class MinServiceProvider {
    * @returns {Promise<void>}
    */
   async getRoundRemainTime () {
-    let roundTimeUrl = this.appSetting.APP_URL(ROUND_TIME);
+    let roundTimeUrl = this.appSetting.APP_URL(this.ROUND_TIME);
 
-    let roundTimeData = await this.appFetch.get(roundTimeUrl);
+    let roundTimeData = await this.appFetch.get<any>(roundTimeUrl);
     let roundTime = roundTimeData.nextRoundTime;
 
 

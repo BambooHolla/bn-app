@@ -1,18 +1,30 @@
-<!--
-  Generated template for the VoteIncomeLogsPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
+  <ion-navbar color="white">
     <ion-title>历史挖矿收益表</ion-title>
+    <ion-buttons right>
+      <button (click)="routeTo('search')">
+        <ali-icon name="ifm-sousuo"></ali-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E5%8E%86%E5%8F%B2%E6%8C%96%E7%9F%BF%E6%94%B6%E7%9B%8A%E8%A1%A8.jpg" alt="">
+<ion-content>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E5%8E%86%E5%8F%B2%E6%8C%96%E7%9F%BF%E6%94%B6%E7%9B%8A%E8%A1%A8.jpg" alt=""> -->
+  <ion-refresher (ionRefresh)="loadIncomeLogList($event)">
+    <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新挖矿收益……"></ion-refresher-content>
+  </ion-refresher>
+  <div class="common-list">
+    <div class="common-item" *ngFor="let log of income_log_list">
+      <div class="left">
+        {{log.create_time|amDateFormat:"YYYY.MM.DD"}}
+      </div>
+      <div class="right">
+        <div class="title">+100.23</div>
+        <div class="sub-title">123.13221312</div>
+      </div>
+    </div>
+  </div>
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreIncomeLogList())" [enabled]="income_log_list_config.has_more">
+    <ion-infinite-scroll-content loadingText="加载更多挖矿收益中……"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

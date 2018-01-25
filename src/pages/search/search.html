@@ -5,14 +5,26 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>search</ion-title>
-  </ion-navbar>
-
+  <!-- <ion-navbar>
+    <ion-title>搜索</ion-title>
+  </ion-navbar> -->
+  <div class="search-input-wrapper">
+    <div class="input-container">
+      <ali-icon name="ifm-sousuo" class="left"></ali-icon>
+      <input type="search">
+      <ali-icon name="ifm-reset" class="right"></ali-icon>
+    </div>
+    <button>取消</button>
+  </div>
 </ion-header>
-
-
-<ion-content padding>
-
+<ion-content>
+  <div class="recommend">
+    <div class="hot-search">
+      <div class="title">热门搜索</div>
+      <div class="content">
+        <div class="item">挖矿收益</div>
+        <div class="item">总资产</div>
+      </div>
+    </div>
+  </div>
 </ion-content>

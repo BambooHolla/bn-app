@@ -2,7 +2,7 @@ page-tabs {
 	> .tabs {
 		.tabbar {
 			border-top-color: #d2d2d2;
-			background: #FFF;
+			background: #fff;
 		}
 		&.transparent-bg {
 			.tabbar {
@@ -11,8 +11,28 @@ page-tabs {
 				background: transparent;
 			}
 		}
-		.tab-button.has-title{
-			.tab-button-text{
+		&.force-hidden {
+			.ion-page.show-page {
+				> .content {
+					> .fixed-content,
+					> .scroll-content {
+						margin-bottom: 0 !important;
+					}
+				}
+			}
+		}
+		&:not(.force-hidden){
+			.ion-page.show-page {
+				> .content {
+					> .fixed-content,
+					> .scroll-content {
+						margin-bottom: 49px !important;
+					}
+				}
+			}
+		}
+		.tab-button.has-title {
+			.tab-button-text {
 				color: #7b7b7b;
 				position: relative;
 				top: -0.6rem;
@@ -50,19 +70,19 @@ page-tabs {
 				animation-direction: normal;
 			}
 			@keyframes rotate-tab-bg {
-				0%{
+				0% {
 					transform: rotate(0deg);
 				}
-				50%{
+				50% {
 					opacity: 0.8;
 					transform: scale(1.1) rotate(180deg);
 				}
-				100%{
+				100% {
 					transform: rotate(360deg);
 				}
 			}
-			.tab-button-text{
-				color: #FFF;
+			.tab-button-text {
+				color: #fff;
 			}
 		}
 
@@ -128,7 +148,6 @@ page-tabs {
 				}
 			}
 		}
-
 	}
 	.ion-ios-tab-vote {
 		background: url('data:image/svg+xml;utf8,<svg width="25" height="25"><use xlink:href="#ifm-web__anquan"></use></svg>');

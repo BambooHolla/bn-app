@@ -96,3 +96,13 @@ ion-navbar.toolbar-ios {
 		}
 	}
 }
+
+ion-content {
+	> .scroll-content {
+		ion-content {
+			> .scroll-content {
+				margin-bottom: 0 !important;
+			}
+		}
+	}
+}

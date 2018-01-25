@@ -75,7 +75,7 @@ export function provideSettings(storage: Storage) {
       autoFocusAssist: false,
       statusbarPadding: false,
       swipeBackEnabled: false,
-      tabsHideOnSubPages: true,
+      // tabsHideOnSubPages: true,// 这个有BUG，不要用。
     }),
     ComponentsModule,
   ],

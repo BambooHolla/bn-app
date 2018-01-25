@@ -30,7 +30,10 @@ export class TabVotePage extends FirstLevelPage {
 	};
 	@TabVotePage.didEnter
 	hiddenTabBg() {
-		this.tabs.setBgTransparent(true, this.cname);
+		this.tabs.setBgTransparent(
+			this.page_status === "bootstrap",
+			this.cname,
+		);
 	}
 	@TabVotePage.didLeave
 	recoverTabBg() {

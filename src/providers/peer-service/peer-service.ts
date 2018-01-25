@@ -17,7 +17,7 @@ import * as IFM from 'ifmchain-ibt';
 */
 @Injectable()
 export class PeerServiceProvider {
-  static DEFAULT_TIMEOUT : 2000;
+  static DEFAULT_TIMEOUT = 2000;
   ifmJs: any;
   peer: any;
   peerList: any[];
