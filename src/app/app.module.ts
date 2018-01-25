@@ -95,13 +95,10 @@ export function provideSettings(storage: Storage) {
     AccountServiceProvider,
     BlockServiceProvider,
     TransactionServiceProvider,
-<<<<<<< HEAD
     TransferProvider,
-=======
     PeerServiceProvider,
     ContactServiceProvider,
     MinServiceProvider,
->>>>>>> add many providers and add some packages
   ],
 })
 export class AppModule {}

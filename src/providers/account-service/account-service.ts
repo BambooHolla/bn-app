@@ -7,9 +7,10 @@ import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { Storage } from "@ionic/storage";
-var Crypto = require("crypto");
-var nacl_factory = require("js-nacl");
-var Buff = require("buffer/").Buffer;
+
+var Crypto = {} as any;// = require("crypto");
+var nacl_factory = {} as any;// = require("js-nacl");
+var Buff = {} as any;// = require("buffer/").Buffer;
 import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from 'ifmchain-ibt';
 
@@ -19,7 +20,7 @@ export class AccountServiceProvider {
   ifmJs: any;
   Mnemonic: any;
   account: any;
-  userInfo: object;
+  userInfo: any;
   md5: any;
   sha: any;
   nacl: any;
@@ -91,8 +92,8 @@ export class AccountServiceProvider {
           }
         }
 
-        let data = await this.transactionService.putTransaction(accountData);
-        if(data.success) {
+        let is_success = await this.transactionService.putTransaction(accountData);
+        if (is_success) {
           this.userInfo.username = newUsername;
         }
       }
@@ -179,11 +180,12 @@ export class AccountServiceProvider {
     return secondKeypair;
   }
 
+  transactionType = this.ifmJs.transactionTypes// By Gaubee
   /**
    * 设置支付密码
    * @param {string} secondScret
    */
-  setSecondPassphrase(secondSecret: string, second ?: string) {
+  async setSecondPassphrase(secondSecret: string, second ?: string) {
     debugger
     let txData = {
       "type" : this.transactionType.SIGNATURE,
@@ -199,8 +201,8 @@ export class AccountServiceProvider {
       "fee" : "0.00000001"
     }
 
-    let data = await this.transactionService.putTransaction(txData);
-    if(data.success) {
+    let is_success = await this.transactionService.putTransaction(txData);
+    if(is_success) {
       console.log("secondSign set successfully");
     }
   }

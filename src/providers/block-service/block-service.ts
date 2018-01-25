@@ -100,9 +100,9 @@ export class BlockServiceProvider {
    */
   async searchBlocks(query : string) {
     //如果是纯数字且不是以0开头就查高度
-    if(query.test(/[1-9][0-9]+/)) {
-      query = query * 1;
-      let data = await this.getBlockByHeight(query);
+    if (/[1-9][0-9]+/.test(query)) {
+      const query_num = parseFloat(query) * 1;
+      let data = await this.getBlockByHeight(query_num);
       return data;
     }else {
       //首先查创块人
@@ -127,7 +127,7 @@ export class BlockServiceProvider {
    * @returns {Promise<{}>}
    */
   async getBlocks(query = {}) {
-    let data = {};
+    let data:any = {};
     if(typeof(query) === 'object' || typeof(query) === undefined) {
       data = await this.block.getBlocks(query);
     }

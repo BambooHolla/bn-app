@@ -24,8 +24,8 @@ export class MinServiceProvider {
     public storage : Storage,
     public appSetting : AppSettingProvider
   ) {
-    this.ifmJs = AppSettingProvider.IFMJS;
   }
+  ifmJs = AppSettingProvider.IFMJS;
 
   /**
    * 获取剩余时间

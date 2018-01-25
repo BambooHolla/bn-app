@@ -18,7 +18,7 @@ import * as IFM from 'ifmchain-ibt';
 export class TransactionServiceProvider {
   ifmJs: any;
   transaction: any;
-  transactionTypeCode: object;
+  transactionTypeCode: any;
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -122,7 +122,7 @@ export class TransactionServiceProvider {
           this.ifmJs.transaction.createTransaction(txData, async (err,transaction)=> {
             debugger
             if(err) throw err;
-            let data = await this.fetch.put<T>(transactionUrl, transaction);
+            let data = await this.fetch.put<any>(transactionUrl, transaction);
             if(data.success) {
               return true;
             }else {
@@ -205,9 +205,9 @@ export class TransactionServiceProvider {
    * @returns {Promise<{}>}
    */
   async getTransactions (query = {}) {
-    let data = {};
+    let data:any = {};
     if(typeof(query) === 'object' || typeof(query) === undefined) {
-      data = await this.block.getTransactions(query);
+      // data = await this.block.getTransactions(query);
     }
 
     return data;
