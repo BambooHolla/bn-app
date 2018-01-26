@@ -37,6 +37,9 @@ export class TabChainPage extends FirstLevelPage {
 	}
 
 	@TabChainPage.willEnter
+	@asyncCtrlGenerator.error(() =>
+		TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
+	)
 	@asyncCtrlGenerator.loading(() =>
 		TabChainPage.getTranslate("LOADING_BLOCK_LIST"),
 	)

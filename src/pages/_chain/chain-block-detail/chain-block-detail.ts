@@ -1,14 +1,13 @@
 import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
-
-/**
- * Generated class for the ChainBlockDetailPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {
+	BlockServiceProvider,
+	BlockModel,
+	TransactionModel,
+} from "../../../providers/block-service/block-service";
 
 @IonicPage({ name: "chain-block-detail" })
 @Component({
@@ -20,10 +19,11 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 		public navCtrl: NavController,
 		public navParams: NavParams,
 		@Optional() public tabs: TabsPage,
+		public blockService: BlockServiceProvider,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
-	block_info = {
+	block_info: BlockModel /* = {
 		create_time: new Date(
 			Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000,
 		),
@@ -35,27 +35,53 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 		trans_assets: Math.random() * 10000,
 		fee: 5000 * Math.random() * 0.00000001,
 		tran_logs: [],
-	};
+	}*/;
+	tran_logs: TransactionModel[];
 	tran_logs_config = {
 		page: 1,
 		pageSize: 20,
 		has_more: true,
 	};
 	@ChainBlockDetailPage.willEnter
-	async loadTranLogs() {
-		await new Promise(cb => setTimeout(cb, 1000));
-		this.block_info.tran_logs.push(
-			...Array.from(Array(this.tran_logs_config.pageSize)),
-		);
+	initAndLoadData() {
+		const block: BlockModel = this.navParams.get("block");
+		if (!block) {
+			this.navCtrl.pop();
+		}
+		this.block_info = block;
+		return this.loadTranLogs();
 	}
 
+	@asyncCtrlGenerator.error(() =>
+		ChainBlockDetailPage.getTranslate("LOAD_MORE_TRANSACTION_LIST_ERROR"),
+	)
+	@asyncCtrlGenerator.loading(() =>
+		ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
+	)
+	async loadTranLogs() {
+		const { block_info, tran_logs_config } = this;
+		// 重置page
+		tran_logs_config.page = 1;
+		const transaction_list = await this.blockService.getTransactionsInBlock(
+			block_info.id,
+			tran_logs_config.page,
+			tran_logs_config.pageSize,
+		);
+
+		await new Promise(cb => setTimeout(cb, 1000));
+		this.tran_logs.push(...transaction_list);
+	}
+
+	@asyncCtrlGenerator.error(() =>
+		ChainBlockDetailPage.getTranslate("LOAD_MORE_TRANSACTION_LIST_ERROR"),
+	)
 	async loadMoreTranLogs() {
 		await new Promise(cb => setTimeout(cb, 1000));
-		if (this.block_info.tran_logs.length < 110) {
-			this.block_info.tran_logs.length += this.tran_logs_config.pageSize;
+		if (this.tran_logs.length < 110) {
+			this.tran_logs.length += this.tran_logs_config.pageSize;
 		}
-		if (this.block_info.tran_logs.length >= 110) {
-			this.block_info.tran_logs.length = 110;
+		if (this.tran_logs.length >= 110) {
+			this.tran_logs.length = 110;
 			this.tran_logs_config.has_more = false;
 		}
 	}

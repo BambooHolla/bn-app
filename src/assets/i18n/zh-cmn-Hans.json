@@ -3,7 +3,13 @@
 
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加载区块链中",
+  "LOAD_BLOCK_LIST_ERROR": "加载区块链失败",
   "LOAD_MORE_BLOCK_LIST_ERROR": "加载更多区块失败",
+  
+  "//": "chain-block-detail",
+  "LOAD_TRANSACTION_LIST_ERROR":"加载交易列表失败",
+  "LOADING_TRANSACTION_LIST":"加载交易列表中",
+  "LOAD_MORE_TRANSACTION_LIST_ERROR":"加载更多交易列表失败",
 
   "NAME": "姓名",
   "EMAIL": "邮箱",

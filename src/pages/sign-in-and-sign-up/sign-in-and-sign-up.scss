@@ -23,6 +23,36 @@ page-sign-in-and-sign-up {
     top: 8vh;
     z-index: -1;
   }
+  #bg3 {
+    position: fixed;
+    width: 120vh;
+    height: 120vh;
+    left: calc(50vw - 60vh);
+    top: 7vh;
+    background-image: url("../assets/imgs/net-circle.png");
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    z-index: -1;
+    animation-name: rotate-bg3;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: 280s;
+    mask-image: radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 1) 60%,
+      rgba(0, 0, 0, 1) 100%
+    );
+  }
+  @keyframes rotate-bg3 {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
   .bg-mask {
     // background: radial-gradient(
     //   ellipse at center,
