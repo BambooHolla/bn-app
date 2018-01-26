@@ -46,6 +46,7 @@ export class ContactServiceProvider {
         publicKey: this.accountService.userInfo.publicKey
       }
       let data = await this.fetch.get<any>(getContactUrl, {params: query});
+      data.follower = await this.getContactIgnored(data.follower);
       
       if(data.success) {
         switch(opt) {
@@ -65,9 +66,46 @@ export class ContactServiceProvider {
       console.log(e);
     }
   }
+  
+  /**
+   * 忽略联系人操作
+   * @param 忽略的地址
+   */
+  async ignoreContact(iAddress) {
+    let address = this.accountService.userInfo.address;
+    let ignoreList : any[];
 
-  async ignoreContact() {
-
+    let ignoreBefore = await this.storage.get('c_' + address);
+    if(ignoreBefore) {
+      ignoreList = ignoreBefore;
+      ignoreList.push(iAddress);
+    }else {
+      ignoreList.push(iAddress);
+    }
+    
+    await this.storage.set('c_' + address, ignoreList);
+    return ignoreList;
+  }
+  
+  /**
+   * 忽略用户
+   * @param followerList 
+   */
+  async getContactIgnored(followerList) {
+    let address = this.accountService.userInfo.address;
+    let ignoreList = await this.storage.get('c_' + address);
+  
+    //如果包含忽略的且有未添加的人员
+    if(ignoreList.length > 0 && followerList.length > 0) {
+      for(let i=followerList.length-1; i >= 0; i--) {
+        if(ignoreList.findIndex(followerList[i]) >= 0) {
+          followerList.splice(i, 1);
+        }
+      }
+      return followerList;
+    }else {
+      return followerList;
+    }
   }
   
   /**

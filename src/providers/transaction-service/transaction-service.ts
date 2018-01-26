@@ -6,6 +6,7 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject} from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
+import { AccountServiceProvider } from "../account-service/account-service";
 import * as TYPE from "./transaction.types";
 import * as IFM from 'ifmchain-ibt';
 
@@ -26,13 +27,16 @@ export class TransactionServiceProvider {
     public storage: Storage,
     public translateService: TranslateService,
     public alertController: AlertController,
-    public fetch : AppFetchProvider
+    public fetch : AppFetchProvider,
+    public accountService: AccountServiceProvider,
   ) {
     console.log('Hello TransactionServiceProvider Provider');
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transaction = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).transaction;
     this.transactionTypeCode = this.ifmJs.transactionTypes;
   }
+
+  readonly UNCONFIRMED = '/api/transactions/unconfirmed';
 
   getTransactionLink (type) {
       switch (type) {
@@ -108,31 +112,35 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     try {
-      if(this.validateTxdata(txData)) {
-        //获取url，获取类型
-        let transactionUrl = this.appSetting.APP_URL(this.getTransactionLink(txData.type)).toString();
-        console.log(transactionUrl);
-        // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
-        //获取时间戳
-        let timestampRes = await this.getTimestamp();
-        if(timestampRes.success) {
-          //时间戳加入转账对象
-          txData.timestamp = timestampRes.timestamp;
-          //生成转账        await上层包裹的函数需要async
-          debugger
-          this.ifmJs.transaction.createTransaction(txData, async (err,transaction)=> {
+      if(this.accountService.balance > 0) {
+        if(this.validateTxdata(txData)) {
+          //获取url，获取类型
+          let transactionUrl = this.appSetting.APP_URL(this.getTransactionLink(txData.type)).toString();
+          console.log(transactionUrl);
+          // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
+          //获取时间戳
+          let timestampRes = await this.getTimestamp();
+          if(timestampRes.success) {
+            //时间戳加入转账对象
+            txData.timestamp = timestampRes.timestamp;
+            //生成转账        await上层包裹的函数需要async
             debugger
-            if(err) throw err;
-            let data = await this.fetch.put<any>(transactionUrl, transaction);
-            if(data.success) {
-              return true;
-            }else {
-              throw data.error;
-            }
-          })
+            this.ifmJs.transaction.createTransaction(txData, async (err,transaction)=> {
+              debugger
+              if(err) throw err;
+              let data = await this.fetch.put<any>(transactionUrl, transaction);
+              if(data.success) {
+                return true;
+              }else {
+                throw data.error;
+              }
+            })
+          }
+        }else {
+          throw "validate error";
         }
       }else {
-        throw "validate error";
+        throw "not enough balance";
       }
     }catch(e) {
       let alert = this.alertController.create({
@@ -212,6 +220,25 @@ export class TransactionServiceProvider {
     }
 
     return data;
+  }
+  
+  /**
+   * 获取未确认交易
+   */
+  async getUnconfirmed(page = 1, limit = 10) {
+    let unconfirmedUrl = this.appSetting.APP_URL(this.UNCONFIRMED);
+    let query:any;
+    query.address = this.accountService.userInfo.address;
+    query.senderPublicKey = this.accountService.userInfo.publicKey;
+    query.offset = (page-1) * limit;
+    query.limit = limit;
+    
+    let data = await this.fetch.get<any>(unconfirmedUrl, {params: query});
+    if(data.success) {
+      return data.transactions;
+    }else {
+      console.log("get unconfirmed error");
+    }
   }
 
 }

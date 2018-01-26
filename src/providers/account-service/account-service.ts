@@ -26,6 +26,8 @@ export class AccountServiceProvider {
   md5: any;
   sha: any;
   nacl: any;
+  fee: any;
+  balance: any;
   constructor(
     public http: HttpClient,
     public translateService: TranslateService,
@@ -100,7 +102,9 @@ export class AccountServiceProvider {
   }
 
   async getUserSettingLocal(address: string) {
-    
+    let user:any = this.storage.get(address);
+    this.fee = user.fee;
+    this.balance = user.balance;
   }
 
   async saveUserSettingLocal(userData: any) {
@@ -115,8 +119,10 @@ export class AccountServiceProvider {
       userData.digRound = 0;
       userData.background = false;
       userData.report = false;
+      userData.animate = true;
       userData.digAtWifi = true;
       userData.autoUpdate = false;
+      userData.fee = 0.00000001;
       userData.language = 'cn';
       this.storage.set(userData.address, userData);
     }
