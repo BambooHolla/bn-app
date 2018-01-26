@@ -116,6 +116,7 @@ page-vote-delegate-detail {
 			flex-grow: 0;
 			display: flex;
 			justify-content: space-around;
+			font-size: 1.3rem;
 			> .item {
 				display: flex;
 				flex-direction: column;
@@ -138,12 +139,13 @@ page-vote-delegate-detail {
 				margin-bottom: 0.2rem;
 			}
 		}
-		>ion-content{
+		> ion-content {
 			width: 100%;
 			flex-shrink: 1;
 			flex-grow: 1;
-			>.scroll-content{
-
+			> .scroll-content {
+				border-top: none;
+				background-color: #eeeeee;
 			}
 		}
 	}

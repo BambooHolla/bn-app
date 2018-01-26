@@ -25,6 +25,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
 			address: "aFJe90Uwc4SsmKI122fmKI122f90faOKJFES90faOKJFESIOe",
 			get_vote_rate: Math.random() * 100,
 		};
+		await this.loadBlockList();
 	}
 
 	block_list: any[];
@@ -51,7 +52,8 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
 				trans_num: (Math.random() * 5000) | 0,
 				trans_assets: Math.random() * 10000,
 				fee: 5000 * Math.random() * 0.00000001,
-				tran_logs: Array.from(Array(Math.random() * 100)),
+				tran_logs: Array.from(Array((Math.random() * 100) | 0)),
+				block_size: Math.random() * 10,
 			};
 		});
 		if (refresher) {
@@ -77,7 +79,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
 					trans_num: (Math.random() * 5000) | 0,
 					trans_assets: Math.random() * 10000,
 					fee: 5000 * Math.random() * 0.00000001,
-					tran_logs: Array.from(Array(Math.random() * 100)),
+					tran_logs: Array.from(Array((Math.random() * 100) | 0)),
 					block_size: Math.random() * 10,
 				};
 			}),

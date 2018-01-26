@@ -49,7 +49,10 @@
         <div class="title">交易量</div>
       </div>
     </div>
-    <ion-content #blockList [ion-content-scroll-shadow]="blockList" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+    <ion-content #blockList [ion-content-scroll-shadow]="blockList" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[255,133,112,0.3]}">
+      <ion-refresher (ionRefresh)="loadBlockList($event)">
+        <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新打快节点……"></ion-refresher-content>
+      </ion-refresher>
       <div class="common-list">
         <div class="common-item row" *ngFor="let block of block_list">
           <div class="item">
@@ -62,13 +65,16 @@
             {{block.height}}
           </div>
           <div class="item">
-            {{block.size|number:"1.2-2"}}
+            {{block.block_size|number:"1.2-2"}}
           </div>
           <div class="item">
             {{block.tran_logs.length}}
           </div>
         </div>
       </div>
+      <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreBlockList())" [enabled]="block_list_config.has_more">
+        <ion-infinite-scroll-content loadingText="加载更多打快节点中……"></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </ion-content>
   </div>
 </ion-content>
