@@ -125,26 +125,7 @@ export class AccountServiceProvider {
   //生成密码
   generateCryptoPassword(options : object, lang : string) {
     let password = this.keypair.generatePassPhraseWithInfo(options, lang);
-    // let password = '', cryptoOptStr = '';
-    // //只有带有options时才生成
-    // if(Object.keys(options).length > 0) {
-    //   let optionStr = '';
-    //   for(let i in options) {
-    //     optionStr += options[i];
-    //   }
-    //   cryptoOptStr = this.md5.update(optionStr).digest('hex');
-    //   cryptoOptStr += '@#@';
-    // }
-
-    // //生成密码
-    // if(lang === 'en') {
-    //   password = new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH)['phrase'];
-    // }else {
-    //   password = new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
-    // }
-
-    // //如果包含@#@则是带有options的密码
-    // return cryptoOptStr + password;
+    
     return password;
   }
 
