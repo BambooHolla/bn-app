@@ -70,7 +70,7 @@ export class AccountServiceProvider {
 
   /**
    *  更改用户名
-   *  @param {string} newUsername 更换用户名
+   *  @param {string} newUsername
    */
   async changeUsername(newUsername: string, secret ?: string) {
     if(!!this.userInfo.username) {
@@ -100,36 +100,32 @@ export class AccountServiceProvider {
   }
 
   async getUserSettingLocal(address: string) {
-
+    
   }
 
-  async saveUserSettingLocal(userData: object) {
-
+  async saveUserSettingLocal(userData: any) {
+    let user:any = this.storage.get(userData.address);
+    if(user) {
+      user = {userData};
+    }else {
+      // default
+      userData.fingerPrint = false;
+      userData.sound = false;
+      userData.autoDig = false;
+      userData.digRound = 0;
+      userData.background = false;
+      userData.report = false;
+      userData.digAtWifi = true;
+      userData.autoUpdate = false;
+      userData.language = 'cn';
+      this.storage.set(userData.address, userData);
+    }
   }
 
   //生成密码
   generateCryptoPassword(options : object, lang : string) {
     let password = this.keypair.generatePassPhraseWithInfo(options, lang);
-    // let password = '', cryptoOptStr = '';
-    // //只有带有options时才生成
-    // if(Object.keys(options).length > 0) {
-    //   let optionStr = '';
-    //   for(let i in options) {
-    //     optionStr += options[i];
-    //   }
-    //   cryptoOptStr = this.md5.update(optionStr).digest('hex');
-    //   cryptoOptStr += '@#@';
-    // }
-
-    // //生成密码
-    // if(lang === 'en') {
-    //   password = new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH)['phrase'];
-    // }else {
-    //   password = new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
-    // }
-
-    // //如果包含@#@则是带有options的密码
-    // return cryptoOptStr + password;
+    
     return password;
   }
 
