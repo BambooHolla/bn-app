@@ -8,6 +8,7 @@ import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AppSettingProvider, TB_AB_Generator} from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
+import { UserInfoProvider } from "../user-info/user-info"
 import * as IFM from 'ifmchain-ibt';
 
 
@@ -30,6 +31,7 @@ export class BenefitServiceProvider {
     public appSetting: AppSettingProvider,
     public blockService: BlockServiceProvider,
     public accountService: AccountServiceProvider,
+    public user: UserInfoProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
   }
@@ -64,7 +66,7 @@ export class BenefitServiceProvider {
           let query = {
             limit : blockBetween,
             orderBy: 'md_timestamp:desc',
-            address: this.accountService.userInfo.address
+            address: this.user.userInfo.address
           }
           
           let data = await this.getBenefits(query);
@@ -81,7 +83,7 @@ export class BenefitServiceProvider {
       let query = {
         limit: 57,
         orderBy: 'md_timestamp:desc',
-        address: this.accountService.userInfo.address
+        address: this.user.userInfo.address
       }
       this.benefitBlockHeight = lastBlockRes;
       let benefitData = this.getBenefits(query);
@@ -119,7 +121,7 @@ export class BenefitServiceProvider {
       let query = {
         offset : (page-1) * limit,
         limit: limit,
-        address: this.accountService.userInfo.address      
+        address: this.user.userInfo.address      
       }
   
       let data = await this.getBenefits(query);

@@ -10,5 +10,6 @@ import { AccountServiceProvider } from "../account-service/account-service";
 */
 @Injectable()
 export class UserInfoProvider {
+  userInfo: any;
 	constructor(public accountService: AccountServiceProvider) {}
 }
