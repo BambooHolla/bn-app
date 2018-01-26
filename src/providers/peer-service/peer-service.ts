@@ -25,7 +25,7 @@ export class PeerServiceProvider {
     public http: HttpClient,
     public storage: Storage,
     public appSetting: AppSettingProvider,
-    public appFetch: AppFetchProvider,
+    public fetch: AppFetchProvider,
     public blockService: BlockServiceProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
@@ -87,7 +87,7 @@ export class PeerServiceProvider {
       let configPeers: Array<string> = await this.getPeersConfig();
       //异步执行异步的循环
       await Promise.all(configPeers.map(async (peer) => {
-        let data = await this.appFetch.get<{ peers: any[] }>(peer + this.PEERS_URL);
+        let data = await this.fetch.get<{ peers: any[] }>(peer + this.PEERS_URL);
         for (let i of data.peers) {
           if (i.state == 2) {
             peers.unshift(i.ip + ':' + i.port);
@@ -105,7 +105,7 @@ export class PeerServiceProvider {
     //TODO:当TIMEOUT秒时放弃连接
     await Promise.all(peers.map(async (peer) => {
       let startTimestamp = new Date().getTime();
-      let data = await this.appFetch.get<{ height: number }>(peer + this.PING_URL);
+      let data = await this.fetch.get<{ height: number }>(peer + this.PING_URL);
       // let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);      
       let endTimestamp = new Date().getTime();
       let during = endTimestamp - startTimestamp;
@@ -131,11 +131,29 @@ export class PeerServiceProvider {
   }
 
   async savePeersLocal(peers: Array<string>) {
-
+    
   }
+  
+  /**
+   * 获取节点的同步状态
+   * return 1 -- 未同步，最新
+   * return number--同步状态，小数返回两位
+   * return -1 -- 同步错误
+   */
+  async getPeerSync(host ?: string) {
+    let peerSyncUrl = host ? host + this.PEER_SYNC : this.appSetting.APP_URL(this.PEER_SYNC);
 
-  async getPeerSync() {
-
+    let data = await this.fetch.get<any>(peerSyncUrl);
+    if(data.success) {
+      if(data.sync == false) {
+        return 1;
+      }else {
+        return (1-(data.blocks/data.height)).toFixed(2);
+      }
+    }else {
+      console.log("get peer sync error");
+      return -1;
+    }
   }
 
   async getPeersLocal() {
