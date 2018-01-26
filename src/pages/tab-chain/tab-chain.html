@@ -67,7 +67,7 @@
           <div class="value">{{block.totalFee/1e8|number:'1.4-8'}}</div>
         </div>
       </div>
-      <div class="footer" (click)="routeTo('chain-block-detail')">
+      <div class="footer" (click)="routeTo('chain-block-detail',{block:block})">
         查看区块
         <ali-icon name="ifm-chain-right-arrow"></ali-icon>
       </div>

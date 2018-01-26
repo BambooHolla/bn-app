@@ -254,7 +254,7 @@ export class BlockServiceProvider {
    * @param page 
    * @param limit 
    */
-  async getTransactionsInBlock(blockId, page?: 1, limit?: 10) {
+  async getTransactionsInBlock(blockId, page = 1, limit = 10):Promise<TYPE.TransactionModel[]> {
     let query = {
       blockId: blockId,
       offset: (page - 1) * limit,

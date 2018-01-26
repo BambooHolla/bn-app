@@ -17,3 +17,4 @@ export type BlockModel = {
 	confirmations: string;
 	totalForged: string;
 };
+export type TransactionModel = {}

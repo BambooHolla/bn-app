@@ -5,7 +5,8 @@
     <h1 class="title">IFMCHAIN</h1>
     <div class="bg-mask"></div>
     <!-- <earth-net-mesh id="bg"></earth-net-mesh> -->
-    <chain-mesh id="bg2" [auto-start]="true"></chain-mesh>
+    <!-- <chain-mesh id="bg2" [auto-start]="true"></chain-mesh> -->
+    <div id="bg3"></div>
     <!--     <div class="bg-prefix-wrapper">
       <div class="bg-prefix"></div>
     </div> -->
@@ -59,10 +60,10 @@
       <div class="info">
         <ali-icon name="ifm-info"></ali-icon>
         仅用于生成密码数据不会保存在区块链上</div>
-      <button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">注册</button>
+      <button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">生成新密码</button>
       <div class="goto-container">
         <span class="dot"></span>
-        <button class="goto-button" (click)="gotoLogin()">我已有账户 立即登录</button>
+        <button class="goto-button" (click)="gotoLogin()">我已有密码 立即开始</button>
         <span class="dot"></span>
       </div>
     </div>
