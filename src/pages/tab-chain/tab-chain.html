@@ -17,27 +17,27 @@
     <div class="content">
       <div class="left">
         <!-- <div class="fee">
-          <div class="value">{{unconfirm_block.fee|number:'1.4-8'}}</div>
+          <div class="value">{{unconfirm_block?.fee|number:'1.4-8'}}</div>
           <span class="title"><ali-icon name="ifm-wallet"></ali-icon>预期手续费</span>
         </div> -->
       </div>
       <div class="center">
         <div class="trans_num">
-          <div class="value">{{unconfirm_block.trans_num}}</div>
+          <div class="value">{{unconfirm_block?.trans_num}}</div>
           <span class="title"><ali-icon name="ifm-tran"></ali-icon>预期交易量</span>
         </div>
         <div class="reward">
-          <div class="value">{{unconfirm_block.reward|number:'1.4-8'}}</div>
+          <div class="value">{{unconfirm_block?.reward|number:'1.4-8'}}</div>
           <span class="title"><ali-icon name="ifm-reward"></ali-icon>预期奖励</span>
         </div>
       </div>
       <div class="right">
         <!-- <div class="height">
-          <div class="value">{{unconfirm_block.height}}</div>
+          <div class="value">{{unconfirm_block?.height}}</div>
           <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>预期高度</span>
         </div> -->
         <div class="height">
-          <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block.height}}
+          <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block?.height}}
         </div>
       </div>
     </div>
@@ -46,11 +46,11 @@
     <div *ngFor="let block of block_list" class="block-item">
       <div class="header">
         <div class="reward">
-          <div class="value">{{block.reward|number:'1.0-0'}}</div>
+          <div class="value">{{block.reward/1e8|number:'1.0-0'}}</div>
           <span class="title"><ali-icon name="ifm-reward"></ali-icon>区块奖励</span>
         </div>
         <div class="trans_num">
-          <div class="value">{{block.trans_num}}</div>
+          <div class="value">{{block.numberOfTransactions}}</div>
           <span class="title"><ali-icon name="ifm-tran"></ali-icon>交易量</span>
         </div>
       </div>
@@ -64,7 +64,7 @@
         </div>
         <div class="fee">
           <span class="title"><ali-icon name="ifm-wallet"></ali-icon>手续费</span>
-          <div class="value">{{block.fee|number:'1.4-8'}}</div>
+          <div class="value">{{block.totalFee/1e8|number:'1.4-8'}}</div>
         </div>
       </div>
       <div class="footer" (click)="routeTo('chain-block-detail')">
@@ -77,4 +77,7 @@
       </div>
     </div>
   </div>
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreBlockList())" [enabled]="block_list_config.has_more">
+    <ion-infinite-scroll-content loadingText="加载更多区块中……"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

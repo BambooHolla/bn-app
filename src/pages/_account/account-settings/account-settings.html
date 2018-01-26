@@ -12,15 +12,15 @@
     </div>
     <div class="item">
       <span class="title">指纹保护</span>
-      <ion-toggle class="left"></ion-toggle>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.open_fingerprint_protection"></ion-toggle>
     </div>
     <div class="item">
       <span class="title">后台挖矿</span>
-      <ion-toggle class="left"></ion-toggle>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.background_mining"></ion-toggle>
     </div>
     <div class="item">
       <span class="title">挖矿收益通知</span>
-      <ion-toggle class="left"></ion-toggle>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_income_notice"></ion-toggle>
     </div>
     <div class="item">
       <span class="title">默认手续费设置</span>
@@ -28,7 +28,11 @@
     </div>
     <div class="item">
       <span class="title">只在wifi时挖矿</span>
-      <ion-toggle class="left"></ion-toggle>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_only_in_wifi"></ion-toggle>
+    </div>
+    <div class="item">
+      <span class="title">动画开关</span>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.animation_switch"></ion-toggle>
     </div>
     <div class="item">
       <span class="title">声音开关</span>

@@ -1,6 +1,10 @@
 {
   "BACK_BUTTON_TEXT": "回退",
 
+  "//": "tab-chain",
+  "LOADING_BLOCK_LIST": "加载区块链中",
+  "LOAD_MORE_BLOCK_LIST_ERROR": "加载更多区块失败",
+
   "NAME": "姓名",
   "EMAIL": "邮箱",
   "USERNAME": "登录名",

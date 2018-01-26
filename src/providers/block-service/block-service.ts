@@ -1,16 +1,19 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 // import { PromisePro } from "../../bnqkl-framework/RxExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import { AppSettingProvider, TB_AB_Generator} from "../app-setting/app-setting";
+import {
+  AppSettingProvider,
+  TB_AB_Generator,
+} from "../app-setting/app-setting";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
-import * as IFM from 'ifmchain-ibt';
-import * as TYPE from './block.types'
-export * from './block.types';
+import * as IFM from "ifmchain-ibt";
+import * as TYPE from "./block.types";
+export * from "./block.types";
 
 @Injectable()
 export class BlockServiceProvider {
@@ -31,24 +34,25 @@ export class BlockServiceProvider {
     console.log(this.block);
     console.groupEnd();
   }
-  readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL("/api/blocks/getLastBlock");
+  readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
+    "/api/blocks/getLastBlock",
+  );
   readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
-
 
   /**
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
   async getLastBlock() {
-    let data : {
-      success ?: boolean,
-      error ?: any,
-      block : any
+    let data: {
+      success?: boolean;
+      error?: any;
+      block: any;
     } = await this.block.getLastBlock();
     //data: {success, block:{id, height, timestamp}}
-    if(data.success) {
+    if (data.success) {
       return data.block;
-    }else {
+    } else {
       return {} as object;
     }
   }
@@ -58,16 +62,16 @@ export class BlockServiceProvider {
    * @param {string} blockId
    * @returns {Promise<any>}
    */
-  async getBlockById(blockId : string) {
-    let data : {
-      success : boolean,
-      blocks: Array<object>,
-      count: number
+  async getBlockById(blockId: string) {
+    let data: {
+      success: boolean;
+      blocks: Array<object>;
+      count: number;
     } = await this.block.getBlockById(blockId);
 
-    if(data.success === true && data.count > 0) {
+    if (data.success === true && data.count > 0) {
       return data.blocks;
-    }else {
+    } else {
       return [];
     }
   }
@@ -77,12 +81,12 @@ export class BlockServiceProvider {
    * @param {number} height
    * @returns {Promise<any>}
    */
-  async getBlockByHeight(height : number) {
-    let data = await this.getBlocks({height: height});
+  async getBlockByHeight(height: number) {
+    let data = await this.getBlocks({ height: height });
 
-    if(data.success === true && data.count > 0) {
+    if (data.success === true && data.count > 0) {
       return data.blocks;
-    }else {
+    } else {
       return [];
     }
   }
@@ -93,11 +97,11 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getBlocksByAddress(address: string) {
-    let data = await this.getBlocks({generatorId: address});
+    let data = await this.getBlocks({ generatorId: address });
 
-    if(data.success === true && data.count > 0) {
+    if (data.success === true && data.count > 0) {
       return data.blocks;
-    }else {
+    } else {
       return [];
     }
   }
@@ -107,22 +111,22 @@ export class BlockServiceProvider {
    * @param {string} query
    * @returns {Promise<any>}
    */
-  async searchBlocks(query : string) {
+  async searchBlocks(query: string) {
     //如果是纯数字且不是以0开头就查高度
     if (/[1-9][0-9]+/.test(query)) {
       const query_num = parseFloat(query) * 1;
       let data = await this.getBlockByHeight(query_num);
       return data;
-    }else {
+    } else {
       //首先查创块人
       let data1 = await this.getBlocksByAddress(query);
-      if(data1.length > 0) {
+      if (data1.length > 0) {
         return data1;
       }
 
       //不是创块人则搜索ID
       let data2 = await this.getBlockById(query);
-      if(data2.length > 0) {
+      if (data2.length > 0) {
         return data2;
       }
 
@@ -136,8 +140,8 @@ export class BlockServiceProvider {
    * @returns {Promise<{}>}
    */
   async getBlocks(query = {}) {
-    let data:any = {};
-    if(typeof(query) === 'object' || typeof(query) === undefined) {
+    let data: any = {};
+    if (typeof query === "object" || typeof query === undefined) {
       data = await this.block.getBlocks(query);
     }
 
@@ -150,50 +154,54 @@ export class BlockServiceProvider {
    * @param {boolean} increment  是否增量更新
    * @returns {Promise<void>}
    */
-  async getTopBlocks(increment : boolean, amount = 10):Promise<TYPE.BlockModel[]> {
+  async getTopBlocks(
+    increment: boolean,
+    amount = 10,
+  ): Promise<TYPE.BlockModel[]> {
     //增量查询
-    if(increment) {
+    if (increment) {
       let currentBlock = await this.getLastBlock();
       let currentHeight = currentBlock.height;
 
       //有缓存时
-      if(this.blockArray && this.blockArray.length > 0 && this.blockArray.length >= amount) {
-
+      if (
+        this.blockArray &&
+        this.blockArray.length > 0 &&
+        this.blockArray.length >= amount
+      ) {
         //如果缓存高度和当前高度一致返回缓存
-        if(currentHeight === this.blockArray[0].height) {
-          return this.blockArray.slice(0, amount-1);
-        }else {
-
+        if (currentHeight === this.blockArray[0].height) {
+          return this.blockArray.slice(0, amount - 1);
+        } else {
           //如果缓存高度不一致
           let heightBetween = currentHeight - this.blockArray[0].height;
           //缓存高度和当前高度相差太大则重新获取，否则只获取相差的块
-          if(heightBetween > amount) {
+          if (heightBetween > amount) {
             return await this.getTopBlocks(false, amount);
-          }else {
-
+          } else {
             //增量的加入缓存
             let data = await this.getBlocks({
-              "limit" : heightBetween,
-              "orderBy" : "height:desc"
+              limit: heightBetween,
+              orderBy: "height:desc",
             });
             //把数组插入原数组前面
             //Array.prototype.splice然后把指针指向
-            if(data.success) {
+            if (data.success) {
               data.blocks.unshift(data.blocks.length, 0);
               Array.prototype.splice.apply(this.blockArray, data.blocks);
-              return this.blockArray.slice(0, amount-1);
-            }else {
-              return this.blockArray.slice(0, amount-1);
+              return this.blockArray.slice(0, amount - 1);
+            } else {
+              return this.blockArray.slice(0, amount - 1);
             }
           }
         }
-      }else {
+      } else {
         this.getTopBlocks(false, amount);
       }
-    }else {
+    } else {
       let data = await this.getBlocks({
-        "limit" : amount,
-        "orderBy" : "height:desc"
+        limit: amount,
+        orderBy: "height:desc",
       });
       this.blockArray = data.blocks;
       return this.blockArray;
@@ -206,40 +214,37 @@ export class BlockServiceProvider {
    * @param {number} limit
    * @returns {Promise<any>}
    */
-  async getBlocksByPage(page : number, limit = 10) {
-    if(page === 1 && this.blockArray && this.blockArray.length > limit) {
+  async getBlocksByPage(page: number, limit = 10): Promise<TYPE.BlockModel[]> {
+    if (page === 1 && this.blockArray && this.blockArray.length > limit) {
       await this.getTopBlocks(true, limit);
-    }else {
+    } else {
       let data = await this.getBlocks({
-        "offset" : (page-1) * limit,
-        "limit" : limit
-      })
-      if(data.success && data.blocks.length > 0) {
+        offset: (page - 1) * limit,
+        limit: limit,
+      });
+      if (data.success && data.blocks.length > 0) {
         return data.blocks;
       }
 
       return [];
     }
   }
-  
+
   /**
    * 获取块中的交易，分页
    * @param blockId 
    * @param page 
    * @param limit 
    */
-  async getTransactionsInBlock(blockId, page ?: 1, limit ?: 10) {
+  async getTransactionsInBlock(blockId, page?: 1, limit?: 10) {
     let query = {
-      blockId : blockId,
-      offset : (page-1) * limit,
-      limit : limit,
-      orderBy : 't_timestamp'
-    }
+      blockId: blockId,
+      offset: (page - 1) * limit,
+      limit: limit,
+      orderBy: "t_timestamp",
+    };
     let data = await this.transactionService.getTransactions(query);
 
     return data.transactions;
   }
-
-  
 }
-

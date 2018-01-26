@@ -68,11 +68,15 @@ export class AniBase extends EventEmitter {
 	pre_t;
 	_loop_runs = [];
 	_loop(t) {
-		for (let fun of this._loop_runs) {
-			fun(t, t - this.pre_t);
-		}
+		const diff_t = t - this.pre_t;
 		this.pre_t = t;
+		this._update(t, diff_t);
 		if (this.is_started) requestAnimationFrame(this._loop);
+	}
+	_update(t, diff_t) {
+		for (let fun of this._loop_runs) {
+			fun(t, diff_t);
+		}
 	}
 	removeLoop(cb: Function) {
 		const index = this._loop_runs.indexOf(cb);

@@ -7,6 +7,9 @@ import {
   Executor,
 } from "../../bnqkl-framework/RxExtends";
 import * as IFM from "ifmchain-ibt";
+import { EventEmitter } from "eventemitter3";
+import { AniBase } from "../../components/AniBase";
+import * as PIXI from "pixi.js";
 
 export class AppUrl {
   constructor(public path) {}
@@ -20,7 +23,7 @@ export class AppUrl {
 }
 
 @Injectable()
-export class AppSettingProvider {
+export class AppSettingProvider extends EventEmitter {
   // static SERVER_URL = "http://mainnet.ifmchain.org";
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
   static SERVER_URL = "http://mainnet.ifmchain.org"; // "http://test1.ifmchain.org:6060";
@@ -34,9 +37,78 @@ export class AppSettingProvider {
   APP_URL(path: string) {
     return new AppUrl(path);
   }
+
+  static SETTING_KEY_PERFIX = "SETTING@";
   constructor(public http: Http) {
+    super();
     console.log("Hello AppSettingProvider Provider");
     this.user_token = new BehaviorSubject<string>(this.getUserToken());
+
+    // 将setting与本地存储进行关联
+    for (let key in this.settings) {
+      const default_value = this.settings[key];
+
+      Object.defineProperty(this.settings, key, {
+        get: () => {
+          const s_key = AppSettingProvider.SETTING_KEY_PERFIX + key;
+          const current_json_value = localStorage.getItem(s_key);
+          let should_write_in = true;
+          let value = default_value;
+          if (typeof current_json_value === "string") {
+            try {
+              value = JSON.parse(current_json_value); //JSON可用
+              should_write_in = false; // 不需要初始化写入
+            } catch (e) {}
+          }
+          if (should_write_in) {
+            localStorage.setItem(s_key, JSON.parse(default_value));
+          }
+          return value;
+        },
+        set: value => {
+          const s_key = AppSettingProvider.SETTING_KEY_PERFIX + key;
+          localStorage.setItem(s_key, JSON.parse(value));
+          this.emit(`changed@setting.${key}`, value);
+          this.emit(`changed@setting`, { key, value });
+        },
+      });
+    }
+
+    // 动画开关对动画的控制
+    let ani_switch = this.settings.animation_switch;
+    this.on("changed@setting.animation_switch", new_v => {
+      ani_switch = new_v;
+    });
+    // 框架内置的AniBase
+    {
+      const _update = AniBase.prototype._update;
+      const _update_key =
+        "_update@" +
+        Math.random()
+          .toString(36)
+          .substr(2);
+      AniBase.prototype[_update_key] = _update;
+      AniBase.prototype._update = function(t, diff_t) {
+        if (ani_switch) {
+          this[_update_key](t, diff_t);
+        }
+      };
+    }
+    // PIXI框架的循环
+    {
+      const _update = PIXI.ticker.Ticker.prototype.update;
+      const _update_key =
+        "_update@" +
+        Math.random()
+          .toString(36)
+          .substr(2);
+      PIXI.ticker.Ticker.prototype[_update_key] = _update;
+      PIXI.ticker.Ticker.prototype.update = function(t) {
+        if (ani_switch) {
+          this[_update_key](t);
+        }
+      };
+    }
   }
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
   user_token: BehaviorSubject<string>;
@@ -75,6 +147,22 @@ export class AppSettingProvider {
   private _setUserToken(token: string) {
     this.user_token.next(this.getUserToken());
   }
+  settings = {
+    /**指纹保护开关*/
+    open_fingerprint_protection: false,
+    /**指纹保护密码*/
+    fingerprint_protection: "",
+    /**后台挖矿*/
+    background_mining: false,
+    /**挖矿收益通知*/
+    mining_income_notice: false,
+    /**默认手续费*/
+    default_fee: 0.00000001,
+    /**只在wifi时挖矿*/
+    mining_only_in_wifi: true,
+    /**动画开关*/
+    animation_switch: true,
+  };
 }
 
 function getQueryVariable(variable) {
