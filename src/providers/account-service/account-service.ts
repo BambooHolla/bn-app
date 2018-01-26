@@ -108,7 +108,7 @@ export class AccountServiceProvider {
   }
 
   async saveUserSettingLocal(userData: any) {
-    let user:any = this.storage.get(userData.address);
+    let user:any = await this.storage.get(userData.address);
     if(user) {
       user = {userData};
     }else {
@@ -124,7 +124,7 @@ export class AccountServiceProvider {
       userData.autoUpdate = false;
       userData.fee = 0.00000001;
       userData.language = 'cn';
-      this.storage.set(userData.address, userData);
+      return this.storage.set(userData.address, userData);
     }
   }
 

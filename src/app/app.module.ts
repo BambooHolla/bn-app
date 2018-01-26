@@ -31,6 +31,7 @@ import { PeerServiceProvider } from '../providers/peer-service/peer-service';
 import { ContactServiceProvider } from '../providers/contact-service/contact-service';
 import { MinServiceProvider } from '../providers/min-service/min-service';
 import { BenefitServiceProvider } from '../providers/benefit-service/benefit-service';
+import { UserInfoProvider } from '../providers/user-info/user-info';
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
@@ -102,6 +103,7 @@ export function provideSettings(storage: Storage) {
     ContactServiceProvider,
     MinServiceProvider,
     BenefitServiceProvider,
+    UserInfoProvider,
   ],
 })
 export class AppModule {}
