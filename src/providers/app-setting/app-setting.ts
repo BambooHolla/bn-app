@@ -11,10 +11,10 @@ import * as IFM from "ifmchain-ibt";
 export class AppUrl {
   constructor(public path) {}
   toString() {
-    if(this.path[0] === '/') {
+    if (this.path[0] === "/") {
       return AppSettingProvider.SERVER_URL + this.path;
-    }else {
-      return AppSettingProvider.SERVER_URL + '/api/' + this.path;
+    } else {
+      return AppSettingProvider.SERVER_URL + "/api/" + this.path;
     }
   }
 }
@@ -23,13 +23,13 @@ export class AppUrl {
 export class AppSettingProvider {
   // static SERVER_URL = "http://mainnet.ifmchain.org";
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
-  static SERVER_URL = "http://test1.ifmchain.org:6060";
+  static SERVER_URL = "http://mainnet.ifmchain.org"; // "http://test1.ifmchain.org:6060";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = "testnet";
   static IFMJS = IFM(AppSettingProvider.NET_VERSION);
-  static HTTP_PROVIDER = new (AppSettingProvider.IFMJS.HttpProvider)(
+  static HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,
-    AppSettingProvider.SERVER_TIMEOUT
+    AppSettingProvider.SERVER_TIMEOUT,
   );
   APP_URL(path: string) {
     return new AppUrl(path);
@@ -159,9 +159,7 @@ export function TB_AB_Generator(
         if (!_v) {
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${
-                this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           this.appSetting.user_token.subscribe(token => {
@@ -223,5 +221,3 @@ export function calcExpiryTime(expiry_time: ExpiryTime) {
   }
   return res_time;
 }
-
-

@@ -227,7 +227,7 @@ export class MinServiceProvider {
    */
   getFullTimestamp(timestamp: number) {
     let seed = new Date(Date.UTC(AppSettingProvider.SEED_DATE[0], AppSettingProvider.SEED_DATE[1], AppSettingProvider.SEED_DATE[2], AppSettingProvider.SEED_DATE[3], AppSettingProvider.SEED_DATE[4], AppSettingProvider.SEED_DATE[5], AppSettingProvider.SEED_DATE[6]));
-    let tstamp = parseInt((d.getTime() / 1000).toString());
+    let tstamp = parseInt((Date.now() / 1000).toString());
     let fullTimestamp = (timestamp + tstamp) * 1000;
   
     return fullTimestamp;

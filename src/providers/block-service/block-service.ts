@@ -9,13 +9,9 @@ import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AppSettingProvider, TB_AB_Generator} from "../app-setting/app-setting";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import * as IFM from 'ifmchain-ibt';
+import * as TYPE from './block.types'
+export * from './block.types';
 
-/*
-  Generated class for the BlockServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class BlockServiceProvider {
   ifmJs: any;
@@ -154,7 +150,7 @@ export class BlockServiceProvider {
    * @param {boolean} increment  是否增量更新
    * @returns {Promise<void>}
    */
-  async getTopBlocks(increment : boolean, amount = 10) {
+  async getTopBlocks(increment : boolean, amount = 10):Promise<TYPE.BlockModel[]> {
     //增量查询
     if(increment) {
       let currentBlock = await this.getLastBlock();
@@ -165,7 +161,7 @@ export class BlockServiceProvider {
 
         //如果缓存高度和当前高度一致返回缓存
         if(currentHeight === this.blockArray[0].height) {
-          return {"blocks" : this.blockArray.slice(0, amount-1)};
+          return this.blockArray.slice(0, amount-1);
         }else {
 
           //如果缓存高度不一致
@@ -200,7 +196,7 @@ export class BlockServiceProvider {
         "orderBy" : "height:desc"
       });
       this.blockArray = data.blocks;
-      return data;
+      return this.blockArray;
     }
   }
 
