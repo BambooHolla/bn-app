@@ -8,9 +8,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { Storage } from "@ionic/storage";
 
-var Crypto = {} as any;// = require("crypto");
-var nacl_factory = {} as any;// = require("js-nacl");
-var Buff = {} as any;// = require("buffer/").Buffer;
 import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from 'ifmchain-ibt';
 
@@ -20,7 +17,12 @@ export class AccountServiceProvider {
   ifmJs = AppSettingProvider.IFMJS;
   Mnemonic = this.ifmJs.Mnemonic;
   account = AppSettingProvider.IFMJS.Api(AppSettingProvider.HTTP_PROVIDER).account;
+  transactionType = this.ifmJs.transactionTypes;
+  nacl_factory = this.ifmJs.nacl_factory;
+  Buff = this.ifmJs.Buff;
+  keypair = this.ifmJs.keypairHelper;
   userInfo: any;
+  Crypto = this.ifmJs.crypto;
   md5: any;
   sha: any;
   nacl: any;
@@ -32,9 +34,9 @@ export class AccountServiceProvider {
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
   ) {
-    this.md5 = {};//Crypto.createHash('md5');
-    this.sha = {};//Crypto.createHash('sha256');
-    //console.log(this.md5.update('11111').digest('hex'));
+    console.log(this.Crypto);
+    this.md5 = this.Crypto.createHash('md5');//Crypto.createHash('md5');
+    this.sha = this.Crypto.createHash('sha256');//Crypto.createHash('sha256');
   }
 
   /**
@@ -47,7 +49,7 @@ export class AccountServiceProvider {
     if(data.success) {
       return data;
     }else {
-      return {};
+      return {} as Object;
     }
   }
 
@@ -62,7 +64,7 @@ export class AccountServiceProvider {
     if(data.success && data.account.address) {
       return data.account;
     }else {
-      return false;
+      return {} as Object;
     }
   }
 
@@ -107,26 +109,28 @@ export class AccountServiceProvider {
 
   //生成密码
   generateCryptoPassword(options : object, lang : string) {
-    let password = '', cryptoOptStr = '';
-    //只有带有options时才生成
-    if(Object.keys(options).length > 0) {
-      let optionStr = '';
-      for(let i in options) {
-        optionStr += options[i];
-      }
-      cryptoOptStr = this.md5.update(optionStr).digest('hex');
-      cryptoOptStr += '@#@';
-    }
+    let password = this.keypair.generatePassPhraseWithInfo(options, lang);
+    // let password = '', cryptoOptStr = '';
+    // //只有带有options时才生成
+    // if(Object.keys(options).length > 0) {
+    //   let optionStr = '';
+    //   for(let i in options) {
+    //     optionStr += options[i];
+    //   }
+    //   cryptoOptStr = this.md5.update(optionStr).digest('hex');
+    //   cryptoOptStr += '@#@';
+    // }
 
-    //生成密码
-    if(lang === 'en') {
-      password = new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH)['phrase'];
-    }else {
-      password = new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
-    }
+    // //生成密码
+    // if(lang === 'en') {
+    //   password = new this.Mnemonic(256, this.Mnemonic.Words.ENGLISH)['phrase'];
+    // }else {
+    //   password = new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
+    // }
 
-    //如果包含@#@则是带有options的密码
-    return cryptoOptStr + password;
+    // //如果包含@#@则是带有options的密码
+    // return cryptoOptStr + password;
+    return password;
   }
 
   //验证支付密码
@@ -135,7 +139,7 @@ export class AccountServiceProvider {
       let secondPublic = this.formatSecondPassphrase(this.userInfo.publicKey, secondPassphrase);
       console.log(secondPublic.publicKey.toString('hex'));
       if(secondPublic.publicKey.toString('hex') === this.userInfo.secondPublicKey) {
-        return true;
+        return true; 
       }else {
         return false;
       }
@@ -154,7 +158,7 @@ export class AccountServiceProvider {
     debugger
     //设置
     if(!this.nacl) {
-      nacl_factory.instantiate(function(tmpNacl) {
+      this.nacl_factory.instantiate(function(tmpNacl) {
         this.nacl = tmpNacl;
       })
     }
@@ -172,12 +176,12 @@ export class AccountServiceProvider {
     let md5Second = publicKey.toString().trim() + '-' + this.md5.update(secondSecret.toString().trim()).digest('hex');
     let secondHash = this.sha.update(md5Second, 'utf-8').digest();
     let secondKeypair = this.nacl.crypto_sign_seed_keypair(secondHash);
-    secondKeypair.publicKey = Buff.from(secondKeypair.signPK);
-    secondKeypair.privateKey = Buff.from(secondKeypair.signSK);
+    secondKeypair.publicKey = this.Buff.from(secondKeypair.signPK);
+    secondKeypair.privateKey = this.Buff.from(secondKeypair.signSK);
     return secondKeypair;
   }
 
-  transactionType = this.ifmJs.transactionTypes// By Gaubee
+  
   /**
    * 设置支付密码
    * @param {string} secondScret

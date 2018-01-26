@@ -140,7 +140,7 @@ export class BlockServiceProvider {
     if(typeof(query) === 'object' || typeof(query) === undefined) {
       data = await this.block.getBlocks(query);
     }
-
+    
     return data;
   }
 
@@ -199,6 +199,20 @@ export class BlockServiceProvider {
       return this.blockArray;
     }
   }
+  
+  /**
+   * 获取当前的块是否延迟
+   * @param list 
+   */
+  blockListHandle(list:any[]) {
+    for(let i = 0; i<list.length-1; i++) {
+      if(list[i].timestamp > list[i+1].timestamp + 128) {
+        list[i].delay = true;
+      }else {
+        list[i].delay = false;
+      }
+    }
+  }
 
   /**
    * 分页查询块数据，页数从1开始
@@ -206,14 +220,18 @@ export class BlockServiceProvider {
    * @param {number} limit
    * @returns {Promise<any>}
    */
-  async getBlocksByPage(page : number, limit = 10) {
+  async getBlocksByPage(page : number, limit = 10, sort = true) {
     if(page === 1 && this.blockArray && this.blockArray.length > limit) {
       await this.getTopBlocks(true, limit);
     }else {
-      let data = await this.getBlocks({
-        "offset" : (page-1) * limit,
-        "limit" : limit
-      })
+      let query = {
+        offset : (page-1) * limit,
+        limit : limit,
+        orderBy : sort ? 'height:asc' : 'height:desc'
+      }
+
+      let data = await this.getBlocks(query);
+      
       if(data.success && data.blocks.length > 0) {
         return data.blocks;
       }
