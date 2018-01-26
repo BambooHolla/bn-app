@@ -18,14 +18,11 @@ import * as IFM from 'ifmchain-ibt';
 */
 @Injectable()
 export class MinServiceProvider {
-<<<<<<< HEAD
-=======
   ifmJs: any;
   transactionTypes: any;
   allVoters : string[];
   allMiners : string[];
   allMinersRound: number;
->>>>>>> add some pipe and providers
   constructor(
     public http: HttpClient,
     public fetch: AppFetchProvider,
