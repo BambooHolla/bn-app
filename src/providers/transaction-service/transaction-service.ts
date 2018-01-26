@@ -6,7 +6,6 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject} from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
-import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./transaction.types";
 import * as IFM from 'ifmchain-ibt';
@@ -29,7 +28,6 @@ export class TransactionServiceProvider {
     public translateService: TranslateService,
     public alertController: AlertController,
     public fetch : AppFetchProvider,
-    public accountService: AccountServiceProvider,
     public user: UserInfoProvider,
   ) {
     console.log('Hello TransactionServiceProvider Provider');
@@ -114,7 +112,7 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     try {
-      if(this.accountService.balance > 0) {
+      if(this.user.userInfo.balance > 0) {
         if(this.validateTxdata(txData)) {
           //获取url，获取类型
           let transactionUrl = this.appSetting.APP_URL(this.getTransactionLink(txData.type)).toString();
