@@ -42,6 +42,7 @@ export class MinServiceProvider {
   readonly VOTE_FOR_ME = '/api/accounts/voteForDelegate';
   readonly FORGE_STATUS = '/api/delegates/forging/status';
   readonly MY_VOTES = '/api/delegates';
+  readonly MY_RANK = '/api/accounts/profitRanking';
 
   /**
    * 获取本轮剩余时间
@@ -159,7 +160,7 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllVotersForMe(page ?: 1, limit ?: 10) {
+  async getAllVotersForMe(page = 1, limit = 10) {
     let voteForMeUrl = this.appSetting.APP_URL(this.VOTE_FOR_ME);
 
 
@@ -172,9 +173,27 @@ export class MinServiceProvider {
       return this.allVoters;
     }
   }
+  
+  /**
+   * 获取我投的票
+   * @param page 
+   * @param limit 
+   */
+  async getMyVotes(page = 1, limit = 10) {
+    let myVotesUrl = this.appSetting.APP_URL(this.MY_VOTES);
+    
+    let query = {
+      address : this.accountService.userInfo.address,
+      offset : (page-1)*limit,
+      limit: limit
+    }
 
-  async getMyVotes(page ?: 1, limit ?: 10) {
-
+    let data:any = this.fetch.get<any>(myVotesUrl, {params: query});
+    if(data.success) {
+      return data.delegates;
+    }else {
+      console.log("get my votes error");
+    }
   }
 
   /**
@@ -184,7 +203,7 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllMiners(page ?: 1, limit ?: 10) {
+  async getAllMiners(page = 1, limit = 10) {
     let myVotesUrl = this.appSetting.APP_URL(this.MY_VOTES);
 
     let currentBlock = await this.blockService.getLastBlock();
@@ -206,9 +225,31 @@ export class MinServiceProvider {
       return this.allMiners.slice((page-1)*limit, limit);
     }
   }
+  
+  /**
+   * 获取候选矿工
+   * @param page 
+   * @param limit 
+   */
+  async getAllMinersOutside(page = 1, limit = 10) {
+    let minersUrl = this.appSetting.APP_URL(this.MY_VOTES);
+    
+    let query = {
+      offset : 57 + (page-1) * limit,
+      limit : limit,
+      orderBy : 'rate:asc'
+    }
+    let data = await this.fetch.get<any>(minersUrl, {params: query});
+
+    if(data.success) {
+      return data.delegates;
+    }else {
+      console.log("get all miners outside error");
+    }
+  }
 
   /**
-   * 返回是否在挖矿
+   * 返回是否在挖矿(打块)
    * @returns {Promise<void>}
    */
   async getForgeStaus() {
@@ -231,6 +272,22 @@ export class MinServiceProvider {
     let fullTimestamp = (timestamp + tstamp) * 1000;
   
     return fullTimestamp;
+  }
+  
+  /**
+   * 获取我在上一轮的排名
+   */
+  async getMyRank() {
+    let myRankUrl = this.appSetting.APP_URL(this.MY_RANK);
+    
+    let query = {
+      address: this.accountService.userInfo.address
+    }
+    let data = await this.fetch.get<any>(myRankUrl, {params: query});
+
+    if(data.success) {
+      return data.ranks;
+    }
   }
 
 }
