@@ -1,12 +1,74 @@
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>{{delegate_info?.username}}委托人</ion-title>
+  <ion-navbar color="transparent">
+    <ion-title>{{delegate_info?.username||'委托人'}}</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E5%A7%94%E6%89%98%E4%BA%BA.jpg" alt="">
+<ion-content>
+  <div class="bg"></div>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E5%A7%94%E6%89%98%E4%BA%BA.jpg" alt=""> -->
+  <div class="base-info">
+    <div class="left">
+      <div class="cur-trans-num">26</div>
+      <div class="online-rate">
+        <div class="label">在线率</div>80%</div>
+    </div>
+    <div class="right">
+      <div class="in-vote-rate">
+        <div class="label">
+          <ali-icon name="ifm-fapiao"></ali-icon>
+          得票率
+        </div>
+        <div class="value">32</div>
+      </div>
+    </div>
+  </div>
+  <div class="address">
+    <ali-icon name="ifm-account-detail"></ali-icon>
+    CSafasafsdfasdgklnfadlkjfaioodnvasindfioadsfhas
+  </div>
+  <div class="block-content">
+    <div class="table-header row">
+      <div class="item">
+        <ali-icon name="ifm-clock"></ali-icon>
+        <div class="title">时间</div>
+      </div>
+      <div class="item">
+        <ali-icon name="ifm-reward"></ali-icon>
+        <div class="title">区块奖励</div>
+      </div>
+      <div class="item">
+        <ali-icon name="ifm-resize-height"></ali-icon>
+        <div class="title">高度</div>
+      </div>
+      <div class="item">
+        <ali-icon name="ifm-qukuaiguanli"></ali-icon>
+        <div class="title">区块大小</div>
+      </div>
+      <div class="item">
+        <ali-icon name="ifm-tran"></ali-icon>
+        <div class="title">交易量</div>
+      </div>
+    </div>
+    <ion-content #blockList [ion-content-scroll-shadow]="blockList" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+      <div class="common-list">
+        <div class="common-item row" *ngFor="let block of block_list">
+          <div class="item">
+            {{block.create_time|amDateFormat:"YYYY.MM.DD"}}
+          </div>
+          <div class="item">
+            {{block.reward|number:"1.0-0"}}
+          </div>
+          <div class="item">
+            {{block.height}}
+          </div>
+          <div class="item">
+            {{block.size|number:"1.2-2"}}
+          </div>
+          <div class="item">
+            {{block.tran_logs.length}}
+          </div>
+        </div>
+      </div>
+    </ion-content>
+  </div>
 </ion-content>
