@@ -3,8 +3,8 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
-import * as Instascan from "instascan";
-window["Instascan"] = Instascan;
+// import * as Instascan from "instascan";
+// window["Instascan"] = Instascan;
 
 /**
  * Generated class for the AccountScanAddContactPage page.
@@ -25,8 +25,8 @@ export class AccountScanAddContactPage extends SecondLevelPage {
 		@Optional() public tabs: TabsPage,
 	) {
 		super(navCtrl, navParams, true, tabs);
-		window["Instascan"] = Instascan;
-		alert(Instascan);
+		// window["Instascan"] = Instascan;
+		// alert(Instascan);
 	}
 	innerHeight = window.innerHeight;
 	innerWidth = window.innerWidth;

@@ -11,7 +11,7 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from 'ifmchain-ibt';
 
-
+// TODO：接入Token管理，将用户相关的数据使用内存进行缓存。改进用户相关的数据请求。@Gaubee
 @Injectable()
 export class AccountServiceProvider {
   ifmJs = AppSettingProvider.IFMJS;
