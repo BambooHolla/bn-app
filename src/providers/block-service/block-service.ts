@@ -7,6 +7,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 // import { PromisePro } from "../../bnqkl-framework/RxExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AppSettingProvider, TB_AB_Generator} from "../app-setting/app-setting";
+import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import * as IFM from 'ifmchain-ibt';
 
 /*
@@ -26,9 +27,9 @@ export class BlockServiceProvider {
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public storage: Storage,
-    public translateService: TranslateService
+    public translateService: TranslateService,
+    public transactionService: TransactionServiceProvider,
   ) {
-    console.log('Hello BlockServiceProvider Provider');
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
     console.log(this.block);
@@ -43,9 +44,17 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getLastBlock() {
-    let data = this.block.getLastBlock();
+    let data : {
+      success ?: boolean,
+      error ?: any,
+      block : any
+    } = await this.block.getLastBlock();
     //data: {success, block:{id, height, timestamp}}
-    return data.block;
+    if(data.success) {
+      return data.block;
+    }else {
+      return {} as object;
+    }
   }
 
   /**
@@ -54,7 +63,11 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId : string) {
-    let data = await this.block.getBlockById(blockId);
+    let data : {
+      success : boolean,
+      blocks: Array<object>,
+      count: number
+    } = await this.block.getBlockById(blockId);
 
     if(data.success === true && data.count > 0) {
       return data.blocks;
@@ -145,7 +158,7 @@ export class BlockServiceProvider {
     //增量查询
     if(increment) {
       let currentBlock = await this.getLastBlock();
-      let currentHeight = currentBlock.block.height;
+      let currentHeight = currentBlock.height;
 
       //有缓存时
       if(this.blockArray && this.blockArray.length > 0 && this.blockArray.length >= amount) {
@@ -156,7 +169,7 @@ export class BlockServiceProvider {
         }else {
 
           //如果缓存高度不一致
-          var heightBetween = currentHeight - this.blockArray[0].height;
+          let heightBetween = currentHeight - this.blockArray[0].height;
           //缓存高度和当前高度相差太大则重新获取，否则只获取相差的块
           if(heightBetween > amount) {
             return await this.getTopBlocks(false, amount);
@@ -192,13 +205,13 @@ export class BlockServiceProvider {
   }
 
   /**
-   * 分页查询数据，页数从1开始
+   * 分页查询块数据，页数从1开始
    * @param {number} page 从1开始
    * @param {number} limit
    * @returns {Promise<any>}
    */
   async getBlocksByPage(page : number, limit = 10) {
-    if(page === 0 && this.blockArray && this.blockArray.length > limit) {
+    if(page === 1 && this.blockArray && this.blockArray.length > limit) {
       await this.getTopBlocks(true, limit);
     }else {
       let data = await this.getBlocks({
@@ -212,5 +225,25 @@ export class BlockServiceProvider {
       return [];
     }
   }
+  
+  /**
+   * 获取块中的交易，分页
+   * @param blockId 
+   * @param page 
+   * @param limit 
+   */
+  async getTransactionsInBlock(blockId, page ?: 1, limit ?: 10) {
+    let query = {
+      blockId : blockId,
+      offset : (page-1) * limit,
+      limit : limit,
+      orderBy : 't_timestamp'
+    }
+    let data = await this.transactionService.getTransactions(query);
+
+    return data.transactions;
+  }
+
+  
 }
 

@@ -22,6 +22,7 @@ export class AppUrl {
 @Injectable()
 export class AppSettingProvider {
   // static SERVER_URL = "http://mainnet.ifmchain.org";
+  static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
   static SERVER_URL = "http://test1.ifmchain.org:6060";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = "testnet";
@@ -222,3 +223,5 @@ export function calcExpiryTime(expiry_time: ExpiryTime) {
   }
   return res_time;
 }
+
+
