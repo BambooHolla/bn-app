@@ -9,6 +9,7 @@ import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AppSettingProvider, TB_AB_Generator} from "../app-setting/app-setting";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
+import { UserInfoProvider } from "../user-info/user-info"
 import * as IFM from 'ifmchain-ibt';
 
 @Injectable()
@@ -24,6 +25,7 @@ export class ContactServiceProvider {
     public fetch : AppFetchProvider,
     public accountService: AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
+    public user: UserInfoProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transactionTypes = this.ifmJs.transactionTypes;
@@ -43,7 +45,7 @@ export class ContactServiceProvider {
       let getContactUrl = this.appSetting.APP_URL(this.GET_CONTACT);
 
       let query = {
-        publicKey: this.accountService.userInfo.publicKey
+        publicKey: this.user.userInfo.publicKey
       }
       let data = await this.fetch.get<any>(getContactUrl, {params: query});
       data.follower = await this.getContactIgnored(data.follower);
@@ -72,7 +74,7 @@ export class ContactServiceProvider {
    * @param 忽略的地址
    */
   async ignoreContact(iAddress) {
-    let address = this.accountService.userInfo.address;
+    let address = this.user.userInfo.address;
     let ignoreList : any[];
 
     let ignoreBefore = await this.storage.get('c_' + address);
@@ -92,7 +94,7 @@ export class ContactServiceProvider {
    * @param followerList 
    */
   async getContactIgnored(followerList) {
-    let address = this.accountService.userInfo.address;
+    let address = this.user.userInfo.address;
     let ignoreList = await this.storage.get('c_' + address);
   
     //如果包含忽略的且有未添加的人员
@@ -135,8 +137,8 @@ export class ContactServiceProvider {
             address: '+' + address
           }
         },
-        fee: this.accountService.userInfo.fee,
-        publicKey: this.accountService.userInfo.publicKey,
+        fee: this.user.userInfo.fee,
+        publicKey: this.user.userInfo.publicKey,
         secondSecret
       }
 

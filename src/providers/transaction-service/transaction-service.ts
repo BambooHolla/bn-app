@@ -7,6 +7,7 @@ import { Observable, BehaviorSubject} from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
+import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./transaction.types";
 import * as IFM from 'ifmchain-ibt';
 
@@ -29,6 +30,7 @@ export class TransactionServiceProvider {
     public alertController: AlertController,
     public fetch : AppFetchProvider,
     public accountService: AccountServiceProvider,
+    public user: UserInfoProvider,
   ) {
     console.log('Hello TransactionServiceProvider Provider');
     this.ifmJs = AppSettingProvider.IFMJS;
@@ -228,8 +230,8 @@ export class TransactionServiceProvider {
   async getUnconfirmed(page = 1, limit = 10) {
     let unconfirmedUrl = this.appSetting.APP_URL(this.UNCONFIRMED);
     let query:any;
-    query.address = this.accountService.userInfo.address;
-    query.senderPublicKey = this.accountService.userInfo.publicKey;
+    query.address = this.user.userInfo.address;
+    query.senderPublicKey = this.user.userInfo.publicKey;
     query.offset = (page-1) * limit;
     query.limit = limit;
     

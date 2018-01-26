@@ -8,6 +8,7 @@ import { AppSettingProvider } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
+import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from 'ifmchain-ibt';
 
 /*
@@ -32,6 +33,7 @@ export class MinServiceProvider {
     public accountService : AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
     public blockService : BlockServiceProvider,
+    public user :UserInfoProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transactionTypes = this.ifmJs.transactionTypes;
@@ -51,7 +53,7 @@ export class MinServiceProvider {
   async getRoundRemainTime () {
     let roundTimeUrl = this.appSetting.APP_URL(this.ROUND_TIME);
     let roundTimeReq = {
-      publicKey : this.accountService.userInfo.publicKey
+      publicKey : this.user.userInfo.publicKey
     }
     let roundProgress: any;
 
@@ -130,7 +132,7 @@ export class MinServiceProvider {
                 let txData = {
                   type: this.transactionTypes.VOTE,
                   secret: secret,
-                  publicKey: this.accountService.userInfo.publicKey,
+                  publicKey: this.user.userInfo.publicKey,
                   fee: "0.00000001",
                   timestamp: resp.timestamp,
                   asset: {
@@ -183,7 +185,7 @@ export class MinServiceProvider {
     let myVotesUrl = this.appSetting.APP_URL(this.MY_VOTES);
     
     let query = {
-      address : this.accountService.userInfo.address,
+      address : this.user.userInfo.address,
       offset : (page-1)*limit,
       limit: limit
     }
@@ -256,7 +258,7 @@ export class MinServiceProvider {
     let forgeStatusUrl = this.appSetting.APP_URL(this.FORGE_STATUS);
 
     let query = {
-      publicKey : this.accountService.userInfo.publicKey
+      publicKey : this.user.userInfo.publicKey
     }
     let data = await this.fetch.get<any>(forgeStatusUrl, {params: query});
     return data.enabled;
@@ -281,7 +283,7 @@ export class MinServiceProvider {
     let myRankUrl = this.appSetting.APP_URL(this.MY_RANK);
     
     let query = {
-      address: this.accountService.userInfo.address
+      address: this.user.userInfo.address
     }
     let data = await this.fetch.get<any>(myRankUrl, {params: query});
 
