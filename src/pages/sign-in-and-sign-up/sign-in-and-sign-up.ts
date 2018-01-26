@@ -125,6 +125,7 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
   }
 
   async doRegister() {
+    debugger
     let txData = {
       // "typeName" : "SEND",
       "type": this.transactionType.SEND,

@@ -115,7 +115,7 @@ export class AccountServiceProvider {
         optionStr += options[i];
       }
       cryptoOptStr = this.md5.update(optionStr).digest('hex');
-      cryptoOptStr += '@';
+      cryptoOptStr += '@#@';
     }
 
     //生成密码
@@ -125,7 +125,7 @@ export class AccountServiceProvider {
       password = new this.Mnemonic(256, this.Mnemonic.Words.CHINESE)['phrase'];
     }
 
-    //如果包含@则是带有options的密码
+    //如果包含@#@则是带有options的密码
     return cryptoOptStr + password;
   }
 

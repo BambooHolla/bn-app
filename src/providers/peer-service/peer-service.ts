@@ -33,6 +33,10 @@ export class PeerServiceProvider {
     this.peerList = ['http://mainnet.ifmchain.org', 'http://test1.ifmchain.org'];
   }
 
+  readonly PEER_SYNC = '/api/loader/status/sync';
+  readonly PING_URL = '/api/blocks/getHeight';
+  readonly PEERS_URL = '/api/peers/';
+
   /**
    * 获取节点信息
    * @param ipStr
@@ -74,8 +78,6 @@ export class PeerServiceProvider {
    * step6 - 保存节点列表至本地，节点列表首先选择已筛选的，没有再选择配置文件中的
    */
   async sortPeers() {
-    const PING_URL = '/api/blocks/getHeight';
-    const PEERS_URL = '/api/peers/';
     let peers: any[];
     let peersArray: any[];
     peers = await this.getPeersLocal();
@@ -85,13 +87,16 @@ export class PeerServiceProvider {
       let configPeers: Array<string> = await this.getPeersConfig();
       //异步执行异步的循环
       await Promise.all(configPeers.map(async (peer) => {
-        let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ peers: any[] }>(peer + PEERS_URL);
+        let data = await this.appFetch.get<{ peers: any[] }>(peer + this.PEERS_URL);
         for (let i of data.peers) {
-          //状态为1的才进行插入
-          if (i.state === 1) {
+          if (i.state == 2) {
+            peers.unshift(i.ip + ':' + i.port);
+          }else if (i.state == 1) {
+            //状态为1的才进行插入
             let ip_port = i.ip + ':' + i.port;
             peers.push(ip_port);
           }
+          
         }
       }))
     }
@@ -100,7 +105,8 @@ export class PeerServiceProvider {
     //TODO:当TIMEOUT秒时放弃连接
     await Promise.all(peers.map(async (peer) => {
       let startTimestamp = new Date().getTime();
-      let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);
+      let data = await this.appFetch.get<{ height: number }>(peer + this.PING_URL);
+      // let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);      
       let endTimestamp = new Date().getTime();
       let during = endTimestamp - startTimestamp;
       peersArray.push({
@@ -125,6 +131,10 @@ export class PeerServiceProvider {
   }
 
   async savePeersLocal(peers: Array<string>) {
+
+  }
+
+  async getPeerSync() {
 
   }
 
