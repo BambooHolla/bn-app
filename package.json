@@ -44,7 +44,7 @@
     "cordova-plugin-x-toast": "^2.6.0",
     "cordova-sqlite-storage": "^2.1.5",
     "eventemitter3": "^3.0.0",
-    "ifmchain-ibt": "0.0.4",
+    "ifmchain-ibt": "0.0.7",
     "ifmchain-js": "^0.1.2",
     "ionic-angular": "3.9.2",
     "ionic-plugin-keyboard": "^2.2.1",

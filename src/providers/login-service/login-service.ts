@@ -90,19 +90,22 @@ export class LoginServiceProvider {
       }
 
       let data = await this.fetch.put<any>(this.LOGIN_URL, req);
-      let loginObj = {
-        password,
-        "publicKey" : data.account.publicKey,
-        "address" : data.account.address,
-        "username" : data.account.username || "",
-        "balance" : data.account.balance,
-        "remember" : savePwd,
-        "secondPublickey" : data.account.secondPublicKey ? data.account.secondPublicKey : ""
+      if(data.success) {
+        let loginObj = {
+          password,
+          publicKey : data.account.publicKey,
+          address : data.account.address,
+          username : data.account.username || "",
+          balance : data.account.balance,
+          remember : savePwd,
+          secondPublickey : data.account.secondPublicKey ? data.account.secondPublicKey : ""
+        }
+        
+        localStorage.setItem("address", data.account.address);  
+        await this.accountService.saveUserSettingLocal(loginObj);
+        // this.appSetting.setUserToken(loginObj);
+        return data;
       }
-      await this.storage.set(data.account.address, loginObj);
-      localStorage.setItem("address", data.account.address);
-      this.appSetting.setUserToken(loginObj);
-      return data;
     }else {
       let alert = this.alertController.create({
         title: 'error',
@@ -135,7 +138,8 @@ export class LoginServiceProvider {
    * @memberof LoginServiceProvider
    */
   checkAccountLoginAble(password: string) {
-    return this.ifmJs.Mnemonic.isValid(password);
+    // return this.ifmJs.Mnemonic.isValid(password);
+    return true;
   }
 
   /**
