@@ -70,7 +70,7 @@ export class AccountServiceProvider {
 
   /**
    *  更改用户名
-   *  @param {string} newUsername 更换用户名
+   *  @param {string} newUsername
    */
   async changeUsername(newUsername: string, secret ?: string) {
     if(!!this.userInfo.username) {
@@ -100,11 +100,26 @@ export class AccountServiceProvider {
   }
 
   async getUserSettingLocal(address: string) {
-
+    
   }
 
-  async saveUserSettingLocal(userData: object) {
-
+  async saveUserSettingLocal(userData: any) {
+    let user:any = this.storage.get(userData.address);
+    if(user) {
+      user = {userData};
+    }else {
+      // default
+      userData.fingerPrint = false;
+      userData.sound = false;
+      userData.autoDig = false;
+      userData.digRound = 0;
+      userData.background = false;
+      userData.report = false;
+      userData.digAtWifi = true;
+      userData.autoUpdate = false;
+      userData.language = 'cn';
+      this.storage.set(userData.address, userData);
+    }
   }
 
   //生成密码
