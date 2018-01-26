@@ -1,18 +1,22 @@
-<!--
-  Generated template for the SettingsLangPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
+  <ion-navbar color="white">
     <ion-title>语言设置</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AF%AD%E8%A8%80%E8%AE%BE%E7%BD%AE.jpg" alt="">
+<ion-content>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AF%AD%E8%A8%80%E8%AE%BE%E7%BD%AE.jpg" alt=""> -->
+  <div class="common-list">
+    <div class="common-item" *ngFor="let lang of lang_list" (click)="setLang(lang.lang_code)">
+      <div class="flag">
+        <img [src]="'../assets/imgs/settings-lang/'+lang.lang_code+'.png'" [alt]="lang.lang_code">
+      </div>
+      <div class="names">
+        <div class="source-name">{{lang.lang_source_name|async}}</div>
+        <div class="trans-name">{{lang.lang_trans_name|async}}</div>
+      </div>
+      <div class="right">
+      	<ali-icon *ngIf="translate.currentLang==lang.lang_code" name="ifm-dagou"></ali-icon>
+      </div>
+    </div>
+  </div>
 </ion-content>

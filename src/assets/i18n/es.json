@@ -44,5 +44,18 @@
 
   "CARDS_TITLE": "Social",
 
-  "SEARCH_TITLE": "Buscar"
+  "SEARCH_TITLE": "Buscar",
+
+  "//": "语言包",
+  "LANG_zh-cmn-Hans": "Chino simplificado",
+  "LANG_zh-cmn-Hant": "Chino tradicional",
+  "LANG_en": "El inglés",
+  "LANG_ja": "El japonés",
+  "LANG_es": "Español",
+  "LANG_fr": "El francés",
+  "LANG_de": "Devon",
+  "LANG_it": "Italia",
+  "//LANG_ko": "El coreano",
+
+  "//": "OVER"
 }

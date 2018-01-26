@@ -64,5 +64,19 @@
   "CARDS_TITLE": "社交",
 
   "SEARCH_TITLE": "搜索",
-  "SEARCH_PLACEHOLDER": "搜索項目列表, 例如：\"Donald Duck\""
+  "SEARCH_PLACEHOLDER": "搜索項目列表, 例如：\"Donald Duck\"",
+
+  "//": "语言包",
+  "LANG_zh-cmn-Hans": "簡體中文",
+  "LANG_zh-cmn-Hant": "繁體中文",
+  "LANG_en": "英語",
+  "LANG_ja": "日文",
+  "LANG_es": "西班牙文",
+  "LANG_fr": "法文",
+  "LANG_de": "德文",
+  "LANG_it": "意大利",
+  "//LANG_ko": "韓文",
+
+  "//": "OVER"
+
 }

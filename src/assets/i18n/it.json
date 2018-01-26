@@ -64,5 +64,18 @@
   "CARDS_TITLE": "Social",
 
   "SEARCH_TITLE": "Ricerca",
-  "SEARCH_PLACEHOLDER": "Trova elementi in lista, ex. \"Donald Duck\""
+  "SEARCH_PLACEHOLDER": "Trova elementi in lista, ex. \"Donald Duck\"",
+
+  "//": "语言包",
+  "LANG_zh-cmn-Hans": "Cinese semplificato",
+  "LANG_zh-cmn-Hant": "Cinese tradizionale",
+  "LANG_en": "inglese",
+  "LANG_ja": "giapponese",
+  "LANG_es": "lingua spagnola",
+  "LANG_fr": "francese",
+  "LANG_de": "tedesco",
+  "LANG_it": "Italia",
+  "//LANG_ko": "coreano",
+
+  "//": "OVER"
 }

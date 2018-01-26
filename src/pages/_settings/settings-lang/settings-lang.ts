@@ -3,13 +3,6 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 
-/**
- * Generated class for the SettingsLangPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage({ name: "settings-lang" })
 @Component({
 	selector: "page-settings-lang",
@@ -22,7 +15,63 @@ export class SettingsLangPage extends SecondLevelPage {
 		@Optional() public tabs: TabsPage,
 	) {
 		super(navCtrl, navParams, true, tabs);
+		this.auto_header_shadow_when_scroll_down = true;
+	}
+	// TODO: use this.translate.getLangs() replace with lang_code_list
+	lang_code_list = [
+		"zh-cmn-Hans",
+		"zh-cmn-Hant",
+		"en",
+		"ja",
+		"es",
+		"fr",
+		"de",
+		"it",
+	];
+	lang_list = this._setLangList();
+	private _setLangList() {
+		if (!this.lang_list) {
+			const current_lang_map = this.translate.getTranslation(
+				this.translate.currentLang,
+			);
+			const base_list = this.lang_code_list.map(lang_code => {
+				console.log(
+					this.translate
+						.get(`LANG_${lang_code}`)
+						.toPromise()
+						.then(console.log),
+				);
+				return {
+					lang_code,
+					lang_source_name: this.translate
+						.getTranslation(lang_code)
+						.map(val_map => {
+							console.log("getTranslation", lang_code, val_map);
+							return val_map["LANG_" + lang_code];
+						}),
+					lang_trans_name: current_lang_map.map(
+						val_map => val_map["LANG_" + lang_code],
+					),
+				};
+			});
+			this.lang_list = base_list;
+		} else {
+			this.lang_list.forEach(lang => {
+				lang.lang_trans_name = this.translate.get(
+					"LANG_" + lang.lang_code,
+				);
+			});
+		}
+		return this.lang_list;
 	}
 
-	
+	setLang(lang_code) {
+		return this.translate
+			.use(lang_code)
+			.toPromise()
+			.then(res => {
+				this._setLangList();
+				return res;
+			});
+	}
 }

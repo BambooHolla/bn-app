@@ -64,5 +64,18 @@
   "CARDS_TITLE": "Social",
 
   "SEARCH_TITLE": "Search",
-  "SEARCH_PLACEHOLDER": "Search the items list, e.g. \"Donald Duck\""
+  "SEARCH_PLACEHOLDER": "Search the items list, e.g. \"Donald Duck\"",
+
+  "//": "语言包",
+  "LANG_zh-cmn-Hans": "Simplified Chinese",
+  "LANG_zh-cmn-Hant": "Traditional Chinese",
+  "LANG_en": "English",
+  "LANG_ja": "Japanese",
+  "LANG_es": "Spanish",
+  "LANG_fr": "French",
+  "LANG_de": "German",
+  "LANG_it": "Italy",
+  "//LANG_ko": "Korean",
+
+  "//": "OVER"
 }
