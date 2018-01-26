@@ -86,7 +86,7 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTransactionById (id: string) {
-    let data : TYPE.transactionsModel = this.transaction.getTransactionById(id);
+    let data = this.transaction.getTransactionById(id);
 
     return data.transactions[0];
   }
@@ -96,8 +96,8 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTimestamp () {
-    let data = this.transaction.getTimestamp();
-
+    let data = await this.transaction.getTimestamp();
+    
     return data;
   }
 
