@@ -143,15 +143,15 @@ export class LoginServiceProvider {
    *
    */
   generateNewPassphrase() {
-    if(this.translateService.defaultLang && this.translateService.defaultLang === 'en') {
-      return this.accountService.generateCryptoPassword({}, 'en');
-    }else {
+    // if(this.translateService.defaultLang && this.translateService.defaultLang === 'en') {
+    //   return this.accountService.generateCryptoPassword({}, 'en');
+    // }else {
       return this.accountService.generateCryptoPassword({
         "phone" : "123",
         "email" : "aaa@qaa.com",
         "mark" : "my secret"
       }, 'cn');
-    }
+    // }
   }
 
 
