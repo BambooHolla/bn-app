@@ -35,12 +35,6 @@ export class SettingsLangPage extends SecondLevelPage {
 				this.translate.currentLang,
 			);
 			const base_list = this.lang_code_list.map(lang_code => {
-				console.log(
-					this.translate
-						.get(`LANG_${lang_code}`)
-						.toPromise()
-						.then(console.log),
-				);
 				return {
 					lang_code,
 					lang_source_name: this.translate
