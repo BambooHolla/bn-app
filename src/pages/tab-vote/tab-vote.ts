@@ -62,10 +62,7 @@ export class TabVotePage extends FirstLevelPage {
 			this.satellite_pixi.startAnimation();
 		this.buddha_glow &&
 			this.buddha_glow.is_inited &&
-			this.buddha_glow.startAnimation() &&
-			(() => {
-				this.buddha_glow.app.stage.alpha = 0.5;
-			})();
+			this.buddha_glow.startAnimation();
 		if (!this.is_show._inited) {
 			this.is_show._inited = true;
 			setTimeout(() => {

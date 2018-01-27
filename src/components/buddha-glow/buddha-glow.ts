@@ -68,16 +68,14 @@ export class BuddhaGlowComponent extends AniBase {
 		const wh_size = Math.min(renderer.width, renderer.height);
 		const circle_mesh_canvas = ChainMeshComponent.createRadialGradient(
 			renderer.width,
-			[
-				[0, "rgba(255,255,255,0.3)"],
-				// [0.2, "rgba(255,255,255,0.5)"],
-				[0.35, "rgba(255,255,255,0.5)"],
-				[0.65, "rgba(255,255,255,0.65)"],
-				[0.8, "rgba(255,255,255,0.8)"],
-				[0.95, "#FFF"],
-				[1, "#FFF"],
+				[
+				[0, "rgba(255,255,255,1)"],
+				[0.8, "rgba(255,255,255,1)"],
+				[0.95, "rgba(255,255,255,0)"],
+				[1, "rgba(255,255,255,0)"],
 			],
 		);
+		document.body.appendChild(circle_mesh_canvas)
 		const circle_mesh_texture = PIXI.Texture.fromCanvas(circle_mesh_canvas);
 		const circle_mesh_mask = new PIXI.Sprite(circle_mesh_texture)
 		stage.addChild(circle_mesh_mask);
