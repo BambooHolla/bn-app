@@ -29,10 +29,10 @@ export class PeerServiceProvider {
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.peer = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).peer;
-    this.peerList = [
-      "http://mainnet.ifmchain.org",
-      "http://test1.ifmchain.org",
-    ];
+    // this.peerList = [
+    //   "http://mainnet.ifmchain.org",
+    //   "http://test1.ifmchain.org",
+    // ];
   }
 
   readonly PEER_SYNC = "/api/loader/status/sync";
@@ -90,7 +90,7 @@ export class PeerServiceProvider {
         let startTimestamp = new Date().getTime();
         let data = await this.fetch.get<{ height: number }>(
           peer + this.PING_URL,
-        );
+        ).catch();
         // let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);
         let endTimestamp = new Date().getTime();
         let during = endTimestamp - startTimestamp;
@@ -120,8 +120,10 @@ export class PeerServiceProvider {
    * 获取所有节点（未进行统计排序）
    * 其中可用节点才被加入
    * 状态为2（未发生过错误）的节点置于头部
+   * deep为搜索的深度，默认只搜索一次
    */
-  async getAllPeers() {
+  async getAllPeers(deep = 1) {
+    // debugger
     let peers: any[];
     peers = await this.getPeersLocal();
     //当不存在本地已保存的节点IP时
@@ -129,19 +131,74 @@ export class PeerServiceProvider {
     if (!peers || peers.length === 0) {
       let configPeers: Array<string> = await this.getPeersConfig();
       //异步执行异步的循环
+      debugger
       await Promise.all(configPeers.map(async (peer) => {
         let data = await this.fetch.get<{ peers: any[] }>(peer + this.PEERS_URL);
-        for (let i of data.peers) {
-          if (i.state == 2) {
-            peers.unshift(i.ip + ':' + i.port);
-          }else if (i.state == 1) {
-            //状态为1的才进行插入
-            let ip_port = i.ip + ':' + i.port;
-            peers.push(ip_port);
+        // let allPeers = await this.getAllPeersFromPeerList(data.peers);
+        // if(!allPeers || allPeers.length == 0) {
+          for (let i of data.peers) {
+            if(i.state == 2) {
+              peers.unshift(i.ip + ':' + i.port);
+            }else if(i.state == 1) {
+              peers.push( i.ip + ':' + i.port);
+            }
           }
-        }
+        // }
+        // if(deep > 1) {
+        //   peers = await this.getAllPeersFromPeerList(peers);
+        // }
       }))
     }
+
+    return peers;
+  }
+  
+  /**
+   * 根据节点数组进行遍历搜索
+   * @param peerList 
+   */
+  async getAllPeersFromPeerList(peerList) {
+    let peers: any[];
+    await Promise.all(peerList.map(async (peer)=> {
+      let data: any;
+      if(peer.hasOwnProperty('ip')) {
+        await this.fetch.get<{peers: any[]}>('http://' + peer.ip + ':' + peer.port + this.PEERS_URL).then((res) => {
+          if(res.peers) {
+            for (let i of res.peers) {
+              if(i.state == 2) {
+                peers.unshift(i.ip + ':' + i.port);
+              }else if(i.state == 1) {
+                peers.push( i.ip + ':' + i.port);
+              }
+            }
+          }
+        }).catch();
+      }
+      if(typeof(peer) == "string") {
+        await this.fetch.get<{peers: any[]}>(peer + this.PEERS_URL).then((res) => {
+          if(res.peers) {
+            for (let i of res.peers) {
+              if(i.state == 2) {
+                peers.unshift(i.ip + ':' + i.port);
+              }else if(i.state == 1) {
+                peers.push( i.ip + ':' + i.port);
+              }
+            }
+          }
+        }).catch();
+      }
+      
+      // debugger
+      // if(data.peers) {
+      //   for (let i of data.peers) {
+      //     if(i.state == 2) {
+      //       peers.unshift(i.ip + ':' + i.port);
+      //     }else if(i.state == 1) {
+      //       peers.push( i.ip + ':' + i.port);
+      //     }
+      //   }
+      // }
+    }))
 
     return peers;
   }
@@ -183,7 +240,7 @@ export class PeerServiceProvider {
    * 从未保存过时返回空数组
    */
   async getPeersLocal() {
-    let peers:any = await this.storage.get('peers');
+    let peers:any[] = await this.storage.get('peers');
     
     if(peers && peers.length > 0) {
       return peers;
@@ -198,5 +255,13 @@ export class PeerServiceProvider {
    */
   async getPeersConfig() {
     return PEERS;
+  }
+  
+  /**
+   * 设置连接的
+   * @param peer 
+   */
+  setPeer(peer) {
+    AppSettingProvider.SERVER_URL = peer;
   }
 }

@@ -126,11 +126,12 @@ export class MinServiceProvider {
             } else {
               let delegateArr = resp.delegate;
               let voteList: any[];
-
+              //票投给所有获取回来的人
               for (let i of delegateArr) {
                 voteList.push("+" + delegateArr[i]);
               }
-
+              
+              //设置投票的参数
               let txData = {
                 type: this.transactionTypes.VOTE,
                 secret: secret,
@@ -146,15 +147,27 @@ export class MinServiceProvider {
               if (secondSecret) {
                 txData.secondSecret = secondSecret;
               }
-
+              
+              //成功完成交易
               let isDone: boolean = await this.transactionService.putTransaction(
                 txData,
               );
-
-              return isDone;
+              if(isDone) {
+                let saveObj = {
+                  autoDig: true,
+                  digRound: await this.getRound()
+                }
+                await this.user.saveUserSettings(this.user.address, saveObj);
+              }else {
+                throw "vote transaction error";
+              }
             }
+          }else {
+            throw "get voter error";
           }
         });
+      }else {
+        throw "get transaction timestamp error";
       }
     } catch (e) {
       console.log(e);

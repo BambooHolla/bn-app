@@ -101,41 +101,7 @@ export class AccountServiceProvider {
     }
   }
   
-  /**
-   * 获取用户信息
-   * @param address 
-   */
-  async getUserSettingLocal(address: string) {
-    let user:any = this.storage.get(address);
-    this.user.fee = user.fee;
-    this.user.balance = user.balance;
-  }
   
-  /**
-   * 保存用户信息至本地
-   * @param userData 
-   */
-  async saveUserSettingLocal(userData: any) {
-    let user: any = await this.storage.get(userData.address);
-    if (user) {
-      user = { userData };
-    } else {
-      // default
-      userData.fingerPrint = false;
-      userData.sound = false;
-      userData.autoDig = false;
-      userData.digRound = 0;
-      userData.background = false;
-      userData.report = false;
-      userData.animate = true;
-      userData.digAtWifi = true;
-      userData.autoUpdate = false;
-      userData.fee = 0.00000001;
-      userData.language = "cn";
-      return this.storage.set(userData.address, userData);
-    }
-  }
-
   /**
    * 生成密码
    * @param options 传入的选项，都没有的话返回纯粹的生成密码
