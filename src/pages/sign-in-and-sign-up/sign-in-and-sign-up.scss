@@ -377,18 +377,11 @@ page-sign-in-and-sign-up {
   }
   .register-form,
   .login-form {
-    // position: absolute;
+    position: absolute;
     top: 14rem;
-    // -webkit-transform-origin-z: -230px;
+    /* -webkit-transform-origin-z: -230px; */
   }
-  [contenteditable] {
-    -webkit-user-modify: read-write;
-    -webkit-user-select: text;
-    user-select: text;
-  }
-  .register-form {
-    display: none !important;
-  }
+
   #font-calc {
     font-family: "monospace", "Menlo" !important;
     font-size: 1.4rem;

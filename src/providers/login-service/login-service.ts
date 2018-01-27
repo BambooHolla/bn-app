@@ -13,6 +13,7 @@ import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
+import { UserInfoProvider } from "../user-info/user-info"
 import * as IFM from "ifmchain-ibt";
 
 export type UserModel = {
@@ -33,6 +34,7 @@ export class LoginServiceProvider {
     public alertController: AlertController,
     public translateService: TranslateService,
     public accountService: AccountServiceProvider,
+    public user: UserInfoProvider,
   ) {
     console.group("Hello LoginServiceProvider Provider");
     window["LoginServiceProviderInstance"] = this;
@@ -102,7 +104,7 @@ export class LoginServiceProvider {
         };
 
         localStorage.setItem("address", data.account.address);
-        await this.accountService.saveUserSettingLocal(loginObj);
+        await this.user.saveUserInfoLocal(loginObj);
         // this.appSetting.setUserToken(loginObj);
         return data;
       }

@@ -24,9 +24,9 @@ export class AppUrl {
 
 @Injectable()
 export class AppSettingProvider extends EventEmitter {
-  static SERVER_URL = "http://mainnet.ifmchain.org";
+  // static SERVER_URL = "http://mainnet.ifmchain.org";
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
-  // static SERVER_URL = "http://test1.ifmchain.org:6062";
+  static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = "mainnet";
   static IFMJS = IFM(AppSettingProvider.NET_VERSION);

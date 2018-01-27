@@ -9,6 +9,7 @@ import { LoginServiceProvider } from "../../providers/login-service/login-servic
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { TransactionServiceProvider } from "../../providers/transaction-service/transaction-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
+import { PeerServiceProvider } from "../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { MyApp } from "../../app/app.component";
 import {
@@ -36,6 +37,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     public blockService: BlockServiceProvider,
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer,
+    public peerService: PeerServiceProvider,
   ) {
     super(navCtrl, navParams);
   }
@@ -196,20 +198,12 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
 
   async doRegister() {
-    // debugger
-    // let txData = {
-    //   // "typeName" : "SEND",
-    //   "type": this.transactionType.SEND,
-    //   "amount": "0.00000001",
-    //   "secret": "decorate soap volcano lizard original leaf evolve vibrant protect maple enough together weapon erase orphan eye blue spoil verb more credit garbage barrel age",
-    //   "publicKey": "38e70075fc1054bfbb29cb550932a719f88c1c34f2ed897f1ae74a328ab9a21e",
-    //   "recipientId": "c2B5D921U9sbLfQCBAWhyFMnJcHEcc3ij2",
-    //   "fee": "0.00000001"
-    // }
-    // this.transactionService.putTransaction(txData);
-    // let a = await this.blockService.getLastBlock();
-    // this.blockService.getTopBlocks(true);
+    // let peers = await this.peerService.getAllPeers();
+    let sortPeer = await this.peerService.sortPeers();
+    // console.log(peers);
+    console.log(sortPeer);
 
+    debugger;
     let passphrase = this.loginService.generateNewPassphrase({
       email: this.formData.email,
       phone: this.formData.phone,
