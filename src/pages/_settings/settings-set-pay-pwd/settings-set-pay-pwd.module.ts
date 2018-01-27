@@ -4,10 +4,7 @@ import { SettingsSetPayPwdPage } from "./settings-set-pay-pwd";
 import { ComponentsModule } from "../../../components/components.module";
 
 @NgModule({
-	declarations: [SettingsSetPayPwdPage],
-	imports: [
-		IonicPageModule.forChild(SettingsSetPayPwdPage),
-		ComponentsModule,
-	],
+  declarations: [SettingsSetPayPwdPage],
+  imports: [IonicPageModule.forChild(SettingsSetPayPwdPage), ComponentsModule],
 })
 export class SettingsSetPayPwdPageModule {}

@@ -1,36 +1,36 @@
 page-account-info {
-	@extend .header-no-border;
-	> .content {
-		> .scroll-content {
-			background-color: #eeeeee;
-		}
-	}
-	.address-info {
-		width: 100%;
-		padding: 1.3rem 2rem;
-		background-color: #fff;
-		color: #717171;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		> .title {
-			align-self: flex-start;
-			font-size: 1.5rem;
-			ali-icon {
-				font-size: 1.6rem;
-			}
-		}
-		> .address-qrcode {
-			min-width: 50%;
-			max-width: 62%;
-			margin: 1rem;
-		}
-		> .address-text {
-			font-size: 1.35rem;
-		}
-	}
-	.extends-list {
-		margin-top: 1rem;
-		width: 100%;
-	}
+  @extend .header-no-border;
+  > .content {
+    > .scroll-content {
+      background-color: #eeeeee;
+    }
+  }
+  .address-info {
+    width: 100%;
+    padding: 1.3rem 2rem;
+    background-color: #fff;
+    color: #717171;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > .title {
+      align-self: flex-start;
+      font-size: 1.5rem;
+      ali-icon {
+        font-size: 1.6rem;
+      }
+    }
+    > .address-qrcode {
+      min-width: 50%;
+      max-width: 62%;
+      margin: 1rem;
+    }
+    > .address-text {
+      font-size: 1.35rem;
+    }
+  }
+  .extends-list {
+    margin-top: 1rem;
+    width: 100%;
+  }
 }

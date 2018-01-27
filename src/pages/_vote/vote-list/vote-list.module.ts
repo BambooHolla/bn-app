@@ -6,12 +6,12 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { DirectivesModule } from "../../../directives/directives.module";
 
 @NgModule({
-	declarations: [VoteListPage],
-	imports: [
-		IonicPageModule.forChild(VoteListPage),
-		ComponentsModule,
-		PipesModule,
-		DirectivesModule,
-	],
+  declarations: [VoteListPage],
+  imports: [
+    IonicPageModule.forChild(VoteListPage),
+    ComponentsModule,
+    PipesModule,
+    DirectivesModule,
+  ],
 })
 export class VoteListPageModule {}

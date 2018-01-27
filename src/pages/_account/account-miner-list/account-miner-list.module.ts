@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from "../../../pipes/pipes.module";
 
 @NgModule({
-	declarations: [AccountMinerListPage],
-	imports: [
-		IonicPageModule.forChild(AccountMinerListPage),
-		ComponentsModule,
-		PipesModule,
-	],
+  declarations: [AccountMinerListPage],
+  imports: [
+    IonicPageModule.forChild(AccountMinerListPage),
+    ComponentsModule,
+    PipesModule,
+  ],
 })
 export class AccountMinerListPageModule {}

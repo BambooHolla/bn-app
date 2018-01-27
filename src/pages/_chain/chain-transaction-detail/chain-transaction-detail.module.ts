@@ -6,12 +6,12 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [ChainTransactionDetailPage],
-	imports: [
-		IonicPageModule.forChild(ChainTransactionDetailPage),
-		ComponentsModule,
-		PipesModule,
-		MomentModule,
-	],
+  declarations: [ChainTransactionDetailPage],
+  imports: [
+    IonicPageModule.forChild(ChainTransactionDetailPage),
+    ComponentsModule,
+    PipesModule,
+    MomentModule,
+  ],
 })
 export class ChainTransactionDetailPageModule {}

@@ -6,12 +6,12 @@ import { DirectivesModule } from "../../../directives/directives.module";
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [VoteDelegateDetailPage],
-	imports: [
-		IonicPageModule.forChild(VoteDelegateDetailPage),
-		ComponentsModule,
-		DirectivesModule,
-		MomentModule,
-	],
+  declarations: [VoteDelegateDetailPage],
+  imports: [
+    IonicPageModule.forChild(VoteDelegateDetailPage),
+    ComponentsModule,
+    DirectivesModule,
+    MomentModule,
+  ],
 })
 export class VoteDelegateDetailPageModule {}

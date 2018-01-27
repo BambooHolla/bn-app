@@ -6,12 +6,12 @@ import { ComponentsModule } from "../../components/components.module";
 import { PipesModule } from "../../pipes/pipes.module";
 
 @NgModule({
-	declarations: [TabPayPage],
-	imports: [
-		IonicPageModule.forChild(TabPayPage),
-		MomentModule,
-		ComponentsModule,
-		PipesModule,
-	],
+  declarations: [TabPayPage],
+  imports: [
+    IonicPageModule.forChild(TabPayPage),
+    MomentModule,
+    ComponentsModule,
+    PipesModule,
+  ],
 })
 export class TabPayPageModule {}

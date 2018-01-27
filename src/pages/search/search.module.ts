@@ -4,7 +4,7 @@ import { SearchPage } from "./search";
 import { ComponentsModule } from "../../components/components.module";
 
 @NgModule({
-	declarations: [SearchPage],
-	imports: [IonicPageModule.forChild(SearchPage), ComponentsModule],
+  declarations: [SearchPage],
+  imports: [IonicPageModule.forChild(SearchPage), ComponentsModule],
 })
 export class SearchPageModule {}

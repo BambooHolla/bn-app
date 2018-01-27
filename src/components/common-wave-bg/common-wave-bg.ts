@@ -7,9 +7,9 @@ import { Component, Input } from "@angular/core";
  * Components.
  */
 @Component({
-	selector: "common-wave-bg",
-	templateUrl: "common-wave-bg.html",
+  selector: "common-wave-bg",
+  templateUrl: "common-wave-bg.html",
 })
 export class CommonWaveBgComponent {
-	@Input("show") show = true;
+  @Input("show") show = true;
 }

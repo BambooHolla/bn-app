@@ -12,17 +12,15 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 @IonicPage({ name: "account-dapp-list" })
 @Component({
-	selector: "page-account-dapp-list",
-	templateUrl: "account-dapp-list.html",
+  selector: "page-account-dapp-list",
+  templateUrl: "account-dapp-list.html",
 })
 export class AccountDappListPage extends SecondLevelPage {
-	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		@Optional() public tabs: TabsPage,
-	) {
-		super(navCtrl, navParams, true, tabs);
-	}
-
-	
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    @Optional() public tabs: TabsPage,
+  ) {
+    super(navCtrl, navParams, true, tabs);
+  }
 }

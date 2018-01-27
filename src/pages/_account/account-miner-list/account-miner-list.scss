@@ -1,139 +1,139 @@
 page-account-miner-list {
-	@extend .header-no-border;
-	> .content {
-		> .scroll-content {
-			background-color: #eeeeee;
-		}
-	}
-	.cur-rank-list,
-	.can-rank-list {
-		position: relative;
-		&::before {
-			content: " ";
-			position: absolute;
-			width: 50%;
-			height: 3.2rem;
-			background-position: 100% 0%;
-			background-size: contain;
-			opacity: 0.18;
-			z-index: 0;
-			background-repeat: no-repeat;
-			right: 3.4rem;
-			top: 1rem;
-		}
-		> .header {
-			display: flex;
-			align-items: center;
-			background-color: #fff;
-			color: #4e4e4e;
-			height: 4rem;
-			justify-content: space-between;
-			> .left {
-				font-size: 1.6rem;
-				font-weight: 600;
-				padding-left: 1.8rem;
-				display: flex;
-				align-items: center;
-				> .title {
-					&::after {
-						content: " ";
-						display: inline-block;
-						width: 0.4rem;
-						height: 0.4rem;
-						background-color: currentcolor;
-						border-radius: 50%;
-						margin: 0.5rem;
-					}
-				}
-			}
-			> .right {
-				padding-right: 0.8rem;
-				color: #717171;
-				ali-icon[name="ifm-arrow-dot-dot"] {
-					font-size: 2rem;
-					transform: rotate(-90deg);
-				}
-			}
-		}
-		> .common-item {
-			> .left {
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-				> .No {
-					width: 3rem;
-					height: 3rem;
-					box-sizing: border-box;
-					background-size: contain;
-					background-repeat: no-repeat;
-					background-position: center;
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					/* padding: 0.5rem 0 0 0.9rem; */
-					font-weight: 700;
-					color: #535453;
-					margin-right: 0.5rem;
-					&[no="1"],
-					&[no="2"],
-					&[no="3"] {
-						display: block;
-						padding: 0.5rem 0 0 0.9rem;
-					}
-					&[no="1"] {
-						background-image: url("../assets/imgs/miner-list/rank-no-1.png");
-					}
-					&[no="2"] {
-						background-image: url("../assets/imgs/miner-list/rank-no-2.png");
-					}
-					&[no="3"] {
-						background-image: url("../assets/imgs/miner-list/rank-no-3.png");
-					}
-				}
-				> .address {
-					font-size: 1.7rem;
-					font-weight: lighter;
-				}
-			}
-		}
-	}
-	.cur-rank-list {
-		&::before {
-			background-image: url("../assets/imgs/miner-list/铲子.png");
-		}
-	}
-	.can-rank-list {
-		margin-top: 1rem;
-		&::before {
-			background-image: url("../assets/imgs/miner-list/安全帽.png");
-		}
-	}
+  @extend .header-no-border;
+  > .content {
+    > .scroll-content {
+      background-color: #eeeeee;
+    }
+  }
+  .cur-rank-list,
+  .can-rank-list {
+    position: relative;
+    &::before {
+      content: " ";
+      position: absolute;
+      width: 50%;
+      height: 3.2rem;
+      background-position: 100% 0%;
+      background-size: contain;
+      opacity: 0.18;
+      z-index: 0;
+      background-repeat: no-repeat;
+      right: 3.4rem;
+      top: 1rem;
+    }
+    > .header {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      color: #4e4e4e;
+      height: 4rem;
+      justify-content: space-between;
+      > .left {
+        font-size: 1.6rem;
+        font-weight: 600;
+        padding-left: 1.8rem;
+        display: flex;
+        align-items: center;
+        > .title {
+          &::after {
+            content: " ";
+            display: inline-block;
+            width: 0.4rem;
+            height: 0.4rem;
+            background-color: currentcolor;
+            border-radius: 50%;
+            margin: 0.5rem;
+          }
+        }
+      }
+      > .right {
+        padding-right: 0.8rem;
+        color: #717171;
+        ali-icon[name="ifm-arrow-dot-dot"] {
+          font-size: 2rem;
+          transform: rotate(-90deg);
+        }
+      }
+    }
+    > .common-item {
+      > .left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        > .No {
+          width: 3rem;
+          height: 3rem;
+          box-sizing: border-box;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          /* padding: 0.5rem 0 0 0.9rem; */
+          font-weight: 700;
+          color: #535453;
+          margin-right: 0.5rem;
+          &[no="1"],
+          &[no="2"],
+          &[no="3"] {
+            display: block;
+            padding: 0.5rem 0 0 0.9rem;
+          }
+          &[no="1"] {
+            background-image: url("../assets/imgs/miner-list/rank-no-1.png");
+          }
+          &[no="2"] {
+            background-image: url("../assets/imgs/miner-list/rank-no-2.png");
+          }
+          &[no="3"] {
+            background-image: url("../assets/imgs/miner-list/rank-no-3.png");
+          }
+        }
+        > .address {
+          font-size: 1.7rem;
+          font-weight: lighter;
+        }
+      }
+    }
+  }
+  .cur-rank-list {
+    &::before {
+      background-image: url("../assets/imgs/miner-list/铲子.png");
+    }
+  }
+  .can-rank-list {
+    margin-top: 1rem;
+    &::before {
+      background-image: url("../assets/imgs/miner-list/安全帽.png");
+    }
+  }
 
-	.cur-peer-list {
-		margin-top: 1rem;
-		> .header {
-			background-color: #fff;
-			color: #4e4e4e;
-			height: 4rem;
-			padding-left: 1.8rem;
-			display: flex;
-			align-items: center;
-		}
-		> .row {
-			display: flex;
-			align-items: center;
-			background: #fff;
-			color: #7b7b7b;
-			justify-content: space-around;
-			padding: 0;
-			>.item{
-				flex: 1;
-				text-align: center;
-			}
-		}
-		> .table-head {
-			font-size: 2rem;
-			height: 2.6rem;
-		}
-	}
+  .cur-peer-list {
+    margin-top: 1rem;
+    > .header {
+      background-color: #fff;
+      color: #4e4e4e;
+      height: 4rem;
+      padding-left: 1.8rem;
+      display: flex;
+      align-items: center;
+    }
+    > .row {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      color: #7b7b7b;
+      justify-content: space-around;
+      padding: 0;
+      > .item {
+        flex: 1;
+        text-align: center;
+      }
+    }
+    > .table-head {
+      font-size: 2rem;
+      height: 2.6rem;
+    }
+  }
 }

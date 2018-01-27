@@ -12,17 +12,15 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 @IonicPage({ name: "dapp-detail" })
 @Component({
-	selector: "page-dapp-detail",
-	templateUrl: "dapp-detail.html",
+  selector: "page-dapp-detail",
+  templateUrl: "dapp-detail.html",
 })
 export class DappDetailPage extends SecondLevelPage {
-	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		@Optional() public tabs: TabsPage,
-	) {
-		super(navCtrl, navParams, true, tabs);
-	}
-
-	
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    @Optional() public tabs: TabsPage,
+  ) {
+    super(navCtrl, navParams, true, tabs);
+  }
 }

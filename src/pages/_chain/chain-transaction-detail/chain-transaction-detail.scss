@@ -1,107 +1,107 @@
 page-chain-transaction-detail {
-	@extend .header-no-border;
-	> .content {
-		> .scroll-content {
-			background-color: #eeeeee;
-		}
-	}
-	.base-info {
-		margin-top: 1rem;
-		> .common-item {
-			font-size: 1.5rem;
-			> .left {
-				min-width: 7.6rem;
-				flex-direction: column;
-				align-items: flex-start;
-			}
-			> .right {
-				word-break: break-all;
-				align-items: center;
-				flex-direction: row;
-				> .unit {
-					margin-left: 0.3rem;
-				}
-				> .dapp-name {
-					color: #4e4e4e;
-					font-size: 1.35rem;
-				}
-			}
-			&.extend-data {
-				height: auto;
-				> details {
-					padding-bottom: 1rem;
-					width: 100%;
-					> summary {
-						height: 4.6rem;
-						display: flex;
-						align-items: center;
-						position: relative;
-						&::after {
-							right: 0;
-							font-family: "ifmicon";
-							content: "\e62d";
-							position: absolute;
-							width: 1em;
-							height: 1em;
-							/* margin: 0.2em 0 0 0.5ch; */
-							transition: transform 0.2s;
-							/* transform: rotate(180deg); */
-						}
-					}
-					> content {
-						/* 	transition-duration: 0.2s;
+  @extend .header-no-border;
+  > .content {
+    > .scroll-content {
+      background-color: #eeeeee;
+    }
+  }
+  .base-info {
+    margin-top: 1rem;
+    > .common-item {
+      font-size: 1.5rem;
+      > .left {
+        min-width: 7.6rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      > .right {
+        word-break: break-all;
+        align-items: center;
+        flex-direction: row;
+        > .unit {
+          margin-left: 0.3rem;
+        }
+        > .dapp-name {
+          color: #4e4e4e;
+          font-size: 1.35rem;
+        }
+      }
+      &.extend-data {
+        height: auto;
+        > details {
+          padding-bottom: 1rem;
+          width: 100%;
+          > summary {
+            height: 4.6rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            &::after {
+              right: 0;
+              font-family: "ifmicon";
+              content: "\e62d";
+              position: absolute;
+              width: 1em;
+              height: 1em;
+              /* margin: 0.2em 0 0 0.5ch; */
+              transition: transform 0.2s;
+              /* transform: rotate(180deg); */
+            }
+          }
+          > content {
+            /* 	transition-duration: 0.2s;
 						transform: scaleY(1); */
-						animation: sweep 0.25s ease-in-out;
-					}
+            animation: sweep 0.25s ease-in-out;
+          }
 
-					@keyframes sweep {
-						0% {
-							opacity: 0;
-						}
-						100% {
-							opacity: 1;
-						}
-					}
-					&:not([open]) {
-						padding-bottom: 0rem;
-						> summary {
-							&::after {
-								/* margin-top: .25em; */
-								transform: rotate(-90deg);
-							}
-						}
-						/* > content {
+          @keyframes sweep {
+            0% {
+              opacity: 0;
+            }
+            100% {
+              opacity: 1;
+            }
+          }
+          &:not([open]) {
+            padding-bottom: 0rem;
+            > summary {
+              &::after {
+                /* margin-top: .25em; */
+                transform: rotate(-90deg);
+              }
+            }
+            /* > content {
 							transform: scaleY(0);
 						} */
-					}
-					::-webkit-details-marker {
-						/* 	direction: ltr;
+          }
+          ::-webkit-details-marker {
+            /* 	direction: ltr;
 						color: gray;
 						margin-left: 0.5ch; */
-						display: none;
-					}
-				}
-			}
-		}
-	}
-	.detail-info {
-		margin-top: 1rem;
-		> .common-item {
-			height: auto;
-			padding-top: 1.2rem;
-			padding-bottom: 1.2rem;
-			font-size: 1.5rem;
-			> .left {
-				width: 100%;
-				min-width: 7.6rem;
-				flex-direction: column;
-				align-items: flex-start;
-				> .content {
-					word-break: break-all;
-					font-size: 1.6rem;
-					color: #4f4f4f;
-				}
-			}
-		}
-	}
+            display: none;
+          }
+        }
+      }
+    }
+  }
+  .detail-info {
+    margin-top: 1rem;
+    > .common-item {
+      height: auto;
+      padding-top: 1.2rem;
+      padding-bottom: 1.2rem;
+      font-size: 1.5rem;
+      > .left {
+        width: 100%;
+        min-width: 7.6rem;
+        flex-direction: column;
+        align-items: flex-start;
+        > .content {
+          word-break: break-all;
+          font-size: 1.6rem;
+          color: #4f4f4f;
+        }
+      }
+    }
+  }
 }

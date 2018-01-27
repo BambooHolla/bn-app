@@ -4,7 +4,7 @@ import { ScanNodesPage } from "./scan-nodes";
 import { ComponentsModule } from "../../components/components.module";
 
 @NgModule({
-	declarations: [ScanNodesPage],
-	imports: [IonicPageModule.forChild(ScanNodesPage), ComponentsModule],
+  declarations: [ScanNodesPage],
+  imports: [IonicPageModule.forChild(ScanNodesPage), ComponentsModule],
 })
 export class ScanNodesPageModule {}

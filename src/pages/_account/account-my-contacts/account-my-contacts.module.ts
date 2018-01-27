@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from "../../../pipes/pipes.module";
 
 @NgModule({
-	declarations: [AccountMyContactsPage],
-	imports: [
-		IonicPageModule.forChild(AccountMyContactsPage),
-		ComponentsModule,
-		PipesModule,
-	],
+  declarations: [AccountMyContactsPage],
+  imports: [
+    IonicPageModule.forChild(AccountMyContactsPage),
+    ComponentsModule,
+    PipesModule,
+  ],
 })
 export class AccountMyContactsPageModule {}

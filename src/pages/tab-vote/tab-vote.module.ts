@@ -4,7 +4,7 @@ import { TabVotePage } from "./tab-vote";
 import { ComponentsModule } from "../../components/components.module";
 
 @NgModule({
-	declarations: [TabVotePage],
-	imports: [IonicPageModule.forChild(TabVotePage), ComponentsModule],
+  declarations: [TabVotePage],
+  imports: [IonicPageModule.forChild(TabVotePage), ComponentsModule],
 })
 export class TabVotePageModule {}

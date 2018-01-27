@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 /**
  * Generated class for the RadioButtonComponent component.
@@ -7,16 +7,14 @@ import { Component } from '@angular/core';
  * Components.
  */
 @Component({
-  selector: 'radio-button',
-  templateUrl: 'radio-button.html'
+  selector: "radio-button",
+  templateUrl: "radio-button.html",
 })
 export class RadioButtonComponent {
-
   text: string;
 
   constructor() {
-    console.log('Hello RadioButtonComponent Component');
-    this.text = 'Hello World';
+    console.log("Hello RadioButtonComponent Component");
+    this.text = "Hello World";
   }
-
 }

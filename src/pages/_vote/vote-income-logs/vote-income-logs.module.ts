@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../../components/components.module";
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [VoteIncomeLogsPage],
-	imports: [
-		IonicPageModule.forChild(VoteIncomeLogsPage),
-		ComponentsModule,
-		MomentModule,
-	],
+  declarations: [VoteIncomeLogsPage],
+  imports: [
+    IonicPageModule.forChild(VoteIncomeLogsPage),
+    ComponentsModule,
+    MomentModule,
+  ],
 })
 export class VoteIncomeLogsPageModule {}

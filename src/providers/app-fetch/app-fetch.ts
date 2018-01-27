@@ -6,8 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { AppUrl } from "../app-setting/app-setting";
 
 import { AppSettingProvider } from "../app-setting/app-setting";
-import "whatwg-fetch";// 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
-
+import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
   static parseErrorMessage(code, message) {
@@ -88,7 +87,7 @@ export class AppFetchProvider {
     }
   }
   private _handleResCatch(res) {
-    debugger
+    debugger;
     const data = res.json();
     const error = res.json().error;
     debugger;

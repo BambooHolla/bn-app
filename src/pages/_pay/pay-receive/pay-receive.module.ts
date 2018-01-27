@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../../components/components.module";
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [PayReceivePage],
-	imports: [
-		IonicPageModule.forChild(PayReceivePage),
-		ComponentsModule,
-		MomentModule,
-	],
+  declarations: [PayReceivePage],
+  imports: [
+    IonicPageModule.forChild(PayReceivePage),
+    ComponentsModule,
+    MomentModule,
+  ],
 })
 export class PayReceivePageModule {}

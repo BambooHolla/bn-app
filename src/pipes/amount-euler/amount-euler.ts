@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 
 /**
  * Generated class for the AmountEulerPipe pipe.
@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  * See https://angular.io/api/core/Pipe for more info on Angular Pipes.
  */
 @Pipe({
-  name: 'amountEuler',
+  name: "amountEuler",
 })
 export class AmountEulerPipe implements PipeTransform {
   /**
@@ -14,8 +14,8 @@ export class AmountEulerPipe implements PipeTransform {
    */
   transform(num: number, ...args) {
     num = num / 100000000;
-    let numStr = '' + num;
-    if(/e/.test(numStr) == true) {
+    let numStr = "" + num;
+    if (/e/.test(numStr) == true) {
       numStr = num.toFixed(8);
       return numStr;
     }

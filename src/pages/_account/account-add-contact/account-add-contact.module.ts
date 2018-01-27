@@ -4,10 +4,7 @@ import { AccountAddContactPage } from "./account-add-contact";
 import { ComponentsModule } from "../../../components/components.module";
 
 @NgModule({
-	declarations: [AccountAddContactPage],
-	imports: [
-		IonicPageModule.forChild(AccountAddContactPage),
-		ComponentsModule,
-	],
+  declarations: [AccountAddContactPage],
+  imports: [IonicPageModule.forChild(AccountAddContactPage), ComponentsModule],
 })
 export class AccountAddContactPageModule {}

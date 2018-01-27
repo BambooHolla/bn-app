@@ -1,13 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
-import * as IFM from 'ifmchain-ibt';
-
+import * as IFM from "ifmchain-ibt";
 
 /*
   Generated class for the PeerServiceProvider provider.
@@ -30,12 +29,15 @@ export class PeerServiceProvider {
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.peer = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).peer;
-    this.peerList = ['http://mainnet.ifmchain.org', 'http://test1.ifmchain.org'];
+    this.peerList = [
+      "http://mainnet.ifmchain.org",
+      "http://test1.ifmchain.org",
+    ];
   }
 
-  readonly PEER_SYNC = '/api/loader/status/sync';
-  readonly PING_URL = '/api/blocks/getHeight';
-  readonly PEERS_URL = '/api/peers/';
+  readonly PEER_SYNC = "/api/loader/status/sync";
+  readonly PING_URL = "/api/blocks/getHeight";
+  readonly PEERS_URL = "/api/peers/";
 
   /**
    * 获取节点信息
@@ -86,35 +88,42 @@ export class PeerServiceProvider {
     if (peers.length === 0) {
       let configPeers: Array<string> = await this.getPeersConfig();
       //异步执行异步的循环
-      await Promise.all(configPeers.map(async (peer) => {
-        let data = await this.fetch.get<{ peers: any[] }>(peer + this.PEERS_URL);
-        for (let i of data.peers) {
-          if (i.state == 2) {
-            peers.unshift(i.ip + ':' + i.port);
-          }else if (i.state == 1) {
-            //状态为1的才进行插入
-            let ip_port = i.ip + ':' + i.port;
-            peers.push(ip_port);
+      await Promise.all(
+        configPeers.map(async peer => {
+          let data = await this.fetch.get<{ peers: any[] }>(
+            peer + this.PEERS_URL,
+          );
+          for (let i of data.peers) {
+            if (i.state == 2) {
+              peers.unshift(i.ip + ":" + i.port);
+            } else if (i.state == 1) {
+              //状态为1的才进行插入
+              let ip_port = i.ip + ":" + i.port;
+              peers.push(ip_port);
+            }
           }
-          
-        }
-      }))
+        }),
+      );
     }
 
     //获取保存的节点列表中的每一个节点的连接时间和高度
     //TODO:当TIMEOUT秒时放弃连接
-    await Promise.all(peers.map(async (peer) => {
-      let startTimestamp = new Date().getTime();
-      let data = await this.fetch.get<{ height: number }>(peer + this.PING_URL);
-      // let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);      
-      let endTimestamp = new Date().getTime();
-      let during = endTimestamp - startTimestamp;
-      peersArray.push({
-        "peer": peer,
-        "height": data.height,
-        "during": during
-      })
-    }))
+    await Promise.all(
+      peers.map(async peer => {
+        let startTimestamp = new Date().getTime();
+        let data = await this.fetch.get<{ height: number }>(
+          peer + this.PING_URL,
+        );
+        // let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);
+        let endTimestamp = new Date().getTime();
+        let during = endTimestamp - startTimestamp;
+        peersArray.push({
+          peer: peer,
+          height: data.height,
+          during: during,
+        });
+      }),
+    );
 
     //对列表进行排序，根据高度进行排序，再根据速度进行筛选
     peersArray = peersArray.sort((a, b) => {
@@ -123,45 +132,44 @@ export class PeerServiceProvider {
       } else {
         return a.height < b.height ? 1 : -1;
       }
-    })
+    });
 
     this.savePeersLocal(peersArray);
 
     return peersArray;
   }
 
-  async savePeersLocal(peers: Array<string>) {
-    
-  }
-  
+  async savePeersLocal(peers: Array<string>) {}
+
   /**
    * 获取节点的同步状态
    * return 1 -- 未同步，最新
    * return number--同步状态，小数返回两位
    * return -1 -- 同步错误
    */
-  async getPeerSync(host ?: string) {
-    let peerSyncUrl = host ? host + this.PEER_SYNC : this.appSetting.APP_URL(this.PEER_SYNC);
+  async getPeerSync(host?: string) {
+    let peerSyncUrl = host
+      ? host + this.PEER_SYNC
+      : this.appSetting.APP_URL(this.PEER_SYNC);
 
     let data = await this.fetch.get<any>(peerSyncUrl);
-    if(data.success) {
-      if(data.sync == false) {
+    if (data.success) {
+      if (data.sync == false) {
         return 1;
-      }else {
-        return (1-(data.blocks/data.height)).toFixed(2);
+      } else {
+        return (1 - data.blocks / data.height).toFixed(2);
       }
-    }else {
+    } else {
       console.log("get peer sync error");
       return -1;
     }
   }
 
   async getPeersLocal() {
-    return []
+    return [];
   }
 
   async getPeersConfig() {
-    return []
+    return [];
   }
-
 }

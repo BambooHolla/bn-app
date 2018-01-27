@@ -247,7 +247,9 @@ export function TB_AB_Generator(
         if (!_v) {
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${
+                this.constructor.name
+              } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           this.appSetting.user_token.subscribe(token => {

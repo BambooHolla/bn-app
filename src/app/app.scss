@@ -14,95 +14,95 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 .header-no-border {
-	.toolbar-background {
-		border: none !important;
-	}
-	> ion-content {
-		> .scroll-content {
-			top: -0.55px;
-		}
-	}
+  .toolbar-background {
+    border: none !important;
+  }
+  > ion-content {
+    > .scroll-content {
+      top: -0.55px;
+    }
+  }
 }
 .clip-text {
-	-webkit-background-clip: text !important;
-	background-clip: text !important;
-	// -webkit-text-fill-color: transparent;
-	color: transparent !important;
-	ali-icon {
-		background-image: inherit;
-		-webkit-background-clip: text !important;
-		background-clip: text !important;
-	}
-	// .ifmicon {
-	// 		// background-image: inherit;
-	// 	&::before {
-	// 		// background-image: inherit;
-	// 		-webkit-background-clip: text !important;
-	// 		background-clip: text !important;
-	// 		// -webkit-text-fill-color: transparent;
-	// 		color: transparent !important;
-	// 	}
-	// }
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  // -webkit-text-fill-color: transparent;
+  color: transparent !important;
+  ali-icon {
+    background-image: inherit;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+  }
+  // .ifmicon {
+  // 		// background-image: inherit;
+  // 	&::before {
+  // 		// background-image: inherit;
+  // 		-webkit-background-clip: text !important;
+  // 		background-clip: text !important;
+  // 		// -webkit-text-fill-color: transparent;
+  // 		color: transparent !important;
+  // 	}
+  // }
 }
 
 // $toolbar-ios-height: 1.8rem;
 $navbar-height: 60px;
 ion-loading {
-	&.can-goback {
-		margin-top: $navbar-height;
-	}
-	&.can-tap {
-		pointer-events: none;
-		background-color: transparent;
-	}
+  &.can-goback {
+    margin-top: $navbar-height;
+  }
+  &.can-tap {
+    pointer-events: none;
+    background-color: transparent;
+  }
 }
 ion-navbar,
 ion-title {
-	padding-top: 18px !important;
+  padding-top: 18px !important;
 }
 ion-navbar.toolbar-ios {
-	min-height: $navbar-height;
-	padding: 0 1.1rem;
-	.back-button {
-		width: 3rem;
-		.button-inner {
-			.back-button-icon {
-				display: flex;
-				align-items: flex-end;
-				&::before {
-					font-family: "ifmicon" !important;
-					content: "\e607";
-					font-size: 1.6rem;
-					color: #7b7b7b;
-					transform: rotate(180deg);
-					position: relative;
-					top: -0.2rem;
-					left: -0.8rem;
-				}
-			}
-		}
-	}
-	.toolbar-title-ios {
-		color: #7a7a7a;
-	}
-	.bar-buttons {
-		button {
-			background-color: transparent;
-			border: none;
-		}
-		ali-icon {
-			color: #7a7a7a;
-			font-size: 1.95rem;
-		}
-	}
+  min-height: $navbar-height;
+  padding: 0 1.1rem;
+  .back-button {
+    width: 3rem;
+    .button-inner {
+      .back-button-icon {
+        display: flex;
+        align-items: flex-end;
+        &::before {
+          font-family: "ifmicon" !important;
+          content: "\e607";
+          font-size: 1.6rem;
+          color: #7b7b7b;
+          transform: rotate(180deg);
+          position: relative;
+          top: -0.2rem;
+          left: -0.8rem;
+        }
+      }
+    }
+  }
+  .toolbar-title-ios {
+    color: #7a7a7a;
+  }
+  .bar-buttons {
+    button {
+      background-color: transparent;
+      border: none;
+    }
+    ali-icon {
+      color: #7a7a7a;
+      font-size: 1.95rem;
+    }
+  }
 }
 
 ion-content {
-	> .scroll-content {
-		ion-content {
-			> .scroll-content {
-				margin-bottom: 0 !important;
-			}
-		}
-	}
+  > .scroll-content {
+    ion-content {
+      > .scroll-content {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
 }

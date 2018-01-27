@@ -1,8 +1,8 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { AppSettingProvider } from '../../providers/app-setting/app-setting';
+import { Pipe, PipeTransform } from "@angular/core";
+import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 
 @Pipe({
-  name: 'timestamp',
+  name: "timestamp",
 })
 export class TimestampPipe implements PipeTransform {
   /**
@@ -10,10 +10,20 @@ export class TimestampPipe implements PipeTransform {
    */
   transform(value: number, ...args) {
     //种子的UTC时间
-    let d = new Date(Date.UTC(AppSettingProvider.SEED_DATE[0], AppSettingProvider.SEED_DATE[1], AppSettingProvider.SEED_DATE[2], AppSettingProvider.SEED_DATE[3], AppSettingProvider.SEED_DATE[4], AppSettingProvider.SEED_DATE[5], AppSettingProvider.SEED_DATE[6]));
+    let d = new Date(
+      Date.UTC(
+        AppSettingProvider.SEED_DATE[0],
+        AppSettingProvider.SEED_DATE[1],
+        AppSettingProvider.SEED_DATE[2],
+        AppSettingProvider.SEED_DATE[3],
+        AppSettingProvider.SEED_DATE[4],
+        AppSettingProvider.SEED_DATE[5],
+        AppSettingProvider.SEED_DATE[6],
+      ),
+    );
     //获取传入时间戳
     let t = parseInt((d.getTime() / 1000).toString());
-    
+
     //获得传入时间戳的准确时间戳
     let tDate = new Date((value + t) * 1000);
     return tDate;

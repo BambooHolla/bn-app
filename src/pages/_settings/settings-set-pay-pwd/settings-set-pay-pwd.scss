@@ -1,39 +1,39 @@
 page-settings-set-pay-pwd {
-	@extend .header-no-border;
-	> .content {
-		background-color: #eeeeee;
-		> .scroll-content {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-	}
-	.common-form {
-		margin-top: 1rem;
-	}
-	.fee-info {
-		margin: 0.5rem 0;
-		color: #fc615c;
-		width: 92%;
-		font-size: 1.4rem;
-		ali-icon {
-			font-size: 1.6rem;
-		}
-	}
-	.submit-button {
-		font-size: 1.8rem;
-		color: #fff;
-		background: linear-gradient(
-			to bottom,
-			#ff5a5a 0%,
-			#fd6e5f 50%,
-			#ff9171 100%
-		);
-		height: 4rem;
-		border-radius: 0.8rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-weight: 700;
-	}
+  @extend .header-no-border;
+  > .content {
+    background-color: #eeeeee;
+    > .scroll-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  .common-form {
+    margin-top: 1rem;
+  }
+  .fee-info {
+    margin: 0.5rem 0;
+    color: #fc615c;
+    width: 92%;
+    font-size: 1.4rem;
+    ali-icon {
+      font-size: 1.6rem;
+    }
+  }
+  .submit-button {
+    font-size: 1.8rem;
+    color: #fff;
+    background: linear-gradient(
+      to bottom,
+      #ff5a5a 0%,
+      #fd6e5f 50%,
+      #ff9171 100%
+    );
+    height: 4rem;
+    border-radius: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
 }

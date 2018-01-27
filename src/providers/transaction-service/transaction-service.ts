@@ -8,7 +8,7 @@ import { AppSettingProvider } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./transaction.types";
-export * from './transaction.types'
+export * from "./transaction.types";
 import * as IFM from "ifmchain-ibt";
 
 /*

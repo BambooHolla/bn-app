@@ -1,129 +1,129 @@
 page-pay-receive {
-	@extend .header-no-border;
-	> .header {
-		.back-button {
-			.back-button-icon {
-				&::before {
-					color: #fff !important;
-				}
-			}
-		}
-		.toolbar-title-ios {
-			color: #fff;
-		}
-	}
-	> .content {
-		background: linear-gradient(to bottom, #3eccea 0%, #3ce6d7 100%);
-		> .scroll-content {
-			overflow: hidden;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			margin-bottom: 0 !important;
-		}
-	}
-	.info-wrapper {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		color: #505050;
-		background-color: #fff;
-		width: 92.5%;
-		box-sizing: border-box;
-		padding: 1rem;
-		flex-shrink: 0;
-		flex-grow: 0;
-		border-radius: 0.4rem;
-		> .qrcode {
-			min-width: 50%;
-			max-width: 62%;
-			margin: 1rem;
-		}
-		> .address {
-			font-size: 1.35rem;
-			margin-bottom: 1.2rem;
-			ali-icon {
-				font-size: 1.5rem;
-			}
-		}
-	}
-	.income-logs {
-		flex-grow: 1;
-		margin-top: 1rem;
-		color: #fff;
-		width: 92.5%;
-		display: flex;
-		flex-direction: column;
-		> .title {
-			font-size: 1.8rem;
-			padding-left: 1.4rem;
-			display: flex;
-			align-items: center;
-			height: 2.4rem;
-			flex-grow: 0;
-			flex-shrink: 0;
-		}
-		> .content {
-			flex-grow: 1;
-			flex-shrink: 1;
-			border: none;
-			margin: 0;
-			padding: 0;
-			max-height: 80vh;
-			border-radius: 0.4rem 0.4rem 0 0;
-			background-color: rgba(#fff, 0.18);
-			> .scroll-content {
-				border: none;
-				margin: 0 !important;
-				padding: 0 0.6rem;
-				background: none;
-				.log-item {
-					color: #fff;
-					border-bottom: 0.55px solid rgba(#fff, 0.3);
-					box-sizing: border-box;
-					display: flex;
-					align-items: center;
-					height: 4.7rem;
-					font-weight: lighter;
-					> .left {
-						padding-left: 0.8rem;
-						font-size: 1.4rem;
-					}
-					> .right {
-						margin-left: auto;
-						justify-self: flex-end;
-						font-size: 1.3rem;
-						padding-right: 0.5rem;
-					}
-				}
-			}
-			ion-refresher {
-				.refresher-pulling-icon,
-				.refresher-refreshing-icon {
-					font-size: 2rem;
-					color: #fff;
-					.spinner-ios line {
-						stroke: #fff !important;
-					}
-				}
-				.refresher-pulling-text,
-				.refresher-refreshing-text {
-					font-size: 1.2rem;
-					color: #fff;
-				}
-			}
-			ion-infinite-scroll {
-				.infinite-loading-spinner {
-					font-size: 2rem;
-					.spinner-ios line {
-						stroke: #fff !important;
-					}
-				}
-				.infinite-loading-text {
-					font-size: 1.2rem;
-					color: #fff;
-				}
-			}
-		}
-	}
+  @extend .header-no-border;
+  > .header {
+    .back-button {
+      .back-button-icon {
+        &::before {
+          color: #fff !important;
+        }
+      }
+    }
+    .toolbar-title-ios {
+      color: #fff;
+    }
+  }
+  > .content {
+    background: linear-gradient(to bottom, #3eccea 0%, #3ce6d7 100%);
+    > .scroll-content {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 0 !important;
+    }
+  }
+  .info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #505050;
+    background-color: #fff;
+    width: 92.5%;
+    box-sizing: border-box;
+    padding: 1rem;
+    flex-shrink: 0;
+    flex-grow: 0;
+    border-radius: 0.4rem;
+    > .qrcode {
+      min-width: 50%;
+      max-width: 62%;
+      margin: 1rem;
+    }
+    > .address {
+      font-size: 1.35rem;
+      margin-bottom: 1.2rem;
+      ali-icon {
+        font-size: 1.5rem;
+      }
+    }
+  }
+  .income-logs {
+    flex-grow: 1;
+    margin-top: 1rem;
+    color: #fff;
+    width: 92.5%;
+    display: flex;
+    flex-direction: column;
+    > .title {
+      font-size: 1.8rem;
+      padding-left: 1.4rem;
+      display: flex;
+      align-items: center;
+      height: 2.4rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    > .content {
+      flex-grow: 1;
+      flex-shrink: 1;
+      border: none;
+      margin: 0;
+      padding: 0;
+      max-height: 80vh;
+      border-radius: 0.4rem 0.4rem 0 0;
+      background-color: rgba(#fff, 0.18);
+      > .scroll-content {
+        border: none;
+        margin: 0 !important;
+        padding: 0 0.6rem;
+        background: none;
+        .log-item {
+          color: #fff;
+          border-bottom: 0.55px solid rgba(#fff, 0.3);
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          height: 4.7rem;
+          font-weight: lighter;
+          > .left {
+            padding-left: 0.8rem;
+            font-size: 1.4rem;
+          }
+          > .right {
+            margin-left: auto;
+            justify-self: flex-end;
+            font-size: 1.3rem;
+            padding-right: 0.5rem;
+          }
+        }
+      }
+      ion-refresher {
+        .refresher-pulling-icon,
+        .refresher-refreshing-icon {
+          font-size: 2rem;
+          color: #fff;
+          .spinner-ios line {
+            stroke: #fff !important;
+          }
+        }
+        .refresher-pulling-text,
+        .refresher-refreshing-text {
+          font-size: 1.2rem;
+          color: #fff;
+        }
+      }
+      ion-infinite-scroll {
+        .infinite-loading-spinner {
+          font-size: 2rem;
+          .spinner-ios line {
+            stroke: #fff !important;
+          }
+        }
+        .infinite-loading-text {
+          font-size: 1.2rem;
+          color: #fff;
+        }
+      }
+    }
+  }
 }

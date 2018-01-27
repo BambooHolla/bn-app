@@ -12,17 +12,15 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 
 @IonicPage({ name: "dapp-bill" })
 @Component({
-	selector: "page-dapp-bill",
-	templateUrl: "dapp-bill.html",
+  selector: "page-dapp-bill",
+  templateUrl: "dapp-bill.html",
 })
 export class DappBillPage extends SecondLevelPage {
-	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		@Optional() public tabs: TabsPage,
-	) {
-		super(navCtrl, navParams, true, tabs);
-	}
-
-	
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    @Optional() public tabs: TabsPage,
+  ) {
+    super(navCtrl, navParams, true, tabs);
+  }
 }

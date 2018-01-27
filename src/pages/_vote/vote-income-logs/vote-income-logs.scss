@@ -1,18 +1,18 @@
 page-vote-income-logs {
-	@extend .header-no-border;
-	> .content {
-		> .scroll-content {
-			background-color: #eeeeee;
-		}
-	}
-	.common-list {
-		margin-top: 1rem;
-		> .common-item {
-			> .right {
-				> .title {
-					color: #4f4f4f;
-				}
-			}
-		}
-	}
+  @extend .header-no-border;
+  > .content {
+    > .scroll-content {
+      background-color: #eeeeee;
+    }
+  }
+  .common-list {
+    margin-top: 1rem;
+    > .common-item {
+      > .right {
+        > .title {
+          color: #4f4f4f;
+        }
+      }
+    }
+  }
 }

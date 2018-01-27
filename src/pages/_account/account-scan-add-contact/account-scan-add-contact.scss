@@ -1,10 +1,10 @@
 page-account-scan-add-contact {
-	@extend .header-no-border;
-	.scan-view{
-		position: fixed;
-		top:0;
-		height: 0;
-		width: 100vw;
-		height: 100vh;
-	}
+  @extend .header-no-border;
+  .scan-view {
+    position: fixed;
+    top: 0;
+    height: 0;
+    width: 100vw;
+    height: 100vh;
+  }
 }
