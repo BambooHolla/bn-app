@@ -1,14 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
-import { Observable, BehaviorSubject} from "rxjs";
+import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./transaction.types";
-import * as IFM from 'ifmchain-ibt';
+export * from './transaction.types'
+import * as IFM from "ifmchain-ibt";
 
 /*
   Generated class for the TransactionServiceProvider provider.
@@ -20,6 +21,7 @@ import * as IFM from 'ifmchain-ibt';
 export class TransactionServiceProvider {
   ifmJs: any;
   transaction: any;
+  // block: any;
   transactionTypeCode: any;
   constructor(
     public http: HttpClient,
@@ -27,61 +29,64 @@ export class TransactionServiceProvider {
     public storage: Storage,
     public translateService: TranslateService,
     public alertController: AlertController,
-    public fetch : AppFetchProvider,
+    public fetch: AppFetchProvider,
     public user: UserInfoProvider,
   ) {
-    console.log('Hello TransactionServiceProvider Provider');
+    console.log("Hello TransactionServiceProvider Provider");
     this.ifmJs = AppSettingProvider.IFMJS;
-    this.transaction = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).transaction;
+    this.transaction = this.ifmJs.Api(
+      AppSettingProvider.HTTP_PROVIDER,
+    ).transaction;
+    // this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
     this.transactionTypeCode = this.ifmJs.transactionTypes;
   }
 
-  readonly UNCONFIRMED = '/api/transactions/unconfirmed';
+  readonly UNCONFIRMED = "/api/transactions/unconfirmed";
 
-  getTransactionLink (type) {
-      switch (type) {
-        case this.transactionTypeCode.SEND:
-          return "transactions/tx";
-        //“签名”交易
-        case this.transactionTypeCode.SIGNATURE:
-          return "signatures/tx";
-        //注册为受托人
-        case this.transactionTypeCode.DELEGATE:
-          return "delegates/tx";
-        //投票
-        case this.transactionTypeCode.VOTE:
-          return "accounts/tx/delegates";
-        //注册用户别名地址
-        case this.transactionTypeCode.USERNAME:
-          return "accounts/tx/username";
-        //添加联系人
-        case this.transactionTypeCode.FOLLOW:
-          return "contacts/tx";
-        //注册多重签名帐号
-        case this.transactionTypeCode.MULTI:
-          return "multisignatures/tx";
-        // 侧链应用
-        case this.transactionTypeCode.DAPP:
-          return "dapps/tx"
-        // //转入Dapp资金
-        // case transactionTypes.IN_TRANSFER:
-        //     return "xxxxx"
-        // //转出Dapp资金
-        // case transactionTypes.OUT_TRANSFER:
-        // return "xxxxx"
-        //点赞
-        case this.transactionTypeCode.FABULOUS:
-          return "fabulous/tx";
-        //打赏
-        case this.transactionTypeCode.GRATUITY:
-          return "gratuities/tx";
-        //发送信息
-        case this.transactionTypeCode.SENDMESSAGE:
-          return "messages/tx";
-        //侧链数据存证
-        case this.transactionTypeCode.MARK:
-          return "marks/tx";
-      }
+  getTransactionLink(type) {
+    switch (type) {
+      case this.transactionTypeCode.SEND:
+        return "transactions/tx";
+      //“签名”交易
+      case this.transactionTypeCode.SIGNATURE:
+        return "signatures/tx";
+      //注册为受托人
+      case this.transactionTypeCode.DELEGATE:
+        return "delegates/tx";
+      //投票
+      case this.transactionTypeCode.VOTE:
+        return "accounts/tx/delegates";
+      //注册用户别名地址
+      case this.transactionTypeCode.USERNAME:
+        return "accounts/tx/username";
+      //添加联系人
+      case this.transactionTypeCode.FOLLOW:
+        return "contacts/tx";
+      //注册多重签名帐号
+      case this.transactionTypeCode.MULTI:
+        return "multisignatures/tx";
+      // 侧链应用
+      case this.transactionTypeCode.DAPP:
+        return "dapps/tx";
+      // //转入Dapp资金
+      // case transactionTypes.IN_TRANSFER:
+      //     return "xxxxx"
+      // //转出Dapp资金
+      // case transactionTypes.OUT_TRANSFER:
+      // return "xxxxx"
+      //点赞
+      case this.transactionTypeCode.FABULOUS:
+        return "fabulous/tx";
+      //打赏
+      case this.transactionTypeCode.GRATUITY:
+        return "gratuities/tx";
+      //发送信息
+      case this.transactionTypeCode.SENDMESSAGE:
+        return "messages/tx";
+      //侧链数据存证
+      case this.transactionTypeCode.MARK:
+        return "marks/tx";
+    }
   }
 
   /**
@@ -89,7 +94,7 @@ export class TransactionServiceProvider {
    * @param {string} id
    * @returns {Promise<any>}
    */
-  async getTransactionById (id: string) {
+  async getTransactionById(id: string) {
     let data = this.transaction.getTransactionById(id);
 
     return data.transactions[0];
@@ -99,9 +104,9 @@ export class TransactionServiceProvider {
    * 获取交易时间，交易所需
    * @returns {Promise<any>}
    */
-  async getTimestamp () {
+  async getTimestamp() {
     let data = await this.transaction.getTimestamp();
-    
+
     return data;
   }
 
@@ -112,42 +117,50 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     try {
-      if(this.user.userInfo.balance > 0) {
-        if(this.validateTxdata(txData)) {
+      if (this.user.userInfo.balance > 0) {
+        if (this.validateTxdata(txData)) {
           //获取url，获取类型
-          let transactionUrl = this.appSetting.APP_URL(this.getTransactionLink(txData.type)).toString();
+          let transactionUrl = this.appSetting
+            .APP_URL(this.getTransactionLink(txData.type))
+            .toString();
           console.log(transactionUrl);
           // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
           //获取时间戳
           let timestampRes = await this.getTimestamp();
-          if(timestampRes.success) {
+          if (timestampRes.success) {
             //时间戳加入转账对象
             txData.timestamp = timestampRes.timestamp;
             //生成转账        await上层包裹的函数需要async
-            debugger
-            this.ifmJs.transaction.createTransaction(txData, async (err,transaction)=> {
-              debugger
-              if(err) throw err;
-              let data = await this.fetch.put<any>(transactionUrl, transaction);
-              if(data.success) {
-                return true;
-              }else {
-                throw data.error;
-              }
-            })
+            debugger;
+            this.ifmJs.transaction.createTransaction(
+              txData,
+              async (err, transaction) => {
+                debugger;
+                if (err) throw err;
+                let data = await this.fetch.put<any>(
+                  transactionUrl,
+                  transaction,
+                );
+                if (data.success) {
+                  return true;
+                } else {
+                  throw data.error;
+                }
+              },
+            );
           }
-        }else {
+        } else {
           throw "validate error";
         }
-      }else {
+      } else {
         throw "not enough balance";
       }
-    }catch(e) {
+    } catch (e) {
       let alert = this.alertController.create({
-        title: 'transfer error',
+        title: "transfer error",
         subTitle: e || e.message,
-        buttons: ['OK']
-      })
+        buttons: ["OK"],
+      });
       alert.present();
       return false;
     }
@@ -158,25 +171,28 @@ export class TransactionServiceProvider {
    * @param txData
    * @returns {boolean}
    */
-  validateTxdata (txData) {
-    debugger
-    if(txData) {
-      if(!txData.type && txData.type !== 0) {
-        console.log('tx type error');
+  validateTxdata(txData) {
+    debugger;
+    if (txData) {
+      if (!txData.type && txData.type !== 0) {
+        console.log("tx type error");
         return false;
       }
 
-      if(!txData.secret) {
-        console.log('tx secret error');
+      if (!txData.secret) {
+        console.log("tx secret error");
         return false;
       }
 
-      if((txData.type === 'SEND' && !txData.recipientId) || (txData.type === 'SEND' && !txData.amount)) {
-        console.log('tx is send and recipient is null');
+      if (
+        (txData.type === "SEND" && !txData.recipientId) ||
+        (txData.type === "SEND" && !txData.amount)
+      ) {
+        console.log("tx is send and recipient is null");
         return false;
       }
-      if(!txData.fee) {
-        console.log('tx fee type error');
+      if (!txData.fee) {
+        console.log("tx fee type error");
         return false;
       }
       return true;
@@ -191,19 +207,19 @@ export class TransactionServiceProvider {
    * @param {number} limit
    * @returns {Promise<any>}
    */
-  async getUserTransactions (address: string, page = 1, limit = 10) {
+  async getUserTransactions(address: string, page = 1, limit = 10) {
     var query = {
-      "senderId" : address,
-      "recipientId" : address,
-      "offset" : (page-1)*limit,
-      "limit" : limit,
-      "orderBy" : "t_timestamp:desc"
-    }
+      senderId: address,
+      recipientId: address,
+      offset: (page - 1) * limit,
+      limit: limit,
+      orderBy: "t_timestamp:desc",
+    };
     let data = await this.getTransactions(query);
 
-    if(data.success) {
+    if (data.success) {
       return data.transactions;
-    }else {
+    } else {
       return [];
     }
   }
@@ -213,32 +229,28 @@ export class TransactionServiceProvider {
    * @param {{}} query
    * @returns {Promise<{}>}
    */
-  async getTransactions (query = {}) {
-    let data:any = {};
-    if(typeof(query) === 'object' || typeof(query) === undefined) {
-      // data = await this.block.getTransactions(query);
-    }
+  async getTransactions(query = {}) {
+    let data = await this.transaction.getTransactions(query);
 
     return data;
   }
-  
+
   /**
    * 获取未确认交易
    */
   async getUnconfirmed(page = 1, limit = 10) {
     let unconfirmedUrl = this.appSetting.APP_URL(this.UNCONFIRMED);
-    let query:any;
+    let query: any;
     query.address = this.user.userInfo.address;
     query.senderPublicKey = this.user.userInfo.publicKey;
-    query.offset = (page-1) * limit;
+    query.offset = (page - 1) * limit;
     query.limit = limit;
-    
-    let data = await this.fetch.get<any>(unconfirmedUrl, {params: query});
-    if(data.success) {
+
+    let data = await this.fetch.get<any>(unconfirmedUrl, { params: query });
+    if (data.success) {
       return data.transactions;
-    }else {
+    } else {
       console.log("get unconfirmed error");
     }
   }
-
 }

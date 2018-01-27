@@ -12,8 +12,8 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AlertController } from "ionic-angular";
-import { AccountServiceProvider } from "../account-service/account-service"
-import  * as IFM from 'ifmchain-ibt';
+import { AccountServiceProvider } from "../account-service/account-service";
+import * as IFM from "ifmchain-ibt";
 
 export type UserModel = {
   name: string;
@@ -23,7 +23,7 @@ export type UserModel = {
 @Injectable()
 export class LoginServiceProvider {
   loginStatus: Observable<boolean>;
-  ifmJs : any;
+  ifmJs: any;
   Mnemonic: any;
   constructor(
     public http: Http,
@@ -31,8 +31,8 @@ export class LoginServiceProvider {
     public fetch: AppFetchProvider,
     public storage: Storage,
     public alertController: AlertController,
-    public translateService : TranslateService,
-    public accountService : AccountServiceProvider,
+    public translateService: TranslateService,
+    public accountService: AccountServiceProvider,
   ) {
     console.group("Hello LoginServiceProvider Provider");
     window["LoginServiceProviderInstance"] = this;
@@ -67,9 +67,7 @@ export class LoginServiceProvider {
   @TB_AB_Generator("loginerInfo")
   loginerInfo_Executor(promise_pro) {
     return promise_pro.follow(
-      this.fetch
-        .autoCache(true)
-        .get(this.LOGIN_URL, { search: { type: "1" } }),
+      this.fetch.autoCache(true).get(this.LOGIN_URL, { search: { type: "1" } }),
     );
   }
   private USER_PWD_STORE_KEY = "IFM_USER_LOGIN_PWD";
@@ -83,35 +81,37 @@ export class LoginServiceProvider {
    * @memberof LoginServiceProvider
    */
   async doLogin(password: string, savePwd = true) {
-    if(this.checkAccountLoginAble(password)) {
+    if (this.checkAccountLoginAble(password)) {
       let keypair = this.ifmJs.keypairHelper.create(password);
       let req = {
-        "publicKey": keypair.publicKey.toString('hex')
-      }
+        publicKey: keypair.publicKey.toString("hex"),
+      };
 
       let data = await this.fetch.put<any>(this.LOGIN_URL, req);
-      if(data.success) {
+      if (data.success) {
         let loginObj = {
           password,
-          publicKey : data.account.publicKey,
-          address : data.account.address,
-          username : data.account.username || "",
-          balance : data.account.balance,
-          remember : savePwd,
-          secondPublickey : data.account.secondPublicKey ? data.account.secondPublicKey : ""
-        }
-        
-        localStorage.setItem("address", data.account.address);  
+          publicKey: data.account.publicKey,
+          address: data.account.address,
+          username: data.account.username || "",
+          balance: data.account.balance,
+          remember: savePwd,
+          secondPublickey: data.account.secondPublicKey
+            ? data.account.secondPublicKey
+            : "",
+        };
+
+        localStorage.setItem("address", data.account.address);
         await this.accountService.saveUserSettingLocal(loginObj);
         // this.appSetting.setUserToken(loginObj);
         return data;
       }
-    }else {
+    } else {
       let alert = this.alertController.create({
-        title: 'error',
-        subTitle: 'Your passphrase is incorrect.',
-        buttons: ['OK']
-      })
+        title: "error",
+        subTitle: "Your passphrase is incorrect.",
+        buttons: ["OK"],
+      });
       alert.present();
       return false;
     }
@@ -122,9 +122,9 @@ export class LoginServiceProvider {
    */
   async getRecentAccount() {
     let address = localStorage.getItem("address");
-    if(address) {
+    if (address) {
       let accountInfo = await this.storage.get(address);
-      if(accountInfo && accountInfo.remember) {
+      if (accountInfo && accountInfo.remember) {
         return accountInfo.password;
       }
     }
@@ -146,18 +146,19 @@ export class LoginServiceProvider {
    * 创建一个新的账号，根据当前语言获得不同的主密码语言
    *
    */
-  generateNewPassphrase() {
-    if(this.translateService.defaultLang && this.translateService.defaultLang === 'en') {
-      return this.accountService.generateCryptoPassword({}, 'en');
-    }else {
-      return this.accountService.generateCryptoPassword({
-        "phone" : "123",
-        "email" : "aaa@qaa.com",
-        "mark" : "my secret"
-      }, 'cn');
+  generateNewPassphrase(params: {
+    phone?: string;
+    email?: string;
+    mark?: string;
+    pwd?: string;
+  }) {
+    const currentLang = this.translateService.currentLang;
+    if (currentLang.indexOf("zh-") === 0) {
+      return this.accountService.generateCryptoPassword(params, "cn");
+    } else {
+      return this.accountService.generateCryptoPassword(params, "en");
     }
   }
-
 
   loginOut() {
     this.appSetting.clearUserToken();

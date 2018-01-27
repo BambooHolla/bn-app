@@ -45,9 +45,11 @@ export class TabChainPage extends FirstLevelPage {
 	)
 	async loadBlockList() {
 		const { block_list_config } = this;
-		const block_list = await this.blockService.getTopBlocks(
-			false,
-			block_list_config.pageSize,
+		const block_list = this.blockService.blockListHandle(
+			await this.blockService.getTopBlocks(
+				false,
+				block_list_config.pageSize,
+			),
 		);
 		console.log("block_list", block_list);
 		this.block_list = block_list;

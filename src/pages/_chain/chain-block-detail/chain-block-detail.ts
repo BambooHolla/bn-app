@@ -6,8 +6,8 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import {
 	BlockServiceProvider,
 	BlockModel,
-	TransactionModel,
 } from "../../../providers/block-service/block-service";
+import {TransactionModel} from "../../../providers/transaction-service/transaction-service";
 
 @IonicPage({ name: "chain-block-detail" })
 @Component({
@@ -34,10 +34,10 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 		trans_num: (Math.random() * 5000) | 0,
 		trans_assets: Math.random() * 10000,
 		fee: 5000 * Math.random() * 0.00000001,
-		tran_logs: [],
+		tran_list: [],
 	}*/;
-	tran_logs: TransactionModel[];
-	tran_logs_config = {
+	tran_list: TransactionModel[] = [];
+	tran_list_config = {
 		page: 1,
 		pageSize: 20,
 		has_more: true,
@@ -46,7 +46,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 	initAndLoadData() {
 		const block: BlockModel = this.navParams.get("block");
 		if (!block) {
-			this.navCtrl.pop();
+			return this.navCtrl.goToRoot({});
 		}
 		this.block_info = block;
 		return this.loadTranLogs();
@@ -59,30 +59,34 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 		ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
 	)
 	async loadTranLogs() {
-		const { block_info, tran_logs_config } = this;
+		const { block_info, tran_list_config } = this;
 		// 重置page
-		tran_logs_config.page = 1;
+		tran_list_config.page = 1;
 		const transaction_list = await this.blockService.getTransactionsInBlock(
 			block_info.id,
-			tran_logs_config.page,
-			tran_logs_config.pageSize,
+			tran_list_config.page,
+			tran_list_config.pageSize,
 		);
+		tran_list_config.has_more =
+			transaction_list.length === tran_list_config.pageSize;
 
-		await new Promise(cb => setTimeout(cb, 1000));
-		this.tran_logs.push(...transaction_list);
+		this.tran_list.push(...transaction_list);
 	}
 
 	@asyncCtrlGenerator.error(() =>
 		ChainBlockDetailPage.getTranslate("LOAD_MORE_TRANSACTION_LIST_ERROR"),
 	)
 	async loadMoreTranLogs() {
-		await new Promise(cb => setTimeout(cb, 1000));
-		if (this.tran_logs.length < 110) {
-			this.tran_logs.length += this.tran_logs_config.pageSize;
-		}
-		if (this.tran_logs.length >= 110) {
-			this.tran_logs.length = 110;
-			this.tran_logs_config.has_more = false;
-		}
+		const { block_info, tran_list_config, tran_list } = this;
+
+		tran_list_config.page += 1;
+		const transaction_list = await this.blockService.getTransactionsInBlock(
+			block_info.id,
+			tran_list_config.page,
+			tran_list_config.pageSize,
+		);
+		tran_list_config.has_more =
+			transaction_list.length === tran_list_config.pageSize;
+		this.tran_list.push(...transaction_list);
 	}
 }

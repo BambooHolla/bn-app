@@ -106,15 +106,16 @@ export class ChainMeshComponent extends AniBase {
 		const gradient_r_canvas = ChainMeshComponent.createRadialGradient(
 			wh_size,
 			[
-				[0, "rgba(255,255,255,0.3)"],
-				// [0.2, "rgba(255,255,255,0.5)"],
-				[0.35, "rgba(255,255,255,0.5)"],
-				[0.65, "rgba(255,255,255,0.65)"],
-				[0.8, "rgba(255,255,255,0.8)"],
-				[0.95, "#FFF"],
-				[1, "#FFF"],
+				[0, "rgba(0,0,0,1)"],
+				// [0.2, "rgba(0,0,0,0.5)"],
+				[0.35, "rgba(0,0,0,1)"],
+				[0.65, "rgba(0,0,0,1)"],
+				[0.8, "rgba(0,0,0,1)"],
+				[0.95, "rgba(0,0,0,0)"],
+				[1, "rgba(0,0,0,0)"],
 			],
 		);
+		document.body.appendChild(gradient_r_canvas);
 
 		const mask_texture = PIXI.Texture.fromCanvas(gradient_r_canvas);
 

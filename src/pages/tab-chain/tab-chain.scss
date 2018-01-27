@@ -112,10 +112,11 @@ page-tab-chain {
 		}
 	}
 	.block-list {
-		padding-top: #{$block-distance}rem;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		transform: translateZ(0);
+		padding-top: #{$block-distance}rem;
 		.block-item {
 			margin-bottom: #{$block-distance}rem;
 			background-color: #fff;

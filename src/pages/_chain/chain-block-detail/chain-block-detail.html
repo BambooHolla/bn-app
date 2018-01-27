@@ -13,23 +13,23 @@
           锻造者
         </div>
         <div class="right">
-          <ali-icon name="ifm-clock"></ali-icon>{{block_info.create_time|amDateFormat:"YYYY.MM.DD"}}
+          <ali-icon name="ifm-clock"></ali-icon>{{block_info?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD"}}
         </div>
       </div>
       <div class="line address">
-        {{block_info.address}}
+        {{block_info?.address}}
       </div>
     </div>
     <div class="content">
       <div class="line">
         <div class="left reward">
-          <div class="value">{{block_info.reward|number:"1.0-0"}}</div>
+          <div class="value">{{block_info?.reward|amountEuler|number:"1.0-0"}}</div>
           <div class="title">
             <ali-icon name="ifm-reward"></ali-icon>区块奖励
           </div>
         </div>
         <div class="right trans_num">
-          <div class="value">{{block_info.trans_num}}</div>
+          <div class="value">{{block_info?.numberOfTransactions}}</div>
           <div class="title">
             <ali-icon name="ifm-tran"></ali-icon>交易量</div>
         </div>
@@ -40,7 +40,7 @@
           高度
         </div>
         <div class="right">
-          {{block_info.height}}
+          {{block_info?.height}}
         </div>
       </div>
       <div class="line confirm-num">
@@ -49,7 +49,7 @@
           确认数
         </div>
         <div class="right">
-          {{block_info.height}}个
+          {{block_info?.confirmations}}个
         </div>
       </div>
       <div class="line fee">
@@ -58,30 +58,37 @@
           手续费
         </div>
         <div class="right">
-          {{block_info.fee|number:"1.8-8"}}
+          {{block_info?.totalFee|amountEuler|number:"1.8-8"}}
         </div>
       </div>
     </div>
   </div>
   <div class="trans-logs">
+    <!-- TODO: 对于自己的交易，优化显示效果 -->
     <div class="header">
       <ali-icon name="ifm-tran-history"></ali-icon>
       交易记录
     </div>
     <ion-content #listContent class="list" [ion-content-scroll-shadow]="listContent">
-      <div class="item" *ngFor="let tran of block_info.tran_logs" (click)="routeTo('chain-transaction-detail',{id:'qaq'})">
+      <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail',{transaction:tran})">
         <div class="left">
-          <div class="tran-type">转账 （Gaubee）</div>
+          <div class="tran-type">
+            {{('TRAN_TYPE_NAME_'+tran.type) | translate}} 
+            <span class="sender" *ngIf="tran.senderUsername">(tran.senderUsername)</span>
+            <span class="sender" *ngIf="!tran.senderUsername&&tran.senderId" [innerHTML]="'('+(tran.senderId|mask:'@address')+')'"></span>
+             
+          </div>
           <div class="create-time">
-            {{block_info.create_time|amDateFormat:"MM-DD hh:mm"}}
+            {{tran?.timestamp|timestamp|amDateFormat:"MM-DD hh:mm"}}
           </div>
         </div>
         <div class="right">
-          <div class="extend-info">Bangeel</div>
-          <div class="amount">{{block_info.reward|number:"1.8-8"}}</div>
+            <div class="extend-info" *ngIf="tran.recipientUsername">tran.recipientUsername</div>
+            <div class="extend-info" *ngIf="!tran.recipientUsername&&tran.recipientId" [innerHTML]="tran.recipientId|mask:'@address'"></div>
+          <div class="amount">{{tran?.amount|amountEuler|number:"1.8-8"}}</div>
         </div>
       </div>
-      <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreTranLogs())" [enabled]="tran_logs_config.has_more">
+      <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreTranLogs())" [enabled]="tran_list_config.has_more">
         <ion-infinite-scroll-content loadingText="加载更多区块交易记录中……"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </ion-content>

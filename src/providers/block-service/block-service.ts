@@ -13,6 +13,8 @@ import {
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
+import { TransactionModel } from "../transaction-service/transaction.types";
+
 export * from "./block.types";
 
 @Injectable()
@@ -144,7 +146,7 @@ export class BlockServiceProvider {
     if (typeof query === "object" || typeof query === undefined) {
       data = await this.block.getBlocks(query);
     }
-    
+
     return data;
   }
 
@@ -207,19 +209,20 @@ export class BlockServiceProvider {
       return this.blockArray;
     }
   }
-  
+
   /**
    * 获取当前的块是否延迟
-   * @param list 
+   * @param list
    */
-  blockListHandle(list:any[]) {
-    for(let i = 0; i<list.length-1; i++) {
-      if(list[i].timestamp > list[i+1].timestamp + 128) {
+  blockListHandle(list: TYPE.BlockModel[]) {
+    for (let i = 0; i < list.length - 1; i++) {
+      if (list[i].timestamp > list[i + 1].timestamp + 128) {
         list[i].delay = true;
-      }else {
+      } else {
         list[i].delay = false;
       }
     }
+    return list;
   }
 
   /**
@@ -228,19 +231,23 @@ export class BlockServiceProvider {
    * @param {number} limit
    * @returns {Promise<any>}
    */
-  async getBlocksByPage(page: number, limit = 10, sort = true): Promise<TYPE.BlockModel[]> {
-    if(page === 1 && this.blockArray && this.blockArray.length > limit) {
+  async getBlocksByPage(
+    page: number,
+    limit = 10,
+    sort = true,
+  ): Promise<TYPE.BlockModel[]> {
+    if (page === 1 && this.blockArray && this.blockArray.length > limit) {
       await this.getTopBlocks(true, limit);
-    }else {
+    } else {
       let query = {
-        offset : (page-1) * limit,
-        limit : limit,
-        orderBy : sort ? 'height:asc' : 'height:desc'
-      }
+        offset: (page - 1) * limit,
+        limit: limit,
+        orderBy: sort ? "height:asc" : "height:desc",
+      };
 
       let data = await this.getBlocks(query);
-      
-      if(data.success && data.blocks.length > 0) {
+
+      if (data.success && data.blocks.length > 0) {
         return data.blocks;
       }
 
@@ -250,11 +257,15 @@ export class BlockServiceProvider {
 
   /**
    * 获取块中的交易，分页
-   * @param blockId 
-   * @param page 
-   * @param limit 
+   * @param blockId
+   * @param page
+   * @param limit
    */
-  async getTransactionsInBlock(blockId, page = 1, limit = 10):Promise<TYPE.TransactionModel[]> {
+  async getTransactionsInBlock(
+    blockId,
+    page = 1,
+    limit = 10,
+  ): Promise<TransactionModel[]> {
     let query = {
       blockId: blockId,
       offset: (page - 1) * limit,

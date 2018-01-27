@@ -1,8 +1,20 @@
 page-tab-vote {
 	background-color: #fff;
-	background-image: url("../assets/imgs/net-circle-gray.png");
-	background-size: 128vh 128vh;
-	background-position: center;
+	&::before{
+		position: absolute;
+		width: 128vh;
+		height: 128vh;
+		top: calc(50vh - 64vh);
+		left: calc(50vw - 64vh);
+		content: " ";
+		background-image: url("../assets/imgs/net-circle-gray.png");
+		background-size:  100% 100%;
+		background-position: center;
+		animation-name: rotate-bg3;
+		animation-timing-function: linear;
+		animation-duration: 280s * 2;
+		animation-iteration-count: infinite;
+	}
 	> .content-ios {
 		background: none;
 	}
@@ -31,7 +43,7 @@ page-tab-vote {
 		position: fixed;
 		height: 56.22vh;
 		width: 56.22vh;
-		left: 0;
+		left: calc(50vw - 56.22vh / 2);
 		top: 0;
 		z-index: -1;
 		// background-color: purple;
@@ -46,7 +58,7 @@ page-tab-vote {
 				animation-name: rotate-chain-mesh;
 				animation-delay: 0.6s;
 				animation-timing-function: linear;
-				animation-duration: 36s;
+				animation-duration: 140s;
 				animation-iteration-count: infinite;
 			}
 		}
@@ -70,16 +82,35 @@ page-tab-vote {
 		left: -32vw;
 		top: -25vw;
 		z-index: -2;
-		background-image: url("../assets/imgs/tab-vote/bg.png");
-		background-repeat: no-repeat;
-		background-size: 100%;
-		background-position: center;
 		transform: scale(0);
 		opacity: 0.4;
 		transition-duration: 0.5s;
+		&::after {
+			position: absolute;
+			content: " ";
+			width: 100%;
+			height: 100%;
+			background-image: url("../assets/imgs/tab-vote/bg.png");
+			background-repeat: no-repeat;
+			background-size: 100%;
+			background-position: center;
+			animation-duration: 280s;
+			animation-name: rotate-bg3;
+			animation-timing-function: linear;
+			animation-iteration-count: infinite;
+			background-color: #fff;
+		}
 		&.vote-detail {
 			transform: scale(1);
 			opacity: 1;
+		}
+		@keyframes rotate-bg3 {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(-360deg);
+			}
 		}
 	}
 	.pages-container {
@@ -248,31 +279,39 @@ page-tab-vote {
 				}
 			}
 			.ani-glow {
-				contain: strict;
+				/* contain: strict; */
 				position: absolute;
 				width: 94%;
 				height: 94%;
 				top: 3%;
 				left: 3%;
 				border-radius: 50%;
-				overflow: hidden;
+				/* overflow: hidden; */
 				/* background: radial-gradient(
 					ellipse at 50% 10%,
 					rgba(#fff, 0) 0%,
 					rgba(#fdd04e, 0) 60%,
 					rgba(#fdd04e, 1) 70%
 				); */
-				background-image: url("../assets/imgs/tab-vote/glow.png");
-				background-size: 100%;
 				/**/
-				display: none;
-				opacity: 0;
-				transition-duration: 0.75s;
+				 /* display: none;
+				 opacity: 1; */
+				/* transform: scale(0.4);
+				transition-duration: 0.75s; */
 				&.show {
-					display: block;
-					opacity: 1;
+					/* display: block;
+					opacity: 1; */
+					/* transform: scale(1); */
 				}
-				> canvas {
+				&::after {
+					position: absolute;
+					content: " ";
+					width: 100%;
+					height: 100%;
+					top: 0;
+					left: 0;
+					/* background-image: url("../assets/imgs/tab-vote/glow.png"); */
+					background-size: 100%;
 					opacity: 0.5;
 				}
 			}

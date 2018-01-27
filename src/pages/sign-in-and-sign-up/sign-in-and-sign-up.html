@@ -13,7 +13,7 @@
     <div class="login-form" [@login-in-out]="page_status">
       <div class="inputer-container">
         <ali-icon class="lock-icon" name="ifm-lock"></ali-icon>
-        <textarea class="password-textarear" [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="请输入密码" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (input)="autoReHeightPWDTextArea($event)"></textarea>
+        <textarea class="password-textarear" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="请输入密码" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (input)="autoReHeightPWDTextArea($event)"></textarea>
         <div class="password-textarear-mask" [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" [innerHTML]="formData.pwd_disc"></div>
         <button class="show-pwd-button" (touchstart)="showPWD()" (touchend)="hidePWD()">
           <ali-icon class="show-pad-icon" name="ifm-show-pwd"></ali-icon>
@@ -54,7 +54,7 @@
         </div>
         <div class="password-inputer-wrapper">
           <ali-icon name="ifm-lock"></ali-icon>
-          <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.pwd" />
+          <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.gpwd" />
         </div>
       </div>
       <div class="info">

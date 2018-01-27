@@ -2,13 +2,7 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
-
-/**
- * Generated class for the ChainTransactionDetailPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { TransactionModel } from "../../../providers/transaction-service/transaction-service";
 
 @IonicPage({ name: "chain-transaction-detail" })
 @Component({
@@ -24,13 +18,13 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
 		super(navCtrl, navParams, true, tabs);
 		this.auto_header_shadow_when_scroll_down = true;
 	}
-	transaction = {
-		transfer_id: "qtransfer_idaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
-		block_id: "qblock_idaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
-		amount: Math.random() * 10,
-		fee: Math.random() / 10,
-		transfer_time: new Date(Date.now()-10*24*60*60*1000*Math.random()),
-		sender_address: "qsender_addressaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
-		receiver_address: "qreceiver_addressaqqqqqqqqqqqqqqqzzzzzzsdasdasddad",
-	};
+	transaction: TransactionModel;
+	@ChainTransactionDetailPage.willEnter
+	setTransactionData() {
+		const transaction = this.navParams.get("transaction");
+		if(!transaction){
+			return this.navCtrl.goToRoot({});
+		}
+		this.transaction = transaction
+	}
 }

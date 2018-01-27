@@ -16,5 +16,5 @@ export type BlockModel = {
 	blockSize: string;
 	confirmations: string;
 	totalForged: string;
+	delay?: boolean;
 };
-export type TransactionModel = {}

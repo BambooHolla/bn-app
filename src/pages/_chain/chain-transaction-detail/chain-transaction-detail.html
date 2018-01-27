@@ -11,7 +11,7 @@
         交易ID
       </div>
       <div class="right">
-        {{transaction.transfer_id}}
+        {{transaction?.id}}
       </div>
     </div>
     <div class="common-item block-id">
@@ -19,15 +19,15 @@
         所属区块ID
       </div>
       <div class="right">
-        {{transaction.block_id}}
+        {{transaction?.blockId}}
       </div>
     </div>
     <div class="common-item amount">
       <div class="left">
-        交易数量
+        交易量
       </div>
       <div class="right">
-        {{transaction.amount|number:'1.8-8'}}
+        {{transaction?.amount|amountEuler|number:'1.8-8'}}
         <div class="unit">IBT</div>
       </div>
     </div>
@@ -36,7 +36,7 @@
         手续费
       </div>
       <div class="right">
-        {{transaction.fee|number:'1.8-8'}}
+        {{transaction?.fee|amountEuler|number:'1.8-8'}}
         <div class="unit">IBT</div>
       </div>
     </div>
@@ -45,7 +45,7 @@
         交易时间
       </div>
       <div class="right">
-        {{transaction.transfer_time|amDateFormat:"YYYY.MM.DD hh:mm:ss"}}
+        {{transaction?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm:ss"}}
       </div>
     </div>
     <div class="common-item dapp">
@@ -63,7 +63,7 @@
     <div class="common-item extend-data">
       <details>
         <summary>附加数据</summary>
-        <content>穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷穷啊穷啊穷穷</content>
+        <content>{{transaction?.mark}}</content>
       </details>
     </div>
   </div>
@@ -71,13 +71,13 @@
     <div class="common-item sender">
       <div class="left">
         <div class="title">发送者</div>
-        <div class="content">{{transaction.sender_address}}</div>
+        <div class="content">{{transaction?.senderId}}</div>
       </div>
     </div>
     <div class="common-item receiver">
       <div class="left">
         <div class="title">接收者</div>
-        <div class="content">{{transaction.receiver_address}}</div>
+        <div class="content">{{transaction?.recipientId}}</div>
       </div>
     </div>
   </div>
