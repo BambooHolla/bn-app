@@ -25,8 +25,6 @@ export class AccountServiceProvider {
   md5: any;
   sha: any;
   nacl: any;
-  fee: any;
-  balance: any;
   constructor(
     public http: HttpClient,
     public translateService: TranslateService,
@@ -102,13 +100,21 @@ export class AccountServiceProvider {
       }
     }
   }
-
+  
+  /**
+   * 获取用户信息
+   * @param address 
+   */
   async getUserSettingLocal(address: string) {
-    let user: any = this.storage.get(address);
-    this.fee = user.fee;
-    this.balance = user.balance;
+    let user:any = this.storage.get(address);
+    this.user.fee = user.fee;
+    this.user.balance = user.balance;
   }
-
+  
+  /**
+   * 保存用户信息至本地
+   * @param userData 
+   */
   async saveUserSettingLocal(userData: any) {
     let user: any = await this.storage.get(userData.address);
     if (user) {
@@ -130,8 +136,12 @@ export class AccountServiceProvider {
     }
   }
 
-  //生成密码
-  generateCryptoPassword(options: object, lang: string) {
+  /**
+   * 生成密码
+   * @param options 传入的选项，都没有的话返回纯粹的生成密码
+   * @param lang 默认语言
+   */
+  generateCryptoPassword(options : object, lang : string) {
     let password = this.keypair.generatePassPhraseWithInfo(options, lang);
 
     return password;

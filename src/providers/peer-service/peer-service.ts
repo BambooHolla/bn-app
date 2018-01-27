@@ -6,8 +6,8 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
-import * as IFM from "ifmchain-ibt";
-
+import * as IFM from 'ifmchain-ibt';
+const PEERS = ['http://mainnet.ifmchain.org'];
 /*
   Generated class for the PeerServiceProvider provider.
 
@@ -80,31 +80,8 @@ export class PeerServiceProvider {
    * step6 - 保存节点列表至本地，节点列表首先选择已筛选的，没有再选择配置文件中的
    */
   async sortPeers() {
-    let peers: any[];
+    let peers = await this.getAllPeers();
     let peersArray: any[];
-    peers = await this.getPeersLocal();
-    //当不存在本地已保存的节点IP时
-    //根据配置文件获取节点，再获取每一个节点的所有节点列表
-    if (peers.length === 0) {
-      let configPeers: Array<string> = await this.getPeersConfig();
-      //异步执行异步的循环
-      await Promise.all(
-        configPeers.map(async peer => {
-          let data = await this.fetch.get<{ peers: any[] }>(
-            peer + this.PEERS_URL,
-          );
-          for (let i of data.peers) {
-            if (i.state == 2) {
-              peers.unshift(i.ip + ":" + i.port);
-            } else if (i.state == 1) {
-              //状态为1的才进行插入
-              let ip_port = i.ip + ":" + i.port;
-              peers.push(ip_port);
-            }
-          }
-        }),
-      );
-    }
 
     //获取保存的节点列表中的每一个节点的连接时间和高度
     //TODO:当TIMEOUT秒时放弃连接
@@ -134,13 +111,49 @@ export class PeerServiceProvider {
       }
     });
 
-    this.savePeersLocal(peersArray);
+    await this.savePeersLocal(peersArray);
 
     return peersArray;
   }
+  
+  /**
+   * 获取所有节点（未进行统计排序）
+   * 其中可用节点才被加入
+   * 状态为2（未发生过错误）的节点置于头部
+   */
+  async getAllPeers() {
+    let peers: any[];
+    peers = await this.getPeersLocal();
+    //当不存在本地已保存的节点IP时
+    //根据配置文件获取节点，再获取每一个节点的所有节点列表
+    if (!peers || peers.length === 0) {
+      let configPeers: Array<string> = await this.getPeersConfig();
+      //异步执行异步的循环
+      await Promise.all(configPeers.map(async (peer) => {
+        let data = await this.fetch.get<{ peers: any[] }>(peer + this.PEERS_URL);
+        for (let i of data.peers) {
+          if (i.state == 2) {
+            peers.unshift(i.ip + ':' + i.port);
+          }else if (i.state == 1) {
+            //状态为1的才进行插入
+            let ip_port = i.ip + ':' + i.port;
+            peers.push(ip_port);
+          }
+        }
+      }))
+    }
 
-  async savePeersLocal(peers: Array<string>) {}
+    return peers;
+  }
 
+  /**
+   * 保存可用节点列表
+   * @param peers 
+   */
+  async savePeersLocal(peers: Array<string>) {
+    await this.storage.set('peers', peers);
+  }
+  
   /**
    * 获取节点的同步状态
    * return 1 -- 未同步，最新
@@ -164,12 +177,26 @@ export class PeerServiceProvider {
       return -1;
     }
   }
-
+  
+  /**
+   * 获取可用节点
+   * 从未保存过时返回空数组
+   */
   async getPeersLocal() {
-    return [];
+    let peers:any = await this.storage.get('peers');
+    
+    if(peers && peers.length > 0) {
+      return peers;
+    }else {
+      return [];
+    }
   }
-
+  
+  /**
+   * 返回配置的节点数组
+   * 目前在顶部设置
+   */
   async getPeersConfig() {
-    return [];
+    return PEERS;
   }
 }
