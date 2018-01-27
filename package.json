@@ -52,6 +52,7 @@
     "js-nacl": "^1.2.2",
     "kjua": "^0.1.2",
     "pixi.js": "^4.6.2",
+    "plumin.js": "^1.10.7",
     "rxjs": "5.5.2",
     "simplex-noise": "^2.3.0",
     "sw-toolbox": "3.6.0",

@@ -1,4 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
+import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
+
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
@@ -15,6 +17,7 @@ import {
 } from "./sign-in-and-sign-up.animations";
 import { MainPage } from "../pages";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import * as plumin from "plumin.js";
 
 @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -22,7 +25,7 @@ import { AppSettingProvider } from "../../providers/app-setting/app-setting";
   templateUrl: "sign-in-and-sign-up.html",
   animations: [LoginFormInOut, RegisterFormInOut],
 })
-export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
+export class SignInAndSignUpPage extends FirstLevelPage {
   ifmJs = AppSettingProvider.IFMJS;
   transactionType = this.ifmJs.transactionTypes;
   constructor(
@@ -32,6 +35,7 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     public myApp: MyApp,
     public blockService: BlockServiceProvider,
     public transactionService: TransactionServiceProvider,
+    public domSanitizer: DomSanitizer,
   ) {
     super(navCtrl, navParams);
   }
@@ -57,28 +61,16 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     remark: "",
     gpwd: "",
     pwd: "",
-    pwd_disc: "",
   };
   _ture_pwd = "";
   pwd_textarea_height = "";
 
-  autoReHeightPWDTextArea(e) {
-    // e.target.style.height
-    this.pwd_textarea_height = e.target.style.height = "";
-    if (e.target.clientHeight < e.target.scrollHeight) {
-      this.pwd_textarea_height = e.target.style.height =
-        e.target.scrollHeight + "px";
+  autoReHeightPWDTextArea() {
+    const ele = this.passwordTextarear.nativeElement;
+    this.pwd_textarea_height = ele.style.height = "";
+    if (ele.clientHeight < ele.scrollHeight) {
+      this.pwd_textarea_height = ele.style.height = ele.scrollHeight + "px";
     }
-  }
-  bindFormData(e) {
-    debugger;
-    var content = e.target.innerHTML
-      .replace(/\<span\sclass\=\"dot\"\>([\w\W]+?)\<\/span\>/g, "$1")
-      .replace(/\&nbsp\;/g, " ");
-    this.formData.pwd = content;
-    requestAnimationFrame(() => {
-      this.hiddenPwd();
-    });
   }
 
   show_pwd = false;
@@ -88,15 +80,92 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
   hidePWD() {
     this.show_pwd = false;
   }
+  togglePWD() {
+    this.show_pwd = !this.show_pwd;
+  }
+  pwd_font_char_map = new Map();
+  pwd_font = (() => {
+    // const canvas_ele = document.createElement("canvas");
+    // canvas_ele.style.display = "none";
+    // document.body.appendChild(canvas_ele);
+    plumin.setup({
+      width: 1024,
+      height: 1024,
+    });
+
+    return new plumin.Font({
+      familyName: "PWD",
+      ascender: 800,
+      descender: -200,
+    });
+  })();
   hiddenPwd() {
-    this.formData.pwd_disc = this.formData.pwd.replace(
-      /([\w\W])/g,
-      (match_str, match_char) => {
-        return `<span class="dot">${
-          match_char === " " ? "&nbsp;" : match_char
-        }</span>`;
-      },
-    );
+    this.generatePWDFont();
+  }
+  font_name: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("PWD");
+  @ViewChild("fontCalc") fontCalcEle: ElementRef;
+  calcFontWidth(c) {
+    const ele = this.fontCalcEle.nativeElement;
+    ele.innerHTML = c;
+    return ele.getBoundingClientRect().width;
+  }
+  generatePWDFont() {
+    const { pwd_font_char_map } = this;
+    const pwd_str = this.formData.pwd;
+    const new_char_list = [];
+    for (let i = 0; i < pwd_str.length; i += 1) {
+      const char = pwd_str[i];
+      if (pwd_font_char_map.has(char)) {
+        continue;
+      }
+      const char_g = new plumin.Glyph({
+        name: "PWD:" + char,
+        unicode: char,
+        advanceWidth: 76.57 * this.calcFontWidth(char), //536,
+      });
+
+      const shape = new plumin.Path.Ellipse({
+        point: [50, 0],
+        size: [436, 510],
+      });
+      char_g.addContour(shape);
+      new_char_list.push(char_g);
+      pwd_font_char_map.set(char, char_g);
+    }
+    // if (new_char_list.length) {
+    //   // const font_name =
+    //   //   "PWD-" +
+    //   //   Date.now()
+    //   //     .toString(36)
+    //   //     .substr(2);
+    //   // this.font_name = this.domSanitizer.bypassSecurityTrustStyle(font_name);
+    //   // const pwd_font = new plumin.Font({
+    //   //   familyName: font_name,
+    //   //   ascender: 800,
+    //   //   descender: -200,
+    //   // });
+    //   const font_name = "PWD";
+    //   const { pwd_font } = this;
+    //   pwd_font.addGlyphs(new_char_list);
+    //   pwd_font.updateOTCommands();
+    //   pwd_font.addToFonts(undefined, font_name, true);
+    // }
+    const font_name =
+      "PWD-" +
+      Date.now()
+        .toString(36)
+        .substr(2);
+    this.font_name = this.domSanitizer.bypassSecurityTrustStyle(font_name);
+    const pwd_font = new plumin.Font({
+      familyName: font_name,
+      ascender: 800,
+      descender: -200,
+    });
+    this.pwd_font = pwd_font;
+
+    pwd_font.addGlyphs([...pwd_font_char_map.values()]);
+    pwd_font.updateOTCommands();
+    pwd_font.addToFonts(undefined, font_name, true);
   }
 
   page_status = "login";
@@ -152,9 +221,7 @@ export class SignInAndSignUpPage extends FirstLevelPage implements OnInit {
     this.show_pwd = true;
     this.hiddenPwd();
     this.platform.raf(() => {
-      this.autoReHeightPWDTextArea({
-        target: this.passwordTextarear.nativeElement,
-      });
+      this.autoReHeightPWDTextArea();
     });
 
     console.log(passphrase);

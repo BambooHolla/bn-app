@@ -10,12 +10,12 @@ export const _load_resource_promiseout = new PromiseOut<
 
 export const _is_load_resource = false;
 export const _coin_assets = [
-  "./assets/img/gold-coin/s36-114.png",
-  "./assets/img/gold-coin/s36-152.png",
-  "./assets/img/gold-coin/s36-177.png",
-  "./assets/img/gold-coin/s36-208.png",
-  "./assets/img/gold-coin/s36-226.png",
-  "./assets/img/gold-coin/s36-79.png",
+  // "./assets/img/gold-coin/s36-114.png",
+  // "./assets/img/gold-coin/s36-152.png",
+  // "./assets/img/gold-coin/s36-177.png",
+  // "./assets/img/gold-coin/s36-208.png",
+  // "./assets/img/gold-coin/s36-226.png",
+  // "./assets/img/gold-coin/s36-79.png",
   "./assets/img/gold-coin/s36.png",
 ].map((url, i) => ({
   name: "img" + i,

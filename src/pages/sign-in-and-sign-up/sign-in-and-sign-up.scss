@@ -179,43 +179,40 @@ page-sign-in-and-sign-up {
           color: #fff;
           transform: scaleX(1.2);
         }
-        .password-textarear,
-        .password-textarear-mask {
-          /* text-indent: 2.7rem; */
-          text-indent: 32.4px;
-          line-height: 2rem;
+        .password-textarear {
+          text-indent: 2.7rem;
+          /* text-indent: 32.4px; */
+          line-height: 4rem;
           margin-top: 2.5rem;
           background: transparent;
           border: none;
           display: block;
           width: 100%;
-          /* font-size: 1.3rem; */
-          font-size: 13px;
           resize: none;
           height: 10rem;
           min-height: 12.5rem;
           color: #fff;
+          overflow-y: visible;
+        }
+        @font-face {
+          font-family: monospace;
+          src: local("Menlo");
         }
         .password-textarear {
-          -webkit-text-security: disc;
-          /* color: transparent; */
-          /* caret-color: #fff; */
+          font-family: "PWD";
           background: linear-gradient(
             rgba(#fff, 0.5) 0%,
             rgba(#fff, 0.5) 2%,
             transparent 2%,
             transparent 100%
           );
+          font-size: 1.4rem;
           background-size: 100% 4rem;
           background-position: 0 3rem;
           background-attachment: local;
-          /* letter-spacing: 1rem; */
-          letter-spacing: 6px;
-          color: red;
-          /* -webkit-text-fill-color: transparent; */
+          // letter-spacing: 6px;
           &.show-pwd {
-            /* color: transparent; */
-            /* -webkit-text-security: unset; */
+            font-family: "monospace", "Menlo" !important;
           }
           &::selection {
             color: transparent;
@@ -223,56 +220,8 @@ page-sign-in-and-sign-up {
           }
           &::-webkit-input-placeholder {
             color: rgba(#fff, 0.8) !important;
-            /* font-size: 1.3rem; */
             -webkit-text-fill-color: unset !important;
             font-size: 1.3rem;
-            /* letter-spacing: 0rem; */
-          }
-        }
-        .password-textarear-mask {
-          z-index: -1;
-          position: absolute;
-          top: 0rem;
-          /*     display: flex;
-          flex-wrap: wrap; */
-          .dot {
-            text-indent: 0;
-            flex-shrink: 0;
-            flex-grow: 0;
-
-            /* width: 16.6px; */
-            width: 8px;
-            height: 2.2rem;
-            line-height: 2.2rem;
-            display: inline-block;
-            text-align: center;
-            position: relative;
-            /* left: 0.2rem; */
-            left: 2.4px;
-            /* overflow: hidden; */
-            color: transparent;
-            position: relative;
-            &::after {
-              content: "·";
-              text-align: center;
-              position: absolute;
-              top: 0;
-              left: 0rem;
-              font-size: 3rem;
-              color: #fff;
-              width: 100%;
-              height: 100%;
-            }
-          }
-          &.show-pwd {
-            opacity: 1;
-            .dot {
-              color: #fff;
-              &::after {
-                opacity: 0;
-                pointer-events: none;
-              }
-            }
           }
         }
         .show-pwd-button {
@@ -281,9 +230,36 @@ page-sign-in-and-sign-up {
           color: #fff;
           font-size: 2.5rem;
           position: absolute;
-          bottom: 1.2rem;
-          right: 0;
+          bottom: 2rem;
+          right: 0.5rem;
           padding: 0.5rem;
+          width: 2rem;
+          height: 2rem;
+          > ali-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition-duration: 0.25s;
+            transition-timing-function: ease-out;
+          }
+          > ali-icon[name="ifm-jinzhi"] {
+            opacity: 0;
+            transform: scale(1.2);
+          }
+          > ali-icon[name="ifm-show-pwd"] {
+            transform: scale(1);
+          }
+          &.show-pwd {
+            > ali-icon[name="ifm-jinzhi"] {
+              opacity: 1;
+              transform: scale(1);
+            }
+            > ali-icon[name="ifm-show-pwd"] {
+              transform: scale(0.7);
+            }
+          }
         }
       }
       .remember-pwd {
@@ -394,15 +370,34 @@ page-sign-in-and-sign-up {
 
   /* 3d效果 */
   .form-wrapper {
-    transform-style: preserve-3d;
-    perspective: 2020px;
-    perspective-origin: 50% 100px;
+    // transform-style: preserve-3d;
+    // perspective: 2020px;
+    // perspective-origin: 50% 50%;
     position: relative;
   }
   .register-form,
   .login-form {
-    position: absolute;
+    // position: absolute;
     top: 14rem;
-    -webkit-transform-origin-z: -230px;
+    // -webkit-transform-origin-z: -230px;
+  }
+  [contenteditable] {
+    -webkit-user-modify: read-write;
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  .register-form {
+    display: none !important;
+  }
+  #font-calc {
+    font-family: "monospace", "Menlo" !important;
+    font-size: 1.4rem;
+    pointer-events: none;
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    z-index: -100000;
+    white-space: pre;
   }
 }
