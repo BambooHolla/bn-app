@@ -246,7 +246,7 @@ export class TransactionServiceProvider {
     query.offset = (page - 1) * limit;
     query.limit = limit;
 
-    let data = await this.fetch.get<any>(unconfirmedUrl, { params: query });
+    let data = await this.fetch.get<any>(unconfirmedUrl, { search: query });
     if (data.success) {
       return data.transactions;
     } else {

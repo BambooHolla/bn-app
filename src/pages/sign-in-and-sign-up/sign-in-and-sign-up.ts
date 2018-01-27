@@ -180,13 +180,14 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     return this.formData.pwd;
   }
   @asyncCtrlGenerator.error(() =>
-    SignInAndSignUpPage.getTranslate("LOGIN ERROR"),
+    SignInAndSignUpPage.getTranslate("LOGIN_ERROR"),
   )
   @asyncCtrlGenerator.loading()
   async doLogin() {
     let result = await this.loginService.doLogin(this.formData.pwd);
     if (result) {
-      this.routeTo("scan-nodes");
+      // this.routeTo("scan-nodes");
+      this.navCtrl.setRoot(MainPage);
     }
   }
   gotoRegister() {
@@ -198,18 +199,22 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
 
   async doRegister() {
-    // let peers = await this.peerService.getAllPeers();
-    let sortPeer = await this.peerService.sortPeers();
-    // console.log(peers);
-    console.log(sortPeer);
-
-    debugger;
-    let passphrase = this.loginService.generateNewPassphrase({
+    // // let peers = await this.peerService.getAllPeers();
+    // let sortPeer = await this.peerService.sortPeers();
+    // // console.log(peers);
+    // console.log(sortPeer);
+    const params = {
       email: this.formData.email,
       phone: this.formData.phone,
       mark: this.formData.remark,
       pwd: this.formData.gpwd,
-    });
+    };
+    for (let key in params) {
+      if (!params[key]) {
+        delete params[key];
+      }
+    }
+    let passphrase = this.loginService.generateNewPassphrase(params);
     this.gotoLogin();
     this.formData.pwd = passphrase;
     this.show_pwd = true;

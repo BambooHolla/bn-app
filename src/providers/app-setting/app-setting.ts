@@ -9,6 +9,7 @@ import {
 import * as IFM from "ifmchain-ibt";
 import { EventEmitter } from "eventemitter3";
 import { AniBase } from "../../components/AniBase";
+import { UserInfoProvider, SettingParams } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 
 export class AppUrl {
@@ -24,9 +25,9 @@ export class AppUrl {
 
 @Injectable()
 export class AppSettingProvider extends EventEmitter {
-  // static SERVER_URL = "http://mainnet.ifmchain.org";
+  static SERVER_URL = "http://mainnet.ifmchain.org";
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
-  static SERVER_URL = "http://test1.ifmchain.org:6062";
+  // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = "mainnet";
   static IFMJS = IFM(AppSettingProvider.NET_VERSION);
@@ -39,20 +40,33 @@ export class AppSettingProvider extends EventEmitter {
   }
 
   static SETTING_KEY_PERFIX = "SETTING@";
-  constructor(public http: Http) {
+  constructor(public http: Http, public user: UserInfoProvider) {
     super();
     console.log("Hello AppSettingProvider Provider");
     this.user_token = new BehaviorSubject<string>(this.getUserToken());
 
+    const default_settings = { ...this.settings };
+    // 获取用户的配置
+    this.user.getUserSettingLocal().then(current_user_settings => {
+      if(!current_user_settings){
+        return;
+      }
+      for (let s_key in this.skey2keyMap) {
+        const key = this.skey2keyMap[s_key];
+        const s_value = current_user_settings[s_key];
+        if (s_value !== undefined) {
+          default_settings[key] = s_value;
+        }
+      }
+    });
     // 将setting与本地存储进行关联
     for (let key in this.settings) {
-      const default_value = this.settings[key];
-
       Object.defineProperty(this.settings, key, {
         get: () => {
           const s_key = AppSettingProvider.SETTING_KEY_PERFIX + key;
           const current_json_value = localStorage.getItem(s_key);
           let should_write_in = true;
+          const default_value = default_settings[key];
           let value = default_value;
           if (typeof current_json_value === "string") {
             try {
@@ -62,12 +76,14 @@ export class AppSettingProvider extends EventEmitter {
           }
           if (should_write_in) {
             localStorage.setItem(s_key, JSON.parse(default_value));
+            this.saveUserSettingParams();
           }
           return value;
         },
         set: value => {
           const s_key = AppSettingProvider.SETTING_KEY_PERFIX + key;
           localStorage.setItem(s_key, JSON.parse(value));
+          this.saveUserSettingParams();
           this.emit(`changed@setting.${key}`, value);
           this.emit(`changed@setting`, { key, value });
         },
@@ -162,7 +178,39 @@ export class AppSettingProvider extends EventEmitter {
     mining_only_in_wifi: true,
     /**动画开关*/
     animation_switch: true,
+    /**自动更新*/
+    auto_update_app: false,
   };
+  key2skeyMap = {
+    open_fingerprint_protection: "fingerPrint",
+    background_mining: "autoDig",
+    mining_income_notice: "report",
+    animation_switch: "animate",
+    mining_only_in_wifi: "digAtWifi",
+    auto_update_app: "autoUpdate",
+    default_fee: "fee",
+  };
+  skey2keyMap = (() => {
+    const res = {};
+    for (let key in this.key2skeyMap) {
+      res[this.key2skeyMap[key]] = key;
+    }
+    return res;
+  })();
+  toUserSettingParams(): SettingParams {
+    const params = {} as any;
+    for (let key in this.settings) {
+      if (key in this.key2skeyMap) {
+        let s_key = this.key2skeyMap[key];
+        params[s_key] = this.settings[key];
+      }
+    }
+    return params;
+  }
+  saveUserSettingParams() {
+    const params = this.toUserSettingParams();
+    this.user.saveUserSettings(params);
+  }
 }
 
 function getQueryVariable(variable) {

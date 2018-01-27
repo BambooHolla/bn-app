@@ -2,6 +2,8 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { MinServiceProvider } from "../../../providers/min-service/min-service";
+import { PeerServiceProvider } from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-list" })
 @Component({
@@ -13,6 +15,8 @@ export class AccountMinerListPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
+    public minService: MinServiceProvider,
+    public peerService: PeerServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -34,32 +38,30 @@ export class AccountMinerListPage extends SecondLevelPage {
 
   @AccountMinerListPage.willEnter
   async initMinterList() {
-    await new Promise(cb => setTimeout(cb, 1000));
-    this.cur_minter_rank_list = Array.from(Array(57)).map((_, i) => ({
-      No: i + 1,
+    const cur_minter_list = await this.minService.getAllMiners(1, 4);
+
+    this.cur_minter_rank_list = cur_minter_list.map((cur_minter, i) => {
+      return {
+        No: i + 1,
+        ...cur_minter,
+      };
+    });
+
+    const can_minter_list = await this.minService.getAllMinersOutside(1, 4);
+    this.can_minter_rank_list = can_minter_list.map((can_minter, i) => {
+      return {
+        No: i + 1,
+        ...can_minter,
+      };
+    });
+
+  }
+  @AccountMinerListPage.willEnter
+  async initPeerList() {
+    const peer_list = await this.peerService.getPeersLocal();
+    this.cur_peer_list = peer_list.map(peer => ({
+      ...peer,
+      linked_number: (Math.random() * 50) | 0,
     }));
-    this.can_minter_rank_list = Array.from(Array(20)).map((_, i) => ({
-      No: i + 1,
-    }));
-    await new Promise(cb => setTimeout(cb, 500));
-    this.cur_peer_list = Array.from(Array((Math.random() * 20) | 0)).map(
-      (_, i) => {
-        return {
-          id: i,
-          ip: Array.from({ length: 4 })
-            .map(() => (256 * Math.random()) | 0)
-            .join("."),
-          height: parseInt(
-            new Date()
-              .toDateString()
-              .match(/\d+/g)
-              .join(""),
-          ),
-          ping: 0,
-          linked_number: (Math.random() * 50) | 0,
-          port: 8080,
-        };
-      },
-    );
   }
 }

@@ -11,7 +11,7 @@
     <!--     <div class="bg-prefix-wrapper">
       <div class="bg-prefix"></div>
     </div> -->
-    <div class="login-form"> <!-- [@login-in-out]="page_status" -->
+    <div class="login-form" [@login-in-out]="page_status" >
       <div class="inputer-container">
         <ali-icon class="lock-icon" name="ifm-lock"></ali-icon>
         <textarea class="password-textarear" [style.fontFamily]="font_name" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="请输入密码" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
@@ -39,7 +39,7 @@
         <span class="dot"></span>
       </div>
     </div>
-    <div class="register-form"> <!-- [@register-in-out]="page_status" -->
+    <div class="register-form" [@register-in-out]="page_status">
       <div class="inputer-container">
         <div class="password-inputer-wrapper">
           <ali-icon name="ifm-email"></ali-icon>

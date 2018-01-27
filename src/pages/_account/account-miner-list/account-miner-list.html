@@ -18,7 +18,7 @@
     <div class="common-item" *ngFor="let minter of show_cur_minter_rank_list" (click)="routeTo('vote-delegate-detail')">
       <div class="left">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
-        <div class="address" [innerHTML]="'csassjkhfsdjhdasffddsfdsfsdascsacasc'|mask:'@address'"></div>
+        <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@
     <div class="common-item" *ngFor="let minter of show_can_minter_rank_list">
       <div class="left">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
-        <div class="address" [innerHTML]="'csassjkhfsdjhdasffddsfdsfsdascsacasc'|mask:'@address'"></div>
+        <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
       </div>
     </div>
   </div>

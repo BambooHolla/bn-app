@@ -14,6 +14,7 @@ import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
+import { ContactModel } from "./contact.types";
 
 @Injectable()
 export class ContactServiceProvider {
@@ -50,17 +51,24 @@ export class ContactServiceProvider {
       let query = {
         publicKey: this.user.userInfo.publicKey,
       };
-      let data = await this.fetch.get<any>(getContactUrl, { params: query });
-      data.follower = await this.getContactIgnored(data.follower);
+      let data = await this.fetch.get<
+        | {
+            follower: ContactModel[];
+            following: ContactModel[];
+            success: true;
+          }
+        | { success: false; error: any }
+      >(getContactUrl, { search: query });
 
       if (data.success) {
+        data.follower = await this.getContactIgnored(data.follower);
         switch (opt) {
           case 0:
             return { following: data.following, follower: data.follower };
-          case 1:
-            return data.following;
-          case 2:
-            return data.follower;
+          // case 1:
+          //   return data.following;
+          // case 2:
+          //   return data.follower;
           default:
             return { following: data.following, follower: data.follower };
         }
@@ -97,6 +105,9 @@ export class ContactServiceProvider {
    * @param followerList
    */
   async getContactIgnored(followerList) {
+    if (!followerList || followerList.length === 0) {
+      return followerList || [];
+    }
     let address = this.user.userInfo.address;
     let ignoreList = await this.storage.get("c_" + address);
 

@@ -370,16 +370,16 @@ page-sign-in-and-sign-up {
 
   /* 3d效果 */
   .form-wrapper {
-    // transform-style: preserve-3d;
-    // perspective: 2020px;
-    // perspective-origin: 50% 50%;
+    transform-style: preserve-3d;
+    perspective: 2020px;
+    perspective-origin: 50% 10%;
     position: relative;
   }
   .register-form,
   .login-form {
     position: absolute;
     top: 14rem;
-    /* -webkit-transform-origin-z: -230px; */
+    -webkit-transform-origin-z: -230px;
   }
 
   #font-calc {

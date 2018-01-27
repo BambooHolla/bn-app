@@ -10,6 +10,8 @@ import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
+import { DelegateModel } from "./min.types";
+export * from "./min.types";
 
 /*
   Generated class for the MinServiceProvider provider.
@@ -22,7 +24,7 @@ export class MinServiceProvider {
   ifmJs: any;
   transactionTypes: any;
   allVoters: string[];
-  allMiners: string[];
+  allMiners: DelegateModel[];
   allMinersRound: number;
   constructor(
     public http: HttpClient,
@@ -130,7 +132,7 @@ export class MinServiceProvider {
               for (let i of delegateArr) {
                 voteList.push("+" + delegateArr[i]);
               }
-              
+
               //设置投票的参数
               let txData = {
                 type: this.transactionTypes.VOTE,
@@ -147,26 +149,26 @@ export class MinServiceProvider {
               if (secondSecret) {
                 txData.secondSecret = secondSecret;
               }
-              
+
               //成功完成交易
               let isDone: boolean = await this.transactionService.putTransaction(
                 txData,
               );
-              if(isDone) {
+              if (isDone) {
                 let saveObj = {
                   autoDig: true,
-                  digRound: await this.getRound()
-                }
-                await this.user.saveUserSettings(this.user.address, saveObj);
-              }else {
+                  digRound: await this.getRound(),
+                };
+                await this.user.saveUserSettings(saveObj, this.user.address);
+              } else {
                 throw "vote transaction error";
               }
             }
-          }else {
+          } else {
             throw "get voter error";
           }
         });
-      }else {
+      } else {
         throw "get transaction timestamp error";
       }
     } catch (e) {
@@ -206,7 +208,7 @@ export class MinServiceProvider {
       limit: limit,
     };
 
-    let data: any = this.fetch.get<any>(myVotesUrl, { params: query });
+    let data: any = this.fetch.get<any>(myVotesUrl, { search: query });
     if (data.success) {
       return data.delegates;
     } else {
@@ -221,17 +223,17 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllMiners(page = 1, limit = 10) {
+  async getAllMiners(page = 1, limit = 10): Promise<DelegateModel[]> {
     let myVotesUrl = this.appSetting.APP_URL(this.MY_VOTES);
 
     let currentBlock = await this.blockService.getLastBlock();
     let currentRound = Math.floor(currentBlock.height / 57);
 
-    if (currentRound == this.allMinersRound) {
+    if (currentRound != this.allMinersRound) {
       let query = {
         orderBy: "rate:asc",
       };
-      let data = await this.fetch.get<any>(myVotesUrl, { params: query });
+      let data = await this.fetch.get<any>(myVotesUrl, { search: query });
       if (data.success) {
         this.allMiners = data.delegates;
         this.allMinersRound = currentRound;
@@ -257,7 +259,7 @@ export class MinServiceProvider {
       limit: limit,
       orderBy: "rate:asc",
     };
-    let data = await this.fetch.get<any>(minersUrl, { params: query });
+    let data = await this.fetch.get<any>(minersUrl, { search: query });
 
     if (data.success) {
       return data.delegates;
@@ -276,7 +278,7 @@ export class MinServiceProvider {
     let query = {
       publicKey: this.user.userInfo.publicKey,
     };
-    let data = await this.fetch.get<any>(forgeStatusUrl, { params: query });
+    let data = await this.fetch.get<any>(forgeStatusUrl, { search: query });
     return data.enabled;
   }
 
@@ -311,7 +313,7 @@ export class MinServiceProvider {
     let query = {
       address: this.user.userInfo.address,
     };
-    let data = await this.fetch.get<any>(myRankUrl, { params: query });
+    let data = await this.fetch.get<any>(myRankUrl, { search: query });
 
     if (data.success) {
       return data.ranks;

@@ -3,6 +3,10 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { MainPage } from "../pages";
+import {
+  PeerServiceProvider,
+  PeerModel,
+} from "../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "link-node" })
 @Component({
@@ -10,46 +14,77 @@ import { MainPage } from "../pages";
   templateUrl: "link-node.html",
 })
 export class LinkNodePage extends FirstLevelPage {
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public peerService: PeerServiceProvider,
+  ) {
     super(navCtrl, navParams);
   }
   nodes: any[];
+  // peer_list:PeerModel[]
   @LinkNodePage.willEnter
-  getNodes() {
-    this.nodes = this.navParams.get("nodes");
-    if (!this.nodes || this.nodes.length == 0) {
-      return this.routeTo("scan-nodes", undefined, {
-        animation: "wp-transition",
+  async getNodes() {
+    // 开始请求节点延迟信息
+    this.peerService.sortPeers();
+    const peer_list = await this.peerService.getAllPeers();
+    this.nodes = peer_list.map(peer => {
+      const peer_info = peer.split(":");
+      const port = peer_info.pop();
+      const ip = peer_info.join(":");
+      const node_info = {
+        loading: true,
+        ping: -1,
+        ip,
+        port,
+        height: -1,
+        linked_number: -1,
+      };
+      this.peerService.once("peer-ping-success:" + peer, peer_detail => {
+        node_info.loading = false;
+        node_info.height = peer_detail.height;
+        node_info.ping = peer_detail.ping;
+        node_info.linked_number = (Math.random() * Math.random() * 1000)|0;
       });
-    }
-    var _auto_link_started = false;
-    this.nodes.forEach(node => {
-      if (Math.random() > 0.3) {
-        // 模拟ping成功
-        const ping = Math.random() * 200;
-        const run_ping = () => {
-          var diff = Math.random() * 10;
-          const start_time = performance.now();
-          setTimeout(() => {
-            const end_time = performance.now();
-            node.ping = end_time - start_time;
-            // 两秒后自动选择并连接节点
-            if (!_auto_link_started) {
-              _auto_link_started = true;
-              setTimeout(() => {
-                this.timeoutAutoLinkFastetNode();
-              }, 2000);
-            }
-            setTimeout(() => {
-              run_ping();
-            }, 5000);
-          }, ping + diff);
-        };
-        setTimeout(() => {
-          run_ping();
-        }, 5000 * Math.random());
-      }
+      this.peerService.on("peer-ping-error:" + peer, err => {
+        node_info.loading = false;
+      });
+      return node_info;
     });
+    // this.nodes = this.navParams.get("nodes");
+    // if (!this.nodes || this.nodes.length == 0) {
+    //   return this.routeTo("scan-nodes", undefined, {
+    //     animation: "wp-transition",
+    //   });
+    // }
+    // var _auto_link_started = false;
+    // this.nodes.forEach(node => {
+    //   if (Math.random() > 0.3) {
+    //     // 模拟ping成功
+    //     const ping = Math.random() * 200;
+    //     const run_ping = () => {
+    //       var diff = Math.random() * 10;
+    //       const start_time = performance.now();
+    //       setTimeout(() => {
+    //         const end_time = performance.now();
+    //         node.ping = end_time - start_time;
+    //         // 两秒后自动选择并连接节点
+    //         if (!_auto_link_started) {
+    //           _auto_link_started = true;
+    //           setTimeout(() => {
+    //             this.timeoutAutoLinkFastetNode();
+    //           }, 2000);
+    //         }
+    //         setTimeout(() => {
+    //           run_ping();
+    //         }, 5000);
+    //       }, ping + diff);
+    //     };
+    //     setTimeout(() => {
+    //       run_ping();
+    //     }, 5000 * Math.random());
+    //   }
+    // });
   }
 
   formData = {

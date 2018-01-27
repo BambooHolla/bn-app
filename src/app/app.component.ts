@@ -73,10 +73,11 @@ export class MyApp implements OnInit {
       this.openPage(FirstRunPage);
     }
 
-    loginService.loginStatus.subscribe(isLogined => {
-      console.log("isLogined", isLogined);
-      this.openPage(isLogined ? MainPage : MainPage);
-    });
+    // loginService.loginStatus.subscribe(isLogined => {
+    //   console.log("isLogined", isLogined);
+    //   this.openPage(isLogined ? MainPage : MainPage);
+    // });
+    this.openPage(LoginPage);
   }
 
   initTranslate() {
