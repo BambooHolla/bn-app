@@ -59,12 +59,13 @@ export class MinServiceProvider {
     };
     let roundProgress: any;
 
-    let roundTimeData = await this.fetch.get<{
+    let data = await this.fetch.get<{
       success: boolean;
       nextRoundTime: number;
+      error ?: any;
     }>(roundTimeUrl);
-    if (roundTimeData.success) {
-      let roundTime = roundTimeData.nextRoundTime;
+    if (data.success) {
+      let roundTime = data.nextRoundTime;
       let blockTimeRes = await this.transactionService.getTimestamp();
       if (blockTimeRes.success) {
         let blockTime = blockTimeRes.timestamp;
@@ -74,6 +75,8 @@ export class MinServiceProvider {
         ).toFixed(2);
         return roundProgress;
       }
+    }else {
+      throw new ServerResError(data.error.message);
     }
     return roundProgress;
   }
@@ -114,68 +117,71 @@ export class MinServiceProvider {
    * @param secondSecret 支付密码
    */
   async vote(secret: string, secondSecret?: string) {
-    try {
-      //首先获取时间戳
-      let voteTimestamp = await this.transactionService.getTimestamp();
-      if (voteTimestamp.success) {
-        let vote_url = this.appSetting.APP_URL(this.VOTE_URL);
-        //获取投票的人
-        await this.fetch.get<any>(vote_url).then(async resp => {
-          if (resp.success) {
-            //如果没有可投票的人，一般都是已经投了57票
-            if (resp.delegate.length === 0) {
-              throw "you have already voted";
-            } else {
-              let delegateArr = resp.delegate;
-              let voteList: any[];
-              //票投给所有获取回来的人
-              for (let i of delegateArr) {
-                voteList.push("+" + delegateArr[i]);
-              }
-
-              //设置投票的参数
-              let txData = {
-                type: this.transactionTypes.VOTE,
-                secret: secret,
-                publicKey: this.user.userInfo.publicKey,
-                fee: this.user.fee,
-                timestamp: resp.timestamp,
-                asset: {
-                  votes: voteList,
-                },
-                secondSecret,
-              };
-
-              if (secondSecret) {
-                txData.secondSecret = secondSecret;
-              }
-
-              //成功完成交易
-              let isDone: boolean = await this.transactionService.putTransaction(
-                txData,
-              );
-              if (isDone) {
-                // let saveObj = {
-                //   autoDig: true,
-                //   digRound: await this.getRound(),
-                // };
-                // await this.user.saveUserSettings(saveObj, this.user.address);
-                this.appSetting.settings.digRound = await this.getRound();
-                this.appSetting.settings.background_mining = true;
-              } else {
-                throw "vote transaction error";
-              }
-            }
+    //首先获取时间戳
+    let voteTimestamp = await this.transactionService.getTimestamp();
+    if (voteTimestamp.success) {
+      let vote_url = this.appSetting.APP_URL(this.VOTE_URL);
+      //获取投票的人
+      await this.fetch.get<any>(vote_url).then(async resp => {
+        if (resp.success) {
+          //如果没有可投票的人，一般都是已经投了57票
+          if (resp.delegate.length === 0) {
+            throw "you have already voted";
           } else {
-            throw "get voter error";
+            let delegateArr = resp.delegate;
+            let voteList: any[];
+            //票投给所有获取回来的人
+            for (let i of delegateArr) {
+              voteList.push("+" + delegateArr[i]);
+            }
+
+            //设置投票的参数
+            let txData = {
+              type: this.transactionTypes.VOTE,
+              secret: secret,
+              publicKey: this.user.publicKey,
+              fee: this.appSetting.settings.default_fee,
+              timestamp: resp.timestamp,
+              asset: {
+                votes: voteList,
+              },
+              secondSecret,
+            };
+
+            if (secondSecret) {
+              txData.secondSecret = secondSecret;
+            }
+
+            //成功完成交易
+            let isDone: boolean = await this.transactionService.putTransaction(
+              txData,
+            );
+            if (isDone) {
+              // let saveObj = {
+              //   autoDig: true,
+              //   digRound: await this.getRound(),
+              // };
+              // await this.user.saveUserSettings(saveObj, this.user.address);
+              this.appSetting.settings.digRound = await this.getRound();
+              this.appSetting.settings.background_mining = true;
+            } else {
+              throw "vote transaction error";
+            }
           }
-        });
-      } else {
-        throw "get transaction timestamp error";
-      }
-    } catch (e) {
-      console.log(e);
+        } else {
+          throw new ServerResError(resp.error.message);
+        }
+      });
+    } else {
+      throw new ServerResError(voteTimestamp.error.message);
     }
+  }
+
+  /**
+   * 取消自动投票
+   */
+  async stopVote() {
+    
   }
 
   /**
@@ -214,7 +220,7 @@ export class MinServiceProvider {
     if (data.success) {
       return data.delegates;
     } else {
-      console.log("get my votes error");
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -241,7 +247,7 @@ export class MinServiceProvider {
         this.allMinersRound = currentRound;
         return this.allMiners.slice((page - 1) * limit, limit);
       } else {
-        return [];
+        throw data.error.message;
       }
     } else {
       return this.allMiners.slice((page - 1) * limit, limit);
@@ -266,7 +272,7 @@ export class MinServiceProvider {
     if (data.success) {
       return data.delegates;
     } else {
-      console.log("get all miners outside error");
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -281,7 +287,11 @@ export class MinServiceProvider {
       publicKey: this.user.userInfo.publicKey,
     };
     let data = await this.fetch.get<any>(forgeStatusUrl, { search: query });
-    return data.enabled;
+    if(data) {
+      return data.enabled;
+    }else {
+      throw new ServerResError(data.error.message);
+    }
   }
 
   /**
@@ -319,6 +329,8 @@ export class MinServiceProvider {
 
     if (data.success) {
       return data.ranks;
+    }else {
+      throw new ServerResError(data.error.message);
     }
   }
 }

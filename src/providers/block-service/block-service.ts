@@ -33,29 +33,30 @@ export class BlockServiceProvider {
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
-    console.log(this.block);
-    console.groupEnd();
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
   );
-  readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
+  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/get");
 
   /**
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
   async getLastBlock() {
-    let data: {
-      success?: boolean;
-      error?: any;
-      block: any;
-    } = await this.block.getLastBlock();
+    // let data: {
+    //   success?: boolean;
+    //   error?: any;
+    //   block: any;
+    // } = await this.block.getLastBlock();
     //data: {success, block:{id, height, timestamp}}
+    
+    let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
+
     if (data.success) {
       return data.block;
     } else {
-      return {} as object;
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -65,16 +66,20 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId: string) {
-    let data: {
-      success: boolean;
-      blocks: Array<object>;
-      count: number;
-    } = await this.block.getBlockById(blockId);
+    // let data: {
+    //   success: boolean;
+    //   blocks: Array<object>;
+    //   count: number;
+    // } = await this.block.getBlockById(blockId);
+
+    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {search: {
+      "id" : blockId
+    }});
 
     if (data.success === true && data.count > 0) {
       return data.blocks;
     } else {
-      return [];
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -84,12 +89,16 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getBlockByHeight(height: number) {
-    let data = await this.getBlocks({ height: height });
+    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
+      search: {
+        "height" : height
+      }
+    })
 
     if (data.success === true && data.count > 0) {
       return data.blocks;
     } else {
-      return [];
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -99,12 +108,16 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getBlocksByAddress(address: string) {
-    let data = await this.getBlocks({ generatorId: address });
+    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
+      search: {
+        generatorId : address
+      }
+    });
 
     if (data.success === true && data.count > 0) {
       return data.blocks;
     } else {
-      return [];
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -115,7 +128,7 @@ export class BlockServiceProvider {
    */
   async searchBlocks(query: string) {
     //如果是纯数字且不是以0开头就查高度
-    if (/[1-9][0-9]+/.test(query)) {
+    if (/[1-9][0-9]*/.test(query)) {
       const query_num = parseFloat(query) * 1;
       let data = await this.getBlockByHeight(query_num);
       return data;
@@ -143,11 +156,16 @@ export class BlockServiceProvider {
    */
   async getBlocks(query = {}) {
     let data: any = {};
-    if (typeof query === "object" || typeof query === undefined) {
-      data = await this.block.getBlocks(query);
+  
+    data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
+      search: query
+    })
+  
+    if(data.success) {
+      return data;
+    }else {
+      throw new ServerResError(data.error.message);
     }
-
-    return data;
   }
 
   /**
@@ -211,7 +229,7 @@ export class BlockServiceProvider {
   }
 
   /**
-   * 获取当前的块是否延迟
+   * 判断当前的块是否延迟，返回块数组
    * @param list
    */
   blockListHandle(list: TYPE.BlockModel[]) {
@@ -247,11 +265,11 @@ export class BlockServiceProvider {
 
       let data = await this.getBlocks(query);
 
-      if (data.success && data.blocks.length > 0) {
+      if (data.success) {
         return data.blocks;
+      }else {
+        return new ServerResError(data.error.message);
       }
-
-      return [];
     }
   }
 
@@ -273,7 +291,11 @@ export class BlockServiceProvider {
       orderBy: "t_timestamp",
     };
     let data = await this.transactionService.getTransactions(query);
-
-    return data.transactions;
+    
+    if(data.success) {
+      return data.transactions;
+    }else {
+      throw new ServerResError(data.error.message);
+    }
   }
 }
