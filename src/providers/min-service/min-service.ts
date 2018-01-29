@@ -138,7 +138,7 @@ export class MinServiceProvider {
                 type: this.transactionTypes.VOTE,
                 secret: secret,
                 publicKey: this.user.userInfo.publicKey,
-                fee: "0.00000001",
+                fee: this.user.fee,
                 timestamp: resp.timestamp,
                 asset: {
                   votes: voteList,

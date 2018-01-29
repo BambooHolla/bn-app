@@ -175,7 +175,7 @@ export class AccountServiceProvider {
    * 设置支付密码
    * @param {string} secondScret
    */
-  async setSecondPassphrase(secondSecret: string, second?: string) {
+  async setSecondPassphrase(password: string, secondSecret: string, second?: string) {
     debugger;
     let txData = {
       type: this.transactionType.SIGNATURE,
@@ -185,12 +185,11 @@ export class AccountServiceProvider {
         },
       },
       amount: "0",
-      secret:
-        "decorate soap volcano lizard original leaf evolve vibrant protect maple enough together weapon erase orphan eye blue spoil verb more credit garbage barrel age",
+      secret: password,
       secondSecret: secondSecret,
       publicKey:
         "38e70075fc1054bfbb29cb550932a719f88c1c34f2ed897f1ae74a328ab9a21e",
-      fee: "0.00000001",
+      fee: this.user.fee,
     };
 
     let is_success = await this.transactionService.putTransaction(txData);
