@@ -114,67 +114,63 @@ export class MinServiceProvider {
    * @param secondSecret 支付密码
    */
   async vote(secret: string, secondSecret?: string) {
-    try {
-      //首先获取时间戳
-      let voteTimestamp = await this.transactionService.getTimestamp();
-      if (voteTimestamp.success) {
-        let vote_url = this.appSetting.APP_URL(this.VOTE_URL);
-        //获取投票的人
-        await this.fetch.get<any>(vote_url).then(async resp => {
-          if (resp.success) {
-            //如果没有可投票的人，一般都是已经投了57票
-            if (resp.delegate.length === 0) {
-              throw "you have already voted";
-            } else {
-              let delegateArr = resp.delegate;
-              let voteList: any[];
-              //票投给所有获取回来的人
-              for (let i of delegateArr) {
-                voteList.push("+" + delegateArr[i]);
-              }
-
-              //设置投票的参数
-              let txData = {
-                type: this.transactionTypes.VOTE,
-                secret: secret,
-                publicKey: this.user.userInfo.publicKey,
-                fee: this.user.fee,
-                timestamp: resp.timestamp,
-                asset: {
-                  votes: voteList,
-                },
-                secondSecret,
-              };
-
-              if (secondSecret) {
-                txData.secondSecret = secondSecret;
-              }
-
-              //成功完成交易
-              let isDone: boolean = await this.transactionService.putTransaction(
-                txData,
-              );
-              if (isDone) {
-                // let saveObj = {
-                //   autoDig: true,
-                //   digRound: await this.getRound(),
-                // };
-                // await this.user.saveUserSettings(saveObj, this.user.address);
-                this.appSetting.settings.digRound = await this.getRound();
-                this.appSetting.settings.background_mining = true;
-              } else {
-                throw "vote transaction error";
-              }
-            }
-          } else {
-            throw "get voter error";
-          }
-        });
-      } else {
-        throw "get transaction timestamp error";
+    //首先获取时间戳
+    let voteTimestamp = await this.transactionService.getTimestamp();
+    if (voteTimestamp.success) {
+      let vote_url = this.appSetting.APP_URL(this.VOTE_URL);
+      //获取投票的人
+      const resp = await this.fetch.get<any>(vote_url, {
+        search: { address: this.user.address },
+      });
+      if (!resp.success) {
+        throw resp.error.message;
       }
-    } catch (e) {
-      console.log(e);
+      //如果没有可投票的人，一般都是已经投了57票
+      if (resp.delegate.length === 0) {
+        throw "you have already voted";
+      } else {
+        let delegateArr = resp.delegate;
+        let voteList = [];
+        //票投给所有获取回来的人
+        for (let i in delegateArr) {
+          voteList.push("+" + delegateArr[i]);
+        }
+
+        //设置投票的参数
+        let txData = {
+          type: this.transactionTypes.VOTE,
+          secret: secret,
+          publicKey: this.user.userInfo.publicKey,
+          fee: this.appSetting.settings.default_fee,
+          timestamp: resp.timestamp,
+          asset: {
+            votes: voteList,
+          },
+          secondSecret,
+        };
+
+        if (secondSecret) {
+          txData.secondSecret = secondSecret;
+        }
+
+        //成功完成交易
+        let isDone: boolean = await this.transactionService.putTransaction(
+          txData,
+        );
+        if (isDone) {
+          // let saveObj = {
+          //   autoDig: true,
+          //   digRound: await this.getRound(),
+          // };
+          // await this.user.saveUserSettings(saveObj, this.user.address);
+          this.appSetting.settings.digRound = await this.getRound();
+          this.appSetting.settings.background_mining = true;
+        } else {
+          throw "vote transaction error";
+        }
+      }
+    } else {
+      throw "get transaction timestamp error";
     }
   }
 

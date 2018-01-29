@@ -10,6 +10,8 @@ import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
 import { AniBase } from "../../components/AniBase";
 import { TabsPage } from "../tabs/tabs";
+import { MinServiceProvider } from "../../providers/min-service/min-service";
+import { AccountServiceProvider } from "../../providers/account-service/account-service";
 
 @IonicPage({ name: "tab-vote" })
 @Component({
@@ -22,6 +24,8 @@ export class TabVotePage extends FirstLevelPage {
     public navParams: NavParams,
     public sanitizer: DomSanitizer,
     public tabs: TabsPage,
+    public minService: MinServiceProvider,
+    public accountService: AccountServiceProvider,
   ) {
     super(navCtrl, navParams);
   }
@@ -174,4 +178,21 @@ export class TabVotePage extends FirstLevelPage {
     buddha_glow: false,
     fall_coins: false,
   };
+
+  /** 开启挖矿*/
+  @asyncCtrlGenerator.error(() =>
+    TabVotePage.getTranslate("START_AUTO_VOTE_ERROR"),
+  )
+  async startMin() {
+    const pwdData = await this.getUserPassword();
+    await this.minService.vote(pwdData.password, pwdData.pay_pwd);
+    this.routeToVoteDetail();
+  }
+  /** 关闭挖矿*/
+  @asyncCtrlGenerator.error(() =>
+    TabVotePage.getTranslate("STOP_AUTO_VOTE_ERROR"),
+  )
+  async stopMin() {
+    this.routeToBootstrap();
+  }
 }

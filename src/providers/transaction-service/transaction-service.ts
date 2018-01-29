@@ -139,7 +139,7 @@ export class TransactionServiceProvider {
           if (data.success) {
             return true;
           } else {
-            throw data.error;
+            throw data.error.message;
           }
         }
       } else {

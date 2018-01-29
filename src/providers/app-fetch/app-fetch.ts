@@ -80,17 +80,15 @@ export class AppFetchProvider {
       return Promise.reject(
         //返回的错误在reject中统一处理，翻译后返回
         this.translateService
-          .get(data.error)
+          .get(data.error && data.error.message)
           .take(1)
           .toPromise(),
       );
     }
   }
   private _handleResCatch(res) {
-    debugger;
     const data = res.json();
-    const error = res.json().error;
-    debugger;
+    const error = data.error;
     if (error) {
       return Promise.reject(
         error.code
@@ -155,7 +153,9 @@ export class AppFetchProvider {
           return Promise.reject(response);
         });
     }
-    return promise.catch(this._handleResCatch).then(this._handleResThen);
+    return promise
+      .catch(this._handleResCatch.bind(this))
+      .then(this._handleResThen.bind(this));
   }
   private _handleUrlAndOptions(
     url: string,
