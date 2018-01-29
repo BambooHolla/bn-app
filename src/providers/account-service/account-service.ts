@@ -48,7 +48,7 @@ export class AccountServiceProvider {
     if (data.success) {
       return data;
     } else {
-      return {} as Object;
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -66,7 +66,7 @@ export class AccountServiceProvider {
       }
       return data.account;
     } else {
-      throw new Error(data.error.message);
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -98,7 +98,11 @@ export class AccountServiceProvider {
         );
         if (is_success) {
           this.user.userInfo.username = newUsername;
+        }else {
+          throw new Error("Change username error");
         }
+      }else {
+        throw new Error("This username has already exist");
       }
     }
   }
@@ -112,63 +116,6 @@ export class AccountServiceProvider {
     let password = this.keypair.generatePassPhraseWithInfo(options, lang);
 
     return password;
-  }
-
-  //验证支付密码
-  verifySecondPassphrase(secondPassphrase: string) {
-    try {
-      let secondPublic = this.formatSecondPassphrase(
-        this.user.userInfo.publicKey,
-        secondPassphrase,
-      );
-      console.log(secondPublic.publicKey.toString("hex"));
-      if (
-        secondPublic.publicKey.toString("hex") ===
-        this.user.userInfo.secondPublicKey
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      console.log("Failed to verify");
-    }
-  }
-
-  /**
-   * 将输入的支付密码转换为publicKey
-   * @param publicKey
-   * @param secondSecret
-   * @returns {any}
-   */
-  formatSecondPassphrase(publicKey, secondSecret) {
-    debugger;
-    //设置
-    if (!this.nacl) {
-      this.nacl_factory.instantiate(function(tmpNacl) {
-        this.nacl = tmpNacl;
-      });
-    }
-
-    let reg = /^[^\s]+$/;
-    if (!reg.test(secondSecret)) {
-      throw "Second Secret cannot contain spaces";
-    }
-
-    let pattern = /^[^\u4e00-\u9fa5]+$/;
-    if (!pattern.test(secondSecret)) {
-      throw "Second Secret cannot contain Chinese characters";
-    }
-
-    let md5Second =
-      publicKey.toString().trim() +
-      "-" +
-      this.md5.update(secondSecret.toString().trim()).digest("hex");
-    let secondHash = this.sha.update(md5Second, "utf-8").digest();
-    let secondKeypair = this.nacl.crypto_sign_seed_keypair(secondHash);
-    secondKeypair.publicKey = this.Buff.from(secondKeypair.signPK);
-    secondKeypair.privateKey = this.Buff.from(secondKeypair.signSK);
-    return secondKeypair;
   }
 
   /**
@@ -194,7 +141,9 @@ export class AccountServiceProvider {
 
     let is_success = await this.transactionService.putTransaction(txData);
     if (is_success) {
-      console.log("secondSign set successfully");
+      return true;
+    }else {
+      throw new Error("Set second passphrase error");
     }
   }
 }

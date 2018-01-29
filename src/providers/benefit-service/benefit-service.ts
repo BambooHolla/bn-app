@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
+import { AppFetchProvider, CommonResponseData, ServerResError } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
@@ -105,7 +105,7 @@ export class BenefitServiceProvider {
     if (data.success) {
       return data.balancedetails;
     } else {
-      return [];
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -127,7 +127,11 @@ export class BenefitServiceProvider {
       };
 
       let data = await this.getBenefits(query);
-      return data;
+      if(data.success) {
+        return data;
+      }else {
+        throw new ServerResError(data.error.message);
+      }
     }
   }
 

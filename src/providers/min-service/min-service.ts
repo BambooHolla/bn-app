@@ -59,12 +59,13 @@ export class MinServiceProvider {
     };
     let roundProgress: any;
 
-    let roundTimeData = await this.fetch.get<{
+    let data = await this.fetch.get<{
       success: boolean;
       nextRoundTime: number;
+      error ?: any;
     }>(roundTimeUrl);
-    if (roundTimeData.success) {
-      let roundTime = roundTimeData.nextRoundTime;
+    if (data.success) {
+      let roundTime = data.nextRoundTime;
       let blockTimeRes = await this.transactionService.getTimestamp();
       if (blockTimeRes.success) {
         let blockTime = blockTimeRes.timestamp;
@@ -74,6 +75,8 @@ export class MinServiceProvider {
         ).toFixed(2);
         return roundProgress;
       }
+    }else {
+      throw new ServerResError(data.error.message);
     }
     return roundProgress;
   }
@@ -175,6 +178,13 @@ export class MinServiceProvider {
   }
 
   /**
+   * 取消自动投票
+   */
+  async stopVote() {
+    
+  }
+
+  /**
    * 返回所有的投票人
    * @param page
    * @param limit
@@ -210,7 +220,7 @@ export class MinServiceProvider {
     if (data.success) {
       return data.delegates;
     } else {
-      console.log("get my votes error");
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -237,7 +247,7 @@ export class MinServiceProvider {
         this.allMinersRound = currentRound;
         return this.allMiners.slice((page - 1) * limit, limit);
       } else {
-        return [];
+        throw data.error.message;
       }
     } else {
       return this.allMiners.slice((page - 1) * limit, limit);
@@ -262,7 +272,7 @@ export class MinServiceProvider {
     if (data.success) {
       return data.delegates;
     } else {
-      console.log("get all miners outside error");
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -277,7 +287,11 @@ export class MinServiceProvider {
       publicKey: this.user.userInfo.publicKey,
     };
     let data = await this.fetch.get<any>(forgeStatusUrl, { search: query });
-    return data.enabled;
+    if(data) {
+      return data.enabled;
+    }else {
+      throw new ServerResError(data.error.message);
+    }
   }
 
   /**
@@ -315,6 +329,8 @@ export class MinServiceProvider {
 
     if (data.success) {
       return data.ranks;
+    }else {
+      throw new ServerResError(data.error.message);
     }
   }
 }

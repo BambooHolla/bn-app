@@ -55,8 +55,9 @@ export class PeerServiceProvider extends EventEmitter {
 
     if (data.success) {
       return data.peer;
+    }else {
+      throw new ServerResError(data.error.message);
     }
-    return {};
   }
 
   /**
@@ -69,9 +70,9 @@ export class PeerServiceProvider extends EventEmitter {
 
     if (data.success) {
       return data.peers;
+    }else {
+      throw new ServerResError(data.error.message);
     }
-
-    return [];
   }
 
   /**

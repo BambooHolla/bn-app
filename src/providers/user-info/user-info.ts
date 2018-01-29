@@ -9,7 +9,10 @@ export class UserInfoProvider {
   get userInfo() {
     return this._userInfo || {};
   }
-
+  private _publicKey: string;
+  get publicKey() {
+    return this._publicKey;
+  }
   private _balance: string;
   get balance() {
     return this._balance;
@@ -38,6 +41,7 @@ export class UserInfoProvider {
     this._address = userInfo.address;
     this._balance = userInfo.balance;
     this._secondPublicKey = userInfo.secondPublicKey;
+    this._publicKey = userInfo.publicKey;
     this._password = userInfo.remember ? userInfo.password : null;
   }
 }
