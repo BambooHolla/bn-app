@@ -124,6 +124,14 @@ export class ContactServiceProvider {
     }
   }
 
+  async addContactSmart(
+    address_or_username: string,
+    secret: string,
+    secondSecret?: string,
+  ) {
+    throw new Error("need com");
+  }
+
   /**
    * 添加联系人，密码、二次密码，地址（可选），用户名（可选），地址和用户名必选一种
    * @param secret

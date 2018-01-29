@@ -1,0 +1,32 @@
+page-pwd-input {
+	@extend .header-no-border;
+	> .content {
+		background-color: transparent;
+		background-color: rgba(#000, 0.6);
+
+		> .scroll-content {
+			backdrop-filter: blur(5px);
+			background-color: rgba(#fff, 0.8);
+			overflow: hidden;
+			padding-top: 2rem;
+			width: 80%;
+			/* height: 40%; */
+			height: 20rem;
+			/* position: relative; */
+			left: 10%;
+			top: 15%;
+			border-radius: 2rem;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+	}
+	.common-form {
+		> .input-container {
+			background-color: transparent;
+		}
+	}
+	.label {
+		padding-right: 0.5rem;
+	}
+}

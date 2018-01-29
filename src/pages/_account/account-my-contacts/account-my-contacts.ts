@@ -59,7 +59,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
           };
           letter_list_map.set(word[0], letter);
         }
-        letter.push(my_contact);
+        letter.list.push(my_contact);
       } catch {
         unkown_letter.list.push(my_contact);
       }

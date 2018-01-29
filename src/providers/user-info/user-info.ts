@@ -22,6 +22,10 @@ export class UserInfoProvider {
   get address() {
     return this._address;
   }
+  private _password: string;
+  get password() {
+    return this._password;
+  }
   constructor(public storage: Storage) {}
   initUserInfo(userInfo) {
     if (!userInfo) {
@@ -31,6 +35,7 @@ export class UserInfoProvider {
     this._address = userInfo.address;
     this._fee = userInfo.fee;
     this._balance = userInfo.balance;
+    this._password = userInfo.remember ? userInfo.password : null;
   }
 
   // /**

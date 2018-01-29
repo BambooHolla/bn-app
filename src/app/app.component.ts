@@ -21,6 +21,7 @@ import { SettingsProvider } from "../providers/settings/settings";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
+import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 
 @Component({
@@ -44,6 +45,7 @@ export class MyApp implements OnInit {
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     public modalController: ModalController,
+    public userInfo: UserInfoProvider,
   ) {
     window["translate"] = translate;
     window["platform"] = platform;
@@ -53,6 +55,7 @@ export class MyApp implements OnInit {
     window["toast"] = toast;
     window["modalCtrl"] = modalController;
     window["accountService"] = accountService;
+    window["userInfo"] = userInfo;
     window["myapp"] = this;
     this.initTranslate();
 

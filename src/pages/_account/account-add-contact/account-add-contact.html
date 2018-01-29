@@ -10,11 +10,14 @@
       <div class="right">
         <ali-icon name="ifm-sousuo"></ali-icon>
       </div>
-      <input type="text" placeholder="请输入地址">
+      <input type="text" placeholder="请输入地址" [(ngModel)]="formData.search_text" (ngModelChanged)="searchContacts()">
     </div>
   </div>
   <div class="account-address">
-  	<div class="prefix">本账户地址：</div>
-  	<div class="address">{{account_info.address}}</div>
+    <div class="prefix">本账户地址：</div>
+    <div class="address">{{user.address}}</div>
   </div>
+  <button class="submit-button" (click)="searchContacts()">
+    确定添加
+  </button>
 </ion-content>

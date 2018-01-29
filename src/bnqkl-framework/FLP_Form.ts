@@ -1,4 +1,5 @@
 import { FLP_Route } from "./FLP_Route";
+import { UserInfoProvider } from "../providers/user-info/user-info";
 export class FLP_Form extends FLP_Route {
   private __ecc__: { [prop_name: string]: string[] };
   private get _error_checks_col() {
@@ -92,5 +93,33 @@ export class FLP_Form extends FLP_Route {
         }
       });
     }
+  }
+
+  /*要求用户输入支付密码*/
+  @FLP_Form.FromGlobal userInfo: UserInfoProvider;
+  async getUserPassword(
+    opts: {
+      /**是否需要二次密码*/
+      seconed_pwd?: boolean;
+    } = {},
+  ) {
+    // // 登录密码
+    // const password = this.userInfo.password;
+    // 支付密码
+    const pwdData = new Promise((resolve, reject) => {
+      try {
+        const model = this.modalCtrl.create("pwd-input", opts,{
+          // enableBackdropDismiss: true
+        });
+        model.present();
+        model.onDidDismiss(data => {
+          resolve(data);
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+    console.log(pwdData);
+    return pwdData;
   }
 }
