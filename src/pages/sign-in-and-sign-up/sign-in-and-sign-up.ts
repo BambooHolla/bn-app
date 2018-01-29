@@ -63,6 +63,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     remark: "",
     gpwd: "",
     pwd: "",
+    remember_pwd: true,
   };
   _ture_pwd = "";
   pwd_textarea_height = "";
@@ -120,10 +121,18 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       if (pwd_font_char_map.has(char)) {
         continue;
       }
+      const char_width = this.calcFontWidth(char);
+      if (/\s/.test(char)) {
+        continue;
+      }
+      if (!char_width) {
+        // 可能有回车符号之类的不可见符号
+        continue;
+      }
       const char_g = new plumin.Glyph({
         name: "PWD:" + char,
         unicode: char,
-        advanceWidth: 76.57 * this.calcFontWidth(char), //536,
+        advanceWidth: 76.57 * char_width, //536,
       });
 
       const shape = new plumin.Path.Ellipse({
@@ -184,7 +193,10 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   )
   @asyncCtrlGenerator.loading()
   async doLogin() {
-    let result = await this.loginService.doLogin(this.formData.pwd);
+    let result = await this.loginService.doLogin(
+      this.formData.pwd,
+      this.formData.remember_pwd,
+    );
     if (result) {
       // this.routeTo("scan-nodes");
       this.navCtrl.setRoot(MainPage);

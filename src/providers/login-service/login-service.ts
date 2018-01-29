@@ -102,9 +102,14 @@ export class LoginServiceProvider {
             ? data.account.secondPublicKey
             : "",
         };
+        if(savePwd){// 以Token的形式保存用户登录信息，用于自动登录
+          this.appSetting.setUserToken(loginObj);
+        }else{
+          this.appSetting.setUserToken(null);
+        }
 
         localStorage.setItem("address", data.account.address);
-        await this.user.saveUserInfoLocal(loginObj);
+        // await this.user.saveUserInfoLocal(loginObj);
         // this.appSetting.setUserToken(loginObj);
         return data;
       }
@@ -116,19 +121,6 @@ export class LoginServiceProvider {
       });
       alert.present();
       return false;
-    }
-  }
-
-  /**
-   * 获取最新登录的账号
-   */
-  async getRecentAccount() {
-    let address = localStorage.getItem("address");
-    if (address) {
-      let accountInfo = await this.storage.get(address);
-      if (accountInfo && accountInfo.remember) {
-        return accountInfo.password;
-      }
     }
   }
 

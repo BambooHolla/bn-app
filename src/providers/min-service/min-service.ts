@@ -155,11 +155,13 @@ export class MinServiceProvider {
                 txData,
               );
               if (isDone) {
-                let saveObj = {
-                  autoDig: true,
-                  digRound: await this.getRound(),
-                };
-                await this.user.saveUserSettings(saveObj, this.user.address);
+                // let saveObj = {
+                //   autoDig: true,
+                //   digRound: await this.getRound(),
+                // };
+                // await this.user.saveUserSettings(saveObj, this.user.address);
+                this.appSetting.settings.digRound = await this.getRound();
+                this.appSetting.settings.background_mining = true;
               } else {
                 throw "vote transaction error";
               }
