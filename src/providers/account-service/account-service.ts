@@ -60,10 +60,13 @@ export class AccountServiceProvider {
   async getAccountByUsername(username: string) {
     let data = await this.account.getUserByUsername(username);
 
-    if (data.success && data.account.address) {
+    if (data.success) {
+      if (!data.account) {
+        throw "Incorrect address or username";
+      }
       return data.account;
     } else {
-      return {} as Object;
+      throw new Error(data.error.message);
     }
   }
 
@@ -81,7 +84,7 @@ export class AccountServiceProvider {
           type: "username",
           secret: this.user.userInfo.secret,
           publicKey: this.user.userInfo.publicKey,
-          fee: this.user.userInfo.fee,
+          fee: this.appSetting.settings.default_fee,
           asset: {
             username: {
               alias: newUsername,
@@ -99,14 +102,13 @@ export class AccountServiceProvider {
       }
     }
   }
-  
-  
+
   /**
    * 生成密码
    * @param options 传入的选项，都没有的话返回纯粹的生成密码
    * @param lang 默认语言
    */
-  generateCryptoPassword(options : object, lang : string) {
+  generateCryptoPassword(options: object, lang: string) {
     let password = this.keypair.generatePassPhraseWithInfo(options, lang);
 
     return password;

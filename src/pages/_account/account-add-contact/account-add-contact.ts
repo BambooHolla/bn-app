@@ -41,10 +41,18 @@ export class AccountAddContactPage extends SecondLevelPage {
   @asyncCtrlGenerator.error(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_ERROR"),
   )
+  @asyncCtrlGenerator.success(() =>
+    AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
+  )
   private async _searchContacts() {
     // 直接添加，暂时不支持搜索
     const address = this.formData.search_text;
     const pwdData = await this.getUserPassword();
-    this.contactService.addContactSmart(address, "");
+    const { password, pay_pwd } = pwdData;
+    const is_success = await this.contactService.addContact(
+      password,
+      address,
+      pay_pwd,
+    );
   }
 }

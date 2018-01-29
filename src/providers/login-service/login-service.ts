@@ -13,7 +13,7 @@ import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
-import { UserInfoProvider } from "../user-info/user-info"
+import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 
 export type UserModel = {
@@ -45,6 +45,12 @@ export class LoginServiceProvider {
     this.ifmJs = IFM(AppSettingProvider.NET_VERSION);
     //用于生成随机语句
     this.Mnemonic = this.ifmJs.Mnemonic;
+
+    // 执行一下登录，来更新账户信息（余额等）
+    if (this.user.password) {
+      this.doLogin(this.user.password, true);
+    }
+
     console.groupEnd();
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
@@ -102,15 +108,12 @@ export class LoginServiceProvider {
             ? data.account.secondPublicKey
             : "",
         };
-        if(savePwd){// 以Token的形式保存用户登录信息，用于自动登录
+        if (savePwd) {
+          // 以Token的形式保存用户登录信息，用于自动登录
           this.appSetting.setUserToken(loginObj);
-        }else{
+        } else {
           this.appSetting.setUserToken(null);
         }
-
-        localStorage.setItem("address", data.account.address);
-        // await this.user.saveUserInfoLocal(loginObj);
-        // this.appSetting.setUserToken(loginObj);
         return data;
       }
     } else {

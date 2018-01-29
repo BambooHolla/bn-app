@@ -178,7 +178,7 @@ export class AppSettingProvider extends EventEmitter {
     /**挖矿收益通知*/
     mining_income_notice: false,
     /**默认手续费*/
-    default_fee: 0.00000001,
+    default_fee: "0.00000001",
     /**只在wifi时挖矿*/
     mining_only_in_wifi: true,
     /**动画开关*/
@@ -212,6 +212,8 @@ if (location.hostname === "dev-bnlc.bnqkl.cn") {
   AppSettingProvider.SERVER_URL = `http://${home_ip}:40001/api/v1/bngj/`;
 } else if (location.hostname === "wzx-bnlc.bnqkl.cn" || server_host === "WZX") {
   AppSettingProvider.SERVER_URL = "http://192.168.16.216:40001/api/v1/bngj/";
+} else if (server_host.startsWith("FULL:")) {
+  AppSettingProvider.SERVER_URL = server_host.replace("FULL:", "").trim();
 }
 console.log(
   "%cSERVER_URL:",

@@ -97,10 +97,10 @@ export class ContactServiceProvider {
     } else {
       ignoreList.push(iAddress);
     }
-    
-    for(let i of ignoreList) {
+
+    for (let i of ignoreList) {
       let isIgnore = this.followerList.find(ignoreList[i]);
-      if(isIgnore >= 0) {
+      if (isIgnore >= 0) {
         this.followerList.splice(i, 1);
       }
     }
@@ -131,22 +131,16 @@ export class ContactServiceProvider {
       return followerList;
     }
   }
-  
+
   /**
    * 获取已被忽略的列表
    */
   async getIgnoreList() {
-    let ignoreList = JSON.parse(await this.storage.get("c_" + this.user.address));
+    let ignoreList = JSON.parse(
+      await this.storage.get("c_" + this.user.address),
+    );
 
     return ignoreList;
-  }
-
-  async addContactSmart(
-    address_or_username: string,
-    secret: string,
-    secondSecret?: string,
-  ) {
-    throw new Error("need com");
   }
 
   /**
@@ -161,44 +155,37 @@ export class ContactServiceProvider {
     address_or_username: string,
     secondSecret?: string,
   ) {
-    try {
-      if (!address_or_username) {
-        throw "Parameters cannot find address or username";
-      }
-
-      if (!this.addressCheck.isAddress(address_or_username)) {
-        let userAddress = await this.accountService.getAccountByUsername(
-          address_or_username,
-        );
-        if(!userAddress) {
-          throw "Incorrect address or username";
-        }
-        address_or_username = userAddress.address;
-      }
-
-      let txData = {
-        type: this.transactionTypes.FOLLOW,
-        amount: "0",
-        secret: secret,
-        asset: {
-          contact: {
-            address: "+" + address_or_username,
-          },
-        },
-        fee: this.user.userInfo.fee,
-        publicKey: this.user.userInfo.publicKey,
-        secondSecret,
-      };
-
-      if (secondSecret) {
-        txData.secondSecret = secondSecret;
-      }
-
-      let data: boolean = await this.transactionService.putTransaction(txData);
-      return data;
-    } catch (e) {
-      console.log(e);
+    if (!address_or_username) {
+      throw "Parameters cannot find address or username";
     }
+
+    if (!this.addressCheck.isAddress(address_or_username)) {
+      let userAddress = await this.accountService.getAccountByUsername(
+        address_or_username,
+      );
+      address_or_username = userAddress.address;
+    }
+
+    let txData = {
+      type: this.transactionTypes.FOLLOW,
+      amount: "0",
+      secret: secret,
+      asset: {
+        contact: {
+          address: "+" + address_or_username,
+        },
+      },
+      fee: this.appSetting.settings.default_fee,
+      publicKey: this.user.userInfo.publicKey,
+      secondSecret,
+    };
+
+    if (secondSecret) {
+      txData.secondSecret = secondSecret;
+    }
+
+    let data: boolean = await this.transactionService.putTransaction(txData);
+    return data;
   }
 
   /**

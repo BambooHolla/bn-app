@@ -1,5 +1,7 @@
 import { FLP_Route } from "./FLP_Route";
 import { UserInfoProvider } from "../providers/user-info/user-info";
+import { asyncCtrlGenerator } from "./Decorator";
+
 export class FLP_Form extends FLP_Route {
   private __ecc__: { [prop_name: string]: string[] };
   private get _error_checks_col() {
@@ -97,6 +99,13 @@ export class FLP_Form extends FLP_Route {
 
   /*要求用户输入支付密码*/
   @FLP_Form.FromGlobal userInfo: UserInfoProvider;
+
+  @asyncCtrlGenerator.error(
+    () => FLP_Form.getTranslate("PAY_INPUT_ERROR"),
+    undefined,
+    undefined,
+    true,
+  )
   async getUserPassword(
     opts: {
       /**是否需要二次密码*/
@@ -104,22 +113,29 @@ export class FLP_Form extends FLP_Route {
     } = {},
   ) {
     // // 登录密码
-    // const password = this.userInfo.password;
+    const { password, hasSecondPwd } = this.userInfo;
+    if (!hasSecondPwd && password) {
+      return { password, pay_pwd: "" };
+    }
     // 支付密码
-    const pwdData = new Promise((resolve, reject) => {
+    return new Promise<{ password; pay_pwd }>((resolve, reject) => {
       try {
-        const model = this.modalCtrl.create("pwd-input", opts,{
-          // enableBackdropDismiss: true
+        const model = this.modalCtrl.create("pwd-input", opts, {
+          enableBackdropDismiss: true,
+          cssClass: "pwd-input-modal",
+          showBackdrop: true,
         });
         model.present();
         model.onDidDismiss(data => {
-          resolve(data);
+          if (data) {
+            resolve(data);
+          } else {
+            this.getTranslate("PAY_INPUT_CANCEL").then(reject);
+          }
         });
       } catch (err) {
         reject(err);
       }
     });
-    console.log(pwdData);
-    return pwdData;
   }
 }

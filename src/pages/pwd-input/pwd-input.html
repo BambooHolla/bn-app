@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content>
   <div class="common-form">
-    <div class="input-container">
+    <div class="input-container" *ngIf="formData.need_pay_pwd">
       <div class="left">
         <div class="label">支付密码</div>
       </div>
@@ -18,5 +18,5 @@
       <input type="password" placeholder="请输入登录密码" [(ngModel)]="formData.password">
     </div>
   </div>
-  <div class="submit-button" (click)="submitData()">提交</div>
+  <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">提交</button>
 </ion-content>

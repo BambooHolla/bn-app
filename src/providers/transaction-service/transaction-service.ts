@@ -10,6 +10,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import * as IFM from "ifmchain-ibt";
+import * as promisify from "es6-promisify";
 
 /*
   Generated class for the TransactionServiceProvider provider.
@@ -116,53 +117,36 @@ export class TransactionServiceProvider {
    * @returns {Promise<boolean>}
    */
   async putTransaction(txData) {
-    try {
-      if (this.user.userInfo.balance > 0) {
-        if (this.validateTxdata(txData)) {
-          //获取url，获取类型
-          let transactionUrl = this.appSetting
-            .APP_URL(this.getTransactionLink(txData.type))
-            .toString();
-          console.log(transactionUrl);
-          // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
-          //获取时间戳
-          let timestampRes = await this.getTimestamp();
-          if (timestampRes.success) {
-            //时间戳加入转账对象
-            txData.timestamp = timestampRes.timestamp;
-            //生成转账        await上层包裹的函数需要async
-            debugger;
-            this.ifmJs.transaction.createTransaction(
-              txData,
-              async (err, transaction) => {
-                debugger;
-                if (err) throw err;
-                let data = await this.fetch.put<any>(
-                  transactionUrl,
-                  transaction,
-                );
-                if (data.success) {
-                  return true;
-                } else {
-                  throw data.error;
-                }
-              },
-            );
+    if (this.user.userInfo.balance > 0) {
+      if (this.validateTxdata(txData)) {
+        //获取url，获取类型
+        let transactionUrl = this.appSetting
+          .APP_URL(this.getTransactionLink(txData.type))
+          .toString();
+        console.log(transactionUrl);
+        // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
+        //获取时间戳
+        let timestampRes = await this.getTimestamp();
+        if (timestampRes.success) {
+          //时间戳加入转账对象
+          txData.timestamp = timestampRes.timestamp;
+          //生成转账        await上层包裹的函数需要async
+          const transaction = await promisify(
+            this.ifmJs.transaction.createTransaction,
+          )(txData);
+
+          let data = await this.fetch.put<any>(transactionUrl, transaction);
+          if (data.success) {
+            return true;
+          } else {
+            throw data.error;
           }
-        } else {
-          throw "validate error";
         }
       } else {
-        throw "not enough balance";
+        throw "validate error";
       }
-    } catch (e) {
-      let alert = this.alertController.create({
-        title: "transfer error",
-        subTitle: e || e.message,
-        buttons: ["OK"],
-      });
-      alert.present();
-      return false;
+    } else {
+      throw "not enough balance";
     }
   }
 

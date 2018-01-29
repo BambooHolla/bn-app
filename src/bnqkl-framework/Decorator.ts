@@ -13,12 +13,30 @@ import { Toast } from "@ionic-native/toast";
 import { TranslateService } from "@ngx-translate/core";
 import { FLP_Tool } from "./FLP_Tool";
 
-export const ERROR_FROM_ASYNCERROR = { NAME: "CATCHED_ERROR" };
+const _ERROR_FROM_ASYNCERROR_CODE =
+  "CATCHED_ERROR@" +
+  Math.random()
+    .toString(36)
+    .substr(2);
+
+export function getErrorFromAsyncerror(keep_throw: boolean) {
+  const res = {
+    code: _ERROR_FROM_ASYNCERROR_CODE,
+  };
+  if (keep_throw) {
+    return Promise.reject(res);
+  }
+  return res;
+}
+export function isErrorFromAsyncerror(err) {
+  return err && err.code === _ERROR_FROM_ASYNCERROR_CODE;
+}
 
 export function asyncErrorWrapGenerator(
   error_title: any = () => FLP_Tool.getTranslate("ERROR"),
   opts?: AlertOptions,
   hidden_when_page_leaved = true,
+  keep_throw = false,
 ) {
   return function asyncErrorWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
@@ -39,6 +57,10 @@ export function asyncErrorWrapGenerator(
           return data;
         })
         .catch(err => {
+          if (isErrorFromAsyncerror(err)) {
+            // 这个error已经弹出过了，就不在弹出了
+            return keep_throw ? Promise.reject(err) : err;
+          }
           var err_msg;
           if (err instanceof Error) {
             err_msg = err.message;
@@ -53,7 +75,7 @@ export function asyncErrorWrapGenerator(
               "%c不弹出异常提示因为页面的切换 " + (this.cname || ""),
               "color:yellow",
             );
-            return ERROR_FROM_ASYNCERROR;
+            return getErrorFromAsyncerror(keep_throw);
           }
           const alertCtrl: AlertController = this.alertCtrl;
           if (!(alertCtrl instanceof AlertController)) {
@@ -84,7 +106,7 @@ export function asyncErrorWrapGenerator(
               },
             );
           }
-          return ERROR_FROM_ASYNCERROR;
+          return getErrorFromAsyncerror(keep_throw);
         });
     };
     descriptor.value.source_fun = source_fun;
@@ -101,8 +123,8 @@ export function asyncSuccessWrapGenerator(
     const source_fun = descriptor.value;
     descriptor.value = function SuccessWrap(...args) {
       return source_fun.apply(this, args).then(data => {
-        if (data === ERROR_FROM_ASYNCERROR) {
-          return ERROR_FROM_ASYNCERROR;
+        if (isErrorFromAsyncerror(data)) {
+          return data;
         }
         if (
           hidden_when_page_leaved &&

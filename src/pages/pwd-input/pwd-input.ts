@@ -8,12 +8,6 @@ import {
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { UserInfoProvider } from "../../providers/user-info/user-info";
 
-/**
- * Generated class for the PwdInputPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage({ name: "pwd-input" })
 @Component({
@@ -32,6 +26,7 @@ export class PwdInputPage extends FirstLevelPage {
 		password: this.userInfo.password,
 		have_password:!!this.userInfo.password,
 		pay_pwd: "",
+		need_pay_pwd:this.userInfo.hasSecondPwd
 	};
 
 	submitData() {
