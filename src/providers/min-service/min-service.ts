@@ -210,11 +210,9 @@ export class MinServiceProvider {
     };
 
     let data: any = this.fetch.get<any>(myVotesUrl, { search: query });
-    if (data.success) {
-      return data.delegates;
-    } else {
-       
-    }
+
+    return data.delegates;
+    
   }
 
   /**
@@ -235,13 +233,10 @@ export class MinServiceProvider {
         orderBy: "rate:asc",
       };
       let data = await this.fetch.get<any>(myVotesUrl, { search: query });
-      if (data.success) {
-        this.allMiners = data.delegates;
-        this.allMinersRound = currentRound;
-        return this.allMiners.slice((page - 1) * limit, limit);
-      } else {
-        throw data.error.message;
-      }
+      this.allMiners = data.delegates;
+      this.allMinersRound = currentRound;
+      return this.allMiners.slice((page - 1) * limit, limit);
+      
     } else {
       return this.allMiners.slice((page - 1) * limit, limit);
     }
@@ -262,11 +257,7 @@ export class MinServiceProvider {
     };
     let data = await this.fetch.get<any>(minersUrl, { search: query });
 
-    if (data.success) {
-      return data.delegates;
-    } else {
-       
-    }
+    return data.delegates;
   }
 
   /**
@@ -280,11 +271,8 @@ export class MinServiceProvider {
       publicKey: this.user.userInfo.publicKey,
     };
     let data = await this.fetch.get<any>(forgeStatusUrl, { search: query });
-    if(data) {
-      return data.enabled;
-    }else {
-       
-    }
+    return data.enabled;
+    
   }
 
   /**
@@ -320,10 +308,7 @@ export class MinServiceProvider {
     };
     let data = await this.fetch.get<any>(myRankUrl, { search: query });
 
-    if (data.success) {
-      return data.ranks;
-    }else {
-       
-    }
+    return data.ranks;
+    
   }
 }
