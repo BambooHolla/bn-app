@@ -20,7 +20,7 @@ import * as promisify from "es6-promisify";
 */
 @Injectable()
 export class TransactionServiceProvider {
-  ifmJs: any;
+  ifmJs = AppSettingProvider.IFMJS;
   transaction: any;
   // block: any;
   transactionTypeCode: any;
@@ -30,7 +30,7 @@ export class TransactionServiceProvider {
   md5: any;
   sha: any;
   nacl: any;
-  constructor(
+  constructor( 
     public http: HttpClient,
     public appSetting: AppSettingProvider,
     public storage: Storage,
@@ -40,7 +40,6 @@ export class TransactionServiceProvider {
     public user: UserInfoProvider,
   ) {
     console.log("Hello TransactionServiceProvider Provider");
-    this.ifmJs = AppSettingProvider.IFMJS;
     this.transaction = this.ifmJs.Api(
       AppSettingProvider.HTTP_PROVIDER,
     ).transaction;
