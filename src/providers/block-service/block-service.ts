@@ -53,11 +53,8 @@ export class BlockServiceProvider {
     
     let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
 
-    if (data.success) {
-      return data.block;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.block;
+    
   }
 
   /**
@@ -76,11 +73,8 @@ export class BlockServiceProvider {
       "id" : blockId
     }});
 
-    if (data.success === true && data.count > 0) {
-      return data.blocks;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.blocks;
+    
   }
 
   /**
@@ -95,11 +89,8 @@ export class BlockServiceProvider {
       }
     })
 
-    if (data.success === true && data.count > 0) {
-      return data.blocks;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.blocks;
+    
   }
 
   /**
@@ -114,11 +105,8 @@ export class BlockServiceProvider {
       }
     });
 
-    if (data.success === true && data.count > 0) {
-      return data.blocks;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.blocks;
+    
   }
 
   /**
@@ -161,11 +149,8 @@ export class BlockServiceProvider {
       search: query
     })
   
-    if(data.success) {
-      return data;
-    }else {
-      throw new ServerResError(data.error.message);
-    }
+    return data;
+
   }
 
   /**
@@ -265,11 +250,8 @@ export class BlockServiceProvider {
 
       let data = await this.getBlocks(query);
 
-      if (data.success) {
-        return data.blocks;
-      }else {
-        return new ServerResError(data.error.message);
-      }
+      return data.blocks;
+      
     }
   }
 
@@ -292,10 +274,7 @@ export class BlockServiceProvider {
     };
     let data = await this.transactionService.getTransactions(query);
     
-    if(data.success) {
-      return data.transactions;
-    }else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.transactions;
+    
   }
 }

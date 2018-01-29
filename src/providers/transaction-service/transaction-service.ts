@@ -113,11 +113,8 @@ export class TransactionServiceProvider {
       }
     })
     
-    if(data.success) {
-      return data.transaction;
-    }else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.transaction;
+    
   }
 
   /**
@@ -127,11 +124,7 @@ export class TransactionServiceProvider {
   async getTimestamp() {
     let data = await this.fetch.get<any>(this.GET_TIMESTAMP);
     
-    if(data.success) {
-      return data;
-    }else {
-      throw new ServerResError(data.error.message);      
-    }
+    return data;
   }
 
   /**
@@ -167,11 +160,8 @@ export class TransactionServiceProvider {
           )(txData);
 
           let data = await this.fetch.put<any>(transactionUrl, transaction);
-          if (data.success) {
-            return true;
-          } else {
-            throw new ServerResError(data.error.message);
-          }
+          return true;
+          
         }
       } else {
         throw "validate error";
@@ -288,11 +278,8 @@ export class TransactionServiceProvider {
     };
     let data = await this.getTransactions(query);
 
-    if (data.success) {
-      return data.transactions;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.transactions;
+    
   }
 
   /**
@@ -303,11 +290,8 @@ export class TransactionServiceProvider {
   async getTransactions(query = {}) {
     let data = await this.fetch.get<any>(this.GET_TRANSACTIONS);
     
-    if (data.success) {
-      return data.transactions;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.transactions;
+    
   }
 
   /**
@@ -323,10 +307,7 @@ export class TransactionServiceProvider {
     };
 
     let data = await this.fetch.get<any>(unconfirmedUrl, { search: query });
-    if (data.success) {
-      return data.transactions;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.transactions;
+
   }
 }

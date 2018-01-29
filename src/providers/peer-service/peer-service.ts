@@ -39,9 +39,10 @@ export class PeerServiceProvider extends EventEmitter {
     // ];
   }
 
-  readonly PEER_SYNC = "/api/loader/status/sync";
-  readonly PING_URL = "/api/blocks/getHeight";
-  readonly PEERS_URL = "/api/peers/";
+  readonly PEER_SYNC = this.appSetting.APP_URL("/api/loader/status/sync");
+  readonly PING_URL = this.appSetting.APP_URL("/api/blocks/getHeight");
+  readonly PEERS_URL = this.appSetting.APP_URL("/api/peers/");
+  readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
 
   /**
    * 获取节点信息
@@ -51,13 +52,15 @@ export class PeerServiceProvider extends EventEmitter {
    * ip port height health state os sharePort version
    */
   async getPeer(ipStr, port) {
-    let data = await this.peer.getPeer(ipStr, port);
+    let data = await this.fetch.get<any>(this.PEERS_QUERY_URL, {
+      search: {
+        "ip_str" : ipStr,
+        "port" : port
+      }
+    })
 
-    if (data.success) {
-      return data.peer;
-    }else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.peer;
+    
   }
 
   /**
@@ -66,13 +69,12 @@ export class PeerServiceProvider extends EventEmitter {
    * @returns {Promise<any>}
    */
   async getPeers(params = {}) {
-    let data = await this.peer.getPeers(params);
+    let data = await this.fetch.get<any>(this.PEERS_QUERY_URL, {
+      search: params
+    })
 
-    if (data.success) {
-      return data.peers;
-    }else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.peers;
+    
   }
 
   /**
@@ -245,9 +247,7 @@ export class PeerServiceProvider extends EventEmitter {
    * return -1 -- 同步错误
    */
   async getPeerSync(host?: string) {
-    let peerSyncUrl = host
-      ? host + this.PEER_SYNC
-      : this.appSetting.APP_URL(this.PEER_SYNC);
+    let peerSyncUrl = host ? host + this.PEER_SYNC : AppSettingProvider.SERVER_URL + this.PEER_SYNC;
 
     let data = await this.fetch.get<any>(peerSyncUrl);
     if (data.success) {

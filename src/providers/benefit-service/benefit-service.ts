@@ -102,11 +102,7 @@ export class BenefitServiceProvider {
     let getBenefitUrl = this.appSetting.APP_URL(this.GET_BENEFIT);
     let data = await this.fetch.get<any>(getBenefitUrl, params);
 
-    if (data.success) {
-      return data.balancedetails;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.balancedetails;
   }
 
   /**
@@ -127,11 +123,8 @@ export class BenefitServiceProvider {
       };
 
       let data = await this.getBenefits(query);
-      if(data.success) {
-        return data;
-      }else {
-        throw new ServerResError(data.error.message);
-      }
+      return data;
+      
     }
   }
 
