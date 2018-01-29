@@ -21,6 +21,9 @@ export class ContactServiceProvider {
   ifmJs: any;
   contact: any;
   transactionTypes: any;
+  addressCheck: any;
+  followingList: any[];
+  followerList: any[];
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -33,6 +36,7 @@ export class ContactServiceProvider {
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transactionTypes = this.ifmJs.transactionTypes;
+    this.addressCheck = this.ifmJs.addressCheck;
   }
 
   readonly GET_CONTACT = "/api/contacts";
@@ -61,14 +65,12 @@ export class ContactServiceProvider {
       >(getContactUrl, { search: query });
 
       if (data.success) {
-        data.follower = await this.getContactIgnored(data.follower);
+        data.follower = await this.contactIgnored(data.follower);
+        this.followingList = data.following;
+        this.followerList = data.follower;
         switch (opt) {
           case 0:
             return { following: data.following, follower: data.follower };
-          // case 1:
-          //   return data.following;
-          // case 2:
-          //   return data.follower;
           default:
             return { following: data.following, follower: data.follower };
         }
@@ -85,31 +87,37 @@ export class ContactServiceProvider {
    * @param 忽略的地址
    */
   async ignoreContact(iAddress) {
-    let address = this.user.userInfo.address;
+    let address = this.user.address;
     let ignoreList: any[];
 
-    let ignoreBefore = await this.storage.get("c_" + address);
+    let ignoreBefore = JSON.parse(await this.storage.get("c_" + address));
     if (ignoreBefore) {
       ignoreList = ignoreBefore;
       ignoreList.push(iAddress);
     } else {
       ignoreList.push(iAddress);
     }
-
-    await this.storage.set("c_" + address, ignoreList);
-    return ignoreList;
+    
+    for(let i of ignoreList) {
+      let isIgnore = this.followerList.find(ignoreList[i]);
+      if(isIgnore >= 0) {
+        this.followerList.splice(i, 1);
+      }
+    }
+    await this.storage.set("c_" + address, JSON.stringify(ignoreList));
+    return this.followerList;
   }
 
   /**
    * 忽略用户
    * @param followerList
    */
-  async getContactIgnored(followerList) {
+  async contactIgnored(followerList) {
     if (!followerList || followerList.length === 0) {
       return followerList || [];
     }
-    let address = this.user.userInfo.address;
-    let ignoreList = await this.storage.get("c_" + address);
+    let address = this.user.address;
+    let ignoreList = JSON.parse(await this.storage.get("c_" + address));
 
     //如果包含忽略的且有未添加的人员
     if (ignoreList.length > 0 && followerList.length > 0) {
@@ -122,6 +130,15 @@ export class ContactServiceProvider {
     } else {
       return followerList;
     }
+  }
+  
+  /**
+   * 获取已被忽略的列表
+   */
+  async getIgnoreList() {
+    let ignoreList = JSON.parse(await this.storage.get("c_" + this.user.address));
+
+    return ignoreList;
   }
 
   async addContactSmart(
@@ -141,20 +158,22 @@ export class ContactServiceProvider {
    */
   async addContact(
     secret: string,
+    address_or_username: string,
     secondSecret?: string,
-    address?: string,
-    username?: string,
   ) {
     try {
-      if (!address && !username) {
-        throw "Parameters cannot find address and username";
+      if (!address_or_username) {
+        throw "Parameters cannot find address or username";
       }
 
-      if (username) {
+      if (!this.addressCheck.isAddress(address_or_username)) {
         let userAddress = await this.accountService.getAccountByUsername(
-          username,
+          address_or_username,
         );
-        address = userAddress.address;
+        if(!userAddress) {
+          throw "Incorrect address or username";
+        }
+        address_or_username = userAddress.address;
       }
 
       let txData = {
@@ -163,7 +182,7 @@ export class ContactServiceProvider {
         secret: secret,
         asset: {
           contact: {
-            address: "+" + address,
+            address: "+" + address_or_username,
           },
         },
         fee: this.user.userInfo.fee,
