@@ -49,36 +49,32 @@ export class ContactServiceProvider {
    * opt - 2 : 获取未添加
    */
   async getMyContacts(opt?: number) {
-    try {
-      let getContactUrl = this.appSetting.APP_URL(this.GET_CONTACT);
+    let getContactUrl = this.appSetting.APP_URL(this.GET_CONTACT);
 
-      let query = {
-        publicKey: this.user.userInfo.publicKey,
-      };
-      let data = await this.fetch.get<
-        | {
-            follower: ContactModel[];
-            following: ContactModel[];
-            success: true;
-          }
-        | { success: false; error: any }
-      >(getContactUrl, { search: query });
-
-      if (data.success) {
-        data.follower = await this.contactIgnored(data.follower);
-        this.followingList = data.following;
-        this.followerList = data.follower;
-        switch (opt) {
-          case 0:
-            return { following: data.following, follower: data.follower };
-          default:
-            return { following: data.following, follower: data.follower };
+    let query = {
+      publicKey: this.user.userInfo.publicKey,
+    };
+    let data = await this.fetch.get<
+      | {
+          follower: ContactModel[];
+          following: ContactModel[];
+          success: true;
         }
-      } else {
-        throw "Get contact list error";
+      | { success: false; error: any }
+    >(getContactUrl, { search: query });
+
+    if (data.success) {
+      data.follower = await this.contactIgnored(data.follower);
+      this.followingList = data.following;
+      this.followerList = data.follower;
+      switch (opt) {
+        case 0:
+          return { following: data.following, follower: data.follower };
+        default:
+          return { following: data.following, follower: data.follower };
       }
-    } catch (e) {
-      console.log(e);
+    } else {
+      throw new Error("Get contact list error");
     }
   }
 
@@ -156,7 +152,7 @@ export class ContactServiceProvider {
     secondSecret?: string,
   ) {
     if (!address_or_username) {
-      throw "Parameters cannot find address or username";
+      throw new Error("Parameters cannot find address or username");
     }
 
     if (!this.addressCheck.isAddress(address_or_username)) {
@@ -185,7 +181,12 @@ export class ContactServiceProvider {
     }
 
     let data: boolean = await this.transactionService.putTransaction(txData);
-    return data;
+
+    if(data) {
+      return data;
+    }else {
+      throw new Error("Add contact transaction error");
+    }
   }
 
   /**
@@ -199,7 +200,7 @@ export class ContactServiceProvider {
     } else if (username) {
       return await this.accountService.getAccountByUsername;
     } else {
-      return {} as object;
+      return null;
     }
   }
 }

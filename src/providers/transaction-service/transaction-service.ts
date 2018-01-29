@@ -24,6 +24,12 @@ export class TransactionServiceProvider {
   transaction: any;
   // block: any;
   transactionTypeCode: any;
+  nacl_factory = this.ifmJs.nacl_factory;
+  Buff = this.ifmJs.Buff;
+  Crypto = this.ifmJs.crypto;
+  md5: any;
+  sha: any;
+  nacl: any;
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -40,9 +46,14 @@ export class TransactionServiceProvider {
     ).transaction;
     // this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
     this.transactionTypeCode = this.ifmJs.transactionTypes;
+    this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
+    this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
   }
 
-  readonly UNCONFIRMED = "/api/transactions/unconfirmed";
+  readonly UNCONFIRMED = this.appSetting.APP_URL("/api/transactions/unconfirmed");
+  readonly GET_TRANSACTIONS_BY_ID = this.appSetting.APP_URL("/api/transactions/get");
+  readonly GET_TIMESTAMP = this.appSetting.APP_URL("/api/transactions/getslottime");
+  readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions");
 
   getTransactionLink(type) {
     switch (type) {
@@ -96,9 +107,17 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTransactionById(id: string) {
-    let data = this.transaction.getTransactionById(id);
-
-    return data.transactions[0];
+    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS_BY_ID, {
+      search: {
+        id: id
+      }
+    })
+    
+    if(data.success) {
+      return data.transaction;
+    }else {
+      throw new ServerResError(data.error.message);
+    }
   }
 
   /**
@@ -106,9 +125,13 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTimestamp() {
-    let data = await this.transaction.getTimestamp();
-
-    return data;
+    let data = await this.fetch.get<any>(this.GET_TIMESTAMP);
+    
+    if(data.success) {
+      return data;
+    }else {
+      throw new ServerResError(data.error.message);      
+    }
   }
 
   /**
@@ -118,6 +141,14 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     if (this.user.userInfo.balance > 0) {
+      if(txData.secondSecret) {
+        let secondPwd = txData.secondPwd;
+        let is_second_true = this.verifySecondPassphrase(secondPwd);
+        if(!is_second_true) {
+          throw "Second passphrase verified error";
+        }
+      }
+
       if (this.validateTxdata(txData)) {
         //获取url，获取类型
         let transactionUrl = this.appSetting
@@ -139,7 +170,7 @@ export class TransactionServiceProvider {
           if (data.success) {
             return true;
           } else {
-            throw data.error;
+            throw new ServerResError(data.error.message);
           }
         }
       } else {
@@ -159,12 +190,12 @@ export class TransactionServiceProvider {
     debugger;
     if (txData) {
       if (!txData.type && txData.type !== 0) {
-        console.log("tx type error");
+        console.log("transaction type error");
         return false;
       }
 
       if (!txData.secret) {
-        console.log("tx secret error");
+        console.log("transaction secret error");
         return false;
       }
 
@@ -182,6 +213,62 @@ export class TransactionServiceProvider {
       return true;
     }
     return false;
+  }
+
+  /**
+   * 验证支付密码
+   * @param: secondPassphrase 输入的二次密码
+   */
+  verifySecondPassphrase(secondPassphrase: string) {
+    let secondPublic = this.formatSecondPassphrase(
+      this.user.publicKey,
+      secondPassphrase,
+    );
+    console.log(secondPublic.publicKey.toString("hex"));
+    if (
+      secondPublic.publicKey.toString("hex") ===
+      this.user.secondPublicKey
+    ) {
+      return true;
+    } else {
+      return false;
+    } 
+  }
+
+  /**
+   * 将输入的支付密码转换为publicKey
+   * @param publicKey
+   * @param secondSecret
+   * @returns {any}
+   */
+  formatSecondPassphrase(publicKey, secondSecret) {
+    debugger;
+    //设置
+    if (!this.nacl) {
+      this.nacl_factory.instantiate(function(tmpNacl) {
+        this.nacl = tmpNacl;
+      });
+    }
+
+    let reg = /^[^\s]+$/;
+    if (!reg.test(secondSecret)) {
+      throw "Second Secret cannot contain spaces";
+    }
+
+    let pattern = /^[^\u4e00-\u9fa5]+$/;
+    if (!pattern.test(secondSecret)) {
+      throw "Second Secret cannot contain Chinese characters";
+    }
+
+    let md5Second =
+      publicKey.toString().trim() +
+      "-" +
+      this.md5.update(secondSecret.toString().trim()).digest("hex");
+    let secondHash = this.sha.update(md5Second, "utf-8").digest();
+    let secondKeypair = this.nacl.crypto_sign_seed_keypair(secondHash);
+    secondKeypair.publicKey = this.Buff.from(secondKeypair.signPK);
+    secondKeypair.privateKey = this.Buff.from(secondKeypair.signSK);
+    return secondKeypair;
   }
 
   /**
@@ -204,7 +291,7 @@ export class TransactionServiceProvider {
     if (data.success) {
       return data.transactions;
     } else {
-      return [];
+      throw new ServerResError(data.error.message);
     }
   }
 
@@ -214,9 +301,13 @@ export class TransactionServiceProvider {
    * @returns {Promise<{}>}
    */
   async getTransactions(query = {}) {
-    let data = await this.transaction.getTransactions(query);
-
-    return data;
+    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS);
+    
+    if (data.success) {
+      return data.transactions;
+    } else {
+      throw new ServerResError(data.error.message);
+    }
   }
 
   /**
@@ -224,17 +315,18 @@ export class TransactionServiceProvider {
    */
   async getUnconfirmed(page = 1, limit = 10) {
     let unconfirmedUrl = this.appSetting.APP_URL(this.UNCONFIRMED);
-    let query: any;
-    query.address = this.user.userInfo.address;
-    query.senderPublicKey = this.user.userInfo.publicKey;
-    query.offset = (page - 1) * limit;
-    query.limit = limit;
+    let query = {
+      address : this.user.address,
+      senderPublicKey : this.user.publicKey,
+      offset : (page - 1) * limit,
+      limit: limit
+    };
 
     let data = await this.fetch.get<any>(unconfirmedUrl, { search: query });
     if (data.success) {
       return data.transactions;
     } else {
-      console.log("get unconfirmed error");
+      throw new ServerResError(data.error.message);
     }
   }
 }
