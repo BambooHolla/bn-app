@@ -24,9 +24,9 @@ export class TransactionServiceProvider {
   transaction: any;
   // block: any;
   transactionTypeCode: any;
-  nacl_factory = this.ifmJs.nacl_factory;
-  Buff = this.ifmJs.Buff;
-  Crypto = this.ifmJs.crypto;
+  nacl_factory :any;
+  Buff :any;
+  Crypto : any;
   md5: any;
   sha: any;
   nacl: any;
@@ -46,6 +46,9 @@ export class TransactionServiceProvider {
     ).transaction;
     // this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
     this.transactionTypeCode = this.ifmJs.transactionTypes;
+    this.nacl_factory = this.ifmJs.nacl_factory;
+    this.Crypto = this.ifmJs.crypto;
+    this.Buff = this.ifmJs.Buff;
     this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
   }
