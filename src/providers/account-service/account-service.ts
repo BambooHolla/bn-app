@@ -45,11 +45,7 @@ export class AccountServiceProvider {
    */
   async getAccountByAddress(address: string) {
     let data = await this.account.getUserByAddress(address);
-    if (data.success) {
-      return data;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data;
   }
 
   /**
@@ -60,14 +56,7 @@ export class AccountServiceProvider {
   async getAccountByUsername(username: string) {
     let data = await this.account.getUserByUsername(username);
 
-    if (data.success) {
-      if (!data.account) {
-        throw "Incorrect address or username";
-      }
-      return data.account;
-    } else {
-      throw new ServerResError(data.error.message);
-    }
+    return data.account;
   }
 
   /**
@@ -136,7 +125,7 @@ export class AccountServiceProvider {
       secondSecret: secondSecret,
       publicKey:
         "38e70075fc1054bfbb29cb550932a719f88c1c34f2ed897f1ae74a328ab9a21e",
-      fee: this.user.fee,
+      fee: this.appSetting.settings.default_fee,
     };
 
     let is_success = await this.transactionService.putTransaction(txData);

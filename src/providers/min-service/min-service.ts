@@ -64,20 +64,17 @@ export class MinServiceProvider {
       nextRoundTime: number;
       error ?: any;
     }>(roundTimeUrl);
-    if (data.success) {
-      let roundTime = data.nextRoundTime;
-      let blockTimeRes = await this.transactionService.getTimestamp();
-      if (blockTimeRes.success) {
-        let blockTime = blockTimeRes.timestamp;
-        roundProgress = (
-          (1 - roundTime / (57 * blockTime / 1000)) *
-          100
-        ).toFixed(2);
-        return roundProgress;
-      }
-    }else {
-      throw new ServerResError(data.error.message);
+    let roundTime = data.nextRoundTime;
+    let blockTimeRes = await this.transactionService.getTimestamp();
+    if (blockTimeRes.success) {
+      let blockTime = blockTimeRes.timestamp;
+      roundProgress = (
+        (1 - roundTime / (57 * blockTime / 1000)) *
+        100
+      ).toFixed(2);
+      return roundProgress;
     }
+    
     return roundProgress;
   }
 
@@ -125,9 +122,6 @@ export class MinServiceProvider {
       const resp = await this.fetch.get<any>(vote_url, {
         search: { address: this.user.address },
       });
-      if (!resp.success) {
-        throw resp.error.message;
-      }
       //如果没有可投票的人，一般都是已经投了57票
       if (resp.delegate.length === 0) {
         throw "you have already voted";
@@ -172,9 +166,8 @@ export class MinServiceProvider {
           throw "vote transaction error";
         }
       }
-    } else {
-      throw "get transaction timestamp error";
-    }
+    };
+    
   }
 
   /**
@@ -220,7 +213,7 @@ export class MinServiceProvider {
     if (data.success) {
       return data.delegates;
     } else {
-      throw new ServerResError(data.error.message);
+       
     }
   }
 
@@ -272,7 +265,7 @@ export class MinServiceProvider {
     if (data.success) {
       return data.delegates;
     } else {
-      throw new ServerResError(data.error.message);
+       
     }
   }
 
@@ -290,7 +283,7 @@ export class MinServiceProvider {
     if(data) {
       return data.enabled;
     }else {
-      throw new ServerResError(data.error.message);
+       
     }
   }
 
@@ -330,7 +323,7 @@ export class MinServiceProvider {
     if (data.success) {
       return data.ranks;
     }else {
-      throw new ServerResError(data.error.message);
+       
     }
   }
 }
