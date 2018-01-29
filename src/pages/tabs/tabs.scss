@@ -31,14 +31,52 @@ page-tabs {
         }
       }
     }
-    .tab-button.has-title {
+    .tab-button {
+      color: #7b7b7b!important;
       .tab-button-text {
-        color: #7b7b7b;
+        color: inherit!important;
         position: relative;
         top: -0.6rem;
       }
+
+      .tab-button-icon {
+        color: inherit!important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &:after {
+          font-family: "ifmicon";
+          font-size: 1.9rem;
+        }
+        &.ion-ios-tab-vote,
+        &.ion-ios-tab-vote-outline {
+          &:after {
+            content: "\e60d";
+          }
+        }
+
+        &.ion-ios-tab-chain,
+        &.ion-ios-tab-chain-outline {
+          &:after {
+            content: "";
+          }
+        }
+        &.ion-ios-tab-pay,
+        &.ion-ios-tab-pay-outline {
+          &:after {
+            content: "\e649";
+          }
+        }
+        &.ion-ios-tab-account,
+        &.ion-ios-tab-account-outline {
+          &:after {
+            content: "\e612";
+          }
+        }
+      }
     }
     .tab-button[aria-selected="true"] {
+      color: #fff!important;
       &::before {
         content: " ";
         width: 40%;
@@ -80,9 +118,6 @@ page-tabs {
         100% {
           transform: rotate(360deg);
         }
-      }
-      .tab-button-text {
-        color: #fff;
       }
     }
 
@@ -148,19 +183,5 @@ page-tabs {
         }
       }
     }
-  }
-  .ion-ios-tab-vote {
-    background: url('data:image/svg+xml;utf8,<svg width="25" height="25"><use xlink:href="#ifm-web__anquan"></use></svg>');
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-  }
-  .ion-ios-tab-chain {
-  }
-  .ion-ios-tab-pay {
-  }
-  .ion-ios-tab-account {
   }
 }

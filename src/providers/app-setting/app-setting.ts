@@ -9,7 +9,7 @@ import {
 import * as IFM from "ifmchain-ibt";
 import { EventEmitter } from "eventemitter3";
 import { AniBase } from "../../components/AniBase";
-import { UserInfoProvider, SettingParams } from "../user-info/user-info";
+import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 
 export class AppUrl {
@@ -43,49 +43,47 @@ export class AppSettingProvider extends EventEmitter {
   constructor(public http: Http, public user: UserInfoProvider) {
     super();
     console.log("Hello AppSettingProvider Provider");
-    this.user_token = new BehaviorSubject<string>(this.getUserToken());
+
+    const user_token = this.getUserToken();
+
+    // 初始化缓存中的user_info
+    this.user.initUserInfo(user_token);
+
+    this.user_token = new BehaviorSubject<string>(user_token);
 
     const default_settings = { ...this.settings };
-    // 获取用户的配置
-    this.user.getUserSettingLocal().then(current_user_settings => {
-      if(!current_user_settings){
-        return;
-      }
-      for (let s_key in this.skey2keyMap) {
-        const key = this.skey2keyMap[s_key];
-        const s_value = current_user_settings[s_key];
-        if (s_value !== undefined) {
-          default_settings[key] = s_value;
-        }
-      }
-    });
     // 将setting与本地存储进行关联
     for (let key in this.settings) {
+      const get_s_key = () =>
+        this.user.address &&
+        AppSettingProvider.SETTING_KEY_PERFIX + key + ":" + this.user.address;
+      const default_value = default_settings[key];
       Object.defineProperty(this.settings, key, {
         get: () => {
-          const s_key = AppSettingProvider.SETTING_KEY_PERFIX + key;
-          const current_json_value = localStorage.getItem(s_key);
-          let should_write_in = true;
-          const default_value = default_settings[key];
           let value = default_value;
-          if (typeof current_json_value === "string") {
-            try {
-              value = JSON.parse(current_json_value); //JSON可用
-              should_write_in = false; // 不需要初始化写入
-            } catch (e) {}
-          }
-          if (should_write_in) {
-            localStorage.setItem(s_key, JSON.parse(default_value));
-            this.saveUserSettingParams();
+          const s_key = get_s_key();
+          if (s_key) {
+            const current_json_value = localStorage.getItem(s_key);
+            let should_write_in = true;
+            if (typeof current_json_value === "string") {
+              try {
+                value = JSON.parse(current_json_value); //JSON可用
+                should_write_in = false; // 不需要初始化写入
+              } catch (e) {}
+            }
+            if (should_write_in) {
+              localStorage.setItem(s_key, JSON.parse(default_value));
+            }
           }
           return value;
         },
         set: value => {
-          const s_key = AppSettingProvider.SETTING_KEY_PERFIX + key;
-          localStorage.setItem(s_key, JSON.parse(value));
-          this.saveUserSettingParams();
-          this.emit(`changed@setting.${key}`, value);
-          this.emit(`changed@setting`, { key, value });
+          const s_key = get_s_key();
+          if (s_key) {
+            localStorage.setItem(s_key, JSON.parse(value));
+            this.emit(`changed@setting.${key}`, value);
+            this.emit(`changed@setting`, { key, value });
+          }
         },
       });
     }
@@ -144,14 +142,19 @@ export class AppSettingProvider extends EventEmitter {
       //   console.log("User Token 过期：", obj);
       //   this._setUserToken("");
       // }, obj.expiredTime - Date.now());
-      return obj || "";
+      return obj || null;
     } catch (e) {
-      return "";
+      return null;
     }
   }
   setUserToken(obj: any) {
     if (typeof obj !== "string") {
+      this.user.initUserInfo(obj);
       obj = JSON.stringify(obj);
+    } else {
+      throw new TypeError(
+        "user token must be an object:{address,password,balance,fee}",
+      );
     }
     localStorage.setItem(this.USER_TOKEN_STORE_KEY, obj);
     this._setUserToken(this.getUserToken());
@@ -170,6 +173,8 @@ export class AppSettingProvider extends EventEmitter {
     fingerprint_protection: "",
     /**后台挖矿*/
     background_mining: false,
+    /** ? 不知道这个是什么用的，要问俊杰*/
+    digRound: 0,
     /**挖矿收益通知*/
     mining_income_notice: false,
     /**默认手续费*/
@@ -181,36 +186,6 @@ export class AppSettingProvider extends EventEmitter {
     /**自动更新*/
     auto_update_app: false,
   };
-  key2skeyMap = {
-    open_fingerprint_protection: "fingerPrint",
-    background_mining: "autoDig",
-    mining_income_notice: "report",
-    animation_switch: "animate",
-    mining_only_in_wifi: "digAtWifi",
-    auto_update_app: "autoUpdate",
-    default_fee: "fee",
-  };
-  skey2keyMap = (() => {
-    const res = {};
-    for (let key in this.key2skeyMap) {
-      res[this.key2skeyMap[key]] = key;
-    }
-    return res;
-  })();
-  toUserSettingParams(): SettingParams {
-    const params = {} as any;
-    for (let key in this.settings) {
-      if (key in this.key2skeyMap) {
-        let s_key = this.key2skeyMap[key];
-        params[s_key] = this.settings[key];
-      }
-    }
-    return params;
-  }
-  saveUserSettingParams() {
-    const params = this.toUserSettingParams();
-    this.user.saveUserSettings(params);
-  }
 }
 
 function getQueryVariable(variable) {

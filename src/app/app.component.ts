@@ -19,6 +19,7 @@ import { Toast } from "@ionic-native/toast";
 import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
 import { SettingsProvider } from "../providers/settings/settings";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
+import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 
@@ -35,6 +36,7 @@ export class MyApp implements OnInit {
     public splashScreen: SplashScreen,
     public accountService: AccountServiceProvider,
     public loginService: LoginServiceProvider,
+    public appSetting: AppSettingProvider,
     public storage: Storage,
     public keyboard: Keyboard,
     public toast: Toast,
@@ -52,6 +54,31 @@ export class MyApp implements OnInit {
     window["modalCtrl"] = modalController;
     window["accountService"] = accountService;
     window["myapp"] = this;
+    this.initTranslate();
+
+    const initPage = (async () => {
+      if (!localStorage.getItem("HIDE_WELCOME")) {
+        this.openPage(FirstRunPage);
+      }
+      const user_token = appSetting.getUserToken();
+      if (user_token && user_token.password) {
+        // 自动登录
+        this.loginService.doLogin(user_token.password, true);
+        return null; //MainPage;
+      }
+      return LoginPage;
+    })().catch(err => {
+      console.error("get init page error:", err);
+      return LoginPage;
+    });
+
+    loginService.loginStatus.subscribe(isLogined => {
+      console.log("isLogined", isLogined);
+      this.openPage(isLogined ? MainPage : LoginPage);
+    });
+
+    // this.openPage(LoginPage);
+
     statusBar.hide();
     platform.ready().then(() => {
       statusBar.show();
@@ -66,18 +93,10 @@ export class MyApp implements OnInit {
       statusBar.overlaysWebView(true);
       statusBar.hide();
       splashScreen.hide();
+      initPage.then(page => {
+        page && this.openPage(page);
+      });
     });
-    this.initTranslate();
-    if (!localStorage.getItem("HIDE_WELCOME")) {
-      localStorage.setItem("HIDE_WELCOME", "1");
-      this.openPage(FirstRunPage);
-    }
-
-    // loginService.loginStatus.subscribe(isLogined => {
-    //   console.log("isLogined", isLogined);
-    //   this.openPage(isLogined ? MainPage : MainPage);
-    // });
-    this.openPage(LoginPage);
   }
 
   initTranslate() {
@@ -125,13 +144,12 @@ export class MyApp implements OnInit {
   private _openPage(page: string) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
+    this.currentPage = page;
     if (this.nav) {
       this.nav.setRoot(page);
-      this.currentPage = page;
     } else {
       this._onNavInitedPromise.promise.then(() => {
         this.nav.setRoot(page);
-        this.currentPage = page;
       });
     }
   }

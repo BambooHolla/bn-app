@@ -65,6 +65,7 @@ export class TutorialPage {
   }
 
   startApp() {
+    localStorage.setItem("HIDE_WELCOME", "1");
     this.myapp.openPage(this.myapp.tryInPage, true);
   }
 
