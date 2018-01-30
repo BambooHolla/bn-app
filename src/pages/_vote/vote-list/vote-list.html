@@ -19,7 +19,7 @@
     <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新我的得票……"></ion-refresher-content>
   </ion-refresher>
   <div class="common-list">
-    <div class="common-item" *ngFor="let tran of out_vote_list">
+    <div class="common-item" *ngFor="let vote of out_vote_list">
       <div class="left" [innerHTML]="'v12jK5LKJS1235FdoI1230asdfiocd123sasAFDj'|mask:'@address'"></div>
       <div class="right">
         123
@@ -36,7 +36,7 @@
     <ion-slide>
       <ion-content #content1 [ion-content-scroll-shadow]="content1" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
         <div class="common-list">
-          <div class="common-item" *ngFor="let tran of out_vote_list">
+          <div class="common-item" *ngFor="let vote of out_vote_list">
             <div class="left">v12jK5LKJS1235FdoI1230asdfiocd123sasAFDj</div>
             <div class="right">
               <ali-icon name="ifm-arrow-to-right"></ali-icon>
@@ -51,8 +51,8 @@
     <ion-slide>
       <ion-content #content2 [ion-content-scroll-shadow]="content2" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
         <div class="common-list">
-          <div class="common-item" *ngFor="let tran of out_vote_list">
-            <div class="left">ocdv12jK5LKI1230asdfiJS1235Fdo123sasAFDj</div>
+          <div class="common-item" *ngFor="let vote of out_vote_list">
+            <div class="left">{{vote.username||vote.address}}</div>
             <div class="right">
               <ali-icon name="ifm-arrow-to-right"></ali-icon>
             </div>

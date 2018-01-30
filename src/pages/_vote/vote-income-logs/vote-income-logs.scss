@@ -8,6 +8,9 @@ page-vote-income-logs {
   .common-list {
     margin-top: 1rem;
     > .common-item {
+      >.left{
+        align-items: flex-start;
+      }
       > .right {
         > .title {
           color: #4f4f4f;

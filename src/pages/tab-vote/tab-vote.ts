@@ -10,8 +10,12 @@ import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
 import { AniBase } from "../../components/AniBase";
 import { TabsPage } from "../tabs/tabs";
-import { MinServiceProvider } from "../../providers/min-service/min-service";
+import {
+  MinServiceProvider,
+  RankModel,
+} from "../../providers/min-service/min-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
+import { HEIGHT_AB_Generator } from "../../providers/app-setting/app-setting";
 
 @IonicPage({ name: "tab-vote" })
 @Component({
@@ -193,6 +197,21 @@ export class TabVotePage extends FirstLevelPage {
     TabVotePage.getTranslate("STOP_AUTO_VOTE_ERROR"),
   )
   async stopMin() {
+    this.minService.stopVote();
     this.routeToBootstrap();
+  }
+
+  /**上一轮的排名*/
+  get pre_round_rank_list() {
+    return this.minService.myRank.getPromise();
+  }
+  get pre_round_rank_list_pre() {
+    return this.pre_round_rank_list.then(list => list[0]);
+  }
+  get pre_round_rank_list_cur() {
+    return this.pre_round_rank_list.then(list => list[1]);
+  }
+  get pre_round_rank_list_next() {
+    return this.pre_round_rank_list.then(list => list[2]);
   }
 }

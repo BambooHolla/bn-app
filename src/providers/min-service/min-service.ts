@@ -4,7 +4,11 @@ import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-import { AppSettingProvider } from "../app-setting/app-setting";
+import {
+  AppSettingProvider,
+  ROUND_AB_Generator,
+  AsyncBehaviorSubject,
+} from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
@@ -42,9 +46,15 @@ export class MinServiceProvider {
   }
 
   readonly ROUND_TIME = this.appSetting.APP_URL("/api/delegates/roundTime");
-  readonly VOTE_URL = this.appSetting.APP_URL("/api/accounts/randomAccessDelegates");
-  readonly VOTE_FOR_ME = this.appSetting.APP_URL("/api/accounts/voteForDelegate");
-  readonly FORGE_STATUS = this.appSetting.APP_URL("/api/delegates/forging/status");
+  readonly VOTE_URL = this.appSetting.APP_URL(
+    "/api/accounts/randomAccessDelegates",
+  );
+  readonly VOTE_FOR_ME = this.appSetting.APP_URL(
+    "/api/accounts/voteForDelegate",
+  );
+  readonly FORGE_STATUS = this.appSetting.APP_URL(
+    "/api/delegates/forging/status",
+  );
   readonly MY_VOTES = this.appSetting.APP_URL("/api/delegates");
   readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
 
@@ -62,19 +72,18 @@ export class MinServiceProvider {
     let data = await this.fetch.get<{
       success: boolean;
       nextRoundTime: number;
-      error ?: any;
+      error?: any;
     }>(roundTimeUrl);
     let roundTime = data.nextRoundTime;
     let blockTimeRes = await this.transactionService.getTimestamp();
     if (blockTimeRes.success) {
       let blockTime = blockTimeRes.timestamp;
-      roundProgress = (
-        (1 - roundTime / (57 * blockTime / 1000)) *
-        100
-      ).toFixed(2);
+      roundProgress = ((1 - roundTime / (57 * blockTime / 1000)) * 100).toFixed(
+        2,
+      );
       return roundProgress;
     }
-    
+
     return roundProgress;
   }
 
@@ -101,7 +110,7 @@ export class MinServiceProvider {
   /**
    * 获取当前轮次
    */
-  async getRound():Promise<number> {
+  async getRound(): Promise<number> {
     let currentBlock: any = await this.blockService.getLastBlock();
     if (currentBlock.height) {
       return Math.floor(currentBlock.height / 57);
@@ -165,15 +174,14 @@ export class MinServiceProvider {
           throw "vote transaction error";
         }
       }
-    };
-    
+    }
   }
 
   /**
    * 取消自动投票
    */
-  async stopVote() {
-    
+  stopVote() {
+    this.appSetting.settings.background_mining = false;
   }
 
   /**
@@ -181,15 +189,15 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllVotersForMe(page = 1, limit = 10):Promise<string[]> {
+  async getAllVotersForMe(page = 1, limit = 10): Promise<string[]> {
     let voteForMeUrl = this.VOTE_FOR_ME;
 
     let data = await this.fetch.get<any>(voteForMeUrl, {
-      "search" : {
-        "publicKey" : this.user.publicKey,
-        "offset" : (page-1) * limit,
-        "limit" : limit
-      }
+      search: {
+        publicKey: this.user.publicKey,
+        offset: (page - 1) * limit,
+        limit: limit,
+      },
     });
     if (data.success) {
       data.unshift(0, data.length - 1);
@@ -212,10 +220,9 @@ export class MinServiceProvider {
       limit: limit,
     };
 
-    let data: any = this.fetch.get<any>(this.MY_VOTES, { "search": query });
+    let data: any = await this.fetch.get<any>(this.MY_VOTES, { search: query });
 
     return data.delegates;
-    
   }
 
   /**
@@ -237,7 +244,6 @@ export class MinServiceProvider {
       this.allMiners = data.delegates;
       this.allMinersRound = currentRound;
       return this.allMiners.slice((page - 1) * limit, limit);
-      
     } else {
       return this.allMiners.slice((page - 1) * limit, limit);
     }
@@ -248,7 +254,7 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllMinersOutside(page = 1, limit = 10) :Promise<DelegateModel[]> {
+  async getAllMinersOutside(page = 1, limit = 10): Promise<DelegateModel[]> {
     let query = {
       offset: 57 + (page - 1) * limit,
       limit: limit,
@@ -269,7 +275,6 @@ export class MinServiceProvider {
     };
     let data = await this.fetch.get<any>(this.FORGE_STATUS, { search: query });
     return data.enabled;
-    
   }
 
   /**
@@ -297,13 +302,18 @@ export class MinServiceProvider {
   /**
    * 获取我在上一轮的排名
    */
-  async getMyRank():Promise<RankModel[]> {
+  async getMyRank(): Promise<RankModel[]> {
     let query = {
       address: this.user.userInfo.address,
     };
     let data = await this.fetch.get<any>(this.MY_RANK, { search: query });
 
     return data.ranks;
-    
+  }
+
+  myRank: AsyncBehaviorSubject<RankModel[]>;
+  @ROUND_AB_Generator("myRank")
+  myRank_Executor(promise_pro) {
+    return promise_pro.follow(this.getMyRank());
   }
 }

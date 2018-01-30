@@ -13,7 +13,7 @@ export class AmountEulerPipe implements PipeTransform {
    * Takes a value and makes it lowercase.
    */
   transform(num: number, ...args) {
-    num = num / 100000000;
+    num = num / 100000000 || 0;
     let numStr = "" + num;
     if (/e/.test(numStr) == true) {
       numStr = num.toFixed(8);

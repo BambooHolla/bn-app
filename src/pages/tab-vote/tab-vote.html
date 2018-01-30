@@ -26,17 +26,7 @@
       </div>
       <div class="assets-info">
         <div class="balance">
-          <svg xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="gradient-1" x2="1" y2="0">
-                <stop stop-color="#f8846f" offset="0" />
-                <stop stop-color="#ffc85e" offset="1" />
-              </linearGradient>
-            </defs>
-            <text y="2.4rem" font-size="2.4rem" x="12.4rem" fill="url(#gradient-1)">
-              {{account_info?.balance}}
-            </text>
-          </svg>
+          <text-gradient [text]="userInfo.userInfo.votingReward|amountEuler|number:'1.8-8'" from="#f8846f" to="#ffc85e" direction="to right"></text-gradient>
         </div>
         <div class="history-logs">
           <a class="linker" (click)="routeTo('vote-income-logs')">历史挖矿收益</a>
@@ -49,7 +39,7 @@
           <ali-icon name="ifm-close-sound"></ali-icon>
         </button>
         <button (click)="routeTo('vote-list')">
-          <ali-icon name="ifm-caikuangeps"></ali-icon>
+          <ali-icon name="ifm-caikuang"></ali-icon>
         </button>
       </div>
       <div class="ani-wrapper" #aniWrapper (click)="stopMin()">
@@ -67,21 +57,21 @@
               <div class="header">
                 <div class="title">
                   <ali-icon name="ifm-income-ranking"></ali-icon>
-                  本轮收益排名
+                  上轮收益排名
                 </div>
               </div>
               <div class="rank-info">
                 <div class="pre-item">
-                  <div class="ranking-val">9</div>
-                  <div class="ip-address">192.**.**.106</div>
+                  <div class="ranking-val">{{(pre_round_rank_list_pre|async)?.vvv}}</div>
+                  <div class="ip-address">{{(pre_round_rank_list_pre|async)?.xxx}}</div>
                 </div>
                 <div class="cur-item">
-                  <div class="ranking-val">10</div>
-                  <div class="ip-address">192.**.**.106</div>
+                  <div class="ranking-val">{{(pre_round_rank_list_cur|async)?.vvv}}</div>
+                  <div class="ip-address">{{(pre_round_rank_list_cur|async)?.xxx}}</div>
                 </div>
                 <div class="aft-item">
-                  <div class="ranking-val">11</div>
-                  <div class="ip-address">192.**.**.106</div>
+                  <div class="ranking-val">{{(pre_round_rank_list_next|async)?.vvv}}</div>
+                  <div class="ip-address">{{(pre_round_rank_list_next|async)?.xxx}}</div>
                 </div>
               </div>
             </div>

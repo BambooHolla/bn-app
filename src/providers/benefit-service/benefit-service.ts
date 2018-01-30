@@ -1,6 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AppFetchProvider, CommonResponseData, ServerResError } from "../app-fetch/app-fetch";
+import {
+  AppFetchProvider,
+  CommonResponseData,
+  ServerResError,
+} from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
@@ -13,6 +17,7 @@ import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./benefit.types";
+export * from "./benefit.types";
 import * as IFM from "ifmchain-ibt";
 
 /*
@@ -39,7 +44,9 @@ export class BenefitServiceProvider {
     this.ifmJs = AppSettingProvider.IFMJS;
   }
 
-  readonly GET_BENEFIT = this.appSetting.APP_URL("/api/accounts/balanceDetails");
+  readonly GET_BENEFIT = this.appSetting.APP_URL(
+    "/api/accounts/balanceDetails",
+  );
 
   /**
    * 增量查询我的前n个收益，增量
@@ -48,7 +55,7 @@ export class BenefitServiceProvider {
    * @param limit
    * @returns {Promise<Object[]>}
    */
-  async getTop57Benefits(increment: boolean):Promise<TYPE.benefitModel[]> {
+  async getTop57Benefits(increment: boolean): Promise<TYPE.BenefitModel[]> {
     //超过100个则删除数组至100个
     if (this.benefitList.length > 100) {
       this.benefitList = this.benefitList.splice(0, 100);
@@ -73,7 +80,7 @@ export class BenefitServiceProvider {
           };
 
           let data = await this.getBenefits(query);
-          let temp :any;
+          let temp: any;
           temp = data;
           temp.unshift(temp.length, 0);
           // data.unshift(data[0], 0);
@@ -103,8 +110,8 @@ export class BenefitServiceProvider {
    * @param params
    * @returns {Promise<any>}
    */
-  async getBenefits(params):Promise<TYPE.benefitModel[]> {
-    let data = await this.fetch.get<any>(this.GET_BENEFIT, {"search" : params});
+  async getBenefits(params): Promise<TYPE.BenefitModel[]> {
+    let data = await this.fetch.get<any>(this.GET_BENEFIT, { search: params });
 
     return data.balancedetails;
   }
@@ -115,9 +122,16 @@ export class BenefitServiceProvider {
    * @param page
    * @param limit
    */
-  async getBenefitsByPage(page: number, limit: number):Promise<TYPE.benefitModel[]> {
+  async getBenefitsByPage(
+    page: number,
+    limit: number,
+  ): Promise<TYPE.BenefitModel[]> {
     //如果小于57则获取缓存中的收益
-    if (page * limit < 57 && this.benefitList.length >= 57) {
+    if (
+      this.benefitList &&
+      page * limit < 57 &&
+      this.benefitList.length >= 57
+    ) {
       return this.benefitList.slice((page - 1) * limit, limit);
     } else {
       let query = {
@@ -128,7 +142,6 @@ export class BenefitServiceProvider {
 
       let data = await this.getBenefits(query);
       return data;
-      
     }
   }
 
@@ -136,7 +149,7 @@ export class BenefitServiceProvider {
    * 也是需要57个块内获取本轮的块进行计算
    * 獲取本輪的收益
    */
-  async getBenefitThisRound():Promise<number> {
+  async getBenefitThisRound(): Promise<number> {
     let currentHeightRes = await this.blockService.getLastBlock();
     let currentRound = Math.floor(currentHeightRes.height / 57);
     let benefitThisRound = 0;

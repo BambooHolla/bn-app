@@ -68,7 +68,14 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   _ture_pwd = "";
   pwd_textarea_height = "";
 
-  autoReHeightPWDTextArea() {
+  autoReHeightPWDTextArea(stop_loop: boolean) {
+    if (!stop_loop) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.autoReHeightPWDTextArea(true);
+        });
+      });
+    }
     const ele = this.passwordTextarear.nativeElement;
     this.pwd_textarea_height = ele.style.height = "";
     if (ele.clientHeight < ele.scrollHeight) {
@@ -194,7 +201,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   @asyncCtrlGenerator.loading()
   async doLogin() {
     let result = await this.loginService.doLogin(
-      this.formData.pwd,
+      this.formData.pwd.trim(),
       this.formData.remember_pwd,
     );
     if (result) {

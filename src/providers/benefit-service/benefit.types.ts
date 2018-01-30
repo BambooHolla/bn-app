@@ -1,4 +1,4 @@
-export type benefitModel = {
+export type BenefitModel = {
     address : string;
     amount : number;
     blockId : string;

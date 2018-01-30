@@ -16,11 +16,16 @@
   <div class="common-list">
     <div class="common-item" *ngFor="let log of income_log_list">
       <div class="left">
-        {{log.create_time|amDateFormat:"YYYY.MM.DD"}}
+        <div class="time-ago">
+          {{log.timestamp|timestamp|amLocale:localName|amTimeAgo}}
+        </div>
+        <div class="time-detail">
+          {{log.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm"}}
+        </div>
       </div>
       <div class="right">
-        <div class="title">+100.23</div>
-        <div class="sub-title">123.13221312</div>
+        <div class="title">+{{log.amount|amountEuler|number:"1.8-8"}}</div>
+        <!-- <div class="sub-title">123.13221312</div> -->
       </div>
     </div>
   </div>

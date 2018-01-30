@@ -6,6 +6,7 @@ import {
   AsyncBehaviorSubject,
   Executor,
 } from "../../bnqkl-framework/RxExtends";
+export * from "../../bnqkl-framework/RxExtends";
 import * as IFM from "ifmchain-ibt";
 import { EventEmitter } from "eventemitter3";
 import { AniBase } from "../../components/AniBase";
@@ -163,6 +164,23 @@ export class AppSettingProvider extends EventEmitter {
   private _setUserToken(token: string) {
     this.user_token.next(this.getUserToken());
   }
+  /**高度*/
+  height: BehaviorSubject<number> = new BehaviorSubject(1);
+  /**轮次*/
+  round: BehaviorSubject<number> = new BehaviorSubject(1);
+  setHeight(height: number) {
+    this.height.next(height);
+  }
+  getHeight() {
+    return this.height.getValue();
+  }
+  setRound(round: number) {
+    this.round.next(round);
+  }
+  getRound() {
+    return this.round.getValue();
+  }
+
   settings = {
     /**指纹保护开关*/
     open_fingerprint_protection: false,
@@ -278,6 +296,151 @@ export function TB_AB_Generator(
             if (need_token && !token) {
               return;
             }
+            if (!_v) {
+              _v = new AsyncBehaviorSubject(executor.bind(this));
+              expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
+            } else {
+              _v.refresh();
+            }
+          });
+        }
+        return _v;
+      },
+    });
+    return descriptor;
+  };
+}
+
+/**
+ * 基于height的AsyncBehaviorSubjuet类型的属性/方法生成器
+ * tokenBaseAsyncBehaviorSubjectGenerator
+ *
+ * @export
+ * @param {any} target
+ * @param {any} name
+ * @param {any} descriptor
+ */
+export function HEIGHT_AB_Generator(
+  target_prop_name: string,
+  expiry_time_opts?: ExpiryTime & {
+    loop?: boolean;
+  },
+) {
+  return (target, name, descriptor) => {
+    var executor: Executor<any> = descriptor.value;
+    let _v: AsyncBehaviorSubject<any>;
+    const timeout_auto_refresh = (from: Date) => {
+      let refresh_time = calcExpiryTime(
+        Object.assign({}, expiry_time_opts, { from }),
+      );
+      const do_refresh = () => {
+        if (_v) {
+          console.log(target_prop_name, "过期，强制刷新");
+          _v.refresh();
+          if (expiry_time_opts.loop) {
+            timeout_auto_refresh(refresh_time);
+          }
+        }
+      };
+      const time_out = +refresh_time - Date.now();
+      if (time_out < 0) {
+        const time_span_val = +refresh_time - +from;
+        // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
+        refresh_time = new Date(
+          +refresh_time +
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+        );
+        do_refresh();
+      } else {
+        setTimeout(do_refresh, time_out);
+      }
+      console.log("time_out", time_out);
+    };
+    console.log(target_prop_name);
+    Object.defineProperty(target, target_prop_name, {
+      get() {
+        if (!_v) {
+          const appSetting: AppSettingProvider = this.appSetting;
+          if (!(appSetting instanceof AppSettingProvider)) {
+            throw new Error(
+              `${
+                this.constructor.name
+              } 需要注入依赖： (appSetting)AppSettingProvider`,
+            );
+          }
+          appSetting.height.subscribe(height => {
+            if (!_v) {
+              _v = new AsyncBehaviorSubject(executor.bind(this));
+              expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
+            } else {
+              _v.refresh();
+            }
+          });
+        }
+        return _v;
+      },
+    });
+    return descriptor;
+  };
+}
+/**
+ * 基于round的AsyncBehaviorSubjuet类型的属性/方法生成器
+ * tokenBaseAsyncBehaviorSubjectGenerator
+ *
+ * @export
+ * @param {any} target
+ * @param {any} name
+ * @param {any} descriptor
+ */
+export function ROUND_AB_Generator(
+  target_prop_name: string,
+  expiry_time_opts?: ExpiryTime & {
+    loop?: boolean;
+  },
+) {
+  return (target, name, descriptor) => {
+    var executor: Executor<any> = descriptor.value;
+    let _v: AsyncBehaviorSubject<any>;
+    const timeout_auto_refresh = (from: Date) => {
+      let refresh_time = calcExpiryTime(
+        Object.assign({}, expiry_time_opts, { from }),
+      );
+      const do_refresh = () => {
+        if (_v) {
+          console.log(target_prop_name, "过期，强制刷新");
+          _v.refresh();
+          if (expiry_time_opts.loop) {
+            timeout_auto_refresh(refresh_time);
+          }
+        }
+      };
+      const time_out = +refresh_time - Date.now();
+      if (time_out < 0) {
+        const time_span_val = +refresh_time - +from;
+        // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
+        refresh_time = new Date(
+          +refresh_time +
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+        );
+        do_refresh();
+      } else {
+        setTimeout(do_refresh, time_out);
+      }
+      console.log("time_out", time_out);
+    };
+    console.log(target_prop_name);
+    Object.defineProperty(target, target_prop_name, {
+      get() {
+        if (!_v) {
+          const appSetting: AppSettingProvider = this.appSetting;
+          if (!(appSetting instanceof AppSettingProvider)) {
+            throw new Error(
+              `${
+                this.constructor.name
+              } 需要注入依赖： (appSetting)AppSettingProvider`,
+            );
+          }
+          appSetting.round.subscribe(round => {
             if (!_v) {
               _v = new AsyncBehaviorSubject(executor.bind(this));
               expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);

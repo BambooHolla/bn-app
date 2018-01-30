@@ -99,10 +99,11 @@ export class LoginServiceProvider {
       if (data.success) {
         let loginObj = {
           password,
-          publicKey: data.account.publicKey,
-          address: data.account.address,
+          ...data.account,
+          // publicKey: data.account.publicKey,
+          // address: data.account.address,
           username: data.account.username || "",
-          balance: data.account.balance,
+          // balance: data.account.balance,
           remember: savePwd,
           secondPublickey: data.account.secondPublicKey
             ? data.account.secondPublicKey
