@@ -18,3 +18,15 @@ export type BlockModel = {
   totalForged: string;
   delay?: boolean;
 };
+
+export type SingleBlockModel = {
+  height: number;
+  id: string;
+  timestamp:number;
+}
+
+export type BlockResModel = {
+  success: boolean,
+  count: number,
+  blocks: BlockModel[]
+}

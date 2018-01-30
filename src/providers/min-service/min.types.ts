@@ -9,3 +9,11 @@ export type DelegateModel = {
 	rate: number;
 	productivity: string;
 };
+
+export type RankModel = {
+	_id: string;
+	address: string;
+	dateCreated: string;
+	profit: string;
+	uniqueId: string;
+}

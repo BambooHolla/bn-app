@@ -10,7 +10,7 @@ import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
-import { DelegateModel } from "./min.types";
+import { DelegateModel, RankModel } from "./min.types";
 export * from "./min.types";
 
 /*
@@ -41,19 +41,19 @@ export class MinServiceProvider {
     this.transactionTypes = this.ifmJs.transactionTypes;
   }
 
-  readonly ROUND_TIME = "/api/delegates/roundTime";
-  readonly VOTE_URL = "/api/accounts/randomAccessDelegates";
-  readonly VOTE_FOR_ME = "/api/accounts/voteForDelegate";
-  readonly FORGE_STATUS = "/api/delegates/forging/status";
-  readonly MY_VOTES = "/api/delegates";
-  readonly MY_RANK = "/api/accounts/profitRanking";
+  readonly ROUND_TIME = this.appSetting.APP_URL("/api/delegates/roundTime");
+  readonly VOTE_URL = this.appSetting.APP_URL("/api/accounts/randomAccessDelegates");
+  readonly VOTE_FOR_ME = this.appSetting.APP_URL("/api/accounts/voteForDelegate");
+  readonly FORGE_STATUS = this.appSetting.APP_URL("/api/delegates/forging/status");
+  readonly MY_VOTES = this.appSetting.APP_URL("/api/delegates");
+  readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
 
   /**
    * 获取本轮剩余时间
    * @returns {Promise<void>}
    */
   async getRoundRemainTime() {
-    let roundTimeUrl = this.appSetting.APP_URL(this.ROUND_TIME);
+    let roundTimeUrl = this.ROUND_TIME;
     let roundTimeReq = {
       publicKey: this.user.userInfo.publicKey,
     };
@@ -101,7 +101,7 @@ export class MinServiceProvider {
   /**
    * 获取当前轮次
    */
-  async getRound() {
+  async getRound():Promise<number> {
     let currentBlock: any = await this.blockService.getLastBlock();
     if (currentBlock.height) {
       return Math.floor(currentBlock.height / 57);
@@ -117,9 +117,8 @@ export class MinServiceProvider {
     //首先获取时间戳
     let voteTimestamp = await this.transactionService.getTimestamp();
     if (voteTimestamp.success) {
-      let vote_url = this.appSetting.APP_URL(this.VOTE_URL);
       //获取投票的人
-      const resp = await this.fetch.get<any>(vote_url, {
+      const resp = await this.fetch.get<any>(this.VOTE_URL, {
         search: { address: this.user.address },
       });
       //如果没有可投票的人，一般都是已经投了57票
@@ -138,7 +137,7 @@ export class MinServiceProvider {
           type: this.transactionTypes.VOTE,
           secret: secret,
           publicKey: this.user.userInfo.publicKey,
-          fee: this.appSetting.settings.default_fee,
+          fee: this.appSetting.settings.default_fee.toString(),
           timestamp: resp.timestamp,
           asset: {
             votes: voteList,
@@ -182,10 +181,16 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllVotersForMe(page = 1, limit = 10) {
-    let voteForMeUrl = this.appSetting.APP_URL(this.VOTE_FOR_ME);
+  async getAllVotersForMe(page = 1, limit = 10):Promise<string[]> {
+    let voteForMeUrl = this.VOTE_FOR_ME;
 
-    let data = await this.fetch.get<any>(voteForMeUrl);
+    let data = await this.fetch.get<any>(voteForMeUrl, {
+      "search" : {
+        "publicKey" : this.user.publicKey,
+        "offset" : (page-1) * limit,
+        "limit" : limit
+      }
+    });
     if (data.success) {
       data.unshift(0, data.length - 1);
       Array.prototype.push.apply(this.allVoters, data);
@@ -201,15 +206,13 @@ export class MinServiceProvider {
    * @param limit
    */
   async getMyVotes(page = 1, limit = 10) {
-    let myVotesUrl = this.appSetting.APP_URL(this.MY_VOTES);
-
     let query = {
       address: this.user.userInfo.address,
       offset: (page - 1) * limit,
       limit: limit,
     };
 
-    let data: any = this.fetch.get<any>(myVotesUrl, { search: query });
+    let data: any = this.fetch.get<any>(this.MY_VOTES, { "search": query });
 
     return data.delegates;
     
@@ -223,8 +226,6 @@ export class MinServiceProvider {
    * @param limit
    */
   async getAllMiners(page = 1, limit = 10): Promise<DelegateModel[]> {
-    let myVotesUrl = this.appSetting.APP_URL(this.MY_VOTES);
-
     let currentBlock = await this.blockService.getLastBlock();
     let currentRound = Math.floor(currentBlock.height / 57);
 
@@ -232,7 +233,7 @@ export class MinServiceProvider {
       let query = {
         orderBy: "rate:asc",
       };
-      let data = await this.fetch.get<any>(myVotesUrl, { search: query });
+      let data = await this.fetch.get<any>(this.MY_VOTES, { search: query });
       this.allMiners = data.delegates;
       this.allMinersRound = currentRound;
       return this.allMiners.slice((page - 1) * limit, limit);
@@ -247,15 +248,13 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllMinersOutside(page = 1, limit = 10) {
-    let minersUrl = this.appSetting.APP_URL(this.MY_VOTES);
-
+  async getAllMinersOutside(page = 1, limit = 10) :Promise<DelegateModel[]> {
     let query = {
       offset: 57 + (page - 1) * limit,
       limit: limit,
       orderBy: "rate:asc",
     };
-    let data = await this.fetch.get<any>(minersUrl, { search: query });
+    let data = await this.fetch.get<any>(this.MY_VOTES, { search: query });
 
     return data.delegates;
   }
@@ -265,12 +264,10 @@ export class MinServiceProvider {
    * @returns {Promise<void>}
    */
   async getForgeStaus() {
-    let forgeStatusUrl = this.appSetting.APP_URL(this.FORGE_STATUS);
-
     let query = {
       publicKey: this.user.userInfo.publicKey,
     };
-    let data = await this.fetch.get<any>(forgeStatusUrl, { search: query });
+    let data = await this.fetch.get<any>(this.FORGE_STATUS, { search: query });
     return data.enabled;
     
   }
@@ -300,13 +297,11 @@ export class MinServiceProvider {
   /**
    * 获取我在上一轮的排名
    */
-  async getMyRank() {
-    let myRankUrl = this.appSetting.APP_URL(this.MY_RANK);
-
+  async getMyRank():Promise<RankModel[]> {
     let query = {
       address: this.user.userInfo.address,
     };
-    let data = await this.fetch.get<any>(myRankUrl, { search: query });
+    let data = await this.fetch.get<any>(this.MY_RANK, { search: query });
 
     return data.ranks;
     
