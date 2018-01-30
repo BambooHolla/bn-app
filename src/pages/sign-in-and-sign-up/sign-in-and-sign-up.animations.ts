@@ -10,13 +10,15 @@ export const LoginFormInOut = trigger("login-in-out", [
   state(
     "login",
     style({
-      transform: "rotateY(0deg) translateZ(80px)",
+      transform: "rotateY(0deg) ", //translateZ(80px)
+      pointerEvents: "all",
     }),
   ),
   state(
     "register",
     style({
-      transform: "rotateY(180deg) translateZ(80px)",
+      transform: "rotateY(180deg) ", //translateZ(80px)
+      pointerEvents: "none",
     }),
   ),
   transition(
@@ -25,10 +27,10 @@ export const LoginFormInOut = trigger("login-in-out", [
       "500ms ease-out",
       keyframes([
         style({
-          transform: "rotateY(0deg) translateZ(80px)",
+          transform: "rotateY(0deg) ", //translateZ(80px)
         }),
         style({
-          transform: "rotateY(180deg) translateZ(80px)",
+          transform: "rotateY(180deg) ", //translateZ(80px)
         }),
       ]),
     ),
@@ -39,10 +41,10 @@ export const LoginFormInOut = trigger("login-in-out", [
       "500ms ease-out",
       keyframes([
         style({
-          transform: "rotateY(180deg) translateZ(80px)",
+          transform: "rotateY(180deg) ", //translateZ(80px)
         }),
         style({
-          transform: "rotateY(360deg) translateZ(80px)",
+          transform: "rotateY(360deg) ", //translateZ(80px)
         }),
       ]),
     ),
@@ -53,13 +55,13 @@ export const RegisterFormInOut = trigger("register-in-out", [
   state(
     "login",
     style({
-      transform: "rotateY(-180deg) translateZ(80px)",
+      transform: "rotateY(-180deg) ", //translateZ(80px)
     }),
   ),
   state(
     "register",
     style({
-      transform: "rotateY(0deg) translateZ(80px)",
+      transform: "rotateY(0deg) ", //translateZ(80px)
     }),
   ),
   transition(
@@ -68,10 +70,10 @@ export const RegisterFormInOut = trigger("register-in-out", [
       "500ms ease-out",
       keyframes([
         style({
-          transform: "rotateY(-180deg) translateZ(80px)",
+          transform: "rotateY(-180deg) ", //translateZ(80px)
         }),
         style({
-          transform: "rotateY(0deg) translateZ(80px)",
+          transform: "rotateY(0deg) ", //translateZ(80px)
         }),
       ]),
     ),
@@ -82,10 +84,10 @@ export const RegisterFormInOut = trigger("register-in-out", [
       "500ms ease-out",
       keyframes([
         style({
-          transform: "rotateY(0deg) translateZ(80px)",
+          transform: "rotateY(0deg) ", //translateZ(80px)
         }),
         style({
-          transform: "rotateY(180deg) translateZ(80px)",
+          transform: "rotateY(180deg) ", //translateZ(80px)
         }),
       ]),
     ),

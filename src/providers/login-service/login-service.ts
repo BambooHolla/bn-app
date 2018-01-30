@@ -159,6 +159,6 @@ export class LoginServiceProvider {
 
   loginOut() {
     this.appSetting.clearUserToken();
-    return this.loginerInfo.toPromise();
+    // return this.loginerInfo.toPromise();
   }
 }

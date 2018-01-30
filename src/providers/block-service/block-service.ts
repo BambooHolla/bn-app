@@ -50,11 +50,10 @@ export class BlockServiceProvider {
     //   block: any;
     // } = await this.block.getLastBlock();
     //data: {success, block:{id, height, timestamp}}
-    
+
     let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
 
     return data.block;
-    
   }
 
   /**
@@ -69,12 +68,13 @@ export class BlockServiceProvider {
     //   count: number;
     // } = await this.block.getBlockById(blockId);
 
-    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {search: {
-      "id" : blockId
-    }});
+    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
+      search: {
+        id: blockId,
+      },
+    });
 
     return data.blocks;
-    
   }
 
   /**
@@ -85,12 +85,11 @@ export class BlockServiceProvider {
   async getBlockByHeight(height: number) {
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
       search: {
-        "height" : height
-      }
-    })
+        height: height,
+      },
+    });
 
     return data.blocks;
-    
   }
 
   /**
@@ -101,12 +100,11 @@ export class BlockServiceProvider {
   async getBlocksByAddress(address: string) {
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
       search: {
-        generatorId : address
-      }
+        generatorId: address,
+      },
     });
 
     return data.blocks;
-    
   }
 
   /**
@@ -144,13 +142,12 @@ export class BlockServiceProvider {
    */
   async getBlocks(query = {}) {
     let data: any = {};
-  
-    data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
-      search: query
-    })
-  
-    return data;
 
+    data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
+      search: query,
+    });
+
+    return data;
   }
 
   /**
@@ -201,7 +198,7 @@ export class BlockServiceProvider {
           }
         }
       } else {
-        this.getTopBlocks(false, amount);
+        return await this.getTopBlocks(false, amount);
       }
     } else {
       let data = await this.getBlocks({
@@ -251,7 +248,6 @@ export class BlockServiceProvider {
       let data = await this.getBlocks(query);
 
       return data.blocks;
-      
     }
   }
 
@@ -273,8 +269,7 @@ export class BlockServiceProvider {
       orderBy: "t_timestamp",
     };
     let data = await this.transactionService.getTransactions(query);
-    
+
     return data.transactions;
-    
   }
 }

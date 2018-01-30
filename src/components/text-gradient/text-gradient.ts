@@ -4,25 +4,24 @@ import {
   ElementRef,
   OnInit,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
   SimpleChange,
+  ViewChild,
 } from "@angular/core";
-import { TextGradientDefault } from "./text-gradient-default";
-import { TextGradientSVG } from "./text-gradient-svg";
-/**
- * Generated class for the TextGradientComponent component.
- *
- * See https://angular.io/api/core/Component for more info on Angular
- * Components.
- */
+import * as PIXI from "pixi.js";
 @Component({
   selector: "text-gradient",
   templateUrl: "text-gradient.html",
 })
-export class TextGradientComponent implements OnInit, OnChanges {
+export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
+  @ViewChild("textPanel") canvasRef: ElementRef;
   @Input("text") text = "";
   @Input("from") from = "transparent";
   @Input("to") to = "transparent";
+  @Input("fontSize") fontSize = "1.4rem";
+  @Input("fontFamily")
+  fontFamily = ["-apple-system", "Helvetica Neue", "Roboto", "sans-serif"];
   @Input("direction") direction = "right";
   @Input("fallbackColor") fallbackColor = "";
   get options() {
@@ -34,75 +33,43 @@ export class TextGradientComponent implements OnInit, OnChanges {
       fallbackColor: this.fallbackColor,
     };
   }
-
-  // static version
-  static _id = 0;
-  static _implementation = TextGradientDefault;
-  static _updateImplementation = function _updateImplementation() {
-    if ("WebkitTextFillColor" in document.documentElement.style === false) {
-      this._implementation = TextGradientSVG;
-      document.body.insertAdjacentHTML(
-        "afterbegin",
-        "<svg id='tg-svg-container' height='0' width='0' style='position:absolute'><defs></defs></svg>",
-      );
-      this._svgDefsContainer = document
-        .getElementById("tg-svg-container")
-        .getElementsByTagName("defs")[0];
-    }
-  };
-  static _svgDefsContainer = null;
-  static _include(a, b) {
-    var property;
-    for (property in b) {
-      if (b.hasOwnProperty(property)) {
-        a[property] = b[property];
-      }
-    }
-    return a;
-  }
-  constructor(public eleRef: ElementRef) {}
-  private _id = TextGradientComponent._id++;
-  private _svgDefsContainer = TextGradientComponent._svgDefsContainer;
-  _include = TextGradientComponent._include;
-  element: HTMLElement;
+  private _panel: PIXI.Application;
   ngOnInit() {
-    this.element = this.eleRef.nativeElement;
-    this._init();
-  }
-  _destroyed = false;
-
-  /* Initialize.
-     * All implementations should include this method.
-     * @private, abstract
-     */
-  _init() {
-    throw new Error("TextGradient.prototype._init not implemented");
+    this._panel = new PIXI.Application({
+      transparent: true,
+      autoStart: false,
+      autoResize: false,
+      view: this.canvasRef.nativeElement,
+    });
+    this.updateText();
   }
 
-  /* Implementation to update the text contents of this.element keeping the gradient intact.
-     * All implementations should include this method.
-     * @public, abstract
-     */
-  updateText(text: string) {
-    throw new Error("TextGradient.prototype.update not implemented");
+  private _btext: PIXI.extras.BitmapText = new PIXI.extras.BitmapText("");
+  updateText() {
+    if (!this._panel) {
+      return;
+    }
+    this._panel.start();
+    const { stage, render } = this._panel;
+    const { _btext: btext } = this;
+    btext.parent || stage.addChild(btext);
+
+    btext.text = this.text;
+    btext.font = "";
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this._panel && this._panel.stop();
+      });
+    });
   }
 
-  /* Implementation to remove the gradient and created elements.
-     * All implementations should include this method.
-     * @public, abstract
-     */
-  destroy() {
-    throw new Error("TextGradient.properties.destroy not implemented");
-  }
   ngOnChanges(changes: SimpleChanges) {
     if (changes.text) {
-      this.updateText(this.text);
+      this.updateText();
     }
   }
+  ngOnDestroy() {
+    this._panel && this._panel.destroy();
+  }
 }
-// 初始化，安装可用的模式
-TextGradientComponent._updateImplementation();
-TextGradientComponent._include(
-  TextGradientComponent.prototype,
-  TextGradientComponent._implementation,
-);

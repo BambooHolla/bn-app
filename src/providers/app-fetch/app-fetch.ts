@@ -77,24 +77,25 @@ export class AppFetchProvider {
     if (data.success) {
       return data;
     } else {
-      return Promise.reject(
-        //返回的错误在reject中统一处理，翻译后返回
-        this.translateService
-          .get(data.error && data.error.message)
-          .take(1)
-          .toPromise(),
-      );
+      //返回的错误在reject中统一处理，翻译后返回
+      return this._handleResCatch(res);
     }
   }
   private _handleResCatch(res) {
     const data = res.json();
     const error = data.error;
     if (error) {
-      return Promise.reject(
-        error.code
-          ? ServerResError.parseErrorMessage(error.code, error.message)
-          : error.message,
-      );
+      return this.translateService
+        .get(data.error && data.error.message)
+        .take(1)
+        .toPromise()
+        .then(err_translated_msg => {
+          return Promise.reject(
+            error.code
+              ? ServerResError.parseErrorMessage(error.code, err_translated_msg)
+              : new Error(err_translated_msg),
+          );
+        });
     } else {
       if (data) {
         if (

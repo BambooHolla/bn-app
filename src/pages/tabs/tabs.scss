@@ -32,15 +32,15 @@ page-tabs {
       }
     }
     .tab-button {
-      color: #7b7b7b!important;
+      color: #7b7b7b !important;
       .tab-button-text {
-        color: inherit!important;
+        color: inherit !important;
         position: relative;
         top: -0.6rem;
       }
 
       .tab-button-icon {
-        color: inherit!important;
+        color: inherit !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -76,7 +76,7 @@ page-tabs {
       }
     }
     .tab-button[aria-selected="true"] {
-      color: #fff!important;
+      color: #fff !important;
       &::before {
         content: " ";
         width: 40%;
@@ -87,6 +87,8 @@ page-tabs {
         transform: rotate(45deg);
         border-radius: 38%;
         z-index: -1;
+        top: 10%;
+        left: 30%;
       }
       &::after {
         content: " ";
@@ -95,8 +97,10 @@ page-tabs {
         padding-bottom: 41%;
         font-size: 0;
         position: absolute;
-        top: 13%;
-        left: 30%;
+        top: 9%;
+        left: 29.5%;
+        // top: 13%;
+        // left: 30%;
         transform: rotate(0deg);
         border-radius: 38%;
         z-index: -2;

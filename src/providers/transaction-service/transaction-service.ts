@@ -179,15 +179,14 @@ export class TransactionServiceProvider {
    * @returns {boolean}
    */
   validateTxdata(txData) {
-    debugger;
     if (txData) {
       if (!txData.type && txData.type !== 0) {
-        console.log("transaction type error");
+        console.error("transaction type error");
         return false;
       }
 
       if (!txData.secret) {
-        console.log("transaction secret error");
+        console.error("transaction secret error");
         return false;
       }
 
@@ -195,11 +194,11 @@ export class TransactionServiceProvider {
         (txData.type === "SEND" && !txData.recipientId) ||
         (txData.type === "SEND" && !txData.amount)
       ) {
-        console.log("tx is send and recipient is null");
+        console.error("tx is send and recipient is null");
         return false;
       }
       if (!txData.fee) {
-        console.log("tx fee type error");
+        console.error("tx fee type error");
         return false;
       }
       return true;
@@ -234,7 +233,6 @@ export class TransactionServiceProvider {
    * @returns {any}
    */
   formatSecondPassphrase(publicKey, secondSecret) {
-    debugger;
     //设置
     if (!this.nacl) {
       this.nacl_factory.instantiate(function(tmpNacl) {
@@ -244,12 +242,12 @@ export class TransactionServiceProvider {
 
     let reg = /^[^\s]+$/;
     if (!reg.test(secondSecret)) {
-      throw "Second Secret cannot contain spaces";
+      throw new TypeError("Second Secret cannot contain spaces");
     }
 
     let pattern = /^[^\u4e00-\u9fa5]+$/;
     if (!pattern.test(secondSecret)) {
-      throw "Second Secret cannot contain Chinese characters";
+      throw new TypeError("Second Secret cannot contain Chinese characters");
     }
 
     let md5Second =

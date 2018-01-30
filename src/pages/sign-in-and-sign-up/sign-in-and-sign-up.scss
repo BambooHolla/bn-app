@@ -1,4 +1,9 @@
 page-sign-in-and-sign-up {
+  > .content {
+    > .scroll-content {
+      overflow: hidden;
+    }
+  }
   #bg {
     height: 100vh;
     width: 100vw;
@@ -222,6 +227,7 @@ page-sign-in-and-sign-up {
             color: rgba(#fff, 0.8) !important;
             -webkit-text-fill-color: unset !important;
             font-size: 1.3rem;
+            text-indent: 3rem;
           }
         }
         .show-pwd-button {
@@ -309,11 +315,20 @@ page-sign-in-and-sign-up {
     padding: 1.2rem;
     width: 75vw;
     font-size: 1.8rem;
-    color: #fff;
     font-weight: bolder;
+    color: #fff;
     background: linear-gradient(to bottom, rgba(#02e5f6, 1), rgba(#01acdd, 1));
     box-shadow: 0 0 0.2rem rgba(#333, 0.5);
     transition-duration: 250ms;
+    flex-shrink: 0;
+    > .inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
     &:disabled {
       font-weight: bold;
       opacity: 1;
@@ -340,6 +355,7 @@ page-sign-in-and-sign-up {
 
   .goto-container {
     width: 74vw;
+    flex-shrink: 0;
     display: flex;
     flex-direction: row;
     margin-top: 1.7rem;
@@ -361,25 +377,56 @@ page-sign-in-and-sign-up {
     .goto-button {
       flex-grow: 0;
       flex-shrink: 0;
+      height: 1.6rem;
+      color: #01acdd;
+      font-weight: bolder;
       background-image: linear-gradient(top, #02e5f6 20%, #01acdd 80%);
-      -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
       font-size: 1.6rem;
     }
   }
 
   /* 3d效果 */
   .form-wrapper {
-    transform-style: preserve-3d;
-    perspective: 2020px;
-    perspective-origin: 50% 10%;
+    /* transform-style: preserve-3d; */
+    /* perspective: 2020px; */
+    /* perspective-origin: 50% 10%; */
     position: relative;
   }
   .register-form,
   .login-form {
+    pointer-events: none;
     position: absolute;
     top: 14rem;
-    -webkit-transform-origin-z: -230px;
+    /*width=72vw,rest=28 */
+    left: 14vw;
+    transition-duration: 0.5s;
+  }
+  .login-form {
+    &.login {
+      pointer-events: all;
+      transform: scale(1);
+      opacity: 1;
+    }
+    &.register {
+      pointer-events: none;
+      transform: scale(0.4);
+      opacity: 0;
+    }
+  }
+
+  .register-form {
+    &.login {
+      pointer-events: none;
+      transform: scale(0.4);
+      opacity: 0;
+    }
+    &.register {
+      pointer-events: all;
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   #font-calc {
