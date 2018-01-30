@@ -15,17 +15,14 @@ import * as PIXI from "pixi.js";
 export class AppUrl {
   constructor(public path) {}
   toString() {
-    if (this.path[0] === "/") {
-      return AppSettingProvider.SERVER_URL + this.path;
-    } else {
-      return AppSettingProvider.SERVER_URL + "/api/" + this.path;
-    }
+    return AppSettingProvider.SERVER_URL + this.path;
   }
 }
 
 @Injectable()
 export class AppSettingProvider extends EventEmitter {
   static SERVER_URL = "http://mainnet.ifmchain.org";
+  // static SERVER_URL = "http://47.104.142.234:6062";
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;

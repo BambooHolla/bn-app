@@ -12,6 +12,7 @@ import {
 import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
+import * as TYPE from "./benefit.types";
 import * as IFM from "ifmchain-ibt";
 
 /*
@@ -38,7 +39,7 @@ export class BenefitServiceProvider {
     this.ifmJs = AppSettingProvider.IFMJS;
   }
 
-  readonly GET_BENEFIT = "/api/accounts/balanceDetails";
+  readonly GET_BENEFIT = this.appSetting.APP_URL("/api/accounts/balanceDetails");
 
   /**
    * 增量查询我的前n个收益，增量
@@ -47,7 +48,7 @@ export class BenefitServiceProvider {
    * @param limit
    * @returns {Promise<Object[]>}
    */
-  async getTop57Benefits(increment: boolean) {
+  async getTop57Benefits(increment: boolean):Promise<TYPE.benefitModel[]> {
     //超过100个则删除数组至100个
     if (this.benefitList.length > 100) {
       this.benefitList = this.benefitList.splice(0, 100);
@@ -59,7 +60,7 @@ export class BenefitServiceProvider {
       let lastBlockHeight = this.benefitBlockHeight;
 
       if (lastBlockHeight) {
-        let blockBetween = lastBlockRes - lastBlockHeight;
+        let blockBetween = lastBlockRes.height - lastBlockHeight;
         //没有更新且有缓存则返回缓存
         if (blockBetween == 0 && this.benefitList.length == 57) {
           return this.benefitList.slice(0, 56);
@@ -72,9 +73,13 @@ export class BenefitServiceProvider {
           };
 
           let data = await this.getBenefits(query);
-          data.unshift(data.length, 0);
-          Array.prototype.splice.apply(this.benefitList, data);
-          this.benefitBlockHeight = lastBlockRes;
+          let temp :any;
+          temp = data;
+          temp.unshift(temp.length, 0);
+          // data.unshift(data[0], 0);
+          Array.prototype.splice.apply(this.benefitList, temp);
+          this.benefitList = temp;
+          this.benefitBlockHeight = lastBlockRes.height;
           return this.benefitList.slice(0, 56);
         }
       } else {
@@ -87,7 +92,7 @@ export class BenefitServiceProvider {
         orderBy: "md_timestamp:desc",
         address: this.user.userInfo.address,
       };
-      this.benefitBlockHeight = lastBlockRes;
+      this.benefitBlockHeight = lastBlockRes.height;
       let benefitData = this.getBenefits(query);
       this.benefitList = benefitData;
     }
@@ -98,9 +103,8 @@ export class BenefitServiceProvider {
    * @param params
    * @returns {Promise<any>}
    */
-  async getBenefits(params) {
-    let getBenefitUrl = this.appSetting.APP_URL(this.GET_BENEFIT);
-    let data = await this.fetch.get<any>(getBenefitUrl, params);
+  async getBenefits(params):Promise<TYPE.benefitModel[]> {
+    let data = await this.fetch.get<any>(this.GET_BENEFIT, {"search" : params});
 
     return data.balancedetails;
   }
@@ -111,7 +115,7 @@ export class BenefitServiceProvider {
    * @param page
    * @param limit
    */
-  async getBenefitsByPage(page: number, limit: number) {
+  async getBenefitsByPage(page: number, limit: number):Promise<TYPE.benefitModel[]> {
     //如果小于57则获取缓存中的收益
     if (page * limit < 57 && this.benefitList.length >= 57) {
       return this.benefitList.slice((page - 1) * limit, limit);
@@ -130,10 +134,11 @@ export class BenefitServiceProvider {
 
   /**
    * 也是需要57个块内获取本轮的块进行计算
+   * 獲取本輪的收益
    */
-  async getBenefitThisRound() {
+  async getBenefitThisRound():Promise<number> {
     let currentHeightRes = await this.blockService.getLastBlock();
-    let currentRound = Math.floor(currentHeightRes / 57);
+    let currentRound = Math.floor(currentHeightRes.height / 57);
     let benefitThisRound = 0;
     if (this.benefitList.length >= 57) {
       for (let i of this.benefitList) {

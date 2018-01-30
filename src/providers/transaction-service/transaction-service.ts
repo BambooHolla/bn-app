@@ -110,7 +110,7 @@ export class TransactionServiceProvider {
    */
   async getTransactionById(id: string) {
     let data = await this.fetch.get<any>(this.GET_TRANSACTIONS_BY_ID, {
-      search: {
+      "search": {
         id: id
       }
     })
@@ -143,11 +143,14 @@ export class TransactionServiceProvider {
           throw "Second passphrase verified error";
         }
       }
+      if(typeof(txData.fee) === 'number') {
+        txData.fee = txData.fee.toString();
+      }
 
       if (this.validateTxdata(txData)) {
         //获取url，获取类型
         let transactionUrl = this.appSetting
-          .APP_URL(this.getTransactionLink(txData.type))
+          .APP_URL('/api/' + this.getTransactionLink(txData.type))
           .toString();
         console.log(transactionUrl);
         // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
@@ -287,18 +290,33 @@ export class TransactionServiceProvider {
    * @param {{}} query
    * @returns {Promise<{}>}
    */
-  async getTransactions(query = {}) {
-    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS);
+  async getTransactions(query) {
+    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS, {
+      "search": query
+    });
     
+    return data;
+    
+  }
+  
+  /**
+   * 根据时间逆序获得交易
+   * @param page 
+   * @param limit 
+   */
+  async getTransactionsByPages(page = 1, limit = 10) {
+    let data = await this.getTransactions({
+      offset : (page-1)*limit,
+      limit: limit,
+      orderBy: 't_timestamp:desc'
+    })
     return data.transactions;
-    
   }
 
   /**
    * 获取未确认交易
    */
   async getUnconfirmed(page = 1, limit = 10) {
-    let unconfirmedUrl = this.UNCONFIRMED;
     let query = {
       address : this.user.address,
       senderPublicKey : this.user.publicKey,
@@ -306,7 +324,7 @@ export class TransactionServiceProvider {
       limit: limit
     };
 
-    let data = await this.fetch.get<any>(unconfirmedUrl, { search: query });
+    let data = await this.fetch.get<any>(this.UNCONFIRMED, { "search": query });
     return data.transactions;
 
   }

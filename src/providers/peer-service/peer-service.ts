@@ -41,7 +41,7 @@ export class PeerServiceProvider extends EventEmitter {
 
   readonly PEER_SYNC = this.appSetting.APP_URL("/api/loader/status/sync");
   readonly PING_URL = this.appSetting.APP_URL("/api/blocks/getHeight");
-  readonly PEERS_URL = this.appSetting.APP_URL("/api/peers/");
+  readonly PEERS_URL = "/api/peers/";
   readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
 
   /**
