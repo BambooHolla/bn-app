@@ -288,10 +288,26 @@ export class TransactionServiceProvider {
    * @returns {Promise<{}>}
    */
   async getTransactions(query = {}) {
-    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS);
+    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS, {
+      search: query
+    });
     
+    return data;
+    
+  }
+  
+  /**
+   * 根据时间逆序获得交易
+   * @param page 
+   * @param limit 
+   */
+  async getTransactionsByPages(page = 1, limit = 10) {
+    let data = await this.getTransactions({
+      offset : (page-1)*limit,
+      limit: limit,
+      orderBy: 't_timestamp:desc'
+    })
     return data.transactions;
-    
   }
 
   /**

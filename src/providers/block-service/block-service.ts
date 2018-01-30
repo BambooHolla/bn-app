@@ -37,7 +37,7 @@ export class BlockServiceProvider {
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
   );
-  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/get");
+  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
 
   /**
    * 获取当前区块链的块高度
@@ -256,6 +256,7 @@ export class BlockServiceProvider {
    * @param blockId
    * @param page
    * @param limit
+   * TODO:前端判断如果没有交易量则不要调用该接口
    */
   async getTransactionsInBlock(
     blockId,

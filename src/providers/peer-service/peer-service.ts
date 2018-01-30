@@ -98,8 +98,7 @@ export class PeerServiceProvider extends EventEmitter {
         try {
           this.emit("peer-ping-start", peer);
           let data = await this.fetch
-            .get<{ height: number }>(peer + this.PING_URL)
-            .catch();
+            .get<{ height: number }>(peer + this.PING_URL);
           // let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);
           let endTimestamp = new Date().getTime();
           let during = endTimestamp - startTimestamp;
