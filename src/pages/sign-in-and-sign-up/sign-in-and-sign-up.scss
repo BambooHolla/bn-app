@@ -178,7 +178,7 @@ page-sign-in-and-sign-up {
         }
         .lock-icon {
           position: absolute;
-          top: 3.8rem;
+          top: 3.5rem;
           left: 0.4rem;
           font-size: 1.7rem;
           color: #fff;
@@ -194,7 +194,7 @@ page-sign-in-and-sign-up {
           display: block;
           width: 100%;
           resize: none;
-          height: 10rem;
+          height: 16.5rem;
           min-height: 12.5rem;
           color: #fff;
           overflow-y: visible;
@@ -245,8 +245,8 @@ page-sign-in-and-sign-up {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            // width: 100%;
+            // height: 100%;
             transition-duration: 0.25s;
             transition-timing-function: ease-out;
           }
@@ -329,6 +329,10 @@ page-sign-in-and-sign-up {
       justify-content: center;
       text-align: center;
     }
+    >text-gradient{
+      width: 100%;
+      
+    }
     &:disabled {
       font-weight: bold;
       opacity: 1;
@@ -379,10 +383,11 @@ page-sign-in-and-sign-up {
       flex-shrink: 0;
       height: 1.6rem;
       color: #01acdd;
-      font-weight: bolder;
-      background-image: linear-gradient(top, #02e5f6 20%, #01acdd 80%);
-      -webkit-text-fill-color: transparent;
-      -webkit-background-clip: text;
+      background-color: transparent;
+      // font-weight: bolder;
+      // background-image: linear-gradient(top, #02e5f6 20%, #01acdd 80%);
+      // -webkit-text-fill-color: transparent;
+      // -webkit-background-clip: text;
       font-size: 1.6rem;
     }
   }

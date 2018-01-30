@@ -24,6 +24,8 @@ import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 
 import { ComponentsModule } from "../components/components.module";
+import { PipesModule } from "../pipes/pipes.module";
+import { MomentModule } from "angular2-moment";
 import { BlockServiceProvider } from "../providers/block-service/block-service";
 import { TransactionServiceProvider } from "../providers/transaction-service/transaction-service";
 import { TransferProvider } from "../providers/transfer/transfer";
@@ -32,6 +34,13 @@ import { ContactServiceProvider } from "../providers/contact-service/contact-ser
 import { MinServiceProvider } from "../providers/min-service/min-service";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
 import { UserInfoProvider } from "../providers/user-info/user-info";
+
+// 预加载页面
+import { TabsPage } from "../pages/tabs/tabs";
+import { TabVotePage } from "../pages/tab-vote/tab-vote";
+import { TabChainPage } from "../pages/tab-chain/tab-chain";
+import { TabPayPage } from "../pages/tab-pay/tab-pay";
+import { TabAccountPage } from "../pages/tab-account/tab-account";
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
@@ -52,9 +61,10 @@ export function provideSettings(storage: Storage) {
     option4: "Hello",
   });
 }
+const pages = [MyApp];
 
 @NgModule({
-  declarations: [MyApp],
+  declarations: pages,
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -80,9 +90,11 @@ export function provideSettings(storage: Storage) {
       // tabsHideOnSubPages: true,// 这个有BUG，不要用。
     }),
     ComponentsModule,
+    PipesModule,
+    MomentModule,
   ],
   bootstrap: [IonicApp],
-  entryComponents: [MyApp],
+  entryComponents: pages,
   providers: [
     Camera,
     SplashScreen,

@@ -5,11 +5,10 @@ ali-icon {
   vertical-align: -0.15em;
   fill: currentColor;
   color: currentColor;
-  overflow: hidden;
+  /* overflow: hidden; */
   > .ifmicon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    object-fit: contain;
+    position: relative;
     width: 100%;
     height: 100%;
     font-size: inherit;

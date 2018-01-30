@@ -11,7 +11,8 @@
     <!--     <div class="bg-prefix-wrapper">
       <div class="bg-prefix"></div>
     </div> -->
-    <div class="login-form" [ngClass]="page_status"><!--  [@login-in-out]="page_status" -->
+    <div class="login-form" [ngClass]="page_status">
+      <!--  [@login-in-out]="page_status" -->
       <div class="inputer-container">
         <ali-icon class="lock-icon" name="ifm-lock"></ali-icon>
         <textarea class="password-textarear" [style.fontFamily]="font_name" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="请输入密码" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
@@ -31,15 +32,19 @@
         </label>
       </div>
       <button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
-        <div class="inner">立即开始</div>
+        <!-- <div class="inner">立即开始</div> -->
+        <text-gradient text="立即开始" fontSize="1.8rem" [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
       </button>
       <div class="goto-container">
         <span class="dot"></span>
-        <button class="goto-button" (click)="gotoRegister()">注册新账户</button>
+        <button class="goto-button" (click)="gotoRegister()">
+          <text-gradient text="注册新账户" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+        </button>
         <span class="dot"></span>
       </div>
     </div>
-    <div class="register-form" [ngClass]="page_status"><!--  [@register-in-out]="page_status" -->
+    <div class="register-form" [ngClass]="page_status">
+      <!--  [@register-in-out]="page_status" -->
       <div class="inputer-container">
         <div class="password-inputer-wrapper">
           <ali-icon name="ifm-email"></ali-icon>
@@ -66,7 +71,9 @@
       </button>
       <div class="goto-container">
         <span class="dot"></span>
-        <button class="goto-button" (click)="gotoLogin()">我已有密码 立即开始</button>
+        <button class="goto-button" (click)="gotoLogin()">
+          <text-gradient text="我已有密码 立即开始" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+        </button>
         <span class="dot"></span>
       </div>
     </div>
