@@ -6,7 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { Storage } from "@ionic/storage";
 import { UserInfoProvider } from "../user-info/user-info";
-
+import * as TYPE from "./account.types";
 import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from "ifmchain-ibt";
 
@@ -38,14 +38,21 @@ export class AccountServiceProvider {
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
   }
 
+  readonly GET_USER = this.appSetting.APP_URL('/api/accounts/');
+  readonly GET_USER_BY_USERNAME = this.appSetting.APP_URL('/api/accounts/username/get');
+
   /**
    * 根据地址获取账户信息
    * @param {string} address
    * @returns {Promise<any>}
    */
-  async getAccountByAddress(address: string) {
-    let data = await this.account.getUserByAddress(address);
-    return data;
+  async getAccountByAddress(address: string):Promise<TYPE.userModel> {
+    let data = await this.fetch.get<any>(this.GET_USER, {
+      "search" : {
+        "address" : address
+      }
+    })
+    return data.account;
   }
 
   /**
@@ -53,8 +60,12 @@ export class AccountServiceProvider {
    * @param {string} username
    * @returns {Promise<any>}
    */
-  async getAccountByUsername(username: string) {
-    let data = await this.account.getUserByUsername(username);
+  async getAccountByUsername(username: string):Promise<TYPE.userModel> {
+    let data = await this.fetch.get<any>(this.GET_USER_BY_USERNAME, {
+      "search" : {
+        "username" :username
+      }
+    })
 
     return data.account;
   }
@@ -87,6 +98,7 @@ export class AccountServiceProvider {
         );
         if (is_success) {
           this.user.userInfo.username = newUsername;
+          return true;
         }else {
           throw new Error("Change username error");
         }
@@ -125,7 +137,7 @@ export class AccountServiceProvider {
       secondSecret: secondSecret,
       publicKey:
         "38e70075fc1054bfbb29cb550932a719f88c1c34f2ed897f1ae74a328ab9a21e",
-      fee: this.appSetting.settings.default_fee,
+      fee: this.appSetting.settings.default_fee.toString(),
     };
 
     let is_success = await this.transactionService.putTransaction(txData);

@@ -41,7 +41,7 @@ export class PeerServiceProvider extends EventEmitter {
 
   readonly PEER_SYNC = this.appSetting.APP_URL("/api/loader/status/sync");
   readonly PING_URL = this.appSetting.APP_URL("/api/blocks/getHeight");
-  readonly PEERS_URL = this.appSetting.APP_URL("/api/peers/");
+  readonly PEERS_URL = "/api/peers/";
   readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
 
   /**
@@ -98,7 +98,8 @@ export class PeerServiceProvider extends EventEmitter {
         try {
           this.emit("peer-ping-start", peer);
           let data = await this.fetch
-            .get<{ height: number }>(peer + this.PING_URL);
+            .get<{ height: number }>(peer + this.PING_URL)
+            .catch();
           // let data = await this.appFetch.timeout(PeerServiceProvider.DEFAULT_TIMEOUT).get<{ height: number }>(peer + PING_URL);
           let endTimestamp = new Date().getTime();
           let during = endTimestamp - startTimestamp;

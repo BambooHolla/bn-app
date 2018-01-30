@@ -39,7 +39,7 @@ export class ContactServiceProvider {
     this.addressCheck = this.ifmJs.addressCheck;
   }
 
-  readonly GET_CONTACT = "/api/contacts";
+  readonly GET_CONTACT = this.appSetting.APP_URL("/api/contacts");
 
   /**
    * 获取我的联系人，默认返回所有
@@ -49,8 +49,6 @@ export class ContactServiceProvider {
    * opt - 2 : 获取未添加
    */
   async getMyContacts(opt?: number) {
-    let getContactUrl = this.appSetting.APP_URL(this.GET_CONTACT);
-
     let query = {
       publicKey: this.user.userInfo.publicKey,
     };
@@ -61,7 +59,7 @@ export class ContactServiceProvider {
           success: true;
         }
       | { success: false; error: any }
-    >(getContactUrl, { search: query });
+    >(this.GET_CONTACT, { search: query });
 
     if (data.success) {
       data.follower = await this.contactIgnored(data.follower);
@@ -171,7 +169,7 @@ export class ContactServiceProvider {
           address: "+" + address_or_username,
         },
       },
-      fee: this.appSetting.settings.default_fee,
+      fee: this.appSetting.settings.default_fee.toString(),
       publicKey: this.user.userInfo.publicKey,
       secondSecret,
     };
