@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
+import { Subscription } from "rxjs/Subscription";
 import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
@@ -183,14 +184,21 @@ export class TabVotePage extends FirstLevelPage {
     fall_coins: false,
   };
 
+  min_starting = false;
   /** 开启挖矿*/
   @asyncCtrlGenerator.error(() =>
     TabVotePage.getTranslate("START_AUTO_VOTE_ERROR"),
   )
   async startMin() {
-    const pwdData = await this.getUserPassword();
-    await this.minService.vote(pwdData.password, pwdData.pay_pwd);
-    this.routeToVoteDetail();
+    this.min_starting = true;
+    try {
+      const pwdData = await this.getUserPassword();
+      await this.minService.vote(pwdData.password, pwdData.pay_pwd);
+      this.routeToVoteDetail();
+      this.getPreRoundRankList();
+    } finally {
+      this.min_starting = false;
+    }
   }
   /** 关闭挖矿*/
   @asyncCtrlGenerator.error(() =>
@@ -202,16 +210,26 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   /**上一轮的排名*/
-  get pre_round_rank_list() {
-    return this.minService.myRank.getPromise();
+  @TabVotePage.autoUnsubscribe private _my_rank_subscription: Subscription;
+  pre_round_rank_list: RankModel[];
+  @TabVotePage.willEnter
+  getPreRoundRankList() {
+    if (!this._my_rank_subscription && this.page_status == "vote-detail") {
+      this._my_rank_subscription = this.minService.myRank.subscribe(
+        rank_list => {
+          this.pre_round_rank_list = rank_list;
+        },
+      );
+    }
   }
+
   get pre_round_rank_list_pre() {
-    return this.pre_round_rank_list.then(list => list[0]);
+    return this.pre_round_rank_list && this.pre_round_rank_list[0];
   }
   get pre_round_rank_list_cur() {
-    return this.pre_round_rank_list.then(list => list[1]);
+    return this.pre_round_rank_list && this.pre_round_rank_list[1];
   }
   get pre_round_rank_list_next() {
-    return this.pre_round_rank_list.then(list => list[2]);
+    return this.pre_round_rank_list && this.pre_round_rank_list[2];
   }
 }

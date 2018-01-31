@@ -85,17 +85,26 @@ export class AppFetchProvider {
     const data = res.json();
     const error = data.error;
     if (error) {
-      return this.translateService
-        .get(data.error && data.error.message)
-        .take(1)
-        .toPromise()
-        .then(err_translated_msg => {
-          return Promise.reject(
-            error.code
-              ? ServerResError.parseErrorMessage(error.code, err_translated_msg)
-              : new Error(err_translated_msg),
-          );
-        });
+      debugger;
+      const err_message = data.error && data.error.message;
+      if (err_message) {
+        return this.translateService
+          .get(err_message)
+          .take(1)
+          .toPromise()
+          .then(err_translated_msg => {
+            return Promise.reject(
+              error.code
+                ? ServerResError.parseErrorMessage(
+                    error.code,
+                    err_translated_msg,
+                  )
+                : new Error(err_translated_msg),
+            );
+          });
+      } else {
+        return Promise.reject(data.error);
+      }
     } else {
       if (data) {
         if (

@@ -56,6 +56,7 @@ export class MyApp implements OnInit {
     window["modalCtrl"] = modalController;
     window["accountService"] = accountService;
     window["userInfo"] = userInfo;
+    window["appSetting"] = appSetting;
     window["myapp"] = this;
     this.initTranslate();
 

@@ -1,10 +1,10 @@
-import { OnInit, AfterContentInit } from "@angular/core";
+import { OnInit, AfterContentInit, OnDestroy } from "@angular/core";
 import { EventEmitter } from "eventemitter3";
 import { PAGE_STATUS } from "./const";
 import { FLP_Tool } from "./FLP_Tool";
 
 export class FLP_Lifecycle extends FLP_Tool
-  implements OnInit, AfterContentInit {
+  implements OnInit, AfterContentInit, OnDestroy {
   constructor() {
     super();
     console.log(this.cname, this);
@@ -36,6 +36,12 @@ export class FLP_Lifecycle extends FLP_Tool
       this[fun_name]();
     }
     this.tryEmit("afterContentInit");
+  }
+  ngOnDestroy() {
+    for (let fun_name of this._ondestory_funs) {
+      this[fun_name]();
+    }
+    this.tryEmit("onDestory");
   }
 
   ionViewWillEnter() {
@@ -94,6 +100,12 @@ export class FLP_Lifecycle extends FLP_Tool
     FLP_Tool.addProtoArray(target, "afterContentInit", name);
     return descriptor;
   }
+  @FLP_Lifecycle.cacheFromProtoArray("onDestory")
+  private _ondestory_funs: Set<string>;
+  static onDestory(target: any, name: string, descriptor?: PropertyDescriptor) {
+    FLP_Tool.addProtoArray(target, "onDestory", name);
+    return descriptor;
+  }
   @FLP_Lifecycle.cacheFromProtoArray("willEnter")
   private _will_enter_funs: Set<string>;
   static willEnter(target: any, name: string, descriptor?: PropertyDescriptor) {
@@ -117,6 +129,20 @@ export class FLP_Lifecycle extends FLP_Tool
   static didLeave(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "didLeave", name);
     return descriptor;
+  }
+
+  static autoUnsubscribe(target: FLP_Lifecycle, name: string) {
+    const cache_key = `-AU-${name}-`;
+    if (!target[cache_key]) {
+      target[cache_key] = function() {
+        if (this[name]) {
+          this[name].unsubscribe();
+          this[name] = null;
+        }
+      };
+      FLP_Tool.addProtoArray(target, "didLeave", cache_key);
+      FLP_Tool.addProtoArray(target, "onDestory", cache_key);
+    }
   }
 
   static cacheFromProtoArray(key) {

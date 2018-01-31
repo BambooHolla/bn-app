@@ -71,9 +71,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   autoReHeightPWDTextArea(stop_loop: boolean) {
     if (!stop_loop) {
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          this.autoReHeightPWDTextArea(true);
-        });
+        this.autoReHeightPWDTextArea(true);
       });
     }
     const ele = this.passwordTextarear.nativeElement;
@@ -239,7 +237,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     this.show_pwd = true;
     this.hiddenPwd();
     this.platform.raf(() => {
-      this.autoReHeightPWDTextArea();
+      this.autoReHeightPWDTextArea(true);
     });
 
     console.log(passphrase);
