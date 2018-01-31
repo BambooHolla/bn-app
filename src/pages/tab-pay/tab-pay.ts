@@ -11,6 +11,7 @@ import {
   TransferProvider,
   RollOutLogModel,
 } from "../../providers/transfer/transfer";
+import {} from "../../";
 
 function generateRollOutLog(len = 20, from = Date.now()) {
   return Array.from(Array(len)).map(_ => {
@@ -31,6 +32,33 @@ export class TabPayPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
+  formData = {
+    transfer_address: "",
+    transfer_amount: "",
+    transfer_mark: "",
+  };
+
+  // @TabPayPage.setErrorTo("errors","transfer_address",["wrongAddress"])
+  // check_transfer_address(){
+  //   return
+  // }
+  ignore_keys = ["transfer_mark"];
+
+  @TabPayPage.setErrorTo("errors", "transfer_amount", ["rangeError"])
+  check_transfer_address() {
+    const { transfer_amount } = this.formData;
+    if (typeof transfer_amount === "number") {
+      if (
+        transfer_amount < 0 ||
+        transfer_amount > parseFloat(this.userInfo.balance) / 1e8
+      ) {
+        return {
+          rangeError: true,
+        };
+      }
+    }
+  }
+
   roll_out_logs: RollOutLogModel[];
   roll_out_config = {
     has_more: true,

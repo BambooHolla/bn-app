@@ -72,16 +72,24 @@ export class AccountServiceProvider {
     return data.account;
   }
 
+  checkUsernameExisted(username: string) {
+    return this.getAccountByUsername(username)
+      .then(() => true)
+      .catch(() => false);
+  }
+
   /**
    *  更改用户名
    *  @param {string} newUsername
    */
   async changeUsername(newUsername: string, secret?: string) {
     if (!!this.user.userInfo.username) {
-      throw "account already has username";
+      return this.fetch.ServerResError.translateAndParseErrorMessage(
+        "account already has username",
+      );
     } else {
-      let accountUsername = await this.getAccountByUsername(newUsername);
-      if (!!accountUsername) {
+      let is_existed = await this.checkUsernameExisted(newUsername);
+      if (!!is_existed) {
         let accountData = {
           type: "username",
           secret: this.user.userInfo.secret,
@@ -102,10 +110,14 @@ export class AccountServiceProvider {
           this.user.userInfo.username = newUsername;
           return true;
         } else {
-          throw new Error("Change username error");
+          return this.fetch.ServerResError.translateAndParseErrorMessage(
+            "change username error",
+          );
         }
       } else {
-        throw new Error("This username has already exist");
+        return this.fetch.ServerResError.translateAndParseErrorMessage(
+          "this username has already exist",
+        );
       }
     }
   }
@@ -141,7 +153,7 @@ export class AccountServiceProvider {
       amount: "0",
       secret: password,
       secondSecret: secondSecret,
-      publicKey:this.user.publicKey,
+      publicKey: this.user.publicKey,
       fee: this.appSetting.settings.default_fee.toString(),
     };
 
@@ -152,6 +164,4 @@ export class AccountServiceProvider {
       throw new Error("Set second passphrase error");
     }
   }
-  
-
 }

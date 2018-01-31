@@ -24,7 +24,7 @@
   "//": "VOTE",
   "TRAN_TYPE_NAME_3": "投票",
   "//": "USERNAME",
-  "TRAN_TYPE_NAME_4": "设置用户民",
+  "TRAN_TYPE_NAME_4": "设置用户名",
   "//": "FOLLOW",
   "TRAN_TYPE_NAME_5": "添加联系人",
   "//": "MULTI",
@@ -54,6 +54,11 @@
   "SET_PAY_PWD_SUBMITING": "设置支付密码提交中",
   "SET_PAY_PWD_SUBMIT_ERROR": "设置支付密码提交失败",
   "SET_PAY_PWD_SUBMIT_SUCCESS": "设置支付密码提交成功",
+
+  "//": "account-set-username",
+  "SET_USERNAME_SUBMIT_ERROR": "设置用户名提交失败",
+  "SET_USERNAME_SUBMITING": "设置用户名提交中",
+  "SET_USERNAME_SUBMIT_SUCCESS": "设置用户名提交成功",
 
   "NAME": "姓名",
   "EMAIL": "邮箱",
@@ -147,6 +152,9 @@
 
   "//": "来自服务端或者provider的错误",
   "not enough balance": "没有足够的IBT",
+  "account already has username": "您已经设置了用户名",
+  "change username error": "用户名设置出错",
+  "this username has already exist": "用户名已存在",
 
   "//": "OVER"
 }

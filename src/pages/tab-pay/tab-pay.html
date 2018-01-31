@@ -18,24 +18,24 @@
   <div class="transfer">
     <div class="input-container">
       <ali-icon class="left" name="ifm-account-detail"></ali-icon>
-      <input type="text" [(ngModel)]="formData.transfer_address" placeholder="请输入地址" />
+      <input type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="请输入地址" />
       <button class="right">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
     </div>
     <div class="input-container">
       <ali-icon class="left" name="ifm-amount"></ali-icon>
-      <input type="text" [(ngModel)]="formData.transfer_amount" placeholder="请输入数量" />
+      <input type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" placeholder="请输入数量" />
     </div>
     <div class="input-container">
       <ali-icon class="left" name="ifm-duihua"></ali-icon>
-      <input type="text" [(ngModel)]="formData.transfer_mark" placeholder="请输入附言" />
+      <input type="text" [(ngModel)]="formData.transfer_mark" set-input-status="transfer_mark" placeholder="请输入附言" disabled />
     </div>
     <div class="fee">
       <ali-icon class="left" name="ifm-info"></ali-icon>
-      <span class="value">0.000000001</span>
+      <span class="value">{{appSetting.settings.default_fee|number:'1.8-8'}}</span>
     </div>
-    <div class="submit-button">确认转出</div>
+    <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">确认转出</button>
   </div>
   <div class="roll-out-logs">
     <div class="title">

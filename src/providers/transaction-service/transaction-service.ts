@@ -176,13 +176,11 @@ export class TransactionServiceProvider {
         }
       } else {
         return this.fetch.ServerResError.translateAndParseErrorMessage(
-          null,
           "validate error",
         );
       }
     } else {
       return this.fetch.ServerResError.translateAndParseErrorMessage(
-        null,
         "not enough balance",
       );
     }

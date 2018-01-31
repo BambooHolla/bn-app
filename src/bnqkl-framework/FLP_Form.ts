@@ -67,11 +67,16 @@ export class FLP_Form extends FLP_Route {
     return true;
   }
 
+  ignore_keys = [];
   get canSubmit() {
     return (
       !this.hasError(this.errors) &&
       Object.keys(this.formData).every(k => {
-        return this.formData[k] || typeof this.formData[k] === "boolean";
+        return (
+          this.ignore_keys.indexOf(k) !== -1 ||
+          this.formData[k] ||
+          typeof this.formData[k] === "boolean"
+        );
       })
     );
   }
