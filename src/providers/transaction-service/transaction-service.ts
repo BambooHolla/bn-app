@@ -31,6 +31,7 @@ export class TransactionServiceProvider {
   sha: any;
   nacl: any;
   keypairService: any;
+  addresssCheck: any;
   constructor( 
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -52,6 +53,7 @@ export class TransactionServiceProvider {
     this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
     this.keypairService = this.ifmJs.keypairHelper;//For verify passphrase
+    this.addresssCheck = this.ifmJs.addressCheck;
   }
 
   readonly UNCONFIRMED = this.appSetting.APP_URL(
@@ -336,25 +338,30 @@ export class TransactionServiceProvider {
   /**
    * 转账交易
    * @param recipientId 接收人
+   * TODO:全部判断地址是否正确
    */
   async transfer(recipientId, amount, password, secondSecret) {
-    let txData = {
-      type: this.transactionTypeCode.SEND,
-      secret: password,
-      amount: amount.toString(),
-      recipientId: recipientId,
-      publicKey: this.user.publicKey,
-      fee: this.appSetting.settings.default_fee.toString(),
-      secondSecret
+    if(parseInt(amount) > 0) {
+      let txData = {
+        type: this.transactionTypeCode.SEND,
+        secret: password,
+        amount: amount.toString(),
+        recipientId: recipientId,
+        publicKey: this.user.publicKey,
+        fee: this.appSetting.settings.default_fee.toString(),
+        secondSecret
+      }
+  
+      if(secondSecret) {
+        txData.secondSecret = secondSecret;
+      }
+  
+      let is_success:boolean = await this.putTransaction(txData);
+  
+      return is_success;
+    }else {
+      throw "Amount error";
     }
-
-    if(secondSecret) {
-      txData.secondSecret = secondSecret;
-    }
-
-    let is_success:boolean = await this.putTransaction(txData);
-
-    return is_success;
   }
 
   /**
@@ -368,5 +375,13 @@ export class TransactionServiceProvider {
     }else {
       return false;
     }
+  }
+
+  /**
+   * 判断地址是否正确
+   * @param address 
+   */
+  isAddressCorrect(address):boolean {
+    return this.addresssCheck.isAddress(address);
   }
 }
