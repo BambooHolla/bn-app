@@ -9,6 +9,7 @@ import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
   AppSettingProvider,
   TB_AB_Generator,
+  HEIGHT_AB_Generator,
 } from "../app-setting/app-setting";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import * as IFM from "ifmchain-ibt";
@@ -45,12 +46,6 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getLastBlock():Promise<TYPE.SingleBlockModel> {
-    // let data: {
-    //   success?: boolean;
-    //   error?: any;
-    //   block: any;
-    // } = await this.block.getLastBlock();
-    //data: {success, block:{id, height, timestamp}}
 
     let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
 
@@ -63,12 +58,6 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId: string):Promise<TYPE.SingleBlockModel> {
-    // let data: {
-    //   success: boolean;
-    //   blocks: Array<object>;
-    //   count: number;
-    // } = await this.block.getBlockById(blockId);
-
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_ID, {
       "search": {
         id: blockId,
@@ -213,6 +202,15 @@ export class BlockServiceProvider {
       this.blockArray = data.blocks;
       return this.blockArray;
     }
+  }
+  
+  /**
+   * 获取最新的块
+   */
+  latestBlock: AsyncBehaviorSubject<TYPE.BlockModel[]>
+  @HEIGHT_AB_Generator("lastBlock")
+  lastBlock_Executor(promise_pro) {
+    return promise_pro(this.getTopBlocks(true));
   }
 
   /**

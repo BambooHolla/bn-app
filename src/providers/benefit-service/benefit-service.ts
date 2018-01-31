@@ -8,10 +8,12 @@ import {
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
   AppSettingProvider,
   TB_AB_Generator,
+  ROUND_AB_Generator,
+  AsyncBehaviorSubject,
+  HEIGHT_AB_Generator,
 } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
@@ -166,5 +168,14 @@ export class BenefitServiceProvider {
     }
 
     return benefitThisRound;
+  }
+  
+  /**
+   * 获取本轮收益
+   */
+  benefitThisRound: AsyncBehaviorSubject<number>;
+  @HEIGHT_AB_Generator("benefitThisRound")
+  benefitThisRound_Executor(promise_pro) {
+    return promise_pro.follow(this.getBenefitThisRound());
   }
 }

@@ -14,6 +14,7 @@ import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
+import { FLP_Form }from "../../../src/bnqkl-framework/FLP_Form";
 import { DelegateModel, RankModel } from "./min.types";
 export * from "./min.types";
 
@@ -43,6 +44,9 @@ export class MinServiceProvider {
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transactionTypes = this.ifmJs.transactionTypes;
+    this.appSetting.round.subscribe((r)=> {
+       this.autoVote(r);
+    })
   }
 
   readonly ROUND_TIME = this.appSetting.APP_URL("/api/delegates/roundTime");
@@ -163,17 +167,31 @@ export class MinServiceProvider {
           txData,
         );
         if (isDone) {
-          // let saveObj = {
-          //   autoDig: true,
-          //   digRound: await this.getRound(),
-          // };
-          // await this.user.saveUserSettings(saveObj, this.user.address);
           this.appSetting.settings.digRound = await this.getRound();
           this.appSetting.settings.background_mining = true;
         } else {
           throw "vote transaction error";
         }
       }
+    }
+  }
+  
+  /**
+   * 自动投票
+   */
+  async autoVote(round) {
+    let voteSwitch:boolean = this.appSetting.settings.background_mining;
+    let voteRound:number = this.appSetting.settings.digRound;
+    let password: string;
+    let secondSecret: any;
+    let passwordObj: any;
+    if(voteSwitch == true && voteRound < round) {
+      passwordObj = await FLP_Form.prototype.getUserPassword({
+        seconed_pwd :true
+      });
+      password = passwordObj.password;
+      secondSecret = passwordObj.secondSecret;
+      await this.vote(password, secondSecret);
     }
   }
 
@@ -207,6 +225,15 @@ export class MinServiceProvider {
       return this.allVoters;
     }
   }
+  
+  /**
+   * 给我投票的人
+   */
+  voteForMe: AsyncBehaviorSubject<RankModel[]>;
+  @ROUND_AB_Generator("voteForMe")
+  voteForMe_Executor(promise_pro) {
+    return promise_pro.follow(this.getAllVotersForMe());
+  }
 
   /**
    * 获取我投的票
@@ -224,6 +251,7 @@ export class MinServiceProvider {
 
     return data.delegates;
   }
+
 
   /**
    * 返回已被选中的矿工
@@ -250,6 +278,15 @@ export class MinServiceProvider {
   }
 
   /**
+   * 获取本轮矿工
+   */
+  allMinersPerRound: AsyncBehaviorSubject<DelegateModel[]>;
+  @ROUND_AB_Generator("allMinersPerRound")
+  allMiners_Executor(promise_pro) {
+    return promise_pro.follow(this.getAllMiners());
+  }
+
+  /**
    * 获取候选矿工
    * @param page
    * @param limit
@@ -263,6 +300,15 @@ export class MinServiceProvider {
     let data = await this.fetch.get<any>(this.MY_VOTES, { search: query });
 
     return data.delegates;
+  }
+  
+  /**
+   * 获取未被选中的矿工
+   */
+  minersOut: AsyncBehaviorSubject<DelegateModel[]>;
+  @ROUND_AB_Generator("minersOut")
+  minersOut_Executor(promise_pro) {
+    return promise_pro.follow(this.getAllMinersOutside());
   }
 
   /**
@@ -316,4 +362,5 @@ export class MinServiceProvider {
   myRank_Executor(promise_pro) {
     return promise_pro.follow(this.getMyRank());
   }
+  
 }
