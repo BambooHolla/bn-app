@@ -1,5 +1,6 @@
 import { FLP_Route } from "./FLP_Route";
 import { UserInfoProvider } from "../providers/user-info/user-info";
+import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { asyncCtrlGenerator } from "./Decorator";
 
 export class FLP_Form extends FLP_Route {
@@ -69,7 +70,9 @@ export class FLP_Form extends FLP_Route {
   get canSubmit() {
     return (
       !this.hasError(this.errors) &&
-      Object.keys(this.formData).every(k => this.formData[k])
+      Object.keys(this.formData).every(k => {
+        return this.formData[k] || typeof this.formData[k] === "boolean";
+      })
     );
   }
 
@@ -99,6 +102,7 @@ export class FLP_Form extends FLP_Route {
 
   /*要求用户输入支付密码*/
   @FLP_Form.FromGlobal userInfo: UserInfoProvider;
+  @FLP_Form.FromGlobal appSetting: AppSettingProvider;
 
   @asyncCtrlGenerator.error(
     () => FLP_Form.getTranslate("PAY_INPUT_ERROR"),
@@ -108,14 +112,17 @@ export class FLP_Form extends FLP_Route {
   )
   async getUserPassword(
     opts: {
-      /**是否需要二次密码*/
-      seconed_pwd?: boolean;
+      /**是否一定要输入主密码*/
+      force_require_password?: boolean;
     } = {},
   ) {
-    // // 登录密码
-    const { password, hasSecondPwd } = this.userInfo;
-    if (!hasSecondPwd && password) {
-      return { password, pay_pwd: "" };
+    const { force_require_password } = opts;
+    if (!force_require_password) {
+      // 登录密码
+      const { password, hasSecondPwd } = this.userInfo;
+      if (!hasSecondPwd && password) {
+        return { password, pay_pwd: "" };
+      }
     }
     // 支付密码
     return new Promise<{ password; pay_pwd }>((resolve, reject) => {

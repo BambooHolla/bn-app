@@ -30,7 +30,10 @@ export class AccountAddContactPage extends SecondLevelPage {
   searchContacts() {
     clearTimeout(this._ti);
     this._ti = setTimeout(() => {
-      this._searchContacts();
+      this.getUserPassword().then(pwdData => {
+        const { password, pay_pwd } = pwdData;
+        this._searchContacts(password, pay_pwd);
+      });
     }, 200);
   }
 
@@ -44,11 +47,9 @@ export class AccountAddContactPage extends SecondLevelPage {
   @asyncCtrlGenerator.success(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
   )
-  private async _searchContacts() {
+  private async _searchContacts(password, pay_pwd) {
     // 直接添加，暂时不支持搜索
     const address = this.formData.search_text;
-    const pwdData = await this.getUserPassword();
-    const { password, pay_pwd } = pwdData;
     const is_success = await this.contactService.addContact(
       password,
       address,

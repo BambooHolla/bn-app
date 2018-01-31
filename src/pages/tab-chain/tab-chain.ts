@@ -40,8 +40,13 @@ export class TabChainPage extends FirstLevelPage {
   @asyncCtrlGenerator.error(() =>
     TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
   )
-  @asyncCtrlGenerator.loading(() =>
-    TabChainPage.getTranslate("LOADING_BLOCK_LIST"),
+  @asyncCtrlGenerator.loading(
+    () => TabChainPage.getTranslate("LOADING_BLOCK_LIST"),
+    undefined,
+    {
+      cssClass: "can-tap",
+      showBackdrop: false,
+    },
   )
   async loadBlockList() {
     const { block_list_config } = this;

@@ -7,16 +7,16 @@
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AE%BE%E7%BD%AE%E6%94%AF%E4%BB%98%E5%AF%86%E7%A0%81.jpg" alt=""> -->
   <div class="common-form">
     <div class="input-container">
-      <input type="password" placeholder="支付密码">
+      <input type="password" placeholder="支付密码" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd">
     </div>
     <div class="input-container">
-      <input type="password" placeholder="再次确认密码">
+      <input type="password" placeholder="再次确认密码" [(ngModel)]="formData.confrim_pay_pwd" set-input-status="confrim_pay_pwd" [watch-input-keys]="['pay_pwd']">
     </div>
   </div>
   <div class="fee-info">
     <ali-icon name="ifm-info"></ali-icon>
     手续费
-    <span class="fee">0.00000001</span>
+    <span class="fee">{{appSetting.settings.default_fee|number:'1.8-8'}}</span>
   </div>
-  <div class="submit-button">确认</div>
+  <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">确认</button>
 </ion-content>

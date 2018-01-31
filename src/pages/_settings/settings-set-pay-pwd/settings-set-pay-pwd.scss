@@ -16,8 +16,11 @@ page-settings-set-pay-pwd {
     color: #fc615c;
     width: 92%;
     font-size: 1.4rem;
+    display: flex;
+    align-items: center;
     ali-icon {
       font-size: 1.6rem;
+      margin-right: 0.5rem;
     }
   }
   .submit-button {

@@ -9,13 +9,13 @@
       <div class="left">
         <div class="label">支付密码</div>
       </div>
-      <input type="password" placeholder="请输入支付密码" [(ngModel)]="formData.pay_pwd">
+      <input type="password" placeholder="请输入支付密码" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd">
     </div>
     <div class="input-container" *ngIf="!formData.have_password">
       <div class="left">
         <div class="label">登录密码</div>
       </div>
-      <input type="password" placeholder="请输入登录密码" [(ngModel)]="formData.password">
+      <input type="password" placeholder="请输入登录密码" [(ngModel)]="formData.password" set-input-status="password">
     </div>
   </div>
   <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">提交</button>

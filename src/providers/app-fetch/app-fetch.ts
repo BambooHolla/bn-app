@@ -9,6 +9,19 @@ import { AppSettingProvider } from "../app-setting/app-setting";
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
+  static translateAndParseErrorMessage(code, message) {
+    return window["translate"]
+      .get(message)
+      .take(1)
+      .toPromise()
+      .then(err_translated_msg => {
+        return Promise.reject(
+          code
+            ? ServerResError.parseErrorMessage(code, message)
+            : new Error(err_translated_msg),
+        );
+      });
+  }
   static parseErrorMessage(code, message) {
     const CODE_LIST = [code + ""];
     var MESSAGE = message;
@@ -88,20 +101,7 @@ export class AppFetchProvider {
       debugger;
       const err_message = data.error && data.error.message;
       if (err_message) {
-        return this.translateService
-          .get(err_message)
-          .take(1)
-          .toPromise()
-          .then(err_translated_msg => {
-            return Promise.reject(
-              error.code
-                ? ServerResError.parseErrorMessage(
-                    error.code,
-                    err_translated_msg,
-                  )
-                : new Error(err_translated_msg),
-            );
-          });
+        return ServerResError.translateAndParseErrorMessage(error.code,err_message);
       } else {
         return Promise.reject(data.error);
       }

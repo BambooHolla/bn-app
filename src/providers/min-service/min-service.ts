@@ -186,9 +186,7 @@ export class MinServiceProvider {
     let secondSecret: any;
     let passwordObj: any;
     if (voteSwitch == true && voteRound < round) {
-      passwordObj = await FLP_Form.prototype.getUserPassword({
-        seconed_pwd: true,
-      });
+      passwordObj = await FLP_Form.prototype.getUserPassword();
       password = passwordObj.password;
       secondSecret = passwordObj.secondSecret;
       await this.vote(password, secondSecret);

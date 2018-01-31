@@ -72,6 +72,7 @@ const pages = [MyApp];
       autoFocusAssist: false,
       statusbarPadding: false,
       swipeBackEnabled: false,
+      preloadModules: true,
       // tabsHideOnSubPages: true,// 这个有BUG，不要用。
     }),
     ComponentsModule,
