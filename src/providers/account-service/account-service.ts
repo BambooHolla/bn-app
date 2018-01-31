@@ -76,7 +76,7 @@ export class AccountServiceProvider {
    *  更改用户名
    *  @param {string} newUsername
    */
-  async changeUsername(newUsername: string, secret?: string) {
+  async changeUsername(newUsername: string, secret: string, secondSecret ?: string) {
     if (!!this.user.userInfo.username) {
       throw "account already has username";
     } else {
@@ -93,7 +93,12 @@ export class AccountServiceProvider {
               publicKey: this.user.userInfo.publicKey,
             },
           },
-        };
+          secondSecret
+        }
+
+        if(secondSecret) {
+          accountData.secondSecret = secondSecret;
+        }
 
         let is_success = await this.transactionService.putTransaction(
           accountData,
