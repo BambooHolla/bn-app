@@ -30,6 +30,7 @@ export class TransactionServiceProvider {
   md5: any;
   sha: any;
   nacl: any;
+  keypairService: any;
   constructor( 
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -50,6 +51,7 @@ export class TransactionServiceProvider {
     this.Buff = this.ifmJs.Buff;
     this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
+    this.keypairService = this.ifmJs.keypairHelper;//For verify passphrase
   }
 
   readonly UNCONFIRMED = this.appSetting.APP_URL("/api/transactions/unconfirmed");
@@ -351,5 +353,18 @@ export class TransactionServiceProvider {
     let is_success:boolean = await this.putTransaction(txData);
 
     return is_success;
+  }
+
+  /**
+   * 验证主密码
+   * @param passphrase 
+   */
+  async verifyPassphrase(passphrase) {
+    let keypair = this.keypairService.create(passphrase);
+    if(this.user.publicKey === keypair) {
+      return true;
+    }else {
+      return false;
+    }
   }
 }

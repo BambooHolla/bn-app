@@ -135,8 +135,7 @@ export class AccountServiceProvider {
       amount: "0",
       secret: password,
       secondSecret: secondSecret,
-      publicKey:
-        "38e70075fc1054bfbb29cb550932a719f88c1c34f2ed897f1ae74a328ab9a21e",
+      publicKey:this.user.publicKey,
       fee: this.appSetting.settings.default_fee.toString(),
     };
 
@@ -148,11 +147,5 @@ export class AccountServiceProvider {
     }
   }
   
-  /**
-   * 验证主密码
-   * @param passphrase 
-   */
-  async verifyPassphrase(passphrase) {
-    return true;
-  }
+
 }
