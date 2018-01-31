@@ -147,4 +147,12 @@ export class AccountServiceProvider {
       throw new Error("Set second passphrase error");
     }
   }
+  
+  /**
+   * 验证主密码
+   * @param passphrase 
+   */
+  async verifyPassphrase(passphrase) {
+    return true;
+  }
 }
