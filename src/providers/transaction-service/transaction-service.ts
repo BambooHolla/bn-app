@@ -30,7 +30,8 @@ export class TransactionServiceProvider {
   md5: any;
   sha: any;
   nacl: any;
-  constructor(
+  keypairService: any;
+  constructor( 
     public http: HttpClient,
     public appSetting: AppSettingProvider,
     public storage: Storage,
@@ -50,6 +51,7 @@ export class TransactionServiceProvider {
     this.Buff = this.ifmJs.Buff;
     this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
+    this.keypairService = this.ifmJs.keypairHelper;//For verify passphrase
   }
 
   readonly UNCONFIRMED = this.appSetting.APP_URL(
@@ -331,5 +333,42 @@ export class TransactionServiceProvider {
 
     let data = await this.fetch.get<any>(this.UNCONFIRMED, { search: query });
     return data.transactions;
+  }
+  
+  /**
+   * 转账交易
+   * @param recipientId 接收人
+   */
+  async transfer(recipientId, amount, password, secondSecret) {
+    let txData = {
+      type: this.transactionTypeCode.SEND,
+      secret: password,
+      amount: amount.toString(),
+      recipientId: recipientId,
+      publicKey: this.user.publicKey,
+      fee: this.appSetting.settings.default_fee.toString(),
+      secondSecret
+    }
+
+    if(secondSecret) {
+      txData.secondSecret = secondSecret;
+    }
+
+    let is_success:boolean = await this.putTransaction(txData);
+
+    return is_success;
+  }
+
+  /**
+   * 验证主密码
+   * @param passphrase 
+   */
+  async verifyPassphrase(passphrase) {
+    let keypair = this.keypairService.create(passphrase);
+    if(this.user.publicKey === keypair) {
+      return true;
+    }else {
+      return false;
+    }
   }
 }
