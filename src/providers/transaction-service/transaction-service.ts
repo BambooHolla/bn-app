@@ -328,4 +328,28 @@ export class TransactionServiceProvider {
     return data.transactions;
 
   }
+  
+  /**
+   * 转账交易
+   * @param recipientId 接收人
+   */
+  async transfer(recipientId, amount, password, secondSecret) {
+    let txData = {
+      type: this.transactionTypeCode.SEND,
+      secret: password,
+      amount: amount.toString(),
+      recipientId: recipientId,
+      publicKey: this.user.publicKey,
+      fee: this.appSetting.settings.default_fee.toString(),
+      secondSecret
+    }
+
+    if(secondSecret) {
+      txData.secondSecret = secondSecret;
+    }
+
+    let is_success:boolean = await this.putTransaction(txData);
+
+    return is_success;
+  }
 }
