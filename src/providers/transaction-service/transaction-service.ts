@@ -383,7 +383,7 @@ export class TransactionServiceProvider {
    * 判断地址是否正确
    * @param address 
    */
-  verifyAddressFormat(address):boolean {
+  isAddressCorrect(address):boolean {
     return this.addresssCheck.isAddress(address);
   }
 }
