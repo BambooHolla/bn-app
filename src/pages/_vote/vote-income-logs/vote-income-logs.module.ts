@@ -6,12 +6,12 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [VoteIncomeLogsPage],
-	imports: [
-		IonicPageModule.forChild(VoteIncomeLogsPage),
-		ComponentsModule,
-		PipesModule,
-		MomentModule,
-	],
+  declarations: [VoteIncomeLogsPage],
+  imports: [
+    IonicPageModule.forChild(VoteIncomeLogsPage),
+    ComponentsModule,
+    PipesModule,
+    MomentModule,
+  ],
 })
 export class VoteIncomeLogsPageModule {}

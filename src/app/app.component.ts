@@ -17,7 +17,6 @@ import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
 
 import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
-import { SettingsProvider } from "../providers/settings/settings";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
@@ -31,7 +30,6 @@ export class MyApp implements OnInit {
   constructor(
     public translate: TranslateService,
     public platform: Platform,
-    public settings: SettingsProvider,
     public config: Config,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
@@ -88,15 +86,9 @@ export class MyApp implements OnInit {
     platform.ready().then(() => {
       keyboard.disableScroll(true);
       keyboard.hideKeyboardAccessoryBar(true);
-      // statusBar.styleDefault();
-      // statusBar.overlaysWebView
-      // statusBar.overlaysWebView(true);
-      // // Okay, so the platform is ready and our plugins are available.
-      // // Here you can do any higher level native things you might need.
-      // // this.statusBar.styleDefault();
-      // statusBar.styleBlackTranslucent();
+      statusBar.show();
       statusBar.overlaysWebView(true);
-      statusBar.hide();
+      statusBar.styleDefault();
       splashScreen.hide();
       initPage.then(page => {
         page && this.openPage(page);

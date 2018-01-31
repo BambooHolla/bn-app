@@ -44,7 +44,7 @@ export class LinkNodePage extends FirstLevelPage {
         node_info.loading = false;
         node_info.height = peer_detail.height;
         node_info.ping = peer_detail.ping;
-        node_info.linked_number = (Math.random() * Math.random() * 1000)|0;
+        node_info.linked_number = (Math.random() * Math.random() * 1000) | 0;
       });
       this.peerService.on("peer-ping-error:" + peer, err => {
         node_info.loading = false;

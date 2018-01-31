@@ -45,8 +45,7 @@ export class BlockServiceProvider {
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
-  async getLastBlock():Promise<TYPE.SingleBlockModel> {
-
+  async getLastBlock(): Promise<TYPE.SingleBlockModel> {
     let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
 
     return data.block;
@@ -57,9 +56,9 @@ export class BlockServiceProvider {
    * @param {string} blockId
    * @returns {Promise<any>}
    */
-  async getBlockById(blockId: string):Promise<TYPE.SingleBlockModel> {
+  async getBlockById(blockId: string): Promise<TYPE.SingleBlockModel> {
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_ID, {
-      "search": {
+      search: {
         id: blockId,
       },
     });
@@ -72,9 +71,9 @@ export class BlockServiceProvider {
    * @param {number} height
    * @returns {Promise<any>}
    */
-  async getBlockByHeight(height: number):Promise<TYPE.BlockModel[]> {
+  async getBlockByHeight(height: number): Promise<TYPE.BlockModel[]> {
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
-      "search": {
+      search: {
         height: height,
       },
     });
@@ -87,9 +86,9 @@ export class BlockServiceProvider {
    * @param {string} address
    * @returns {Promise<any>}
    */
-  async getBlocksByAddress(address: string):Promise<TYPE.BlockModel[]> {
+  async getBlocksByAddress(address: string): Promise<TYPE.BlockModel[]> {
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
-      "search": {
+      search: {
         generatorId: address,
       },
     });
@@ -102,12 +101,12 @@ export class BlockServiceProvider {
    * @param {string} query
    * @returns {Promise<any>}
    */
-  async searchBlocks(query: string):Promise<any[]> {
+  async searchBlocks(query: string): Promise<any[]> {
     //如果是纯数字且不是以0开头就查高度
     if (/[1-9][0-9]*/.test(query)) {
       const query_num = parseFloat(query) * 1;
       let data = await this.getBlockByHeight(query_num);
-      if(data.length > 0) {
+      if (data.length > 0) {
         return data;
       }
     } else {
@@ -132,10 +131,13 @@ export class BlockServiceProvider {
    * @param {{}} query  查询的条件，对象存在
    * @returns {Promise<{}>}
    */
-  async getBlocks(query):Promise<TYPE.BlockResModel> {
-    let data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY, {
-      "search": query,
-    });
+  async getBlocks(query): Promise<TYPE.BlockResModel> {
+    let data = await this.fetch.get<TYPE.BlockResModel>(
+      this.GET_BLOCK_BY_QUERY,
+      {
+        search: query,
+      },
+    );
 
     return data;
   }
@@ -178,9 +180,9 @@ export class BlockServiceProvider {
             });
             //把数组插入原数组前面
             //Array.prototype.splice然后把指针指向
-            debugger
+            debugger;
             if (data.success) {
-              let temp:any;
+              let temp: any;
               temp = data;
               temp.blocks.unshift(temp.length, 0);
               Array.prototype.splice.apply(this.blockArray, temp);
@@ -203,11 +205,11 @@ export class BlockServiceProvider {
       return this.blockArray;
     }
   }
-  
+
   /**
    * 获取最新的块
    */
-  latestBlock: AsyncBehaviorSubject<TYPE.BlockModel[]>
+  latestBlock: AsyncBehaviorSubject<TYPE.BlockModel[]>;
   @HEIGHT_AB_Generator("lastBlock")
   lastBlock_Executor(promise_pro) {
     return promise_pro(this.getTopBlocks(true));
@@ -217,7 +219,7 @@ export class BlockServiceProvider {
    * 判断当前的块是否延迟，返回块数组
    * @param list
    */
-  blockListHandle(list: TYPE.BlockModel[]):TYPE.BlockModel[] {
+  blockListHandle(list: TYPE.BlockModel[]): TYPE.BlockModel[] {
     for (let i = 0; i < list.length - 1; i++) {
       if (list[i].timestamp > list[i + 1].timestamp + 128) {
         list[i].delay = true;

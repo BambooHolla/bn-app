@@ -180,9 +180,9 @@ export class ContactServiceProvider {
 
     let data: boolean = await this.transactionService.putTransaction(txData);
 
-    if(data) {
+    if (data) {
       return data;
-    }else {
+    } else {
       throw new Error("Add contact transaction error");
     }
   }

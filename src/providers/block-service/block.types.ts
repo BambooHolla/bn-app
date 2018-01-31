@@ -22,11 +22,11 @@ export type BlockModel = {
 export type SingleBlockModel = {
   height: number;
   id: string;
-  timestamp:number;
-}
+  timestamp: number;
+};
 
 export type BlockResModel = {
-  success: boolean,
-  count: number,
-  blocks: BlockModel[]
-}
+  success: boolean;
+  count: number;
+  blocks: BlockModel[];
+};

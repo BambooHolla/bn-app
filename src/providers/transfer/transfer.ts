@@ -35,7 +35,7 @@ export class TransferProvider {
         create_time: new Date(from_val - (i + 1) * 128e3),
       };
     });
-  } 
+  }
   async getReceiveLogList(
     num = 20,
     from = new Date(),

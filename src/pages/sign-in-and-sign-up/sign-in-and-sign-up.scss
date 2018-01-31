@@ -220,7 +220,7 @@ page-sign-in-and-sign-up {
             font-family: "monospace", "Menlo" !important;
           }
           &::selection {
-            color: transparent;
+            // color: transparent;
             background: rgba(#0f608b, 0.6);
           }
           &::-webkit-input-placeholder {
@@ -329,9 +329,8 @@ page-sign-in-and-sign-up {
       justify-content: center;
       text-align: center;
     }
-    >text-gradient{
+    > text-gradient {
       width: 100%;
-      
     }
     &:disabled {
       font-weight: bold;

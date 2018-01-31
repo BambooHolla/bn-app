@@ -196,7 +196,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   @asyncCtrlGenerator.error(() =>
     SignInAndSignUpPage.getTranslate("LOGIN_ERROR"),
   )
-  @asyncCtrlGenerator.loading()
+  @asyncCtrlGenerator.loading(() => SignInAndSignUpPage.getTranslate("LOGINNG"))
   async doLogin() {
     let result = await this.loginService.doLogin(
       this.formData.pwd.trim(),

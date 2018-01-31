@@ -38,20 +38,22 @@ export class AccountServiceProvider {
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
   }
 
-  readonly GET_USER = this.appSetting.APP_URL('/api/accounts/');
-  readonly GET_USER_BY_USERNAME = this.appSetting.APP_URL('/api/accounts/username/get');
+  readonly GET_USER = this.appSetting.APP_URL("/api/accounts/");
+  readonly GET_USER_BY_USERNAME = this.appSetting.APP_URL(
+    "/api/accounts/username/get",
+  );
 
   /**
    * 根据地址获取账户信息
    * @param {string} address
    * @returns {Promise<any>}
    */
-  async getAccountByAddress(address: string):Promise<TYPE.userModel> {
+  async getAccountByAddress(address: string): Promise<TYPE.userModel> {
     let data = await this.fetch.get<any>(this.GET_USER, {
-      "search" : {
-        "address" : address
-      }
-    })
+      search: {
+        address: address,
+      },
+    });
     return data.account;
   }
 
@@ -60,12 +62,12 @@ export class AccountServiceProvider {
    * @param {string} username
    * @returns {Promise<any>}
    */
-  async getAccountByUsername(username: string):Promise<TYPE.userModel> {
+  async getAccountByUsername(username: string): Promise<TYPE.userModel> {
     let data = await this.fetch.get<any>(this.GET_USER_BY_USERNAME, {
-      "search" : {
-        "username" :username
-      }
-    })
+      search: {
+        username: username,
+      },
+    });
 
     return data.account;
   }
@@ -99,10 +101,10 @@ export class AccountServiceProvider {
         if (is_success) {
           this.user.userInfo.username = newUsername;
           return true;
-        }else {
+        } else {
           throw new Error("Change username error");
         }
-      }else {
+      } else {
         throw new Error("This username has already exist");
       }
     }
@@ -123,7 +125,11 @@ export class AccountServiceProvider {
    * 设置支付密码
    * @param {string} secondScret
    */
-  async setSecondPassphrase(password: string, secondSecret: string, second?: string) {
+  async setSecondPassphrase(
+    password: string,
+    secondSecret: string,
+    second?: string,
+  ) {
     debugger;
     let txData = {
       type: this.transactionType.SIGNATURE,
@@ -143,7 +149,7 @@ export class AccountServiceProvider {
     let is_success = await this.transactionService.putTransaction(txData);
     if (is_success) {
       return true;
-    }else {
+    } else {
       throw new Error("Set second passphrase error");
     }
   }

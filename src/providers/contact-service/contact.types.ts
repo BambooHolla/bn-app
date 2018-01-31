@@ -1,4 +1,4 @@
 export type ContactModel = {
-	address: string;
-	username: string;
+  address: string;
+  username: string;
 };

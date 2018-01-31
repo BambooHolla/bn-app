@@ -169,7 +169,7 @@ export class BenefitServiceProvider {
 
     return benefitThisRound;
   }
-  
+
   /**
    * 获取本轮收益
    */

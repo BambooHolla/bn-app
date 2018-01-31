@@ -122,7 +122,7 @@ page-chain-block-detail {
       flex-grow: 1;
       > .scroll-content {
         background-color: #fff;
-        transform: translateZ(0);
+        // transform: translateZ(0);
         &::after {
           content: " ";
           position: fixed;

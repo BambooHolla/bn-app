@@ -54,7 +54,6 @@ export class AccountMinerListPage extends SecondLevelPage {
         ...can_minter,
       };
     });
-
   }
   @AccountMinerListPage.willEnter
   async initPeerList() {

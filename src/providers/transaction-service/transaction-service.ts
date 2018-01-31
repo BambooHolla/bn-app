@@ -24,13 +24,13 @@ export class TransactionServiceProvider {
   transaction: any;
   // block: any;
   transactionTypeCode: any;
-  nacl_factory :any;
-  Buff :any;
-  Crypto : any;
+  nacl_factory: any;
+  Buff: any;
+  Crypto: any;
   md5: any;
   sha: any;
   nacl: any;
-  constructor( 
+  constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
     public storage: Storage,
@@ -52,9 +52,15 @@ export class TransactionServiceProvider {
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
   }
 
-  readonly UNCONFIRMED = this.appSetting.APP_URL("/api/transactions/unconfirmed");
-  readonly GET_TRANSACTIONS_BY_ID = this.appSetting.APP_URL("/api/transactions/get");
-  readonly GET_TIMESTAMP = this.appSetting.APP_URL("/api/transactions/getslottime");
+  readonly UNCONFIRMED = this.appSetting.APP_URL(
+    "/api/transactions/unconfirmed",
+  );
+  readonly GET_TRANSACTIONS_BY_ID = this.appSetting.APP_URL(
+    "/api/transactions/get",
+  );
+  readonly GET_TIMESTAMP = this.appSetting.APP_URL(
+    "/api/transactions/getslottime",
+  );
   readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions");
 
   getTransactionLink(type) {
@@ -110,13 +116,12 @@ export class TransactionServiceProvider {
    */
   async getTransactionById(id: string) {
     let data = await this.fetch.get<any>(this.GET_TRANSACTIONS_BY_ID, {
-      "search": {
-        id: id
-      }
-    })
-    
+      search: {
+        id: id,
+      },
+    });
+
     return data.transaction;
-    
   }
 
   /**
@@ -125,7 +130,7 @@ export class TransactionServiceProvider {
    */
   async getTimestamp() {
     let data = await this.fetch.get<any>(this.GET_TIMESTAMP);
-    
+
     return data;
   }
 
@@ -136,21 +141,21 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     if (this.user.userInfo.balance > 0) {
-      if(txData.secondSecret) {
+      if (txData.secondSecret) {
         let secondPwd = txData.secondPwd;
         let is_second_true = this.verifySecondPassphrase(secondPwd);
-        if(!is_second_true) {
+        if (!is_second_true) {
           throw "Second passphrase verified error";
         }
       }
-      if(typeof(txData.fee) === 'number') {
+      if (typeof txData.fee === "number") {
         txData.fee = txData.fee.toString();
       }
 
       if (this.validateTxdata(txData)) {
         //获取url，获取类型
         let transactionUrl = this.appSetting
-          .APP_URL('/api/' + this.getTransactionLink(txData.type))
+          .APP_URL("/api/" + this.getTransactionLink(txData.type))
           .toString();
         console.log(transactionUrl);
         // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
@@ -166,7 +171,6 @@ export class TransactionServiceProvider {
 
           let data = await this.fetch.put<any>(transactionUrl, transaction);
           return true;
-          
         }
       } else {
         throw "validate error";
@@ -219,14 +223,11 @@ export class TransactionServiceProvider {
       secondPassphrase,
     );
     console.log(secondPublic.publicKey.toString("hex"));
-    if (
-      secondPublic.publicKey.toString("hex") ===
-      this.user.secondPublicKey
-    ) {
+    if (secondPublic.publicKey.toString("hex") === this.user.secondPublicKey) {
       return true;
     } else {
       return false;
-    } 
+    }
   }
 
   /**
@@ -282,7 +283,6 @@ export class TransactionServiceProvider {
     let data = await this.getTransactions(query);
 
     return data.transactions;
-    
   }
 
   /**
@@ -292,24 +292,23 @@ export class TransactionServiceProvider {
    */
   async getTransactions(query) {
     let data = await this.fetch.get<any>(this.GET_TRANSACTIONS, {
-      "search": query
+      search: query,
     });
-    
+
     return data;
-    
   }
-  
+
   /**
    * 根据时间逆序获得交易
-   * @param page 
-   * @param limit 
+   * @param page
+   * @param limit
    */
   async getTransactionsByPages(page = 1, limit = 10) {
     let data = await this.getTransactions({
-      offset : (page-1)*limit,
+      offset: (page - 1) * limit,
       limit: limit,
-      orderBy: 't_timestamp:desc'
-    })
+      orderBy: "t_timestamp:desc",
+    });
     return data.transactions;
   }
 
@@ -318,14 +317,13 @@ export class TransactionServiceProvider {
    */
   async getUnconfirmed(page = 1, limit = 10) {
     let query = {
-      address : this.user.address,
-      senderPublicKey : this.user.publicKey,
-      offset : (page - 1) * limit,
-      limit: limit
+      address: this.user.address,
+      senderPublicKey: this.user.publicKey,
+      offset: (page - 1) * limit,
+      limit: limit,
     };
 
-    let data = await this.fetch.get<any>(this.UNCONFIRMED, { "search": query });
+    let data = await this.fetch.get<any>(this.UNCONFIRMED, { search: query });
     return data.transactions;
-
   }
 }

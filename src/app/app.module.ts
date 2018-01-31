@@ -17,7 +17,6 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
 
 import { MyApp } from "./app.component";
-import { SettingsProvider } from "../providers/settings/settings";
 import { AppFetchProvider } from "../providers/app-fetch/app-fetch";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
@@ -47,20 +46,6 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
-export function provideSettings(storage: Storage) {
-  /**
-   * The Settings provider takes a set of default settings for your app.
-   *
-   * You can add new settings options at any time. Once the settings are saved,
-   * these values will not overwrite the saved values (this can be done manually if desired).
-   */
-  return new SettingsProvider(storage, {
-    option1: true,
-    option2: "Ionitron J. Framework",
-    option3: "3",
-    option4: "Hello",
-  });
-}
 const pages = [MyApp];
 
 @NgModule({
@@ -101,7 +86,6 @@ const pages = [MyApp];
     Keyboard,
     Toast,
     StatusBar,
-    { provide: SettingsProvider, useFactory: provideSettings, deps: [Storage] },
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppFetchProvider,

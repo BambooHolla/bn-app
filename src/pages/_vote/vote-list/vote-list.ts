@@ -79,7 +79,7 @@ export class VoteListPage extends SecondLevelPage {
     const { out_vote_list_config } = this;
     // 重置分页
     out_vote_list_config.page = 1;
-    debugger
+    debugger;
 
     const list = await this.minService.getMyVotes(
       out_vote_list_config.page,

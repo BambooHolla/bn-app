@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../components/components.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [SearchPage],
-	imports: [
-		IonicPageModule.forChild(SearchPage),
-		ComponentsModule,
-		TranslateModule,
-	],
+  declarations: [SearchPage],
+  imports: [
+    IonicPageModule.forChild(SearchPage),
+    ComponentsModule,
+    TranslateModule,
+  ],
 })
 export class SearchPageModule {}

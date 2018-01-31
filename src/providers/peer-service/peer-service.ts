@@ -54,13 +54,12 @@ export class PeerServiceProvider extends EventEmitter {
   async getPeer(ipStr, port) {
     let data = await this.fetch.get<any>(this.PEERS_QUERY_URL, {
       search: {
-        "ip_str" : ipStr,
-        "port" : port
-      }
-    })
+        ip_str: ipStr,
+        port: port,
+      },
+    });
 
     return data.peer;
-    
   }
 
   /**
@@ -70,11 +69,10 @@ export class PeerServiceProvider extends EventEmitter {
    */
   async getPeers(params = {}) {
     let data = await this.fetch.get<any>(this.PEERS_QUERY_URL, {
-      search: params
-    })
+      search: params,
+    });
 
     return data.peers;
-    
   }
 
   /**
@@ -247,7 +245,9 @@ export class PeerServiceProvider extends EventEmitter {
    * return -1 -- 同步错误
    */
   async getPeerSync(host?: string) {
-    let peerSyncUrl = host ? host + this.PEER_SYNC : AppSettingProvider.SERVER_URL + this.PEER_SYNC;
+    let peerSyncUrl = host
+      ? host + this.PEER_SYNC
+      : AppSettingProvider.SERVER_URL + this.PEER_SYNC;
 
     let data = await this.fetch.get<any>(peerSyncUrl);
     if (data.success) {
