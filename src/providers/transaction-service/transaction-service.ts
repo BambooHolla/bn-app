@@ -145,7 +145,7 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     if (this.user.userInfo.balance > 0) {
-      if (txData.secondSecret) {
+      if (txData.secondSecret && txData.type !== this.transactionTypeCode.SIGNATURE) {
         let secondPwd = txData.secondPwd;
         let is_second_true = this.verifySecondPassphrase(secondPwd);
         if (!is_second_true) {
