@@ -1,2 +1,53 @@
 page-search {
+	> .content {
+		background-color: #eeeeee;
+	}
+	@extend .header-no-border;
+	.search-input-wrapper {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-top: 1rem;
+		> .input-container {
+			width: 85%;
+			background-color: #fff;
+			border-radius: 2rem;
+			height: 3.5rem;
+			display: flex;
+			align-items: center;
+			> ali-icon {
+				flex-grow: 0;
+				flex-shrink: 0;
+				margin: 0 1rem;
+			}
+			> .left {
+				font-size: 2.5rem;
+				color: #c6c6c6;
+				margin-right: 0.5rem;
+			}
+			> input {
+				flex-grow: 1;
+				height: 100%;
+				border: none;
+				background-color: transparent;
+				color: #7a7a7a;
+				&::-webkit-input-placeholder {
+					color: #c6c6c6;
+				}
+			}
+			> .right {
+				color: #7a7a7a;
+				font-size: 1.6rem;
+				margin-left: 0.5rem;
+			}
+		}
+		> .cancel {
+			background-color: transparent;
+			color: #7a7a7a;
+			padding: 0.5rem;
+			padding-left: 0.8rem;
+			font-size: 1.6rem;
+		}
+	}
 }

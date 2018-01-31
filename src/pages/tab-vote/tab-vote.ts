@@ -63,6 +63,13 @@ export class TabVotePage extends FirstLevelPage {
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.startAnimation();
+    clearInterval(this["_fall_coin_progress_ti"]);
+    this["_fall_coin_progress_ti"] = setInterval(() => {
+      this.fall_coin.progress = parseFloat(
+        ((this.fall_coin.progress + 0.001) % 1).toFixed(4),
+      );
+    }, 100);
+
     this.satellite_pixi &&
       this.satellite_pixi.is_inited &&
       this.satellite_pixi.startAnimation();
@@ -184,7 +191,7 @@ export class TabVotePage extends FirstLevelPage {
     fall_coins: false,
   };
 
-try_min_starting = false;
+  try_min_starting = false;
   min_starting = false;
   /** 开启挖矿*/
   @asyncCtrlGenerator.error(() =>

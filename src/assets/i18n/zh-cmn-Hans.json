@@ -41,6 +41,12 @@
   "//":"MARK",
   "TRAN_TYPE_NAME_13": "侧链数据存证",
 
+  "//":"search",
+  "SEARCH_TYPE_ALL":"搜索",
+  "SEARCH_TYPE_VOTE_INCOME":"搜索挖矿收益",
+  "SEARCH_TYPE_BLOCK":"搜索区块链信息",
+  "SEARCH_TYPE_ASSETS":"搜索总资产",
+
   "NAME": "姓名",
   "EMAIL": "邮箱",
   "USERNAME": "登录名",

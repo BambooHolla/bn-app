@@ -55,8 +55,10 @@ export class FallCoinsComponent extends AniBase {
   gravity = 500; //重力加速度: px/s
   async initPixiApp() {
     if (this.app) {
-      this.app.destroy();
-      this.app = null;
+      this.app.stage.children.slice().forEach(child => {
+        return child.destroy();
+      });
+      this._loop_runs.length = 0;
     }
     const {
       pt,
@@ -66,13 +68,16 @@ export class FallCoinsComponent extends AniBase {
       progress_coins,
       gravity,
     } = this;
-    const app = (this.app = new PIXI.Application({
-      transparent: true,
-      view: canvasNode,
-      height: pt(canvasNode.clientHeight),
-      width: pt(canvasNode.clientWidth),
-      autoStart: false,
-    }));
+    if (!this.app) {
+      this.app = new PIXI.Application({
+        transparent: true,
+        view: canvasNode,
+        height: pt(canvasNode.clientHeight),
+        width: pt(canvasNode.clientWidth),
+        autoStart: false,
+      });
+    }
+    const app = this.app;
     const resources = await _load_resource_promiseout.promise;
     console.log("resources", resources);
     // 处理resource成动画帧
@@ -120,9 +125,9 @@ export class FallCoinsComponent extends AniBase {
       return con;
     };
 
-    const auto_fall_down = t => {
+    const auto_fall_down = () => {
       // if (t / 200 <= progress_coins.length) {
-      // 	return;
+      //   return;
       // }
       const target_line =
         useable_lines[(Math.random() * useable_lines.length) | 0];
@@ -199,91 +204,134 @@ export class FallCoinsComponent extends AniBase {
         useable_lines.splice(useable_lines.indexOf(target_line), 1);
       }
     };
-    this._loop_runs.push(auto_fall_down);
+    const total = useable_lines.reduce((cur, v) => cur + v.max, 0);
+    if (this._fall_down_when_progress_added) {
+      this.off("progress", this._fall_down_when_progress_added);
+    }
+    let pre_progress_value = 0;
+    this._fall_down_when_progress_added = progress => {
+      const cur_progress_value = Math.round(progress * total);
+      // 发生了增加，进行掉落动画
+      while (cur_progress_value > pre_progress_value) {
+        pre_progress_value += 1;
+        auto_fall_down();
+      }
+      if (progress === 1) {
+        this.off("progress", this._fall_down_when_progress_added);
+        this._fall_down_when_progress_added = null;
+      }
+    };
+    this.on("progress", this._fall_down_when_progress_added);
+
+    // this._loop_runs.push(auto_fall_down);
   }
   startPixiApp() {
     this.app && this.app.start();
+  }
+  private _fall_down_when_progress_added: any;
+  private _progress = 0;
+  set progress(v: number) {
+    if (isFinite(v)) {
+      v = Math.max(0, v);
+      v = Math.min(1, v);
+      if (v !== this._progress) {
+        if (v === 0) {
+          // 重置
+          this._progress_coins_config = this.resetProgressCoinsConfig();
+          this.initPixiApp();
+          this._progress = 0;
+        } else {
+          this.emit("progress", (this._progress = v));
+        }
+      }
+    }
+  }
+  get progress() {
+    return this._progress;
   }
 
   stopPixiApp() {
     this.app && this.app.stop();
   }
 
-  private _progress_coins_config = {
-    useable_lines: [
-      // 底行
-      {
-        y: 1,
-        x: 0.2 * 0,
-        max: 6,
-      },
-      {
-        y: -1,
-        x: 0.2 * 1,
-        max: 7,
-      },
-      {
-        y: -1,
-        x: 0.2 * 2,
-        max: 9,
-      },
-      {
-        y: -1,
-        x: 0.2 * 3,
-        max: 8,
-      },
-      {
-        y: 1,
-        x: 0.2 * 4,
-        max: 5,
-      },
-      // 第二行
-      {
-        y: 4,
-        x: 0.2 * 0.5,
-        max: 7,
-      },
-      {
-        y: 3,
-        x: 0.2 * 1.5,
-        max: 7,
-      },
-      {
-        y: 3,
-        x: 0.2 * 2.5,
-        max: 8,
-      },
-      {
-        y: 4,
-        x: 0.2 * 3.5,
-        max: 6,
-      },
+  resetProgressCoinsConfig() {
+    return {
+      useable_lines: [
+        // 底行
+        {
+          y: 1,
+          x: 0.2 * 0,
+          max: 6,
+        },
+        {
+          y: -1,
+          x: 0.2 * 1,
+          max: 7,
+        },
+        {
+          y: -1,
+          x: 0.2 * 2,
+          max: 9,
+        },
+        {
+          y: -1,
+          x: 0.2 * 3,
+          max: 8,
+        },
+        {
+          y: 1,
+          x: 0.2 * 4,
+          max: 5,
+        },
+        // 第二行
+        {
+          y: 4,
+          x: 0.2 * 0.5,
+          max: 7,
+        },
+        {
+          y: 3,
+          x: 0.2 * 1.5,
+          max: 7,
+        },
+        {
+          y: 3,
+          x: 0.2 * 2.5,
+          max: 8,
+        },
+        {
+          y: 4,
+          x: 0.2 * 3.5,
+          max: 6,
+        },
 
-      // 顶行
-      {
-        y: 6,
-        x: 0.2 * 0.8,
-        max: 8,
-      },
-      {
-        y: 5,
-        x: 0.2 * 2,
-        max: 10,
-      },
-      {
-        y: 7,
-        x: 0.2 * 3.2,
-        max: 7,
-      },
-    ].map((con, i) => {
-      return {
-        ...con,
-        cur: 0,
-        in_ani: 0,
-        _id: i,
-      };
-    }),
-    full_lines: [],
-  };
+        // 顶行
+        {
+          y: 6,
+          x: 0.2 * 0.8,
+          max: 8,
+        },
+        {
+          y: 5,
+          x: 0.2 * 2,
+          max: 10,
+        },
+        {
+          y: 7,
+          x: 0.2 * 3.2,
+          max: 7,
+        },
+      ].map((con, i) => {
+        return {
+          ...con,
+          cur: 0,
+          in_ani: 0,
+          _id: i,
+        };
+      }),
+      full_lines: [],
+    };
+  }
+  private _progress_coins_config = this.resetProgressCoinsConfig();
   progress_coins = [];
 }

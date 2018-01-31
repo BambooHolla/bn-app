@@ -11,6 +11,7 @@ import { asyncCtrlGenerator } from "./Decorator";
 import { PAGE_STATUS } from "./const";
 
 import { FLP_Data } from "./FLP_Data";
+import { SearchType } from "../pages/search/search.const";
 
 export class FirstLevelPage extends FLP_Data {
   constructor(
@@ -69,7 +70,7 @@ export class FirstLevelPage extends FLP_Data {
     pre_scroll_process: 0,
   };
 
-  // 页面滚动自动添加阴影
+  /**页面滚动自动添加阴影*/
   @FirstLevelPage.onInit
   _autoAddHeaderShadowWhenScrollDown() {
     this.content.ionScroll.subscribe(() => {
@@ -106,5 +107,22 @@ export class FirstLevelPage extends FLP_Data {
         this.header.setElementStyle("box-shadow", null);
       }
     });
+  }
+
+  SearchType = SearchType;
+  /**弹出搜索页*/
+  openSeach(search_type?: SearchType) {
+    return this.modalCtrl
+      .create(
+        "search",
+        {
+          search_type,
+        },
+        {
+          enableBackdropDismiss: true,
+          showBackdrop: true,
+        },
+      )
+      .present();
   }
 }
