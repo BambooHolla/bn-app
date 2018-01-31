@@ -184,6 +184,7 @@ export class TabVotePage extends FirstLevelPage {
     fall_coins: false,
   };
 
+try_min_starting = false;
   min_starting = false;
   /** 开启挖矿*/
   @asyncCtrlGenerator.error(() =>

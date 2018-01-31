@@ -21,7 +21,7 @@
     <div class="bootstrap-page" [ngClass]="page_status">
       <div class="main-container">
         <div class="auto-start-button-wrapper">
-          <div class="auto-start-button" (click)="startMin()"></div>
+          <div class="auto-start-button" [class.opening]="min_starting||try_min_starting" (touchstart)="try_min_starting=true" (touchcancel)="try_min_starting=false" (touchend)="try_min_starting=false;startMin()"></div>
         </div>
       </div>
       <div class="assets-info">
@@ -62,16 +62,16 @@
               </div>
               <div class="rank-info">
                 <div class="pre-item">
-                  <div class="ranking-val">{{(pre_round_rank_list_pre|async)?.vvv}}</div>
-                  <div class="ip-address">{{(pre_round_rank_list_pre|async)?.xxx}}</div>
+                  <div class="ranking-val">{{pre_round_rank_list_pre?.vvv}}</div>
+                  <div class="ip-address">{{pre_round_rank_list_pre?.xxx}}</div>
                 </div>
                 <div class="cur-item">
-                  <div class="ranking-val">{{(pre_round_rank_list_cur|async)?.vvv}}</div>
-                  <div class="ip-address">{{(pre_round_rank_list_cur|async)?.xxx}}</div>
+                  <div class="ranking-val">{{pre_round_rank_list_cur?.vvv}}</div>
+                  <div class="ip-address">{{pre_round_rank_list_cur?.xxx}}</div>
                 </div>
                 <div class="aft-item">
-                  <div class="ranking-val">{{(pre_round_rank_list_next|async)?.vvv}}</div>
-                  <div class="ip-address">{{(pre_round_rank_list_next|async)?.xxx}}</div>
+                  <div class="ranking-val">{{pre_round_rank_list_next?.vvv}}</div>
+                  <div class="ip-address">{{pre_round_rank_list_next?.xxx}}</div>
                 </div>
               </div>
             </div>

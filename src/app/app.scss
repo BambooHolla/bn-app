@@ -34,14 +34,14 @@
     background-clip: text !important;
   }
   // .ifmicon {
-  // 		// background-image: inherit;
-  // 	&::before {
-  // 		// background-image: inherit;
-  // 		-webkit-background-clip: text !important;
-  // 		background-clip: text !important;
-  // 		// -webkit-text-fill-color: transparent;
-  // 		color: transparent !important;
-  // 	}
+  //    // background-image: inherit;
+  //  &::before {
+  //    // background-image: inherit;
+  //    -webkit-background-clip: text !important;
+  //    background-clip: text !important;
+  //    // -webkit-text-fill-color: transparent;
+  //    color: transparent !important;
+  //  }
   // }
 }
 
@@ -104,5 +104,22 @@ ion-content {
         margin-bottom: 0 !important;
       }
     }
+  }
+}
+
+@keyframes rotate-with-clock {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotate-unwith-clock {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
   }
 }

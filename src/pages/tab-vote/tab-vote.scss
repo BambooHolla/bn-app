@@ -157,16 +157,74 @@ page-tab-vote {
       align-items: center;
       justify-content: center;
       .auto-start-button {
-        // box-shadow: -0.05rem 0rem 0rem 0.05rem rgba(255, 255, 255, 0.8),
-        // 	0 0.8rem 2rem rgba(0, 0, 0, 0.3),
-        // 	0 0rem 3rem rgba(0, 0, 0, 0.3);
-        width: 105.2625%;
-        height: 105.2625%;
-        // background-color: #fdde66;
+        /*         width: 105.2625%;
+height: 105.2625%; */
+        width: 100%;
+        height: 100%;
+        transform: scale(1.052625);
         border-radius: 50%;
-        background-image: url("../assets/imgs/tab-vote/start-button.png");
-        background-size: 100%;
-        background-position: center;
+        position: relative;
+        &::before {
+          content: " ";
+          transition-duration: 0.25s;
+          transition-timing-function: ease-in;
+          position: absolute;
+          background-image: url("../assets/imgs/tab-vote/start-button.png");
+          background-size: 100%;
+          background-repeat: no-repeat;
+          background-position: center;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          opacity: 1;
+          z-index: 1;
+          pointer-events: none;
+        }
+        &::after {
+          content: " ";
+          transition-duration: 0.25s;
+          transition-timing-function: ease-in;
+          position: absolute;
+          background-image: url("../assets/imgs/tab-vote/start-button-no-shadow.png");
+          transform-origin: 49.8% 50%;
+          /*   background-size: 122%;
+          background-position: 50% 44%; */
+          background-size: 100%;
+          background-repeat: no-repeat;
+          background-position: center;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          opacity: 0;
+          z-index: 2;
+          pointer-events: none;
+
+        }
+        &.opening {
+          &::before {
+            opacity: 0;
+            transform: scale(0.96);
+          }
+          &::after {
+            opacity: 1;
+            transform: scale(0.96);
+            animation-name: rotate-to-open;
+            animation-timing-function: ease-in-out;
+            animation-duration: 5s;
+            /* animation-iteration-count: infinite; */
+          }
+
+          @keyframes rotate-to-open {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg * 30);
+            }
+          }
+        }
       }
     }
   }
@@ -211,9 +269,9 @@ page-tab-vote {
     pointer-events: none;
     transition-duration: 0.5s;
     transform: scale(0);
-    /* 		display: flex;
-		flex-direction: column;
-		align-items: center; */
+    /*    display: flex;
+    flex-direction: column;
+    align-items: center; */
     /* justify-content: center; */
     &.vote-detail {
       opacity: 1;
@@ -368,8 +426,8 @@ page-tab-vote {
     }
     .extends-panel {
       /* position: relative; */
-      /* 	align-self: flex-start;
-			justify-self: flex-end; */
+      /*  align-self: flex-start;
+      justify-self: flex-end; */
       position: absolute;
       bottom: 0;
       margin-top: auto;
@@ -377,16 +435,16 @@ page-tab-vote {
       width: 100%;
       .panel-list {
         /* display: flex;
-				flex-direction: row;
-				width: 100%;
-				overflow: hidden;
-				list-style: none;
-				padding: 0;
-				.panel-item {
-					flex-shrink: 0;
-					width: 80%;
-					margin: 0 10%;
-				} */
+        flex-direction: row;
+        width: 100%;
+        overflow: hidden;
+        list-style: none;
+        padding: 0;
+        .panel-item {
+          flex-shrink: 0;
+          width: 80%;
+          margin: 0 10%;
+        } */
         .panel-item {
           background: #fff;
           box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.2);
@@ -424,20 +482,20 @@ page-tab-vote {
             );
             background-repeat: no-repeat;
             /* &::before {
-							content: " ";
-							position: absolute;
-							width: 50%;
-							height: 100%;
-							transform: rotate(5deg) scale(0, 0);
-							background: linear-gradient(
-								to right,
-								#fcbd4d 0%,
-								#fccf45 100%
-							);
-							z-index: -1;
-							left: 0;
-							top: 0;
-						} */
+              content: " ";
+              position: absolute;
+              width: 50%;
+              height: 100%;
+              transform: rotate(5deg) scale(0, 0);
+              background: linear-gradient(
+                to right,
+                #fcbd4d 0%,
+                #fccf45 100%
+              );
+              z-index: -1;
+              left: 0;
+              top: 0;
+            } */
             .header {
               flex: 1;
               display: flex;
@@ -567,7 +625,7 @@ page-tab-vote {
                 font-weight: lighter;
                 /* margin: auto; */
                 /* justify-self: flex-end;
-								margin-left: auto; */
+                margin-left: auto; */
               }
             }
           }
@@ -602,9 +660,9 @@ page-tab-vote {
         height: 100%;
         width: 100%;
         background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="#FFF" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
+            <svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#FFF" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
+            </svg>');
         background-size: 100% 100%;
         background-position: -50vw;
         z-index: -1;
@@ -628,9 +686,9 @@ page-tab-vote {
         height: 100%;
         width: 100%;
         background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="rgba(0,0,0,0.2)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
+            <svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
+              <path fill="rgba(0,0,0,0.2)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
+            </svg>');
         background-size: 100% 100%;
         background-position: -50vw;
         z-index: -2;
@@ -659,9 +717,9 @@ page-tab-vote {
         height: 100%;
         width: 100%;
         background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="rgba(253,208,68,0.8)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
+            <svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
+              <path fill="rgba(253,208,68,0.8)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
+            </svg>');
         background-size: 100% 100%;
         background-position: -8vw;
         z-index: -1;
@@ -698,9 +756,9 @@ page-tab-vote {
         height: 100%;
         width: 100%;
         background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="rgba(250,141,68,0.6)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
+            <svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
+              <path fill="rgba(250,141,68,0.6)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
+            </svg>');
         background-size: 100% 100%;
         background-position: 10vw;
         z-index: -1;
