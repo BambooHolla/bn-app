@@ -19,6 +19,8 @@ export class AppUrl {
     return AppSettingProvider.SERVER_URL + this.path;
   }
 }
+const net_version =
+  getQueryVariable("NET_VERSION") || localStorage.getItem("NET_VERSION") || "";
 
 @Injectable()
 export class AppSettingProvider extends EventEmitter {
@@ -27,7 +29,7 @@ export class AppSettingProvider extends EventEmitter {
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;
-  static NET_VERSION = "mainnet";
+  static NET_VERSION = net_version || "mainnet";
   static IFMJS = IFM(AppSettingProvider.NET_VERSION);
   static HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,
@@ -230,6 +232,7 @@ if (location.hostname === "dev-bnlc.bnqkl.cn") {
 } else if (server_host.startsWith("FULL:")) {
   AppSettingProvider.SERVER_URL = server_host.replace("FULL:", "").trim();
 }
+
 console.log(
   "%cSERVER_URL:",
   "font-size:2em;color:green;background-color:#DDD",
@@ -287,9 +290,7 @@ export function TB_AB_Generator(
         if (!_v) {
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${
-                this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           this.appSetting.user_token.subscribe(token => {
@@ -363,9 +364,7 @@ export function HEIGHT_AB_Generator(
           const appSetting: AppSettingProvider = this.appSetting;
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${
-                this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           appSetting.height.subscribe(height => {
@@ -435,9 +434,7 @@ export function ROUND_AB_Generator(
           const appSetting: AppSettingProvider = this.appSetting;
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${
-                this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           appSetting.round.subscribe(round => {

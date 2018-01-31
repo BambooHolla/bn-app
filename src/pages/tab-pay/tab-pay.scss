@@ -48,20 +48,24 @@ page-tab-pay {
       width: 92.6829%; // 76
       margin-top: 0.5rem;
       position: relative;
+      display: flex;
+      align-items: center;
       .left,
       .right {
-        position: absolute;
+        /* position: absolute; */
         font-size: 1.7rem;
         color: #fff;
+        flex-grow: 0;
+        flex-shrink: 0;
       }
       .left {
-        left: 0.2rem;
-        top: 1rem;
+        margin-left: 0.2rem;
+        /* top: 1rem; */
       }
       .right {
         font-size: 1.9rem;
-        right: 0.2rem;
-        top: 0.4rem;
+        margin-right: 0.2rem;
+        /* top: 0.4rem; */
         background-color: transparent;
         padding: 0.5rem;
         border-radius: 50%;
@@ -75,8 +79,9 @@ page-tab-pay {
         font-size: 1.4rem;
         background-color: transparent;
         color: #fff;
-        padding: 1rem 1rem 0.8rem 1rem;
-        text-indent: 1.8rem;
+        padding: 1rem 0.5rem 0.8rem 1rem;
+        /* text-indent: 1.8rem; */
+
         border-bottom: 0.55px solid rgba(#fff, 0.2);
         &::-webkit-input-placeholder {
           color: rgba(#fff, 0.6);

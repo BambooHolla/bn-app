@@ -98,7 +98,7 @@ export class LoginServiceProvider {
       let data = await this.fetch.put<any>(this.LOGIN_URL, req);
       if (data.success) {
         let loginObj = {
-          password,
+          password: savePwd ? password : "",
           ...data.account,
           // publicKey: data.account.publicKey,
           // address: data.account.address,
@@ -109,12 +109,8 @@ export class LoginServiceProvider {
             ? data.account.secondPublicKey
             : "",
         };
-        if (savePwd) {
-          // 以Token的形式保存用户登录信息，用于自动登录
-          this.appSetting.setUserToken(loginObj);
-        } else {
-          this.appSetting.setUserToken(null);
-        }
+        // 以Token的形式保存用户登录信息，用于自动登录
+        this.appSetting.setUserToken(loginObj);
         return data;
       }
     } else {

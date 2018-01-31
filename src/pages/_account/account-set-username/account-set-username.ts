@@ -38,6 +38,7 @@ export class AccountSetUsernamePage extends SecondLevelPage {
 		return res;
 	}
 
+	@asyncCtrlGenerator.error()
 	async submit() {
 		const { password } = await this.getUserPassword();
 		await this._submit(password);

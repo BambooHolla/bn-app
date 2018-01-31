@@ -11,7 +11,7 @@ import {
   TransferProvider,
   RollOutLogModel,
 } from "../../providers/transfer/transfer";
-import {} from "../../";
+import { TransactionServiceProvider } from "../../providers/transaction-service/transaction-service";
 
 function generateRollOutLog(len = 20, from = Date.now()) {
   return Array.from(Array(len)).map(_ => {
@@ -29,6 +29,7 @@ export class TabPayPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public transferProvider: TransferProvider,
+    public transactionService: TransactionServiceProvider,
   ) {
     super(navCtrl, navParams);
   }
@@ -38,14 +39,18 @@ export class TabPayPage extends FirstLevelPage {
     transfer_mark: "",
   };
 
-  // @TabPayPage.setErrorTo("errors","transfer_address",["wrongAddress"])
-  // check_transfer_address(){
-  //   return
-  // }
+  @TabPayPage.setErrorTo("errors", "transfer_address", ["wrongAddress"])
+  check_transfer_address() {
+    if (
+      !this.transactionService.isAddressCorrect(this.formData.transfer_address)
+    ) {
+      return { wrongAddress: true };
+    }
+  }
   ignore_keys = ["transfer_mark"];
 
   @TabPayPage.setErrorTo("errors", "transfer_amount", ["rangeError"])
-  check_transfer_address() {
+  check_transfer_amount() {
     const { transfer_amount } = this.formData;
     if (typeof transfer_amount === "number") {
       if (

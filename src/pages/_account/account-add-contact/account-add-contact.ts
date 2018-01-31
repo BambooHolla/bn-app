@@ -30,10 +30,14 @@ export class AccountAddContactPage extends SecondLevelPage {
   searchContacts() {
     clearTimeout(this._ti);
     this._ti = setTimeout(() => {
-      this.getUserPassword().then(pwdData => {
-        const { password, pay_pwd } = pwdData;
-        this._searchContacts(password, pay_pwd);
-      });
+      this.getUserPassword()
+        .then(pwdData => {
+          const { password, pay_pwd } = pwdData;
+          this._searchContacts(password, pay_pwd);
+        })
+        .catch(() => {
+          /*密码设置异常不做处理*/
+        });
     }, 200);
   }
 

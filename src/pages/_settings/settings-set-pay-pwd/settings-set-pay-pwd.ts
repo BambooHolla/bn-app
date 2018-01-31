@@ -24,6 +24,7 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
 		confrim_pay_pwd: "",
 	};
 
+	@asyncCtrlGenerator.error()
 	async submit() {
 		const { password } = await this.getUserPassword({
 			force_require_password: true,

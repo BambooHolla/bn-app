@@ -32,7 +32,7 @@ export class TransactionServiceProvider {
   nacl: any;
   keypairService: any;
   addresssCheck: any;
-  constructor( 
+  constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
     public storage: Storage,
@@ -52,7 +52,7 @@ export class TransactionServiceProvider {
     this.Buff = this.ifmJs.Buff;
     this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
-    this.keypairService = this.ifmJs.keypairHelper;//For verify passphrase
+    this.keypairService = this.ifmJs.keypairHelper; //For verify passphrase
     this.addresssCheck = this.ifmJs.addressCheck;
   }
 
@@ -247,7 +247,7 @@ export class TransactionServiceProvider {
   formatSecondPassphrase(publicKey, secondSecret) {
     //设置
     if (!this.nacl) {
-      this.nacl_factory.instantiate(function(tmpNacl) {
+      this.nacl_factory.instantiate(tmpNacl => {
         this.nacl = tmpNacl;
       });
     }
@@ -334,14 +334,14 @@ export class TransactionServiceProvider {
     let data = await this.fetch.get<any>(this.UNCONFIRMED, { search: query });
     return data.transactions;
   }
-  
+
   /**
    * 转账交易
    * @param recipientId 接收人
    * TODO:全部判断地址是否正确
    */
   async transfer(recipientId, amount, password, secondSecret) {
-    if(parseInt(amount) > 0) {
+    if (parseInt(amount) > 0) {
       let txData = {
         type: this.transactionTypeCode.SEND,
         secret: password,
@@ -349,17 +349,17 @@ export class TransactionServiceProvider {
         recipientId: recipientId,
         publicKey: this.user.publicKey,
         fee: this.appSetting.settings.default_fee.toString(),
-        secondSecret
-      }
-  
-      if(secondSecret) {
+        secondSecret,
+      };
+
+      if (secondSecret) {
         txData.secondSecret = secondSecret;
       }
-  
-      let is_success:boolean = await this.putTransaction(txData);
-  
+
+      let is_success: boolean = await this.putTransaction(txData);
+
       return is_success;
-    }else {
+    } else {
       throw "Amount error";
     }
   }
@@ -370,9 +370,9 @@ export class TransactionServiceProvider {
    */
   async verifyPassphrase(passphrase) {
     let keypair = this.keypairService.create(passphrase);
-    if(this.user.publicKey === keypair) {
+    if (this.user.publicKey === keypair) {
       return true;
-    }else {
+    } else {
       return false;
     }
   }
@@ -381,7 +381,7 @@ export class TransactionServiceProvider {
    * 判断地址是否正确
    * @param address 
    */
-  isAddressCorrect(address):boolean {
+  isAddressCorrect(address): boolean {
     return this.addresssCheck.isAddress(address);
   }
 }
