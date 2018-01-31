@@ -135,7 +135,6 @@ export class AccountServiceProvider {
     secondSecret: string,
     second?: string,
   ) {
-    debugger;
     let txData = {
       type: this.transactionType.SIGNATURE,
       asset: {
