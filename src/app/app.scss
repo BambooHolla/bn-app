@@ -59,6 +59,7 @@ ion-loading {
 ion-navbar,
 ion-title {
   padding-top: 18px !important;
+  padding-top: calc(constant(safe-area-inset-top) + 18px) !important;
 }
 ion-navbar.toolbar-ios {
   min-height: $navbar-height;
