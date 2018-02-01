@@ -184,12 +184,14 @@ page-sign-in-and-sign-up {
           color: #fff;
           transform: scaleX(1.2);
         }
+        @font-face {
+          font-family: monospace;
+          src: local("Menlo");
+        }
         .password-textarear {
           text-indent: 2.7rem;
-          /* text-indent: 32.4px; */
           line-height: 4rem;
           margin-top: 2.5rem;
-          background: transparent;
           border: none;
           display: block;
           width: 100%;
@@ -198,12 +200,6 @@ page-sign-in-and-sign-up {
           min-height: 12.5rem;
           color: #fff;
           overflow-y: visible;
-        }
-        @font-face {
-          font-family: monospace;
-          src: local("Menlo");
-        }
-        .password-textarear {
           font-family: "PWD";
           background: linear-gradient(
             rgba(#fff, 0.5) 0%,
