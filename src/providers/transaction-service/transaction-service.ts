@@ -154,7 +154,7 @@ export class TransactionServiceProvider {
         if (!is_second_true) {
           return this.fetch.ServerResError.translateAndParseErrorMessage<
             boolean
-          >("Second passphrase verified error");
+            >("Second passphrase verified error");
         }
       }
       if (typeof txData.fee === "number") {
@@ -280,8 +280,9 @@ export class TransactionServiceProvider {
   }
 
   /**
-   * 根据地址获得交易，分页
+   * 根据地址获得交易，分页，send:true为转出
    * @param {string} address
+   * @param {boolean} send    true为转出，false为转入
    * @param {number} page
    * @param {number} limit
    * @returns {Promise<any>}
@@ -301,6 +302,7 @@ export class TransactionServiceProvider {
       orderBy: "t_timestamp:desc",
       type,
     };
+
     let data = await this.getTransactions(query);
 
     return data.transactions;
