@@ -6,7 +6,7 @@ import * as PIXI from "pixi.js";
 export const loader = new PIXI.loaders.Loader();
 export const _load_resource_promiseout = new PromiseOut<
   PIXI.loaders.ResourceDictionary
->();
+  >();
 
 export const _is_load_resource = false;
 export const _coin_assets = [
@@ -36,8 +36,8 @@ loader.load();
   templateUrl: "fall-coins.html",
 })
 export class FallCoinsComponent extends AniBase {
-  app: PIXI.Application;
-  @ViewChild("canvas") canvasRef: ElementRef;
+  app?: PIXI.Application ;
+  @ViewChild("canvas") canvasRef!: ElementRef;
 
   _init() {
     this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
@@ -68,8 +68,12 @@ export class FallCoinsComponent extends AniBase {
       progress_coins,
       gravity,
     } = this;
+    if (!canvasNode) {
+      throw new Error("call init first");
+    }
     if (!this.app) {
       this.app = new PIXI.Application({
+        antialias: true,
         transparent: true,
         view: canvasNode,
         height: pt(canvasNode.clientHeight),
@@ -117,7 +121,7 @@ export class FallCoinsComponent extends AniBase {
         con = new PIXI.Container();
         con["zIndex"] = index;
         container.addChild(con);
-        container.children.sort(function(a, b) {
+        container.children.sort(function (a, b) {
           return b["zIndex"] - a["zIndex"];
         });
         indexContainerMap.set(key, con);
@@ -195,7 +199,7 @@ export class FallCoinsComponent extends AniBase {
       }
       target_line.in_ani += 1;
       // 开始动画
-      this._loop_runs.push(coin_ani);
+      this.addLoop(coin_ani);
 
       target_line.cur += 1;
       if (target_line.cur >= target_line.max) {
@@ -328,10 +332,18 @@ export class FallCoinsComponent extends AniBase {
           in_ani: 0,
           _id: i,
         };
-      }),
-      full_lines: [],
+      }) as LineOptions[],
+      full_lines: [] as LineOptions[],
     };
   }
   private _progress_coins_config = this.resetProgressCoinsConfig();
-  progress_coins = [];
+  progress_coins: PIXI.extras.AnimatedSprite[] = [];
+}
+export type LineOptions = {
+  cur: number;
+  in_ani: number;
+  _id: number;
+  y: number;
+  x: number;
+  max: number;
 }

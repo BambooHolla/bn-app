@@ -16,7 +16,7 @@ export class FLP_Route extends FLP_Lifecycle {
   _navCtrlPush(path: string, params?: any, opts?: NavOptions, done?: any) {
     return this.navCtrl.push(path, params, opts, done);
   }
-  @FLP_Route.FromGlobal accountService: AccountServiceProvider;
+  @FLP_Route.FromGlobal accountService!: AccountServiceProvider;
 
   /** 路由loading显示与否的控制器 */
   hide_jump_loading = true;
@@ -42,7 +42,7 @@ export class FLP_Route extends FLP_Lifecycle {
   // 页面A为了实现某个任务，打开页面B
   // 页面B完成任务后，返回页面A，触发任务完成的回调
   // 这个流程相关的API
-  viewCtrl: ViewController;
+  viewCtrl?: ViewController;
   finishJob(
     remove_view_after_finish: boolean = this.navParams.get("auto_return") ||
       this.navParams.get("remove_view_after_finish"),
@@ -54,7 +54,7 @@ export class FLP_Route extends FLP_Lifecycle {
       setTimeout(() => {
         const viewCtrl = this.viewCtrl;
         if (viewCtrl) {
-          this.navCtrl.removeView(this.viewCtrl);
+          this.navCtrl.removeView(viewCtrl);
         } else {
           console.warn(
             "使用remove_view_after_finish必须注入viewCtrl: ViewController对象",
@@ -192,7 +192,7 @@ export class FLP_Route extends FLP_Lifecycle {
   /**
    * 智能跳转，尝试使用pop，如果是上一级的页面
    */
-  smartRouteTo(path?: string, params?: any, opts?: NavOptions) {
+  smartRouteTo(path: string, params?: any, opts?: NavOptions) {
     const views = this.navCtrl.getViews();
     const pre_view = views[views.length - 2];
     if (pre_view.id === path) {
@@ -234,13 +234,13 @@ export class FLP_Route extends FLP_Lifecycle {
           },
           options,
         ),
-      )
+    )
       .present();
   }
 }
 
 type RouteToBeforeCheck = {
-  name: string;
+  name?: string;
   match: RouteToBeforeCheck_Match;
   checker: RouteToBeforeCheck_Checker;
   weight: number;

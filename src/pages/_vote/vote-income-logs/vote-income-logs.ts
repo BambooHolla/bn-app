@@ -30,6 +30,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
 
   income_log_list: BenefitModel[] = [];
   income_log_list_config = {
+    loaded: false,
     page: 1,
     pageSize: 20,
     has_more: true,
@@ -50,6 +51,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
       income_log_list_config.pageSize,
     );
     this.income_log_list = list;
+    income_log_list_config.loaded = true;
     if (refresher) {
       refresher.complete();
     }

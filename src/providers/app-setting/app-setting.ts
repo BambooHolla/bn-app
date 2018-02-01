@@ -131,9 +131,9 @@ export class AppSettingProvider extends EventEmitter {
     try {
       // clearTimeout(this._token_timeout_ti);
       var tokenJson = localStorage.getItem(this.USER_TOKEN_STORE_KEY);
-      // if (!tokenJson) {
-      //   return "";
-      // }
+      if (!tokenJson) {
+        return null;
+      }
       var obj = JSON.parse(tokenJson);
       // if (obj.expiredTime && obj.expiredTime < Date.now()) {
       //   return "";
@@ -265,7 +265,7 @@ export function TB_AB_Generator(
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
           _v.refresh();
-          if (expiry_time_opts.loop) {
+          if (expiry_time_opts && expiry_time_opts.loop) {
             timeout_auto_refresh(refresh_time);
           }
         }
@@ -290,7 +290,9 @@ export function TB_AB_Generator(
         if (!_v) {
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${
+                this.constructor.name
+              } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           this.appSetting.user_token.subscribe(token => {
@@ -338,7 +340,7 @@ export function HEIGHT_AB_Generator(
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
           _v.refresh();
-          if (expiry_time_opts.loop) {
+          if (expiry_time_opts && expiry_time_opts.loop) {
             timeout_auto_refresh(refresh_time);
           }
         }
@@ -364,7 +366,9 @@ export function HEIGHT_AB_Generator(
           const appSetting: AppSettingProvider = this.appSetting;
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${
+                this.constructor.name
+              } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           appSetting.height.subscribe(height => {
@@ -408,7 +412,7 @@ export function ROUND_AB_Generator(
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
           _v.refresh();
-          if (expiry_time_opts.loop) {
+          if (expiry_time_opts && expiry_time_opts.loop) {
             timeout_auto_refresh(refresh_time);
           }
         }
@@ -434,7 +438,9 @@ export function ROUND_AB_Generator(
           const appSetting: AppSettingProvider = this.appSetting;
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
-              `${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`,
+              `${
+                this.constructor.name
+              } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
           appSetting.round.subscribe(round => {

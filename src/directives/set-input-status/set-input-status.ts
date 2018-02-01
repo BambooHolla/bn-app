@@ -21,7 +21,7 @@ import { FirstLevelPage } from '../../bnqkl-framework/FirstLevelPage';
 export class SetInputStatusDirective implements OnInit, OnDestroy {
 	@Input('set-input-status') form_key = '';
 
-	@Input('watch-input-keys') watch_keys = [];
+	@Input('watch-input-keys') watch_keys: string[] = [];
 
 	constructor(private elementRef: ElementRef, public view: ViewContainerRef) {
 		// console.log('Hello BackdropBlurDirective Directive');
@@ -40,7 +40,7 @@ export class SetInputStatusDirective implements OnInit, OnDestroy {
 	}
 	page: FirstLevelPage;
 
-	ionItemEle: HTMLElement;
+	ionItemEle?: HTMLElement;
 	private _addEvent(name) {
 		this.ele.addEventListener(name, e => {
 			this.form_key && this.page.setInputstatus(this.form_key, e);
@@ -81,10 +81,9 @@ export class SetInputStatusDirective implements OnInit, OnDestroy {
 		}
 	}
 	findIonItemEle() {
-		let ionItemEle: HTMLElement = this.ionItemEle;
+		let ionItemEle = this.ionItemEle;
 
 		if (ionItemEle === undefined) {
-			ionItemEle = null;
 			const inputEle = this.ele;
 			let parentEle = inputEle.parentElement;
 			while (parentEle && parentEle != document.body) {
@@ -103,7 +102,7 @@ export class SetInputStatusDirective implements OnInit, OnDestroy {
 		this.page.event.on('input-status-changed', this.onInputStatusChanged);
 	}
 	onInputStatusChanged(change_info) {
-		const { key, event } = change_info;
+		const { key, event }: { key: string, event: any } = change_info;
 		if (this.watch_keys.indexOf(key) !== -1 && event.type === 'input') {
 			this.form_key && this.page.checkFormKey(this.form_key);
 		}

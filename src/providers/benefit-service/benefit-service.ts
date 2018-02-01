@@ -32,7 +32,7 @@ import * as IFM from "ifmchain-ibt";
 export class BenefitServiceProvider {
   ifmJs: any;
   benefitList: any;
-  benefitBlockHeight: number;
+  benefitBlockHeight!: number;
   constructor(
     public http: HttpClient,
     public storage: Storage,
@@ -66,7 +66,7 @@ export class BenefitServiceProvider {
     let lastBlockRes = await this.blockService.getLastBlock();
     //增量
     if (increment) {
-      let lastBlockHeight = this.benefitBlockHeight;
+      let lastBlockHeight = this.benefitBlockHeight!;
 
       if (lastBlockHeight) {
         let blockBetween = lastBlockRes.height - lastBlockHeight;
@@ -88,7 +88,7 @@ export class BenefitServiceProvider {
           // data.unshift(data[0], 0);
           Array.prototype.splice.apply(this.benefitList, temp);
           this.benefitList = temp;
-          this.benefitBlockHeight = lastBlockRes.height;
+          this.benefitBlockHeight! = lastBlockRes.height;
           return this.benefitList.slice(0, 56);
         }
       } else {
@@ -101,10 +101,11 @@ export class BenefitServiceProvider {
         orderBy: "md_timestamp:desc",
         address: this.user.userInfo.address,
       };
-      this.benefitBlockHeight = lastBlockRes.height;
+      this.benefitBlockHeight! = lastBlockRes.height;
       let benefitData = this.getBenefits(query);
       this.benefitList = benefitData;
     }
+    return this.benefitList
   }
 
   /**
@@ -173,7 +174,7 @@ export class BenefitServiceProvider {
   /**
    * 获取本轮收益
    */
-  benefitThisRound: AsyncBehaviorSubject<number>;
+  benefitThisRound!: AsyncBehaviorSubject<number>;
   @HEIGHT_AB_Generator("benefitThisRound")
   benefitThisRound_Executor(promise_pro) {
     return promise_pro.follow(this.getBenefitThisRound());

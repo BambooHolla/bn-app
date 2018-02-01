@@ -20,33 +20,35 @@ export class FirstLevelPage extends FLP_Data {
   ) {
     super(navCtrl, navParams);
   }
-  @ViewChild(ToolbarTitle) title: ToolbarTitle;
-  @ViewChild(Header) header: Header;
-  @ViewChild(Content) content: Content;
+  @ViewChild(ToolbarTitle) title?: ToolbarTitle;
+  @ViewChild(Header) header?: Header;
+  @ViewChild(Content) content?: Content;
 
   // 启用实验性的backdropFilter功能
   @FirstLevelPage.didEnter
   private _initBackdropFilter() {
-    const headerEle = this.header.getNativeElement() as HTMLElement;
+    if (this.header) {
+      const headerEle = this.header.getNativeElement() as HTMLElement;
 
-    if (this.toBool(headerEle.dataset.canBackdropFilter)) {
-      const contentFixedEle = this.content.getFixedElement();
-      const contentScrollEle = this.content.getScrollElement();
-      if (contentFixedEle.style.marginTop) {
-        contentScrollEle.style.paddingTop = contentFixedEle.style.marginTop;
-        contentScrollEle.style.marginTop = "";
+      if (this.content && this.toBool(headerEle.dataset.canBackdropFilter)) {
+        const contentFixedEle = this.content.getFixedElement();
+        const contentScrollEle = this.content.getScrollElement();
+        if (contentFixedEle.style.marginTop) {
+          contentScrollEle.style.paddingTop = contentFixedEle.style.marginTop;
+          contentScrollEle.style.marginTop = "";
+        }
       }
     }
   }
 
-  private _title_ti: number;
+  private _title_ti?: number;
   // 强行修复ionic Title显示的BUG
   @FirstLevelPage.didEnter
   private _fixIonicDocumentTitleBug_didEnter() {
     if (this.PAGE_LEVEL === 1) {
       this._title_ti = this.platform.raf(() => {
         document.title = "……"; //
-        document.title = this.title.getTitleText();
+        document.title = this.title && this.title.getTitleText();
       });
     }
   }
@@ -56,7 +58,7 @@ export class FirstLevelPage extends FLP_Data {
       // 销毁TITLE控制器
       if (this._title_ti) {
         this.platform.cancelRaf(this._title_ti);
-        this._title_ti = null;
+        this._title_ti = undefined;
       }
     }
   }
@@ -73,7 +75,13 @@ export class FirstLevelPage extends FLP_Data {
   /**页面滚动自动添加阴影*/
   @FirstLevelPage.onInit
   _autoAddHeaderShadowWhenScrollDown() {
+    if (!this.content) {
+      return
+    }
     this.content.ionScroll.subscribe(() => {
+      if (!this.content || !this.header) {
+        return
+      }
       if (this.auto_header_shadow_when_scroll_down) {
         const {
           from_color,
@@ -104,7 +112,7 @@ export class FirstLevelPage extends FLP_Data {
           `0 0 ${blur_rem}rem rgba(${cur_color})`,
         );
       } else {
-        this.header.setElementStyle("box-shadow", null);
+        (this.header.setElementStyle as any)("box-shadow", null);
       }
     });
   }
@@ -122,7 +130,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-      )
+    )
       .present();
   }
 }

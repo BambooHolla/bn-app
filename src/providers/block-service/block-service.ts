@@ -101,14 +101,14 @@ export class BlockServiceProvider {
    * @param {string} query
    * @returns {Promise<any>}
    */
-  async searchBlocks(query: string): Promise<any[]> {
+  async searchBlocks(query: string): Promise<TYPE.BlockModel[] | TYPE.SingleBlockModel[]> {
     //如果是纯数字且不是以0开头就查高度
     if (/[1-9][0-9]*/.test(query)) {
       const query_num = parseFloat(query) * 1;
       let data = await this.getBlockByHeight(query_num);
-      if (data.length > 0) {
-        return data;
-      }
+      // if (data.length > 0) {
+      return data;
+      // }
     } else {
       //首先查创块人
       let data1 = await this.getBlocksByAddress(query);
@@ -209,7 +209,7 @@ export class BlockServiceProvider {
   /**
    * 获取最新的块
    */
-  latestBlock: AsyncBehaviorSubject<TYPE.BlockModel[]>;
+  latestBlock!: AsyncBehaviorSubject<TYPE.BlockModel[]>;
   @HEIGHT_AB_Generator("lastBlock")
   lastBlock_Executor(promise_pro) {
     return promise_pro(this.getTopBlocks(true));
@@ -242,7 +242,7 @@ export class BlockServiceProvider {
     sort = true,
   ): Promise<TYPE.BlockModel[]> {
     if (page === 1 && this.blockArray && this.blockArray.length > limit) {
-      await this.getTopBlocks(true, limit);
+      return await this.getTopBlocks(true, limit);
     } else {
       let query = {
         offset: (page - 1) * limit,

@@ -22,8 +22,8 @@ export class ContactServiceProvider {
   contact: any;
   transactionTypes: any;
   addressCheck: any;
-  followingList: any[];
-  followerList: any[];
+  followingList?: any[];
+  followerList?: any[];
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -54,12 +54,12 @@ export class ContactServiceProvider {
     };
     let data = await this.fetch.get<
       | {
-          follower: ContactModel[];
-          following: ContactModel[];
-          success: true;
-        }
+        follower: ContactModel[];
+        following: ContactModel[];
+        success: true;
+      }
       | { success: false; error: any }
-    >(this.GET_CONTACT, { search: query });
+      >(this.GET_CONTACT, { search: query });
 
     if (data.success) {
       data.follower = await this.contactIgnored(data.follower);
@@ -82,7 +82,7 @@ export class ContactServiceProvider {
    */
   async ignoreContact(iAddress) {
     let address = this.user.address;
-    let ignoreList: any[];
+    let ignoreList: any[] = [];
 
     let ignoreBefore = JSON.parse(await this.storage.get("c_" + address));
     if (ignoreBefore) {
@@ -93,9 +93,11 @@ export class ContactServiceProvider {
     }
 
     for (let i of ignoreList) {
-      let isIgnore = this.followerList.find(ignoreList[i]);
-      if (isIgnore >= 0) {
-        this.followerList.splice(i, 1);
+      if (this.followerList) {
+        let isIgnore = this.followerList.indexOf(ignoreList[i]);
+        if (isIgnore >= 0) {
+          this.followerList.splice(i, 1);
+        }
       }
     }
     await this.storage.set("c_" + address, JSON.stringify(ignoreList));

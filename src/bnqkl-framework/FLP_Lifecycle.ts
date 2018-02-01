@@ -12,7 +12,7 @@ export class FLP_Lifecycle extends FLP_Tool
   }
   cname = this.constructor.name;
   PAGE_LEVEL = 1;
-  _event: EventEmitter;
+  _event?: EventEmitter;
   get event() {
     return this._event || (this._event = new EventEmitter());
   }
@@ -85,13 +85,13 @@ export class FLP_Lifecycle extends FLP_Tool
   // 生命周期 修饰器
   // 这里只保存属性名，在调用的时候就能获取到最终被其它修饰器修饰完的属性值
   @FLP_Lifecycle.cacheFromProtoArray("onInit")
-  private _oninit_funs: Set<string>;
+  private _oninit_funs!: Set<string>;
   static onInit(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "onInit", name);
     return descriptor;
   }
   @FLP_Lifecycle.cacheFromProtoArray("afterContentInit")
-  private _aftercontentinit_funs: Set<string>;
+  private _aftercontentinit_funs!: Set<string>;
   static afterContentInit(
     target: any,
     name: string,
@@ -101,31 +101,31 @@ export class FLP_Lifecycle extends FLP_Tool
     return descriptor;
   }
   @FLP_Lifecycle.cacheFromProtoArray("onDestory")
-  private _ondestory_funs: Set<string>;
+  private _ondestory_funs!: Set<string>;
   static onDestory(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "onDestory", name);
     return descriptor;
   }
   @FLP_Lifecycle.cacheFromProtoArray("willEnter")
-  private _will_enter_funs: Set<string>;
+  private _will_enter_funs!: Set<string>;
   static willEnter(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "willEnter", name);
     return descriptor;
   }
   @FLP_Lifecycle.cacheFromProtoArray("didEnter")
-  private _did_enter_funs: Set<string>;
+  private _did_enter_funs!: Set<string>;
   static didEnter(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "didEnter", name);
     return descriptor;
   }
   @FLP_Lifecycle.cacheFromProtoArray("willLeave")
-  private _will_leave_funs: Set<string>;
+  private _will_leave_funs!: Set<string>;
   static willLeave(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "willLeave", name);
     return descriptor;
   }
   @FLP_Lifecycle.cacheFromProtoArray("didLeave")
-  private _did_leave_funs: Set<string>;
+  private _did_leave_funs!: Set<string>;
   static didLeave(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "didLeave", name);
     return descriptor;
@@ -134,7 +134,7 @@ export class FLP_Lifecycle extends FLP_Tool
   static autoUnsubscribe(target: FLP_Lifecycle, name: string) {
     const cache_key = `-AU-${name}-`;
     if (!target[cache_key]) {
-      target[cache_key] = function() {
+      target[cache_key] = function () {
         if (this[name]) {
           this[name].unsubscribe();
           this[name] = null;

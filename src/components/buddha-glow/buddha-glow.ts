@@ -7,9 +7,9 @@ import * as PIXI from "pixi.js";
   templateUrl: "buddha-glow.html",
 })
 export class BuddhaGlowComponent extends AniBase {
-  app: PIXI.Application;
+  app?: PIXI.Application;
   // noise = new SimplexNoise();
-  @ViewChild("canvas") canvasRef: ElementRef;
+  @ViewChild("canvas") canvasRef!: ElementRef;
 
   constructor() {
     super();
@@ -23,17 +23,26 @@ export class BuddhaGlowComponent extends AniBase {
   }
   private initPixiApp() {
     if (this.app) {
-      this.app.destroy();
-      this.app = null;
+      this.app.stage.children.slice().forEach(child => {
+        return child.destroy();
+      });
+      this._loop_runs.length = 0;
     }
     const { pt, px, canvasNode, lights } = this;
-    const app = (this.app = new PIXI.Application({
-      transparent: true,
-      // backgroundColor: 0xebbb57,
-      view: canvasNode,
-      height: pt(canvasNode.clientHeight),
-      width: pt(canvasNode.clientWidth),
-    }));
+    if (!canvasNode) {
+      throw new Error("call init first");
+    }
+    if (!this.app) {
+      this.app = new PIXI.Application({
+        antialias: true,
+        transparent: true,
+        // backgroundColor: 0xebbb57,
+        view: canvasNode,
+        height: pt(canvasNode.clientHeight),
+        width: pt(canvasNode.clientWidth),
+      });
+    }
+    const app = this.app;
     const { stage, renderer, ticker } = app;
 
     const lightsContainer = new PIXI.Container();
@@ -163,15 +172,15 @@ export class BuddhaGlowComponent extends AniBase {
     }
 
     var ctx = canvas.getContext("2d");
-    window["ctx"] = ctx;
+    if (ctx) {
+      var gradient = ctx.createLinearGradient(0, 0, x1, y1);
+      for (let stop of stops) {
+        gradient.addColorStop(stop[0] as number, stop[1] as string);
+      }
+      ctx.fillStyle = gradient;
 
-    var gradient = ctx.createLinearGradient(0, 0, x1, y1);
-    for (let stop of stops) {
-      gradient.addColorStop(stop[0] as number, stop[1] as string);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    ctx.fillStyle = gradient;
-
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
     return canvas;
   }
   static createRadialGradient(r = 300, stops = [[0, "#FFF"], [1, "#000"]]) {
@@ -183,15 +192,16 @@ export class BuddhaGlowComponent extends AniBase {
     const half_r = r / 2;
 
     var ctx = canvas.getContext("2d");
-    window["ctx"] = ctx;
+    if (ctx) {
 
-    var gradient = ctx.createRadialGradient(half_r, 0, half_r, half_r, 0, 0);
-    for (let stop of stops) {
-      gradient.addColorStop(stop[0] as number, stop[1] as string);
+      var gradient = ctx.createRadialGradient(half_r, 0, half_r, half_r, 0, 0);
+      for (let stop of stops) {
+        gradient.addColorStop(stop[0] as number, stop[1] as string);
+      }
+      ctx.fillStyle = gradient;
+
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    ctx.fillStyle = gradient;
-
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
     return canvas;
   }
   startPixiApp() {

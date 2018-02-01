@@ -6,7 +6,6 @@ import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { SatellitePixiComponent } from "../../components/satellite-pixi/satellite-pixi";
 import { FallCoinsComponent } from "../../components/fall-coins/fall-coins";
-import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
 import { AniBase } from "../../components/AniBase";
@@ -46,14 +45,16 @@ export class TabVotePage extends FirstLevelPage {
     this.tabs.setBgTransparent(false, this.cname);
   }
 
-  @ViewChild("aniWrapper") aniWrapper: ElementRef;
+  @ViewChild("aniWrapper") aniWrapper?: ElementRef;
   @TabVotePage.onInit
   initAniContainerSize() {
     // 初始化容器大小
-    const targetEle = this.aniWrapper.nativeElement;
-    targetEle.style.transform = `scale(${document.body.clientWidth *
-      0.8 /
-      targetEle.clientWidth})`;
+    if (this.aniWrapper) {
+      const targetEle = this.aniWrapper.nativeElement;
+      targetEle.style.transform = `scale(${document.body.clientWidth *
+        0.8 /
+        targetEle.clientWidth})`;
+    }
   }
 
   page_status = "bootstrap";
@@ -65,9 +66,13 @@ export class TabVotePage extends FirstLevelPage {
       this.fall_coin.startAnimation();
     clearInterval(this["_fall_coin_progress_ti"]);
     this["_fall_coin_progress_ti"] = setInterval(() => {
-      this.fall_coin.progress = parseFloat(
-        ((this.fall_coin.progress + 0.001) % 1).toFixed(4),
-      );
+      if (this.fall_coin) {
+        this.fall_coin.progress = parseFloat(
+          ((this.fall_coin.progress + 0.001) % 1).toFixed(4),
+        );
+      } else {
+        clearInterval(this["_fall_coin_progress_ti"]);
+      }
     }, 100);
 
     this.satellite_pixi &&
@@ -92,7 +97,6 @@ export class TabVotePage extends FirstLevelPage {
       }, 100);
     }
 
-    this.earth_net_mesh && this.earth_net_mesh.startAnimation();
     this.chain_mesh && this.chain_mesh.startAnimation();
     const { _earth_enabled_config, earth_config } = this;
     for (const key in _earth_enabled_config) {
@@ -130,7 +134,6 @@ export class TabVotePage extends FirstLevelPage {
       const from = earth_config[key];
       const to = _earth_disabled_config[key];
       const finish_fun = () => {
-        this.earth_net_mesh && this.earth_net_mesh.stopAnimation();
         this.chain_mesh && this.chain_mesh.stopAnimation();
       };
       if (key.indexOf("_color") != -1) {
@@ -146,11 +149,10 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
   }
-  @ViewChild(FallCoinsComponent) fall_coin: FallCoinsComponent;
-  @ViewChild(SatellitePixiComponent) satellite_pixi: SatellitePixiComponent;
-  @ViewChild(BuddhaGlowComponent) buddha_glow: BuddhaGlowComponent;
-  @ViewChild(EarthNetMeshComponent) earth_net_mesh: EarthNetMeshComponent;
-  @ViewChild(ChainMeshComponent) chain_mesh: ChainMeshComponent;
+  @ViewChild(FallCoinsComponent) fall_coin?: FallCoinsComponent;
+  @ViewChild(SatellitePixiComponent) satellite_pixi?: SatellitePixiComponent;
+  @ViewChild(BuddhaGlowComponent) buddha_glow?: BuddhaGlowComponent;
+  @ViewChild(ChainMeshComponent) chain_mesh?: ChainMeshComponent;
 
   _earth_disabled_config = {
     body_color: 0xececec,
@@ -169,11 +171,10 @@ export class TabVotePage extends FirstLevelPage {
   @TabVotePage.didEnter
   initEarchNetMesh() {
     // 执行一帧，并停止
-    this.earth_net_mesh && this.earth_net_mesh._loop();
     if (this.chain_mesh) {
       const _loop = () => {
         requestAnimationFrame(() => {
-          this.chain_mesh.app.ticker.update();
+          this.chain_mesh && this.chain_mesh.app && this.chain_mesh.app.ticker.update();
         });
       };
       if (this.chain_mesh.is_app_ready) {
@@ -218,8 +219,8 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   /**上一轮的排名*/
-  @TabVotePage.autoUnsubscribe private _my_rank_subscription: Subscription;
-  pre_round_rank_list: RankModel[];
+  @TabVotePage.autoUnsubscribe private _my_rank_subscription?: Subscription;
+  pre_round_rank_list?: RankModel[];
   @TabVotePage.willEnter
   getPreRoundRankList() {
     if (!this._my_rank_subscription && this.page_status == "vote-detail") {

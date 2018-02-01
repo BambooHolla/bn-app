@@ -70,7 +70,7 @@ export class LoginServiceProvider {
   //   }
   //   return this._loginerInfo;
   // }
-  loginerInfo: AsyncBehaviorSubject<UserModel>;
+  loginerInfo!: AsyncBehaviorSubject<UserModel>;
   // 按需生成，否则直接生成的话发起请求，在返回的末端没有其它地方接手这个请求catch错误的话，会导致异常抛出到全局
   @TB_AB_Generator("loginerInfo")
   loginerInfo_Executor(promise_pro) {

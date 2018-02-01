@@ -4,6 +4,9 @@
   "LOGINNG": "登陆中",
   "LOGIN_ERROR": "登录失败",
 
+  "//": "tab-vote",
+  "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
+
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加载区块链中",
   "LOAD_BLOCK_LIST_ERROR": "加载区块链失败",
@@ -98,7 +101,8 @@
     "使用你需要的多种多样的页面删除你不需要的页面。我们提供许多常见移动 app 页面，如登录、注册页面，tabs 标签页，以及本教程页面。",
 
   "TUTORIAL_SLIDE3_TITLE": "开始",
-  "TUTORIAL_SLIDE3_DESCRIPTION": "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
+  "TUTORIAL_SLIDE3_DESCRIPTION":
+    "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
 
   "TUTORIAL_SLIDE4_TITLE": "开始学习？",
 

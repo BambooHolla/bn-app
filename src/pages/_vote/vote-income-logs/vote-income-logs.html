@@ -14,6 +14,9 @@
     <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新挖矿收益……"></ion-refresher-content>
   </ion-refresher>
   <div class="common-list">
+    <div class="common-item" *ngIf="income_log_list.length==0 && income_log_list_config.loaded">
+      <i>无可用数据</i>
+    </div>
     <div class="common-item" *ngFor="let log of income_log_list">
       <div class="left">
         <div class="time-ago">

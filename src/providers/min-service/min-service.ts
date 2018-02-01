@@ -28,9 +28,12 @@ export * from "./min.types";
 export class MinServiceProvider {
   ifmJs: any;
   transactionTypes: any;
-  allVoters: string[];
-  allMiners: DelegateModel[];
-  allMinersRound: number;
+  allVoters?: RankModel[];
+  allMinersInfo?: {
+    list: DelegateModel[],
+    round: number
+  }
+
   constructor(
     public http: HttpClient,
     public fetch: AppFetchProvider,
@@ -116,9 +119,7 @@ export class MinServiceProvider {
    */
   async getRound(): Promise<number> {
     let currentBlock: any = await this.blockService.getLastBlock();
-    if (currentBlock.height) {
-      return Math.floor(currentBlock.height / 57);
-    }
+    return Math.floor(currentBlock.height / 57);
   }
 
   /**
@@ -138,11 +139,11 @@ export class MinServiceProvider {
       if (resp.delegate.length === 0) {
         throw "you have already voted";
       } else {
-        let delegateArr = resp.delegate;
-        let voteList = [];
+        let delegateArr: string[] = resp.delegate;
+        let voteList: string[] = [];
         //票投给所有获取回来的人
-        for (let i in delegateArr) {
-          voteList.push("+" + delegateArr[i]);
+        for (let delegate of delegateArr) {
+          voteList.push("+" + delegate);
         }
 
         //设置投票的参数
@@ -205,7 +206,7 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllVotersForMe(page = 1, limit = 10): Promise<string[]> {
+  async getAllVotersForMe(page = 1, limit = 10) {
     let voteForMeUrl = this.VOTE_FOR_ME;
 
     let data = await this.fetch.get<any>(voteForMeUrl, {
@@ -215,9 +216,13 @@ export class MinServiceProvider {
         limit: limit,
       },
     });
-    if (data.success) {
+    if (data.success) {//@DDFIX
       data.unshift(0, data.length - 1);
-      Array.prototype.push.apply(this.allVoters, data);
+      if (this.allVoters) {
+        this.allVoters.push(...data);
+      } else {
+        this.allVoters = data;
+      }
       return this.allVoters;
     } else {
       return this.allVoters;
@@ -227,7 +232,7 @@ export class MinServiceProvider {
   /**
    * 给我投票的人
    */
-  voteForMe: AsyncBehaviorSubject<RankModel[]>;
+  voteForMe!: AsyncBehaviorSubject<RankModel[]>;
   @ROUND_AB_Generator("voteForMe")
   voteForMe_Executor(promise_pro) {
     return promise_pro.follow(this.getAllVotersForMe());
@@ -261,23 +266,25 @@ export class MinServiceProvider {
     let currentBlock = await this.blockService.getLastBlock();
     let currentRound = Math.floor(currentBlock.height / 57);
 
-    if (currentRound != this.allMinersRound) {
+    if (this.allMinersInfo && this.allMinersInfo.round === currentRound) {
+      return this.allMinersInfo.list.slice((page - 1) * limit, limit);
+    } else {
       let query = {
         orderBy: "rate:asc",
       };
       let data = await this.fetch.get<any>(this.MY_VOTES, { search: query });
-      this.allMiners = data.delegates;
-      this.allMinersRound = currentRound;
-      return this.allMiners.slice((page - 1) * limit, limit);
-    } else {
-      return this.allMiners.slice((page - 1) * limit, limit);
+      this.allMinersInfo = {
+        list: data.delegate,
+        round: currentRound
+      }
+      return this.allMinersInfo.list.slice((page - 1) * limit, limit);
     }
   }
 
   /**
    * 获取本轮矿工
    */
-  allMinersPerRound: AsyncBehaviorSubject<DelegateModel[]>;
+  allMinersPerRound!: AsyncBehaviorSubject<DelegateModel[]>;
   @ROUND_AB_Generator("allMinersPerRound")
   allMiners_Executor(promise_pro) {
     return promise_pro.follow(this.getAllMiners());
@@ -302,7 +309,7 @@ export class MinServiceProvider {
   /**
    * 获取未被选中的矿工
    */
-  minersOut: AsyncBehaviorSubject<DelegateModel[]>;
+  minersOut!: AsyncBehaviorSubject<DelegateModel[]>;
   @ROUND_AB_Generator("minersOut")
   minersOut_Executor(promise_pro) {
     return promise_pro.follow(this.getAllMinersOutside());
@@ -354,7 +361,7 @@ export class MinServiceProvider {
     return data.ranks;
   }
 
-  myRank: AsyncBehaviorSubject<RankModel[]>;
+  myRank!: AsyncBehaviorSubject<RankModel[]>;
   @ROUND_AB_Generator("myRank")
   myRank_Executor(promise_pro) {
     return promise_pro.follow(this.getMyRank());

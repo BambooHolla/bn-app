@@ -9,7 +9,7 @@ import { AppSettingProvider } from "../app-setting/app-setting";
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
-  static translateAndParseErrorMessage(message, code?) {
+  static translateAndParseErrorMessage<T=never>(message, code?): Promise<T> {
     return (window["translate"] as TranslateService)
       .get(message)
       .take(1)
@@ -35,7 +35,7 @@ export class ServerResError extends Error {
         } else {
           break;
         }
-      } catch (err) {}
+      } catch (err) { }
     }
     return new ServerResError(CODE_LIST, MESSAGE);
   }
@@ -46,7 +46,9 @@ export class ServerResError extends Error {
     this.stack += "\t\n" + code_list.join("\t\n");
   }
   CODE_LIST: string[];
-  CODE: string;
+  get CODE(): string {
+    return this.CODE_LIST[0] || "";
+  };
   MESSAGE: string;
 }
 export type CommonResponseData<T> = {
@@ -59,7 +61,7 @@ export type CommonResponseData<T> = {
 @Injectable()
 export class AppFetchProvider {
   ServerResError = ServerResError;
-  private _user_token: string;
+  private _user_token!: string;
 
   constructor(
     public http: Http,
@@ -122,13 +124,13 @@ export class AppFetchProvider {
       }
     }
   }
-  private _catchData() {}
+  private _catchData() { }
   private _handlePromise(
     promise: Promise<any>,
-    auto_cache?: boolean,
+    // auto_cache: boolean,
     catch_key?: string,
   ) {
-    if (auto_cache) {
+    if (catch_key) {
       promise = promise
         .then(response => {
           try {
@@ -196,21 +198,22 @@ export class AppFetchProvider {
     body: any,
     options: RequestOptionsArgs = {},
     without_token?: boolean,
-    auto_cache?: boolean,
-    timeout_ms?: number,
+    auto_cache = this.auto_cache,
+    timeout_ms = this.timeout_ms,
   ) {
-    // 获取外部的默认值并自动重置，一定要触发getter
-    const default_auto_cache = this.auto_cache;
-    if (auto_cache === undefined) {
-      auto_cache = default_auto_cache;
-    }
-    const default_timeout_ms = this.timeout_ms;
-    if (timeout_ms === undefined) {
-      timeout_ms = default_timeout_ms;
-    }
+    // // 获取外部的默认值并自动重置，一定要触发getter
+    // const default_auto_cache = this.auto_cache;
+    // if (auto_cache === undefined) {
+    //   auto_cache = default_auto_cache;
+    // }
+    // const default_timeout_ms = this.timeout_ms;
+    // if (timeout_ms === undefined) {
+    //   timeout_ms = default_timeout_ms;
+    // }
+    let catch_key: string = ""
     if (auto_cache) {
       const url_info = new URL(url);
-      var catch_key =
+      catch_key =
         `[${method}]${url_info.pathname}` +
         `【PARAMS：${JSON.stringify(options.params)}】` +
         `【SEARCH：${JSON.stringify(options.search)}】`;
@@ -242,7 +245,7 @@ export class AppFetchProvider {
         ),
       ]);
     }
-    return this._handlePromise(req_promise, auto_cache, catch_key);
+    return this._handlePromise(req_promise, catch_key);
   }
   get<T>(
     url: string | AppUrl,

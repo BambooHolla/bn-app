@@ -17,7 +17,7 @@ import * as SimplexNoise from "simplex-noise";
 export const loader = new PIXI.loaders.Loader();
 export const _load_resource_promiseout = new PromiseOut<
   PIXI.loaders.ResourceDictionary
->();
+  >();
 export const FRAMES_NUM = 60;
 for (let i = 0; i < FRAMES_NUM; i += 1) {
   const i_str = ("00000" + i).substr(-5);
@@ -33,8 +33,8 @@ loader.load((loader, resources) => {
   templateUrl: "chain-mesh.html",
 })
 export class ChainMeshComponent extends AniBase {
-  @ViewChild("canvas") canvasRef: ElementRef;
-  app: PIXI.Application;
+  @ViewChild("canvas") canvasRef!: ElementRef;
+  app?: PIXI.Application ;
   @Input("auto-start") auto_start = false;
   @Input("tint")
   set tint(v) {
@@ -64,18 +64,28 @@ export class ChainMeshComponent extends AniBase {
   is_app_ready = false;
   async initPixiApp() {
     if (this.app) {
-      this.app.destroy();
-      this.app = null;
+      this.app.stage.children.slice().forEach(child => {
+        return child.destroy();
+      });
+      this._loop_runs.length = 0;
     }
+
     const { pt, px, canvasNode } = this;
-    const app = (this.app = new PIXI.Application({
-      antialias: true,
-      transparent: true,
-      view: canvasNode,
-      height: pt(canvasNode.clientHeight),
-      width: pt(canvasNode.clientWidth),
-      autoStart: this.auto_start,
-    }));
+    if (!canvasNode) {
+      throw new Error("call init first");
+    }
+    if (!this.app) {
+      this.app = new PIXI.Application({
+        antialias: true,
+        transparent: true,
+        view: canvasNode,
+        height: pt(canvasNode.clientHeight),
+        width: pt(canvasNode.clientWidth),
+        autoStart: this.auto_start,
+      });
+    }
+    const app = this.app;
+
     const resources = await _load_resource_promiseout.promise;
     console.log("resources", resources);
     // 处理resource成动画帧
@@ -209,22 +219,22 @@ export class ChainMeshComponent extends AniBase {
     const half_r = r / 2;
 
     var ctx = canvas.getContext("2d");
-    window["ctx"] = ctx;
+    if (ctx) {
+      var gradient = ctx.createRadialGradient(
+        half_r,
+        half_r,
+        0,
+        half_r,
+        half_r,
+        half_r,
+      );
+      for (let stop of stops) {
+        gradient.addColorStop(stop[0] as number, stop[1] as string);
+      }
+      ctx.fillStyle = gradient;
 
-    var gradient = ctx.createRadialGradient(
-      half_r,
-      half_r,
-      0,
-      half_r,
-      half_r,
-      half_r,
-    );
-    for (let stop of stops) {
-      gradient.addColorStop(stop[0] as number, stop[1] as string);
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    ctx.fillStyle = gradient;
-
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
     return canvas;
   }
 }

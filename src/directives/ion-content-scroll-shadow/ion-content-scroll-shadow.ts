@@ -8,7 +8,7 @@ import { Subscription } from "rxjs/Subscription";
 export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
   constructor(private _r2: Renderer2) {}
 
-  @Input("ion-content-scroll-shadow") content: Content;
+  @Input("ion-content-scroll-shadow") content!: Content;
   default_content_shadow_config = {
     distance: 300, // 显示完整阴影所需的位移量
     from_color: [29, 98, 113, 0],
@@ -36,7 +36,7 @@ export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
   // @Input("content-scroll-shadow-is-inited")is_inited
   // @Input("content-scroll-shadow-shadow-style")shadow_style
 
-  private _sub: Subscription;
+  private _sub?: Subscription;
   ngOnInit() {
     console.log("contentcontentcontent", this.content);
     if (this.content_shadow_config.is_inited) {

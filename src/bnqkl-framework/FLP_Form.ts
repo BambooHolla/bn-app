@@ -106,8 +106,8 @@ export class FLP_Form extends FLP_Route {
   }
 
   /*要求用户输入支付密码*/
-  @FLP_Form.FromGlobal userInfo: UserInfoProvider;
-  @FLP_Form.FromGlobal appSetting: AppSettingProvider;
+  @FLP_Form.FromGlobal userInfo!: UserInfoProvider;
+  @FLP_Form.FromGlobal appSetting!: AppSettingProvider;
 
   @asyncCtrlGenerator.error(
     () => FLP_Form.getTranslate("PAY_INPUT_ERROR"),

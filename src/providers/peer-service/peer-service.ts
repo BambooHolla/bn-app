@@ -22,7 +22,7 @@ export class PeerServiceProvider extends EventEmitter {
   static DEFAULT_TIMEOUT = 2000;
   ifmJs: any;
   peer: any;
-  peerList: any[];
+  peerList?: any[];
   constructor(
     public http: HttpClient,
     public storage: Storage,
@@ -86,7 +86,7 @@ export class PeerServiceProvider extends EventEmitter {
    */
   async sortPeers() {
     let peers = await this.getAllPeers();
-    let peersArray: any[];
+    let peersArray: any[] = [];
 
     //获取保存的节点列表中的每一个节点的连接时间和高度
     //TODO:当TIMEOUT秒时放弃连接
@@ -175,7 +175,7 @@ export class PeerServiceProvider extends EventEmitter {
    * @param peerList
    */
   async getAllPeersFromPeerList(peerList) {
-    let peers: any[];
+    let peers: string[] = [];
     await Promise.all(
       peerList.map(async peer => {
         let data: any;
@@ -183,7 +183,7 @@ export class PeerServiceProvider extends EventEmitter {
           await this.fetch
             .get<{ peers: any[] }>(
               "http://" + peer.ip + ":" + peer.port + this.PEERS_URL,
-            )
+          )
             .then(res => {
               if (res.peers) {
                 for (let i of res.peers) {

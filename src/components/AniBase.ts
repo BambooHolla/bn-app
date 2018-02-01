@@ -44,7 +44,7 @@ export class AniBase extends EventEmitter {
     this.emit("stop-animation");
     console.groupEnd();
   }
-  canvasNode: HTMLCanvasElement;
+  canvasNode?: HTMLCanvasElement;
   is_inited = false;
   _init() {
     // 重新初始化
@@ -66,7 +66,7 @@ export class AniBase extends EventEmitter {
     return true;
   }
   pre_t;
-  _loop_runs = [];
+  _loop_runs: Function[] = [];
   _loop(t) {
     const diff_t = t - this.pre_t;
     this.pre_t = t;
@@ -110,7 +110,7 @@ export class AniBase extends EventEmitter {
     easing_function = Easing.Linear,
   ) {
     const diff = to - from;
-    return function(
+    return function (
       cb: (v: number) => void | boolean,
       after_finished?: () => void,
     ) {
@@ -325,9 +325,9 @@ export const Easing = {
     }
     return (
       a *
-        Math.pow(2, -10 * (k -= 1)) *
-        Math.sin((k - s) * (2 * Math.PI) / p) *
-        0.5 +
+      Math.pow(2, -10 * (k -= 1)) *
+      Math.sin((k - s) * (2 * Math.PI) / p) *
+      0.5 +
       1
     );
   },

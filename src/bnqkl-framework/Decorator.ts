@@ -101,7 +101,7 @@ export function asyncErrorWrapGenerator(
                       },
                       opts,
                     ),
-                  )
+                )
                   .present();
               },
             );
@@ -178,10 +178,10 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
   string,
   {
     // readonly is_presented: boolean;
-    loading: Loading;
+    loading?: Loading;
     promises: Set<Promise<any>>;
   }
->());
+  >());
 export function asyncLoadingWrapGenerator(
   loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
@@ -195,7 +195,7 @@ export function asyncLoadingWrapGenerator(
         // get is_presented() {
         //   return this.promises.size && this.loading;
         // },
-        loading: null,
+        loading: undefined,
         promises: new Set<Promise<any>>(),
       };
       loadingIdLock.set(id, id_info);
@@ -203,7 +203,7 @@ export function asyncLoadingWrapGenerator(
   }
   return function asyncLoadingWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
-    descriptor.value = function(...args) {
+    descriptor.value = function (...args) {
       const loadingCtrl: LoadingController = this.loadingCtrl;
       if (!(loadingCtrl instanceof LoadingController)) {
         throw new Error(
@@ -281,7 +281,7 @@ export function asyncLoadingWrapGenerator(
           loading.dismiss();
         }
       };
-      let before_dismiss = null;
+      let before_dismiss: Function | undefined;
       const loading_dismiss = (...args) => {
         before_dismiss && before_dismiss();
         if (id_info) {
@@ -290,7 +290,7 @@ export function asyncLoadingWrapGenerator(
             id_info.promises.delete(res);
             if (id_info.promises.size === 0 && id_info.loading) {
               id_info.loading["_my_dismiss"]();
-              id_info.loading = null;
+              id_info.loading = undefined;
             }
           }
         } else {
@@ -300,7 +300,7 @@ export function asyncLoadingWrapGenerator(
       if ("PAGE_STATUS" in this) {
         // 还没进入页面
         const run_loading_present = with_dealy => {
-          before_dismiss = null;
+          before_dismiss = undefined;
           with_dealy ? setImmediate(loading_present) : loading_present();
           this.event.once("didLeave", loading_dismiss);
         };

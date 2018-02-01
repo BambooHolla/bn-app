@@ -8,8 +8,8 @@ import { EventEmitter } from "eventemitter3";
  * @template T
  */
 export class PromiseOut<T> {
-  resolve: (value?: T | PromiseLike<T> | undefined) => void;
-  reject: (reason?: any) => void;
+  resolve!: (value?: T | PromiseLike<T> | undefined) => void;
+  reject!: (reason?: any) => void;
   promise: Promise<T>;
   constructor(promiseCon: PromiseConstructor = Promise) {
     this.promise = new promiseCon<T>((_resolve, _reject) => {
@@ -30,7 +30,7 @@ export class PromiseOut<T> {
  * @extends {Error}
  */
 export class AbortError extends Error {
-  ABORT_ERROR_FLAG: true;
+  ABORT_ERROR_FLAG = true;
 }
 
 export class PromisePro<T> extends PromiseOut<T> {
@@ -38,7 +38,7 @@ export class PromisePro<T> extends PromiseOut<T> {
     super(promiseCon);
   }
   is_done = false;
-  abort_error: AbortError;
+  abort_error?: AbortError;
   abort(abort_message = "Abort") {
     if (this.is_done) {
       return;
@@ -46,7 +46,7 @@ export class PromisePro<T> extends PromiseOut<T> {
     this.reject((this.abort_error = new AbortError(abort_message)));
     this._tryEmit("abort", this.abort_error, this);
   }
-  private _event: EventEmitter;
+  private _event?: EventEmitter;
   get event() {
     if (!this._event) {
       this._event = new EventEmitter();
@@ -83,15 +83,15 @@ export function autoAbort(
   descriptor: PropertyDescriptor,
 ) {
   const fun = descriptor.value;
-  let _lock: PromisePro<any>;
-  descriptor.value = function(...args) {
+  let _lock: PromisePro<any> | undefined;
+  descriptor.value = function (...args) {
     if (_lock) {
       _lock.abort();
-      _lock = null;
+      _lock = undefined;
     }
     const res = (_lock = fun.apply(this, args));
     res.promise.then(() => {
-      _lock = null;
+      _lock = undefined;
     });
     return res;
   };

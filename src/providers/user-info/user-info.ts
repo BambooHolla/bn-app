@@ -9,30 +9,30 @@ export class UserInfoProvider {
   get userInfo() {
     return this._userInfo || {};
   }
-  private _publicKey: string;
+  private _publicKey!: string;
   get publicKey() {
     return this._publicKey;
   }
-  private _balance: string;
+  private _balance!: string;
   get balance() {
     return this._balance;
   }
-  private _address: string;
+  private _address!: string;
   get address() {
     return this._address;
   }
-  private _password: string;
+  private _password!: string;
   get password() {
     return this._password;
   }
-  private _secondPublicKey: string;
+  private _secondPublicKey!: string;
   get secondPublicKey() {
     return this._secondPublicKey;
   }
   get hasSecondPwd() {
     return !!this._userInfo.secondPublicKey;
   }
-  constructor(public storage: Storage) {}
+  constructor(public storage: Storage) { }
   initUserInfo(userInfo) {
     if (!userInfo) {
       userInfo = {};

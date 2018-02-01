@@ -2,7 +2,6 @@ import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 
 import { IonicPage, NavController, NavParams } from "ionic-angular";
-import { EarthNetMeshComponent } from "../../components/earth-net-mesh/earth-net-mesh";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
@@ -41,17 +40,11 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
-  @ViewChild("passwordTextarear") passwordTextarear: ElementRef;
-  @ViewChild(EarthNetMeshComponent) earth: EarthNetMeshComponent;
-  @ViewChild(ChainMeshComponent) cmesh: ChainMeshComponent;
+  @ViewChild("passwordTextarear") passwordTextarear?: ElementRef;
+  @ViewChild(ChainMeshComponent) cmesh?: ChainMeshComponent;
 
   @SignInAndSignUpPage.didEnter
   initEarchPos() {
-    if (this.earth) {
-      this.earth.camera.position.y = 18 * this.earth.devicePixelRatio;
-      this.earth.camera.position.z /= 1.8;
-      this.earth.line_width = 1.5;
-    }
     if (this.cmesh) {
       // this.cmesh.startAnimation();
     }
@@ -74,10 +67,12 @@ export class SignInAndSignUpPage extends FirstLevelPage {
         this.autoReHeightPWDTextArea(true);
       });
     }
-    const ele = this.passwordTextarear.nativeElement;
-    this.pwd_textarea_height = ele.style.height = "";
-    if (ele.clientHeight < ele.scrollHeight) {
-      this.pwd_textarea_height = ele.style.height = ele.scrollHeight + "px";
+    if (this.passwordTextarear) {
+      const ele = this.passwordTextarear.nativeElement;
+      this.pwd_textarea_height = ele.style.height = "";
+      if (ele.clientHeight < ele.scrollHeight) {
+        this.pwd_textarea_height = ele.style.height = ele.scrollHeight + "px";
+      }
     }
   }
 
@@ -111,16 +106,19 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     this.generatePWDFont();
   }
   font_name: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("PWD");
-  @ViewChild("fontCalc") fontCalcEle: ElementRef;
-  calcFontWidth(c) {
-    const ele = this.fontCalcEle.nativeElement;
-    ele.innerHTML = c;
-    return ele.getBoundingClientRect().width;
+  @ViewChild("fontCalc") fontCalcEle?: ElementRef;
+  calcFontWidth(c): number {
+    if (this.fontCalcEle) {
+      const ele = this.fontCalcEle.nativeElement;
+      ele.innerHTML = c;
+      return ele.getBoundingClientRect().width;
+    }
+    return 0;
   }
   generatePWDFont() {
     const { pwd_font_char_map } = this;
     const pwd_str = this.formData.pwd;
-    const new_char_list = [];
+    const new_char_list: any[] = [];
     for (let i = 0; i < pwd_str.length; i += 1) {
       const char = pwd_str[i];
       if (pwd_font_char_map.has(char)) {
@@ -187,7 +185,6 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   page_status = "login";
   gotoLogin() {
     this.page_status = "login";
-    this.earth && this.earth.rotateMeshsZ(0, 500, -1);
   }
 
   get canDoLogin() {
@@ -209,7 +206,6 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
   gotoRegister() {
     this.page_status = "register";
-    this.earth && this.earth.rotateMeshsZ(Math.PI, 500, -1);
   }
   get canDoRegister() {
     return true; //this.allHaveValues(this.formData);

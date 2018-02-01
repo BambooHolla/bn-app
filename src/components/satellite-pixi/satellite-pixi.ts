@@ -7,18 +7,18 @@ import * as PIXI from "pixi.js";
   templateUrl: "satellite-pixi.html",
 })
 export class SatellitePixiComponent extends AniBase {
-  protected app: PIXI.Application;
-  protected root_circle: PIXI.Graphics;
-  protected ship: PIXI.Container;
+  protected app?: PIXI.Application;
+  protected root_circle?: PIXI.Graphics;
+  protected ship?: PIXI.Container;
   protected round_time = /*128*/ 10 * 1000;
   protected res_time = this.round_time;
-  protected circle_width: number;
+  protected circle_width?: number;
   protected get progress() {
     return 1 - this.res_time / this.round_time;
   }
   protected ani_progress = 0; // 动画显示用的进度
   protected ani_deg_speed = Math.PI * 2 / this.round_time; // 默认角速度，deg/ms
-  @ViewChild("canvas") canvasRef: ElementRef;
+  @ViewChild("canvas") canvasRef!: ElementRef;
 
   _init() {
     this.canvasNode ||
@@ -35,19 +35,27 @@ export class SatellitePixiComponent extends AniBase {
 
   initPixiApp() {
     if (this.app) {
-      this.app.destroy();
-      this.app = null;
+      this.app.stage.children.slice().forEach(child => {
+        return child.destroy();
+      });
+      this._loop_runs.length = 0;
     }
 
     const { canvasNode, pt, ani_deg_speed } = this;
-    const app = (this.app = new PIXI.Application({
-      transparent: true,
-      view: canvasNode,
-      height: pt(canvasNode.clientHeight),
-      width: pt(canvasNode.clientWidth),
-      autoStart: false,
-      // rat: window.devicePixelRatio,
-    }));
+    if (!canvasNode) {
+      throw new Error("call init first");
+    }
+    if (!this.app) {
+      this.app = new PIXI.Application({
+        antialias: true,
+        transparent: true,
+        view: canvasNode,
+        height: pt(canvasNode.clientHeight),
+        width: pt(canvasNode.clientWidth),
+        autoStart: false,
+      });
+    }
+    const app = this.app;
 
     const { stage, renderer, ticker } = app;
     const root_circle = (this.root_circle = new PIXI.Graphics());
@@ -98,7 +106,7 @@ export class SatellitePixiComponent extends AniBase {
       const tail_len =
         min_tail_length +
         (max_tail_length - min_tail_length) *
-          (1 - Math.abs(center_tail_index - i) / center_tail_index);
+        (1 - Math.abs(center_tail_index - i) / center_tail_index);
       const deg = i / (tails_num - 1) * (to_deg - from_deg) + from_deg;
       const x = Math.sin(deg) * 25;
       const y = Math.cos(deg) * 25;
@@ -123,7 +131,7 @@ export class SatellitePixiComponent extends AniBase {
     // });
 
     // 沿轨道运动动画
-    this._loop_runs.push((t, dif_ms) => {
+    this.addLoop((t, dif_ms) => {
       // console.log('zzz',circle_width)
       const cur_ani_deg = (this.ani_progress += this.ani_deg_speed * dif_ms);
 

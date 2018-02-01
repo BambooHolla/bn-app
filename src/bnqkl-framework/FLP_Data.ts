@@ -4,7 +4,7 @@ export class FLP_Data extends FLP_Form {
   /** 定义一个延迟渲染到页面的属性
    */
   static setAfterPageEnter(defaultValue?: any, delay?: number) {
-    return function(
+    return function (
       target: any,
       name: string,
       descriptor?: PropertyDescriptor,
@@ -14,11 +14,11 @@ export class FLP_Data extends FLP_Form {
         let val;
         let is_bind_event = false;
         let can_set = true;
-        let can_set_cb = null;
+        let can_set_cb: Function;
 
         target.event.on("willEnter", () => {
           val = cache_data = defaultValue;
-          if (isFinite(delay)) {
+          if (delay && isFinite(delay)) {
             can_set = false;
             setTimeout(() => {
               can_set = true;

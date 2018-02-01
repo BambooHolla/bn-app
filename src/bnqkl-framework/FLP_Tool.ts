@@ -10,12 +10,12 @@ import {
 export class FLP_Tool {
   constructor() {}
   // 全局弹出层控制器
-  @FLP_Tool.FromGlobal alertCtrl: AlertController;
-  @FLP_Tool.FromGlobal loadingCtrl: LoadingController;
-  @FLP_Tool.FromGlobal toastCtrl: ToastController;
-  @FLP_Tool.FromGlobal modalCtrl: ModalController;
-  @FLP_Tool.FromGlobal platform: Platform;
-  @FLP_Tool.FromGlobal translate: TranslateService;
+  @FLP_Tool.FromGlobal alertCtrl!: AlertController;
+  @FLP_Tool.FromGlobal loadingCtrl!: LoadingController;
+  @FLP_Tool.FromGlobal toastCtrl!: ToastController;
+  @FLP_Tool.FromGlobal modalCtrl!: ModalController;
+  @FLP_Tool.FromGlobal platform!: Platform;
+  @FLP_Tool.FromGlobal translate!: TranslateService;
   get localName() {
     const { currentLang } = this.translate;
     if (currentLang === "zh-cmn-Hans") {

@@ -15,7 +15,7 @@ const CONSTRUCTOR_HELPER = Promise.resolve() as Promise<any>;
  * @export
  * @class CatchAbleFetcher
  */
-export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T>> {
+export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T> | undefined> {
   getPromise(): Promise<T> {
     // super.toPromise();
     const res = new PromisePro<Promise<T>>();
@@ -34,7 +34,7 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T>> {
   private _asyncer: PromisePro<T>;
 
   // 安装执行器
-  private _executor: Executor<T>;
+  private _executor!: Executor<T>;
   setupExecutor(executor: Executor<T>) {
     this._executor = executor;
   }
@@ -42,7 +42,7 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T>> {
     this.abort();
     this.runExcutor();
   }
-  private _promise: Promise<T>;
+  private _promise?: Promise<T>;
   get promise() {
     return this._promise;
   }
@@ -53,7 +53,7 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T>> {
     }
     if ((this._promise = v)) {
       // v["ID"] = Math.random();
-      v
+      v && v
         .then(data => {
           // 来自缓存数据，有异常
           this._is_catched_error = data["__source_err__"] || false;

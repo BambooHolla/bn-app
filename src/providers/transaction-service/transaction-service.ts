@@ -152,7 +152,7 @@ export class TransactionServiceProvider {
         let secondPwd = txData.secondPwd;
         let is_second_true = this.verifySecondPassphrase(secondPwd);
         if (!is_second_true) {
-          return this.fetch.ServerResError.translateAndParseErrorMessage(
+          return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
             "Second passphrase verified error",
           );
         }
@@ -182,15 +182,16 @@ export class TransactionServiceProvider {
           return true;
         }
       } else {
-        return this.fetch.ServerResError.translateAndParseErrorMessage(
+        return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
           "validate error",
         );
       }
     } else {
-      return this.fetch.ServerResError.translateAndParseErrorMessage(
+      return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
         "not enough balance",
       );
     }
+    return false
   }
 
   /**
