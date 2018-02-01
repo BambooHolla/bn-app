@@ -3,6 +3,7 @@ import { IonicPageModule } from "ionic-angular";
 import { AccountSetUsernamePage } from "./account-set-username";
 import { ComponentsModule } from "../../../components/components.module";
 import { DirectivesModule } from "../../../directives/directives.module";
+import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
 	declarations: [AccountSetUsernamePage],
@@ -10,6 +11,7 @@ import { DirectivesModule } from "../../../directives/directives.module";
 		IonicPageModule.forChild(AccountSetUsernamePage),
 		ComponentsModule,
 		DirectivesModule,
+		TranslateModule,
 	],
 })
 export class AccountSetUsernamePageModule {}
