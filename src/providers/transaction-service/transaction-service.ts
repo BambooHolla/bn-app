@@ -347,7 +347,7 @@ export class TransactionServiceProvider {
    * TODO:全部判断地址是否正确
    */
   async transfer(recipientId, amount, password, secondSecret) {
-    if (parseInt(amount) > 0) {
+    if (parseFloat(amount) > 0) {
       let txData: any = {
         type: this.transactionTypeCode.SEND,
         secret: password,
@@ -366,7 +366,7 @@ export class TransactionServiceProvider {
 
       return is_success;
     } else {
-      throw "Amount error";
+      return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>("Amount error");
     }
   }
 

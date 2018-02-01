@@ -1,8 +1,5 @@
-export type BlockModel = {
-  id: string;
+export interface BlockModel extends SingleBlockModel {
   version: number;
-  timestamp: number;
-  height: number;
   previousBlock: string;
   numberOfTransactions: number;
   totalAmount: string;
@@ -19,7 +16,7 @@ export type BlockModel = {
   delay?: boolean;
 };
 
-export type SingleBlockModel = {
+export interface SingleBlockModel {
   height: number;
   id: string;
   timestamp: number;

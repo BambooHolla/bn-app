@@ -21,7 +21,7 @@ export class LinkNodePage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
-  nodes: any[];
+  nodes!: any[];
   // peer_list:PeerModel[]
   @LinkNodePage.willEnter
   async getNodes() {

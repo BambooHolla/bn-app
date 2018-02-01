@@ -16,6 +16,7 @@ import {
 } from "../../providers/min-service/min-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { HEIGHT_AB_Generator } from "../../providers/app-setting/app-setting";
+import { BenefitServiceProvider } from "../../providers/benefit-service/benefit-service";
 
 @IonicPage({ name: "tab-vote" })
 @Component({
@@ -30,6 +31,7 @@ export class TabVotePage extends FirstLevelPage {
     public tabs: TabsPage,
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
+    public benefitService: BenefitServiceProvider,
   ) {
     super(navCtrl, navParams);
   }
@@ -201,10 +203,32 @@ export class TabVotePage extends FirstLevelPage {
   async startMin() {
     this.min_starting = true;
     try {
+      if (parseFloat(this.appSetting.settings.default_fee) == 0) {
+        this.alertCtrl.create({
+          title: this.translate.instant("DEFAULT_FEE_NOT_SETTED"),
+          message: this.translate.instant("DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE"),
+          buttons: [
+            this.translate.instant("CANCEL"),
+            {
+              text: this.translate.instant("OK"),
+              handler: () => {
+                this.routeTo("settings-set-default-fee", {
+                  auto_return: true,
+                  after_finish_job: () => {
+                    this.startMin();
+                  }
+                })
+              },
+            },
+          ]
+        }).present();
+        return
+      }
       const pwdData = await this.getUserPassword();
       await this.minService.vote(pwdData.password, pwdData.pay_pwd);
       this.routeToVoteDetail();
       this.getPreRoundRankList();
+      this.getCurRoundIncomeInfo();
     } finally {
       this.min_starting = false;
     }
@@ -218,15 +242,15 @@ export class TabVotePage extends FirstLevelPage {
     this.routeToBootstrap();
   }
 
-  /**上一轮的排名*/
   @TabVotePage.autoUnsubscribe private _my_rank_subscription?: Subscription;
+  /**上一轮的排名*/
   pre_round_rank_list?: RankModel[];
   @TabVotePage.willEnter
   getPreRoundRankList() {
     if (!this._my_rank_subscription && this.page_status == "vote-detail") {
       this._my_rank_subscription = this.minService.myRank.subscribe(
-        rank_list => {
-          this.pre_round_rank_list = rank_list;
+        async rank_list => {
+          this.pre_round_rank_list = await rank_list;
         },
       );
     }
@@ -241,4 +265,28 @@ export class TabVotePage extends FirstLevelPage {
   get pre_round_rank_list_next() {
     return this.pre_round_rank_list && this.pre_round_rank_list[2];
   }
-}
+
+  @TabVotePage.autoUnsubscribe private _cur_round_info_subscription?: Subscription;
+  /**本轮挖矿收益 */
+  cur_round_income_info = {
+    round: 0,
+    block_num: 0,
+    cur_round_income_amount: 0,
+    recent_income_amount: 0,
+  }
+  @TabVotePage.willEnter
+  getCurRoundIncomeInfo() {
+    if (!this._cur_round_info_subscription && this.page_status == "vote-detail") {
+      this._cur_round_info_subscription = this.appSetting.round.subscribe(this._set_cur_round_income_info.bind(this))
+    }
+  }
+  private async _set_cur_round_income_info() {
+    const { cur_round_income_info } = this;
+    cur_round_income_info.round = this.appSetting.round.getValue();
+    cur_round_income_info.block_num = this.appSetting.height.getValue() % 57;
+    cur_round_income_info.cur_round_income_amount = await this.benefitService.getBenefitThisRound();
+
+    // cur_round_income_info.recent_income_amount = 0;
+  }
+
+} 0;

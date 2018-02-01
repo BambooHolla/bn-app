@@ -13,21 +13,21 @@
 </ion-header>
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E6%88%91%E7%9A%84%E8%81%94%E7%B3%BB%E4%BA%BA%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
-  <div class="unconfim-list list">
+  <div class="unconfim-list list" *ngIf="unconfirm_contact_list.length">
     <div class="header-divider">
       <ali-icon name="ifm-dengdai"></ali-icon>
       等待确认列表
     </div>
     <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list">
-      <div class="left">
-        <div class="username">吴祖贤</div>
-        <div class="address" [innerHTML]="'lsdop2o3p4ifhiashfdjfsd'|mask:'@address'"></div>
+      <div class="left"><div class="username" *ngIf="unconfirm_contact.username">
+          {{unconfirm_contact.username}}</div>
+        <div class="address" [innerHTML]="unconfirm_contact.address|mask:'@address'"></div>
       </div>
       <div class="right">
-        <button class="button cancel">
+        <button class="button cancel" (click)="ignoreUnconfirmContact(unconfirm_contact)">
           <ali-icon name="ifm-cancel"></ali-icon>
         </button>
-        <button class="button confirm">
+        <button class="button confirm" (click)="addUnconfirmContact(unconfirm_contact)">
           <ali-icon name="ifm-confirm"></ali-icon>
         </button>
       </div>
@@ -38,11 +38,14 @@
       <div class="divider">{{letter_contacts.letter}}</div>
       <div class="item" *ngFor="let contact of letter_contacts.list">
         <div class="left">
-          <div class="username">吴祖贤</div>
-          <div class="address" [innerHTML]="'lsdop2o3p4ifhiashfdjfsd'|mask:'@address'"></div>
+          <div class="username" *ngIf="contact.username">{{contact.username}}</div>
+          <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
         </div>
       </div>
     </ng-container>
+    <div class="divider" *ngIf="!loading_my_contact_list&&my_contact_list.length==0">
+      <i>暂无联系人</i>
+    </div>
   </div>
   <div class="fast-nav">
     <ali-icon name="ifm-sousuo"></ali-icon>

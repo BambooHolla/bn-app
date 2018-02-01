@@ -31,7 +31,7 @@ import * as IFM from "ifmchain-ibt";
 @Injectable()
 export class BenefitServiceProvider {
   ifmJs: any;
-  benefitList: any;
+  benefitList: TYPE.BenefitModel[] = [];
   benefitBlockHeight!: number;
   constructor(
     public http: HttpClient,
@@ -63,13 +63,13 @@ export class BenefitServiceProvider {
       this.benefitList = this.benefitList.splice(0, 100);
     }
 
-    let lastBlockRes = await this.blockService.getLastBlock();
+    const last_block_height = this.appSetting.getHeight();
     //增量
     if (increment) {
       let lastBlockHeight = this.benefitBlockHeight!;
 
       if (lastBlockHeight) {
-        let blockBetween = lastBlockRes.height - lastBlockHeight;
+        let blockBetween = last_block_height - lastBlockHeight;
         //没有更新且有缓存则返回缓存
         if (blockBetween == 0 && this.benefitList.length == 57) {
           return this.benefitList.slice(0, 56);
@@ -88,7 +88,7 @@ export class BenefitServiceProvider {
           // data.unshift(data[0], 0);
           Array.prototype.splice.apply(this.benefitList, temp);
           this.benefitList = temp;
-          this.benefitBlockHeight! = lastBlockRes.height;
+          this.benefitBlockHeight! = last_block_height;
           return this.benefitList.slice(0, 56);
         }
       } else {
@@ -101,8 +101,8 @@ export class BenefitServiceProvider {
         orderBy: "md_timestamp:desc",
         address: this.user.userInfo.address,
       };
-      this.benefitBlockHeight! = lastBlockRes.height;
-      let benefitData = this.getBenefits(query);
+      this.benefitBlockHeight! = last_block_height;
+      let benefitData = await this.getBenefits(query);
       this.benefitList = benefitData;
     }
     return this.benefitList
@@ -153,8 +153,7 @@ export class BenefitServiceProvider {
    * 獲取本輪的收益
    */
   async getBenefitThisRound(): Promise<number> {
-    let currentHeightRes = await this.blockService.getLastBlock();
-    let currentRound = Math.floor(currentHeightRes.height / 57);
+    let currentRound = this.appSetting.getRound();
     let benefitThisRound = 0;
     if (this.benefitList.length >= 57) {
       for (let i of this.benefitList) {

@@ -14,7 +14,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 
 export class AppUrl {
-  constructor(public path) {}
+  constructor(public path) { }
   toString() {
     return AppSettingProvider.SERVER_URL + this.path;
   }
@@ -69,7 +69,7 @@ export class AppSettingProvider extends EventEmitter {
               try {
                 value = JSON.parse(current_json_value); //JSON可用
                 should_write_in = false; // 不需要初始化写入
-              } catch (e) {}
+              } catch (e) { }
             }
             if (should_write_in) {
               localStorage.setItem(s_key, JSON.parse(default_value));
@@ -102,7 +102,7 @@ export class AppSettingProvider extends EventEmitter {
           .toString(36)
           .substr(2);
       AniBase.prototype[_update_key] = _update;
-      AniBase.prototype._update = function(t, diff_t) {
+      AniBase.prototype._update = function (t, diff_t) {
         if (ani_switch) {
           this[_update_key](t, diff_t);
         }
@@ -117,7 +117,7 @@ export class AppSettingProvider extends EventEmitter {
           .toString(36)
           .substr(2);
       PIXI.ticker.Ticker.prototype[_update_key] = _update;
-      PIXI.ticker.Ticker.prototype.update = function(t) {
+      PIXI.ticker.Ticker.prototype.update = function (t) {
         if (ani_switch) {
           this[_update_key](t);
         }
@@ -172,6 +172,11 @@ export class AppSettingProvider extends EventEmitter {
   round: BehaviorSubject<number> = new BehaviorSubject(1);
   setHeight(height: number) {
     this.height.next(height);
+    const pre_round = this.getRound()
+    const cur_round = (height / 57) | 0;
+    if (cur_round !== pre_round) {
+      this.setRound(cur_round);
+    }
   }
   getHeight() {
     return this.height.getValue();
@@ -195,7 +200,7 @@ export class AppSettingProvider extends EventEmitter {
     /**挖矿收益通知*/
     mining_income_notice: false,
     /**默认手续费*/
-    default_fee: "0.00000001",
+    default_fee: "0.00000000",
     /**只在wifi时挖矿*/
     mining_only_in_wifi: true,
     /**动画开关*/
@@ -276,7 +281,7 @@ export function TB_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -291,7 +296,7 @@ export function TB_AB_Generator(
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -351,7 +356,7 @@ export function HEIGHT_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -367,7 +372,7 @@ export function HEIGHT_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -423,7 +428,7 @@ export function ROUND_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -439,7 +444,7 @@ export function ROUND_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }

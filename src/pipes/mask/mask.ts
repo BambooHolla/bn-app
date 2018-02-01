@@ -13,7 +13,7 @@ export class MaskPipe implements PipeTransform {
    * Takes a value and makes it lowercase.
    */
   transform(value: string, ...args) {
-    if (args[0].indexOf("@") === 0) {
+    if (typeof value === "string" && args[0].indexOf("@") === 0) {
       const type = args[0].substr(1);
       if (type === "address") {
         return (
@@ -30,6 +30,6 @@ export class MaskPipe implements PipeTransform {
         return ipinfo.join(".");
       }
     }
-    return value.toLowerCase();
+    return value;
   }
 }

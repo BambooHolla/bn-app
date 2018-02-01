@@ -108,6 +108,44 @@ export class VoteListPage extends SecondLevelPage {
       list.length >= out_vote_list_config.pageSize;
   }
   @asyncCtrlGenerator.loading(() =>
+    VoteListPage.getTranslate("LOADING_CAN_VOTE_LIST"),
+  )
+  @asyncCtrlGenerator.error(() =>
+    VoteListPage.getTranslate("LOAD_CAN_VOTE_LIST_ERROR"),
+  )
+  async loadCanVoteList(refresher?: Refresher) {
+    const { can_vote_list_config } = this;
+    // 重置分页
+    can_vote_list_config.page = 1;
+    debugger;
+
+    const list = await this.minService.getMyVotes(
+      can_vote_list_config.page,
+      can_vote_list_config.pageSize,
+    );
+    this.can_vote_list = list;
+    if (refresher) {
+      refresher.complete();
+    }
+  }
+  @asyncCtrlGenerator.error(() =>
+    VoteListPage.getTranslate("LOAD_MORE_CAN_VOTE_LIST_ERROR"),
+  )
+  async loadMoreCanVoteList() {
+    const { can_vote_list_config } = this;
+    // 重置分页
+    can_vote_list_config.page += 1;
+
+    const list = await this.minService.getMyVotes(
+      can_vote_list_config.page,
+      can_vote_list_config.pageSize,
+    );
+    this.can_vote_list.push(...list);
+
+    can_vote_list_config.has_more =
+      list.length >= can_vote_list_config.pageSize;
+  }
+  @asyncCtrlGenerator.loading(() =>
     VoteListPage.getTranslate("LOADING_IN_VOTE_LIST"),
   )
   @asyncCtrlGenerator.error(() =>

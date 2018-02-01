@@ -1,11 +1,18 @@
 {
+  "OK": "确定",
+  "CANCEL": "取消",
   "BACK_BUTTON_TEXT": "回退",
   "//": "sign-in-and-sign-up",
   "LOGINNG": "登陆中",
   "LOGIN_ERROR": "登录失败",
 
+  "//": "settings-set-default-fee",
+  "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",
+
   "//": "tab-vote",
   "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
+  "DEFAULT_FEE_NOT_SETTED": "默认交易手续费未设置",
+  "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "您是否要去设置默认手续费",
 
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加载区块链中",
@@ -16,6 +23,26 @@
   "LOAD_TRANSACTION_LIST_ERROR": "加载交易列表失败",
   "LOADING_TRANSACTION_LIST": "加载交易列表中",
   "LOAD_MORE_TRANSACTION_LIST_ERROR": "加载更多交易列表失败",
+
+  "//": "account-my-contacts",
+  "IGNORE_UNCONFIRM_CONTACT_ERROR": "拒绝通过联系人失败",
+  "ADD_CONTACT_SUBMIT_ERROR": "同意添加联系人提交失败",
+  "ADD_CONTACT_SUBMITING": "同意添加联系人提交中",
+  "ADD_CONTACT_SUBMIT_SUCCESS": "同意添加联系人提交成功",
+
+  "//": "vote-list",
+  "LOADING_OUT_VOTE_LIST": "加载已投票列表中",
+  "LOAD_OUT_VOTE_LIST_ERROR": "获取已投票列表失败",
+  "LOADING_MORE_OUT_VOTE_LIST": "加载更多已投票列表中",
+  "LOAD_MORE_OUT_VOTE_LIST_ERROR": "加载更多已投票列表失败",
+  "LOADING_CAN_VOTE_LIST": "加载可投票列表中",
+  "LOAD_CAN_VOTE_LIST_ERROR": "获取可投票列表失败",
+  "LOADING_MORE_CAN_VOTE_LIST": "加载更多可投票列表中",
+  "LOAD_MORE_CAN_VOTE_LIST_ERROR": "加载更多可投票列表失败",
+  "LOADING_IN_VOTE_LIST": "加载得票列表中",
+  "LOAD_IN_VOTE_LIST_ERROR": "获取得票列表失败",
+  "LOADING_MORE_IN_VOTE_LIST": "加载更多得票列表中",
+  "LOAD_MORE_IN_VOTE_LIST_ERROR": "加载更多得票列表失败",
 
   "//": "typeCode",
   "//": "SEND",
@@ -93,16 +120,13 @@
   "TUTORIAL_CONTINUE_BUTTON": "继续",
 
   "TUTORIAL_SLIDE1_TITLE": "欢迎来到 Ionic Super Starter",
-  "TUTORIAL_SLIDE1_DESCRIPTION":
-    "<b>Ionic Super Starter</b> 是一个功能全面，内置多个页面以及最佳实践的 Ionic 入门教程。",
+  "TUTORIAL_SLIDE1_DESCRIPTION": "<b>Ionic Super Starter</b> 是一个功能全面，内置多个页面以及最佳实践的 Ionic 入门教程。",
 
   "TUTORIAL_SLIDE2_TITLE": "如何使用 Super 入门教程",
-  "TUTORIAL_SLIDE2_DESCRIPTION":
-    "使用你需要的多种多样的页面删除你不需要的页面。我们提供许多常见移动 app 页面，如登录、注册页面，tabs 标签页，以及本教程页面。",
+  "TUTORIAL_SLIDE2_DESCRIPTION": "使用你需要的多种多样的页面删除你不需要的页面。我们提供许多常见移动 app 页面，如登录、注册页面，tabs 标签页，以及本教程页面。",
 
   "TUTORIAL_SLIDE3_TITLE": "开始",
-  "TUTORIAL_SLIDE3_DESCRIPTION":
-    "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
+  "TUTORIAL_SLIDE3_DESCRIPTION": "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
 
   "TUTORIAL_SLIDE4_TITLE": "开始学习？",
 

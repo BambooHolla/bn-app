@@ -15,6 +15,7 @@ import { TransactionServiceProvider } from "../transaction-service/transaction-s
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
+import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 
 export * from "./block.types";
 
@@ -34,6 +35,41 @@ export class BlockServiceProvider {
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
+
+    // 启动轮询更新更新
+    this._loopGetAndSetHeight();
+  }
+
+  private _refresh_interval = 0;
+  @asyncCtrlGenerator.error()
+  private async _loopGetAndSetHeight() {
+    const last_block = await this.lastBlock.getPromise();
+    this.appSetting.setHeight(last_block.height);
+
+    let lastTime = this.getFullTimestamp(last_block.timestamp);
+    let currentTime = Date.now();
+
+    const diff_time = currentTime - lastTime;
+
+    const do_loop = () => {
+      this.lastBlock.refresh();
+      this._loopGetAndSetHeight();
+    }
+
+    if (diff_time < 128e3) {
+      this._refresh_interval = 0;
+      setTimeout(do_loop, diff_time);
+    } else {
+      // 刷新时间递增
+      if (this._refresh_interval === 0) {
+        this._refresh_interval = 1e3;
+      } else {
+        this._refresh_interval *= 2;
+      }
+      // 至少二分之一轮要更新一次
+      this._refresh_interval = Math.min(128e3 / 2, this._refresh_interval);
+      setTimeout(do_loop, this._refresh_interval);
+    }
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
@@ -49,6 +85,51 @@ export class BlockServiceProvider {
     let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
 
     return data.block;
+  }
+
+  lastBlock = new AsyncBehaviorSubject<TYPE.SingleBlockModel>((promise_pro) => {
+    return promise_pro.follow(this.getLastBlock());
+  });
+
+  /**
+   * 获取块剩余时间
+   * 返回大于0说明块正常打块
+   * 返回-1说明块延迟
+   * @returns {Promise<void>}
+   */
+  async getBlockRemainTime() {
+    let lastBlock: any = await this.lastBlock.getPromise();
+
+    let lastBlockTime = lastBlock.timestamp;
+    let lastTime = this.getFullTimestamp(lastBlockTime);
+    let currentTime = new Date().getTime();
+    if (currentTime - lastTime > 12800) {
+      return -1;
+    } else {
+      let percent = Math.floor((currentTime - lastTime) / 128) * 100;
+      return percent;
+    }
+  }
+  /**
+   * 获取输入的时间戳的完整时间戳,TODO: 和minSer重复了
+   * @param timestamp
+   */
+  getFullTimestamp(timestamp: number) {
+    let seed = new Date(
+      Date.UTC(
+        AppSettingProvider.SEED_DATE[0],
+        AppSettingProvider.SEED_DATE[1],
+        AppSettingProvider.SEED_DATE[2],
+        AppSettingProvider.SEED_DATE[3],
+        AppSettingProvider.SEED_DATE[4],
+        AppSettingProvider.SEED_DATE[5],
+        AppSettingProvider.SEED_DATE[6],
+      ),
+    );
+    let tstamp = parseInt((seed.valueOf() / 1000).toString());
+    let fullTimestamp = (timestamp + tstamp) * 1000;
+
+    return fullTimestamp;
   }
 
   /**
@@ -154,8 +235,7 @@ export class BlockServiceProvider {
   ): Promise<TYPE.BlockModel[]> {
     //增量查询
     if (increment) {
-      let currentBlock = await this.getLastBlock();
-      let currentHeight = currentBlock.height;
+      let currentHeight = this.appSetting.getHeight();
 
       //有缓存时
       if (
@@ -204,15 +284,6 @@ export class BlockServiceProvider {
       this.blockArray = data.blocks;
       return this.blockArray;
     }
-  }
-
-  /**
-   * 获取最新的块
-   */
-  latestBlock!: AsyncBehaviorSubject<TYPE.BlockModel[]>;
-  @HEIGHT_AB_Generator("lastBlock")
-  lastBlock_Executor(promise_pro) {
-    return promise_pro(this.getTopBlocks(true));
   }
 
   /**

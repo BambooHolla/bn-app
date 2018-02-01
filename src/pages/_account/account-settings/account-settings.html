@@ -6,7 +6,7 @@
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AE%BE%E7%BD%AE%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="settings-list">
-    <div class="item" (click)="routeTo('settings-set-pay-pwd')">
+    <div class="item" (click)="routeTo('settings-set-pay-pwd',{auto_return:true})">
       <span class="title">设置支付密码</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
@@ -22,7 +22,7 @@
       <span class="title">挖矿收益通知</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_income_notice"></ion-toggle>
     </div>
-    <div class="item">
+    <div class="item" (click)="routeTo('settings-set-default-fee',{auto_return:true})">
       <span class="title">默认手续费设置</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>

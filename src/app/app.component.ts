@@ -146,7 +146,7 @@ export class MyApp implements OnInit {
       this.nav.setRoot(page);
     } else {
       this._onNavInitedPromise.promise.then(() => {
-        this.nav.setRoot(page);
+        this.nav && this.nav.setRoot(page);
       });
     }
   }

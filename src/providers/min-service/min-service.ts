@@ -62,7 +62,8 @@ export class MinServiceProvider {
   readonly FORGE_STATUS = this.appSetting.APP_URL(
     "/api/delegates/forging/status",
   );
-  readonly MY_VOTES = this.appSetting.APP_URL("/api/delegates");
+  readonly MINERS = this.appSetting.APP_URL("/api/delegates");
+  readonly MY_VOTES = this.appSetting.APP_URL("/api/accounts/delegates");
   readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
 
   /**
@@ -92,34 +93,6 @@ export class MinServiceProvider {
     }
 
     return roundProgress;
-  }
-
-  /**
-   * 获取块剩余时间
-   * 返回大于0说明块正常打块
-   * 返回-1说明块延迟
-   * @returns {Promise<void>}
-   */
-  async getBlockRemainTime() {
-    let lastBlock: any = this.blockService.getLastBlock();
-
-    let lastBlockTime = lastBlock.timestamp;
-    let lastTime = this.getFullTimestamp(lastBlockTime);
-    let currentTime = new Date().getTime();
-    if (currentTime - lastTime > 12800) {
-      return -1;
-    } else {
-      let percent = Math.floor((currentTime - lastTime) / 128) * 100;
-      return percent;
-    }
-  }
-
-  /**
-   * 获取当前轮次
-   */
-  async getRound(): Promise<number> {
-    let currentBlock: any = await this.blockService.getLastBlock();
-    return Math.floor(currentBlock.height / 57);
   }
 
   /**
@@ -168,7 +141,7 @@ export class MinServiceProvider {
           txData,
         );
         if (isDone) {
-          this.appSetting.settings.digRound = await this.getRound();
+          this.appSetting.settings.digRound = this.appSetting.getRound();
           this.appSetting.settings.background_mining = true;
         } else {
           throw "vote transaction error";
@@ -272,7 +245,7 @@ export class MinServiceProvider {
       let query = {
         orderBy: "rate:asc",
       };
-      let data = await this.fetch.get<any>(this.MY_VOTES, { search: query });
+      let data = await this.fetch.get<any>(this.MINERS, { search: query });
       this.allMinersInfo = {
         list: data.delegate,
         round: currentRound
@@ -301,7 +274,7 @@ export class MinServiceProvider {
       limit: limit,
       orderBy: "rate:asc",
     };
-    let data = await this.fetch.get<any>(this.MY_VOTES, { search: query });
+    let data = await this.fetch.get<any>(this.MINERS, { search: query });
 
     return data.delegates;
   }
@@ -343,7 +316,7 @@ export class MinServiceProvider {
         AppSettingProvider.SEED_DATE[6],
       ),
     );
-    let tstamp = parseInt((Date.now() / 1000).toString());
+    let tstamp = parseInt((seed.valueOf() / 1000).toString());
     let fullTimestamp = (timestamp + tstamp) * 1000;
 
     return fullTimestamp;
