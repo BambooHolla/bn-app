@@ -15,19 +15,19 @@
 </ion-header>
 <ion-content class="in-vote-content" [class.show]="InOutSubPage.IN_VOTE===current_page">
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8A%95%E7%A5%A8-%E6%88%91%E5%BE%97%E7%9A%84%E7%A5%A8.jpg" alt=""> -->
-  <ion-refresher (ionRefresh)="loadOutVoteList($event)">
-    <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新我的得票……"></ion-refresher-content>
+  <ion-refresher (ionRefresh)="loadInVoteList($event)">
+    <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_IN_VOTE_LIST'|translate"></ion-refresher-content>
   </ion-refresher>
   <div class="common-list">
-    <div class="common-item" *ngFor="let vote of out_vote_list">
-      <div class="left" [innerHTML]="'v12jK5LKJS1235FdoI1230asdfiocd123sasAFDj'|mask:'@address'"></div>
+    <div class="common-item" *ngFor="let vote of in_vote_list">
+      <div class="left" [innerHTML]="vote.address|mask:'@address'"></div>
       <div class="right">
         123
       </div>
     </div>
   </div>
-  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreOutVoteList())" [enabled]="out_vote_list_config.has_more">
-    <ion-infinite-scroll-content loadingText="加载更多我的得票中……"></ion-infinite-scroll-content>
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreInVoteList())" [enabled]="out_vote_list_config.has_more">
+    <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_IN_VOTE_LIST'|translate"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
 <ion-content class="out-vote-content" [class.show]="InOutSubPage.OUT_VOTE===current_page">
@@ -35,21 +35,9 @@
   <ion-slides pager>
     <ion-slide>
       <ion-content #content1 [ion-content-scroll-shadow]="content1" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
-        <div class="common-list">
-          <div class="common-item" *ngFor="let vote of out_vote_list">
-            <div class="left">v12jK5LKJS1235FdoI1230asdfiocd123sasAFDj</div>
-            <div class="right">
-              <ali-icon name="ifm-arrow-to-right"></ali-icon>
-            </div>
-          </div>
-        </div>
-        <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreOutVoteList())" [enabled]="out_vote_list_config.has_more">
-          <ion-infinite-scroll-content loadingText="加载更多已投目标……"></ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </ion-content>
-    </ion-slide>
-    <ion-slide>
-      <ion-content #content2 [ion-content-scroll-shadow]="content2" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+        <ion-refresher (ionRefresh)="loadOutVoteList($event)">
+          <ion-refresher-content  [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_OUT_VOTE_LIST'|translate"></ion-refresher-content>
+        </ion-refresher>
         <div class="common-list">
           <div class="common-item" *ngFor="let vote of out_vote_list">
             <div class="left">{{vote.username||vote.address}}</div>
@@ -59,7 +47,25 @@
           </div>
         </div>
         <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreOutVoteList())" [enabled]="out_vote_list_config.has_more">
-          <ion-infinite-scroll-content loadingText="加载更多可投目标……"></ion-infinite-scroll-content>
+          <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_OUT_VOTE_LIST'|translate"></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ion-content>
+    </ion-slide>
+    <ion-slide>
+      <ion-content #content2 [ion-content-scroll-shadow]="content2" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+        <ion-refresher (ionRefresh)="loadCanVoteList($event)">
+          <ion-refresher-content  [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
+        </ion-refresher>
+        <div class="common-list">
+          <div class="common-item" *ngFor="let vote of can_vote_list">
+            <div class="left">{{vote.username||vote.address}}</div>
+            <div class="right">
+              <ali-icon name="ifm-arrow-to-right"></ali-icon>
+            </div>
+          </div>
+        </div>
+        <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreCanVoteList())" [enabled]="can_vote_list_config.has_more">
+          <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_CAN_VOTE_LIST'|translate"></ion-infinite-scroll-content>
         </ion-infinite-scroll>
       </ion-content>
     </ion-slide>

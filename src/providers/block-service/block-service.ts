@@ -52,6 +52,7 @@ export class BlockServiceProvider {
     const diff_time = currentTime - lastTime;
 
     const do_loop = () => {
+      console.log("qaq");
       this.lastBlock.refresh();
       this._loopGetAndSetHeight();
     }

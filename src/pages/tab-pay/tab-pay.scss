@@ -104,11 +104,11 @@ page-tab-pay {
         font-size: 1.3rem;
         margin-right: 0.4rem;
       }
-      >.balance-info{
+      > .balance-info {
         margin-left: auto;
         align-self: flex-end;
         padding: 0.8rem 0.6rem;
-        color: #FFF;
+        color: #fff;
         font-size: 1.2rem;
         display: flex;
         align-items: center;
@@ -232,6 +232,15 @@ page-tab-pay {
             font-size: 1.3rem;
             text-align: right;
           }
+        }
+        .empty {
+          height: 3rem;
+          color: #fff;
+          display: flex;
+          font-size: 1.3rem;
+          justify-content: center;
+          align-items: center;
+          padding: 1rem 0;
         }
       }
       ion-refresher {

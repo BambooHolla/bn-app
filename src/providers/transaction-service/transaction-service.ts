@@ -152,9 +152,9 @@ export class TransactionServiceProvider {
         let secondPwd = txData.secondPwd;
         let is_second_true = this.verifySecondPassphrase(secondPwd);
         if (!is_second_true) {
-          return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
-            "Second passphrase verified error",
-          );
+          return this.fetch.ServerResError.translateAndParseErrorMessage<
+            boolean
+          >("Second passphrase verified error");
         }
       }
       if (typeof txData.fee === "number") {
@@ -191,7 +191,7 @@ export class TransactionServiceProvider {
         "not enough balance",
       );
     }
-    return false
+    return false;
   }
 
   /**
@@ -286,13 +286,20 @@ export class TransactionServiceProvider {
    * @param {number} limit
    * @returns {Promise<any>}
    */
-  async getUserTransactions(address: string, page = 1, limit = 10) {
+  async getUserTransactions(
+    address: string,
+    page = 1,
+    limit = 10,
+    in_or_out?: "in" | "out",
+    type?: number,
+  ) {
     var query = {
-      senderId: address,
-      recipientId: address,
+      senderId: in_or_out !== "in" ? address : undefined,
+      recipientId: in_or_out !== "out" ? address : undefined,
       offset: (page - 1) * limit,
       limit: limit,
       orderBy: "t_timestamp:desc",
+      type,
     };
     let data = await this.getTransactions(query);
 
@@ -366,13 +373,15 @@ export class TransactionServiceProvider {
 
       return is_success;
     } else {
-      return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>("Amount error");
+      return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
+        "Amount error",
+      );
     }
   }
 
   /**
    * 验证主密码
-   * @param passphrase 
+   * @param passphrase
    */
   async verifyPassphrase(passphrase) {
     let keypair = this.keypairService.create(passphrase);
@@ -385,7 +394,7 @@ export class TransactionServiceProvider {
 
   /**
    * 判断地址是否正确
-   * @param address 
+   * @param address
    */
   isAddressCorrect(address): boolean {
     return this.addresssCheck.isAddress(address);

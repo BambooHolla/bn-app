@@ -138,7 +138,7 @@ export class BuddhaGlowComponent extends AniBase {
       let _p = progress;
       let _i_y = 0;
 
-      let _p_speed = Math.random() * 0.0001;
+      let _p_speed = Math.random() * 0.0003;
       this._loop_runs.push(() => {
         _i_y += 0.0005;
 
@@ -147,7 +147,7 @@ export class BuddhaGlowComponent extends AniBase {
         if (_p > 1) {
           _p -= 1;
           // 重置速度
-          _p_speed = Math.random() * 0.0001;
+          _p_speed = Math.random() * 0.0003;
         }
         sp.alpha = (Math.sin(_p * Math.PI * 20) + 1) / 2;
         sp.rotation = getDeg(_p);

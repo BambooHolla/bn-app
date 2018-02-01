@@ -155,16 +155,15 @@ export class BenefitServiceProvider {
   async getBenefitThisRound(): Promise<number> {
     let currentRound = this.appSetting.getRound();
     let benefitThisRound = 0;
-    if (this.benefitList.length >= 57) {
-      for (let i of this.benefitList) {
-        if (currentRound == Math.floor(i.height / 57)) {
-          benefitThisRound += i.amount;
-        } else {
-          break;
-        }
+    if (this.benefitList.length < 57) {
+      await this.getTop57Benefits(false);
+    }
+    for (let i of this.benefitList) {
+      if (currentRound == Math.floor(i.height / 57)) {
+        benefitThisRound += parseFloat(i.amount);
+      } else {
+        break;
       }
-    } else {
-      this.getTop57Benefits(false);
     }
 
     return benefitThisRound;

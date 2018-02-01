@@ -51,8 +51,11 @@
       <div class="log-item" *ngFor="let log of roll_out_logs">
         <!-- <div class="create-time">{{log.create_time|amLocal:localName|amTimeAgo}}</div> -->
         <div class="create-time">{{log.create_time|amLocale:localName|amTimeAgo}}</div>
-        <div class="address" [innerHTML]="log.address|mask:'@address'"></div>
-        <div class="amount">{{log.amount|number:'1.8-8'}}</div>
+        <div class="address" [innerHTML]="log.recipientId|mask:'@address'"></div>
+        <div class="amount">{{log.amount|amountEuler|number:'1.8-8'}}</div>
+      </div>
+      <div class="empty" *ngIf="!roll_out_config.loading&&roll_out_logs.length==0">
+        <i>暂无转出记录</i>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreRollOutLogs())" [enabled]="roll_out_config.has_more">
         <ion-infinite-scroll-content loadingText="加载更多转出记录中……"></ion-infinite-scroll-content>

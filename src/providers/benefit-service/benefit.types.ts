@@ -1,6 +1,6 @@
 export type BenefitModel = {
   address: string;
-  amount: number;
+  amount: string;
   blockId: string;
   height: number;
   timestamp: number;

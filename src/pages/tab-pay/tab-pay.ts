@@ -88,39 +88,57 @@ export class TabPayPage extends FirstLevelPage {
     );
   }
 
-  roll_out_logs?: TransactionModel[];
+  roll_out_logs: TransactionModel[] = [];
   roll_out_config = {
+    loading: false,
     has_more: true,
-    num: 20,
-    from: new Date(),
+    pageSize: 20,
+    page: 1,
   };
 
   @TabPayPage.willEnter
   async loadRollOutLogs(refresher?: Refresher) {
-    // this.transactionService.getTransactions()
-    // const roll_out_logs = await this.transfer.getRollOutLogList(
-    //   this.roll_out_config.num,
-    //   this.roll_out_config.from,
-    // );
-    // const last_log = roll_out_logs[roll_out_logs.length - 1];
-    // if (last_log) {
-    //   this.roll_out_config.from = last_log.create_time;
-    // }
-    // this.roll_out_config.has_more =
-    //   roll_out_logs.length == this.roll_out_config.num;
+    const { roll_out_config } = this;
+    // 重置分页
+    roll_out_config.page = 1;
+    const list = await this.transactionService.getUserTransactions(
+      this.userInfo.address,
+      roll_out_config.page,
+      roll_out_config.pageSize,
+      "out",
+      this.transactionService.ifmJs.transactionTypes.SEND,
+    );
 
-    // this.roll_out_logs = roll_out_logs;
+    this.roll_out_logs = list;
+
     if (refresher) {
       refresher.complete();
     }
   }
 
   async loadMoreRollOutLogs() {
-    // await new Promise(cb => setTimeout(cb, Math.random() * 3000));
-    // const roll_out_logs = await this.transfer.getRollOutLogList(
-    //   this.roll_out_config.num,
-    //   this.roll_out_config.from,
-    // );
-    // this.roll_out_logs.push(...roll_out_logs);
+    const { roll_out_config } = this;
+    roll_out_config.page += 1;
+    const list = await this._getUserTransactions();
+
+    this.roll_out_logs
+      ? this.roll_out_logs.push(...list)
+      : (this.roll_out_logs = list);
+  }
+  private async _getUserTransactions() {
+    const { roll_out_config } = this;
+    roll_out_config.loading = true;
+    try {
+      const list = await this.transactionService.getUserTransactions(
+        this.userInfo.address,
+        roll_out_config.page,
+        roll_out_config.pageSize,
+        "out",
+      );
+      roll_out_config.has_more = list.length >= roll_out_config.pageSize;
+      return list;
+    } finally {
+      roll_out_config.loading = false;
+    }
   }
 }
