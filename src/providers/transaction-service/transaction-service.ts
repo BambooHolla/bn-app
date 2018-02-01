@@ -280,20 +280,20 @@ export class TransactionServiceProvider {
   }
 
   /**
-   * 根据地址获得交易，分页
+   * 根据地址获得交易，分页，send:true为转出
    * @param {string} address
+   * @param {boolean} send    true为转出，false为转入
    * @param {number} page
    * @param {number} limit
    * @returns {Promise<any>}
    */
-  async getUserTransactions(address: string, page = 1, limit = 10) {
-    var query = {
-      senderId: address,
-      recipientId: address,
+  async getUserTransactions(address: string, send:boolean = true,  page = 1, limit = 10) {
+    var query :any {
       offset: (page - 1) * limit,
       limit: limit,
       orderBy: "t_timestamp:desc",
     };
+    send ? query.senderId = address : query.recipientId = address;
     let data = await this.getTransactions(query);
 
     return data.transactions;
