@@ -15,7 +15,6 @@ import { TransactionServiceProvider } from "../transaction-service/transaction-s
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
-import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 
 export * from "./block.types";
 
@@ -41,35 +40,45 @@ export class BlockServiceProvider {
   }
 
   private _refresh_interval = 0;
-  @asyncCtrlGenerator.error()
+  private _retry_interval = 0;
   private async _loopGetAndSetHeight() {
-    const last_block = await this.lastBlock.getPromise();
-    this.appSetting.setHeight(last_block.height);
-
-    let lastTime = this.getFullTimestamp(last_block.timestamp);
-    let currentTime = Date.now();
-
-    const diff_time = currentTime - lastTime;
-
     const do_loop = () => {
       console.log("qaq");
       this.lastBlock.refresh();
       this._loopGetAndSetHeight();
-    }
+    };
+    try {
+      const last_block = await this.lastBlock.getPromise();
+      this.appSetting.setHeight(last_block.height);
 
-    if (diff_time < 128e3) {
-      this._refresh_interval = 0;
-      setTimeout(do_loop, diff_time);
-    } else {
-      // 刷新时间递增
-      if (this._refresh_interval === 0) {
-        this._refresh_interval = 1e3;
+      let lastTime = this.getFullTimestamp(last_block.timestamp);
+      let currentTime = Date.now();
+
+      const diff_time = currentTime - lastTime;
+
+      if (diff_time < 128e3) {
+        this._refresh_interval = 0;
+        setTimeout(do_loop, diff_time);
       } else {
-        this._refresh_interval *= 2;
+        // 刷新时间递增
+        if (this._refresh_interval === 0) {
+          this._refresh_interval = 1e3;
+        } else {
+          this._refresh_interval *= 2;
+        }
+        // 至少二分之一轮要更新一次
+        this._refresh_interval = Math.min(128e3 / 2, this._refresh_interval);
+        setTimeout(do_loop, this._refresh_interval);
       }
-      // 至少二分之一轮要更新一次
-      this._refresh_interval = Math.min(128e3 / 2, this._refresh_interval);
-      setTimeout(do_loop, this._refresh_interval);
+    } catch (err) {
+      console.warn(err);
+      if (this._retry_interval === 0) {
+        this._retry_interval = 1e3;
+      } else {
+        this._retry_interval *= 2;
+      }
+      this._retry_interval = Math.min(128e3 / 2, this._retry_interval);
+      setTimeout(do_loop, this._retry_interval);
     }
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
@@ -88,7 +97,7 @@ export class BlockServiceProvider {
     return data.block;
   }
 
-  lastBlock = new AsyncBehaviorSubject<TYPE.SingleBlockModel>((promise_pro) => {
+  lastBlock = new AsyncBehaviorSubject<TYPE.SingleBlockModel>(promise_pro => {
     return promise_pro.follow(this.getLastBlock());
   });
 
@@ -183,7 +192,9 @@ export class BlockServiceProvider {
    * @param {string} query
    * @returns {Promise<any>}
    */
-  async searchBlocks(query: string): Promise<TYPE.BlockModel[] | TYPE.SingleBlockModel[]> {
+  async searchBlocks(
+    query: string,
+  ): Promise<TYPE.BlockModel[] | TYPE.SingleBlockModel[]> {
     //如果是纯数字且不是以0开头就查高度
     if (/[1-9][0-9]*/.test(query)) {
       const query_num = parseFloat(query) * 1;
