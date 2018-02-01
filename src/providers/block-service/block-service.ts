@@ -58,7 +58,7 @@ export class BlockServiceProvider {
 
       if (diff_time < 128e3) {
         this._refresh_interval = 0;
-        setTimeout(do_loop, diff_time);
+        setTimeout(do_loop, 128e3 - diff_time);
       } else {
         // 刷新时间递增
         if (this._refresh_interval === 0) {
