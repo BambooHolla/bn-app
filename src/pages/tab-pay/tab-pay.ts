@@ -88,7 +88,7 @@ export class TabPayPage extends FirstLevelPage {
     );
   }
 
-  roll_out_logs: TransactionModel[];
+  roll_out_logs?: TransactionModel[];
   roll_out_config = {
     has_more: true,
     num: 20,

@@ -41,8 +41,7 @@ export class AccountSetUsernamePage extends SecondLevelPage {
 	@asyncCtrlGenerator.error()
 	async submit() {
 		const { password } = await this.getUserPassword();
-		await this._submit(password);
-		this.finishJob();
+		return this._submit(password);
 	}
 
 	@asyncCtrlGenerator.error(() =>
@@ -58,6 +57,8 @@ export class AccountSetUsernamePage extends SecondLevelPage {
 		return this.accountService.changeUsername(
 			this.formData.username,
 			password,
-		);
+		).then(() => {
+			this.finishJob();
+		})
 	}
 }

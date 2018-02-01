@@ -16,8 +16,8 @@ import {
   templateUrl: "iframepage.html",
 })
 export class IframepagePage extends FirstLevelPage {
-  redirect_url: SafeUrl;
-  titleContent: string;
+  redirect_url?: SafeUrl;
+  titleContent?: string;
   navbar_color = "transparent";
 
   constructor(
@@ -45,7 +45,7 @@ export class IframepagePage extends FirstLevelPage {
       this.navbar_color = navbar_color;
     }
   }
-  loading: Loading;
+  loading?: Loading;
 
   @IframepagePage.willLeave
   autoCloseLoading() {
@@ -74,7 +74,7 @@ export class IframepagePage extends FirstLevelPage {
     if (this.loading) {
       console.log("CLOSE loading");
       this.loading.dismiss();
-      this.loading = null;
+      this.loading = undefined;
       const load_toast = this.navParams.get("load_toast");
       if (load_toast) {
         this.toastCtrl

@@ -31,7 +31,7 @@ export class PayReceivePage extends SecondLevelPage {
     username: "吴祖贤",
     address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
   };
-  receive_logs: ReceiveLogModel[];
+  receive_logs?: ReceiveLogModel[];
   receive_config = {
     has_more: true,
     num: 20,
@@ -63,11 +63,11 @@ export class PayReceivePage extends SecondLevelPage {
       this.receive_config.num,
       this.receive_config.from,
     );
-    this.receive_logs.push(...receive_logs);
+    this.receive_logs ? this.receive_logs.push(...receive_logs) : (this.receive_logs = receive_logs);
   }
 
   // 滚动添加阴影
-  @ViewChild("logsContent") logsContent: Content;
+  @ViewChild("logsContent") logsContent!: Content;
   logs_content_shadow_config = {
     distance: 300, // 显示完整阴影所需的位移量
     from_color: [29, 98, 113, 0],

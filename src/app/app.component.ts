@@ -121,7 +121,7 @@ export class MyApp implements OnInit {
     // });
   }
 
-  @ViewChild(Nav) nav: Nav;
+  @ViewChild(Nav) nav?: Nav;
   private _onNavInitedPromise = new PromiseOut();
   ngOnInit() {
     this._onNavInitedPromise.resolve(this.nav);

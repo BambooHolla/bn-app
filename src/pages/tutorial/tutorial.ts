@@ -21,7 +21,7 @@ export interface Slide {
   templateUrl: "tutorial.html",
 })
 export class TutorialPage {
-  slides: Slide[];
+  slides?: Slide[];
   showSkip = true;
   dir: string = "ltr";
 

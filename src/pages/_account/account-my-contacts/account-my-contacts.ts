@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
-import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
+import { ContactServiceProvider, ContactModel } from "../../../providers/contact-service/contact-service";
 import * as pinyin from "tiny-pinyin";
 
 @IonicPage({ name: "account-my-contacts" })
@@ -36,7 +36,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
       follower: unconfirm_contact_list,
     } = await this.contactService.getMyContacts();
     const letter_list_map = new Map();
-    const unkown_letter = {
+    const unkown_letter: { letter: string, list: ContactModel[] } = {
       letter: "*",
       list: [],
     };

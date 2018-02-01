@@ -23,7 +23,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
-  block_info: BlockModel /* = {
+  block_info!: BlockModel /* = {
 		create_time: new Date(
 			Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000,
 		),

@@ -2,8 +2,8 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
-import { MinServiceProvider } from "../../../providers/min-service/min-service";
-import { PeerServiceProvider } from "../../../providers/peer-service/peer-service";
+import { MinServiceProvider, DelegateModel } from "../../../providers/min-service/min-service";
+import { PeerServiceProvider, PeerModel } from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-list" })
 @Component({
@@ -21,8 +21,8 @@ export class AccountMinerListPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
-  cur_minter_rank_list: any[];
-  can_minter_rank_list: any[];
+  cur_minter_rank_list?: DelegateModel[];
+  can_minter_rank_list?: DelegateModel[];
   get show_cur_minter_rank_list() {
     return this.cur_minter_rank_list
       ? this.cur_minter_rank_list.slice(0, 4)
@@ -34,7 +34,7 @@ export class AccountMinerListPage extends SecondLevelPage {
       : [];
   }
 
-  cur_peer_list: any[];
+  cur_peer_list?: PeerModel[];
 
   @AccountMinerListPage.willEnter
   async initMinterList() {

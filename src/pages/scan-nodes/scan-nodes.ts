@@ -29,7 +29,7 @@ export class ScanNodesPage extends FirstLevelPage {
   //   // this.earth.camera.position.z /= 1.6;
   // }
 
-  nodes = [];
+  nodes: any[] = [];
   @ScanNodesPage.willEnter
   async scanNodes() {
     const peer_url_list = await this.peerService.getAllPeers();

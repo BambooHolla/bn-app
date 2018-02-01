@@ -4,7 +4,7 @@ import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { asyncCtrlGenerator } from "./Decorator";
 
 export class FLP_Form extends FLP_Route {
-  private __ecc__: { [prop_name: string]: string[] };
+  private __ecc__?: { [prop_name: string]: string[] };
   private get _error_checks_col() {
     return this.__ecc__ || (this.__ecc__ = {});
   }
@@ -15,7 +15,7 @@ export class FLP_Form extends FLP_Route {
    * @param key 字段属性
    */
   static setErrorTo(namespace: string, key: string, error_keys: string[]) {
-    return (target: any, name: string, descriptor?: PropertyDescriptor) => {
+    return (target: any, name: string, descriptor: PropertyDescriptor) => {
       const error_checks_col = target._error_checks_col;
       if (!(key in error_checks_col)) {
         error_checks_col[key] = [];
@@ -23,7 +23,7 @@ export class FLP_Form extends FLP_Route {
       error_checks_col[key].push(name);
 
       const source_fun = descriptor.value;
-      descriptor.value = function(...args) {
+      descriptor.value = function (...args) {
         const res = source_fun.apply(this, args);
         const bind_errors = _err_map => {
           const all_errors = this[namespace] || (this[namespace] = {});
@@ -67,7 +67,7 @@ export class FLP_Form extends FLP_Route {
     return true;
   }
 
-  ignore_keys = [];
+  ignore_keys: string[] = [];
   get canSubmit() {
     return (
       !this.hasError(this.errors) &&

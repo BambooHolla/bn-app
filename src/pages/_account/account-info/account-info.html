@@ -16,7 +16,7 @@
     <div class="address-text">{{account_info.address}}</div>
   </div>
   <div class="extends-list common-list">
-    <div class="common-item" (click)="routeTo('account-set-username')">
+    <div class="common-item" *ngIf="!userInfo.userInfo.username;else showUserName" (click)="routeTo('account-set-username',{auto_return:true})">
       <div class="left">
         设置用户名
       </div>
@@ -24,5 +24,10 @@
         <ali-icon name="ifm-arrow-to-right"></ali-icon>
       </div>
     </div>
+    <ng-template #showUserName>
+      <div class="common-item">
+        {{userInfo.userInfo.username}}
+      </div>
+    </ng-template>
   </div>
 </ion-content>

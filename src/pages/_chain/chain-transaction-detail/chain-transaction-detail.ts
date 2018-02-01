@@ -18,7 +18,7 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
-  transaction: TransactionModel;
+  transaction?: TransactionModel;
   @ChainTransactionDetailPage.willEnter
   setTransactionData() {
     const transaction = this.navParams.get("transaction");

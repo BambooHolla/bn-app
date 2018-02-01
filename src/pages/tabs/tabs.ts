@@ -44,7 +44,7 @@ export class TabsPage implements OnInit {
   }
 
   private _hidden_tabs = new Set();
-  @ViewChild(Tabs) tabs: Tabs;
+  @ViewChild(Tabs) tabs!: Tabs;
   hideTabs(hidden: boolean, key: string) {
     if (this.tabs) {
       if (hidden) {

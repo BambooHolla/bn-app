@@ -15,6 +15,7 @@ import { TransactionServiceProvider } from "../transaction-service/transaction-s
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import { ContactModel } from "./contact.types";
+export * from "./contact.types";
 
 @Injectable()
 export class ContactServiceProvider {

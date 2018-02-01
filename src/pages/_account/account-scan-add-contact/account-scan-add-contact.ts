@@ -30,7 +30,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   }
   innerHeight = window.innerHeight;
   innerWidth = window.innerWidth;
-  @ViewChild("video") video: ElementRef;
+  @ViewChild("video") video!: ElementRef;
   @AccountScanAddContactPage.willEnter
   @asyncCtrlGenerator.error("扫描异常")
   openCameraMedia() {

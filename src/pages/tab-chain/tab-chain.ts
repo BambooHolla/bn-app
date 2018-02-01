@@ -30,7 +30,7 @@ export class TabChainPage extends FirstLevelPage {
     has_more: false,
   };
 
-  unconfirm_block: BlockModel;
+  unconfirm_block?: BlockModel;
   @TabChainPage.willEnter
   async loadUnconfirmBlock() {
     // this.blockService

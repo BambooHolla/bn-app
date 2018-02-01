@@ -43,7 +43,7 @@ export class SearchPage extends SecondLevelPage {
     this.formData.search_text = "";
     this.trySearch();
   }
-  search_result_list: any[];
+  search_result_list?: any[];
   setSearchType(type: SearchType) {
     if (type in SearchType) {
       this.formData.search_type = type;
@@ -68,7 +68,7 @@ export class SearchPage extends SecondLevelPage {
         this.search_result_list = await this[search_type_key](search_text);
       }
     } else {
-      this.search_result_list = null;
+      this.search_result_list = undefined;
     }
   }
   private _$search_ALL(search_text) {
@@ -77,7 +77,7 @@ export class SearchPage extends SecondLevelPage {
       this._$search_BLOCK(search_text),
       this._$search_ASSETS(search_text),
     ]).then(search_result_list => {
-      var res = [];
+      var res: any[] = [];
       for (let list of search_result_list) {
         if (list instanceof Array) {
           res = res.concat(list);
@@ -87,19 +87,19 @@ export class SearchPage extends SecondLevelPage {
     });
   }
   private async _$search_VOTE_INCOME(search_text) {
-    return [].map(item => {
+    return [].map((item: any) => {
       item.search_type = SearchType.VOTE_INCOME;
       return item;
     });
   }
   private async _$search_BLOCK(search_text) {
-    return [].map(item => {
+    return [].map((item: any) => {
       item.search_type = SearchType.BLOCK;
       return item;
     });
   }
   private async _$search_ASSETS(search_text) {
-    return [].map(item => {
+    return [].map((item: any) => {
       item.search_type = SearchType.ASSETS;
       return item;
     });

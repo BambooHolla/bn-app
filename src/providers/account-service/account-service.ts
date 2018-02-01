@@ -74,15 +74,20 @@ export class AccountServiceProvider {
 
   checkUsernameExisted(username: string) {
     return this.getAccountByUsername(username)
-      .then(() => true)
-      .catch(() => false);
+      .then((data: any) => {
+        if (Object.keys(data.account).length === 0) {
+          return true
+        }
+        return false
+      })
+      .catch(() => true);
   }
 
   /**
    *  更改用户名
    *  @param {string} newUsername
    */
-  async changeUsername(newUsername: string, secret: string, secondSecret ?: string) {
+  async changeUsername(newUsername: string, secret: string, secondSecret?: string) {
     if (!!this.user.userInfo.username) {
       return this.fetch.ServerResError.translateAndParseErrorMessage(
         "account already has username",
@@ -90,9 +95,9 @@ export class AccountServiceProvider {
     } else {
       let is_existed = await this.checkUsernameExisted(newUsername);
       if (!!is_existed) {
-        let accountData = {
-          type: "username",
-          secret: this.user.userInfo.secret,
+        let accountData: any = {
+          type: this.ifmJs.transactionTypes.USERNAME,
+          secret,
           publicKey: this.user.userInfo.publicKey,
           fee: this.appSetting.settings.default_fee,
           asset: {
@@ -101,10 +106,9 @@ export class AccountServiceProvider {
               publicKey: this.user.userInfo.publicKey,
             },
           },
-          secondSecret
         }
 
-        if(secondSecret) {
+        if (secondSecret) {
           accountData.secondSecret = secondSecret;
         }
 
