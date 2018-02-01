@@ -145,11 +145,16 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     if (this.user.userInfo.balance > 0) {
-      if (txData.secondSecret && txData.type !== this.transactionTypeCode.SIGNATURE) {
+      if (
+        txData.secondSecret &&
+        txData.type !== this.transactionTypeCode.SIGNATURE
+      ) {
         let secondPwd = txData.secondPwd;
         let is_second_true = this.verifySecondPassphrase(secondPwd);
         if (!is_second_true) {
-          throw "Second passphrase verified error";
+          return this.fetch.ServerResError.translateAndParseErrorMessage(
+            "Second passphrase verified error",
+          );
         }
       }
       if (typeof txData.fee === "number") {
@@ -342,14 +347,14 @@ export class TransactionServiceProvider {
    */
   async transfer(recipientId, amount, password, secondSecret) {
     if (parseInt(amount) > 0) {
-      let txData = {
+      let txData: any = {
         type: this.transactionTypeCode.SEND,
         secret: password,
         amount: amount.toString(),
         recipientId: recipientId,
         publicKey: this.user.publicKey,
         fee: this.appSetting.settings.default_fee.toString(),
-        secondSecret,
+        // secondSecret,
       };
 
       if (secondSecret) {

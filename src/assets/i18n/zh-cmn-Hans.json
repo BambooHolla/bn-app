@@ -60,6 +60,11 @@
   "SET_USERNAME_SUBMITING": "设置用户名提交中",
   "SET_USERNAME_SUBMIT_SUCCESS": "设置用户名提交成功",
 
+  "//": "pay",
+  "TRANSFER_SUBMIT_ERROR": "转账提交失败",
+  "TRANSFER_SUBMITING": "转账提交中",
+  "TRANSFER_SUBMIT_SUCCESS": "转账提交成功",
+
   "NAME": "姓名",
   "EMAIL": "邮箱",
   "USERNAME": "登录名",

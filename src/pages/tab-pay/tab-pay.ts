@@ -7,11 +7,12 @@ import {
   InfiniteScroll,
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
+import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+
 import {
-  TransferProvider,
-  RollOutLogModel,
-} from "../../providers/transfer/transfer";
-import { TransactionServiceProvider } from "../../providers/transaction-service/transaction-service";
+  TransactionServiceProvider,
+  TransactionModel,
+} from "../../providers/transaction-service/transaction-service";
 
 function generateRollOutLog(len = 20, from = Date.now()) {
   return Array.from(Array(len)).map(_ => {
@@ -28,7 +29,7 @@ export class TabPayPage extends FirstLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public transferProvider: TransferProvider,
+    // public transfer: TransferProvider,
     public transactionService: TransactionServiceProvider,
   ) {
     super(navCtrl, navParams);
@@ -63,8 +64,31 @@ export class TabPayPage extends FirstLevelPage {
       }
     }
   }
+  @asyncCtrlGenerator.error()
+  async submit() {
+    const { password, pay_pwd } = await this.getUserPassword();
+    await this._submit(password, pay_pwd);
+  }
+  @asyncCtrlGenerator.error(() =>
+    TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"),
+  )
+  @asyncCtrlGenerator.loading(() =>
+    TabPayPage.getTranslate("TRANSFER_SUBMITING"),
+  )
+  @asyncCtrlGenerator.success(() =>
+    TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS"),
+  )
+  _submit(password: string, pay_pwd?: string) {
+    const { transfer_address, transfer_amount, transfer_mark } = this.formData;
+    return this.transactionService.transfer(
+      transfer_address,
+      transfer_amount,
+      password,
+      pay_pwd,
+    );
+  }
 
-  roll_out_logs: RollOutLogModel[];
+  roll_out_logs: TransactionModel[];
   roll_out_config = {
     has_more: true,
     num: 20,
@@ -73,29 +97,30 @@ export class TabPayPage extends FirstLevelPage {
 
   @TabPayPage.willEnter
   async loadRollOutLogs(refresher?: Refresher) {
-    const roll_out_logs = await this.transferProvider.getRollOutLogList(
-      this.roll_out_config.num,
-      this.roll_out_config.from,
-    );
-    const last_log = roll_out_logs[roll_out_logs.length - 1];
-    if (last_log) {
-      this.roll_out_config.from = last_log.create_time;
-    }
-    this.roll_out_config.has_more =
-      roll_out_logs.length == this.roll_out_config.num;
+    // this.transactionService.getTransactions()
+    // const roll_out_logs = await this.transfer.getRollOutLogList(
+    //   this.roll_out_config.num,
+    //   this.roll_out_config.from,
+    // );
+    // const last_log = roll_out_logs[roll_out_logs.length - 1];
+    // if (last_log) {
+    //   this.roll_out_config.from = last_log.create_time;
+    // }
+    // this.roll_out_config.has_more =
+    //   roll_out_logs.length == this.roll_out_config.num;
 
-    this.roll_out_logs = roll_out_logs;
+    // this.roll_out_logs = roll_out_logs;
     if (refresher) {
       refresher.complete();
     }
   }
 
   async loadMoreRollOutLogs() {
-    await new Promise(cb => setTimeout(cb, Math.random() * 3000));
-    const roll_out_logs = await this.transferProvider.getRollOutLogList(
-      this.roll_out_config.num,
-      this.roll_out_config.from,
-    );
-    this.roll_out_logs.push(...roll_out_logs);
+    // await new Promise(cb => setTimeout(cb, Math.random() * 3000));
+    // const roll_out_logs = await this.transfer.getRollOutLogList(
+    //   this.roll_out_config.num,
+    //   this.roll_out_config.from,
+    // );
+    // this.roll_out_logs.push(...roll_out_logs);
   }
 }

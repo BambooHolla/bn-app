@@ -34,6 +34,7 @@
     <div class="fee">
       <ali-icon class="left" name="ifm-info"></ali-icon>
       <span class="value">{{appSetting.settings.default_fee|number:'1.8-8'}}</span>
+      <div class="balance-info">余额：{{userInfo.balance|amountEuler|number:'1.8-8'}}</div>
     </div>
     <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">确认转出</button>
   </div>
