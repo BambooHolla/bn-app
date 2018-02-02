@@ -32,7 +32,7 @@ import * as IFM from "ifmchain-ibt";
 export class BenefitServiceProvider {
   ifmJs: any;
   benefitList: TYPE.BenefitModel[] = [];
-  benefitBlockHeight: number;
+  benefitBlockHeight?: number;
   constructor(
     public http: HttpClient,
     public storage: Storage,
@@ -66,7 +66,7 @@ export class BenefitServiceProvider {
     const last_block_height = this.appSetting.getHeight();
     //增量
     if (increment) {
-      let lastBlockHeight = this.benefitBlockHeight!;
+      let lastBlockHeight = this.benefitBlockHeight;
 
       if (lastBlockHeight) {
         let blockBetween = last_block_height - lastBlockHeight;
@@ -172,7 +172,7 @@ export class BenefitServiceProvider {
   /**
    * 获取本轮收益
    */
-  benefitThisRound: AsyncBehaviorSubject<number>;
+  benefitThisRound!: AsyncBehaviorSubject<number>;
   @HEIGHT_AB_Generator("benefitThisRound")
   benefitThisRound_Executor(promise_pro) {
     return promise_pro.follow(this.getBenefitThisRound());
