@@ -32,7 +32,7 @@ import * as IFM from "ifmchain-ibt";
 export class BenefitServiceProvider {
   ifmJs: any;
   benefitList: TYPE.BenefitModel[] = [];
-  benefitBlockHeight!: number;
+  benefitBlockHeight: number;
   constructor(
     public http: HttpClient,
     public storage: Storage,
@@ -172,9 +172,25 @@ export class BenefitServiceProvider {
   /**
    * 获取本轮收益
    */
-  benefitThisRound!: AsyncBehaviorSubject<number>;
+  benefitThisRound: AsyncBehaviorSubject<number>;
   @HEIGHT_AB_Generator("benefitThisRound")
   benefitThisRound_Executor(promise_pro) {
     return promise_pro.follow(this.getBenefitThisRound());
+  }
+  
+  /**
+   * 获取最近57个块的收益
+   * TODO:更新为增量更新
+   */
+  async getRecentBenefit(): Promise<number> {
+    let benefit:number = 0;
+    if(this.benefitList.length < 57) {
+      await this.getTop57Benefits(false);
+    }
+    for(let i=0; i< 57; i++) {
+      benefit += parseFloat(this.benefitList[i].amount);
+    }
+
+    return benefit;
   }
 }
