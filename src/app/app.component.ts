@@ -75,11 +75,6 @@ export class MyApp implements OnInit {
       return LoginPage;
     });
 
-    loginService.loginStatus.subscribe(isLogined => {
-      console.log("isLogined", isLogined);
-      this.openPage(isLogined ? MainPage : LoginPage);
-    });
-
     // this.openPage(LoginPage);
 
     statusBar.hide();
@@ -92,6 +87,10 @@ export class MyApp implements OnInit {
       splashScreen.hide();
       initPage.then(page => {
         page && this.openPage(page);
+        loginService.loginStatus.subscribe(isLogined => {
+          console.log("isLogined", isLogined);
+          this.openPage(isLogined ? MainPage : LoginPage);
+        });
       });
     });
   }

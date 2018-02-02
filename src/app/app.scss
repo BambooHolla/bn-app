@@ -59,8 +59,12 @@ ion-loading {
 ion-navbar,
 ion-title {
   padding-top: 18px !important;
-  padding-top: constant(safe-area-inset-top) !important;
-  padding-top: env(safe-area-inset-top) !important;
+}
+@supports(padding: #{'max(0px)'}) {
+    ion-navbar,
+    ion-title {
+      padding-top: #{'max(18px, env(safe-area-inset-top)) !important'};
+    }
 }
 ion-navbar.toolbar-ios {
   min-height: $navbar-height;
@@ -97,6 +101,13 @@ ion-navbar.toolbar-ios {
       font-size: 1.95rem;
     }
   }
+}
+@supports(padding: #{'max(0px)'}) {
+    ion-navbar.toolbar-ios{
+      min-height: $navbar-height + 10px;
+      margin-bottom: 1rem;
+
+    }
 }
 
 ion-content {

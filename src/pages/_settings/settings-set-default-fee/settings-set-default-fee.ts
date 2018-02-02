@@ -18,7 +18,8 @@ export class SettingsSetDefaultFeePage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
   }
   formData = {
-    default_fee: "0.00000001"
+    default_fee: "0.00000001",
+    max_fee:  this.appSetting.settings.auto_update_default_fee_max_amount 
   }
   @SettingsSetDefaultFeePage.setErrorTo("errors", "default_fee", ["wrongRange"])
   check_defalutFee() {
@@ -30,9 +31,20 @@ export class SettingsSetDefaultFeePage extends SecondLevelPage {
       }
     }
   }
+  @SettingsSetDefaultFeePage.setErrorTo("errors", "max_fee", ["wrongRange"])
+  check_maxFee() {
+    const { max_fee } = this.formData;
+    const num = parseFloat(max_fee);
+    if (!isFinite(num) || num <= 0) {
+      return {
+        wrongRange: true
+      }
+    }
+  }
   @asyncCtrlGenerator.success(() => SettingsSetDefaultFeePage.getTranslate("DEFAULT_FEE_SET_SUCCESS"))
   async submit() {
     this.appSetting.settings.default_fee = this.formData.default_fee + "";
+    this.appSetting.settings.auto_update_default_fee_max_amount = this.formData.max_fee +""
     this.finishJob();
   }
 }

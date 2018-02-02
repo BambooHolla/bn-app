@@ -1,6 +1,6 @@
 .common-form {
   width: 100%;
-  .input-container {
+  > .input-container {
     height: 4.6rem;
     padding: 0 1.4rem;
     background-color: #fff;
@@ -14,10 +14,9 @@
       color: #989898;
     }
     > .left {
-      margin-left: auto;
-      justify-self: flex-end;
+      justify-self: flex-start;
     }
-    input {
+    > input {
       flex: 1;
       flex-grow: 1;
       color: #333;
@@ -31,6 +30,8 @@
       }
     }
     > .right {
+      margin-left: auto;
+      justify-self: flex-end;
       > button {
         background-color: transparent;
         padding: 0.5rem;
@@ -40,6 +41,15 @@
             font-size: 2rem;
             color: #aaaaaa;
           }
+        }
+      }
+    }
+    &.disabled {
+      color: #a7a7a7;
+      > input {
+        color: #999999;
+        &::-webkit-input-placeholder {
+          color: #aaaaaa;
         }
       }
     }

@@ -36,6 +36,8 @@ page-tab-account {
       // padding: 2.5rem 1.6rem 1rem;
       padding: 0 1.6rem;
       height: 5.6rem;
+      height: calc(3rem + #{'env(safe-area-inset-top)'});//iphone X
+      // margin-top: env(safe-area-inset-top);
       box-sizing: border-box;
       > button {
         display: flex;

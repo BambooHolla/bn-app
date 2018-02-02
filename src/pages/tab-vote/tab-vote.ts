@@ -176,7 +176,9 @@ export class TabVotePage extends FirstLevelPage {
     if (this.chain_mesh) {
       const _loop = () => {
         requestAnimationFrame(() => {
-          this.chain_mesh && this.chain_mesh.app && this.chain_mesh.app.ticker.update();
+          this.chain_mesh &&
+            this.chain_mesh.app &&
+            this.chain_mesh.app.ticker.update();
         });
       };
       if (this.chain_mesh.is_app_ready) {
@@ -204,25 +206,29 @@ export class TabVotePage extends FirstLevelPage {
     this.min_starting = true;
     try {
       if (parseFloat(this.appSetting.settings.default_fee) == 0) {
-        this.alertCtrl.create({
-          title: this.translate.instant("DEFAULT_FEE_NOT_SETTED"),
-          message: this.translate.instant("DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE"),
-          buttons: [
-            this.translate.instant("CANCEL"),
-            {
-              text: this.translate.instant("OK"),
-              handler: () => {
-                this.routeTo("settings-set-default-fee", {
-                  auto_return: true,
-                  after_finish_job: () => {
-                    this.startMin();
-                  }
-                })
+        this.alertCtrl
+          .create({
+            title: this.translate.instant("DEFAULT_FEE_NOT_SETTED"),
+            message: this.translate.instant(
+              "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE",
+            ),
+            buttons: [
+              this.translate.instant("CANCEL"),
+              {
+                text: this.translate.instant("OK"),
+                handler: () => {
+                  this.routeTo("settings-set-default-fee", {
+                    auto_return: true,
+                    after_finish_job: () => {
+                      this.startMin();
+                    },
+                  });
+                },
               },
-            },
-          ]
-        }).present();
-        return
+            ],
+          })
+          .present();
+        return;
       }
       const pwdData = await this.getUserPassword();
       await this.minService.vote(pwdData.password, pwdData.pay_pwd);
@@ -242,17 +248,31 @@ export class TabVotePage extends FirstLevelPage {
     this.routeToBootstrap();
   }
 
-  @TabVotePage.autoUnsubscribe private _my_rank_subscription?: Subscription;
+  @TabVotePage.autoUnsubscribe _round_subscription?: Subscription;
+  /** 监听轮次变动
+   *  停止相关的动画
+   *  运作变成大金币并落入底部层
+   *  然后更新相关的数据
+   */
+  watchRoundChanged() {
+    if (!this._round_subscription && this.page_status === "vote-detail") {
+      this._round_subscription = this.appSetting.round.subscribe(() => {
+        // stop ani
+        // do ani
+        // update panel
+        this.getPreRoundRankList();
+        this.getCurRoundIncomeInfo();
+        // start new ani
+      });
+    }
+  }
+
   /**上一轮的排名*/
   pre_round_rank_list?: RankModel[];
   @TabVotePage.willEnter
-  getPreRoundRankList() {
-    if (!this._my_rank_subscription && this.page_status == "vote-detail") {
-      this._my_rank_subscription = this.minService.myRank.subscribe(
-        async rank_list => {
-          this.pre_round_rank_list = await rank_list;
-        },
-      );
+  async getPreRoundRankList() {
+    if (this.page_status == "vote-detail") {
+      this.pre_round_rank_list = await this.minService.myRank.getPromise();
     }
   }
 
@@ -266,27 +286,21 @@ export class TabVotePage extends FirstLevelPage {
     return this.pre_round_rank_list && this.pre_round_rank_list[2];
   }
 
-  @TabVotePage.autoUnsubscribe private _cur_round_info_subscription?: Subscription;
   /**本轮挖矿收益 */
   cur_round_income_info = {
     round: 0,
     block_num: 0,
     cur_round_income_amount: 0,
     recent_income_amount: 0,
-  }
+  };
   @TabVotePage.willEnter
-  getCurRoundIncomeInfo() {
-    if (!this._cur_round_info_subscription && this.page_status == "vote-detail") {
-      this._cur_round_info_subscription = this.appSetting.round.subscribe(this._set_cur_round_income_info.bind(this))
+  async getCurRoundIncomeInfo() {
+    if (this.page_status == "vote-detail") {
+      const { cur_round_income_info } = this;
+      cur_round_income_info.round = this.appSetting.round.getValue();
+      cur_round_income_info.block_num = this.appSetting.height.getValue() % 57;
+      cur_round_income_info.cur_round_income_amount = await this.benefitService.getBenefitThisRound();
     }
   }
-  private async _set_cur_round_income_info() {
-    const { cur_round_income_info } = this;
-    cur_round_income_info.round = this.appSetting.round.getValue();
-    cur_round_income_info.block_num = this.appSetting.height.getValue() % 57;
-    cur_round_income_info.cur_round_income_amount = await this.benefitService.getBenefitThisRound();
-
-    // cur_round_income_info.recent_income_amount = 0;
-  }
-
-} 0;
+}
+0;

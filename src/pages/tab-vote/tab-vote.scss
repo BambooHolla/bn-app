@@ -212,7 +212,7 @@ height: 105.2625%; */
             animation-name: rotate-to-open;
             animation-timing-function: ease-in-out;
             animation-duration: 5s;
-            /* animation-iteration-count: infinite; */
+            animation-iteration-count: infinite;
           }
 
           @keyframes rotate-to-open {
