@@ -6,17 +6,17 @@
 <ion-content>
   <div class="common-form">
     <div class="input-container">
-      <div class="left">手续费：</div>
+      <div class="left">默认手续费：</div>
       <input type="text" placeholder="支付密码" [(ngModel)]="formData.default_fee" set-input-status="default_fee"><!--  min="0.00000001" step="0.00000001" -->
       <!-- <div class="right">尧币</div> -->
     </div>
     <div class="input-container">
-      <div class="left">自动更新手续费</div>
+      <div class="left">自动采用最佳手续费</div>
       <ion-toggle class="right" [(ngModel)]="appSetting.settings.auto_update_default_fee_to_pre_round_min"></ion-toggle>
     </div>
     <div class="input-container" [disabled]="!appSetting.settings.auto_update_default_fee_to_pre_round_min">
-      <div class="left">最大手续费：</div>
-      <input type="text" placeholder="自动变更手续费的最大额度" [(ngModel)]="formData.max_fee" set-input-status="default_fee"><!--  min="0.00000001" step="0.00000001" -->
+      <div class="left">挖矿累计最大手续费：</div>
+      <input type="text" placeholder="请输入手续费" [(ngModel)]="formData.max_fee" set-input-status="default_fee"><!--  min="0.00000001" step="0.00000001" -->
       <!-- <div class="right">尧币</div> -->
     </div>
     <!-- <div class="fee">{{formData.default_fee|amountEuler}}</div> -->
