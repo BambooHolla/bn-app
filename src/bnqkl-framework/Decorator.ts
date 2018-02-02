@@ -336,9 +336,21 @@ export function asyncLoadingWrapGenerator(
     return descriptor;
   };
 }
+export async function autoRetryWrapGenerator(timeGenerator:GeneratorFunction) {
+  const time_gen = timeGenerator();
+  return function (target, name, descriptor) {
+    const source_fun = descriptor.value;
+    descriptor.value = function (...args) {
+      
+    }
+    descriptor.value.source_fun = source_fun;
+    return descriptor;
+  }
+}
 
 export const asyncCtrlGenerator = {
   success: asyncSuccessWrapGenerator,
   loading: asyncLoadingWrapGenerator,
   error: asyncErrorWrapGenerator,
+  retry: autoRetryWrapGenerator
 };

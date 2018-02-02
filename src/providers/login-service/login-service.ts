@@ -124,15 +124,29 @@ export class LoginServiceProvider {
       return false;
     }
   }
+
+  _refresh_user_info_try_time = 0;
   /** 更新用户信息
    */
   async refreshUserInfo() {
-    const userinfo = this.appSetting.getUserToken();
-    const res = await this.fetch.put<any>(this.LOGIN_URL, {
-      publicKey: userinfo.publicKey
-    });
-    Object.assign(userinfo, res.account);
-    this.appSetting.setUserToken(userinfo);
+    try {
+      const userinfo = this.appSetting.getUserToken();
+      const res = await this.fetch.put<any>(this.LOGIN_URL, {
+        publicKey: userinfo.publicKey
+      });
+      Object.assign(userinfo, res.account);
+      this.appSetting.setUserToken(userinfo);
+      // 更新成功，重置
+      this._refresh_user_info_try_time = 1;
+    } catch (err) {
+      console.error('更新用户信息失败', err);
+      if (this._refresh_user_info_try_time == 0) {
+
+      }
+      setTimeout(() => {
+        this.refreshUserInfo()
+      }, 2000);
+    }
   }
 
   /**
