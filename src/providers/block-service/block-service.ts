@@ -55,6 +55,9 @@ export class BlockServiceProvider {
       let currentTime = Date.now();
 
       const diff_time = currentTime - lastTime;
+      if (diff_time <= 0) {
+        throw new RangeError("Wrong diff time");
+      }
 
       if (diff_time < 128e3) {
         this._refresh_interval = 0;
@@ -70,6 +73,7 @@ export class BlockServiceProvider {
         this._refresh_interval = Math.min(128e3 / 2, this._refresh_interval);
         setTimeout(do_loop, this._refresh_interval);
       }
+      this._retry_interval = 0; // 无异常，重置异常计时器
     } catch (err) {
       console.warn(err);
       if (this._retry_interval === 0) {
@@ -266,23 +270,20 @@ export class BlockServiceProvider {
             return await this.getTopBlocks(false, amount);
           } else {
             //增量的加入缓存
-            let data = await this.getBlocks({
+            const data = await this.getBlocks({
               limit: heightBetween,
               orderBy: "height:desc",
             });
             //把数组插入原数组前面
             //Array.prototype.splice然后把指针指向
-            debugger;
-            if (data.success) {
-              let temp: any;
-              temp = data;
-              temp.blocks.unshift(temp.length, 0);
-              Array.prototype.splice.apply(this.blockArray, temp);
-              this.blockArray = temp;
-              return this.blockArray.slice(0, amount - 1);
-            } else {
-              return this.blockArray.slice(0, amount - 1);
-            }
+           
+            // data.blocks.unshift(data.length, 0);
+            // Array.prototype.splice.apply(this.blockArray, data);
+            // this.blockArray = data;
+            // return this.blockArray.slice(0, amount - 1);
+
+            // TODO:这里采用严格的数据类型检测后发现有BUG，暂时没有解决。外部不在采用这个部分的方法，可以直接取消
+            return []
           }
         }
       } else {

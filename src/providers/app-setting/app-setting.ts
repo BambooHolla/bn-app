@@ -89,39 +89,25 @@ export class AppSettingProvider extends EventEmitter {
     }
 
     // 动画开关对动画的控制
-    let ani_switch = this.settings.animation_switch;
-    this.on("changed@setting.animation_switch", new_v => {
-      ani_switch = new_v;
-    });
+
+    const noop = () => {};
     // 框架内置的AniBase
     {
       const _update = AniBase.prototype._update;
-      const _update_key =
-        "_update@" +
-        Math.random()
-          .toString(36)
-          .substr(2);
-      AniBase.prototype[_update_key] = _update;
-      AniBase.prototype._update = function(t, diff_t) {
-        if (ani_switch) {
-          this[_update_key](t, diff_t);
-        }
+      const toggle_update = is_ani => {
+        AniBase.prototype._update = is_ani ? _update : noop;
       };
+      toggle_update(this.settings.animation_switch);
+      this.on("changed@setting.animation_switch", toggle_update);
     }
     // PIXI框架的循环
     {
       const _update = PIXI.ticker.Ticker.prototype.update;
-      const _update_key =
-        "_update@" +
-        Math.random()
-          .toString(36)
-          .substr(2);
-      PIXI.ticker.Ticker.prototype[_update_key] = _update;
-      PIXI.ticker.Ticker.prototype.update = function(t) {
-        if (ani_switch) {
-          this[_update_key](t);
-        }
+      const toggle_update = is_ani => {
+        PIXI.ticker.Ticker.prototype.update = is_ani ? _update : noop;
       };
+      toggle_update(this.settings.animation_switch);
+      this.on("changed@setting.animation_switch", toggle_update);
     }
   }
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
@@ -210,7 +196,7 @@ export class AppSettingProvider extends EventEmitter {
     /**自动更新手续费到前一轮的最低值*/
     auto_update_default_fee_to_pre_round_min: false,
     /**自动更新手续费到前一轮的最低值*/
-    auto_update_default_fee_max_amount: '0.00000100',
+    auto_update_default_fee_max_amount: "0.00000100",
   };
 }
 

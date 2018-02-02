@@ -331,4 +331,31 @@ export class AppFetchProvider {
     this._timeout_ms = timeout_ms;
     return this;
   }
+
+  private _catch_first;
+  /**优先获取缓存*/
+  private get catch_first() {
+    const res = this._catch_first;
+    // 一次性取值，取完就不用了
+    this._catch_first = undefined;
+    return res;
+  }
+  private tryGetCatch(catch_first?: boolean): AppFetchProvider {
+    this._catch_first = catch_first;
+    return this;
+  }
+  private _catch_first_base_on_type = TryGetCatchBaseOn.Height;
+
+  tryGetCatchBaseOnHeight() {
+    this.tryGetCatch(true)
+    this._catch_first_base_on_type = TryGetCatchBaseOn.Height
+  }
+  tryGetCatchBaseOnRound() {
+    this.tryGetCatch(true)
+    this._catch_first_base_on_type = TryGetCatchBaseOn.Round
+  }
+}
+export enum TryGetCatchBaseOn {
+  Height,
+  Round,
 }

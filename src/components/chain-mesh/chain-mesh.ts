@@ -34,7 +34,7 @@ loader.load((loader, resources) => {
 })
 export class ChainMeshComponent extends AniBase {
   @ViewChild("canvas") canvasRef!: ElementRef;
-  app?: PIXI.Application ;
+  app?: PIXI.Application;
   @Input("auto-start") auto_start = false;
   @Input("tint")
   set tint(v) {

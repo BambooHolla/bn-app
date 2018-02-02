@@ -334,6 +334,16 @@ height: 105.2625%; */
           display: block;
           opacity: 1;
         }
+        // &.satellite-css{
+        //   background-image: url("../assets/imgs/tab-vote/轨道.png");
+        //   background-size: 88%;
+        //   background-position: center;
+        //   background-repeat: no-repeat;
+        //   &::after{
+        //     content:" ";
+        //     background-image: url("../assets/imgs/tab-vote/彗星☄.png");
+        //   }
+        // }
       }
       .ani-glow {
         /* contain: strict; */
@@ -379,10 +389,10 @@ height: 105.2625%; */
         contain: strict;
         position: absolute;
         pointer-events: none;
-        bottom: 5%;
-        left: -6%;
+        bottom: 3%;
+        left: 10%;
         height: 45%;
-        width: 100%;
+        width: 70%;
         background-image: url("../assets/imgs/tab-vote/human-work2.gif");
         background-repeat: no-repeat;
         background-size: contain;
@@ -465,10 +475,14 @@ height: 105.2625%; */
             transform-origin: -15% 50%;
             transition-duration: 0ms;
           }
+          $panel-min-height: 22vh;
+          $panel-max-height: 20rem;
           .current-block-income {
             width: 100%;
             padding: 0.5rem;
             height: 12rem;
+            min-height: $panel-min-height;
+            max-height: $panel-max-height;
             display: flex;
             position: relative;
             background-color: #fff;
@@ -534,13 +548,13 @@ height: 105.2625%; */
                   flex: 1;
                   /* flex-grow: 1; */
                   padding-left: 0.5rem;
-                  background: linear-gradient(
-                    to right,
-                    #f78464 0%,
-                    #fecc49 100%
-                  );
-                  -webkit-background-clip: text;
-                  -webkit-text-fill-color: transparent;
+                  // background: linear-gradient(
+                  //   to right,
+                  //   #f78464 0%,
+                  //   #fecc49 100%
+                  // );
+                  // -webkit-background-clip: text;
+                  // -webkit-text-fill-color: transparent;
                   >text-gradient{
                     justify-content: flex-start;
                   }
@@ -551,6 +565,8 @@ height: 105.2625%; */
           .income-ranking {
             width: 100%;
             padding: 0.5rem;
+            min-height: $panel-min-height;
+            max-height: $panel-max-height;
             .header {
               display: flex;
               flex-direction: row;
@@ -609,6 +625,8 @@ height: 105.2625%; */
           .income-trend {
             width: 100%;
             padding: 1rem;
+            min-height: $panel-min-height;
+            max-height: $panel-max-height;
             background: linear-gradient(to right, #faaf52 0%, #fdd04e 100%);
             .header {
               position: relative;
@@ -637,7 +655,7 @@ height: 105.2625%; */
   }
   .wave-container {
     position: absolute;
-    bottom: 0;
+    top: 100vh;
     margin-top: auto;
     padding: 1.5rem 0 0.6rem 0;
     width: 100%;
@@ -785,30 +803,30 @@ height: 105.2625%; */
       /* transform: translateY(150%); */
       .wave-1 {
         transition-delay: 0s;
-        transform: translateY(150%);
+        transform: translateY(5vh);
         opacity: 0;
       }
       .wave-2 {
         transition-delay: 0s;
-        transform: translateY(150%);
+        transform: translateY(5vh);
         opacity: 0;
       }
       .wave-3 {
         transition-delay: 0s;
-        transform: translateY(150%);
+        transform: translateY(5vh);
         opacity: 0;
       }
     }
     &.vote-detail {
       /* transform: translateY(0%); */
       .wave-1 {
-        transform: translateY(0%);
+        transform: translateY(-21rem);
       }
       .wave-2 {
-        transform: translateY(0%);
+        transform: translateY(-21rem);
       }
       .wave-3 {
-        transform: translateY(0%);
+        transform: translateY(-21rem);
       }
     }
   }

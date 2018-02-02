@@ -117,6 +117,14 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     ctx.fillStyle = gradient;
     ctx.font = font;
     ctx.fillText(text, padding_width, canvas.height - 2 * padding_height);
+    // 过滤掉空白
+    const bound = TextGradientComponent.trim(canvas);
+    if (bound && (canvas.width !== bound.width || canvas.height !== bound.height)) {
+      const data = ctx.getImageData(bound.left, bound.top, bound.width, bound.height);
+      canvas.width = bound.width;
+      canvas.height = bound.height;
+      ctx.putImageData(data, 0, 0);
+    }
   }
   static formatDirection(width: number, height: number, direction: string) {
     const max = Math.max(width, height);
@@ -168,4 +176,88 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy() {
     this._panel && this._panel.destroy();
   }
+  static trim(c: HTMLCanvasElement) {
+    const ctx = c.getContext("2d");
+    if (!ctx) {
+      return null;
+    }
+    const pixels = ctx.getImageData(0, 0, c.width, c.height);
+    const l = pixels.data.length;
+    const bound = {
+      top: Infinity,
+      left: Infinity,
+      right: -Infinity,
+      bottom: -Infinity,
+      width: 0,
+      height: 0,
+    };
+
+    // 从上往下扫描
+    const data = pixels.data;
+    for (let i = 3; i < l; i += 4) {
+      if (data[i] !== 0) {
+        bound.top = (i / 4 / c.width) | 0;
+        break;
+      }
+    }
+    if (bound.top == Infinity) {
+      // 全透明
+      return null;
+    }
+    // 从下往上扫描
+    for (let i = l - 1; i >= 0; i -= 4) {
+      if (data[i] !== 0) {
+        bound.bottom = ((i / 4 / c.width) | 0) + 1;
+        break;
+      }
+    }
+    // 从左往右扫描
+    const pre_line_i = c.width * 4;
+    for (let x = 0; x < c.width; x += 1) {
+      const x_alpha = x * 4 + 3;
+      for (let y = bound.top; y < bound.bottom; y += 1) {
+        const i = y * pre_line_i + x_alpha;
+        if (data[i] !== 0) {
+          bound.left = x;
+          break;
+        }
+      }
+      if (bound.left !== Infinity) {
+        break;
+      }
+    }
+    // 从右往左扫描
+    for (let x = c.width - 1; x >= 0; x -= 1) {
+      const x_alpha = x * 4 + 3;
+      for (let y = bound.top; y < bound.bottom; y += 1) {
+        const i = y * pre_line_i + x_alpha;
+        if (data[i] !== 0) {
+          bound.right = x + 1;
+          break;
+        }
+      }
+      if (bound.right !== -Infinity) {
+        break;
+      }
+    }
+
+    const trimHeight = bound.height = bound.bottom - bound.top;
+    const trimWidth = bound.width = bound.right - bound.left;
+    if (!(trimHeight && trimWidth)) {
+      return null;
+    }
+    // var trimmed = ctx.getImageData(
+    //   bound.left,
+    //   bound.top,
+    //   trimWidth,
+    //   trimHeight,
+    // );
+    // const copy = document.createElement("canvas").getContext("2d");
+    // copy.canvas.width = trimWidth;
+    // copy.canvas.height = trimHeight;
+    // copy.putImageData(trimmed, 0, 0);
+
+    return bound;
+  }
+
 }

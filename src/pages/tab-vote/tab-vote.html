@@ -2,7 +2,6 @@
   <!-- 挖矿 -->
 </ion-header>
 <ion-content>
-  <!-- <earth-net-mesh [ngClass]="page_status" id="bg" [auto-start]="false" [line-color]="earth_config.line_color" [body-color]="earth_config.body_color" [line-opacity]="earth_config.line_opacity" [body-opacity]="earth_config.body_opacity"></earth-net-mesh> -->
   <chain-mesh id="bg2" [ngClass]="page_status" [tint]="earth_config.body_color"></chain-mesh>
   <div id="bg3" [ngClass]="page_status"></div>
   <div class="wave-container" [ngClass]="page_status">
@@ -45,6 +44,7 @@
       </div>
       <div class="ani-wrapper" #aniWrapper (click)="stopMin()">
         <satellite-pixi class="ani-progress" [class.show]="is_show.satellite_pixi"></satellite-pixi>
+        <!-- <div class="ani-progress satellite-css" [class.show]="is_show.satellite_pixi"></div> -->
         <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
         <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
         <div class="wakuang-person"></div>

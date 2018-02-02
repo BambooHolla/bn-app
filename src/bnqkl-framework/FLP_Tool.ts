@@ -116,16 +116,19 @@ export class FLP_Tool {
 const CLASS_PROTO_ARRAYDATA_POOL = (window[
   "CLASS_PROTO_ARRAYDATA_POOL"
 ] = new Map<string, classProtoArraydata>());
+const PA_ID_KEY = '@PAID:' + Math.random().toString(36).substr(2);
 type classProtoArraydata = Map<string, string[]>;
 export function getProtoArray(target: any, key: string) {
   var res = new Set();
   const CLASS_PROTO_ARRAYDATA = CLASS_PROTO_ARRAYDATA_POOL.get(key);
   if (CLASS_PROTO_ARRAYDATA) {
     do {
-      const arr_data = CLASS_PROTO_ARRAYDATA.get(target.constructor.name);
-      if (arr_data) {
-        for (let item of arr_data) {
-          res.add(item);
+      if (target.hasOwnProperty(PA_ID_KEY)) {
+        const arr_data = CLASS_PROTO_ARRAYDATA.get(target[PA_ID_KEY])
+        if (arr_data) {
+          for (let item of arr_data) {
+            res.add(item);
+          }
         }
       }
     } while ((target = Object.getPrototypeOf(target)));
@@ -133,7 +136,6 @@ export function getProtoArray(target: any, key: string) {
   return res;
 }
 
-const PA_ID_KEY = '@PAID:' + Math.random().toString(36).substr(2);
 let PA_ID_VALUE = 0;
 export function addProtoArray(target: any, key: string, value: any) {
   var CLASS_PROTO_ARRAYDATA = CLASS_PROTO_ARRAYDATA_POOL.get(key);
@@ -142,7 +144,7 @@ export function addProtoArray(target: any, key: string, value: any) {
     CLASS_PROTO_ARRAYDATA_POOL.set(key, CLASS_PROTO_ARRAYDATA);
   }
 
-  const pa_id = target[PA_ID_KEY] || (target[PA_ID_KEY] = ('#' + PA_ID_VALUE++));
+  const pa_id = target.hasOwnProperty(PA_ID_KEY) ? target[PA_ID_KEY] : (target[PA_ID_KEY] = ('#' + PA_ID_VALUE++));
   var arr_data = CLASS_PROTO_ARRAYDATA.get(pa_id);
   if (!arr_data) {
     arr_data = [value];
