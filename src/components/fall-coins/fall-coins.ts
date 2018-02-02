@@ -108,7 +108,7 @@ export class FallCoinsComponent extends AniBase {
     const { useable_lines, full_lines } = _progress_coins_config;
 
     const { stage, renderer, ticker } = app;
-    const u_size = renderer.width / 6;
+    const u_size = renderer.width / 5.5;
 
     const container = new PIXI.Container();
     // container.position.set(renderer.width / 2, renderer.height);
@@ -263,67 +263,67 @@ export class FallCoinsComponent extends AniBase {
       useable_lines: [
         // 底行
         {
-          y: 1,
+          y: 2.3,
           x: 0.2 * 0,
-          max: 6,
-        },
-        {
-          y: -1,
-          x: 0.2 * 1,
           max: 7,
         },
         {
-          y: -1,
-          x: 0.2 * 2,
+          y: -1.1,
+          x: 0.2 * 1,
           max: 9,
         },
         {
-          y: -1,
-          x: 0.2 * 3,
-          max: 8,
-        },
-        {
-          y: 1,
-          x: 0.2 * 4,
-          max: 5,
-        },
-        // 第二行
-        {
-          y: 4,
-          x: 0.2 * 0.5,
-          max: 7,
-        },
-        {
-          y: 3,
-          x: 0.2 * 1.5,
-          max: 7,
-        },
-        {
-          y: 3,
-          x: 0.2 * 2.5,
-          max: 8,
-        },
-        {
-          y: 4,
-          x: 0.2 * 3.5,
-          max: 6,
-        },
-
-        // 顶行
-        {
-          y: 6,
-          x: 0.2 * 0.8,
-          max: 8,
-        },
-        {
-          y: 5,
+          y: -0.8,
           x: 0.2 * 2,
           max: 10,
         },
         {
-          y: 7,
-          x: 0.2 * 3.2,
-          max: 7,
+          y: -1.2,
+          x: 0.2 * 3,
+          max: 9,
+        },
+        {
+          y: 0.8,
+          x: 0.2 * 4,
+          max: 6,
+        },
+        // 第二行
+        {
+          y: 3.3,
+          x: 0.2 * 0.5,
+          max: 10,
+        },
+        {
+          y: 2.8,
+          x: 0.2 * 1.5,
+          max: 10,
+        },
+        {
+          y: 3.1,
+          x: 0.2 * 2.5,
+          max: 11,
+        },
+        {
+          y: 4.2,
+          x: 0.2 * 3.5,
+          max: 9,
+        },
+
+        // 顶行
+        {
+          y: 7.3,
+          x: 0.2 * 1.1,
+          max: 10,
+        },
+        {
+          y: 5,
+          x: 0.2 * 2,
+          max: 14,
+        },
+        {
+          y: 7.1,
+          x: 0.2 * 2.9,
+          max: 9,
         },
       ].map((con, i) => {
         return {

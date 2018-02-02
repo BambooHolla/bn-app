@@ -67,16 +67,16 @@ export class TabVotePage extends FirstLevelPage {
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.startAnimation();
-    clearInterval(this["_fall_coin_progress_ti"]);
-    this["_fall_coin_progress_ti"] = setInterval(() => {
-      if (this.fall_coin) {
-        this.fall_coin.progress = parseFloat(
-          ((this.fall_coin.progress + 0.001) % 1).toFixed(4),
-        );
-      } else {
-        clearInterval(this["_fall_coin_progress_ti"]);
-      }
-    }, 100);
+    // clearInterval(this["_fall_coin_progress_ti"]);
+    // this["_fall_coin_progress_ti"] = setInterval(() => {
+    //   if (this.fall_coin) {
+    //     this.fall_coin.progress = parseFloat(
+    //       ((this.fall_coin.progress + 0.001) % 1).toFixed(4),
+    //     );
+    //   } else {
+    //     clearInterval(this["_fall_coin_progress_ti"]);
+    //   }
+    // }, 100);
 
     this.satellite_pixi &&
       this.satellite_pixi.is_inited &&
