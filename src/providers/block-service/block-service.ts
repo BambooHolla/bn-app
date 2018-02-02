@@ -53,12 +53,10 @@ export class BlockServiceProvider {
 
       let lastTime = this.getFullTimestamp(last_block.timestamp);
       let currentTime = Date.now();
-
       const diff_time = currentTime - lastTime;
       if (diff_time <= 0) {
         throw new RangeError("Wrong diff time");
       }
-
       if (diff_time < 128e3) {
         this._refresh_interval = 0;
         setTimeout(do_loop, 128e3 - diff_time);
@@ -90,6 +88,7 @@ export class BlockServiceProvider {
   );
   readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
   readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
+  readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
 
   /**
    * 获取当前区块链的块高度
@@ -117,7 +116,8 @@ export class BlockServiceProvider {
     let lastBlockTime = lastBlock.timestamp;
     let lastTime = this.getFullTimestamp(lastBlockTime);
     let currentTime = new Date().getTime();
-    if (currentTime - lastTime > 12800) {
+    if (currentTime - lastTime > 128000+2000) {
+      //2秒缓冲时间
       return -1;
     } else {
       let percent = Math.floor((currentTime - lastTime) / 128) * 100;
@@ -140,9 +140,10 @@ export class BlockServiceProvider {
         AppSettingProvider.SEED_DATE[6],
       ),
     );
-    let tstamp = parseInt((seed.valueOf() / 1000).toString());
+    let tstamp = parseInt((seed.getTime() / 1000).toString());
+    console.log('aaa seed ' + tstamp);
     let fullTimestamp = (timestamp + tstamp) * 1000;
-
+    console.log('aaa full ' + fullTimestamp);
     return fullTimestamp;
   }
 
@@ -361,5 +362,53 @@ export class BlockServiceProvider {
     let data = await this.transactionService.getTransactions(query);
 
     return data.transactions;
+  }
+  
+  /**
+   * 获取最近n个块的平均奖励
+   * @param amount 
+   */
+  async getAvgInfo(amount:number = 5) {
+    if(this.blockArray.length < amount) {
+      this.getTopBlocks(true, amount);
+    }
+    let reward = 0, fee = 0;
+    for(let i=0; i< amount; i++) {
+      reward += parseFloat(this.blockArray[i].reward);
+      fee += parseFloat(this.blockArray[i].totalFee);
+    }
+
+    return {reward, fee};
+  }
+
+  /**
+   * 获取当前的未确认交易数
+   */
+  async getPoolUnconfirmed():Promise<any> {
+    let data:any = this.fetch.get<any>(this.GET_POOL);
+
+    return data.Transactions.u;
+  }
+
+  
+  /**
+   * 获取未来一个块的预期信息
+   * @param:amount 根据最近n个块来获取平均值
+   * 返回平均收益、平均手续费、未确认交易数
+   */
+  async getExpectBlockInfo(amount:number = 5):Promise<{
+    reward: number,
+    fee: number,
+    uncommited: number
+  }> {
+    amount = amount < 57 ? amount : 57;
+    let uncommited = await this.getPoolUnconfirmed();
+    let blockInfo = await this.getAvgInfo(amount);
+    let data = {
+      ...blockInfo,
+      uncommited
+    }
+
+    return data;
   }
 }
