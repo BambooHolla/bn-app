@@ -51,6 +51,9 @@ export class LoginServiceProvider {
       this.doLogin(this.user.password, true);
     }
 
+    // 高度发生变动的时候，更新用户信息
+    this.appSetting.height.subscribe(this.refreshUserInfo.bind(this));
+
     console.groupEnd();
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
@@ -96,23 +99,21 @@ export class LoginServiceProvider {
       };
 
       let data = await this.fetch.put<any>(this.LOGIN_URL, req);
-      if (data.success) {
-        let loginObj = {
-          password: savePwd ? password : "",
-          ...data.account,
-          // publicKey: data.account.publicKey,
-          // address: data.account.address,
-          username: data.account.username || "",
-          // balance: data.account.balance,
-          remember: savePwd,
-          secondPublickey: data.account.secondPublicKey
-            ? data.account.secondPublicKey
-            : "",
-        };
-        // 以Token的形式保存用户登录信息，用于自动登录
-        this.appSetting.setUserToken(loginObj);
-        return data;
-      }
+      let loginObj = {
+        password: savePwd ? password : "",
+        ...data.account,
+        // publicKey: data.account.publicKey,
+        // address: data.account.address,
+        username: data.account.username || "",
+        // balance: data.account.balance,
+        remember: savePwd,
+        secondPublickey: data.account.secondPublicKey
+          ? data.account.secondPublicKey
+          : "",
+      };
+      // 以Token的形式保存用户登录信息，用于自动登录
+      this.appSetting.setUserToken(loginObj);
+      return data;
     } else {
       let alert = this.alertController.create({
         title: "error",
@@ -122,6 +123,16 @@ export class LoginServiceProvider {
       alert.present();
       return false;
     }
+  }
+  /** 更新用户信息
+   */
+  async refreshUserInfo() {
+    const userinfo = this.appSetting.getUserToken();
+    const res = await this.fetch.put<any>(this.LOGIN_URL, {
+      publicKey: userinfo.publicKey
+    });
+    Object.assign(userinfo, res.account);
+    this.appSetting.setUserToken(userinfo);
   }
 
   /**
