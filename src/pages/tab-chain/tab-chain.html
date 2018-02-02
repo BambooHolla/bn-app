@@ -43,7 +43,7 @@
     </div>
   </div>
   <div class="block-list">
-    <div *ngFor="let block of block_list" class="block-item">
+    <div *ngFor="let block of block_list" class="block-item" (click)="routeTo('chain-block-detail',{block:block})">
       <div class="header">
         <div class="reward">
           <div class="value">{{block.reward|amountEuler|number:'1.0-0'}}</div>
@@ -67,7 +67,7 @@
           <div class="value">{{block.totalFee|amountEuler|number:'1.8-8'}}</div>
         </div>
       </div>
-      <div class="footer" (click)="routeTo('chain-block-detail',{block:block})">
+      <div class="footer">
         查看区块
         <ali-icon name="ifm-chain-right-arrow"></ali-icon>
       </div>

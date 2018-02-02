@@ -8,6 +8,7 @@ import {
   BlockModel,
 } from "../../../providers/block-service/block-service";
 import { TransactionModel } from "../../../providers/transaction-service/transaction-service";
+import { TimestampPipe } from '../../../pipes/timestamp/timestamp';
 
 @IonicPage({ name: "chain-block-detail" })
 @Component({
@@ -22,6 +23,13 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public blockService: BlockServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
+  }
+  isShowFullDate(timestamp: number) {
+    const time = TimestampPipe.transform(timestamp);
+    if (time.valueOf() < (Date.now() - 24 * 60 * 60 * 1000)) {
+      return true
+    }
+    return false
   }
   block_info!: BlockModel /* = {
 		create_time: new Date(
