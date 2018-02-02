@@ -181,7 +181,7 @@ height: 105.2625%; */
           z-index: 1;
           pointer-events: none;
         }
-        &::after {
+        .press-down-layer, .press-down-layer::before, .press-down-layer::after {
           content: " ";
           transition-duration: 0.25s;
           transition-timing-function: ease-in;
@@ -206,13 +206,23 @@ height: 105.2625%; */
             opacity: 0;
             transform: scale(0.96);
           }
-          &::after {
+          .press-down-layer, .press-down-layer::after, .press-down-layer::before {
             opacity: 1;
             transform: scale(0.96);
             animation-name: rotate-to-open;
             animation-timing-function: ease-in-out;
             animation-duration: 5s;
             animation-iteration-count: infinite;
+          }
+          .press-down-layer::before{
+            z-index: 3;
+            opacity: 0.5;
+            animation-duration: 3s;
+          }
+          .press-down-layer::after{
+            z-index: 4;
+            opacity: 0.5;
+            animation-duration: 7s;
           }
 
           @keyframes rotate-to-open {

@@ -138,8 +138,13 @@ export class MyApp implements OnInit {
     this._openPage(page);
   }
   private _openPage(page: string) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
+    if (this.currentPage === page) {
+      return;
+    }
+    console.log(
+      `%c Open Page:[${page}] and set as root`,
+      "font-size:1.2rem;color:yellow;",
+    );
     this.currentPage = page;
     if (this.nav) {
       this.nav.setRoot(page);

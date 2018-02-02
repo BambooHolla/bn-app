@@ -135,6 +135,7 @@ export function getProtoArray(target: any, key: string) {
   }
   return res;
 }
+window['getProtoArray'] = getProtoArray;
 
 let PA_ID_VALUE = 0;
 export function addProtoArray(target: any, key: string, value: any) {

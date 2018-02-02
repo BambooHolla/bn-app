@@ -35,12 +35,13 @@ export class TabVotePage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
-  account_info = {
-    balance: 8.88888888,
-  };
+
   @TabVotePage.didEnter
   hiddenTabBg() {
-    this.tabs.setBgTransparent(this.page_status === "bootstrap", this.cname);
+    if (this.page_status === VotePage.None) {
+      this.page_status = VotePage.Bootstrap;
+    }
+    this.tabs.setBgTransparent(this.page_status === VotePage.Bootstrap, this.cname);
   }
   @TabVotePage.didLeave
   recoverTabBg() {
@@ -59,10 +60,10 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
 
-  page_status = "bootstrap";
+  page_status  = VotePage.None;
   routeToVoteDetail() {
     this.tabs.setBgTransparent(false, this.cname);
-    this.page_status = "vote-detail";
+    this.page_status = VotePage.VoteDetail;
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.startAnimation();
@@ -120,7 +121,7 @@ export class TabVotePage extends FirstLevelPage {
   }
   routeToBootstrap() {
     this.tabs.setBgTransparent(true, this.cname);
-    this.page_status = "bootstrap";
+    this.page_status = VotePage.Bootstrap;
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.stopAnimation();
@@ -316,4 +317,9 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
 }
-0;
+
+export enum VotePage {
+  None = "",
+  Bootstrap = "bootstrap",
+  VoteDetail = "vote-detail",
+}

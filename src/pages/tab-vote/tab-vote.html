@@ -21,7 +21,9 @@
       <div class="main-container">
         <div class="auto-start-button-wrapper">
           <div class="auto-start-button" [class.opening]="min_starting||try_min_starting" (touchstart)="try_min_starting=true" (touchcancel)="try_min_starting=false"
-            (touchend)="try_min_starting=false;startMin()"></div>
+            (touchend)="try_min_starting=false;startMin()">
+              <div class="press-down-layer"></div>
+            </div>
         </div>
       </div>
       <div class="assets-info">
