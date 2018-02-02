@@ -131,6 +131,9 @@ export class LoginServiceProvider {
   async refreshUserInfo() {
     try {
       const userinfo = this.appSetting.getUserToken();
+      if (!userinfo) {
+        return;
+      }
       const res = await this.fetch.put<any>(this.LOGIN_URL, {
         publicKey: userinfo.publicKey
       });

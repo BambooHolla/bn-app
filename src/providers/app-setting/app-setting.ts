@@ -24,9 +24,9 @@ const net_version =
 
 @Injectable()
 export class AppSettingProvider extends EventEmitter {
-  // static SERVER_URL = "http://mainnet.ifmchain.org";
-  static SERVER_URL = "http://47.104.142.234:6062";
-  static SEED_DATE = [2017, 11, 27, 15, 58, 36, 0];
+  static SERVER_URL = "http://mainnet.ifmchain.org";
+  // static SERVER_URL = "http://47.104.142.234:6062";
+  static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = net_version || "mainnet";
@@ -87,6 +87,12 @@ export class AppSettingProvider extends EventEmitter {
         },
       });
     }
+
+    // 省电模式
+    this.on(
+      "changed@setting.power_saving_mode",
+      is_save => (this.settings.animation_switch = !is_save),
+    );
 
     // 动画开关对动画的控制
 
@@ -191,6 +197,8 @@ export class AppSettingProvider extends EventEmitter {
     mining_only_in_wifi: true,
     /**动画开关*/
     animation_switch: true,
+    /**省电模式*/
+    power_saving_mode: false,
     /**自动更新*/
     auto_update_app: false,
     /**自动更新手续费到前一轮的最低值*/

@@ -61,7 +61,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   _ture_pwd = "";
   pwd_textarea_height = "";
 
-  autoReHeightPWDTextArea(stop_loop: boolean) {
+  autoReHeightPWDTextArea(stop_loop?: boolean) {
     if (!stop_loop) {
       requestAnimationFrame(() => {
         this.autoReHeightPWDTextArea(true);
@@ -85,6 +85,9 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
   togglePWD() {
     this.show_pwd = !this.show_pwd;
+    requestAnimationFrame(() => {
+      this.autoReHeightPWDTextArea();
+    });
   }
   pwd_font_char_map = new Map();
   pwd_font = (() => {
@@ -201,7 +204,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     );
     if (result) {
       // this.routeTo("scan-nodes");
-      this.navCtrl.setRoot(MainPage);
+      this.myApp.openPage(MainPage);
     }
   }
   gotoRegister() {
