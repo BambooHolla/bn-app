@@ -18,21 +18,34 @@ page-tab-pay {
     height: 5rem;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    /* justify-content: space-around; */
+    flex-shrink: 0;
+    flex-grow: 0;
+    padding: 0 9%;
     .tool-item {
       width: 4.5rem;
       height: 4.5rem;
+      flex-shrink: 0;
+      flex-grow: 0;
       border-radius: 50%;
       background-color: rgba(#fff, 0.2);
-      display: flex;
+      /* display: flex;
       justify-content: center;
-      align-items: center;
-      font-size: 2.8rem;
+      align-items: center; */
+      font-size: 0;
       color: #fff;
       transition-duration: 250ms;
+      >ali-icon{
+        width: 0rem;
+        text-align: center;
+        position: relative;
+        left: -1.2rem;
+        font-size: 2.8rem;
+      }
       &.contact-book {
         font-size: 2.4rem;
       }
+
       &:active {
         transform: scale(1.1);
         background-color: rgba(#fff, 0.4);
@@ -118,10 +131,6 @@ page-tab-pay {
       width: 100%;
       background: #fff;
       border-radius: 0.8rem;
-      height: 3.9rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       color: #35daeb;
       font-size: 1.8rem;
       box-shadow: 0 0.8rem 3rem rgba(99, 99, 99, 0.2);

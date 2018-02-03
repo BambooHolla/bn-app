@@ -68,4 +68,20 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
+  text-align: center;
+}
+.platform-ios{
+  .submit-button{
+    display: -webkit-box;
+  }
+  .flex{
+    display: -webkit-box!important;
+  }
+  .flex-center{
+    display: -webkit-box!important;
+    background-color: red!important;
+    >*{
+      margin: 0 auto;
+    }
+  }
 }

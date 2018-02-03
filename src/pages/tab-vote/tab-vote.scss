@@ -49,6 +49,10 @@ page-tab-vote {
     // background-color: purple;
     transition-duration: 0.5s;
     transform-origin: 50% 0%;
+    &.show-big-fall-icon {
+      transition-delay: 0.2s;
+      opacity: 0;
+    }
     &.bootstrap {
       // 26 + 3.3732 / 0.83
       /* transform-origin: 50% 50%; */
@@ -304,6 +308,117 @@ height: 105.2625%; */
         padding: 0.5rem 1.2rem;
       }
     }
+    .fall-icon-into-panel {
+      flex-shrink: 0;
+      flex-grow: 0;
+      position: absolute;
+      top: 9.8vh;
+      left: 10vw;
+      width: 80vw;
+      height: 80vw;
+      z-index: 10;
+      pointer-events: none;
+      $ani-dur: 2s;
+      div {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+      }
+      &.start-ani {
+        .drilled-into-panel-ani {
+          animation-delay: $ani-dur;
+          animation-name: drilled-into-panel-ani;
+          animation-fill-mode: forwards;
+          animation-duration: $ani-dur/2;
+          animation-iteration-count: infinite;
+          transform-origin: 100% 100%;
+          animation-timing-function: ease-out;
+        }
+        @keyframes drilled-into-panel-ani {
+          0% {
+            transform: translateY(0);
+          }
+          60% {
+            transform: translateY(-0.5rem);
+          }
+          100% {
+            transform: translateY(1rem);
+          }
+        }
+        /* 金币掉落到面板的动画 */
+        .icon-fall-down-ani {
+          animation-name: icon-fall-down-ani;
+          animation-fill-mode: forwards;
+          animation-duration: $ani-dur;
+          animation-timing-function: ease-out;
+          /* animation-iteration-count: infinite; */
+        }
+        @keyframes icon-fall-down-ani {
+          0% {
+            transform: translate(0, 0);
+          }
+          100% {
+            transform: translate(36vw, calc(40vw + 17vh));
+          }
+        }
+        /* 金币缩放的动画 */
+        .icon-scale-ani {
+          animation-name: icon-scale-ani;
+          animation-fill-mode: forwards;
+          animation-duration: $ani-dur * 1.5;
+          animation-timing-function: ease-out;
+          /* animation-iteration-count: infinite; */
+        }
+        @keyframes icon-scale-ani {
+          0% {
+            transform: scale(1) rotate(0deg);
+          }
+          50% {
+            transform: scale(0.18) rotate(#{360 * 1.25}deg);
+            box-shadow: 0 0 0 #fff;
+          }
+          66.666% {
+            transform: scale(0.18) rotate(#{360 * 1.25}deg);
+            box-shadow: 0 0 2rem #fff;
+          }
+          100% {
+            transform: scale(0) rotate(#{360 * 1.25}deg);
+            box-shadow: 0 0 4rem #fff;
+          }
+        }
+      }
+      /* 金币翻转的动画 */
+      .icon-flip-ani {
+        background-image: url("../assets/img/gold-coin/s36.png");
+        background-size: 100% auto;
+        background-repeat: no-repeat;
+        animation-name: icon-flip-ani;
+        animation-timing-function: steps(36);
+        animation-duration: 0.5s;
+        animation-iteration-count: infinite;
+      }
+      @keyframes icon-flip-ani {
+        0% {
+          background-position-y: 0px;
+        }
+        100% {
+          /* background-position-y: 3456px; */
+          background-position-y: 102.857142857%;
+        }
+      }
+      opacity: 0;
+      transform: scale(0.4);
+      &.show-big-fall-icon {
+        transition-duration: 0.7s;
+        transition-timing-function: ease-out;
+        opacity: 1;
+        transform: scale(1);
+        .icon-flip-ani {
+          animation-duration: 0.3s;
+        }
+      }
+    }
     .ani-wrapper {
       flex-shrink: 0;
       flex-grow: 0;
@@ -313,6 +428,16 @@ height: 105.2625%; */
       left: 10vw;
       width: 80vw;
       height: 80vw;
+
+      opacity: 1;
+      transform: scale(1);
+      &.show-big-fall-icon {
+        transition-duration: 0.7s;
+        transition-timing-function: ease-in;
+        opacity: 0;
+        transform: scale(1.2) !important;
+      }
+
       &::before {
         content: " ";
         z-index: 1;
@@ -378,6 +503,10 @@ height: 105.2625%; */
           left: 0;
           background-image: url("../assets/imgs/tab-vote/glow.png");
           background-size: 100%;
+          z-index: -1;
+          /* opacity: 0.5; */
+        }
+        > canvas {
           opacity: 0.5;
         }
       }
@@ -449,6 +578,7 @@ height: 105.2625%; */
         }
       }
     }
+
     .extends-panel {
       /* position: relative; */
       /*  align-self: flex-start;
@@ -591,7 +721,7 @@ height: 105.2625%; */
               .title {
                 font-size: 1.6rem;
               }
-              >.my-income-assets{
+              > .my-income-assets {
                 font-size: 1.2rem;
                 font-weight: lighter;
               }
@@ -677,7 +807,7 @@ height: 105.2625%; */
               justify-content: space-between;
               color: #7a7a7a;
               font-size: 1.65rem;
-              >.my-income-assets{
+              > .my-income-assets {
                 font-size: 1.2rem;
                 font-weight: lighter;
               }
@@ -688,14 +818,64 @@ height: 105.2625%; */
               display: flex;
               align-items: center;
               justify-content: space-around;
-              >.item{
-                >.value{
+              > .item {
+                > .value {
                   font-size: 2rem;
                   transform: scaleY(0.9);
                 }
-                >.label{
+                > .label {
                   font-size: 1.5rem;
                   color: #7a7a7a;
+                }
+              }
+            }
+          }
+          .pre-round-income-rate {
+            background: linear-gradient(
+              to bottom,
+              #fff 0%,
+              #fff 50%,
+              #fedb8d 75%,
+              #fec64a 100%
+            );
+            > .header {
+              padding: 1rem;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              color: #7a7a7a;
+              font-size: 1.65rem;
+              > .my-income-assets {
+                font-size: 1.2rem;
+                font-weight: lighter;
+              }
+            }
+            > .detail {
+              padding-bottom: 1.5rem;
+              > .rate-of-return {
+                padding-top: 0.5rem;
+                padding-bottom: 1.5rem;
+              }
+              > .extends-info {
+                display: flex;
+                justify-content: space-between;
+                
+                padding: 0 2rem;
+                color: #fff;
+                font-size: 1.55rem;
+                font-weight: lighter;
+                >.left,>.right{
+                  display: flex;
+                  align-items: center;
+                  &::before{
+                    content: " ";
+                    display: inline-block;
+                    background-color: #FFF;
+                    width: 0.4rem;
+                    height: 0.4rem;
+                    border-radius: 50%;
+                    margin-right: 0.8rem;
+                  }
                 }
               }
             }

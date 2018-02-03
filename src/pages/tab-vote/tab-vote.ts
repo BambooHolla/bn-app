@@ -41,7 +41,10 @@ export class TabVotePage extends FirstLevelPage {
     if (this.page_status === VotePage.None) {
       this.page_status = VotePage.Bootstrap;
     }
-    this.tabs.setBgTransparent(this.page_status === VotePage.Bootstrap, this.cname);
+    this.tabs.setBgTransparent(
+      this.page_status === VotePage.Bootstrap,
+      this.cname,
+    );
   }
   @TabVotePage.didLeave
   recoverTabBg() {
@@ -60,10 +63,7 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
 
-  page_status  = VotePage.None;
-  routeToVoteDetail() {
-    this.tabs.setBgTransparent(false, this.cname);
-    this.page_status = VotePage.VoteDetail;
+  private _startVoteAnimate() {
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.startAnimation();
@@ -101,6 +101,13 @@ export class TabVotePage extends FirstLevelPage {
     }
 
     this.chain_mesh && this.chain_mesh.startAnimation();
+  }
+  page_status = VotePage.None;
+  routeToVoteDetail() {
+    this.tabs.setBgTransparent(false, this.cname);
+    this.page_status = VotePage.VoteDetail;
+    this._startVoteAnimate();
+
     const { _earth_enabled_config, earth_config } = this;
     for (const key in _earth_enabled_config) {
       const from = earth_config[key];
@@ -119,9 +126,7 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
   }
-  routeToBootstrap() {
-    this.tabs.setBgTransparent(true, this.cname);
-    this.page_status = VotePage.Bootstrap;
+  private _stopVoteAnimate(opts: { is_force_stop_chain_mesh?: boolean } = {}) {
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.stopAnimation();
@@ -131,26 +136,34 @@ export class TabVotePage extends FirstLevelPage {
     this.buddha_glow &&
       this.buddha_glow.is_inited &&
       this.buddha_glow.stopAnimation();
-
-    const { _earth_disabled_config, earth_config } = this;
-    for (const key in _earth_disabled_config) {
-      const from = earth_config[key];
-      const to = _earth_disabled_config[key];
-      const finish_fun = () => {
-        this.chain_mesh && this.chain_mesh.stopAnimation();
-      };
-      if (key.indexOf("_color") != -1) {
-        AniBase.animateColor(from, to, 500)(v => {
-          earth_config[key] = (v[0] << 16) + (v[1] << 8) + v[2];
-          return this.page_status == "bootstrap";
-        }, finish_fun);
-      } else {
-        AniBase.animateNumber(from, to, 500)(v => {
-          earth_config[key] = v;
-          return this.page_status == "bootstrap";
-        }, finish_fun);
+    if (opts.is_force_stop_chain_mesh) {
+      this.chain_mesh && this.chain_mesh.stopAnimation();
+    } else {
+      const { _earth_disabled_config, earth_config } = this;
+      for (const key in _earth_disabled_config) {
+        const from = earth_config[key];
+        const to = _earth_disabled_config[key];
+        const finish_fun = () => {
+          this.chain_mesh && this.chain_mesh.stopAnimation();
+        };
+        if (key.indexOf("_color") != -1) {
+          AniBase.animateColor(from, to, 500)(v => {
+            earth_config[key] = (v[0] << 16) + (v[1] << 8) + v[2];
+            return this.page_status == "bootstrap";
+          }, finish_fun);
+        } else {
+          AniBase.animateNumber(from, to, 500)(v => {
+            earth_config[key] = v;
+            return this.page_status == "bootstrap";
+          }, finish_fun);
+        }
       }
     }
+  }
+  routeToBootstrap() {
+    this.tabs.setBgTransparent(true, this.cname);
+    this.page_status = VotePage.Bootstrap;
+    this._stopVoteAnimate();
   }
   @ViewChild(FallCoinsComponent) fall_coin?: FallCoinsComponent;
   @ViewChild(SatellitePixiComponent) satellite_pixi?: SatellitePixiComponent;
@@ -195,6 +208,8 @@ export class TabVotePage extends FirstLevelPage {
     satellite_pixi: false,
     buddha_glow: false,
     fall_coins: false,
+    show_big_fall_icon: false,
+    round_ani: false,
   };
 
   try_min_starting = false;
@@ -249,6 +264,12 @@ export class TabVotePage extends FirstLevelPage {
       this.routeToVoteDetail();
       this.getPreRoundRankList();
       this.getCurRoundIncomeInfo();
+      // FAKE ANI
+      setTimeout(() => {
+        if(!this.is_show.show_big_fall_icon){
+          this._whenRoundChangeAni();
+        }
+      }, 1000);
     } finally {
       this.min_starting = false;
     }
@@ -271,14 +292,27 @@ export class TabVotePage extends FirstLevelPage {
   watchRoundChanged() {
     if (!this._round_subscription && this.page_status === "vote-detail") {
       this._round_subscription = this.appSetting.round.subscribe(() => {
-        // stop ani
-        // do ani
-        // update panel
+        this._whenRoundChangeAni();// 执行动画
+        // TODO:数据的变动应该与动画同时触发
         this.getPreRoundRankList();
         this.getCurRoundIncomeInfo();
-        // start new ani
       });
     }
+  }
+  private _whenRoundChangeAni() {
+    this._stopVoteAnimate({ is_force_stop_chain_mesh: true });
+    // 隐藏挖矿动画层，显示大金币
+    this.is_show.show_big_fall_icon = true;
+    setTimeout(() => {
+      // 显示金币掉落动画
+      this.is_show.round_ani = true;
+      setTimeout(() => {
+        this.is_show.show_big_fall_icon = false;
+        this.is_show.round_ani = false;
+        // 重新开始动画
+        this._startVoteAnimate();
+      }, 4000);
+    }, 1000);
   }
 
   /**上一轮的排名*/
