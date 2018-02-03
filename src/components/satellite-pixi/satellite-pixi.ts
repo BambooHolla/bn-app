@@ -140,10 +140,7 @@ export class SatellitePixiComponent extends AniBase {
 
       ship.x = x + root_circle.x;
       ship.y = y + root_circle.y;
-      console.log('ship.rotation', ship.rotation, cur_deg);
-      // if (cur_ani_deg === Math.PI * 2) {
-      //   ship.rotation = 0;
-      // }
+      // console.log('ship.rotation', ship.rotation, cur_deg);
     }
 
     this.addLoop((t, dif_ms) => {
