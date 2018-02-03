@@ -30,7 +30,7 @@ export class AniBase extends EventEmitter {
     }
 
     this.is_started = true;
-    console.group("start-animation");
+    console.group("start-animation:" + this.cname);
     this.emit("start-animation");
     console.groupEnd();
     requestAnimationFrame(t => {
@@ -40,7 +40,7 @@ export class AniBase extends EventEmitter {
   }
   stopAnimation() {
     this.is_started = false;
-    console.group("stop-animation");
+    console.group("stop-animation:" + this.cname);
     this.emit("stop-animation");
     console.groupEnd();
   }
@@ -110,7 +110,7 @@ export class AniBase extends EventEmitter {
     easing_function = Easing.Linear,
   ) {
     const diff = to - from;
-    return function (
+    return function(
       cb: (v: number) => void | boolean,
       after_finished?: () => void,
     ) {

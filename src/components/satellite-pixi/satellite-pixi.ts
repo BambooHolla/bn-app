@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
-import { AniBase } from "../AniBase";
+import { AniBase, Easing } from "../AniBase";
 import * as PIXI from "pixi.js";
 
 @Component({
@@ -10,14 +10,14 @@ export class SatellitePixiComponent extends AniBase {
   protected app?: PIXI.Application;
   protected root_circle?: PIXI.Graphics;
   protected ship?: PIXI.Container;
-  protected round_time = /*128*/ 10 * 1000;
-  protected res_time = this.round_time;
+  // protected round_time = /*128*/ 10 * 1000;
+  // protected res_time = this.round_time;
   protected circle_width?: number;
-  protected get progress() {
-    return 1 - this.res_time / this.round_time;
-  }
-  protected ani_progress = 0; // 动画显示用的进度
-  protected ani_deg_speed = Math.PI * 2 / this.round_time; // 默认角速度，deg/ms
+  // protected get progress() {
+  //   return 1 - this.res_time / this.round_time;
+  // }
+  // protected ani_progress = 0; // 动画显示用的进度
+  // protected ani_deg_speed = Math.PI * 2 / this.round_time; // 默认角速度，deg/ms
   @ViewChild("canvas") canvasRef!: ElementRef;
 
   _init() {
@@ -41,7 +41,7 @@ export class SatellitePixiComponent extends AniBase {
       this._loop_runs.length = 0;
     }
 
-    const { canvasNode, pt, ani_deg_speed } = this;
+    const { canvasNode, pt } = this;
     if (!canvasNode) {
       throw new Error("call init first");
     }
@@ -118,6 +118,7 @@ export class SatellitePixiComponent extends AniBase {
     }
 
     stage.addChild(ship);
+    ship.cacheAsBitmap = true;
 
     // // 推进器火焰动画
     // this._loop_runs.push(() => {
@@ -131,18 +132,65 @@ export class SatellitePixiComponent extends AniBase {
     // });
 
     // 沿轨道运动动画
-    this.addLoop((t, dif_ms) => {
-      // console.log('zzz',circle_width)
-      const cur_ani_deg = (this.ani_progress += this.ani_deg_speed * dif_ms);
+    function shipAddDeg(cur_deg: number) {
 
-      const x = -Math.sin(cur_ani_deg) * circle_width;
-      const y = Math.cos(cur_ani_deg) * circle_width;
+      ship.rotation = cur_deg;
+      const x = -Math.sin(cur_deg) * circle_width;
+      const y = Math.cos(cur_deg) * circle_width;
 
       ship.x = x + root_circle.x;
       ship.y = y + root_circle.y;
-      ship.rotation = cur_ani_deg;
+      console.log('ship.rotation', ship.rotation, cur_deg);
+      // if (cur_ani_deg === Math.PI * 2) {
+      //   ship.rotation = 0;
+      // }
+    }
+
+    this.addLoop((t, dif_ms) => {
+      if (this._add_ms < this._ani_ms) {
+        this._add_ms += dif_ms
+        if (this._add_ms > this._ani_ms) {
+          this._add_ms = this._ani_ms
+        }
+      } else {
+        return
+      }
+      const p = this._pre_progress + this._add_ms / this._ani_ms * this._dif_progress;
+      const diff_deg = Math.PI * 2 * p;
+      // console.log('zzz',circle_width)
+      // const cur_ani_deg = ship.rotation + deg_p;
+      shipAddDeg(diff_deg);
     });
   }
+  private _pre_progress = 0;
+  private _dif_progress = 0;
+  private _progress = 0;
+  set progress(v: number) {
+    if (isFinite(v)) {
+      // v = Math.max(0, v);
+      // v = Math.min(1, v);
+      if (v !== this._progress) {
+        this._pre_progress = this._progress;
+        this._progress = v;
+        this._dif_progress = v - this._pre_progress;
+        this._add_ms = 0;
+        this.emit("progress", v);
+      }
+    }
+  }
+  get progress() {
+    return this._progress;
+  }
+  private _ani_ms = 500;
+  private _add_ms = 0;
+
+  setProgress(progress: number, ani_ms?: number) {
+    if (ani_ms && isFinite(ani_ms) && ani_ms > 0) {
+      this._ani_ms = ani_ms
+    }
+    this.progress = progress;
+  }
+  easing = Easing.Linear
 
   startPixiApp() {
     this.app && this.app.start();
