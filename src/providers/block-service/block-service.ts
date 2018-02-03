@@ -45,6 +45,7 @@ export class BlockServiceProvider {
     const do_loop = () => {
       console.log("qaq");
       this.lastBlock.refresh();
+      // 这里不需要捕捉错误，_loop内有完整的错误捕捉方案。所以只需要执行就可以了
       this._loopGetAndSetHeight();
     };
     try {
@@ -54,11 +55,17 @@ export class BlockServiceProvider {
       let lastTime = this.getFullTimestamp(last_block.timestamp);
       let currentTime = Date.now();
       const diff_time = currentTime - lastTime;
-      if (diff_time <= 0) {
-        throw new RangeError("Wrong diff time");
-      }
+      // if (diff_time <= 0) {
+      //   throw new RangeError("Wrong diff time");
+      // }
       if (diff_time < 128e3) {
         this._refresh_interval = 0;
+        console.log(
+          `%c高度将在${new Date(
+            currentTime + 128e3 - diff_time,
+          ).toLocaleTimeString()}进行更新`,
+          "font-size:1rem;color:blue;",
+        );
         setTimeout(do_loop, 128e3 - diff_time);
       } else {
         // 刷新时间递增
@@ -116,7 +123,7 @@ export class BlockServiceProvider {
     let lastBlockTime = lastBlock.timestamp;
     let lastTime = this.getFullTimestamp(lastBlockTime);
     let currentTime = new Date().getTime();
-    if (currentTime - lastTime > 128000+2000) {
+    if (currentTime - lastTime > 128000 + 2000) {
       //2秒缓冲时间
       return -1;
     } else {
@@ -141,9 +148,9 @@ export class BlockServiceProvider {
       ),
     );
     let tstamp = parseInt((seed.getTime() / 1000).toString());
-    console.log('aaa seed ' + tstamp);
+    console.log("aaa seed " + tstamp);
     let fullTimestamp = (timestamp + tstamp) * 1000;
-    console.log('aaa full ' + fullTimestamp);
+    console.log("aaa full " + fullTimestamp);
     return fullTimestamp;
   }
 
@@ -277,14 +284,14 @@ export class BlockServiceProvider {
             });
             //把数组插入原数组前面
             //Array.prototype.splice然后把指针指向
-           
+
             // data.blocks.unshift(data.length, 0);
             // Array.prototype.splice.apply(this.blockArray, data);
             // this.blockArray = data;
             // return this.blockArray.slice(0, amount - 1);
 
             // TODO:这里采用严格的数据类型检测后发现有BUG，暂时没有解决。外部不在采用这个部分的方法，可以直接取消
-            return []
+            return [];
           }
         }
       } else {
@@ -363,51 +370,53 @@ export class BlockServiceProvider {
 
     return data.transactions;
   }
-  
+
   /**
    * 获取最近n个块的平均奖励
-   * @param amount 
+   * @param amount
    */
-  async getAvgInfo(amount:number = 5) {
-    if(this.blockArray.length < amount) {
+  async getAvgInfo(amount: number = 5) {
+    if (this.blockArray.length < amount) {
       this.getTopBlocks(true, amount);
     }
-    let reward = 0, fee = 0;
-    for(let i=0; i< amount; i++) {
+    let reward = 0,
+      fee = 0;
+    for (let i = 0; i < amount; i++) {
       reward += parseFloat(this.blockArray[i].reward);
       fee += parseFloat(this.blockArray[i].totalFee);
     }
 
-    return {reward, fee};
+    return { reward, fee };
   }
 
   /**
    * 获取当前的未确认交易数
    */
-  async getPoolUnconfirmed():Promise<any> {
-    let data:any = this.fetch.get<any>(this.GET_POOL);
+  async getPoolUnconfirmed(): Promise<any> {
+    let data: any = this.fetch.get<any>(this.GET_POOL);
 
     return data.Transactions.u;
   }
 
-  
   /**
    * 获取未来一个块的预期信息
    * @param:amount 根据最近n个块来获取平均值
    * 返回平均收益、平均手续费、未确认交易数
    */
-  async getExpectBlockInfo(amount:number = 5):Promise<{
-    reward: number,
-    fee: number,
-    uncommited: number
+  async getExpectBlockInfo(
+    amount: number = 5,
+  ): Promise<{
+    reward: number;
+    fee: number;
+    uncommited: number;
   }> {
     amount = amount < 57 ? amount : 57;
     let uncommited = await this.getPoolUnconfirmed();
     let blockInfo = await this.getAvgInfo(amount);
     let data = {
       ...blockInfo,
-      uncommited
-    }
+      uncommited,
+    };
 
     return data;
   }

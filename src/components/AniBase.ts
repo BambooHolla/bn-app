@@ -74,6 +74,13 @@ export class AniBase extends EventEmitter {
     if (this.is_started) requestAnimationFrame(this._loop);
   }
   _update(t, diff_t) {
+    if (this.loop_skip) {
+      if (this._cur_loop_skip < this.loop_skip) {
+        this._cur_loop_skip += 1;
+        return;
+      }
+      this._cur_loop_skip = 0;
+    }
     for (let fun of this._loop_runs) {
       fun(t, diff_t);
     }
@@ -102,6 +109,8 @@ export class AniBase extends EventEmitter {
       target[name]();
     });
   }
+  loop_skip = 0;
+  private _cur_loop_skip = 0;
 
   static animateNumber(
     from: number,
@@ -325,9 +334,9 @@ export const Easing = {
     }
     return (
       a *
-      Math.pow(2, -10 * (k -= 1)) *
-      Math.sin((k - s) * (2 * Math.PI) / p) *
-      0.5 +
+        Math.pow(2, -10 * (k -= 1)) *
+        Math.sin((k - s) * (2 * Math.PI) / p) *
+        0.5 +
       1
     );
   },

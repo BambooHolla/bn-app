@@ -203,7 +203,7 @@ export function asyncLoadingWrapGenerator(
   }
   return function asyncLoadingWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
-    descriptor.value = function (...args) {
+    descriptor.value = function(...args) {
       const loadingCtrl: LoadingController = this.loadingCtrl;
       if (!(loadingCtrl instanceof LoadingController)) {
         throw new Error(
@@ -336,21 +336,83 @@ export function asyncLoadingWrapGenerator(
     return descriptor;
   };
 }
-export async function autoRetryWrapGenerator(timeGenerator:GeneratorFunction) {
+export function autoRetryWrapGenerator(
+  maxSeconed_or_timeGenerator?:
+    | (() => IterableIterator<number>)
+    | number
+    | {
+      max_retry_seconed?: number;
+      max_retry_times?: number;
+    },
+  onAbort?: Function,
+) {
+  var max_retry_seconed = 16;
+  var max_retry_times = 5; // 默认最多重试5次
+  if (
+    typeof maxSeconed_or_timeGenerator == "number" &&
+    maxSeconed_or_timeGenerator > 0
+  ) {
+    max_retry_seconed = maxSeconed_or_timeGenerator;
+  }
+  var timeGenerator: () => IterableIterator<number>;
+  if (maxSeconed_or_timeGenerator instanceof Function) {
+    timeGenerator = maxSeconed_or_timeGenerator;
+  } else {
+    timeGenerator = function* () {
+      var second = 1;
+      var times = 0;
+      do {
+        yield second;
+        times += 1;
+        if (times >= max_retry_times) {
+          // 重试太多了，终止
+          return;
+        }
+        if (second < max_retry_seconed) {
+          second *= 2;
+        }
+        if (second > max_retry_seconed) {
+          second = max_retry_seconed;
+        }
+      } while (true);
+    };
+  }
   const time_gen = timeGenerator();
-  return function (target, name, descriptor) {
+  return function(target, name, descriptor) {
     const source_fun = descriptor.value;
-    descriptor.value = function (...args) {
-      
-    }
+    // 强制转为异步函数
+    descriptor.value = async function loop(...args) {
+      var keep_retry = true;
+      do {
+        try {
+          // 不论同步还是异步，都进行await
+          // 如果成功，直接返回，中断重试循环
+          return await source_fun.apply(this, args);
+        } catch (err) {
+          const time_info = time_gen.next(err);
+          if (time_info.done) {
+            // 声明中断循环
+            keep_retry = false;
+            if (onAbort) {
+              onAbort(err);
+            } else {
+              // 停止了重试，抛出异常，中断重试循环
+              throw err;
+            }
+          } else {
+            await new Promise(cb => setTimeout(cb, time_info.value * 1e3));
+          }
+        }
+      } while (keep_retry);
+    };
     descriptor.value.source_fun = source_fun;
     return descriptor;
-  }
+  };
 }
 
 export const asyncCtrlGenerator = {
   success: asyncSuccessWrapGenerator,
   loading: asyncLoadingWrapGenerator,
   error: asyncErrorWrapGenerator,
-  retry: autoRetryWrapGenerator
+  retry: autoRetryWrapGenerator,
 };

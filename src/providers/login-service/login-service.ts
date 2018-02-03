@@ -11,6 +11,7 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
+import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator"
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
@@ -125,31 +126,20 @@ export class LoginServiceProvider {
     }
   }
 
-  _refresh_user_info_try_time = 0;
+
   /** 更新用户信息
    */
+  @asyncCtrlGenerator.retry(undefined, (err) => console.error("获取用户信息一直失败，需要检查网络", err))
   async refreshUserInfo() {
-    try {
-      const userinfo = this.appSetting.getUserToken();
-      if (!userinfo) {
-        return;
-      }
-      const res = await this.fetch.put<any>(this.LOGIN_URL, {
-        publicKey: userinfo.publicKey
-      });
-      Object.assign(userinfo, res.account);
-      this.appSetting.setUserToken(userinfo);
-      // 更新成功，重置
-      this._refresh_user_info_try_time = 1;
-    } catch (err) {
-      console.error('更新用户信息失败', err);
-      if (this._refresh_user_info_try_time == 0) {
-
-      }
-      setTimeout(() => {
-        this.refreshUserInfo()
-      }, 2000);
+    const userinfo = this.appSetting.getUserToken();
+    if (!userinfo) {
+      return;
     }
+    const res = await this.fetch.put<any>(this.LOGIN_URL, {
+      publicKey: userinfo.publicKey
+    });
+    Object.assign(userinfo, res.account);
+    this.appSetting.setUserToken(userinfo);
   }
 
   /**

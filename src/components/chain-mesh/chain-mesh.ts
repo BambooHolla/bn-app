@@ -19,12 +19,18 @@ export const _load_resource_promiseout = new PromiseOut<
   PIXI.loaders.ResourceDictionary
   >();
 export const FRAMES_NUM = 60;
+export const frames_list: PIXI.Texture[] = [];
 for (let i = 0; i < FRAMES_NUM; i += 1) {
   const i_str = ("00000" + i).substr(-5);
   loader.add("img" + i_str, "assets/imgs/400-60/earth-" + i_str + ".png");
 }
 loader.onError.add(err => _load_resource_promiseout.reject(err));
 loader.load((loader, resources) => {
+  for (let i = 0; i < FRAMES_NUM; i += 1) {
+    const i_str = ("00000" + i).substr(-5);
+    const resource = resources["img" + i_str] as PIXI.loaders.Resource;
+    frames_list.push(resource.texture);
+  }
   _load_resource_promiseout.resolve(resources);
 });
 
@@ -62,6 +68,7 @@ export class ChainMeshComponent extends AniBase {
     this.on("stop-animation", this.stopPixiApp.bind(this));
   }
   is_app_ready = false;
+  devicePixelRatio = (window.devicePixelRatio + 1) / 2;
   async initPixiApp() {
     if (this.app) {
       this.app.stage.children.slice().forEach(child => {
@@ -91,27 +98,7 @@ export class ChainMeshComponent extends AniBase {
     // 处理resource成动画帧
     const { stage, renderer, ticker } = app;
     const wh_size = Math.min(renderer.width, renderer.height);
-    const frames_list: PIXI.Texture[] = (window["frames_list"] = []);
-    for (let i = 0; i < FRAMES_NUM; i += 1) {
-      const i_str = ("00000" + i).substr(-5);
-      const resource = resources["img" + i_str] as PIXI.loaders.Resource;
-      frames_list.push(resource.texture);
-    }
 
-    const fps_info = new PIXI.Text(ticker.FPS.toFixed(2), {
-      fontFamily: "Arial",
-      fontSize: 24,
-      fill: 0,
-      align: "center",
-    });
-    fps_info.position.set(
-      160 * this.devicePixelRatio,
-      fps_info.height * 2 * this.devicePixelRatio,
-    );
-    stage.addChild(fps_info);
-    ticker.add(() => {
-      fps_info.text = ticker.FPS.toFixed(2);
-    });
 
     const gradient_r_canvas = ChainMeshComponent.createRadialGradient(wh_size, [
       [0, "rgba(255,255,255,0.3)"],
@@ -188,7 +175,7 @@ export class ChainMeshComponent extends AniBase {
         if (cur_frame_num >= end_frame_num) {
           po.resolve(); // 避免出错
           sp.destroy();
-          ticker.remove(loop);
+          this.removeLoop(loop);
           return;
         }
 
@@ -199,7 +186,7 @@ export class ChainMeshComponent extends AniBase {
         sp.alpha = alpha;
         sp.texture = frames_list[cur_frame_num];
       };
-      ticker.add(loop);
+      this.addLoop(loop);
       // ticker.FPS = 30;
       await po.promise;
     } while (true);
@@ -210,6 +197,7 @@ export class ChainMeshComponent extends AniBase {
   stopPixiApp() {
     this.app && this.app.stop();
   }
+  loop_skip = 1;// 跳帧，跳1帧，等同于30fps
   static createRadialGradient(r = 300, stops = [[0, "#FFF"], [1, "#000"]]) {
     var canvas = document.createElement("canvas");
 

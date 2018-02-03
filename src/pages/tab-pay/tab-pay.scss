@@ -29,17 +29,17 @@ page-tab-pay {
       flex-grow: 0;
       border-radius: 50%;
       background-color: rgba(#fff, 0.2);
-      /* display: flex;
+      display: flex;
       justify-content: center;
-      align-items: center; */
+      align-items: center;
       font-size: 0;
       color: #fff;
       transition-duration: 250ms;
       >ali-icon{
-        width: 0rem;
+        // width: 0rem;
         text-align: center;
         position: relative;
-        left: -1.2rem;
+        // left: -1.2rem;
         font-size: 2.8rem;
       }
       &.contact-book {

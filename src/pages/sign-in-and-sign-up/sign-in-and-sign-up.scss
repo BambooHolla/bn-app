@@ -132,8 +132,7 @@ page-sign-in-and-sign-up {
       font-size: 3rem;
       margin-top: 10.5rem;
     }
-    .login-form,
-    .register-form {
+    .sign-form {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -184,10 +183,6 @@ page-sign-in-and-sign-up {
           color: #fff;
           transform: scaleX(1.2);
         }
-        @font-face {
-          font-family: monospace;
-          src: local("Menlo");
-        }
         .password-textarear {
           text-indent: 2.7rem;
           line-height: 4rem;
@@ -201,13 +196,14 @@ page-sign-in-and-sign-up {
           color: #fff;
           overflow-y: visible;
           font-family: "PWD";
+          font-size: 1.4rem;
           background: linear-gradient(
+            to bottom,
             rgba(#fff, 0.5) 0%,
             rgba(#fff, 0.5) 2%,
             transparent 2%,
             transparent 100%
           );
-          font-size: 1.4rem;
           background-size: 100% 4rem;
           background-position: 0 3rem;
           background-attachment: local;

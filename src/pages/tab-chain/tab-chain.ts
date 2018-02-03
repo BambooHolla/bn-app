@@ -143,20 +143,31 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.autoUnsubscribe private _height_subscription?: Subscription;
   @TabChainPage.onInit
   watchHeightChange() {
-    this._height_subscription = this.appSetting.height.subscribe(height => {
-      if (this.block_list.length === 0) {
-        this.loadBlockList();
-      } else {
-        const current_length = this.block_list[0].height;
-        // TODO：暂停预期块的动画=>实现块进入的动画=>再次开启预期块的动画
-        if (current_length < height) {
-          // 增量更新
-          this.loadBlockList({
-            increment: true,
-            increment_length: height - current_length,
-          });
-        }
+    this._height_subscription = this.appSetting.height.subscribe(
+      this._watchHeightChange.bind(this),
+    );
+  }
+
+  /** TODO：切换可用节点，或者寻找新的可用节点，然后开始重新执行这个函数
+   *  这点应该做成一个peerService中提供的通用catchErrorAndReLinkPeerThenRetryTask修饰器
+   */ 
+  @asyncCtrlGenerator.error(
+    "更新区块链失败，重试次数过多，已停止重试，请检测网络",
+  )
+  @asyncCtrlGenerator.retry()
+  async _watchHeightChange(height) {
+    if (this.block_list.length === 0) {
+      await this.loadBlockList();
+    } else {
+      const current_length = this.block_list[0].height;
+      // TODO：暂停预期块的动画=>实现块进入的动画=>再次开启预期块的动画
+      if (current_length < height) {
+        // 增量更新
+        await this.loadBlockList({
+          increment: true,
+          increment_length: height - current_length,
+        });
       }
-    });
+    }
   }
 }

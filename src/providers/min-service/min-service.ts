@@ -247,7 +247,7 @@ export class MinServiceProvider {
       };
       let data = await this.fetch.get<any>(this.MINERS, { search: query });
       this.allMinersInfo = {
-        list: data.delegate,
+        list: data.delegates,
         round: currentRound
       }
       return this.allMinersInfo.list.slice((page - 1) * limit, limit);
