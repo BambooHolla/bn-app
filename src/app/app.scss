@@ -49,27 +49,26 @@
 $navbar-height: 60px;
 ion-loading {
   &.can-goback {
-    margin-top: $navbar-height;
   }
   &.can-tap {
     pointer-events: none;
     background-color: transparent;
   }
 }
-ion-navbar,
-ion-title {
-  padding-top: 18px !important;
-}
-@supports(padding: #{'max(0px)'}) {
-    ion-navbar,
-    ion-title {
-      padding-top: #{'max(18px, env(safe-area-inset-top)) !important'};
-      padding-bottom: 1rem;
-    }
-}
+// ion-navbar,
+// ion-title {
+//   padding-top: 18px !important;
+// }
+// @supports(padding: #{'max(0px)'}) {
+//     ion-navbar,
+//     ion-title {
+//       padding-top: #{'max(18px, env(safe-area-inset-top)) !important'};
+//       padding-bottom: 1rem;
+//     }
+// }
 ion-navbar.toolbar-ios {
-  min-height: $navbar-height;
-  padding: 0 1.1rem;
+  // min-height: $navbar-height;
+  // padding: 0 1.1rem;
   .back-button {
     width: 3rem;
     .button-inner {
@@ -103,11 +102,11 @@ ion-navbar.toolbar-ios {
     }
   }
 }
-@supports(padding: #{'max(0px)'}) {
-    ion-navbar.toolbar-ios{
-      min-height: $navbar-height + 10px;
-    }
-}
+// @supports(padding: #{'max(0px)'}) {
+//     ion-navbar.toolbar-ios{
+//       min-height: $navbar-height + 10px;
+//     }
+// }
 
 ion-content {
   > .scroll-content {

@@ -70,7 +70,7 @@ const pages = [MyApp];
       scrollPadding: false,
       scrollAssist: false,
       autoFocusAssist: false,
-      statusbarPadding: false,
+      statusbarPadding: true,
       swipeBackEnabled: false,
       preloadModules: true,
       // tabsHideOnSubPages: true,// 这个有BUG，不要用。
