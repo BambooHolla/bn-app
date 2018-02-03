@@ -64,6 +64,7 @@ ion-title {
     ion-navbar,
     ion-title {
       padding-top: #{'max(18px, env(safe-area-inset-top)) !important'};
+      padding-bottom: 1rem;
     }
 }
 ion-navbar.toolbar-ios {
@@ -105,8 +106,6 @@ ion-navbar.toolbar-ios {
 @supports(padding: #{'max(0px)'}) {
     ion-navbar.toolbar-ios{
       min-height: $navbar-height + 10px;
-      margin-bottom: 1rem;
-
     }
 }
 

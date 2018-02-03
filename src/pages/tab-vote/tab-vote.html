@@ -62,19 +62,22 @@
                   <ali-icon name="ifm-income-ranking"></ali-icon>
                   上轮收益排名
                 </div>
+                <div class="my-income-assets">
+                  IBT {{pre_round_rank_list_cur?.profit|amountEuler|number:'1.8-8'}}
+                </div>
               </div>
               <div class="rank-info">
                 <div class="pre-item">
                   <div class="ranking-val">{{pre_round_rank_list_pre?.rate}}</div>
-                  <div class="ip-address" [innerHTML]="pre_round_rank_list_pre?.address|mask:'@address'"></div>
+                  <div class="ip-address">{{pre_round_rank_list_pre?.profit|amountEuler|number:'1.8-8'}}</div>
                 </div>
                 <div class="cur-item">
                   <div class="ranking-val">{{pre_round_rank_list_cur?.rate}}</div>
-                  <div class="ip-address" [innerHTML]="pre_round_rank_list_cur?.address|mask:'@address'"></div>
+                  <div class="ip-address">我</div>
                 </div>
                 <div class="aft-item">
                   <div class="ranking-val">{{pre_round_rank_list_next?.rate}}</div>
-                  <div class="ip-address" [innerHTML]="pre_round_rank_list_next?.address|mask:'@address'"></div>
+                  <div class="ip-address">{{pre_round_rank_list_next?.profit|amountEuler|number:'1.8-8'}}</div>
                 </div>
               </div>
             </div>
@@ -122,7 +125,7 @@
                   收益趋势图
                 </div>
                 <div class="my-income-assets">
-                  IBT 8.88888888
+                  IBT {{pre_round_rank_list_cur?.profit|amountEuler|number:'1.8-8'}}
                 </div>
               </div>
               <div class="chart-wrapper"></div>
@@ -136,7 +139,7 @@
                   我的贡献
                 </div>
                 <div class="my-income-assets">
-                  IBT 8.88888888
+                  IBT {{pre_round_rank_list_cur?.profit|amountEuler|number:'1.8-8'}}
                 </div>
               </div>
               <div class="detail">

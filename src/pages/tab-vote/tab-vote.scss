@@ -580,7 +580,7 @@ height: 105.2625%; */
           }
           .income-ranking {
             width: 100%;
-            padding: 0.5rem;
+            padding: 1rem;
             min-height: $panel-min-height;
             max-height: $panel-max-height;
             .header {
@@ -590,6 +590,10 @@ height: 105.2625%; */
               color: #7a7a7a;
               .title {
                 font-size: 1.6rem;
+              }
+              >.my-income-assets{
+                font-size: 1.2rem;
+                font-weight: lighter;
               }
             }
             .rank-info {
@@ -671,7 +675,7 @@ height: 105.2625%; */
               display: flex;
               align-items: center;
               justify-content: space-between;
-              color: #818181;
+              color: #7a7a7a;
               font-size: 1.65rem;
               >.my-income-assets{
                 font-size: 1.2rem;
@@ -691,7 +695,7 @@ height: 105.2625%; */
                 }
                 >.label{
                   font-size: 1.5rem;
-                  color: #818181;
+                  color: #7a7a7a;
                 }
               }
             }
@@ -867,13 +871,13 @@ height: 105.2625%; */
     &.vote-detail {
       /* transform: translateY(0%); */
       .wave-1 {
-        transform: translateY(-19.5rem);
+        transform: translateY(calc(-22vh - 7rem));
       }
       .wave-2 {
-        transform: translateY(-19.5rem);
+        transform: translateY(calc(-22vh - 7rem));
       }
       .wave-3 {
-        transform: translateY(-19.5rem);
+        transform: translateY(calc(-22vh - 7rem));
       }
     }
   }
