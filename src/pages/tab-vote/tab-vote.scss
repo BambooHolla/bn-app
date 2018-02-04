@@ -945,8 +945,9 @@ height: 105.2625%; */
     padding: 1.5rem 0 0.6rem 0;
     width: 100%;
     z-index: -1;
-    min-height: calc(#{$panel-min-height} + 5rem);
+    // min-height: calc(#{$panel-min-height} + 5rem);
     max-height: calc(#{$panel-max-height} + 5rem);
+    height: calc(#{$panel-height} + 4rem);
     /* transition-duration: 0.2s; */
     .wave {
       transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
