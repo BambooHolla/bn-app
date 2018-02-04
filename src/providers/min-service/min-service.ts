@@ -339,4 +339,35 @@ export class MinServiceProvider {
   myRank_Executor(promise_pro) {
     return promise_pro.follow(this.getMyRank());
   }
+  
+  /** 
+   * 获取上一轮的投资回报率
+   * 从rank中获取上一轮的收益，从上一轮的交易中获取手续费
+   * TODO:需要后端在rank中添加手续费字段或者从其他地方获取手续费或者获取交易时可以根据轮次进行获取
+  */
+  async getRateOfReturn():Promise<number> {
+    let lastRoundT = await this.transactionService.getTransactions({
+      "type": this.ifmJs.transactionTypes.VOTE,
+      "senderId" : this.user.address,
+      "orderBy": "t_timestamp:desc",
+      "limit": 57
+    })
+
+    let transactions = lastRoundT.transactions;
+
+    let totalBenefitObj = await this.getMyRank();
+    let totalBenefit = parseInt(totalBenefitObj[1].profit);
+    let totalFee = 0;
+    for(let i of transactions) {
+      if(Math.floor(i.height/57) == this.appSetting.getRound()) {
+        totalFee += i.fee;
+      }else {
+        break;
+      }
+    }
+    if(totalFee < 0) {
+      return 0;
+    }
+    return totalBenefit/totalFee;
+  }
 }
