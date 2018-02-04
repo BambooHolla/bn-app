@@ -6,139 +6,80 @@ common-wave-bg {
     padding: 1.5rem 0 0.6rem 0;
     width: 100vw;
     height: 16.119rem;
-    /* transition-duration: 0.2s; */
-    .wave-1 {
-      /* transition-delay: 0.5s; */
+    .wave {
       transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      transition-duration: 0.5s;
       position: absolute;
+      opacity: 1;
       bottom: 0;
       left: 0;
       height: 100%;
       width: 100vw;
       z-index: -1;
-      /* background-color: blue; */
+      color: #fff;
+      background-color: currentColor;
       .font-end {
         position: absolute;
-        top: -5vh;
+        top: -11vw;
         left: 0;
-        height: 100%;
-        width: 100%;
-        background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="#FFF" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
-        background-size: 100% 100%;
-        background-position: -50vw;
+        height: 11.1vw;
+        width: 100vw;
+        background-color: currentColor;
+        mask-image: url("../assets/imgs/wave.png");
+        mask-size: 100% 100%;
+        mask-position: -50vw 0;
+        mask-repeat: repeat-x;
         z-index: -1;
-        transform: scaleY(0.7);
-        transform-origin: 50% 0%;
-        background-repeat: repeat-x;
-        &::after {
+        /* filter: drop-shadow(0rem 0.1rem 0rem currentcolor); */
+
+        /* transform-origin: 50% 0%; */
+        /* transform: scaleY(0.7); */
+
+        /*      &::after {
           content: " ";
           height: 110%;
           width: 100%;
           position: absolute;
           bottom: -100%;
           left: 0;
-          background: #fff;
-        }
+          background-color: currentColor;
+        } */
       }
-      .showdown {
-        position: absolute;
-        top: -5vh;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="rgba(0,0,0,0.2)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
-        background-size: 100% 100%;
-        background-position: -50vw;
-        z-index: -2;
-        transform: scaleY(0.7);
-        transform-origin: 50% 0%;
-        background-repeat: repeat-x;
-        background-repeat: repeat-x;
-        filter: blur(20px);
+    }
+    .wave-1 {
+      @extend .wave;
+      /* transition-delay: 0.5s; */
+      transition-duration: 0.5s;
+      filter: drop-shadow(-0.1rem -0.1rem 0.6rem rgba(#000, 0.2));
+      top: -4vh;
+      .font-end {
+        mask-position: -46vw 0;
       }
     }
     .wave-2 {
-      transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      @extend .wave;
+      color: rgb(253, 208, 68);
+      opacity: 0.8;
+      /* filter: sepia(100%) hue-rotate(559deg) saturate(1830%); */
       transition-delay: 0.3s;
       transition-duration: 1s;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 100%;
-      width: 100vw;
       z-index: -3;
-      /* background-color: blue; */
+      top: -2vh;
       .font-end {
-        position: absolute;
-        top: -4vh;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="rgba(253,208,68,0.8)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
-        background-size: 100% 100%;
-        background-position: -8vw;
-        z-index: -1;
-        transform: scaleY(0.7);
-        transform-origin: 50% 0%;
-        background-repeat: repeat-x;
-        &::after {
-          content: " ";
-          height: 100%;
-          width: 100%;
-          position: absolute;
-          bottom: -100%;
-          left: 0;
-          background: #fff;
-        }
+        mask-position: -8vw 0;
       }
     }
 
     .wave-3 {
-      transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      @extend .wave;
+
       transition-delay: 0.5s;
       transition-duration: 1.2s;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 100%;
-      width: 100vw;
+      color: rgb(250, 141, 68);
+      opacity: 0.6;
       z-index: -2;
-      /* background-color: blue; */
+      top: -1.5vh;
       .font-end {
-        position: absolute;
-        top: -3.8vh;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-image: url('data:image/svg+xml;utf8,
-						<svg width="580" height="250" xmlns="http://www.w3.org/2000/svg">
-							<path fill="rgba(250,141,68,0.6)" d="m-1.00003,301.95708l651.00001,0l0,-251.03867c-325.5,106.49573 -325.5,-106.4562 -651.00001,19.76312l0,292.34224l0,-60.99541l0,-0.07129l0,0.00001z"/>
-						</svg>');
-        background-size: 100% 100%;
-        background-position: 10vw;
-        z-index: -1;
-        transform: scaleY(0.7);
-        transform-origin: 50% 0%;
-        background-repeat: repeat-x;
-        &::after {
-          content: " ";
-          height: 100%;
-          width: 100%;
-          position: absolute;
-          bottom: -100%;
-          left: 0;
-          background: #fff;
-        }
+        mask-position: 10vw 0;
       }
     }
     &.hide {
