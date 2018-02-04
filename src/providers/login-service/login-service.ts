@@ -47,10 +47,10 @@ export class LoginServiceProvider {
     //用于生成随机语句
     this.Mnemonic = this.ifmJs.Mnemonic;
 
-    // 执行一下登录，来更新账户信息（余额等）
-    if (this.user.password) {
-      this.doLogin(this.user.password, true);
-    }
+    // // 执行一下登录，来更新账户信息（余额等）
+    // if (this.user.password) {
+    //   this.refreshUserInfo()
+    // }
 
     // 高度发生变动的时候，更新用户信息
     this.appSetting.height.subscribe(this.refreshUserInfo.bind(this));

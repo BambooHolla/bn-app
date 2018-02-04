@@ -66,8 +66,8 @@ export class MyApp implements OnInit {
       const user_token = appSetting.getUserToken();
       if (user_token && user_token.password) {
         // 自动登录
-        this.loginService.doLogin(user_token.password, true);
-        return null; //MainPage;
+        await this.loginService.doLogin(user_token.password, true);
+        return null;
       }
       return LoginPage;
     })().catch(err => {
@@ -84,14 +84,19 @@ export class MyApp implements OnInit {
       statusBar.show();
       statusBar.overlaysWebView(true);
       statusBar.styleDefault();
-      splashScreen.hide();
-      initPage.then(page => {
-        page && this.openPage(page);
-        loginService.loginStatus.subscribe(isLogined => {
-          console.log("isLogined", isLogined);
-          this.openPage(isLogined ? MainPage : LoginPage);
-        });
+      loginService.loginStatus.subscribe(isLogined => {
+        splashScreen.hide();
+        console.log("isLogined", isLogined);
+        this.openPage(isLogined ? MainPage : LoginPage);
       });
+      initPage
+        .then(page => {
+          page && this.openPage(page);
+        })
+        .catch(err => {
+          console.warn("INIT PAGE ERRROR", err);
+          this.openPage(LoginPage);
+        });
     });
   }
 

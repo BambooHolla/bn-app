@@ -14,16 +14,23 @@ export interface BlockModel extends SingleBlockModel {
   confirmations: string;
   totalForged: string;
   delay?: boolean;
-};
+}
 
 export interface SingleBlockModel {
   height: number;
   id: string;
   timestamp: number;
-};
+}
 
 export type BlockResModel = {
   success: boolean;
   count: number;
   blocks: BlockModel[];
+};
+
+export type UnconfirmBlockModel = {
+  reward: number;
+  fee: number;
+  uncommited: number;
+  height: number;
 };

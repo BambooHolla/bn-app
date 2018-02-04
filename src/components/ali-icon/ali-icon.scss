@@ -7,6 +7,7 @@ ali-icon {
   color: currentColor;
   /* overflow: hidden; */
   > .ifmicon {
+    display: block;
     object-fit: contain;
     position: relative;
     width: 100%;

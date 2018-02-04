@@ -8,6 +8,7 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { Subscription } from "rxjs/Subscription";
 
 import {
   TransactionServiceProvider,
@@ -96,7 +97,7 @@ export class TabPayPage extends FirstLevelPage {
     page: 1,
   };
 
-  @TabPayPage.willEnter
+  // @TabPayPage.willEnter
   async loadRollOutLogs(refresher?: Refresher) {
     const { roll_out_config } = this;
     // 重置分页
@@ -115,6 +116,22 @@ export class TabPayPage extends FirstLevelPage {
       refresher.complete();
     }
   }
+
+  @TabPayPage.autoUnsubscribe private _height_subscription?: Subscription;
+  @TabPayPage.onInit
+  watchHeightChange() {
+    this._height_subscription = this.appSetting.height.subscribe(
+      this._watchHeightChange.bind(this),
+    );
+  }
+  @asyncCtrlGenerator.error(
+    "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
+  )
+  @asyncCtrlGenerator.retry()
+  async _watchHeightChange(height) {
+    return this.loadRollOutLogs()
+  }
+
 
   async loadMoreRollOutLogs() {
     const { roll_out_config } = this;

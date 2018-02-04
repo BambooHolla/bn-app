@@ -5,6 +5,7 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import {
   BlockServiceProvider,
   BlockModel,
+  UnconfirmBlockModel,
 } from "../../providers/block-service/block-service";
 import { Subscription } from "rxjs/Subscription";
 
@@ -32,10 +33,10 @@ export class TabChainPage extends FirstLevelPage {
     has_more: false,
   };
 
-  unconfirm_block?: BlockModel;
+  unconfirm_block?: UnconfirmBlockModel;
   @TabChainPage.willEnter
   async loadUnconfirmBlock() {
-    // this.blockService
+   this.unconfirm_block = await this.blockService.getExpectBlockInfo()
   }
 
   @TabChainPage.willEnter

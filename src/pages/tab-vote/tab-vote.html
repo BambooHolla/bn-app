@@ -5,15 +5,15 @@
   <chain-mesh id="bg2" [ngClass]="page_status" [tint]="earth_config.body_color" [class.show-big-fall-icon]="is_show.show_big_fall_icon"></chain-mesh>
   <div id="bg3" [ngClass]="page_status"></div>
   <div class="wave-container" [ngClass]="page_status">
-    <div class="wave-1">
+    <div class="wave-3">
       <div class="font-end"></div>
-      <div class="showdown"></div>
     </div>
     <div class="wave-2">
       <div class="font-end"></div>
     </div>
-    <div class="wave-3">
+    <div class="wave-1">
       <div class="font-end"></div>
+      <div class="showdown"></div>
     </div>
   </div>
   <div class="pages-container">
@@ -97,7 +97,7 @@
                   {{cur_round_income_info.cur_round_income_amount|amountEuler|number:'1.8-8'}}
                 </div>
                 <div class="sub-title">
-                  <ali-icon name="ifm-income-ranking"></ali-icon>
+                  <ali-icon name="ifm-xiangao"></ali-icon>
                   本轮挖矿收益
                 </div>
               </div>
@@ -143,7 +143,7 @@
             <div class="my-contribution">
               <div class="header">
                 <div class="title">
-                  <ali-icon name="ifm-income-trend"></ali-icon>
+                  <ali-icon name="ifm-shujuxian"></ali-icon>
                   我的贡献
                 </div>
                 <div class="my-income-assets">
