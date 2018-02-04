@@ -16,7 +16,10 @@ import {
 } from "../../providers/min-service/min-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { HEIGHT_AB_Generator } from "../../providers/app-setting/app-setting";
-import { BenefitServiceProvider } from "../../providers/benefit-service/benefit-service";
+import {
+  BenefitServiceProvider,
+  BenefitModel,
+} from "../../providers/benefit-service/benefit-service";
 
 @IonicPage({ name: "tab-vote" })
 @Component({
@@ -266,7 +269,7 @@ export class TabVotePage extends FirstLevelPage {
       this.getCurRoundIncomeInfo();
       // FAKE ANI
       setTimeout(() => {
-        if(!this.is_show.show_big_fall_icon){
+        if (!this.is_show.show_big_fall_icon) {
           this._whenRoundChangeAni();
         }
       }, 1000);
@@ -292,7 +295,7 @@ export class TabVotePage extends FirstLevelPage {
   watchRoundChanged() {
     if (!this._round_subscription && this.page_status === "vote-detail") {
       this._round_subscription = this.appSetting.round.subscribe(() => {
-        this._whenRoundChangeAni();// 执行动画
+        this._whenRoundChangeAni(); // 执行动画
         // TODO:数据的变动应该与动画同时触发
         this.getPreRoundRankList();
         this.getCurRoundIncomeInfo();
@@ -318,9 +321,22 @@ export class TabVotePage extends FirstLevelPage {
   /**上一轮的排名*/
   pre_round_rank_list?: RankModel[];
   @TabVotePage.willEnter
+  @asyncCtrlGenerator.retry()
   async getPreRoundRankList() {
     if (this.page_status == "vote-detail") {
       this.pre_round_rank_list = await this.minService.myRank.getPromise();
+    }
+  }
+
+  /**收益趋势图*/
+  income_trend_list?: BenefitModel[];
+  @TabVotePage.willEnter
+  @asyncCtrlGenerator.retry()
+  async getIncomeTrendList() {
+    if (this.page_status == "vote-detail") {
+      this.income_trend_list = await this.benefitService.getTop57Benefits(
+        false,
+      );
     }
   }
 
@@ -342,6 +358,7 @@ export class TabVotePage extends FirstLevelPage {
     recent_income_amount: 0,
   };
   @TabVotePage.willEnter
+  @asyncCtrlGenerator.retry()
   async getCurRoundIncomeInfo() {
     if (this.page_status == "vote-detail") {
       const { cur_round_income_info } = this;

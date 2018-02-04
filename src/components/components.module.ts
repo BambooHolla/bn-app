@@ -9,6 +9,7 @@ import { ChainMeshComponent } from "./chain-mesh/chain-mesh";
 import { CommonWaveBgComponent } from "./common-wave-bg/common-wave-bg";
 import { TextGradientComponent } from "./text-gradient/text-gradient";
 import { KjuaQrcodeComponent } from "./kjua-qrcode/kjua-qrcode";
+import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/income-trend-simple-chart";
 @NgModule({
   declarations: [
     AliIconComponent,
@@ -21,6 +22,7 @@ import { KjuaQrcodeComponent } from "./kjua-qrcode/kjua-qrcode";
     CommonWaveBgComponent,
     TextGradientComponent,
     KjuaQrcodeComponent,
+    IncomeTrendSimpleChartComponent,
   ],
   imports: [],
   exports: [
@@ -34,6 +36,7 @@ import { KjuaQrcodeComponent } from "./kjua-qrcode/kjua-qrcode";
     CommonWaveBgComponent,
     TextGradientComponent,
     KjuaQrcodeComponent,
+    IncomeTrendSimpleChartComponent,
   ],
 })
 export class ComponentsModule {}

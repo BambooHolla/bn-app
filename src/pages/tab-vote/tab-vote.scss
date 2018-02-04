@@ -1,6 +1,7 @@
 page-tab-vote {
   $panel-min-height: 22vh;
   $panel-max-height: 20rem;
+  $panel-height: 20vh;
   background-color: #fff;
   &::before {
     position: absolute;
@@ -623,12 +624,26 @@ height: 105.2625%; */
             transform-origin: -15% 50%;
             transition-duration: 0ms;
           }
+          >.slide-zoom{
+            >div{
+              height: $panel-height;
+              min-height: $panel-min-height;
+              max-height: $panel-max-height;
+              width: 100%;
+            }
+          }
+          .header {
+            .title {
+              font-size: 1.6rem;
+              display: flex;
+              align-items: center;
+              ali-icon{
+                font-size: 2.1rem;
+              }
+            }
+          }
           .current-block-income {
-            width: 100%;
             padding: 0.5rem;
-            height: 12rem;
-            min-height: $panel-min-height;
-            max-height: $panel-max-height;
             display: flex;
             position: relative;
             background-color: #fff;
@@ -716,21 +731,8 @@ height: 105.2625%; */
               }
             }
           }
-          .header {
-            .title {
-              font-size: 1.6rem;
-              display: flex;
-              align-items: center;
-              ali-icon{
-                font-size: 2.1rem;
-              }
-            }
-          }
           .income-ranking {
-            width: 100%;
             padding: 1rem;
-            min-height: $panel-min-height;
-            max-height: $panel-max-height;
             .header {
               display: flex;
               flex-direction: row;
@@ -792,10 +794,7 @@ height: 105.2625%; */
             }
           }
           .income-trend {
-            width: 100%;
             padding: 1rem;
-            min-height: $panel-min-height;
-            max-height: $panel-max-height;
             background: linear-gradient(to right, #faaf52 0%, #fdd04e 100%);
             .header {
               position: relative;
@@ -994,6 +993,7 @@ height: 105.2625%; */
       transition-duration: 0.5s;
       filter: drop-shadow(-0.1rem -0.1rem 0.6rem rgba(#000, 0.2));
       top: -4vh;
+      z-index: 3;
       .font-end {
         mask-position: -46vw 0;
       }
@@ -1005,7 +1005,7 @@ height: 105.2625%; */
       /* filter: sepia(100%) hue-rotate(559deg) saturate(1830%); */
       transition-delay: 0.3s;
       transition-duration: 1s;
-      z-index: -3;
+      z-index: 1;
       top: -2vh;
       .font-end {
         mask-position: -8vw 0;
@@ -1019,7 +1019,7 @@ height: 105.2625%; */
       transition-duration: 1.2s;
       color: rgb(250, 141, 68);
       opacity: 0.6;
-      z-index: -2;
+      z-index: 2;
       top: -1.5vh;
       .font-end {
         mask-position: 10vw 0;

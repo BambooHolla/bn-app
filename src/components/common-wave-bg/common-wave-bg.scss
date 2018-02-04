@@ -50,6 +50,7 @@ common-wave-bg {
       /* transition-delay: 0.5s; */
       transition-duration: 0.5s;
       filter: drop-shadow(-0.1rem -0.1rem 0.6rem rgba(#000, 0.2));
+      z-index: 3;
       top: -4vh;
       .font-end {
         mask-position: -46vw 0;
@@ -62,7 +63,7 @@ common-wave-bg {
       /* filter: sepia(100%) hue-rotate(559deg) saturate(1830%); */
       transition-delay: 0.3s;
       transition-duration: 1s;
-      z-index: -3;
+      z-index: 1;
       top: -2vh;
       .font-end {
         mask-position: -8vw 0;
@@ -76,7 +77,7 @@ common-wave-bg {
       transition-duration: 1.2s;
       color: rgb(250, 141, 68);
       opacity: 0.6;
-      z-index: -2;
+      z-index: 2;
       top: -1.5vh;
       .font-end {
         mask-position: 10vw 0;
