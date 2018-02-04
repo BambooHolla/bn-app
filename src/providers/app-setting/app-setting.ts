@@ -163,6 +163,9 @@ export class AppSettingProvider extends EventEmitter {
   /**轮次*/
   round: BehaviorSubject<number> = new BehaviorSubject(1);
   setHeight(height: number) {
+    if (this.getHeight() == height) {
+      return;
+    }
     this.height.next(height);
     const pre_round = this.getRound();
     const cur_round = (height / 57) | 0;
