@@ -15,6 +15,7 @@ import {
   RankModel,
 } from "../../providers/min-service/min-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
+import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { HEIGHT_AB_Generator } from "../../providers/app-setting/app-setting";
 import {
   BenefitServiceProvider,
@@ -35,6 +36,7 @@ export class TabVotePage extends FirstLevelPage {
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
+    public blockService: BlockServiceProvider,
   ) {
     super(navCtrl, navParams);
   }
@@ -66,24 +68,61 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
 
-  private _startVoteAnimate() {
-    this.fall_coin &&
-      this.fall_coin.is_inited &&
-      this.fall_coin.startAnimation();
-    // clearInterval(this["_fall_coin_progress_ti"]);
-    // this["_fall_coin_progress_ti"] = setInterval(() => {
-    //   if (this.fall_coin) {
-    //     this.fall_coin.progress = parseFloat(
-    //       ((this.fall_coin.progress + 0.001) % 1).toFixed(4),
-    //     );
-    //   } else {
-    //     clearInterval(this["_fall_coin_progress_ti"]);
-    //   }
-    // }, 100);
+  /**动画的进度监控*/
+  @TabVotePage.autoUnsubscribe
+  private _progree_sub: Subscription = this.appSetting.height.subscribe(
+    height => {
+      console.log("height changed", height);
+      this._set_fall_coin_progress();
+      this._set_satellite_pixi_progress();
+    },
+  );
+  private _set_fall_coin_progress() {
+    if (this.fall_coin) {
+      if (this.fall_coin.is_inited) {
+        this.fall_coin.progress = (this.appSetting.getHeight() / 57) % 1;
+      } else {
+        this.fall_coin.once("init-start", () => {
+          this.platform.raf(this._set_fall_coin_progress.bind(this));
+        });
+      }
+    }
+  }
+  private _set_satellite_pixi_progress() {
+    if (this.satellite_pixi) {
+      if (this.satellite_pixi.is_inited) {
+        this.satellite_pixi.progress = 0;
+        this.blockService.getLastBlockRefreshInterval().then(diff_time => {
+          console.log("ani diff_time", diff_time);
+          if (diff_time < 128e3) {
+            this.satellite_pixi &&
+              this.satellite_pixi.setProgress(1, 128e3 - diff_time);
+          } else {
+            // 延迟了，等
+            this.satellite_pixi && this.satellite_pixi.setProgress(1, 500);
+          }
+        });
+      } else {
+        this.satellite_pixi.once("init-start", () => {
+          this.platform.raf(this._set_satellite_pixi_progress.bind(this));
+        });
+      }
+    }
+  }
 
-    this.satellite_pixi &&
-      this.satellite_pixi.is_inited &&
-      this.satellite_pixi.startAnimation();
+  private _startVoteAnimate() {
+    if (this.fall_coin) {
+      if (this.fall_coin.is_inited) {
+        this.fall_coin.startAnimation();
+      }
+    }
+    this._set_fall_coin_progress();
+    if (this.satellite_pixi) {
+      if (this.satellite_pixi.is_inited) {
+        this.satellite_pixi.startAnimation();
+      }
+    }
+    this._set_satellite_pixi_progress();
     this.buddha_glow &&
       this.buddha_glow.is_inited &&
       this.buddha_glow.startAnimation();
@@ -267,12 +306,12 @@ export class TabVotePage extends FirstLevelPage {
       this.routeToVoteDetail();
       this.getPreRoundRankList();
       this.getCurRoundIncomeInfo();
-      // FAKE ANI
-      setTimeout(() => {
-        if (!this.is_show.show_big_fall_icon) {
-          this._whenRoundChangeAni();
-        }
-      }, 1000);
+      // // FAKE ANI
+      // setTimeout(() => {
+      //   if (!this.is_show.show_big_fall_icon) {
+      //     this._whenRoundChangeAni();
+      //   }
+      // }, 1000);
     } finally {
       this.min_starting = false;
     }

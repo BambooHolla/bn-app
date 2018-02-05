@@ -39,6 +39,16 @@ export class BlockServiceProvider {
     this._loopGetAndSetHeight();
   }
 
+  async getLastBlockRefreshInterval(){
+      const last_block = await this.lastBlock.getPromise();
+      this.appSetting.setHeight(last_block.height);
+
+      let lastTime = this.getFullTimestamp(last_block.timestamp);
+      let currentTime = Date.now();
+      const diff_time = currentTime - lastTime;
+      return diff_time
+  }
+
   private _refresh_interval = 0;
   private _retry_interval = 0;
   private async _loopGetAndSetHeight() {
@@ -49,12 +59,7 @@ export class BlockServiceProvider {
       this._loopGetAndSetHeight();
     };
     try {
-      const last_block = await this.lastBlock.getPromise();
-      this.appSetting.setHeight(last_block.height);
-
-      let lastTime = this.getFullTimestamp(last_block.timestamp);
-      let currentTime = Date.now();
-      const diff_time = currentTime - lastTime;
+      const diff_time = await this.getLastBlockRefreshInterval();
       // if (diff_time <= 0) {
       //   throw new RangeError("Wrong diff time");
       // }
@@ -62,7 +67,7 @@ export class BlockServiceProvider {
         this._refresh_interval = 0;
         console.log(
           `%c高度将在${new Date(
-            currentTime + 128e3 - diff_time,
+            Date.now() + 128e3 - diff_time,
           ).toLocaleTimeString()}进行更新`,
           "font-size:1rem;color:blue;",
         );
