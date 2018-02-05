@@ -45,6 +45,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 		fee: 5000 * Math.random() * 0.00000001,
 		tran_list: [],
 	}*/;
+  pre_block_id?: string;
   tran_list: TransactionModel[] = [];
   tran_list_config = {
     page: 1,
@@ -61,14 +62,23 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       return;
     }
     this.block_info = block;
-    return this.loadTranLogs();
+    this.getPreBlockId();
+    this.loadTranLogs();
+  }
+  @asyncCtrlGenerator.error(() =>
+    ChainBlockDetailPage.getTranslate("GET_PRE_BLOCK_ID_ERROR"),
+  )
+  async getPreBlockId() {
+    this.pre_block_id = await this.blockService.getPreBlockId(this.block_info.height);
   }
 
   @asyncCtrlGenerator.error(() =>
     ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
   )
   @asyncCtrlGenerator.loading(() =>
-    ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"),
+    ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"), undefined, {
+      showBackdrop: false
+    }
   )
   async loadTranLogs() {
     const { block_info, tran_list_config } = this;

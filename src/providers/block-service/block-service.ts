@@ -41,14 +41,14 @@ export class BlockServiceProvider {
     this._loopGetAndSetHeight();
   }
 
-  async getLastBlockRefreshInterval(){
-      const last_block = await this.lastBlock.getPromise();
-      this.appSetting.setHeight(last_block.height);
+  async getLastBlockRefreshInterval() {
+    const last_block = await this.lastBlock.getPromise();
+    this.appSetting.setHeight(last_block.height);
 
-      let lastTime = this.getFullTimestamp(last_block.timestamp);
-      let currentTime = Date.now();
-      const diff_time = currentTime - lastTime;
-      return diff_time
+    let lastTime = this.getFullTimestamp(last_block.timestamp);
+    let currentTime = Date.now();
+    const diff_time = currentTime - lastTime;
+    return diff_time;
   }
 
   private _refresh_interval = 0;
@@ -103,7 +103,9 @@ export class BlockServiceProvider {
   readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
   readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
   readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
-  readonly GET_MY_FORGING = this.appSetting.APP_URL("/api/blocks/getForgingBlocks")
+  readonly GET_MY_FORGING = this.appSetting.APP_URL(
+    "/api/blocks/getForgingBlocks",
+  );
 
   /**
    * 获取当前区块链的块高度
@@ -365,16 +367,35 @@ export class BlockServiceProvider {
 
   /**
    * 获取上一个块的ID
-   * @param height 
+   * TODO：实现区块链数据库，使用数据库索引查询
+   * @param height
    */
-  async getPreBlockId(height:number):Promise<string> {
-    let data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY,{
-      search: {
-        "height" : height
+  async getPreBlockId(height: number): Promise<string> {
+    if (height > 1) {
+      if (this.blockArray) {
+        const lists = this.blockArray.slice();
+        for (let i = 0; i < lists.length; i += 1) {
+          if (i % 1000 === 0) {
+            await Promise.resolve(); // 快速异步
+          }
+          const block = lists[i];
+          if (block.height === height) {
+            return block.id;
+          }
+        }
       }
-    })
-
-    return data.blocks[0].id;  
+      let data = await this.fetch.get<TYPE.BlockResModel>(
+        this.GET_BLOCK_BY_QUERY,
+        {
+          search: {
+            height: height - 1,
+          },
+        },
+      );
+      return data.blocks[0].id;
+    } else {
+      return "";
+    }
   }
 
   /**
@@ -406,7 +427,7 @@ export class BlockServiceProvider {
    */
   async getAvgInfo(amount: number = 5) {
     var blockArray = this.blockArray;
-    if (!blockArray||blockArray.length < amount) {
+    if (!blockArray || blockArray.length < amount) {
       blockArray = await this.getTopBlocks(true, amount);
     }
     let reward = 0,
@@ -416,8 +437,8 @@ export class BlockServiceProvider {
       fee += parseFloat(blockArray[i].totalFee);
     }
 
-    reward = reward/amount;
-    fee = fee/amount;
+    reward = reward / amount;
+    fee = fee / amount;
 
     return { reward, fee };
   }
@@ -449,15 +470,15 @@ export class BlockServiceProvider {
     return data;
   }
 
-  /** 
+  /**
    * 获取我锻造的区块数
-  */
-  async getMyForgingCount():Promise<number> {
+   */
+  async getMyForgingCount(): Promise<number> {
     let data = await this.fetch.get<TYPE.BlockResModel>(this.GET_MY_FORGING, {
       search: {
-        generatorPublicKey: this.user.publicKey
-      }
-    })
+        generatorPublicKey: this.user.publicKey,
+      },
+    });
 
     return data.count;
   }
