@@ -179,18 +179,27 @@ export class BenefitServiceProvider {
   }
   
   /**
-   * 获取最近57个块的收益
-   * TODO:更新为增量更新
+   * 获取最近1个块的收益
    */
   async getRecentBenefit(): Promise<number> {
-    let benefit:number = 0;
-    if(this.benefitList.length < 57) {
-      await this.getTop57Benefits(false);
-    }
-    for(let i=0; i< 57; i++) {
-      benefit += parseFloat(this.benefitList[i].amount);
-    }
+    // let benefit:number = 0;
+    // if(this.benefitList.length < 57) {
+    //   await this.getTop57Benefits(false);
+    // }
+    // for(let i=0; i< 57; i++) {
+    //   benefit += parseFloat(this.benefitList[i].amount);
+    // }
 
-    return benefit;
+    // return benefit;
+    await this.getTop57Benefits(true);
+    return parseInt(this.benefitList[0].amount);
   }
+
+  benefitRecent!: AsyncBehaviorSubject<number>;
+  @HEIGHT_AB_Generator("benefitRecent")
+  benefitRecent_Executor(promise_pro) {
+    return promise_pro.follow(this.getRecentBenefit);
+  }
+
+
 }
