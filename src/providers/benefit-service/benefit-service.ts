@@ -59,7 +59,7 @@ export class BenefitServiceProvider {
    */
   async getTop57Benefits(increment: boolean): Promise<TYPE.BenefitModel[]> {
     //超过100个则删除数组至100个
-    if (this.benefitList.length > 100) {
+    if (this.benefitList && this.benefitList.length > 100) {
       this.benefitList = this.benefitList.splice(0, 100);
     }
 
@@ -192,7 +192,11 @@ export class BenefitServiceProvider {
 
     // return benefit;
     await this.getTop57Benefits(true);
-    return parseInt(this.benefitList[0].amount);
+    if(this.benefitList && this.benefitList.length > 0) {
+      return parseInt(this.benefitList[0].amount);
+    }else {
+      return 0;
+    }
   }
 
   benefitRecent!: AsyncBehaviorSubject<number>;
