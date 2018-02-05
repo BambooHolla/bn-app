@@ -351,9 +351,30 @@ export class BlockServiceProvider {
       };
 
       let data = await this.getBlocks(query);
+      // for(let i in data) {
+      //   if(sort) {
+      //     data[i+1].lastBlockId = data[i].id;
+      //   }else {
+      //     data[i].lastBlockId = data[i+1].id;
+      //   }
+      // }
 
       return data.blocks;
     }
+  }
+
+  /**
+   * 获取上一个块的ID
+   * @param height 
+   */
+  async getPreBlockId(height:number):Promise<string> {
+    let data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY,{
+      search: {
+        "height" : height
+      }
+    })
+
+    return data.blocks[0].id;  
   }
 
   /**
