@@ -23,6 +23,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public blockService: BlockServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
+    this.auto_header_shadow_when_scroll_down = true;
   }
   isShowFullDate(timestamp: number) {
     const time = TimestampPipe.transform(timestamp);
@@ -56,15 +57,18 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     if (!block) {
       return this.navCtrl.goToRoot({});
     }
+    if (this.block_info == block) {
+      return;
+    }
     this.block_info = block;
     return this.loadTranLogs();
   }
 
   @asyncCtrlGenerator.error(() =>
-    ChainBlockDetailPage.getTranslate("LOAD_MORE_TRANSACTION_LIST_ERROR"),
+    ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
   )
   @asyncCtrlGenerator.loading(() =>
-    ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
+    ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"),
   )
   async loadTranLogs() {
     const { block_info, tran_list_config } = this;

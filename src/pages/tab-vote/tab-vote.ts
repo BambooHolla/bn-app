@@ -13,6 +13,7 @@ import { TabsPage } from "../tabs/tabs";
 import {
   MinServiceProvider,
   RankModel,
+  RateOfReturnModel,
 } from "../../providers/min-service/min-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
@@ -359,11 +360,15 @@ export class TabVotePage extends FirstLevelPage {
 
   /**上一轮的排名*/
   pre_round_rank_list?: RankModel[];
+  pre_round_my_benefit?: RankModel;
   @TabVotePage.willEnter
   @asyncCtrlGenerator.retry()
   async getPreRoundRankList() {
     if (this.page_status == "vote-detail") {
-      this.pre_round_rank_list = await this.minService.myRank.getPromise();
+      this.pre_round_rank_list = await this.minService.getMyRank();
+      this.pre_round_my_benefit = this.pre_round_rank_list.find(
+        rank_info => rank_info.address == this.userInfo.address,
+      );
     }
   }
 
@@ -373,20 +378,13 @@ export class TabVotePage extends FirstLevelPage {
   @asyncCtrlGenerator.retry()
   async getIncomeTrendList() {
     if (this.page_status == "vote-detail") {
-      this.income_trend_list = await this.benefitService.getTop57Benefits(
+      const income_trend_list = await this.benefitService.getTop57Benefits(
         false,
       );
+      this.income_trend_list = income_trend_list.length
+        ? income_trend_list
+        : undefined;
     }
-  }
-
-  get pre_round_rank_list_pre() {
-    return this.pre_round_rank_list && this.pre_round_rank_list[0];
-  }
-  get pre_round_rank_list_cur() {
-    return this.pre_round_rank_list && this.pre_round_rank_list[1];
-  }
-  get pre_round_rank_list_next() {
-    return this.pre_round_rank_list && this.pre_round_rank_list[2];
   }
 
   /**本轮挖矿收益 */
@@ -404,6 +402,13 @@ export class TabVotePage extends FirstLevelPage {
       cur_round_income_info.round = this.appSetting.round.getValue();
       cur_round_income_info.block_num = this.appSetting.height.getValue() % 57;
       cur_round_income_info.cur_round_income_amount = await this.benefitService.getBenefitThisRound();
+    }
+  }
+
+  pre_round_income_rate?: RateOfReturnModel;
+  async getPreRoundIncomeRate() {
+    if (this.page_status == "vote-detail") {
+      this.pre_round_income_rate = await this.minService.getRateOfReturn();
     }
   }
 }

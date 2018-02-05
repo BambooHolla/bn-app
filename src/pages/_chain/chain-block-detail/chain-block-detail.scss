@@ -1,11 +1,11 @@
 page-chain-block-detail {
   @extend .header-no-border;
   > .content {
-    background-color: #eeeeee;
     > .scroll-content {
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      /* overflow: hidden; */
+      background-color: #eeeeee;
     }
   }
   .block-base-info {
@@ -87,8 +87,16 @@ page-chain-block-detail {
         }
       }
       > .block-id {
+        > .left{
+          flex-shrink: 0;
+          flex-grow: 0;
+          width: 8.5rem;
+          justify-content: flex-start;
+        }
         > .right {
-          width: 75%;
+          // width: 70%;
+          flex-shrink: 1;
+          flex-grow: 1;
           word-break: break-all;
           text-align: right;
         }
@@ -98,7 +106,10 @@ page-chain-block-detail {
       > .confirm-num,
       > .fee,
       > .block-id {
-        height: 3.6rem;
+        min-height: 3.6rem;
+        box-sizing: border-box;
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
         margin-bottom: 1px;
         color: #7c7c7c;
         font-size: 1.45rem;
@@ -139,7 +150,8 @@ page-chain-block-detail {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    // margin-top: 1rem;
+    margin-top: 1rem;
+    min-height: 30rem;
     > .header {
       width: 100%;
       flex-grow: 0;
@@ -175,6 +187,7 @@ page-chain-block-detail {
           background-size: 150%;
           opacity: 0.4;
           z-index: -1;
+          pointer-events: none;
         }
         > .item {
           width: 100%;

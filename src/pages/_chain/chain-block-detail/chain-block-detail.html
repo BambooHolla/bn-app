@@ -2,6 +2,9 @@
   <ion-navbar color="white">
     <ion-title>区块信息</ion-title>
   </ion-navbar>
+</ion-header>
+<ion-content #parentContent>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E5%8C%BA%E5%9D%97%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="block-base-info">
     <div class="header">
       <div class="line">
@@ -74,21 +77,25 @@
           {{block_info?.id}}
         </div>
       </div>
+      <div class="line block-id">
+        <div class="left">
+          <ali-icon name="ifm-wallet"></ali-icon>
+          上一区块ID
+        </div>
+        <div class="right">
+          {{block_info?.id}}
+        </div>
+      </div>
     </div>
   </div>
-  <div class="trans-logs-just-fix-bug">
+  
+  <div class="trans-logs">
     <div class="header">
       <ali-icon name="ifm-tran-history"></ali-icon>
       交易记录
     </div>
-  </div>
-</ion-header>
-<ion-content>
-  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E5%8C%BA%E5%9D%97%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
-  
-  <div class="trans-logs">
     <!-- TODO: 对于自己的交易，优化显示效果 -->
-    <ion-content #listContent class="list" [ion-content-scroll-shadow]="listContent">
+    <ion-content #listContent class="list" [ion-content-scroll-shadow]="listContent" [scroll-parent-ion-content-first]="parentContent">
       <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail',{transaction:tran})">
         <div class="left">
           <div class="tran-type">

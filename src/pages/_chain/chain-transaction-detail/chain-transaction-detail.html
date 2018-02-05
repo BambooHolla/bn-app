@@ -48,7 +48,7 @@
         {{transaction?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm:ss"}}
       </div>
     </div>
-    <div class="common-item dapp">
+    <div class="common-item dapp" *ngIf="transaction?.dapp">
       <div class="left">
         所属应用
       </div>
@@ -60,7 +60,7 @@
         <ali-icon name="ifm-arrow-to-right"></ali-icon>
       </div>
     </div>
-    <div class="common-item extend-data">
+    <div class="common-item extend-data" *ngIf="transaction?.mark">
       <details>
         <summary>附加数据</summary>
         <content>{{transaction?.mark}}</content>

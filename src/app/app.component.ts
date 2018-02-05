@@ -23,6 +23,8 @@ import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 
+import { CommonTransition } from "./common.transition";
+
 @Component({
   template: `<ion-nav #content></ion-nav>`, // [root]="rootPage"
 })
@@ -57,6 +59,8 @@ export class MyApp implements OnInit {
     window["userInfo"] = userInfo;
     window["appSetting"] = appSetting;
     window["myapp"] = this;
+    config.setTransition("common-transition", CommonTransition);
+
     this.initTranslate();
 
     const initPage = (async () => {

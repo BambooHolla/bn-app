@@ -15,7 +15,7 @@ import { TransactionServiceProvider } from "../transaction-service/transaction-s
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
-import { DelegateModel, RankModel } from "./min.types";
+import * as TYPE from "./min.types";
 export * from "./min.types";
 
 /*
@@ -28,9 +28,9 @@ export * from "./min.types";
 export class MinServiceProvider {
   ifmJs: any;
   transactionTypes: any;
-  allVoters?: RankModel[];
+  allVoters?: TYPE.RankModel[];
   allMinersInfo?: {
-    list: DelegateModel[],
+    list: TYPE.DelegateModel[],
     round: number
   }
 
@@ -205,7 +205,7 @@ export class MinServiceProvider {
   /**
    * 给我投票的人
    */
-  voteForMe!: AsyncBehaviorSubject<RankModel[]>;
+  voteForMe!: AsyncBehaviorSubject<TYPE.RankModel[]>;
   @ROUND_AB_Generator("voteForMe")
   voteForMe_Executor(promise_pro) {
     return promise_pro.follow(this.getAllVotersForMe());
@@ -235,7 +235,7 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllMiners(page = 1, limit = 10): Promise<DelegateModel[]> {
+  async getAllMiners(page = 1, limit = 10): Promise<TYPE.DelegateModel[]> {
     let currentBlock = await this.blockService.getLastBlock();
     let currentRound = Math.floor(currentBlock.height / 57);
 
@@ -257,7 +257,7 @@ export class MinServiceProvider {
   /**
    * 获取本轮矿工
    */
-  allMinersPerRound!: AsyncBehaviorSubject<DelegateModel[]>;
+  allMinersPerRound!: AsyncBehaviorSubject<TYPE.DelegateModel[]>;
   @ROUND_AB_Generator("allMinersPerRound")
   allMiners_Executor(promise_pro) {
     return promise_pro.follow(this.getAllMiners());
@@ -268,7 +268,7 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllMinersOutside(page = 1, limit = 10): Promise<DelegateModel[]> {
+  async getAllMinersOutside(page = 1, limit = 10): Promise<TYPE.DelegateModel[]> {
     let query = {
       offset: 57 + (page - 1) * limit,
       limit: limit,
@@ -282,7 +282,7 @@ export class MinServiceProvider {
   /**
    * 获取未被选中的矿工
    */
-  minersOut!: AsyncBehaviorSubject<DelegateModel[]>;
+  minersOut!: AsyncBehaviorSubject<TYPE.DelegateModel[]>;
   @ROUND_AB_Generator("minersOut")
   minersOut_Executor(promise_pro) {
     return promise_pro.follow(this.getAllMinersOutside());
@@ -325,7 +325,7 @@ export class MinServiceProvider {
   /**
    * 获取我在上一轮的排名
    */
-  async getMyRank(): Promise<RankModel[]> {
+  async getMyRank(): Promise<TYPE.RankModel[]> {
     let query = {
       address: this.user.userInfo.address,
     };
@@ -334,45 +334,49 @@ export class MinServiceProvider {
     return data.ranks;
   }
 
-  myRank!: AsyncBehaviorSubject<RankModel[]>;
-  @ROUND_AB_Generator("myRank")
-  myRank_Executor(promise_pro) {
-    return promise_pro.follow(this.getMyRank());
-  }
-  
+  // myRank!: AsyncBehaviorSubject<TYPE.RankModel[]>;
+  // @ROUND_AB_Generator("myRank")
+  // myRank_Executor(promise_pro) {
+  //   return promise_pro.follow(this.getMyRank());
+  // }
+
   /** 
    * 获取上一轮的投资回报率
    * 从rank中获取上一轮的收益，从上一轮的交易中获取手续费
    * TODO:需要后端在rank中添加手续费字段或者从其他地方获取手续费或者获取交易时可以根据轮次进行获取
   */
-  async getRateOfReturn():Promise<{
-    totalBenefit: number;
-    totalFee: number;
-    rateOfReturn: number;
-  }> {
+  async getRateOfReturn() {
     let lastRoundT = await this.transactionService.getTransactions({
       "type": this.ifmJs.transactionTypes.VOTE,
-      "senderId" : this.user.address,
+      "senderId": this.user.address,
       "orderBy": "t_timestamp:desc",
       "limit": 57
     })
 
     let transactions = lastRoundT.transactions;
 
-    let totalBenefitObj = await this.getMyRank();
-    let totalBenefit = parseInt(totalBenefitObj[1].profit);
+    let totalBenefitList = await this.getMyRank();
+    const myBenefit = totalBenefitList.find(rank_info => rank_info.address === this.user.address);
+    if (!myBenefit) {
+      return undefined
+    }
+    let totalBenefit = parseInt(myBenefit.profit);
     let totalFee = 0;
-    for(let i of transactions) {
-      if(Math.floor(i.height/57) == this.appSetting.getRound()) {
-        totalFee += i.fee;
-      }else {
+    for (let i of transactions) {
+      if (Math.floor(i.height / 57) == this.appSetting.getRound()) {
+        totalFee += parseFloat(i.fee);
+      } else {
         break;
       }
     }
-    if(totalFee < 0) {
-      return { totalBenefit:0, totalFee:0, rateOfReturn:0 };
+    if (totalFee < 0) {
+      throw new RangeError("手续费不可能为负数");
     }
-    let rateOfReturn = totalBenefit / totalFee;
-    return {totalBenefit,totalFee,rateOfReturn};
+
+    return {
+      totalBenefit,
+      totalFee,
+      rateOfReturn: totalFee ? (totalBenefit / totalFee) : 0
+    } as TYPE.RateOfReturnModel;
   }
 }
