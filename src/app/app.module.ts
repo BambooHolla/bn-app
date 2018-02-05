@@ -67,6 +67,7 @@ const pages = [MyApp];
       backButtonText: "",
       iconMode: "ios",
       mode: "ios",
+      pageTransition: "common-transition",
       scrollPadding: false,
       scrollAssist: false,
       autoFocusAssist: false,

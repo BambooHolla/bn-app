@@ -1,5 +1,10 @@
-import { Component } from "@angular/core";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { Component, ElementRef } from "@angular/core";
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  ViewController,
+} from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import {
@@ -19,6 +24,7 @@ export class TabChainPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public blockService: BlockServiceProvider,
+    public viewCtrl: ViewController,
   ) {
     super(navCtrl, navParams);
     this.auto_header_shadow_when_scroll_down = true;
@@ -36,7 +42,7 @@ export class TabChainPage extends FirstLevelPage {
   unconfirm_block?: UnconfirmBlockModel;
   @TabChainPage.willEnter
   async loadUnconfirmBlock() {
-   this.unconfirm_block = await this.blockService.getExpectBlockInfo()
+    this.unconfirm_block = await this.blockService.getExpectBlockInfo();
   }
 
   @TabChainPage.willEnter
@@ -151,7 +157,8 @@ export class TabChainPage extends FirstLevelPage {
 
   /** TODO：切换可用节点，或者寻找新的可用节点，然后开始重新执行这个函数
    *  这点应该做成一个peerService中提供的通用catchErrorAndReLinkPeerThenRetryTask修饰器
-   */ 
+   */
+
   @asyncCtrlGenerator.error(
     "更新区块链失败，重试次数过多，已停止重试，请检测网络",
   )
