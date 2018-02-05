@@ -17,3 +17,8 @@ export type RankModel = {
   profit: string;
   uniqueId: string;
 };
+export type RateOfReturnModel = {
+  totalBenefit: number;
+  totalFee: number;
+  rateOfReturn: number;
+};

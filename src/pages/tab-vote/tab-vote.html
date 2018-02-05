@@ -63,7 +63,7 @@
       </div>
       <div class="extends-panel">
         <ion-slides class="panel-list" [initialSlide]="1">
-          <ion-slide class="panel-item">
+          <ion-slide class="panel-item" *ngIf="income_trend_list">
             <div class="income-ranking">
               <div class="header">
                 <div class="title">
@@ -71,21 +71,15 @@
                   上轮收益排名
                 </div>
                 <div class="my-income-assets">
-                  IBT {{pre_round_rank_list_cur?.profit|amountEuler|number:'1.8-8'}}
+                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
                 </div>
               </div>
               <div class="rank-info">
-                <div class="pre-item">
-                  <div class="ranking-val">{{pre_round_rank_list_pre?.rate}}</div>
-                  <div class="ip-address">{{pre_round_rank_list_pre?.profit|amountEuler|number:'1.8-8'}}</div>
-                </div>
-                <div class="cur-item">
-                  <div class="ranking-val">{{pre_round_rank_list_cur?.rate}}</div>
-                  <div class="ip-address">我</div>
-                </div>
-                <div class="aft-item">
-                  <div class="ranking-val">{{pre_round_rank_list_next?.rate}}</div>
-                  <div class="ip-address">{{pre_round_rank_list_next?.profit|amountEuler|number:'1.8-8'}}</div>
+                <div class="item" *ngFor="let rank_item of income_trend_list" [class.me]="rank_item==pre_round_my_benefit">
+                  <div class="ranking-val">{{rank_item.rate}}</div>
+                  <div class="ip-address" >
+                    {{rank_item.profit|amountEuler|number:'1.8-8'}}
+                  </div>
                 </div>
               </div>
             </div>
@@ -133,7 +127,7 @@
                   收益趋势图
                 </div>
                 <div class="my-income-assets">
-                  IBT {{pre_round_rank_list_cur?.profit|amountEuler|number:'1.8-8'}}
+                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
                 </div>
               </div>
               <div class="chart-wrapper">
@@ -149,7 +143,7 @@
                   我的贡献
                 </div>
                 <div class="my-income-assets">
-                  IBT {{pre_round_rank_list_cur?.profit|amountEuler|number:'1.8-8'}}
+                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
                 </div>
               </div>
               <div class="detail">
@@ -168,7 +162,7 @@
               </div>
             </div>
           </ion-slide>
-          <ion-slide class="panel-item">
+          <ion-slide class="panel-item" *ngIf="pre_round_income_rate">
             <div class="pre-round-income-rate">
               <div class="header">
                 <div class="title">
@@ -176,19 +170,19 @@
                   上轮回报率
                 </div>
                 <div class="my-income-assets">
-                  IBT {{pre_round_rank_list_cur?.profit|amountEuler|number:'1.8-8'}}
+                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
                 </div>
               </div>
               <div class="detail">
                 <div class="rate-of-return">
-                  <text-gradient class="value" [text]="'77120倍'" from="#f78464" to="#fdcf48" fontSize="3.5rem" fontWeight="600"></text-gradient>
+                  <text-gradient class="value" [text]="pre_round_income_rate?.rateOfReturn.toFixed(0)+'倍'" from="#f78464" to="#fdcf48" fontSize="3.5rem" fontWeight="600"></text-gradient>
                 </div>
                 <div class="extends-info">
                   <div class="left">
-                    投入 0.00000001
+                    投入 {{pre_round_income_rate?.totalFee|amountEuler|number:'1.8-8'}}
                   </div>
                   <div class="right">
-                    产出 0.00077120
+                    产出 {{pre_round_income_rate?.totalBenefit|amountEuler|number:'1.8-8'}}
                   </div>
                 </div>
               </div>

@@ -1,11 +1,11 @@
 page-chain-block-detail {
   @extend .header-no-border;
   > .content {
-    background-color: #eeeeee;
     > .scroll-content {
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      /* overflow: hidden; */
+      background-color: #eeeeee;
     }
   }
   .block-base-info {
@@ -98,7 +98,10 @@ page-chain-block-detail {
       > .confirm-num,
       > .fee,
       > .block-id {
-        height: 3.6rem;
+        min-height: 3.6rem;
+        box-sizing: border-box;
+        padding-top: 0.8rem;
+        padding-bottom: 0.8rem;
         margin-bottom: 1px;
         color: #7c7c7c;
         font-size: 1.45rem;
@@ -139,7 +142,8 @@ page-chain-block-detail {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    // margin-top: 1rem;
+    margin-top: 1rem;
+    min-height: 30rem;
     > .header {
       width: 100%;
       flex-grow: 0;
