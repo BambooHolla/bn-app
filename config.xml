@@ -80,7 +80,6 @@
     <allow-navigation href="http://192.168.16.107:8100" />
     <allow-navigation href="http://192.168.16.130:8100" />
     <allow-navigation href="http://192.168.16.132:8100" />
-    <engine name="android" spec="^6.3.0" />
     <plugin name="cordova-plugin-crosswalk-webview" spec="^2.3.0">
         <variable name="XWALK_COMMANDLINE" value="--disable-pull-to-refresh-effect --enable-experimental-web-platform-features" />
     </plugin>
@@ -92,4 +91,5 @@
     <plugin name="cordova-plugin-x-toast" spec="^2.6.0" />
     <plugin name="cordova-sqlite-storage" spec="^2.1.5" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
+    <engine name="android" spec="^6.3.0" />
 </widget>
