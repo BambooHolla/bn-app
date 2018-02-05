@@ -152,7 +152,7 @@ export class SatellitePixiComponent extends AniBase {
       } else {
         return
       }
-      const p = this._pre_progress + this._add_ms / this._ani_ms * this._dif_progress;
+      const p = this._pre_progress + this.easing(this._add_ms / this._ani_ms) * this._dif_progress;
       const diff_deg = Math.PI * 2 * p;
       // console.log('zzz',circle_width)
       // const cur_ani_deg = ship.rotation + deg_p;
@@ -181,11 +181,12 @@ export class SatellitePixiComponent extends AniBase {
   private _ani_ms = 500;
   private _add_ms = 0;
 
-  setProgress(progress: number, ani_ms?: number) {
+  setProgress(progress: number, ani_ms?: number,easing = Easing.Linear) {
     if (ani_ms && isFinite(ani_ms) && ani_ms > 0) {
       this._ani_ms = ani_ms
     }
     this.progress = progress;
+    this.easing = easing;
   }
   easing = Easing.Linear
 

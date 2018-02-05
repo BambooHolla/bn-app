@@ -63,15 +63,18 @@ export class VoteListPage extends SecondLevelPage {
       this.gotoSubPage(page);
     }
     if (this.current_page === InOutSubPage.IN_VOTE) {
-      this.loadInVoteList();
+      this.initInVoteList();
     } else {
-      this.loadOutVoteList();
+      this.initOutVoteList();
     }
   }
 
   @asyncCtrlGenerator.loading(() =>
     VoteListPage.getTranslate("LOADING_OUT_VOTE_LIST"),
   )
+  initOutVoteList() {
+    return this.loadOutVoteList();
+  }
   @asyncCtrlGenerator.error(() =>
     VoteListPage.getTranslate("LOAD_OUT_VOTE_LIST_ERROR"),
   )
@@ -109,6 +112,9 @@ export class VoteListPage extends SecondLevelPage {
   @asyncCtrlGenerator.loading(() =>
     VoteListPage.getTranslate("LOADING_CAN_VOTE_LIST"),
   )
+  async initCanVoteList() {
+    return this.loadCanVoteList();
+  }
   @asyncCtrlGenerator.error(() =>
     VoteListPage.getTranslate("LOAD_CAN_VOTE_LIST_ERROR"),
   )
@@ -146,6 +152,9 @@ export class VoteListPage extends SecondLevelPage {
   @asyncCtrlGenerator.loading(() =>
     VoteListPage.getTranslate("LOADING_IN_VOTE_LIST"),
   )
+  async initInVoteList() {
+    return this.loadInVoteList();
+  }
   @asyncCtrlGenerator.error(() =>
     VoteListPage.getTranslate("LOAD_IN_VOTE_LIST_ERROR"),
   )

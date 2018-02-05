@@ -63,7 +63,7 @@
       </div>
       <div class="extends-panel">
         <ion-slides class="panel-list" [initialSlide]="1">
-          <ion-slide class="panel-item" *ngIf="income_trend_list">
+          <ion-slide class="panel-item">
             <div class="income-ranking">
               <div class="header">
                 <div class="title">
@@ -75,7 +75,7 @@
                 </div>
               </div>
               <div class="rank-info">
-                <div class="item" *ngFor="let rank_item of income_trend_list" [class.me]="rank_item==pre_round_my_benefit">
+                <div class="item" *ngFor="let rank_item of pre_round_rank_list" [class.me]="rank_item==pre_round_my_benefit">
                   <div class="ranking-val">{{rank_item.rate}}</div>
                   <div class="ip-address" >
                     {{rank_item.profit|amountEuler|number:'1.8-8'}}
@@ -131,7 +131,7 @@
                 </div>
               </div>
               <div class="chart-wrapper">
-                <income-trend-simple-chart class="chart"></income-trend-simple-chart>
+                <income-trend-simple-chart class="chart" [list]="income_trend_list"></income-trend-simple-chart>
               </div>
             </div>
           </ion-slide>

@@ -192,14 +192,13 @@ export class BenefitServiceProvider {
 
     // return benefit;
     await this.getTop57Benefits(true);
-    return parseInt(this.benefitList[0].amount);
+    const benefit = this.benefitList[0]
+    return parseInt(benefit&&benefit.amount)||0;
   }
 
-  benefitRecent!: AsyncBehaviorSubject<number>;
-  @HEIGHT_AB_Generator("benefitRecent")
-  benefitRecent_Executor(promise_pro) {
-    return promise_pro.follow(this.getRecentBenefit);
+  recentBenefit!: AsyncBehaviorSubject<number>;
+  @HEIGHT_AB_Generator("recentBenefit")
+  recentBenefit_Executor(promise_pro) {
+    return promise_pro.follow(this.getRecentBenefit());
   }
-
-
 }

@@ -482,4 +482,9 @@ export class BlockServiceProvider {
 
     return data.count;
   }
+  myForgingCount!:AsyncBehaviorSubject<number>
+  @HEIGHT_AB_Generator("myForgingCount")
+  myForgingCount_Executor(promise_pro){
+    return promise_pro.follow(this.getMyForgingCount())
+  }
 }

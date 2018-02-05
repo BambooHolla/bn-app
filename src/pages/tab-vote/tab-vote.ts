@@ -8,7 +8,7 @@ import { SatellitePixiComponent } from "../../components/satellite-pixi/satellit
 import { FallCoinsComponent } from "../../components/fall-coins/fall-coins";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
-import { AniBase } from "../../components/AniBase";
+import { AniBase, Easing } from "../../components/AniBase";
 import { TabsPage } from "../tabs/tabs";
 import {
   MinServiceProvider,
@@ -89,7 +89,10 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
   }
+  private _waiting_ani?: any;
+  /**设置卫星动画进度*/
   private _set_satellite_pixi_progress() {
+    clearInterval(this._waiting_ani);
     if (this.satellite_pixi) {
       if (this.satellite_pixi.is_inited) {
         this.satellite_pixi.progress = 0;
@@ -100,7 +103,20 @@ export class TabVotePage extends FirstLevelPage {
               this.satellite_pixi.setProgress(1, 128e3 - diff_time);
           } else {
             // 延迟了，等
-            this.satellite_pixi && this.satellite_pixi.setProgress(1, 500);
+            const ani_dur = 1000;
+            const doWaitingAni = () => {
+              if (this.satellite_pixi) {
+                this.satellite_pixi.setProgress(
+                  this.satellite_pixi.progress + 1,
+                  ani_dur,
+                  Easing.Quartic_InOut,
+                );
+              } else {
+                clearInterval(this._waiting_ani);
+              }
+            };
+            doWaitingAni();
+            this._waiting_ani = setInterval(doWaitingAni, ani_dur);
           }
         });
       } else {
@@ -365,7 +381,7 @@ export class TabVotePage extends FirstLevelPage {
   @asyncCtrlGenerator.retry()
   async getPreRoundRankList() {
     if (this.page_status == "vote-detail") {
-      this.pre_round_rank_list = await this.minService.getMyRank();
+      this.pre_round_rank_list = await this.minService.myRank.getPromise();
       this.pre_round_my_benefit = this.pre_round_rank_list.find(
         rank_info => rank_info.address == this.userInfo.address,
       );
@@ -399,9 +415,10 @@ export class TabVotePage extends FirstLevelPage {
   async getCurRoundIncomeInfo() {
     if (this.page_status == "vote-detail") {
       const { cur_round_income_info } = this;
-      cur_round_income_info.round = this.appSetting.round.getValue();
-      cur_round_income_info.block_num = this.appSetting.height.getValue() % 57;
-      cur_round_income_info.cur_round_income_amount = await this.benefitService.getBenefitThisRound();
+      cur_round_income_info.round = this.appSetting.getRound();
+      cur_round_income_info.block_num = await this.blockService.myForgingCount.getPromise();
+      cur_round_income_info.cur_round_income_amount = await this.benefitService.benefitThisRound.getPromise();
+      cur_round_income_info.recent_income_amount = await this.benefitService.recentBenefit.getPromise();
     }
   }
 

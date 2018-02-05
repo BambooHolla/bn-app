@@ -334,11 +334,11 @@ export class MinServiceProvider {
     return data.ranks;
   }
 
-  // myRank!: AsyncBehaviorSubject<TYPE.RankModel[]>;
-  // @ROUND_AB_Generator("myRank")
-  // myRank_Executor(promise_pro) {
-  //   return promise_pro.follow(this.getMyRank());
-  // }
+  myRank!: AsyncBehaviorSubject<TYPE.RankModel[]>;
+  @ROUND_AB_Generator("myRank")
+  myRank_Executor(promise_pro) {
+    return promise_pro.follow(this.getMyRank());
+  }
 
   /** 
    * 获取上一轮的投资回报率
@@ -355,7 +355,7 @@ export class MinServiceProvider {
 
     let transactions = lastRoundT.transactions;
 
-    let totalBenefitList = await this.getMyRank();
+    let totalBenefitList = await this.myRank.getPromise();
     const myBenefit = totalBenefitList.find(rank_info => rank_info.address === this.user.address);
     if (!myBenefit) {
       return undefined
