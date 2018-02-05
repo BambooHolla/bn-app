@@ -22,7 +22,7 @@ export class PeerServiceProvider extends EventEmitter {
   static DEFAULT_TIMEOUT = 2000;
   ifmJs: any;
   peer: any;
-  peerList?: any[];
+  peerList?: any[] = [];
   constructor(
     public http: HttpClient,
     public storage: Storage,

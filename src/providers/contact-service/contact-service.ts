@@ -23,8 +23,8 @@ export class ContactServiceProvider {
   contact: any;
   transactionTypes: any;
   addressCheck: any;
-  followingList?: any[];
-  followerList?: any[];
+  followingList?: any[] = [];
+  followerList?: any[] = [];
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -94,11 +94,14 @@ export class ContactServiceProvider {
     }
 
     for (let i of ignoreList) {
-      if (this.followerList) {
+      if (this.followerList && this.followerList.length > 0) {
         let isIgnore = this.followerList.indexOf(ignoreList[i]);
         if (isIgnore >= 0) {
           this.followerList.splice(i, 1);
         }
+      }else {
+        this.followerList = [];
+        break;
       }
     }
     await this.storage.set("c_" + address, JSON.stringify(ignoreList));

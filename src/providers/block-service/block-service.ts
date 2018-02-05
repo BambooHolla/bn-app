@@ -23,7 +23,7 @@ export * from "./block.types";
 export class BlockServiceProvider {
   ifmJs: any;
   block: any;
-  blockArray?: TYPE.BlockModel[];
+  blockArray?: TYPE.BlockModel[] = [];
 
   constructor(
     public http: HttpClient,
