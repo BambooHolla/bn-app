@@ -345,7 +345,11 @@ export class MinServiceProvider {
    * 从rank中获取上一轮的收益，从上一轮的交易中获取手续费
    * TODO:需要后端在rank中添加手续费字段或者从其他地方获取手续费或者获取交易时可以根据轮次进行获取
   */
-  async getRateOfReturn():Promise<number> {
+  async getRateOfReturn():Promise<{
+    totalBenefit: number;
+    totalFee: number;
+    rateOfReturn: number;
+  }> {
     let lastRoundT = await this.transactionService.getTransactions({
       "type": this.ifmJs.transactionTypes.VOTE,
       "senderId" : this.user.address,
@@ -366,8 +370,9 @@ export class MinServiceProvider {
       }
     }
     if(totalFee < 0) {
-      return 0;
+      return { totalBenefit:0, totalFee:0, rateOfReturn:0 };
     }
-    return totalBenefit/totalFee;
+    let rateOfReturn = totalBenefit / totalFee;
+    return {totalBenefit,totalFee,rateOfReturn};
   }
 }
