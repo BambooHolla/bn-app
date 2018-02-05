@@ -16,6 +16,7 @@ export type RankModel = {
   dateCreated: string;
   profit: string;
   uniqueId: string;
+  rate: string;
 };
 export type RateOfReturnModel = {
   totalBenefit: number;

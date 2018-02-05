@@ -22,7 +22,7 @@ export class AppUrl {
 const net_version =
   getQueryVariable("NET_VERSION") || localStorage.getItem("NET_VERSION") || "";
 
-@Injectable()
+@Injectable() 
 export class AppSettingProvider extends EventEmitter {
   static SERVER_URL = "http://mainnet.ifmchain.org";
   // static SERVER_URL = "http://47.104.142.234:6062";

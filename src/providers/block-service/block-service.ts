@@ -12,6 +12,7 @@ import {
   HEIGHT_AB_Generator,
 } from "../app-setting/app-setting";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
+import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
@@ -31,6 +32,7 @@ export class BlockServiceProvider {
     public storage: Storage,
     public translateService: TranslateService,
     public transactionService: TransactionServiceProvider,
+    public user: UserInfoProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
@@ -101,6 +103,7 @@ export class BlockServiceProvider {
   readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
   readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
   readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
+  readonly GET_MY_FORGING = this.appSetting.APP_URL("/api/blocks/getForgingBlocks")
 
   /**
    * 获取当前区块链的块高度
@@ -348,9 +351,30 @@ export class BlockServiceProvider {
       };
 
       let data = await this.getBlocks(query);
+      // for(let i in data) {
+      //   if(sort) {
+      //     data[i+1].lastBlockId = data[i].id;
+      //   }else {
+      //     data[i].lastBlockId = data[i+1].id;
+      //   }
+      // }
 
       return data.blocks;
     }
+  }
+
+  /**
+   * 获取上一个块的ID
+   * @param height 
+   */
+  async getPreBlockId(height:number):Promise<string> {
+    let data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY,{
+      search: {
+        "height" : height
+      }
+    })
+
+    return data.blocks[0].id;  
   }
 
   /**
@@ -392,6 +416,9 @@ export class BlockServiceProvider {
       fee += parseFloat(blockArray[i].totalFee);
     }
 
+    reward = reward/amount;
+    fee = fee/amount;
+
     return { reward, fee };
   }
 
@@ -420,5 +447,18 @@ export class BlockServiceProvider {
     };
 
     return data;
+  }
+
+  /** 
+   * 获取我锻造的区块数
+  */
+  async getMyForgingCount():Promise<number> {
+    let data = await this.fetch.get<TYPE.BlockResModel>(this.GET_MY_FORGING, {
+      search: {
+        generatorPublicKey: this.user.publicKey
+      }
+    })
+
+    return data.count;
   }
 }

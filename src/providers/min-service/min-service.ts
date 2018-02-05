@@ -356,18 +356,21 @@ export class MinServiceProvider {
     let transactions = lastRoundT.transactions;
 
     let totalBenefitList = await this.getMyRank();
-    const myBenefit = totalBenefitList.find(rank_info=>rank_info.address === this.user.address);
-    if(!myBenefit){
+    const myBenefit = totalBenefitList.find(rank_info => rank_info.address === this.user.address);
+    if (!myBenefit) {
       return undefined
     }
     let totalBenefit = parseInt(myBenefit.profit);
     let totalFee = 0;
     for (let i of transactions) {
       if (Math.floor(i.height / 57) == this.appSetting.getRound()) {
-        totalFee += i.fee;
+        totalFee += parseFloat(i.fee);
       } else {
         break;
       }
+    }
+    if (totalFee < 0) {
+      throw new RangeError("手续费不可能为负数");
     }
 
     return {
