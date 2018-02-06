@@ -181,12 +181,18 @@ export class SatellitePixiComponent extends AniBase {
   private _ani_ms = 500;
   private _add_ms = 0;
 
-  setProgress(progress: number, ani_ms?: number,easing = Easing.Linear) {
+  setProgress(progress: number, ani_ms?: number, easing = Easing.Linear,immediate?:boolean) {
     if (ani_ms && isFinite(ani_ms) && ani_ms > 0) {
       this._ani_ms = ani_ms
     }
     this.progress = progress;
     this.easing = easing;
+    if(ani_ms===0){
+      immediate = true;
+    }
+    if(immediate){
+      this.updateImmediate();
+    }
   }
   easing = Easing.Linear
 

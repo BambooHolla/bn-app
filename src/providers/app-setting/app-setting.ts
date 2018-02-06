@@ -22,7 +22,15 @@ export class AppUrl {
 const net_version =
   getQueryVariable("NET_VERSION") || localStorage.getItem("NET_VERSION") || "";
 
-@Injectable() 
+const block_unit_time =
+  parseFloat(
+    getQueryVariable("BLOCK_UNIT_TIME") ||
+      localStorage.getItem("BLOCK_UNIT_TIME") ||
+      "",
+  ) ||
+  (net_version === "testnet" && 10e3);
+
+@Injectable()
 export class AppSettingProvider extends EventEmitter {
   static SERVER_URL = "http://mainnet.ifmchain.org";
   // static SERVER_URL = "http://47.104.142.234:6062";
@@ -30,6 +38,10 @@ export class AppSettingProvider extends EventEmitter {
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = net_version || "mainnet";
+  static BLOCK_UNIT_TIME = block_unit_time || 128e10;
+  get BLOCK_UNIT_TIME() {
+    return AppSettingProvider.BLOCK_UNIT_TIME;
+  }
   static IFMJS = IFM(AppSettingProvider.NET_VERSION);
   static HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,

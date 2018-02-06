@@ -68,16 +68,6 @@ export class TabVotePage extends FirstLevelPage {
         targetEle.clientWidth})`;
     }
   }
-
-  /**动画的进度监控*/
-  @TabVotePage.autoUnsubscribe
-  private _progree_sub: Subscription = this.appSetting.height.subscribe(
-    height => {
-      console.log("height changed", height);
-      this._set_fall_coin_progress();
-      this._set_satellite_pixi_progress();
-    },
-  );
   private _set_fall_coin_progress() {
     if (this.fall_coin) {
       if (this.fall_coin.is_inited) {
@@ -90,17 +80,27 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
   private _waiting_ani?: any;
+  private _set_satellite_pixi_progress_process_id = 0; // 进度id，这个设置动画的过程是多个异步在结合，所以确保这个函数上下文是一致的，必须要有一个id来让这些异步知道自己能继续往下做
   /**设置卫星动画进度*/
-  private _set_satellite_pixi_progress() {
+  private _set_satellite_pixi_progress(immediate?: boolean) {
+    const id = ++this._set_satellite_pixi_progress_process_id;
+    const can_run = () => id === this._set_satellite_pixi_progress_process_id;
     clearInterval(this._waiting_ani);
-    if (this.satellite_pixi) {
+    if (can_run() && this.satellite_pixi) {
       if (this.satellite_pixi.is_inited) {
         this.satellite_pixi.progress = 0;
         this.blockService.getLastBlockRefreshInterval().then(diff_time => {
           console.log("ani diff_time", diff_time);
-          if (diff_time < 128e3) {
-            this.satellite_pixi &&
-              this.satellite_pixi.setProgress(1, 128e3 - diff_time);
+          const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
+          if (diff_time < BLOCK_UNIT_TIME) {
+            if (can_run() && this.satellite_pixi) {
+              this.satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
+
+              this.satellite_pixi.setProgress(
+                1,
+                immediate ? 1 : BLOCK_UNIT_TIME - diff_time,
+              );
+            }
           } else {
             // 延迟了，等
             const ani_dur = 1000;
@@ -139,7 +139,7 @@ export class TabVotePage extends FirstLevelPage {
         this.satellite_pixi.startAnimation();
       }
     }
-    this._set_satellite_pixi_progress();
+    this._set_satellite_pixi_progress(true);
     this.buddha_glow &&
       this.buddha_glow.is_inited &&
       this.buddha_glow.startAnimation();
@@ -342,39 +342,6 @@ export class TabVotePage extends FirstLevelPage {
     this.routeToBootstrap();
   }
 
-  @TabVotePage.autoUnsubscribe _round_subscription?: Subscription;
-  /** 监听轮次变动
-   *  停止相关的动画
-   *  运作变成大金币并落入底部层
-   *  然后更新相关的数据
-   */
-  watchRoundChanged() {
-    if (!this._round_subscription && this.page_status === "vote-detail") {
-      this._round_subscription = this.appSetting.round.subscribe(() => {
-        this._whenRoundChangeAni(); // 执行动画
-        // TODO:数据的变动应该与动画同时触发
-        this.getPreRoundRankList();
-        this.getIncomeTrendList();
-        this.getCurRoundIncomeInfo();
-      });
-    }
-  }
-  private _whenRoundChangeAni() {
-    this._stopVoteAnimate({ is_force_stop_chain_mesh: true });
-    // 隐藏挖矿动画层，显示大金币
-    this.is_show.show_big_fall_icon = true;
-    setTimeout(() => {
-      // 显示金币掉落动画
-      this.is_show.round_ani = true;
-      setTimeout(() => {
-        this.is_show.show_big_fall_icon = false;
-        this.is_show.round_ani = false;
-        // 重新开始动画
-        this._startVoteAnimate();
-      }, 4000);
-    }, 1000);
-  }
-
   /**上一轮的收益排名*/
   pre_round_rank_list?: RankModel[];
   pre_round_my_benefit?: RankModel;
@@ -429,6 +396,55 @@ export class TabVotePage extends FirstLevelPage {
     if (this.page_status == "vote-detail") {
       this.pre_round_income_rate = await this.minService.rateOfReturn.getPromise();
     }
+  }
+
+  /**动画的进度监控*/
+  @TabVotePage.autoUnsubscribe private _height_subscription?: Subscription;
+  @TabVotePage.willEnter
+  watchHeightChanged() {
+    this._height_subscription = this.appSetting.height.subscribe(height => {
+      if (this.page_status === VotePage.VoteDetail) {
+        this._set_fall_coin_progress();
+        this._set_satellite_pixi_progress();
+        // TODO:我的贡献？
+      }
+    });
+  }
+
+  @TabVotePage.autoUnsubscribe _round_subscription?: Subscription;
+  /** 监听轮次变动
+   *  停止相关的动画
+   *  运作变成大金币并落入底部层
+   *  然后更新相关的数据
+   */
+  watchRoundChanged() {
+    if (this._round_subscription) {
+      return;
+    }
+    this._round_subscription = this.appSetting.round.subscribe(() => {
+      if (this.page_status === "vote-detail") {
+        this._whenRoundChangeAni(); // 执行动画
+        // TODO:数据的变动应该与动画同时触发
+        this.getPreRoundRankList();
+        this.getIncomeTrendList();
+        this.getCurRoundIncomeInfo();
+      }
+    });
+  }
+  private _whenRoundChangeAni() {
+    this._stopVoteAnimate({ is_force_stop_chain_mesh: true });
+    // 隐藏挖矿动画层，显示大金币
+    this.is_show.show_big_fall_icon = true;
+    setTimeout(() => {
+      // 显示金币掉落动画
+      this.is_show.round_ani = true;
+      setTimeout(() => {
+        this.is_show.show_big_fall_icon = false;
+        this.is_show.round_ani = false;
+        // 重新开始动画
+        this._startVoteAnimate();
+      }, 4000);
+    }, 1000);
   }
 }
 

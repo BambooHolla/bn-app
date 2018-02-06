@@ -60,20 +60,21 @@ export class BlockServiceProvider {
       // 这里不需要捕捉错误，_loop内有完整的错误捕捉方案。所以只需要执行就可以了
       this._loopGetAndSetHeight();
     };
+    const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
     try {
       const diff_time = await this.getLastBlockRefreshInterval();
       // if (diff_time <= 0) {
       //   throw new RangeError("Wrong diff time");
       // }
-      if (diff_time < 128e3) {
+      if (diff_time < BLOCK_UNIT_TIME) {
         this._refresh_interval = 0;
         console.log(
           `%c高度将在${new Date(
-            Date.now() + 128e3 - diff_time,
+            Date.now() + BLOCK_UNIT_TIME - diff_time,
           ).toLocaleTimeString()}进行更新`,
           "font-size:1rem;color:blue;",
         );
-        setTimeout(do_loop, 128e3 - diff_time);
+        setTimeout(do_loop, BLOCK_UNIT_TIME - diff_time);
       } else {
         // 刷新时间递增
         if (this._refresh_interval === 0) {
@@ -82,7 +83,7 @@ export class BlockServiceProvider {
           this._refresh_interval *= 2;
         }
         // 至少二分之一轮要更新一次
-        this._refresh_interval = Math.min(128e3 / 2, this._refresh_interval);
+        this._refresh_interval = Math.min(BLOCK_UNIT_TIME / 2, this._refresh_interval);
         setTimeout(do_loop, this._refresh_interval);
       }
       this._retry_interval = 0; // 无异常，重置异常计时器
@@ -93,7 +94,7 @@ export class BlockServiceProvider {
       } else {
         this._retry_interval *= 2;
       }
-      this._retry_interval = Math.min(128e3 / 2, this._retry_interval);
+      this._retry_interval = Math.min(BLOCK_UNIT_TIME / 2, this._retry_interval);
       setTimeout(do_loop, this._retry_interval);
     }
   }
@@ -121,26 +122,6 @@ export class BlockServiceProvider {
     return promise_pro.follow(this.getLastBlock());
   });
 
-  /**
-   * 获取块剩余时间
-   * 返回大于0说明块正常打块
-   * 返回-1说明块延迟
-   * @returns {Promise<void>}
-   */
-  async getBlockRemainTime() {
-    let lastBlock: any = await this.lastBlock.getPromise();
-
-    let lastBlockTime = lastBlock.timestamp;
-    let lastTime = this.getFullTimestamp(lastBlockTime);
-    let currentTime = new Date().getTime();
-    if (currentTime - lastTime > 128000 + 2000) {
-      //2秒缓冲时间
-      return -1;
-    } else {
-      let percent = Math.floor((currentTime - lastTime) / 128) * 100;
-      return percent;
-    }
-  }
   /**
    * 获取输入的时间戳的完整时间戳,TODO: 和minSer重复了
    * @param timestamp
@@ -322,8 +303,10 @@ export class BlockServiceProvider {
    * @param list
    */
   blockListHandle(list: TYPE.BlockModel[]): TYPE.BlockModel[] {
+    const {BLOCK_UNIT_TIME} = this.appSetting;
+    const BLOCK_UNIT_SECONED = BLOCK_UNIT_TIME/1000;
     for (let i = 0; i < list.length - 1; i++) {
-      if (list[i].timestamp > list[i + 1].timestamp + 128) {
+      if (list[i].timestamp > list[i + 1].timestamp + BLOCK_UNIT_SECONED) {
         list[i].delay = true;
       } else {
         list[i].delay = false;
