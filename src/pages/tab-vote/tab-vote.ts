@@ -354,6 +354,7 @@ export class TabVotePage extends FirstLevelPage {
         this._whenRoundChangeAni(); // 执行动画
         // TODO:数据的变动应该与动画同时触发
         this.getPreRoundRankList();
+        this.getIncomeTrendList();
         this.getCurRoundIncomeInfo();
       });
     }
@@ -374,7 +375,7 @@ export class TabVotePage extends FirstLevelPage {
     }, 1000);
   }
 
-  /**上一轮的排名*/
+  /**上一轮的收益排名*/
   pre_round_rank_list?: RankModel[];
   pre_round_my_benefit?: RankModel;
   @TabVotePage.willEnter
@@ -394,9 +395,7 @@ export class TabVotePage extends FirstLevelPage {
   @asyncCtrlGenerator.retry()
   async getIncomeTrendList() {
     if (this.page_status == "vote-detail") {
-      const income_trend_list = await this.benefitService.getTop57Benefits(
-        false,
-      );
+      const income_trend_list = await this.benefitService.top57Benefits.getPromise();
       this.income_trend_list = income_trend_list.length
         ? income_trend_list
         : undefined;
@@ -422,10 +421,13 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
 
+  /**获取上一轮的投资回报率*/
   pre_round_income_rate?: RateOfReturnModel;
+  @TabVotePage.willEnter
+  @asyncCtrlGenerator.retry()
   async getPreRoundIncomeRate() {
     if (this.page_status == "vote-detail") {
-      this.pre_round_income_rate = await this.minService.getRateOfReturn();
+      this.pre_round_income_rate = await this.minService.rateOfReturn.getPromise();
     }
   }
 }

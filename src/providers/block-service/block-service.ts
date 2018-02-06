@@ -372,6 +372,7 @@ export class BlockServiceProvider {
    */
   async getPreBlockId(height: number): Promise<string> {
     if (height > 1) {
+      const pre_height = height - 1;
       if (this.blockArray) {
         const lists = this.blockArray.slice();
         for (let i = 0; i < lists.length; i += 1) {
@@ -379,7 +380,7 @@ export class BlockServiceProvider {
             await Promise.resolve(); // 快速异步
           }
           const block = lists[i];
-          if (block.height === height) {
+          if (block.height === pre_height) {
             return block.id;
           }
         }
@@ -388,7 +389,7 @@ export class BlockServiceProvider {
         this.GET_BLOCK_BY_QUERY,
         {
           search: {
-            height: height - 1,
+            height: pre_height,
           },
         },
       );
