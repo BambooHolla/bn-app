@@ -58,6 +58,7 @@ export class LoginServiceProvider {
     console.groupEnd();
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
+  readonly SEARCH_ACCOUNT_URL = this.appSetting.APP_URL("/api/accounts/");
   // _loginerInfo: AsyncBehaviorSubject<CommonResponseData<UserModel>>
   // // 按需生成，否则直接生成的话发起请求，在返回的末端没有其它地方接手这个请求catch错误的话，会导致异常抛出到全局
   // get loginerInfo() {
@@ -135,8 +136,10 @@ export class LoginServiceProvider {
     if (!userinfo) {
       return;
     }
-    const res = await this.fetch.put<any>(this.LOGIN_URL, {
-      publicKey: userinfo.publicKey
+    const res = await this.fetch.get<any>(this.SEARCH_ACCOUNT_URL, {
+      search : {
+        "address" : userinfo.address
+      }
     });
     Object.assign(userinfo, res.account);
     this.appSetting.setUserToken(userinfo);
