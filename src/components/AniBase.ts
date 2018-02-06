@@ -85,6 +85,12 @@ export class AniBase extends EventEmitter {
       fun(t, diff_t);
     }
   }
+  updateImmediate(){
+    const t = performance.now();
+    const diff_t = t - this.pre_t;
+    this.pre_t = t;
+    this._update(t, diff_t);
+  }
   removeLoop(cb: Function) {
     const index = this._loop_runs.indexOf(cb);
     if (index !== -1) {

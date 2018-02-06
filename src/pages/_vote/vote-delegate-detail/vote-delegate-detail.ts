@@ -41,23 +41,6 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     const { block_list_config } = this;
     block_list_config.page = 1;
     block_list_config.has_more = true;
-
-    // this.block_list = Array.from(Array(block_list_config.pageSize)).map(
-    //   (_, i) => {
-    //     return {
-    //       create_time: new Date(Date.now() - (i + 1) * 3 * 128 * 1000),
-    //       address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
-    //       reward: 200 * Math.random(),
-    //       height: (1000 * Math.random()) | 0,
-    //       is_delay: Math.random() > 0.5,
-    //       trans_num: (Math.random() * 5000) | 0,
-    //       trans_assets: Math.random() * 10000,
-    //       fee: 5000 * Math.random() * 0.00000001,
-    //       tran_logs: Array.from(Array((Math.random() * 100) | 0)),
-    //       block_size: Math.random() * 10,
-    //     };
-    //   },
-    // );
     if (refresher) {
       refresher.complete();
     }

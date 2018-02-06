@@ -4,6 +4,7 @@ import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
+import { AlertController } from 'ionic-angular'
 import {
   AppSettingProvider,
   ROUND_AB_Generator,
@@ -15,6 +16,7 @@ import { TransactionServiceProvider } from "../transaction-service/transaction-s
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
+import { asyncCtrlGenerator } from "../../../src/bnqkl-framework/Decorator";
 import * as TYPE from "./min.types";
 export * from "./min.types";
 
@@ -153,6 +155,8 @@ export class MinServiceProvider {
   /**
    * 自动投票
    */
+  @FLP_Form.FromGlobal alertCtrl!: AlertController;
+  @asyncCtrlGenerator.error(() => FLP_Form.getTranslate("AUTO_VOTE_ERROR"))
   async autoVote(round) {
     let voteSwitch: boolean = this.appSetting.settings.background_mining;
     let voteRound: number = this.appSetting.settings.digRound;
@@ -160,10 +164,8 @@ export class MinServiceProvider {
     let secondSecret: any;
     let passwordObj: any;
     if (voteSwitch == true && voteRound < round) {
-      passwordObj = await FLP_Form.prototype.getUserPassword();
-      password = passwordObj.password;
-      secondSecret = passwordObj.secondSecret;
-      await this.vote(password, secondSecret);
+      const { password, pay_pwd } = await FLP_Form.prototype.getUserPassword();
+      await this.vote(password, pay_pwd);
     }
   }
 
@@ -378,5 +380,11 @@ export class MinServiceProvider {
       totalFee,
       rateOfReturn: totalFee ? (totalBenefit / totalFee) : 0
     } as TYPE.RateOfReturnModel;
+  }
+
+  rateOfReturn!: AsyncBehaviorSubject<TYPE.RateOfReturnModel | undefined>;
+  @ROUND_AB_Generator("rateOfReturn")
+  rateOfReturn_Executor(promise_pro) {
+    return promise_pro.follow(this.getRateOfReturn());
   }
 }

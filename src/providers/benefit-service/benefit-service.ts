@@ -108,6 +108,12 @@ export class BenefitServiceProvider {
     return this.benefitList
   }
 
+  top57Benefits!:AsyncBehaviorSubject<TYPE.BenefitModel[]>
+  @ROUND_AB_Generator("top57Benefits")
+  top57Benefits_Executor(promise_pro){
+    return promise_pro.follow(this.getTop57Benefits(false));
+  }
+
   /**
    * 获取我的收益
    * @param params
