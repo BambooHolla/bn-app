@@ -125,21 +125,18 @@
   "TUTORIAL_SKIP_BUTTON": "跳过",
   "TUTORIAL_CONTINUE_BUTTON": "继续",
 
-  "TUTORIAL_SLIDE1_TITLE": "欢迎来到 Ionic Super Starter",
-  "TUTORIAL_SLIDE1_DESCRIPTION":
-    "<b>Ionic Super Starter</b> 是一个功能全面，内置多个页面以及最佳实践的 Ionic 入门教程。",
+  "TUTORIAL_SLIDE1_TITLE": "欢迎来到 IFM2.0",
+  "TUTORIAL_SLIDE1_DESCRIPTION": "没有文案",
 
-  "TUTORIAL_SLIDE2_TITLE": "如何使用 Super 入门教程",
-  "TUTORIAL_SLIDE2_DESCRIPTION":
-    "使用你需要的多种多样的页面删除你不需要的页面。我们提供许多常见移动 app 页面，如登录、注册页面，tabs 标签页，以及本教程页面。",
+  "TUTORIAL_SLIDE2_TITLE": "如何使用 IFM2.0 入门教程",
+  "TUTORIAL_SLIDE2_DESCRIPTION": "没有文案",
 
   "TUTORIAL_SLIDE3_TITLE": "开始",
-  "TUTORIAL_SLIDE3_DESCRIPTION":
-    "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
+  "TUTORIAL_SLIDE3_DESCRIPTION": "没有文案",
 
-  "TUTORIAL_SLIDE4_TITLE": "开始学习？",
+  "TUTORIAL_SLIDE4_TITLE": "开始进入手机挖矿时代？",
 
-  "WELCOME_INTRO": "出发，你的下一个强大的 Ionic app",
+  "WELCOME_INTRO": "出发，你的下一个强大的<b>区块链应用</b>",
 
   "SETTINGS_TITLE": "设置",
   "SETTINGS_OPTION1": "选项 1",
@@ -175,7 +172,7 @@
   "CARDS_TITLE": "社交",
 
   "SEARCH_TITLE": "搜索",
-  "SEARCH_PLACEHOLDER": "搜索项目列表, 比如：\"Donald Duck\"",
+  "SEARCH_PLACEHOLDER": "搜索项目列表",
 
   "//": "link-node-page",
   "LINKING_PEER_NODE": "节点连接中",

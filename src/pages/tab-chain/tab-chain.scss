@@ -7,7 +7,7 @@ page-tab-chain {
     position: relative;
     box-sizing: border-box;
     padding: 6rem 0.8rem 1.6rem;
-    margin: 0.2rem auto 0rem auto;
+    margin: 0.2rem auto #{$block-distance}rem auto;
     > .blur-bg {
       position: absolute;
       z-index: -2;
@@ -119,7 +119,7 @@ page-tab-chain {
     flex-direction: column;
     align-items: center;
     transform: translateZ(0);
-    padding-top: #{$block-distance}rem;
+    padding-top: #{$block-distance / 2}rem;
     .block-item {
       margin-bottom: #{$block-distance}rem;
       background-color: #fff;

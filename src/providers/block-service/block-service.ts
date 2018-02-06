@@ -55,7 +55,6 @@ export class BlockServiceProvider {
   private _retry_interval = 0;
   private async _loopGetAndSetHeight() {
     const do_loop = () => {
-      console.log("qaq");
       this.lastBlock.refresh();
       // 这里不需要捕捉错误，_loop内有完整的错误捕捉方案。所以只需要执行就可以了
       this._loopGetAndSetHeight();
@@ -139,9 +138,7 @@ export class BlockServiceProvider {
       ),
     );
     let tstamp = parseInt((seed.getTime() / 1000).toString());
-    console.log("aaa seed " + tstamp);
     let fullTimestamp = (timestamp + tstamp) * 1000;
-    console.log("aaa full " + fullTimestamp);
     return fullTimestamp;
   }
 
@@ -452,6 +449,11 @@ export class BlockServiceProvider {
     };
 
     return data;
+  }
+  expectBlockInfo!:AsyncBehaviorSubject<TYPE.UnconfirmBlockModel>
+  @HEIGHT_AB_Generator("expectBlockInfo")
+  expectBlockInfo_Executor(promise_pro){
+    return promise_pro.follow(this.getExpectBlockInfo());
   }
 
   /**

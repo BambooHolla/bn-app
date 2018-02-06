@@ -47,6 +47,13 @@ export class TabVotePage extends FirstLevelPage {
     if (this.page_status === VotePage.None) {
       this.page_status = VotePage.Bootstrap;
     }
+    if (this.page_status === VotePage.Bootstrap) {
+      // 如果已经开启自动挖矿，直接进入挖矿动画页面
+      if (this.appSetting.settings.background_mining) {
+        // 使用startMin而不是routeToVoteDetail，为了确保自动挖矿的检查条件一定要执行
+        this.startMin();
+      }
+    }
     this.tabs.setBgTransparent(
       this.page_status === VotePage.Bootstrap,
       this.cname,
@@ -165,6 +172,8 @@ export class TabVotePage extends FirstLevelPage {
   routeToVoteDetail() {
     this.tabs.setBgTransparent(false, this.cname);
     this.page_status = VotePage.VoteDetail;
+    // page_status更新后，触发数据获取函数
+    this.dispatchEvent("page on:vote-detail");
     this._startVoteAnimate();
 
     const { _earth_enabled_config, earth_config } = this;
@@ -321,14 +330,6 @@ export class TabVotePage extends FirstLevelPage {
           }
         });
       this.routeToVoteDetail();
-      this.getPreRoundRankList();
-      this.getCurRoundIncomeInfo();
-      // // FAKE ANI
-      // setTimeout(() => {
-      //   if (!this.is_show.show_big_fall_icon) {
-      //     this._whenRoundChangeAni();
-      //   }
-      // }, 1000);
     } finally {
       this.min_starting = false;
     }
@@ -346,6 +347,7 @@ export class TabVotePage extends FirstLevelPage {
   pre_round_rank_list?: RankModel[];
   pre_round_my_benefit?: RankModel;
   @TabVotePage.willEnter
+  @TabVotePage.addEvent("page on:vote-detail")
   @asyncCtrlGenerator.retry()
   async getPreRoundRankList() {
     if (this.page_status == "vote-detail") {
@@ -359,6 +361,7 @@ export class TabVotePage extends FirstLevelPage {
   /**收益趋势图*/
   income_trend_list?: BenefitModel[];
   @TabVotePage.willEnter
+  @TabVotePage.addEvent("page on:vote-detail")
   @asyncCtrlGenerator.retry()
   async getIncomeTrendList() {
     if (this.page_status == "vote-detail") {
@@ -377,6 +380,7 @@ export class TabVotePage extends FirstLevelPage {
     recent_income_amount: 0,
   };
   @TabVotePage.willEnter
+  @TabVotePage.addEvent("page on:vote-detail")
   @asyncCtrlGenerator.retry()
   async getCurRoundIncomeInfo() {
     if (this.page_status == "vote-detail") {
@@ -387,10 +391,21 @@ export class TabVotePage extends FirstLevelPage {
       cur_round_income_info.recent_income_amount = await this.benefitService.recentBenefit.getPromise();
     }
   }
+  /**我的贡献*/
+  my_contribution = {};
+  @TabVotePage.willEnter
+  @TabVotePage.addEvent("page on:vote-detail")
+  @asyncCtrlGenerator.retry()
+  async getMyContribution() {
+    if (this.page_status == "vote-detail") {
+      console.error("还未接入“我的贡献”相关的接口");
+    }
+  }
 
   /**获取上一轮的投资回报率*/
   pre_round_income_rate?: RateOfReturnModel;
   @TabVotePage.willEnter
+  @TabVotePage.addEvent("page on:vote-detail")
   @asyncCtrlGenerator.retry()
   async getPreRoundIncomeRate() {
     if (this.page_status == "vote-detail") {
@@ -402,17 +417,18 @@ export class TabVotePage extends FirstLevelPage {
   @TabVotePage.autoUnsubscribe private _height_subscription?: Subscription;
   @TabVotePage.willEnter
   watchHeightChanged() {
-    if(!this._height_subscription){
-      let is_first = true;
-      this._height_subscription = this.appSetting.height.subscribe(height => {
-        if (this.page_status === VotePage.VoteDetail) {
-          this._set_fall_coin_progress();
-          this._set_satellite_pixi_progress(is_first);
-          // TODO:我的贡献？
-          is_first = false;
-        }
-      });
+    if (this._height_subscription) {
+      return;
     }
+    let is_first = true;
+    this._height_subscription = this.appSetting.height.subscribe(height => {
+      if (this.page_status === VotePage.VoteDetail) {
+        this._set_fall_coin_progress();
+        this._set_satellite_pixi_progress(is_first);
+        // TODO:我的贡献？
+        is_first = false;
+      }
+    });
   }
 
   @TabVotePage.autoUnsubscribe _round_subscription?: Subscription;
@@ -421,13 +437,23 @@ export class TabVotePage extends FirstLevelPage {
    *  运作变成大金币并落入底部层
    *  然后更新相关的数据
    */
+  private get _pre_ani_round() {
+    return parseFloat(localStorage.getItem("@tab-vote-pre_ani_round") || "") || 0;
+  }
+  private set _pre_ani_round(v: number) {
+    localStorage.setItem("@tab-vote-pre_ani_round", v.toString());
+  }
+  @TabVotePage.willEnter
   watchRoundChanged() {
     if (this._round_subscription) {
       return;
     }
-    this._round_subscription = this.appSetting.round.subscribe(() => {
+    this._round_subscription = this.appSetting.round.subscribe(cur_round => {
       if (this.page_status === "vote-detail") {
-        this._whenRoundChangeAni(); // 执行动画
+        if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
+          this._whenRoundChangeAni(); // 执行动画
+        }
+        this._pre_ani_round = cur_round;
         // TODO:数据的变动应该与动画同时触发
         this.getPreRoundRankList();
         this.getIncomeTrendList();

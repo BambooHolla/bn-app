@@ -1,4 +1,4 @@
-import { Component, ElementRef } from "@angular/core";
+import { Component, ElementRef, ViewChild } from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -13,6 +13,10 @@ import {
   UnconfirmBlockModel,
 } from "../../providers/block-service/block-service";
 import { Subscription } from "rxjs/Subscription";
+
+// type BlockWithPosModel = BlockModel & {
+//   y: number;
+// };
 
 @IonicPage({ name: "tab-chain" })
 @Component({
@@ -31,7 +35,7 @@ export class TabChainPage extends FirstLevelPage {
   }
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
-  block_list: BlockModel[] = [];
+  block_list: Array<BlockModel> = [];
   block_list_config = {
     loading: false,
     page: 1,
@@ -42,13 +46,9 @@ export class TabChainPage extends FirstLevelPage {
   unconfirm_block?: UnconfirmBlockModel;
   @TabChainPage.willEnter
   async loadUnconfirmBlock() {
-    this.unconfirm_block = await this.blockService.getExpectBlockInfo();
+    this.unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
   }
 
-  @TabChainPage.willEnter
-  @asyncCtrlGenerator.error(() =>
-    TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
-  )
   // @asyncCtrlGenerator.loading(
   //   () => TabChainPage.getTranslate("LOADING_BLOCK_LIST"),
   //   undefined,
@@ -57,6 +57,10 @@ export class TabChainPage extends FirstLevelPage {
   //     showBackdrop: false,
   //   },
   // )
+  @TabChainPage.willEnter
+  @asyncCtrlGenerator.error(() =>
+    TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
+  )
   async loadBlockList(
     opts: {
       force?: boolean;
@@ -89,12 +93,13 @@ export class TabChainPage extends FirstLevelPage {
       const list = this.blockService.blockListHandle(
         await this.blockService.getTopBlocks(false, size_length),
       );
-      console.log("block_list", list);
       if (increment) {
         // 增量更新
         this.block_list.unshift(...list);
+        this.dispatchEvent("when-block-list-changed");
       } else {
         this.block_list = list;
+        this.dispatchEvent("when-block-list-changed");
         block_list_config.has_more = list.length == block_list_config.pageSize;
 
         // 根据返回的高度，对page进行重置
@@ -138,6 +143,7 @@ export class TabChainPage extends FirstLevelPage {
       filtered_block_list = block_list;
     }
     this.block_list.push(...filtered_block_list);
+    this.dispatchEvent("when-block-list-changed");
     if (
       filtered_block_list.length !== block_list.length &&
       filtered_block_list.length < block_list_config.pageSize / 2
@@ -146,10 +152,16 @@ export class TabChainPage extends FirstLevelPage {
       return this.loadMoreBlockList();
     }
   }
+  blockListTrackByFn(index, item: BlockModel) {
+    return item.height;
+  }
 
   @TabChainPage.autoUnsubscribe private _height_subscription?: Subscription;
-  @TabChainPage.onInit
+  @TabChainPage.willEnter
   watchHeightChange() {
+    if (this._height_subscription) {
+      return;
+    }
     this._height_subscription = this.appSetting.height.subscribe(
       this._watchHeightChange.bind(this),
     );
@@ -167,15 +179,126 @@ export class TabChainPage extends FirstLevelPage {
     if (this.block_list.length === 0) {
       await this.loadBlockList();
     } else {
+      const tasks: Promise<any>[] = [];
       const current_length = this.block_list[0].height;
       // TODO：暂停预期块的动画=>实现块进入的动画=>再次开启预期块的动画
       if (current_length < height) {
         // 增量更新
-        await this.loadBlockList({
+        tasks[tasks.length] = this.loadBlockList({
           increment: true,
           increment_length: height - current_length,
         });
+        tasks[tasks.length] = this.loadUnconfirmBlock();
+      }
+      await Promise.all(tasks);
+    }
+  }
+
+  showing_block_list: Array<BlockModel> = [];
+  private showlist_bind_info = {
+    from_index: 0,
+    current_index: 0,
+    end_index: 0,
+    height: 0,
+  };
+  @TabChainPage.addEvent("when-block-list-changed")
+  @TabChainPage.willEnter
+  bindShowingBlockList() {
+    const { showlist_bind_info, block_list_config } = this;
+    if (this.showing_block_list.length === 0) {
+      this.showing_block_list = this.block_list.slice(
+        0,
+        block_list_config.pageSize * 2,
+      );
+    } else {
+      const center_block_info = this._getViewCenterBlock();
+      if (!center_block_info.height) {
+        return;
+      }
+      const height = center_block_info.height;
+      const first_height = this.block_list[0].height;
+      const current_index = first_height - height;
+      let from_index = current_index - block_list_config.pageSize;
+      let end_index = current_index + block_list_config.pageSize;
+      if (from_index < 0) {
+        end_index -= from_index;
+        from_index = 0;
+      }
+      if (end_index > this.block_list.length) {
+        const more_length = end_index - this.block_list.length;
+        end_index = this.block_list.length;
+        from_index -= more_length;
+        if (from_index < 0) {
+          from_index = 0;
+        }
+      }
+
+      if (
+        // 视野中间的block是同一个
+        showlist_bind_info.height === height &&
+        // 且中间的这个区块与算出的起点距离没有发生改变，等于我不在列表的最前面，当前面发生了插入我不也不用在意
+        showlist_bind_info.current_index - showlist_bind_info.from_index ===
+          current_index - from_index &&
+        // 还有与终点的距离
+        showlist_bind_info.end_index - showlist_bind_info.current_index ===
+          end_index - current_index
+      ) {
+        // console.log(
+        //   "%c不需要更新 showing_block_list",
+        //   "color:green;background-color:#ddd",
+        // );
+        return;
+      }
+      this.showlist_bind_info = {
+        from_index,
+        current_index,
+        end_index,
+        height,
+      };
+      // console.log(
+      //   "%c更新 showing_block_list",
+      //   "color:orange;background-color:#ddd",
+      //   this.showlist_bind_info,
+      // );
+      this.showing_block_list = this.block_list.slice(from_index, end_index);
+    }
+  }
+  @TabChainPage.autoUnsubscribe _content_scroll_subscription?: Subscription;
+  private _content_scroll_refresh_showing_list_ti: any;
+  @TabChainPage.didEnter
+  whenContentScroll() {
+    if (!this.content) {
+      return;
+    }
+
+    this._content_scroll_subscription = this.content.ionScroll.subscribe(
+      scroll_info => {
+        if (this._content_scroll_refresh_showing_list_ti) {
+          return;
+        }
+        this._content_scroll_refresh_showing_list_ti = setTimeout(() => {
+          this.bindShowingBlockList();
+          this._content_scroll_refresh_showing_list_ti = null;
+        }, 160);
+      },
+    );
+  }
+
+  private _getViewCenterBlock() {
+    var ele = document.elementFromPoint(
+      document.body.clientWidth / 2,
+      document.body.clientHeight / 2,
+    ) as HTMLElement;
+    while (!ele.classList.contains("block-item")) {
+      if (ele.parentElement) {
+        ele = ele.parentElement;
+      } else {
+        break;
       }
     }
+    return {
+      ele,
+      height: parseFloat(ele.dataset["height"] as string),
+    };
   }
 }

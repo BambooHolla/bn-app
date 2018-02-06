@@ -81,6 +81,18 @@ export class FLP_Lifecycle extends FLP_Tool
     }
     this.tryEmit("didLeave");
   }
+  dispatchEvent(fire_event_name: string) {
+    console.group("%cdispatchEvent", 'color:blue;background-color:#FFF', fire_event_name);
+    for (let { handle_name, event_name } of this._on_evnet_funs) {
+      if (event_name === fire_event_name) {
+        try {
+          console.log(handle_name);
+          this[handle_name]();
+        } catch (err) { console.error(err); }
+      }
+    }
+    console.groupEnd();
+  }
 
   // 生命周期 修饰器
   // 这里只保存属性名，在调用的时候就能获取到最终被其它修饰器修饰完的属性值
@@ -131,10 +143,19 @@ export class FLP_Lifecycle extends FLP_Tool
     return descriptor;
   }
 
+  @FLP_Lifecycle.cacheFromProtoArray("onEvent")
+  private _on_evnet_funs!: Set<{ handle_name: string, event_name: string }>;
+  static addEvent(event_name: string) {
+    return function(target: any, handle_name: string, descriptor?: PropertyDescriptor) {
+      FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
+      return descriptor;
+    }
+  }
+
   static autoUnsubscribe(target: FLP_Lifecycle, name: string) {
     const cache_key = `-AU-${name}-`;
     if (!target[cache_key]) {
-      target[cache_key] = function () {
+      target[cache_key] = function() {
         if (this[name]) {
           this[name].unsubscribe();
           this[name] = null;

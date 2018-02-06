@@ -118,8 +118,11 @@ export class TabPayPage extends FirstLevelPage {
   }
 
   @TabPayPage.autoUnsubscribe private _height_subscription?: Subscription;
-  @TabPayPage.onInit
+  @TabPayPage.willEnter
   watchHeightChange() {
+    if(this._height_subscription){
+      return
+    }
     this._height_subscription = this.appSetting.height.subscribe(
       this._watchHeightChange.bind(this),
     );
