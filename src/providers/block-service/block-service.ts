@@ -294,6 +294,15 @@ export class BlockServiceProvider {
       return this.blockArray;
     }
   }
+  
+  /**
+   * 按照高度刷新块
+   */
+  refreshBlock!: AsyncBehaviorSubject<TYPE.BlockModel[]>
+  @HEIGHT_AB_Generator("refreshBlock")
+  refreshBlock_Executor(promise_pro) {
+    this.getTopBlocks(true);
+  }
 
   /**
    * 判断当前的块是否延迟，返回块数组
