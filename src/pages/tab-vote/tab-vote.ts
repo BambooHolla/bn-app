@@ -94,12 +94,12 @@ export class TabVotePage extends FirstLevelPage {
           const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
           if (diff_time < BLOCK_UNIT_TIME) {
             if (can_run() && this.satellite_pixi) {
-              this.satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
-
-              this.satellite_pixi.setProgress(
-                1,
-                immediate ? 1 : BLOCK_UNIT_TIME - diff_time,
-              );
+              if (immediate) {
+                // 立即更新现在的进度
+                this.satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
+              }
+              this.satellite_pixi.setProgress(1, BLOCK_UNIT_TIME - diff_time);
+              this.satellite_pixi.setProgress(1, BLOCK_UNIT_TIME - diff_time);
             }
           } else {
             // 延迟了，等
@@ -402,13 +402,17 @@ export class TabVotePage extends FirstLevelPage {
   @TabVotePage.autoUnsubscribe private _height_subscription?: Subscription;
   @TabVotePage.willEnter
   watchHeightChanged() {
-    this._height_subscription = this.appSetting.height.subscribe(height => {
-      if (this.page_status === VotePage.VoteDetail) {
-        this._set_fall_coin_progress();
-        this._set_satellite_pixi_progress();
-        // TODO:我的贡献？
-      }
-    });
+    if(!this._height_subscription){
+      let is_first = true;
+      this._height_subscription = this.appSetting.height.subscribe(height => {
+        if (this.page_status === VotePage.VoteDetail) {
+          this._set_fall_coin_progress();
+          this._set_satellite_pixi_progress(is_first);
+          // TODO:我的贡献？
+          is_first = false;
+        }
+      });
+    }
   }
 
   @TabVotePage.autoUnsubscribe _round_subscription?: Subscription;
