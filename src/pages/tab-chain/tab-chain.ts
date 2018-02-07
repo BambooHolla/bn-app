@@ -156,26 +156,17 @@ export class TabChainPage extends FirstLevelPage {
     return item.height;
   }
 
-  @TabChainPage.autoUnsubscribe private _height_subscription?: Subscription;
-  @TabChainPage.willEnter
-  watchHeightChange() {
-    if (this._height_subscription) {
-      return;
-    }
-    this._height_subscription = this.appSetting.height.subscribe(
-      this._watchHeightChange.bind(this),
-    );
-  }
 
   /** TODO：切换可用节点，或者寻找新的可用节点，然后开始重新执行这个函数
    *  这点应该做成一个peerService中提供的通用catchErrorAndReLinkPeerThenRetryTask修饰器
    */
 
+  @TabChainPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(
     "更新区块链失败，重试次数过多，已停止重试，请检测网络",
   )
   @asyncCtrlGenerator.retry()
-  async _watchHeightChange(height) {
+  async watchHeightChange(height) {
     if (this.block_list.length === 0) {
       await this.loadBlockList();
     } else {

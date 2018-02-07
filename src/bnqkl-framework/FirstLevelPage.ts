@@ -1,3 +1,4 @@
+import { Subscription } from "rxjs/Subscription";
 import { ViewChild } from "@angular/core";
 import {
   NavController,
@@ -76,11 +77,11 @@ export class FirstLevelPage extends FLP_Data {
   @FirstLevelPage.onInit
   _autoAddHeaderShadowWhenScrollDown() {
     if (!this.content) {
-      return
+      return;
     }
     this.content.ionScroll.subscribe(() => {
       if (!this.content || !this.header) {
-        return
+        return;
       }
       if (this.auto_header_shadow_when_scroll_down) {
         const {
@@ -130,7 +131,34 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-    )
+      )
       .present();
+  }
+
+  /**通用的高度监控*/
+  @FirstLevelPage.autoUnsubscribe private _height_subscription?: Subscription;
+  @FirstLevelPage.willEnter
+  __watchHeightChanged() {
+    if (this._height_subscription) {
+      return;
+    }
+    let is_first = true;
+    this._height_subscription = this.appSetting.height.subscribe(height => {
+      this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
+      is_first = false;
+    });
+  }
+  /**通用的轮次监控*/
+  @FirstLevelPage.autoUnsubscribe private _round_subscription?: Subscription;
+  @FirstLevelPage.willEnter
+  __watchRoundChanged() {
+    if (this._round_subscription) {
+      return;
+    }
+    let is_first = true;
+    this._round_subscription = this.appSetting.round.subscribe(round => {
+      this.dispatchEvent("ROUND:CHANGED", round, is_first);
+      is_first = false;
+    });
   }
 }

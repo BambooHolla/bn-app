@@ -105,6 +105,16 @@ export class FLP_Form extends FLP_Route {
     }
   }
 
+  resetFormData(){
+    for(let key in this.formData){
+      if(typeof this.formData[key]==="string"){
+      this.formData[key] = ""
+      }/*else if(typeof this.formData[key]==="number"){
+        this.formData[key] = 0
+      }*/
+    }
+  }
+
   /*要求用户输入支付密码*/
   @FLP_Form.FromGlobal userInfo!: UserInfoProvider;
   @FLP_Form.FromGlobal appSetting!: AppSettingProvider;

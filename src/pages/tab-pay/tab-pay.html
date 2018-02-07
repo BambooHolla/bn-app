@@ -45,12 +45,12 @@
       <ali-icon class="right" name="ifm-arrow-dot-dot"></ali-icon>
     </div>
     <ion-content class="log-list">
-      <ion-refresher (ionRefresh)="loadRollOutLogs($event)">
+      <!-- <ion-refresher (ionRefresh)="loadRollOutLogs($event)">
         <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新转出记录……"></ion-refresher-content>
-      </ion-refresher>
-      <div class="log-item" *ngFor="let log of roll_out_logs">
+      </ion-refresher> -->
+      <div class="log-item" *ngFor="let log of roll_out_logs;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail',{transaction:log})">
         <!-- <div class="create-time">{{log.create_time|amLocal:localName|amTimeAgo}}</div> -->
-        <div class="create-time">{{log.create_time|amLocale:localName|amTimeAgo}}</div>
+        <div class="create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         <div class="address" [innerHTML]="log.recipientId|mask:'@address'"></div>
         <div class="amount">{{log.amount|amountEuler|number:'1.8-8'}}</div>
       </div>

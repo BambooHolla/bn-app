@@ -34,7 +34,7 @@
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8A%95%E7%A5%A8-%E6%88%91%E7%A5%A8%E7%9A%84%E6%8A%95.jpg" alt=""> -->
   <ion-slides pager>
     <ion-slide>
-      <ion-content #content1 [ion-content-scroll-shadow]="content1" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+      <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
         <ion-refresher (ionRefresh)="loadOutVoteList($event)">
           <ion-refresher-content  [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_OUT_VOTE_LIST'|translate"></ion-refresher-content>
         </ion-refresher>
@@ -52,7 +52,7 @@
       </ion-content>
     </ion-slide>
     <ion-slide>
-      <ion-content #content2 [ion-content-scroll-shadow]="content2" [content-shadow-config]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+      <ion-content [ion-content-scroll-shadow]=""{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}"">
         <ion-refresher (ionRefresh)="loadCanVoteList($event)">
           <ion-refresher-content  [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
         </ion-refresher>

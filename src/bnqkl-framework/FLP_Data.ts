@@ -4,7 +4,7 @@ export class FLP_Data extends FLP_Form {
   /** 定义一个延迟渲染到页面的属性
    */
   static setAfterPageEnter(defaultValue?: any, delay?: number) {
-    return function (
+    return function(
       target: any,
       name: string,
       descriptor?: PropertyDescriptor,
@@ -59,5 +59,23 @@ export class FLP_Data extends FLP_Form {
         Object.defineProperty(target, name, descriptor);
       }
     };
+  }
+
+  timeago_clock = 0;
+  enable_timeago_clock = false;
+  @FLP_Data.willEnter
+  refreshShowList() {
+    if (
+      this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER &&
+      this.enable_timeago_clock
+    ) {
+      // this.show_list = this.roll_out_logs.slice();
+      if (this.timeago_clock) {
+        this.timeago_clock = 0;
+      } else {
+        this.timeago_clock = 0.000001;
+      }
+      setTimeout(this.refreshShowList.bind(this), 1000);
+    }
   }
 }

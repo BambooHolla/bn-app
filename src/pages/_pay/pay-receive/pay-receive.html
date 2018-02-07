@@ -6,30 +6,30 @@
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8E%A5%E6%94%B6.jpg" alt=""> -->
   <div class="info-wrapper">
-    <kjua-qrcode class="qrcode" fill="#2e2e2e" [text]="account_info.address"></kjua-qrcode>
+    <kjua-qrcode class="qrcode" fill="#2e2e2e" [text]="userInfo.address"></kjua-qrcode>
     <div class="address">
       <ali-icon name="ifm-account-detail"></ali-icon>
-      {{account_info.address}}
+      {{userInfo.address}}
     </div>
     <div class="username">
-      {{account_info.username}}
+      {{userInfo.username}}
     </div>
   </div>
   <div class="income-logs">
     <div class="title">
       最近
     </div>
-    <ion-content #logsContent class="log-list">
-      <ion-refresher (ionRefresh)="loadReceiveLogs($event)">
+    <ion-content #logsContent class="log-list" [ion-content-scroll-shadow]="{from_color: [29, 98, 113, 0],to_color: [29, 98, 113, 0.3]}">
+      <!-- <ion-refresher (ionRefresh)="loadReceiveLogs($event)">
         <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新转入记录……"></ion-refresher-content>
-      </ion-refresher>
-      <div class="log-item" *ngFor="let log of receive_logs">
+      </ion-refresher> -->
+      <div class="log-item" *ngFor="let log of receive_logs;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail',{transaction:log})">
         <div class="left">
           <div class="title username">{{log.username}}</div>
-          <div class="sub-title create-time">{{log.create_time|amLocale:localName|amTimeAgo}}</div>
+          <div class="sub-title create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         </div>
         <div class="right">
-          +{{log.amount|number:'1.8-8'}}
+          +{{log.amount|amountEuler|number:'1.8-8'}}
         </div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreReceiveLogs())" [enabled]="receive_config.has_more">

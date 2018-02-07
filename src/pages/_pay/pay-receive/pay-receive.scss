@@ -71,6 +71,7 @@ page-pay-receive {
       padding: 0;
       max-height: 80vh;
       border-radius: 0.4rem 0.4rem 0 0;
+      overflow: hidden;
       background-color: rgba(#fff, 0.18);
       > .scroll-content {
         border: none;

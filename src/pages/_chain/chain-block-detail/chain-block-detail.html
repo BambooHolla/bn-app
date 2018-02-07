@@ -95,7 +95,7 @@
       交易记录
     </div>
     <!-- TODO: 对于自己的交易，优化显示效果 -->
-    <ion-content #listContent class="list" [ion-content-scroll-shadow]="listContent" [scroll-parent-ion-content-first]="parentContent">
+    <ion-content class="list" ion-content-scroll-shadow [scroll-parent-ion-content-first]="parentContent">
       <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail',{transaction:tran})">
         <div class="left">
           <div class="tran-type">

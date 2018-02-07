@@ -81,13 +81,16 @@ export class FLP_Lifecycle extends FLP_Tool
     }
     this.tryEmit("didLeave");
   }
-  dispatchEvent(fire_event_name: string) {
+  dispatchEvent(fire_event_name: string, ...args: any[]): void
+  dispatchEvent(fire_event_name: "HEIGHT:CHANGED", height: number, is_init: boolean): void;
+  dispatchEvent(fire_event_name: "ROUND:CHANGED", height: number, is_init: boolean): void;
+  dispatchEvent(fire_event_name: string, ...args: any[]) {
     console.group("%cdispatchEvent", 'color:blue;background-color:#FFF', fire_event_name);
     for (let { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
         try {
           console.log(handle_name);
-          this[handle_name]();
+          this[handle_name](...args);
         } catch (err) { console.error(err); }
       }
     }

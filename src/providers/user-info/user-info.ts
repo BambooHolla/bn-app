@@ -32,6 +32,10 @@ export class UserInfoProvider {
   get hasSecondPwd() {
     return !!this._userInfo.secondPublicKey;
   }
+  private _username!: string;
+  get username() {
+    return this._username;
+  }
   constructor(public storage: Storage) { }
   initUserInfo(userInfo) {
     if (!userInfo) {
@@ -42,6 +46,7 @@ export class UserInfoProvider {
     this._balance = userInfo.balance;
     this._secondPublicKey = userInfo.secondPublicKey;
     this._publicKey = userInfo.publicKey;
+    this._username = userInfo.username;
     this._password = userInfo.remember ? userInfo.password : null;
   }
 }

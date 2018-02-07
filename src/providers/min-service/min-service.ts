@@ -353,7 +353,7 @@ export class MinServiceProvider {
       "senderId": this.user.address,
       "orderBy": "t_timestamp:desc",
       "limit": 57
-    })
+    });
 
     let transactions = lastRoundT.transactions;
 

@@ -414,52 +414,39 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   /**动画的进度监控*/
-  @TabVotePage.autoUnsubscribe private _height_subscription?: Subscription;
-  @TabVotePage.willEnter
-  watchHeightChanged() {
-    if (this._height_subscription) {
-      return;
+  @TabVotePage.addEvent("HEIGHT:CHANGED")
+  watchHeightChanged(height, is_init) {
+    if (this.page_status === VotePage.VoteDetail) {
+      this._set_fall_coin_progress();
+      this._set_satellite_pixi_progress(is_init);
     }
-    let is_first = true;
-    this._height_subscription = this.appSetting.height.subscribe(height => {
-      if (this.page_status === VotePage.VoteDetail) {
-        this._set_fall_coin_progress();
-        this._set_satellite_pixi_progress(is_first);
-        // TODO:我的贡献？
-        is_first = false;
-      }
-    });
   }
 
-  @TabVotePage.autoUnsubscribe _round_subscription?: Subscription;
+  private get _pre_ani_round() {
+    return (
+      parseFloat(localStorage.getItem("@tab-vote-pre_ani_round") || "") || 0
+    );
+  }
+  private set _pre_ani_round(v: number) {
+    localStorage.setItem("@tab-vote-pre_ani_round", v.toString());
+  }
   /** 监听轮次变动
    *  停止相关的动画
    *  运作变成大金币并落入底部层
    *  然后更新相关的数据
    */
-  private get _pre_ani_round() {
-    return parseFloat(localStorage.getItem("@tab-vote-pre_ani_round") || "") || 0;
-  }
-  private set _pre_ani_round(v: number) {
-    localStorage.setItem("@tab-vote-pre_ani_round", v.toString());
-  }
-  @TabVotePage.willEnter
-  watchRoundChanged() {
-    if (this._round_subscription) {
-      return;
-    }
-    this._round_subscription = this.appSetting.round.subscribe(cur_round => {
-      if (this.page_status === "vote-detail") {
-        if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
-          this._whenRoundChangeAni(); // 执行动画
-        }
-        this._pre_ani_round = cur_round;
-        // TODO:数据的变动应该与动画同时触发
-        this.getPreRoundRankList();
-        this.getIncomeTrendList();
-        this.getCurRoundIncomeInfo();
+  @TabVotePage.addEvent("ROUND:CHANGED")
+  watchRoundChanged(cur_round) {
+    if (this.page_status === "vote-detail") {
+      if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
+        this._whenRoundChangeAni(); // 执行动画
       }
-    });
+      this._pre_ani_round = cur_round;
+      // TODO:数据的变动应该与动画同时触发
+      this.getPreRoundRankList();
+      this.getIncomeTrendList();
+      this.getCurRoundIncomeInfo();
+    }
   }
   private _whenRoundChangeAni() {
     this._stopVoteAnimate({ is_force_stop_chain_mesh: true });

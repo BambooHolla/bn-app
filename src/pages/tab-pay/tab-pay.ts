@@ -7,6 +7,7 @@ import {
   InfiniteScroll,
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
+import { PAGE_STATUS } from "../../bnqkl-framework/const";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { Subscription } from "rxjs/Subscription";
 
@@ -34,6 +35,7 @@ export class TabPayPage extends FirstLevelPage {
     public transactionService: TransactionServiceProvider,
   ) {
     super(navCtrl, navParams);
+    this.enable_timeago_clock = true;
   }
   formData = {
     transfer_address: "",
@@ -69,6 +71,7 @@ export class TabPayPage extends FirstLevelPage {
   async submit() {
     const { password, pay_pwd } = await this.getUserPassword();
     await this._submit(password, pay_pwd);
+    this.resetFormData();
   }
   @asyncCtrlGenerator.error(() =>
     TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"),
@@ -90,6 +93,9 @@ export class TabPayPage extends FirstLevelPage {
   }
 
   roll_out_logs: TransactionModel[] = [];
+  listTrackBy(index, item: TransactionModel) {
+    return item.id;
+  }
   roll_out_config = {
     loading: false,
     has_more: true,
@@ -97,44 +103,17 @@ export class TabPayPage extends FirstLevelPage {
     page: 1,
   };
 
-  // @TabPayPage.willEnter
   async loadRollOutLogs(refresher?: Refresher) {
     const { roll_out_config } = this;
     // 重置分页
     roll_out_config.page = 1;
-    const list = await this.transactionService.getUserTransactions(
-      this.userInfo.address,
-      roll_out_config.page,
-      roll_out_config.pageSize,
-      "out",
-      this.transactionService.ifmJs.transactionTypes.SEND,
-    );
-
+    const list = await this._getUserTransactions();
     this.roll_out_logs = list;
 
     if (refresher) {
       refresher.complete();
     }
   }
-
-  @TabPayPage.autoUnsubscribe private _height_subscription?: Subscription;
-  @TabPayPage.willEnter
-  watchHeightChange() {
-    if(this._height_subscription){
-      return
-    }
-    this._height_subscription = this.appSetting.height.subscribe(
-      this._watchHeightChange.bind(this),
-    );
-  }
-  @asyncCtrlGenerator.error(
-    "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
-  )
-  @asyncCtrlGenerator.retry()
-  async _watchHeightChange(height) {
-    return this.loadRollOutLogs()
-  }
-
 
   async loadMoreRollOutLogs() {
     const { roll_out_config } = this;
@@ -160,5 +139,14 @@ export class TabPayPage extends FirstLevelPage {
     } finally {
       roll_out_config.loading = false;
     }
+  }
+
+  @TabPayPage.addEvent("HEIGHT:CHANGED")
+  @asyncCtrlGenerator.error(
+    "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
+  )
+  @asyncCtrlGenerator.retry()
+  async watchHeightChange(height) {
+    return this.loadRollOutLogs();
   }
 }
