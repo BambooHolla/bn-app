@@ -7,7 +7,7 @@ import {
   BlockServiceProvider,
   BlockModel,
 } from "../../../providers/block-service/block-service";
-import { TransactionModel } from "../../../providers/transaction-service/transaction-service";
+import { TransactionModel,TransactionTypes } from "../../../providers/transaction-service/transaction-service";
 import { TimestampPipe } from '../../../pipes/timestamp/timestamp';
 
 @IonicPage({ name: "chain-block-detail" })
@@ -16,6 +16,7 @@ import { TimestampPipe } from '../../../pipes/timestamp/timestamp';
   templateUrl: "chain-block-detail.html",
 })
 export class ChainBlockDetailPage extends SecondLevelPage {
+  TransactionTypes = TransactionTypes;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -24,6 +25,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
+    this.enable_timeago_clock = true;
   }
   isShowFullDate(timestamp: number) {
     const time = TimestampPipe.transform(timestamp);
@@ -75,11 +77,11 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   @asyncCtrlGenerator.error(() =>
     ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
   )
-  @asyncCtrlGenerator.loading(() =>
-    ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"), undefined, {
-      showBackdrop: false
-    }
-  )
+  // @asyncCtrlGenerator.loading(() =>
+  //   ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"), undefined, {
+  //     showBackdrop: false
+  //   }
+  // )
   async loadTranLogs() {
     const { block_info, tran_list_config } = this;
     // 重置page

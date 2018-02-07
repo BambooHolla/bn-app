@@ -101,6 +101,10 @@
   "TRANSFER_SUBMITING": "转账提交中",
   "TRANSFER_SUBMIT_SUCCESS": "转账提交成功",
 
+  "//": "account-my-transaction-list",
+  "LOAD_MORE_CONFIRMED_TRANSACTION_LIST_ERROR": "加载更多已确认交易列表失败",
+  "LOAD_MORE_UNCONFIRM_TRANSACTION_LIST_ERROR": "加载更多未确认交易列表失败",
+
   "NAME": "姓名",
   "EMAIL": "邮箱",
   "USERNAME": "登录名",

@@ -54,27 +54,19 @@ export class ContactServiceProvider {
     let query = {
       publicKey: this.user.userInfo.publicKey,
     };
-    let data = await this.fetch.get<
-      | {
-        follower: ContactModel[];
-        following: ContactModel[];
-        success: true;
-      }
-      | { success: false; error: any }
-      >(this.GET_CONTACT, { search: query });
+    let data = await this.fetch.get<{
+      followers: ContactModel[];
+      following: ContactModel[];
+    }>(this.GET_CONTACT, { search: query });
 
-    if (data.success) {
-      data.follower = await this.contactIgnored(data.follower);
-      this.followingList = data.following;
-      this.followerList = data.follower;
-      switch (opt) {
-        case 0:
-          return { following: data.following, follower: data.follower };
-        default:
-          return { following: data.following, follower: data.follower };
-      }
-    } else {
-      throw new Error("Get contact list error");
+    data.followers = await this.contactIgnored(data.followers);
+    this.followingList = data.following;
+    this.followerList = data.followers;
+    switch (opt) {
+      case 0:
+        return { following: data.following, follower: data.followers };
+      default:
+        return { following: data.following, follower: data.followers };
     }
   }
   myContact!: AsyncBehaviorSubject<{
@@ -129,7 +121,7 @@ export class ContactServiceProvider {
     let ignoreList = JSON.parse(await this.storage.get("c_" + address));
 
     //如果包含忽略的且有未添加的人员
-    if (ignoreList.length > 0 && followerList.length > 0) {
+    if (ignoreList && ignoreList.length > 0 && followerList.length > 0) {
       for (let i = followerList.length - 1; i >= 0; i--) {
         if (ignoreList.findIndex(followerList[i]) >= 0) {
           followerList.splice(i, 1);

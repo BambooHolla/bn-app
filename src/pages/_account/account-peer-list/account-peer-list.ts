@@ -3,13 +3,6 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 
-/**
- * Generated class for the AccountPeerListPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage({ name: "account-peer-list" })
 @Component({
   selector: "page-account-peer-list",

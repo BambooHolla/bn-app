@@ -1,0 +1,163 @@
+page-account-my-transaction-list {
+  > .header {
+    background-image: url("../assets/imgs/vote-list/header-bg.jpg");
+    background-size: cover;
+    .toolbar-title-ios {
+      color: #fff;
+    }
+
+    .back-button {
+      .button-inner {
+        .back-button-icon {
+          &::before {
+            color: #fff;
+          }
+        }
+      }
+    }
+    > .header-nav {
+      padding: 0rem 0.8rem 1rem 0.8rem;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      > .in-vote-list,
+      > .out-vote-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 8rem;
+        height: 8rem;
+        border-radius: 50%;
+        color: #fff;
+        transition-duration: 0.25s;
+        ali-icon {
+          overflow: unset;
+          font-size: 3.4rem;
+          font-weight: lighter;
+          margin-bottom: 0.5rem;
+        }
+        > .title {
+          font-size: 1.5rem;
+        }
+        &.focus {
+          background-color: rgba(0, 0, 0, 0.2);
+          text-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.5);
+          ali-icon {
+            /* text-shadow: ; */
+          }
+        }
+      }
+    }
+  }
+  > .content {
+    opacity: 0.4;
+    transition-duration: 0.25s;
+    &.show {
+      opacity: 1;
+    }
+  }
+  .confimed-page {
+    transform: translateX(-100%);
+    &.show {
+      transform: translateX(0%);
+    }
+  }
+  .unconfim-page {
+    transform: translateX(100%);
+    &.show {
+      transform: translateX(0%);
+    }
+  }
+  .list {
+    width: 100%;
+    flex-grow: 1;
+    > .scroll-content {
+      background-color: #fff;
+      // transform: translateZ(0);
+      &::after {
+        content: " ";
+        position: fixed;
+        width: 100vw;
+        height: 100vw;
+        top: 50vh;
+        left: 0;
+        background-image: url("../assets/imgs/tab-chain/block-bg.png");
+        background-repeat: no-repeat;
+        background-position: 50% -90%;
+        background-size: 150%;
+        opacity: 0.4;
+        z-index: -1;
+        pointer-events: none;
+      }
+      > .item {
+        width: 100%;
+        height: 5rem;
+        border-bottom: 0.55px solid #e5e5e5;
+        flex-shrink: 0;
+        flex-grow: 0;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        font-size: 1.35rem;
+        color: #787878;
+        > .left {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-start;
+          > .from-to {
+            display: flex;
+            align-items: center;
+            ali-icon {
+              font-size: 3rem;
+              margin: 0 0.2rem;
+            }
+          }
+          > .create-time {
+            color: #b5b5b5;
+            font-size: 1.2rem;
+          }
+        }
+        > .right {
+          height: 100%;
+          margin-left: auto;
+          align-self: flex-end;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: flex-end;
+          color: #505050;
+          > .amount {
+            color: #505050;
+            font-weight: 500;
+          }
+        }
+      }
+      > .empty-list {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        > img {
+          margin-top: 2rem;
+          margin-bottom: 2rem;
+          opacity: 0.6;
+          height: 20vh;
+          width: 20vh;
+        }
+        > .message {
+          font-size: 1.4rem;
+          color: #787878;
+        }
+        /* background-image: url("../assets/imgs/empty-list.png");
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.6; */
+      }
+    }
+  }
+}

@@ -12,12 +12,37 @@ export * from "./transaction.types";
 import * as IFM from "ifmchain-ibt";
 import * as promisify from "es6-promisify";
 
-/*
-  Generated class for the TransactionServiceProvider provider.
+export enum TransactionTypes {
+  /** 是最基本的转账交易*/
+  SEND = 0,
+  /** “签名”交易*/
+  SIGNATURE = 1,
+  /** 注册为受托人*/
+  DELEGATE = 2,
+  /**投票*/
+  VOTE = 3,
+  /**注册用户别名地址*/
+  USERNAME = 4,
+  /**添加联系人*/
+  FOLLOW = 5,
+  /**注册多重签名帐号*/
+  MULTI = 6,
+  /**侧链应用*/
+  DAPP = 7,
+  /**转入Dapp资金*/
+  IN_TRANSFER = 8,
+  /**转出Dapp资金*/
+  OUT_TRANSFER = 9,
+  /**点赞*/
+  FABULOUS = 10,
+  /**打赏*/
+  GRATUITY = 11,
+  /**发送信息*/
+  SENDMESSAGE = 12,
+  /** 侧链数据存证*/
+  MARK = 13
+}
 
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class TransactionServiceProvider {
   ifmJs = AppSettingProvider.IFMJS;
@@ -292,7 +317,7 @@ export class TransactionServiceProvider {
     page = 1,
     limit = 10,
     in_or_out?: "in" | "out",
-    type?: number,
+    type?: TransactionTypes,
   ) {
     var query = {
       senderId: in_or_out !== "in" ? address : undefined,

@@ -80,7 +80,7 @@
       <div class="line block-id">
         <div class="left">
           <ali-icon name="ifm-wallet"></ali-icon>
-          上一区块ID
+          前区块ID
         </div>
         <div class="right">
           {{pre_block_id}}
@@ -96,23 +96,35 @@
     </div>
     <!-- TODO: 对于自己的交易，优化显示效果 -->
     <ion-content class="list" ion-content-scroll-shadow [scroll-parent-ion-content-first]="parentContent">
-      <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail',{transaction:tran})">
+
+      <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
         <div class="left">
-          <div class="tran-type">
-            {{('TRAN_TYPE_NAME_'+tran.type) | translate}} 
-            <span class="sender" *ngIf="tran.senderUsername">(tran.senderUsername)</span>
-            <span class="sender" *ngIf="!tran.senderUsername&&tran.senderId" [innerHTML]="'('+(tran.senderId|mask:'@address')+')'"></span>
-             
+          <div class="from-to">
+            <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
+            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+              <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+              <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
+            </ng-container>
           </div>
           <div class="create-time">
-            {{tran?.timestamp|timestamp|amDateFormat:"MM-DD hh:mm"}}
+            {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
           </div>
         </div>
         <div class="right">
-            <div class="extend-info" *ngIf="tran.recipientUsername">tran.recipientUsername</div>
-            <div class="extend-info" *ngIf="!tran.recipientUsername&&tran.recipientId" [innerHTML]="tran.recipientId|mask:'@address'"></div>
-          <div class="amount">{{tran?.amount|amountEuler|number:"1.8-8"}}</div>
+          <div class="tran-type">
+            {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+            {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
+            - {{tran?.fee|amountEuler|number:"1.8-8"}}
+          </div>
         </div>
+      </div>
+      <div class="empty-list" *ngIf="tran_list.length==0&&tran_list_config.loading==false">
+        <img src="assets/imgs/empty-list.png" alt="空列表"/>
+        <div class="message">{{'BLOCK_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreTranLogs())" [enabled]="tran_list_config.has_more">
         <ion-infinite-scroll-content loadingText="加载更多区块交易记录中……"></ion-infinite-scroll-content>

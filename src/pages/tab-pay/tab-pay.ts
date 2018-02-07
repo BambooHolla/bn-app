@@ -13,6 +13,7 @@ import { Subscription } from "rxjs/Subscription";
 
 import {
   TransactionServiceProvider,
+  TransactionTypes,
   TransactionModel,
 } from "../../providers/transaction-service/transaction-service";
 
@@ -133,6 +134,7 @@ export class TabPayPage extends FirstLevelPage {
         roll_out_config.page,
         roll_out_config.pageSize,
         "out",
+        TransactionTypes.SEND
       );
       roll_out_config.has_more = list.length >= roll_out_config.pageSize;
       return list;

@@ -11,6 +11,7 @@ import {
 } from "ionic-angular";
 import {
   TransactionServiceProvider,
+  TransactionTypes,
   TransactionModel,
 } from "../../../providers/transaction-service/transaction-service";
 
@@ -70,6 +71,7 @@ export class PayReceivePage extends SecondLevelPage {
         receive_config.page,
         receive_config.pageSize,
         "in",
+        TransactionTypes.SEND,
       );
       receive_config.has_more = list.length >= receive_config.pageSize;
       return list;

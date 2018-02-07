@@ -389,6 +389,7 @@ export function autoRetryWrapGenerator(
           // 如果成功，直接返回，中断重试循环
           return await source_fun.apply(this, args);
         } catch (err) {
+          console.warn(err);
           const time_info = time_gen.next(err);
           if (time_info.done) {
             // 声明中断循环

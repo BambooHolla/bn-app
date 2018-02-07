@@ -72,6 +72,9 @@ export class AccountMyContactsPage extends SecondLevelPage {
           unkown_letter.list.push(my_contact);
         }
       });
+      if (unkown_letter.list.length) {
+        letter_list_map.set(unkown_letter.letter, unkown_letter);
+      }
       this.my_contact_list = [...letter_list_map.values()].sort((a, b) => {
         return a.letter.localeCompare(b.letter);
       });
