@@ -261,6 +261,20 @@ export class TabChainPage extends FirstLevelPage {
       //   this.showlist_bind_info,
       // );
       this.showing_block_list = this.block_list.slice(from_index, end_index);
+      const from_offset_top = center_block_info.ele.offsetTop;
+      this.platform.raf(() => {
+        const cur_offset_top = center_block_info.ele.offsetTop;
+        if (this.content) {
+          const diff_offset_top = cur_offset_top - from_offset_top;
+          if (diff_offset_top) {
+            this.content.scrollTo(
+              0,
+              this.content.scrollTop + diff_offset_top,
+              0,
+            );
+          }
+        }
+      });
     }
   }
   @TabChainPage.autoUnsubscribe _content_scroll_subscription?: Subscription;
