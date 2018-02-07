@@ -3,7 +3,10 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
-import { ContactServiceProvider, ContactModel } from "../../../providers/contact-service/contact-service";
+import {
+  ContactServiceProvider,
+  ContactModel,
+} from "../../../providers/contact-service/contact-service";
 import * as pinyin from "tiny-pinyin";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 
@@ -25,20 +28,23 @@ export class AccountMyContactsPage extends SecondLevelPage {
   }
   unconfirm_contact_list: ContactModel[] = [];
   my_contact_list: ContactModel[] = [];
-  loading_my_contact_list = false
-  @AccountMyContactsPage.willEnter
+  listTrackBy(item, contact: ContactModel) {
+    return contact.address;
+  }
+  loading_my_contact_list = false;
+  // @AccountMyContactsPage.willEnter
   async loadMyContactList() {
-    this.loading_my_contact_list = true
+    this.loading_my_contact_list = true;
     try {
       const {
         following: my_contact_list,
         follower: unconfirm_contact_list,
-      } = await this.contactService.getMyContacts();
+      } = await this.contactService.myContact.getPromise();
       // 绑定未确认的联系人
       this.unconfirm_contact_list = unconfirm_contact_list;
       // 将已有的联系人进行分组
       const letter_list_map = new Map();
-      const unkown_letter: { letter: string, list: ContactModel[] } = {
+      const unkown_letter: { letter: string; list: ContactModel[] } = {
         letter: "*",
         list: [],
       };
@@ -70,22 +76,45 @@ export class AccountMyContactsPage extends SecondLevelPage {
         return a.letter.localeCompare(b.letter);
       });
     } finally {
-      this.loading_my_contact_list = false
+      this.loading_my_contact_list = false;
     }
   }
-  @asyncCtrlGenerator.error(() => AccountMyContactsPage.getTranslate("IGNORE_UNCONFIRM_CONTACT_ERROR"))
+  @asyncCtrlGenerator.error(() =>
+    AccountMyContactsPage.getTranslate("IGNORE_UNCONFIRM_CONTACT_ERROR"),
+  )
   ignoreUnconfirmContact(contact: ContactModel) {
-    return this.contactService.ignoreContact(contact.address)
+    return this.contactService.ignoreContact(contact.address);
   }
   @asyncCtrlGenerator.error()
   async addUnconfirmContact(contact: ContactModel) {
-    const { password, pay_pwd } = await this.getUserPassword()
-    return this._addUnconfirmContact(password, contact.address, pay_pwd)
+    const { password, pay_pwd } = await this.getUserPassword();
+    return this._addUnconfirmContact(password, contact.address, pay_pwd);
   }
-  @asyncCtrlGenerator.error(() => AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_ERROR"))
-  @asyncCtrlGenerator.loading(() => AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMITING"))
-  @asyncCtrlGenerator.success(() => AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_SUCCESS"))
-  async _addUnconfirmContact(password: string, address: string, pay_pwd: string) {
+  @asyncCtrlGenerator.error(() =>
+    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_ERROR"),
+  )
+  @asyncCtrlGenerator.loading(() =>
+    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMITING"),
+  )
+  @asyncCtrlGenerator.success(() =>
+    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_SUCCESS"),
+  )
+  async _addUnconfirmContact(
+    password: string,
+    address: string,
+    pay_pwd: string,
+  ) {
     return this.contactService.addContact(password, address, pay_pwd);
+  }
+
+  // TODO: 这个页面不根据高度实时刷新，因为可能是一个大列表
+
+  @AccountMyContactsPage.addEvent("HEIGHT:CHANGED")
+  @asyncCtrlGenerator.error(
+    "更新联系人列表失败，重试次数过多，已停止重试，请检测网络",
+  )
+  @asyncCtrlGenerator.retry()
+  watchHeightChanged() {
+    return this.loadMyContactList();
   }
 }

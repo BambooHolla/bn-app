@@ -2,10 +2,10 @@
   <ion-navbar color="white">
     <ion-title>我的联系人</ion-title>
     <ion-buttons right>
-      <button title="扫码添加联系人" (click)="routeTo('account-scan-add-contact')">
+      <button title="扫码添加联系人" (click)="routeTo('account-scan-add-contact',{auto_return:true})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
-      <button title="输入地址添加联系人" (click)="routeTo('account-add-contact')">
+      <button title="输入地址添加联系人" (click)="routeTo('account-add-contact',{auto_return:true})">
         <ali-icon name="ifm-add"></ali-icon>
       </button>
     </ion-buttons>
@@ -18,7 +18,7 @@
       <ali-icon name="ifm-dengdai"></ali-icon>
       等待确认列表
     </div>
-    <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list">
+    <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list;trackBy:listTrackBy">
       <div class="left"><div class="username" *ngIf="unconfirm_contact.username">
           {{unconfirm_contact.username}}</div>
         <div class="address" [innerHTML]="unconfirm_contact.address|mask:'@address'"></div>
@@ -34,7 +34,7 @@
     </div>
   </div>
   <div class="contact-list list">
-    <ng-container *ngFor="let letter_contacts of my_contact_list">
+    <ng-container *ngFor="let letter_contacts of my_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
       <div class="item" *ngFor="let contact of letter_contacts.list">
         <div class="left">

@@ -59,5 +59,6 @@ export class AccountAddContactPage extends SecondLevelPage {
       address,
       pay_pwd,
     );
+    this.finishJob()
   }
 }

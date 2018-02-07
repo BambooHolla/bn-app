@@ -9,6 +9,7 @@ import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
   AppSettingProvider,
   TB_AB_Generator,
+  HEIGHT_AB_Generator,
 } from "../app-setting/app-setting";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
@@ -76,6 +77,14 @@ export class ContactServiceProvider {
       throw new Error("Get contact list error");
     }
   }
+  myContact!: AsyncBehaviorSubject<{
+    follower: ContactModel[],
+    following: ContactModel[]
+  }>
+  @HEIGHT_AB_Generator("myContact")
+  myContact_Executor(promise_pro) {
+    return promise_pro.follow(this.getMyContacts());
+  }
 
   /**
    * 忽略联系人操作
@@ -99,7 +108,7 @@ export class ContactServiceProvider {
         if (isIgnore >= 0) {
           this.followerList.splice(i, 1);
         }
-      }else {
+      } else {
         this.followerList = [];
         break;
       }
