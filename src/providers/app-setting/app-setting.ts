@@ -108,11 +108,16 @@ export class AppSettingProvider extends EventEmitter {
 
     // 动画开关对动画的控制
 
-    const noop = () => {};
     // 框架内置的AniBase
     {
       const _update = AniBase.prototype._update;
+      const noop = function(t, diff_t) {
+        if (this.force_update) {
+          _update.call(this, t, diff_t);
+        }
+      };
       const toggle_update = is_ani => {
+        AniBase.power_saving_mode = is_ani;
         AniBase.prototype._update = is_ani ? _update : noop;
       };
       toggle_update(this.settings.animation_switch);
@@ -120,6 +125,11 @@ export class AppSettingProvider extends EventEmitter {
     }
     // PIXI框架的循环
     {
+      const noop = function(t) {
+        if (this.force_update) {
+          _update.call(this, t);
+        }
+      };
       const _update = PIXI.ticker.Ticker.prototype.update;
       const toggle_update = is_ani => {
         PIXI.ticker.Ticker.prototype.update = is_ani ? _update : noop;

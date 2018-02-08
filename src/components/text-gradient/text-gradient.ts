@@ -71,7 +71,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     textEle.style.fontFamily = this.fontFamily.join(" ");
     textEle.style.fontWeight = this.fontWeight;
     const { width, height } = textEle.getBoundingClientRect();
-    console.log("width, height", width, height);
+    // console.log("width, height", width, height);
     // 开始渲染canvas文本
     const canvas = this.canvasRef.nativeElement as HTMLCanvasElement;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -90,7 +90,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
       }
       font = font.replace(new RegExp(style_fontSize, "g"), fontSize);
     }
-    console.log("font", font);
+    // console.log("font", font);
 
     const { text, direction, devicePixelRatio } = this;
     ctx.font = font;

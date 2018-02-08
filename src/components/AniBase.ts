@@ -5,6 +5,16 @@ import * as PIXI from "pixi.js";
 // window["requestAnimationFrame"] = cb => _raf(() => _raf(cb));
 export class AniBase extends EventEmitter {
   cname = this.constructor.name;
+  _app?: PIXI.Application;
+  get app() {
+    return this._app;
+  }
+  set app(v: PIXI.Application | undefined) {
+    this._app = v;
+    if (v) {
+      v.ticker["force_update"] = this.force_update;
+    }
+  }
   constructor() {
     super();
     window["ani_" + this.cname] = this;
@@ -73,6 +83,28 @@ export class AniBase extends EventEmitter {
     this._update(t, diff_t);
     if (this.is_started) requestAnimationFrame(this._loop);
   }
+  /**在省电模式下是否依旧强制运行*/
+  _force_update = false;
+  set force_update(v: boolean) {
+    if (this._force_update != v) {
+      this._force_update = v;
+      if (this.app) {
+        this.app.ticker["force_update"] = v;
+      }
+    }
+  }
+  get force_update() {
+    return this._force_update;
+  }
+  /**是否处于省电模式*/
+  static power_saving_mode = false;
+  forceRenderOneFrame() {
+    this.force_update = true;
+    cancelAnimationFrame(this["__UPDATER_ID__"]);
+    this["__UPDATER_ID__"] = requestAnimationFrame(
+      () => (this.force_update = false),
+    );
+  }
   _update(t, diff_t) {
     if (this.loop_skip) {
       if (this._cur_loop_skip < this.loop_skip) {
@@ -85,7 +117,7 @@ export class AniBase extends EventEmitter {
       fun(t, diff_t);
     }
   }
-  updateImmediate(){
+  updateImmediate() {
     const t = performance.now();
     const diff_t = t - this.pre_t;
     this.pre_t = t;

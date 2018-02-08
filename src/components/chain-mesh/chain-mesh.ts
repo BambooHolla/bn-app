@@ -40,12 +40,12 @@ loader.load((loader, resources) => {
 })
 export class ChainMeshComponent extends AniBase {
   @ViewChild("canvas") canvasRef!: ElementRef;
-  app?: PIXI.Application;
   @Input("auto-start") auto_start = false;
   @Input("tint")
   set tint(v) {
     this._tint = v;
     if (this.app) {
+      this.forceRenderOneFrame();
       this.app.stage.children.forEach(child => {
         if (child instanceof PIXI.Sprite) {
           child.tint = v;
@@ -123,6 +123,7 @@ export class ChainMeshComponent extends AniBase {
     this.is_app_ready = true;
     this.emit("app-ready");
 
+    this.forceRenderOneFrame();
     let id = 0;
     do {
       const cur_id = id;
@@ -192,7 +193,10 @@ export class ChainMeshComponent extends AniBase {
     } while (true);
   }
   startPixiApp() {
-    this.app && this.app.start();
+    if (this.app) {
+      this.app.start();
+      this.forceRenderOneFrame();
+    }
   }
   stopPixiApp() {
     this.app && this.app.stop();

@@ -7,7 +7,6 @@ import * as PIXI from "pixi.js";
   templateUrl: "buddha-glow.html",
 })
 export class BuddhaGlowComponent extends AniBase {
-  app?: PIXI.Application;
   // noise = new SimplexNoise();
   @ViewChild("canvas") canvasRef!: ElementRef;
 

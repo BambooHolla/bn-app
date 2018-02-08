@@ -71,7 +71,7 @@ export class BlockServiceProvider {
           `%c高度将在${new Date(
             Date.now() + BLOCK_UNIT_TIME - diff_time,
           ).toLocaleTimeString()}进行更新`,
-          "font-size:1rem;color:blue;",
+          "background-color:#3ef;color:#FFF",
         );
         setTimeout(do_loop, BLOCK_UNIT_TIME - diff_time);
       } else {

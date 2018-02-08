@@ -36,7 +36,6 @@ loader.load();
   templateUrl: "fall-coins.html",
 })
 export class FallCoinsComponent extends AniBase {
-  app?: PIXI.Application ;
   @ViewChild("canvas") canvasRef!: ElementRef;
 
   _init() {
@@ -48,6 +47,7 @@ export class FallCoinsComponent extends AniBase {
     this.on("init-start", this.initPixiApp.bind(this));
     this.on("start-animation", this.startPixiApp.bind(this));
     this.on("stop-animation", this.stopPixiApp.bind(this));
+    this.force_update = true;
   }
   // 72pt = 1英寸 = 2.54 厘米
   // 1m = 2834.645669291339 pt

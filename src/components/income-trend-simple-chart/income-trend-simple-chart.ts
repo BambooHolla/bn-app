@@ -7,7 +7,6 @@ import {BenefitModel} from '../../providers/benefit-service/benefit.types';
   templateUrl: 'income-trend-simple-chart.html'
 })
 export class IncomeTrendSimpleChartComponent extends AniBase{
-  app?: PIXI.Application ;
   @ViewChild("canvas") canvasRef!: ElementRef;
   @Input("list") list?:BenefitModel[]
 

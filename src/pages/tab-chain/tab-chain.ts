@@ -13,6 +13,8 @@ import {
   UnconfirmBlockModel,
 } from "../../providers/block-service/block-service";
 import { Subscription } from "rxjs/Subscription";
+import { ChainMeshComponent } from '../../components/chain-mesh/chain-mesh'
+
 
 // type BlockWithPosModel = BlockModel & {
 //   y: number;
@@ -43,10 +45,12 @@ export class TabChainPage extends FirstLevelPage {
     has_more: false,
   };
 
+  @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent
   unconfirm_block?: UnconfirmBlockModel;
   @TabChainPage.willEnter
   async loadUnconfirmBlock() {
     this.unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
+    this.chainMesh && this.chainMesh.forceRenderOneFrame();
   }
 
   // @asyncCtrlGenerator.loading(
@@ -156,7 +160,6 @@ export class TabChainPage extends FirstLevelPage {
     return item.height;
   }
 
-
   /** TODO：切换可用节点，或者寻找新的可用节点，然后开始重新执行这个函数
    *  这点应该做成一个peerService中提供的通用catchErrorAndReLinkPeerThenRetryTask修饰器
    */
@@ -229,10 +232,10 @@ export class TabChainPage extends FirstLevelPage {
         showlist_bind_info.height === height &&
         // 且中间的这个区块与算出的起点距离没有发生改变，等于我不在列表的最前面，当前面发生了插入我不也不用在意
         showlist_bind_info.current_index - showlist_bind_info.from_index ===
-          current_index - from_index &&
+        current_index - from_index &&
         // 还有与终点的距离
         showlist_bind_info.end_index - showlist_bind_info.current_index ===
-          end_index - current_index
+        end_index - current_index
       ) {
         // console.log(
         //   "%c不需要更新 showing_block_list",
@@ -252,20 +255,34 @@ export class TabChainPage extends FirstLevelPage {
       //   this.showlist_bind_info,
       // );
       this.showing_block_list = this.block_list.slice(from_index, end_index);
+
       const from_offset_top = center_block_info.ele.offsetTop;
-      this.platform.raf(() => {
-        const cur_offset_top = center_block_info.ele.offsetTop;
-        if (this.content) {
-          const diff_offset_top = cur_offset_top - from_offset_top;
-          if (diff_offset_top) {
-            this.content.scrollTo(
-              0,
-              this.content.scrollTop + diff_offset_top,
-              0,
-            );
-          }
+      if (this.content) {
+        // console.log(from_offset_top, this.content && this.content.scrollHeight)
+        if (from_offset_top > this.content.scrollHeight) {
+          // 跟随当前元素进行滚动
+          requestAnimationFrame(() => {
+            const cur_offset_top = center_block_info.ele.offsetTop;
+            if (this.content) {
+              const diff_offset_top = cur_offset_top - from_offset_top;
+              if (diff_offset_top) {
+                this.content.scrollTo(
+                  0,
+                  this.content.scrollTop + diff_offset_top,
+                  0,
+                );
+              }
+            }
+          });
+        } else {// 如果处于前面，默认为查看最新区块的模式，所以锁定滚动高度。
+          const cur_scroll_top = this.content.scrollTop;
+          requestAnimationFrame(() => {
+            if (this.content) {
+              this.content.scrollTo(0, cur_scroll_top, 0);
+            }
+          });
         }
-      });
+      }
     }
   }
   @TabChainPage.autoUnsubscribe _content_scroll_subscription?: Subscription;

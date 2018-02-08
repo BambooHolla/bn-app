@@ -1,13 +1,13 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
 import { AniBase, Easing } from "../AniBase";
 import * as PIXI from "pixi.js";
+import * as SimplexNoise from "simplex-noise";
 
 @Component({
   selector: "satellite-pixi",
   templateUrl: "satellite-pixi.html",
 })
 export class SatellitePixiComponent extends AniBase {
-  protected app?: PIXI.Application;
   protected root_circle?: PIXI.Graphics;
   protected ship?: PIXI.Container;
   // protected round_time = /*128*/ 10 * 1000;
@@ -25,12 +25,14 @@ export class SatellitePixiComponent extends AniBase {
       (this.canvasNode = this.canvasRef.nativeElement as HTMLCanvasElement);
     return super._init();
   }
+  noise = new SimplexNoise();
 
   constructor() {
     super();
     this.on("init-start", this.initPixiApp.bind(this));
     this.on("start-animation", this.startPixiApp.bind(this));
     this.on("stop-animation", this.stopPixiApp.bind(this));
+    this.force_update = true;
   }
 
   initPixiApp() {
@@ -92,8 +94,8 @@ export class SatellitePixiComponent extends AniBase {
     ship_body.cacheAsBitmap = true;
     ship.addChild(ship_body);
     const tails: PIXI.Graphics[] = [];
-    const min_tail_length = 24;
-    const max_tail_length = 40;
+    const min_tail_length = pt(12);
+    const max_tail_length = pt(20);
     const tails_num = 5;
     const center_tail_index = (tails_num - 1) / 2;
     const from_deg = 0;
@@ -181,16 +183,16 @@ export class SatellitePixiComponent extends AniBase {
   private _ani_ms = 500;
   private _add_ms = 0;
 
-  setProgress(progress: number, ani_ms?: number, easing = Easing.Linear,immediate?:boolean) {
+  setProgress(progress: number, ani_ms?: number, easing = Easing.Linear, immediate?: boolean) {
     if (ani_ms && isFinite(ani_ms) && ani_ms > 0) {
       this._ani_ms = ani_ms
     }
     this.progress = progress;
     this.easing = easing;
-    if(ani_ms===0){
+    if (ani_ms === 0) {
       immediate = true;
     }
-    if(immediate){
+    if (immediate) {
       this.updateImmediate();
     }
   }
