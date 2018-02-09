@@ -28,17 +28,28 @@ export class VoteExtendsPanelComponent extends EventEmitter implements OnInit, O
 
 	private _is_inited = false;
 	private _round_subscript?: Subscription;
+	private _token_subscript?: Subscription;
 	ngOnInit() {
-		this._round_subscript = this.appSetting.round.subscribe(this.refreshData.bind(this));
+		this._token_subscript = this.appSetting.account_address.subscribe(() => {
+			if (!this._is_inited) {
+				this.refreshData();
+			}
+		});
+		this._round_subscript = this.appSetting.round.subscribe(() => {
+			if (this.appSetting.getUserToken()) {
+				this.refreshData();
+			}
+		});
 		this._is_inited = true;
 	}
 	ngOnDestroy() {
 		this._round_subscript && this._round_subscript.unsubscribe();
+		this._token_subscript && this._token_subscript.unsubscribe();
 	}
 	cur_round_income_amount = 0;
 
 	@asyncCtrlGenerator.error()
-	@asyncCtrlGenerator.retry()
+	@asyncCtrlGenerator.retry(undefined, console.warn)
 	private async refreshData() {
 		const tasks: Promise<any>[] = []
 		tasks[tasks.length] = this.refreshCommonData();
@@ -47,7 +58,7 @@ export class VoteExtendsPanelComponent extends EventEmitter implements OnInit, O
 		} else {
 			tasks[tasks.length] = this.refreshBaseData();
 		}
-		Promise.all(tasks);
+		await Promise.all(tasks);
 	}
 
 	private async refreshCommonData(): Promise<any> {

@@ -38,8 +38,8 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T> | undefi
   setupExecutor(executor: Executor<T>) {
     this._executor = executor;
   }
-  refresh() {
-    this.abort();
+  refresh(msg?: string) {
+    this.abort(msg);
     this.runExcutor();
   }
   private _promise?: Promise<T>;
@@ -77,8 +77,8 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T> | undefi
     }
   }
   // 中断请求
-  abort() {
-    this._asyncer.abort();
+  abort(msg?: string) {
+    this._asyncer.abort(msg);
     this._asyncer = new PromisePro<T>();
     this.promise = undefined;
   }

@@ -115,32 +115,32 @@ export class TabVotePage extends FirstLevelPage {
         this.blockService.getLastBlockRefreshInterval().then(diff_time => {
           console.log("ani diff_time", diff_time);
           const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
-          if (diff_time < BLOCK_UNIT_TIME) {
-            if (can_run() && this.satellite_pixi) {
-              if (immediate) {
-                // 立即更新现在的进度
-                this.satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
-              }
-              this.satellite_pixi.setProgress(1, BLOCK_UNIT_TIME - diff_time);
-              this.satellite_pixi.setProgress(1, BLOCK_UNIT_TIME - diff_time);
+          diff_time %= BLOCK_UNIT_TIME;
+          // if (diff_time < BLOCK_UNIT_TIME) {
+          if (can_run() && this.satellite_pixi) {
+            if (immediate) {
+              // 立即更新现在的进度
+              this.satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
             }
-          } else {
-            // 延迟了，等
-            const ani_dur = 1000;
-            const doWaitingAni = () => {
-              if (this.satellite_pixi) {
-                this.satellite_pixi.setProgress(
-                  this.satellite_pixi.progress + 1,
-                  ani_dur,
-                  Easing.Quartic_InOut,
-                );
-              } else {
-                clearInterval(this._waiting_ani);
-              }
-            };
-            doWaitingAni();
-            this._waiting_ani = setInterval(doWaitingAni, ani_dur);
+            this.satellite_pixi.setProgress(1, BLOCK_UNIT_TIME - diff_time);
           }
+          // } else {
+          //   // 延迟了，等
+          //   const ani_dur = 1000;
+          //   const doWaitingAni = () => {
+          //     if (this.satellite_pixi) {
+          //       this.satellite_pixi.setProgress(
+          //         this.satellite_pixi.progress + 1,
+          //         ani_dur,
+          //         Easing.Quartic_InOut,
+          //       );
+          //     } else {
+          //       clearInterval(this._waiting_ani);
+          //     }
+          //   };
+          //   doWaitingAni();
+          //   this._waiting_ani = setInterval(doWaitingAni, ani_dur);
+          // }
         });
       } else {
         this.satellite_pixi.once("init-start", () => {

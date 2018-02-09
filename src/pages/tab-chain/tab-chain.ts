@@ -254,13 +254,13 @@ export class TabChainPage extends FirstLevelPage {
       //   "color:orange;background-color:#ddd",
       //   this.showlist_bind_info,
       // );
-      this.showing_block_list = this.block_list.slice(from_index, end_index);
-
       const from_offset_top = center_block_info.ele.offsetTop;
       if (this.content) {
+        console.log(from_offset_top , this.content.scrollHeight)
         // console.log(from_offset_top, this.content && this.content.scrollHeight)
         if (from_offset_top > this.content.scrollHeight) {
           // 跟随当前元素进行滚动
+          console.log('跟随当前元素进行滚动')
           requestAnimationFrame(() => {
             const cur_offset_top = center_block_info.ele.offsetTop;
             if (this.content) {
@@ -275,6 +275,7 @@ export class TabChainPage extends FirstLevelPage {
             }
           });
         } else {// 如果处于前面，默认为查看最新区块的模式，所以锁定滚动高度。
+          console.log('锁定滚动高度')
           const cur_scroll_top = this.content.scrollTop;
           requestAnimationFrame(() => {
             if (this.content) {
@@ -283,6 +284,7 @@ export class TabChainPage extends FirstLevelPage {
           });
         }
       }
+      this.showing_block_list = this.block_list.slice(from_index, end_index);
     }
   }
   @TabChainPage.autoUnsubscribe _content_scroll_subscription?: Subscription;

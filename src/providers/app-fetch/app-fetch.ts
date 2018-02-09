@@ -61,7 +61,7 @@ export type CommonResponseData<T> = {
 @Injectable()
 export class AppFetchProvider {
   ServerResError = ServerResError;
-  private _user_token!: string;
+  // private _user_token!: string;
 
   constructor(
     public http: Http,
@@ -71,9 +71,9 @@ export class AppFetchProvider {
   ) {
     console.log("Hello AppFetchProvider Provider");
     window["FETCH"] = this;
-    this.appSetting.user_token.subscribe(val => {
-      this._user_token = val;
-    });
+    // this.appSetting.user_token.subscribe(val => {
+    //   this._user_token = val;
+    // });
 
     // const methods = [
     //   "get",

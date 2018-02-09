@@ -135,6 +135,7 @@ export class FirstLevelPage extends FLP_Data {
       .present();
   }
 
+  @FirstLevelPage.autoUnsubscribe private _token_subscription?: Subscription;
   /**通用的高度监控*/
   @FirstLevelPage.autoUnsubscribe private _height_subscription?: Subscription;
   @FirstLevelPage.willEnter
@@ -143,6 +144,15 @@ export class FirstLevelPage extends FLP_Data {
       return;
     }
     let is_first = true;
+    this.appSetting.account_address.subscribe(token => {
+      if (is_first) {// 等_height_subscription触发后再说
+        this.dispatchEvent(
+          "HEIGHT:CHANGED",
+          this.appSetting.getHeight(),
+          is_first,
+        );
+      }
+    });
     this._height_subscription = this.appSetting.height.subscribe(height => {
       this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
       is_first = false;
@@ -156,6 +166,15 @@ export class FirstLevelPage extends FLP_Data {
       return;
     }
     let is_first = true;
+    this.appSetting.account_address.subscribe(token => {
+      if (is_first) {// 等_round_subscription触发后再说
+        this.dispatchEvent(
+          "ROUND:CHANGED",
+          this.appSetting.getRound(),
+          is_first,
+        );
+      }
+    });
     this._round_subscription = this.appSetting.round.subscribe(round => {
       this.dispatchEvent("ROUND:CHANGED", round, is_first);
       is_first = false;

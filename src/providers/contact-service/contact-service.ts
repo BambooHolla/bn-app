@@ -73,7 +73,7 @@ export class ContactServiceProvider {
     follower: ContactModel[],
     following: ContactModel[]
   }>
-  @HEIGHT_AB_Generator("myContact")
+  @HEIGHT_AB_Generator("myContact", true)
   myContact_Executor(promise_pro) {
     return promise_pro.follow(this.getMyContacts());
   }

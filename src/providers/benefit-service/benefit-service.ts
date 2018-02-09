@@ -108,9 +108,9 @@ export class BenefitServiceProvider {
     return this.benefitList
   }
 
-  top57Benefits!:AsyncBehaviorSubject<TYPE.BenefitModel[]>
+  top57Benefits!: AsyncBehaviorSubject<TYPE.BenefitModel[]>
   @ROUND_AB_Generator("top57Benefits")
-  top57Benefits_Executor(promise_pro){
+  top57Benefits_Executor(promise_pro) {
     return promise_pro.follow(this.getTop57Benefits(false));
   }
 
@@ -179,11 +179,11 @@ export class BenefitServiceProvider {
    * 获取本轮收益
    */
   benefitThisRound!: AsyncBehaviorSubject<number>;
-  @HEIGHT_AB_Generator("benefitThisRound")
+  @HEIGHT_AB_Generator("benefitThisRound", true)
   benefitThisRound_Executor(promise_pro) {
     return promise_pro.follow(this.getBenefitThisRound());
   }
-  
+
   /**
    * 获取最近1个块的收益
    */
@@ -198,15 +198,15 @@ export class BenefitServiceProvider {
 
     // return benefit;
     await this.getTop57Benefits(true);
-    if(this.benefitList && this.benefitList.length > 0) {
+    if (this.benefitList && this.benefitList.length > 0) {
       return parseInt(this.benefitList[0].amount);
-    }else {
+    } else {
       return 0;
     }
   }
 
   recentBenefit!: AsyncBehaviorSubject<number>;
-  @HEIGHT_AB_Generator("recentBenefit")
+  @HEIGHT_AB_Generator("recentBenefit", true)
   recentBenefit_Executor(promise_pro) {
     return promise_pro.follow(this.getRecentBenefit());
   }

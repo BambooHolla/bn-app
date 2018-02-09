@@ -121,24 +121,34 @@ export class BlockServiceProvider {
     return promise_pro.follow(this.getLastBlock());
   });
 
+  tstamp = Date.UTC(
+    AppSettingProvider.SEED_DATE[0],
+    AppSettingProvider.SEED_DATE[1],
+    AppSettingProvider.SEED_DATE[2],
+    AppSettingProvider.SEED_DATE[3],
+    AppSettingProvider.SEED_DATE[4],
+    AppSettingProvider.SEED_DATE[5],
+    AppSettingProvider.SEED_DATE[6],
+  ) / 1000
   /**
    * 获取输入的时间戳的完整时间戳,TODO: 和minSer重复了
    * @param timestamp
    */
   getFullTimestamp(timestamp: number) {
-    let seed = new Date(
-      Date.UTC(
-        AppSettingProvider.SEED_DATE[0],
-        AppSettingProvider.SEED_DATE[1],
-        AppSettingProvider.SEED_DATE[2],
-        AppSettingProvider.SEED_DATE[3],
-        AppSettingProvider.SEED_DATE[4],
-        AppSettingProvider.SEED_DATE[5],
-        AppSettingProvider.SEED_DATE[6],
-      ),
-    );
-    let tstamp = parseInt((seed.getTime() / 1000).toString());
-    let fullTimestamp = (timestamp + tstamp) * 1000;
+    // let seed = new Date(
+    //   Date.UTC(
+    //     AppSettingProvider.SEED_DATE[0],
+    //     AppSettingProvider.SEED_DATE[1],
+    //     AppSettingProvider.SEED_DATE[2],
+    //     AppSettingProvider.SEED_DATE[3],
+    //     AppSettingProvider.SEED_DATE[4],
+    //     AppSettingProvider.SEED_DATE[5],
+    //     AppSettingProvider.SEED_DATE[6],
+    //   ),
+    // );
+    // let tstamp = parseInt((seed.getTime() / 1000).toString());
+    const { tstamp } = this;
+    const fullTimestamp = (timestamp + tstamp) * 1000;
     return fullTimestamp;
   }
 
@@ -294,7 +304,7 @@ export class BlockServiceProvider {
       return this.blockArray;
     }
   }
-  
+
   /**
    * 按照高度刷新块
    */
@@ -309,8 +319,8 @@ export class BlockServiceProvider {
    * @param list
    */
   blockListHandle(list: TYPE.BlockModel[]): TYPE.BlockModel[] {
-    const {BLOCK_UNIT_TIME} = this.appSetting;
-    const BLOCK_UNIT_SECONED = BLOCK_UNIT_TIME/1000;
+    const { BLOCK_UNIT_TIME } = this.appSetting;
+    const BLOCK_UNIT_SECONED = BLOCK_UNIT_TIME / 1000;
     for (let i = 0; i < list.length - 1; i++) {
       if (list[i].timestamp > list[i + 1].timestamp + BLOCK_UNIT_SECONED) {
         list[i].delay = true;
@@ -420,6 +430,7 @@ export class BlockServiceProvider {
     if (!blockArray || blockArray.length < amount) {
       blockArray = await this.getTopBlocks(true, amount);
     }
+    amount = Math.min(blockArray.length, amount);
     let reward = 0,
       fee = 0;
     for (let i = 0; i < amount; i++) {
@@ -459,9 +470,9 @@ export class BlockServiceProvider {
 
     return data;
   }
-  expectBlockInfo!:AsyncBehaviorSubject<TYPE.UnconfirmBlockModel>
+  expectBlockInfo!: AsyncBehaviorSubject<TYPE.UnconfirmBlockModel>
   @HEIGHT_AB_Generator("expectBlockInfo")
-  expectBlockInfo_Executor(promise_pro){
+  expectBlockInfo_Executor(promise_pro) {
     return promise_pro.follow(this.getExpectBlockInfo());
   }
 
@@ -477,9 +488,9 @@ export class BlockServiceProvider {
 
     return data.count;
   }
-  myForgingCount!:AsyncBehaviorSubject<number>
-  @HEIGHT_AB_Generator("myForgingCount")
-  myForgingCount_Executor(promise_pro){
+  myForgingCount!: AsyncBehaviorSubject<number>
+  @HEIGHT_AB_Generator("myForgingCount", true)
+  myForgingCount_Executor(promise_pro) {
     return promise_pro.follow(this.getMyForgingCount())
   }
 }

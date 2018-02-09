@@ -50,7 +50,9 @@ export class MinServiceProvider {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transactionTypes = this.ifmJs.transactionTypes;
     this.appSetting.round.subscribe(r => {
-      this.autoVote(r);
+      if(this.appSetting.getUserToken()){// 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，不需要这里调用
+        this.autoVote(r);
+      }
     });
   }
 
@@ -208,7 +210,7 @@ export class MinServiceProvider {
    * 给我投票的人
    */
   voteForMe!: AsyncBehaviorSubject<TYPE.RankModel[]>;
-  @ROUND_AB_Generator("voteForMe")
+  @ROUND_AB_Generator("voteForMe", true)
   voteForMe_Executor(promise_pro) {
     return promise_pro.follow(this.getAllVotersForMe());
   }
@@ -333,16 +335,16 @@ export class MinServiceProvider {
     };
     let data = await this.fetch.get<any>(this.MY_RANK, { search: query });
 
-    return data.ranks;
+    return data.ranks || [];
   }
 
   myRank!: AsyncBehaviorSubject<TYPE.RankModel[]>;
-  @ROUND_AB_Generator("myRank")
+  @ROUND_AB_Generator("myRank", true)
   myRank_Executor(promise_pro) {
     return promise_pro.follow(this.getMyRank());
   }
   preRoundMyBenefit!: AsyncBehaviorSubject<TYPE.RankModel | undefined>;
-  @ROUND_AB_Generator("preRoundMyBenefit")
+  @ROUND_AB_Generator("preRoundMyBenefit", true)
   preRoundMyBenefit_Executor(promise_pro) {
     return promise_pro.follow(this.myRank.getPromise().then(pre_round_rank_list => {
       if (pre_round_rank_list) {
@@ -393,7 +395,7 @@ export class MinServiceProvider {
   }
 
   rateOfReturn!: AsyncBehaviorSubject<TYPE.RateOfReturnModel | undefined>;
-  @ROUND_AB_Generator("rateOfReturn")
+  @ROUND_AB_Generator("rateOfReturn", true)
   rateOfReturn_Executor(promise_pro) {
     return promise_pro.follow(this.getRateOfReturn());
   }

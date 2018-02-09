@@ -19,8 +19,8 @@
 "BLOCK_transactions":"交易记录",
 
   "//": "sign-in-and-sign-up",
-  "LOGINNG": "登陆中",
-  "LOGIN_ERROR": "登录失败",
+  "LOGINNG": "获取授权中",
+  "LOGIN_ERROR": "授权失败",
 
   "//": "settings-set-default-fee",
   "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",

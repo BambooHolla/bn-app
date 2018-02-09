@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
-import { BehaviorSubject, AsyncSubject } from "rxjs";
+import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
 import {
   AsyncBehaviorSubject,
   Executor,
@@ -14,7 +14,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 
 export class AppUrl {
-  constructor(public path) {}
+  constructor(public path) { }
   toString() {
     return AppSettingProvider.SERVER_URL + this.path;
   }
@@ -25,8 +25,8 @@ const net_version =
 const block_unit_time =
   parseFloat(
     getQueryVariable("BLOCK_UNIT_TIME") ||
-      localStorage.getItem("BLOCK_UNIT_TIME") ||
-      "",
+    localStorage.getItem("BLOCK_UNIT_TIME") ||
+    "",
   ) ||
   (net_version === "testnet" && 10e3);
 
@@ -62,6 +62,15 @@ export class AppSettingProvider extends EventEmitter {
     this.user.initUserInfo(user_token);
 
     this.user_token = new BehaviorSubject<string>(user_token);
+    this.account_address = this.user_token
+      .map(token => {
+        const token_info = this.getUserToken();
+        if (token_info) {
+          return token_info.address;
+        }
+        return "";
+      })
+      .distinctUntilChanged<string>();
 
     const default_settings = { ...this.settings };
     // 将setting与本地存储进行关联
@@ -81,7 +90,7 @@ export class AppSettingProvider extends EventEmitter {
               try {
                 value = JSON.parse(current_json_value); //JSON可用
                 should_write_in = false; // 不需要初始化写入
-              } catch (e) {}
+              } catch (e) { }
             }
             if (should_write_in) {
               localStorage.setItem(s_key, JSON.stringify(default_value));
@@ -140,6 +149,7 @@ export class AppSettingProvider extends EventEmitter {
   }
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
   user_token: BehaviorSubject<string>;
+  account_address: Observable<string>;
   private _token_timeout_ti: any;
   getUserToken() {
     try {
@@ -190,7 +200,7 @@ export class AppSettingProvider extends EventEmitter {
     }
     this.height.next(height);
     const pre_round = this.getRound();
-    const cur_round = (height / 57) | 0;
+    const cur_round = Math.floor(height / 57);
     if (cur_round !== pre_round) {
       this.setRound(cur_round);
     }
@@ -306,7 +316,7 @@ export function TB_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -321,7 +331,7 @@ export function TB_AB_Generator(
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -333,7 +343,7 @@ export function TB_AB_Generator(
               _v = new AsyncBehaviorSubject(executor.bind(this));
               expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
             } else {
-              _v.refresh();
+              _v.refresh(target_prop_name);
             }
           });
         }
@@ -355,6 +365,7 @@ export function TB_AB_Generator(
  */
 export function HEIGHT_AB_Generator(
   target_prop_name: string,
+  need_token = false,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
   },
@@ -381,7 +392,7 @@ export function HEIGHT_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -397,18 +408,25 @@ export function HEIGHT_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
-          appSetting.height.subscribe(height => {
+          const runner = height_or_token => {
+            if (!height_or_token) {
+              return;
+            }
             if (!_v) {
               _v = new AsyncBehaviorSubject(executor.bind(this));
               expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
             } else {
-              _v.refresh();
+              _v.refresh(target_prop_name);
             }
-          });
+          };
+          appSetting.height.subscribe(runner);
+          if (need_token) {
+            appSetting.user_token.subscribe(runner);
+          }
         }
         return _v;
       },
@@ -427,6 +445,7 @@ export function HEIGHT_AB_Generator(
  */
 export function ROUND_AB_Generator(
   target_prop_name: string,
+  need_token = false,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
   },
@@ -453,7 +472,7 @@ export function ROUND_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -469,18 +488,25 @@ export function ROUND_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
-          appSetting.round.subscribe(round => {
+          const runner = height_or_token => {
+            if (!height_or_token) {
+              return;
+            }
             if (!_v) {
               _v = new AsyncBehaviorSubject(executor.bind(this));
               expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
             } else {
-              _v.refresh();
+              _v.refresh(target_prop_name);
             }
-          });
+          };
+          appSetting.round.subscribe(runner);
+          if (need_token) {
+            appSetting.user_token.subscribe(runner);
+          }
         }
         return _v;
       },
