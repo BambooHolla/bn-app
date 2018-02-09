@@ -37,6 +37,11 @@ export class TabPayPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
+    this.event.on("job-finished", ({ id, data }) => {
+      if (id === "account-my-contacts") {
+        this.formData.transfer_address = data.address;
+      }
+    });
   }
   formData = {
     transfer_address: "",
@@ -74,8 +79,8 @@ export class TabPayPage extends FirstLevelPage {
     await this._submit(password, pay_pwd);
     this.resetFormData();
   }
-  resetFormData(){
-    super.resetFormData()
+  resetFormData() {
+    super.resetFormData();
     this.formData.transfer_amount = "";
   }
   @asyncCtrlGenerator.error(() =>
@@ -138,7 +143,7 @@ export class TabPayPage extends FirstLevelPage {
         roll_out_config.page,
         roll_out_config.pageSize,
         "out",
-        TransactionTypes.SEND
+        TransactionTypes.SEND,
       );
       roll_out_config.has_more = list.length >= roll_out_config.pageSize;
       return list;

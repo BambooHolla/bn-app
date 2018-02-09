@@ -425,7 +425,7 @@ export function HEIGHT_AB_Generator(
           };
           appSetting.height.subscribe(runner);
           if (need_token) {
-            appSetting.user_token.subscribe(runner);
+            appSetting.account_address.subscribe(runner);
           }
         }
         return _v;
@@ -505,7 +505,7 @@ export function ROUND_AB_Generator(
           };
           appSetting.round.subscribe(runner);
           if (need_token) {
-            appSetting.user_token.subscribe(runner);
+            appSetting.account_address.subscribe(runner);
           }
         }
         return _v;

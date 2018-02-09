@@ -44,6 +44,10 @@ export class FLP_Route extends FLP_Lifecycle {
   // 页面B完成任务后，返回页面A，触发任务完成的回调
   // 这个流程相关的API
   viewCtrl?: ViewController;
+  _job_res: any
+  jobRes(data: any) {
+    this._job_res = data
+  }
   finishJob(
     remove_view_after_finish: boolean = this.navParams.get("auto_return") ||
       this.navParams.get("remove_view_after_finish"),
@@ -55,7 +59,15 @@ export class FLP_Route extends FLP_Lifecycle {
       setTimeout(() => {
         const viewCtrl = this.viewCtrl;
         if (viewCtrl) {
-          this.navCtrl.removeView(viewCtrl);
+          const preView = this.navCtrl.getPrevious();
+          if (preView) {
+            this.navCtrl.removeView(viewCtrl);
+            const com = preView.instance as FLP_Route;
+            com.tryEmit("job-finished", {
+              id: "account-my-contacts",
+              data: this._job_res
+            });
+          }
         } else {
           console.warn(
             "使用remove_view_after_finish必须注入viewCtrl: ViewController对象",

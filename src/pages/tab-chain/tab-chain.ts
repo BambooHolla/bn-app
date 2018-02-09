@@ -47,7 +47,6 @@ export class TabChainPage extends FirstLevelPage {
 
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent
   unconfirm_block?: UnconfirmBlockModel;
-  @TabChainPage.willEnter
   async loadUnconfirmBlock() {
     this.unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
     this.chainMesh && this.chainMesh.forceRenderOneFrame();

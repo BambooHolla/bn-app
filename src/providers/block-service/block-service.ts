@@ -61,10 +61,11 @@ export class BlockServiceProvider {
     };
     const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
     try {
-      const diff_time = await this.getLastBlockRefreshInterval();
+      let diff_time = await this.getLastBlockRefreshInterval();
       // if (diff_time <= 0) {
       //   throw new RangeError("Wrong diff time");
       // }
+      diff_time %= BLOCK_UNIT_TIME;
       if (diff_time < BLOCK_UNIT_TIME) {
         this._refresh_interval = 0;
         console.log(

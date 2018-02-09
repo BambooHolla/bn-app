@@ -8,7 +8,7 @@
     <button class="tool-item qr-scan">
       <ali-icon name="ifm-scan"></ali-icon>
     </button>
-    <button class="tool-item contact-book">
+    <button class="tool-item contact-book" (click)="routeTo('account-my-contacts',{auto_return:true,mode:'select-address'})">
       <ali-icon name="ifm-tongxunlu"></ali-icon>
     </button>
     <button class="tool-item ibt" (click)="routeTo('pay-receive')">

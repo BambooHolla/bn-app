@@ -1,5 +1,5 @@
 import { Component, Optional } from "@angular/core";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
@@ -22,6 +22,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public accountService: AccountServiceProvider,
     public contactService: ContactServiceProvider,
+    public viewCtrl: ViewController
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -108,6 +109,15 @@ export class AccountMyContactsPage extends SecondLevelPage {
     pay_pwd: string,
   ) {
     return this.contactService.addContact(password, address, pay_pwd);
+  }
+
+  /*点击联系人*/
+  tapContact(contact: ContactModel) {
+    const mode = this.navParams.get("mode");
+    if (mode === "select-address") {
+      this.jobRes(contact);
+      this.finishJob();
+    }
   }
 
   // TODO: 这个页面不根据高度实时刷新，因为可能是一个大列表

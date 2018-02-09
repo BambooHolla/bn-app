@@ -18,7 +18,7 @@
       <ali-icon name="ifm-dengdai"></ali-icon>
       等待确认列表
     </div>
-    <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list;trackBy:listTrackBy">
+    <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list;trackBy:listTrackBy" (click)="tapContact(unconfirm_contact)">
       <div class="left"><div class="username" *ngIf="unconfirm_contact.username">
           {{unconfirm_contact.username}}</div>
         <div class="address" [innerHTML]="unconfirm_contact.address|mask:'@address'"></div>
@@ -36,7 +36,7 @@
   <div class="contact-list list">
     <ng-container *ngFor="let letter_contacts of my_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
-      <div class="item" *ngFor="let contact of letter_contacts.list">
+      <div class="item" *ngFor="let contact of letter_contacts.list" (click)="tapContact(contact)">
         <div class="left">
           <div class="username" *ngIf="contact.username">{{contact.username}}</div>
           <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
