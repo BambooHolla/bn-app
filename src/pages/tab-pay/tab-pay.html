@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content>
   <div class="toolbar">
-    <button class="tool-item qr-scan">
+    <button class="tool-item qr-scan"(click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
       <ali-icon name="ifm-scan"></ali-icon>
     </button>
     <button class="tool-item contact-book" (click)="routeTo('account-my-contacts',{auto_return:true,mode:'select-address'})">

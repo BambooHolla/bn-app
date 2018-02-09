@@ -11,6 +11,7 @@ import { SplashScreen } from "@ionic-native/splash-screen";
 import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
 import { Clipboard } from "@ionic-native/clipboard";
+import { QRScanner } from '@ionic-native/qr-scanner';
 import { StatusBar } from "@ionic-native/status-bar";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -92,6 +93,7 @@ const heightLevelModules = [];
     Keyboard,
     Toast,
     Clipboard,
+    QRScanner,
     StatusBar,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
