@@ -27,4 +27,7 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
 	async refreshBaseData() {
 		this.pre_round_rank_list = await this.minService.myRank.getPromise();
 	}
+	async refreshDetailData(){
+		
+	}
 }

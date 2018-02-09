@@ -15,16 +15,25 @@
 </ion-header>
 <ion-content class="in-vote-content" [class.show]="InOutSubPage.IN_VOTE===current_page">
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8A%95%E7%A5%A8-%E6%88%91%E5%BE%97%E7%9A%84%E7%A5%A8.jpg" alt=""> -->
-  <ion-refresher (ionRefresh)="loadInVoteList($event)">
+  <ion-refresher (ionRefresh)="loadInVoteList($event)" [enabled]="in_vote_mill_list.length">
     <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_IN_VOTE_LIST'|translate"></ion-refresher-content>
   </ion-refresher>
   <div class="common-list">
-    <div class="common-item" *ngFor="let vote of in_vote_list">
-      <div class="left" [innerHTML]="vote.address|mask:'@address'"></div>
-      <div class="right">
-        123
+    <div class="no-mills" *ngIf="!in_vote_mill_list.length;else showInVoteList">
+      <div class="tip">
+        <ali-icon name="ifm-tip"></ali-icon>
+        没有矿机
       </div>
+      <button class="submit-button">添加矿机</button>
     </div>
+    <ng-template #showInVoteList>
+      <div class="common-item" *ngFor="let vote of in_vote_list">
+        <div class="left" [innerHTML]="vote.address|mask:'@address'"></div>
+        <div class="right">
+          123
+        </div>
+      </div>
+    </ng-template>
   </div>
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreInVoteList())" [enabled]="out_vote_list_config.has_more">
     <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_IN_VOTE_LIST'|translate"></ion-infinite-scroll-content>
@@ -36,7 +45,7 @@
     <ion-slide>
       <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
         <ion-refresher (ionRefresh)="loadOutVoteList($event)">
-          <ion-refresher-content  [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_OUT_VOTE_LIST'|translate"></ion-refresher-content>
+          <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_OUT_VOTE_LIST'|translate"></ion-refresher-content>
         </ion-refresher>
         <div class="common-list">
           <div class="common-item" *ngFor="let vote of out_vote_list">
@@ -54,7 +63,7 @@
     <ion-slide>
       <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
         <ion-refresher (ionRefresh)="loadCanVoteList($event)">
-          <ion-refresher-content  [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
+          <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
         </ion-refresher>
         <div class="common-list">
           <div class="common-item" *ngFor="let vote of can_vote_list">

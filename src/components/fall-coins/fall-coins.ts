@@ -47,7 +47,6 @@ export class FallCoinsComponent extends AniBase {
     this.on("init-start", this.initPixiApp.bind(this));
     this.on("start-animation", this.startPixiApp.bind(this));
     this.on("stop-animation", this.stopPixiApp.bind(this));
-    this.force_update = true;
   }
   // 72pt = 1英寸 = 2.54 厘米
   // 1m = 2834.645669291339 pt
@@ -121,13 +120,15 @@ export class FallCoinsComponent extends AniBase {
         con = new PIXI.Container();
         con["zIndex"] = index;
         container.addChild(con);
-        container.children.sort(function (a, b) {
+        container.children.sort(function(a, b) {
           return b["zIndex"] - a["zIndex"];
         });
         indexContainerMap.set(key, con);
       }
       return con;
     };
+
+    var ani_uuid_adder = 0;
 
     const auto_fall_down = () => {
       // if (t / 200 <= progress_coins.length) {
@@ -143,6 +144,7 @@ export class FallCoinsComponent extends AniBase {
       var speed = 0;
       const frames = frames_list[(Math.random() * frames_list.length) | 0];
       const ani = new PIXI.extras.AnimatedSprite(frames);
+      const ani_uuid = ani_uuid_adder++;
       ani.width = u_size;
       ani.height = u_size;
       // ani.animationSpeed = Math.random() + 0.5; // 金币的旋转速度
@@ -188,6 +190,7 @@ export class FallCoinsComponent extends AniBase {
         if (ani.y >= end_y) {
           ani.y = end_y;
           this.removeLoop(coin_ani);
+          requestAnimationFrame(() => this.downForceUpdate(ani_uuid));
           target_line.in_ani -= 1;
         }
         if (target_line.in_ani === 0) {
@@ -200,6 +203,7 @@ export class FallCoinsComponent extends AniBase {
       target_line.in_ani += 1;
       // 开始动画
       this.addLoop(coin_ani);
+      this.upForceUpdate(ani_uuid);
 
       target_line.cur += 1;
       if (target_line.cur >= target_line.max) {

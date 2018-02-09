@@ -50,6 +50,7 @@ export class VoteListPage extends SecondLevelPage {
     has_more: true,
   };
   /**被投的票*/
+  in_vote_mill_list: any[] = [];
   in_vote_list: DelegateModel[] = [];
   in_vote_list_config = {
     page: 1,
@@ -62,11 +63,11 @@ export class VoteListPage extends SecondLevelPage {
     if (page) {
       this.gotoSubPage(page);
     }
-    if (this.current_page === InOutSubPage.IN_VOTE) {
-      this.initInVoteList();
-    } else {
-      this.initOutVoteList();
-    }
+    // if (this.current_page === InOutSubPage.IN_VOTE) {
+    //   this.initInVoteList();
+    // } else {
+    //   this.initOutVoteList();
+    // }
   }
 
   @asyncCtrlGenerator.loading(() =>

@@ -11,7 +11,7 @@
         <div class="left">
           <div class="title">
             <ali-icon name="ifm-feiji"></ali-icon>
-            锻造者
+            {{'BLOCK_generatorId'|translate}}
           </div>
           <div class="create-time">
             <ng-container *ngIf="isShowFullDate(block_info?.timestamp);else showTimeAgo">
@@ -32,13 +32,13 @@
         <div class="left reward">
           <div class="value">{{block_info?.reward|amountEuler|number:"1.0-0"}}</div>
           <div class="title">
-            <ali-icon name="ifm-reward"></ali-icon>区块奖励
+            <ali-icon name="ifm-reward"></ali-icon>{{'BLOCK_reward'|translate}}
           </div>
         </div>
         <div class="right trans_num">
           <div class="value">{{block_info?.numberOfTransactions}}</div>
           <div class="title">
-            <ali-icon name="ifm-tran"></ali-icon>交易量</div>
+            <ali-icon name="ifm-tran"></ali-icon>{{'BLOCK_numberOfTransactions'|translate}}</div>
         </div>
       </div>
       <div class="line height">
@@ -70,7 +70,7 @@
       </div>
       <div class="line block-id">
         <div class="left">
-          <ali-icon name="ifm-wallet"></ali-icon>
+          <ali-icon name="ifm-id"></ali-icon>
           {{'BLOCK_id'|translate}}
         </div>
         <div class="right" [click-to-copy]="block_info?.id" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('BLOCK_id'|translate)}">
@@ -79,7 +79,7 @@
       </div>
       <div class="line block-id">
         <div class="left">
-          <ali-icon name="ifm-wallet"></ali-icon>
+          <ali-icon name="ifm-id"></ali-icon>
           {{'BLOCK_pre_block_id'|translate}}
         </div>
         <div class="right" [click-to-copy]="pre_block_id" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('BLOCK_pre_block_id'|translate)}">
@@ -92,27 +92,27 @@
   <div class="trans-logs">
     <div class="header">
       <ali-icon name="ifm-tran-history"></ali-icon>
-      交易记录
+      {{'BLOCK_transactions'|translate}}
     </div>
     <!-- TODO: 对于自己的交易，优化显示效果 -->
     <ion-content class="list" ion-content-scroll-shadow [scroll-parent-ion-content-first]="parentContent">
 
       <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
         <div class="left">
-          <div class="from-to">
-            <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
-              <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-              <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
-            </ng-container>
+          <div class="tran-type">
+            {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
           </div>
           <div class="create-time">
             {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
           </div>
         </div>
         <div class="right">
-          <div class="tran-type">
-            {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+          <div class="from-to">
+            <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
+            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+              <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+              <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
+            </ng-container>
           </div>
           <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
             {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}

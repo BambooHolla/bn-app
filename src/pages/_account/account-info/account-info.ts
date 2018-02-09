@@ -22,8 +22,4 @@ export class AccountInfoPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
-  account_info = {
-    username: undefined,
-    address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
-  };
 }

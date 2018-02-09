@@ -64,6 +64,34 @@ page-vote-list {
       transform: translateX(0%);
     }
     .common-list {
+      > .no-mills {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        > .tip {
+          padding-top: 10vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #fcc54b;
+          font-size: 1.4rem;
+          ali-icon {
+            font-size: 2.4rem;
+            margin-right: 0.5rem;
+          }
+        }
+        > .submit-button {
+          position: fixed;
+          bottom: 1.6rem;
+          background: linear-gradient(
+            to bottom,
+            #fa9462 0%,
+            #fcb154 50%,
+            #fecc47 100%
+          );
+        }
+      }
       > .common-item {
         > .left {
           flex-direction: row;

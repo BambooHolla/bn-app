@@ -52,150 +52,15 @@
         <div class="ani-container">
         </div>
       </div>
-      <div class="fall-icon-into-panel" [class.show-big-fall-icon]="is_show.show_big_fall_icon" [class.start-ani]="is_show.round_ani">
-        <div class="drilled-into-panel-ani">
-          <div class="icon-fall-down-ani">
-            <div class="icon-scale-ani">
-              <div class="icon-flip-ani"></div>
-            </div>
+    </div>
+    <div class="fall-icon-into-panel" [class.show-big-fall-icon]="is_show.show_big_fall_icon" [class.start-ani]="is_show.round_ani">
+      <div class="drilled-into-panel-ani">
+        <div class="icon-fall-down-ani">
+          <div class="icon-scale-ani">
+            <div class="icon-flip-ani"></div>
           </div>
         </div>
       </div>
-      <!-- <div class="extends-panel">
-        <ion-slides class="panel-list" [initialSlide]="1">
-          <ion-slide class="panel-item">
-            <div class="income-ranking">
-              <div class="header">
-                <div class="title">
-                  <ali-icon name="ifm-income-ranking"></ali-icon>
-                  上轮收益排名
-                </div>
-                <div class="my-income-assets">
-                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
-                </div>
-              </div>
-              <div class="rank-info">
-                <div class="item" *ngFor="let rank_item of pre_round_rank_list" [class.me]="rank_item==pre_round_my_benefit">
-                  <div class="ranking-val" [ngClass]="'ranking-'+rank_item.rate">{{rank_item.rate}}</div>
-                  <div class="ip-address" *ngIf="userInfo.address==rank_item.address">
-                    {{'RANK_OF_ME'|translate}}
-                  </div>
-                  <div class="ip-address" *ngIf="userInfo.address!=rank_item.address">
-                    <div class="username" *ngIf="rank_item.rate<=3" [innerHTML]="rank_item.username?rank_item.username:(rank_item.address|mask:'@address')"></div>
-                    <div class="amount">
-                      {{rank_item.profit|amountEuler|number:'1.8-8'}}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ion-slide>
-          <ion-slide class="panel-item">
-            <div class="current-block-income">
-              <div class="header">
-                <div class="title">
-                  {{cur_round_income_info.cur_round_income_amount|amountEuler|number:'1.8-8'}}
-                </div>
-                <div class="sub-title">
-                  <ali-icon name="ifm-xiangao"></ali-icon>
-                  本轮挖矿收益
-                </div>
-              </div>
-              <div class="block-info">
-                <div class="info-item">
-                  <div class="title">当前轮数</div>
-                  <div class="val">
-                    <text-gradient [text]="cur_round_income_info.round" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600"></text-gradient>
-                  </div>
-                </div>
-                <div class="info-item">
-                  <div class="title">我的区块</div>
-                  <div class="val">
-                    <text-gradient [text]="cur_round_income_info.block_num" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
-                    </text-gradient>
-                  </div>
-                </div>
-                <div class="info-item">
-                  <div class="title">最近收益</div>
-                  <div class="val">
-                    <text-gradient [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
-                    </text-gradient>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ion-slide>
-          <ion-slide class="panel-item">
-            <div class="income-trend">
-              <div class="header">
-                <div class="title">
-                  <ali-icon name="ifm-income-trend"></ali-icon>
-                  收益趋势图
-                </div>
-                <div class="my-income-assets">
-                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
-                </div>
-              </div>
-              <div class="chart-wrapper">
-                <income-trend-simple-chart class="chart" [list]="income_trend_list"></income-trend-simple-chart>
-              </div>
-            </div>
-          </ion-slide>
-          <ion-slide class="panel-item">
-            <div class="my-contribution">
-              <div class="header">
-                <div class="title">
-                  <ali-icon name="ifm-shujuxian"></ali-icon>
-                  我的贡献
-                </div>
-                <div class="my-income-assets">
-                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
-                </div>
-              </div>
-              <div class="detail">
-                <div class="transaction-processed item">
-                  <text-gradient class="value" [text]="'1890'" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
-                  <div class="label">处理交易</div>
-                </div>
-                <div class="contributed-traffic item">
-                  <text-gradient class="value" [text]="'3489.67MB'" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
-                  <div class="label">贡献流量</div>
-                </div>
-              </div>
-              <div class="wave-bg">
-                <div class="wave-1"></div>
-                <div class="wave-2"></div>
-              </div>
-            </div>
-          </ion-slide>
-          <ion-slide class="panel-item" *ngIf="pre_round_income_rate">
-            <div class="pre-round-income-rate">
-              <div class="header">
-                <div class="title">
-                  <ali-icon name="ifm-pre-round-income-rate"></ali-icon>
-                  上轮回报率
-                </div>
-                <div class="my-income-assets">
-                  IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
-                </div>
-              </div>
-              <div class="detail">
-                <div class="rate-of-return">
-                  <text-gradient class="value" [text]="pre_round_income_rate?.rateOfReturn.toFixed(0)+'倍'" from="#f78464" to="#fdcf48" fontSize="3.5rem" fontWeight="600"></text-gradient>
-                </div>
-                <div class="extends-info">
-                  <div class="left">
-                    投入 {{pre_round_income_rate?.totalFee|amountEuler|number:'1.8-8'}}
-                  </div>
-                  <div class="right">
-                    产出 {{pre_round_income_rate?.totalBenefit|amountEuler|number:'1.8-8'}}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ion-slide>
-        </ion-slides>
-      </div> -->
     </div>
 
     <div class="extends-panel-page" [ngClass]="page_status">
@@ -204,18 +69,18 @@
           <vote-pre-round-income-ranking [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.incomeRanking)"></vote-pre-round-income-ranking>
         </ion-slide>
         <ion-slide class="panel-item">
-          <vote-current-block-income (click)="openExtendsPanel(ExtendsPanel.currentBlockIncome)"></vote-current-block-income>
+          <vote-current-block-income [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.currentBlockIncome)"></vote-current-block-income>
         </ion-slide>
         <ion-slide class="panel-item">
-          <vote-income-trend (click)="openExtendsPanel(ExtendsPanel.incomeTrend)">
+          <vote-income-trend [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.incomeTrend)">
           </vote-income-trend>
         </ion-slide>
         <ion-slide class="panel-item">
-          <vote-my-contribution (click)="openExtendsPanel(ExtendsPanel.myContribution)">
+          <vote-my-contribution [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.myContribution)">
           </vote-my-contribution>
         </ion-slide>
-        <ion-slide class="panel-item" *ngIf="pre_round_income_rate">
-          <vote-pre-round-income-rate (click)="openExtendsPanel(ExtendsPanel.preRoundIncomeRate)">
+        <ion-slide class="panel-item">
+          <vote-pre-round-income-rate [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.preRoundIncomeRate)">
           </vote-pre-round-income-rate>
         </ion-slide>
       </ion-slides>

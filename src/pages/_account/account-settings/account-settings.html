@@ -6,9 +6,28 @@
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AE%BE%E7%BD%AE%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="settings-list">
+    <div class="divider"></div>
+    <div class="item" (click)="routeTo('settings-set-default-fee',{auto_return:true})">
+      <span class="title">默认手续费设置</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+    </div>
     <div class="item" (click)="routeTo('settings-set-pay-pwd',{auto_return:true})">
       <span class="title">设置支付密码</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+    </div>
+    <div class="item">
+      <span class="title">挖矿收益通知</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+      <!-- <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_income_notice"></ion-toggle> -->
+    </div>
+    <div class="item" (click)="routeTo('settings-lang')">
+      <span class="title">语言设置</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+    </div>
+    <div class="divider"></div>
+    <div class="item">
+      <span class="title">只在wifi时挖矿</span>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_only_in_wifi"></ion-toggle>
     </div>
     <div class="item">
       <span class="title">指纹保护</span>
@@ -19,37 +38,24 @@
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.background_mining"></ion-toggle>
     </div>
     <div class="item">
-      <span class="title">挖矿收益通知</span>
-      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_income_notice"></ion-toggle>
-    </div>
-    <div class="item" (click)="routeTo('settings-set-default-fee',{auto_return:true})">
-      <span class="title">默认手续费设置</span>
-      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+      <span class="title">自动升级</span>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.auto_update_app"></ion-toggle>
     </div>
     <div class="item">
-      <span class="title">只在wifi时挖矿</span>
-      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_only_in_wifi"></ion-toggle>
+      <span class="title">声效开关</span>
+      <!-- <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon> -->
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.sound_effect"></ion-toggle>
     </div>
     <div class="item">
       <span class="title">省电模式</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.power_saving_mode"></ion-toggle>
     </div>
-    <div class="item">
-      <span class="title">声音开关</span>
-      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
-    </div>
-    <div class="item">
-      <span class="title">自动升级</span>
-      <ion-toggle class="left"></ion-toggle>
-    </div>
-    <div class="item" (click)="routeTo('settings-lang')">
-      <span class="title">语言设置</span>
-      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
-    </div>
+    <div class="divider"></div>
     <div class="item" (click)="routeTo('settings-cache-manage')">
       <span class="title">清空本地缓存</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
+    <div class="divider"></div>
   </div>
   <button class="quit-app" (click)="quitAccount()">安全退出</button>
 </ion-content>

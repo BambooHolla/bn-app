@@ -15,9 +15,10 @@
         <span class="unit">IBT</span>
       </div>
       <div class="dollar-value">
-        <ali-icon name="ifm-ketoujineicon"></ali-icon>
+        <!-- <ali-icon name="ifm-ketoujineicon"></ali-icon> -->
+        <span class="pre-unit">$</span>
         <span class="value">{{dollar|amountEuler|number:"1.8-8"}}</span>
-        <span class="unit">$</span>
+        <span class="unit">USD</span>
       </div>
       <div class="address" (click)="routeTo('account-info')">{{address}}</div>
     </div>
@@ -36,7 +37,7 @@
     </div>
     <div class="nav-item">
       <ali-icon class="left" name="ifm-apps"></ali-icon>
-      <div class="title">我的应用</div>
+      <div class="title">应用市场</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div>
     <div class="nav-item" (click)="routeTo('account-my-transaction-list')">
@@ -55,7 +56,7 @@
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div>
     <div class="nav-item">
-      <ali-icon class="left" name="ifm-info"></ali-icon>
+      <ali-icon class="left" name="ifm-about-ibt"></ali-icon>
       <div class="title">关于IBT</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div>

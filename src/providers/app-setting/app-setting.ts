@@ -230,6 +230,8 @@ export class AppSettingProvider extends EventEmitter {
     auto_update_default_fee_to_pre_round_min: false,
     /**自动更新手续费到前一轮的最低值*/
     auto_update_default_fee_max_amount: "1.00000000",
+    /**音效*/
+    sound_effect: true,
   };
 }
 

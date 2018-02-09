@@ -52,4 +52,7 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
 		});
 		return Promise.all(tasks);
 	}
+	async refreshDetailData(){
+		
+	}
 }

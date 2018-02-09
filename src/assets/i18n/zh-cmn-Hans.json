@@ -7,12 +7,16 @@
   "#INFO#_COPY_SUCCESS": "{{info}}复制成功",
   "RANK_OF_ME": "我",
 
+"BLOCK_generatorId":"锻造者",
+"BLOCK_reward":"区块奖励",
+"BLOCK_numberOfTransactions":"交易量",
   "BLOCK_height": "高度",
   "BLOCK_confirmations": "确认数",
   "BLOCK_confirmations_UNIT": "个",
   "BLOCK_totalFee": "手续费",
   "BLOCK_id": "区块ID",
   "BLOCK_pre_block_id": "前区块ID",
+"BLOCK_transactions":"交易记录",
 
   "//": "sign-in-and-sign-up",
   "LOGINNG": "登陆中",

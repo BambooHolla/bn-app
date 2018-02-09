@@ -31,4 +31,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
 			? income_trend_list
 			: undefined;
 	}
+	async refreshDetailData(){
+		
+	}
 }

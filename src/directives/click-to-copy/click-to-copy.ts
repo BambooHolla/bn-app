@@ -23,10 +23,16 @@ export class ClickToCopyDirective {
 	constructor(public eleRef: ElementRef) {
 		this.eleRef.nativeElement.addEventListener("click", e => {
 			this.clipboard.writeText(this.text).then(() => {
-				this.toastCtrl.create({ message: this.success_msg }).present()
+				this.toastCtrl.create({
+					message: this.success_msg,
+					duration: 2000
+				}).present()
 			}).catch((err) => {
 				console.error(err)
-				this.toastCtrl.create({ message: this.error_msg }).present()
+				this.toastCtrl.create({
+					message: this.error_msg,
+					duration: 2000
+				}).present()
 			});
 		});
 	}

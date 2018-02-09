@@ -99,6 +99,7 @@ page-chain-block-detail {
           flex-grow: 1;
           word-break: break-all;
           text-align: right;
+          font-size: 1.3rem;
         }
       }
 
@@ -200,25 +201,12 @@ page-chain-block-detail {
           display: flex;
           align-items: center;
           font-size: 1.35rem;
-          color: #787878;
           > .left {
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            > .from-to {
-              display: flex;
-              align-items: center;
-              ali-icon {
-                font-size: 3rem;
-                margin: 0 0.2rem;
-              }
-            }
-            > .create-time {
-              color: #b5b5b5;
-              font-size: 1.2rem;
-            }
           }
           > .right {
             height: 100%;
@@ -228,11 +216,26 @@ page-chain-block-detail {
             flex-direction: column;
             justify-content: center;
             align-items: flex-end;
-            color: #505050;
-            > .amount {
-              color: #505050;
-              font-weight: 500;
+          }
+          .from-to {
+            color: #787878;
+            display: flex;
+            align-items: center;
+            ali-icon {
+              font-size: 3rem;
+              margin: 0 0.2rem;
             }
+          }
+          .create-time {
+            color: #b5b5b5;
+            font-size: 1.2rem;
+          }
+          .tran-type {
+            color: #505050;
+          }
+          .amount {
+            color: #505050;
+            font-weight: 500;
           }
         }
         > .empty-list {

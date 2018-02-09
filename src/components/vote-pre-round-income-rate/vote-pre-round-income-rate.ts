@@ -31,4 +31,7 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
 			rateOfReturn: 0,
 		};
 	}
+	async refreshDetailData(){
+		
+	}
 }
