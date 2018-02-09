@@ -1,5 +1,11 @@
 page-account-scan-add-contact {
   @extend .header-no-border;
+  >.content{
+  	background: none;
+  	>.scroll-content{
+	  	background: none;
+  	}
+  }
   .scan-view {
     position: fixed;
     top: 0;
