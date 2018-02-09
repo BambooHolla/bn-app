@@ -1,3 +1,4 @@
+import { Clipboard } from "@ionic-native/clipboard";
 import { TranslateService } from "@ngx-translate/core";
 import {
   AlertController,
@@ -16,6 +17,14 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal modalCtrl!: ModalController;
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
+  @FLP_Tool.FromGlobal _clipboard!: Clipboard;
+  clipboard: {
+    writeText: (text: string) => Promise<void>,
+    readText: () => Promise<string>,
+  } = navigator["clipboard"] || {
+    writeText: text => this._clipboard.copy(text),
+    readText: () => this._clipboard.paste(),
+  };
   get localName() {
     const { currentLang } = this.translate;
     if (currentLang === "zh-cmn-Hans") {

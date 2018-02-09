@@ -37,7 +37,7 @@ page-tab-vote {
     &.bootstrap {
       transform: scale(0.8) translateY(-5%);
     }
-    &.vote-detail {
+    &.vote-detail, &.extends-panel {
       transform: scale(0.86) translateY(-15%);
     }
   }
@@ -69,7 +69,7 @@ page-tab-vote {
         animation-iteration-count: infinite;
       }
     }
-    &.vote-detail {
+    &.vote-detail, &.extends-panel {
       transform: scale(0.88) translateY(8.6363636363vh);
       // opacity: 1;
     }
@@ -107,7 +107,7 @@ page-tab-vote {
       animation-iteration-count: infinite;
       background-color: #fff;
     }
-    &.vote-detail {
+    &.vote-detail, &.extends-panel {
       transform: scale(1);
       opacity: 1;
     }
@@ -164,8 +164,6 @@ page-tab-vote {
       align-items: center;
       justify-content: center;
       .auto-start-button {
-        /*         width: 105.2625%;
-height: 105.2625%; */
         width: 100%;
         height: 100%;
         transform: scale(1.052625);
@@ -293,7 +291,8 @@ height: 105.2625%; */
     flex-direction: column;
     align-items: center; */
     /* justify-content: center; */
-    &.vote-detail {
+    &.vote-detail,
+    &.extends-panel {
       opacity: 1;
       transform: scale(1);
       pointer-events: all;
@@ -546,6 +545,10 @@ height: 105.2625%; */
         z-index: 0;
         border-radius: 50%;
         overflow: hidden;
+        &.extends-panel {
+            /* 停止GIF */
+            background-image: none!important;
+        }
       }
       .ani-container {
         contain: strict;
@@ -581,369 +584,84 @@ height: 105.2625%; */
         }
       }
     }
-
-    .extends-panel {
-      /* position: relative; */
-      /*  align-self: flex-start;
+  }
+  .extends-panel-page {
+    /* position: relative; */
+    /*  align-self: flex-start;
       justify-self: flex-end; */
-      position: absolute;
-      bottom: 0;
-      margin-top: auto;
-      padding: 1.5rem 0 0.6rem 0;
+
+    position: absolute;
+    bottom: 0;
+    margin-top: auto;
+    padding: 1.5rem 0 0.6rem 0;
+    width: 100%;
+
+    opacity: 0;
+    pointer-events: none;
+    transition-duration: 0.5s;
+    transform: scale(0);
+
+    &.vote-detail {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+    }
+    &.extends-panel {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: all;
+      height: 100%;
       width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 0;
+      padding-bottom: 2rem;
+      backdrop-filter: blur(2px);
       .panel-list {
-        /* display: flex;
-        flex-direction: row;
-        width: 100%;
+        .panel-item {
+          border-radius: 1.2rem;
+        }
+      }
+    }
+    .panel-list {
+      .panel-item {
+        background: #fff;
+        box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.2);
+        border-radius: 0.6rem;
         overflow: hidden;
-        list-style: none;
-        padding: 0;
-        .panel-item {
-          flex-shrink: 0;
-          width: 80%;
-          margin: 0 10%;
-        } */
-        .panel-item {
-          background: #fff;
-          box-shadow: 0.1rem 0.1rem 1rem rgba(0, 0, 0, 0.2);
-          border-radius: 0.6rem;
-          overflow: hidden;
-          box-sizing: border-box;
-          transform: scale(0.85);
-          transform-origin: 50% 50%;
-          transition-duration: 250ms;
-          &.swiper-slide-prev {
-            transform: scale(0.7);
-            opacity: 0.8;
-            transform-origin: 115% 50%;
-            transition-duration: 0ms;
+        box-sizing: border-box;
+        transform: scale(0.85);
+        transform-origin: 50% 50%;
+        transition-duration: 250ms;
+        &.swiper-slide-prev {
+          transform: scale(0.7);
+          opacity: 0.8;
+          transform-origin: 115% 50%;
+          transition-duration: 0ms;
+        }
+        &.swiper-slide-next {
+          transform: scale(0.7);
+          opacity: 0.8;
+          transform-origin: -15% 50%;
+          transition-duration: 0ms;
+        }
+        > .slide-zoom {
+          > div {
+            height: $panel-height;
+            min-height: $panel-min-height;
+            max-height: $panel-max-height;
+            width: 100%;
           }
-          &.swiper-slide-next {
-            transform: scale(0.7);
-            opacity: 0.8;
-            transform-origin: -15% 50%;
-            transition-duration: 0ms;
-          }
-          >.slide-zoom{
-            >div{
-              height: $panel-height;
-              min-height: $panel-min-height;
-              max-height: $panel-max-height;
-              width: 100%;
-            }
-          }
-          .header {
-            .title {
-              font-size: 1.6rem;
-              display: flex;
-              align-items: center;
-              ali-icon{
-                font-size: 2.1rem;
-              }
-            }
-          }
-          .current-block-income {
-            padding: 0.5rem;
-            display: flex;
-            position: relative;
-            background-color: #fff;
-            background: linear-gradient(
-              95deg,
-              #fcbd4d 0%,
-              #fccf45 50%,
-              transparent 50.5%,
-              transparent 100%
-            );
-            background-repeat: no-repeat;
-            /* &::before {
-              content: " ";
-              position: absolute;
-              width: 50%;
-              height: 100%;
-              transform: rotate(5deg) scale(0, 0);
-              background: linear-gradient(
-                to right,
-                #fcbd4d 0%,
-                #fccf45 100%
-              );
-              z-index: -1;
-              left: 0;
-              top: 0;
-            } */
-            .header {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              color: #fff;
-              .title {
-                font-size: 2.8rem;
-              }
-              .sub-title {
-                font-size: 1.6rem;
-                display: flex;
-                align-items: center;
-                ali-icon {
-                  font-size: 2rem;
-                  position: relative;
-                  top: -0.3rem;
-                  left: -0.3rem;
-                }
-              }
-            }
-            .block-info {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-              justify-content: space-around;
-              align-items: flex-start;
-              box-sizing: border-box;
-              padding: 1rem 0;
-              .info-item {
-                display: flex;
-                width: 100%;
-                height: 2.6rem;
-                align-items: center;
-
-                .title {
-                  padding-left: 1.2rem;
-                  font-size: 1.5rem;
-                  /* flex-basis: 7rem; */
-                  flex-shrink: 0;
-                  flex-grow: 0;
-                  color: #7d7d7d;
-                }
-                .val {
-                  text-align: left;
-                  flex: 1;
-                  /* flex-grow: 1; */
-                  padding-left: 0.5rem;
-                  // background: linear-gradient(
-                  //   to right,
-                  //   #f78464 0%,
-                  //   #fecc49 100%
-                  // );
-                  // -webkit-background-clip: text;
-                  // -webkit-text-fill-color: transparent;
-                  > text-gradient {
-                    justify-content: flex-start;
-                  }
-                }
-              }
-            }
-          }
-          .income-ranking {
-            padding: 1rem;
-            .header {
-              display: flex;
-              flex-direction: row;
-              justify-content: space-between;
-              color: #7a7a7a;
-              .title {
-                font-size: 1.6rem;
-              }
-              > .my-income-assets {
-                font-size: 1.2rem;
-                font-weight: lighter;
-              }
-            }
-            .rank-info {
-              padding: 1rem;
-              padding-bottom: 0rem;
-              display: flex;
-              flex-direction: row;
-              justify-content: space-around;
-              .item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                color: #aaaaaa;
-                .ip-address {
-                  font-size: 1.4rem;
-                }
-              }
-              .ranking-val {
-                width: 4rem;
-                height: 4rem;
-                background-color: #aaaaaa;
-                border-radius: 50%;
-                border: 0.25rem solid #cacaca;
-                font-size: 1.8rem;
-                color: #fff;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin: 0.6rem;
-              }
-              .me {
-                color: #fcb94e;
-                .ranking-val {
-                  width: 5rem;
-                  height: 5rem;
-                  margin-top: -0.2rem;
-                  font-size: 2.4rem;
-                  background-color: #fcb94e;
-                  border: 0.3rem solid #fad495;
-                  margin-bottom: 0.8rem;
-                }
-                .ip-address {
-                  font-size: 1.8rem;
-                }
-              }
-            }
-          }
-          .income-trend {
-            padding: 1rem;
-            background: linear-gradient(to right, #faaf52 0%, #fdd04e 100%);
-            .header {
-              position: relative;
-              display: flex;
-              flex-direction: row;
-              justify-content: center;
-              color: #ffffff;
-              .title {
-                font-size: 1.6rem;
-                /* margin: auto; */
-                ali-icon{
-                  font-size: 1.9rem;
-                  margin-right: 0.5rem;
-                }
-              }
-              .my-income-assets {
-                position: absolute;
-                right: 1rem;
-                font-size: 1.2rem;
-                font-weight: lighter;
-                /* margin: auto; */
-                /* justify-self: flex-end;
-                margin-left: auto; */
-              }
-            }
-          }
-          .my-contribution {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            > .header {
-              width: 100%;
-              flex-grow: 0;
-              flex-shrink: 0;
-              padding: 1rem;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              color: #7a7a7a;
-              font-size: 1.65rem;
-              > .my-income-assets {
-                font-size: 1.2rem;
-                font-weight: lighter;
-              }
-            }
-            > .detail {
-              width: 100%;
-              flex-grow: 1;
-              box-sizing: border-box;
-              padding-bottom: 2rem;
-              display: flex;
-              /* padding-bottom: 4rem; */
-              display: flex;
-              align-items: center;
-              justify-content: space-around;
-              > .item {
-                > .value {
-                  font-size: 2rem;
-                  transform: scaleY(0.9);
-                }
-                > .label {
-                  font-size: 1.5rem;
-                  color: #7a7a7a;
-                }
-              }
-            }
-            > .wave-bg {
-              position: absolute;
-              bottom: 0;
-              width: 100%;
-              height: 3rem;
-              .wave{
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                bottom: 0;
-                left: 0;
-                mask-image: url("../assets/imgs/wave.png");
-                mask-repeat: repeat-x;
-                mask-size: 200% 100%;
-              }
-              > .wave-1 {
-                @extend .wave;
-                mask-position: -15vw 0;
-                background-color: rgb(253, 208, 68);
-                opacity: 0.8;
-                height: 80%;
-              }
-              > .wave-2 {
-                @extend .wave;
-                mask-position: 25vw 0;
-                background-color: rgb(250, 141, 68);
-                opacity: 0.6;
-                height: 50%;
-              }
-            }
-          }
-          .pre-round-income-rate {
-            background: linear-gradient(
-              to bottom,
-              #fff 0%,
-              #fff 50%,
-              #fedb8d 75%,
-              #fec64a 100%
-            );
-            > .header {
-              padding: 1rem;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              color: #7a7a7a;
-              font-size: 1.65rem;
-              > .my-income-assets {
-                font-size: 1.2rem;
-                font-weight: lighter;
-              }
-            }
-            > .detail {
-              padding-bottom: 1.5rem;
-              > .rate-of-return {
-                padding-top: 0.5rem;
-                padding-bottom: 1.5rem;
-              }
-              > .extends-info {
-                display: flex;
-                justify-content: space-between;
-
-                padding: 0 2rem;
-                color: #fff;
-                font-size: 1.55rem;
-                font-weight: lighter;
-                > .left,
-                > .right {
-                  display: flex;
-                  align-items: center;
-                  &::before {
-                    content: " ";
-                    display: inline-block;
-                    background-color: #fff;
-                    width: 0.4rem;
-                    height: 0.4rem;
-                    border-radius: 50%;
-                    margin-right: 0.8rem;
-                  }
-                }
-              }
-            }
+        }
+      }
+    }
+    &.extends-panel {
+      .panel-list{
+        .panel-item{
+          box-shadow: 0rem 0.3rem 1.2rem rgba(0, 0, 0, 0.4);
+          .slide-zoom{
+            height: 100%;
           }
         }
       }
@@ -1055,7 +773,7 @@ height: 105.2625%; */
         opacity: 0;
       }
     }
-    &.vote-detail {
+    &.vote-detail, &.extends-panel {
       /* transform: translateY(0%); */
       .wave-1 {
         transform: translateY(-100%);

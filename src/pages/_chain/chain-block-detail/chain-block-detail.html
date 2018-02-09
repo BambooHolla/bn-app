@@ -18,7 +18,7 @@
               {{block_info?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm"}}  
             </ng-container>
             <ng-template #showTimeAgo>
-              {{block_info?.timestamp|timestamp|amLocale:localName|amTimeAgo}}  
+              {{block_info?.timestamp|timestamp|amLocale:localName|amTimeAgo}}
             </ng-template>
           </div>
         </div>
@@ -44,7 +44,7 @@
       <div class="line height">
         <div class="left">
           <ali-icon name="ifm-resize-height"></ali-icon>
-          高度
+          {{'BLOCK_height'|translate}}
         </div>
         <div class="right">
           {{block_info?.height}}
@@ -53,16 +53,16 @@
       <div class="line confirm-num">
         <div class="left">
           <ali-icon name="ifm-querendingdan"></ali-icon>
-          确认数
+          {{'BLOCK_confirmations'|translate}}
         </div>
         <div class="right">
-          {{block_info?.confirmations}}个
+          {{block_info?.confirmations}}个{{'BLOCK_confirmations_UNIT'|translate}}
         </div>
       </div>
       <div class="line fee">
         <div class="left">
           <ali-icon name="ifm-wallet"></ali-icon>
-          手续费
+          {{'BLOCK_totalFee'|translate}}
         </div>
         <div class="right">
           {{block_info?.totalFee|amountEuler|number:"1.8-8"}}
@@ -71,18 +71,18 @@
       <div class="line block-id">
         <div class="left">
           <ali-icon name="ifm-wallet"></ali-icon>
-          区块ID
+          {{'BLOCK_id'|translate}}
         </div>
-        <div class="right">
+        <div class="right" [click-to-copy]="block_info?.id" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('BLOCK_id'|translate)}">
           {{block_info?.id}}
         </div>
       </div>
       <div class="line block-id">
         <div class="left">
           <ali-icon name="ifm-wallet"></ali-icon>
-          前区块ID
+          {{'BLOCK_pre_block_id'|translate}}
         </div>
-        <div class="right">
+        <div class="right" [click-to-copy]="pre_block_id" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('BLOCK_pre_block_id'|translate)}">
           {{pre_block_id}}
         </div>
       </div>

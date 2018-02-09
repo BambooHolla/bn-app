@@ -10,6 +10,7 @@ import { Camera } from "@ionic-native/camera";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
+import { Clipboard } from "@ionic-native/clipboard";
 import { StatusBar } from "@ionic-native/status-bar";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -23,6 +24,7 @@ import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 
 import { ComponentsModule } from "../components/components.module";
+
 import { PipesModule } from "../pipes/pipes.module";
 import { MomentModule } from "angular2-moment";
 import { BlockServiceProvider } from "../providers/block-service/block-service";
@@ -40,6 +42,7 @@ import { TabVotePage } from "../pages/tab-vote/tab-vote";
 import { TabChainPage } from "../pages/tab-chain/tab-chain";
 import { TabPayPage } from "../pages/tab-pay/tab-pay";
 import { TabAccountPage } from "../pages/tab-account/tab-account";
+import { CoverTabsCtrlModelPage } from "../pages/cover-tabs-ctrl-model/cover-tabs-ctrl-model";
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
@@ -47,9 +50,10 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 const pages = [MyApp];
+const heightLevelModules = [];
 
 @NgModule({
-  declarations: pages,
+  declarations: [...pages, ...heightLevelModules],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -87,6 +91,7 @@ const pages = [MyApp];
     SplashScreen,
     Keyboard,
     Toast,
+    Clipboard,
     StatusBar,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },

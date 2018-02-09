@@ -40,8 +40,13 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
 		super(navCtrl, navParams, true, tabs);
 		this.enable_timeago_clock = true;
 	}
-	/// 已经确认的交易
 
+
+	listTrackBy(index,item:TransactionModel){
+		return item.id;
+	}
+
+	/// 已经确认的交易
 	confirmed_transaction_list: TransactionModel[] = [];
 	confirmed_transaction_config = {
 		loading: false,

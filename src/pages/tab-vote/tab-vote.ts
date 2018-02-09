@@ -22,6 +22,21 @@ import {
   BenefitServiceProvider,
   BenefitModel,
 } from "../../providers/benefit-service/benefit-service";
+import { CoverTabsCtrlModelPage } from "../cover-tabs-ctrl-model/cover-tabs-ctrl-model";
+
+export enum VotePage {
+  None = "",
+  Bootstrap = "bootstrap",
+  VoteDetail = "vote-detail",
+  ExtendsPanel = "extends-panel",
+}
+export enum ExtendsPanel {
+  incomeRanking = "income-ranking",
+  currentBlockIncome = "current-block-income",
+  incomeTrend = "income-trend",
+  myContribution = "my-contribution",
+  preRoundIncomeRate = "pre-round-income-rate",
+}
 
 @IonicPage({ name: "tab-vote" })
 @Component({
@@ -29,6 +44,7 @@ import {
   templateUrl: "tab-vote.html",
 })
 export class TabVotePage extends FirstLevelPage {
+  VotePage = VotePage;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -180,6 +196,9 @@ export class TabVotePage extends FirstLevelPage {
     for (const key in _earth_enabled_config) {
       const from = earth_config[key];
       const to = _earth_enabled_config[key];
+      if (from == to) {
+        continue;
+      }
 
       if (key.indexOf("_color") != -1) {
         AniBase.animateColor(from, to, 500)(v => {
@@ -343,75 +362,76 @@ export class TabVotePage extends FirstLevelPage {
     this.routeToBootstrap();
   }
 
-  /**上一轮的收益排名*/
-  pre_round_rank_list?: RankModel[];
-  pre_round_my_benefit?: RankModel;
-  @TabVotePage.willEnter
-  @TabVotePage.addEvent("page on:vote-detail")
-  @asyncCtrlGenerator.retry()
-  async getPreRoundRankList() {
-    if (this.page_status == "vote-detail") {
-      this.pre_round_rank_list = await this.minService.myRank.getPromise();
-      this.pre_round_my_benefit = this.pre_round_rank_list.find(
-        rank_info => rank_info.address == this.userInfo.address,
-      );
-    }
-  }
+  // /**上一轮的收益排名*/
+  // pre_round_rank_list?: RankModel[];
+  // pre_round_my_benefit?: RankModel;
+  // @TabVotePage.willEnter
+  // @TabVotePage.addEvent("page on:vote-detail")
+  // @asyncCtrlGenerator.retry()
+  // async getPreRoundRankList() {
+  //   if (this.page_status == "vote-detail") {
+  //     this.pre_round_rank_list = await this.minService.myRank.getPromise();
+  //     this.pre_round_my_benefit = this.pre_round_rank_list.find(
+  //       rank_info => rank_info.address == this.userInfo.address,
+  //     );
+  //   }
+  // }
 
-  /**收益趋势图*/
-  income_trend_list?: BenefitModel[];
-  @TabVotePage.willEnter
-  @TabVotePage.addEvent("page on:vote-detail")
-  @asyncCtrlGenerator.retry()
-  async getIncomeTrendList() {
-    if (this.page_status == "vote-detail") {
-      const income_trend_list = await this.benefitService.top57Benefits.getPromise();
-      this.income_trend_list = income_trend_list.length
-        ? income_trend_list
-        : undefined;
-    }
-  }
+  // /**收益趋势图*/
+  // income_trend_list?: BenefitModel[];
+  // @TabVotePage.willEnter
+  // @TabVotePage.addEvent("page on:vote-detail")
+  // @asyncCtrlGenerator.retry()
+  // async getIncomeTrendList() {
+  //   if (this.page_status == "vote-detail") {
+  //     const income_trend_list = await this.benefitService.top57Benefits.getPromise();
+  //     this.income_trend_list = income_trend_list.length
+  //       ? income_trend_list
+  //       : undefined;
+  //   }
+  // }
 
-  /**本轮挖矿收益 */
-  cur_round_income_info = {
-    round: 0,
-    block_num: 0,
-    cur_round_income_amount: 0,
-    recent_income_amount: 0,
-  };
-  @TabVotePage.willEnter
-  @TabVotePage.addEvent("page on:vote-detail")
-  @asyncCtrlGenerator.retry()
-  async getCurRoundIncomeInfo() {
-    if (this.page_status == "vote-detail") {
-      const { cur_round_income_info } = this;
-      cur_round_income_info.round = this.appSetting.getRound();
-      cur_round_income_info.block_num = await this.blockService.myForgingCount.getPromise();
-      cur_round_income_info.cur_round_income_amount = await this.benefitService.benefitThisRound.getPromise();
-      cur_round_income_info.recent_income_amount = await this.benefitService.recentBenefit.getPromise();
-    }
-  }
-  /**我的贡献*/
-  my_contribution = {};
-  @TabVotePage.willEnter
-  @TabVotePage.addEvent("page on:vote-detail")
-  @asyncCtrlGenerator.retry()
-  async getMyContribution() {
-    if (this.page_status == "vote-detail") {
-      console.error("还未接入“我的贡献”相关的接口");
-    }
-  }
+  // /**本轮挖矿收益 */
+  // cur_round_income_info = {
+  //   round: 0,
+  //   block_num: 0,
+  //   cur_round_income_amount: 0,
+  //   recent_income_amount: 0,
+  // };
+  // @TabVotePage.willEnter
+  // @TabVotePage.addEvent("page on:vote-detail")
+  // @asyncCtrlGenerator.retry()
+  // async getCurRoundIncomeInfo() {
+  //   if (this.page_status == "vote-detail") {
+  //     const { cur_round_income_info } = this;
+  //     cur_round_income_info.round = this.appSetting.getRound();
+  //     cur_round_income_info.block_num = await this.blockService.myForgingCount.getPromise();
+  //     cur_round_income_info.cur_round_income_amount = await this.benefitService.benefitThisRound.getPromise();
+  //     cur_round_income_info.recent_income_amount = await this.benefitService.recentBenefit.getPromise();
+  //   }
+  // }
 
-  /**获取上一轮的投资回报率*/
-  pre_round_income_rate?: RateOfReturnModel;
-  @TabVotePage.willEnter
-  @TabVotePage.addEvent("page on:vote-detail")
-  @asyncCtrlGenerator.retry()
-  async getPreRoundIncomeRate() {
-    if (this.page_status == "vote-detail") {
-      this.pre_round_income_rate = await this.minService.rateOfReturn.getPromise();
-    }
-  }
+  // /**我的贡献*/
+  // my_contribution = {};
+  // @TabVotePage.willEnter
+  // @TabVotePage.addEvent("page on:vote-detail")
+  // @asyncCtrlGenerator.retry()
+  // async getMyContribution() {
+  //   if (this.page_status == "vote-detail") {
+  //     console.error("还未接入“我的贡献”相关的接口");
+  //   }
+  // }
+
+  // /**获取上一轮的投资回报率*/
+  // pre_round_income_rate?: RateOfReturnModel;
+  // @TabVotePage.willEnter
+  // @TabVotePage.addEvent("page on:vote-detail")
+  // @asyncCtrlGenerator.retry()
+  // async getPreRoundIncomeRate() {
+  //   if (this.page_status == "vote-detail") {
+  //     this.pre_round_income_rate = await this.minService.rateOfReturn.getPromise();
+  //   }
+  // }
 
   /**动画的进度监控*/
   @TabVotePage.addEvent("HEIGHT:CHANGED")
@@ -430,6 +450,20 @@ export class TabVotePage extends FirstLevelPage {
   private set _pre_ani_round(v: number) {
     localStorage.setItem("@tab-vote-pre_ani_round", v.toString());
   }
+
+  ExtendsPanel = ExtendsPanel;
+  openExtendsPanel(panel: ExtendsPanel) {
+    if (this.page_status == VotePage.ExtendsPanel) {
+      return;
+    }
+    this.page_status = VotePage.ExtendsPanel;
+    this._stopVoteAnimate({ is_force_stop_chain_mesh: true });
+    CoverTabsCtrlModelPage.open(this, {
+      onclose: () => {
+        this.routeToVoteDetail();
+      },
+    });
+  }
   /** 监听轮次变动
    *  停止相关的动画
    *  运作变成大金币并落入底部层
@@ -442,10 +476,6 @@ export class TabVotePage extends FirstLevelPage {
         this._whenRoundChangeAni(); // 执行动画
       }
       this._pre_ani_round = cur_round;
-      // TODO:数据的变动应该与动画同时触发
-      this.getPreRoundRankList();
-      this.getIncomeTrendList();
-      this.getCurRoundIncomeInfo();
     }
   }
   private _whenRoundChangeAni() {
@@ -463,10 +493,4 @@ export class TabVotePage extends FirstLevelPage {
       }, 4000);
     }, 1000);
   }
-}
-
-export enum VotePage {
-  None = "",
-  Bootstrap = "bootstrap",
-  VoteDetail = "vote-detail",
 }

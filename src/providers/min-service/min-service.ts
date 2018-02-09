@@ -341,7 +341,17 @@ export class MinServiceProvider {
   myRank_Executor(promise_pro) {
     return promise_pro.follow(this.getMyRank());
   }
-
+  preRoundMyBenefit!: AsyncBehaviorSubject<TYPE.RankModel | undefined>;
+  @ROUND_AB_Generator("preRoundMyBenefit")
+  preRoundMyBenefit_Executor(promise_pro) {
+    return promise_pro.follow(this.myRank.getPromise().then(pre_round_rank_list => {
+      if (pre_round_rank_list) {
+        return pre_round_rank_list.find(
+          rank_info => rank_info.address == this.user.userInfo.address,
+        )
+      }
+    }));
+  }
   /** 
    * 获取上一轮的投资回报率
    * 从rank中获取上一轮的收益，从上一轮的交易中获取手续费

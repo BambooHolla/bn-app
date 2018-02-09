@@ -3,6 +3,17 @@
   "CANCEL": "取消",
   "BACK_BUTTON_TEXT": "回退",
   "PULLING_REFRESH_LIST": "下拉更新列表",
+  "COPY_SUCCESS": "复制成功",
+  "#INFO#_COPY_SUCCESS": "{{info}}复制成功",
+  "RANK_OF_ME": "我",
+
+  "BLOCK_height": "高度",
+  "BLOCK_confirmations": "确认数",
+  "BLOCK_confirmations_UNIT": "个",
+  "BLOCK_totalFee": "手续费",
+  "BLOCK_id": "区块ID",
+  "BLOCK_pre_block_id": "前区块ID",
+
   "//": "sign-in-and-sign-up",
   "LOGINNG": "登陆中",
   "LOGIN_ERROR": "登录失败",

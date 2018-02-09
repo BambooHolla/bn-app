@@ -1,0 +1,31 @@
+<div class="header">
+  <div class="title">
+    {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
+  </div>
+  <div class="sub-title">
+    <ali-icon name="ifm-xiangao"></ali-icon>
+    本轮挖矿收益
+  </div>
+</div>
+<div class="block-info">
+  <div class="info-item">
+    <div class="title">当前轮数</div>
+    <div class="val">
+      <text-gradient [text]="cur_round_income_info.round" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600"></text-gradient>
+    </div>
+  </div>
+  <div class="info-item">
+    <div class="title">我的区块</div>
+    <div class="val">
+      <text-gradient [text]="cur_round_income_info.block_num" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
+      </text-gradient>
+    </div>
+  </div>
+  <div class="info-item">
+    <div class="title">最近收益</div>
+    <div class="val">
+      <text-gradient [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
+      </text-gradient>
+    </div>
+  </div>
+</div>

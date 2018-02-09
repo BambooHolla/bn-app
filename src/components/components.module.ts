@@ -9,34 +9,35 @@ import { ChainMeshComponent } from "./chain-mesh/chain-mesh";
 import { CommonWaveBgComponent } from "./common-wave-bg/common-wave-bg";
 import { TextGradientComponent } from "./text-gradient/text-gradient";
 import { KjuaQrcodeComponent } from "./kjua-qrcode/kjua-qrcode";
-import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/income-trend-simple-chart";
+import { IncomeTrendSimpleChartComponent } from './income-trend-simple-chart/income-trend-simple-chart';
+
 @NgModule({
-  declarations: [
-    AliIconComponent,
-    RadioButtonComponent,
-    GoldCoinComponent,
-    SatellitePixiComponent,
-    FallCoinsComponent,
-    BuddhaGlowComponent,
-    ChainMeshComponent,
-    CommonWaveBgComponent,
-    TextGradientComponent,
-    KjuaQrcodeComponent,
+    declarations: [
+        AliIconComponent,
+        RadioButtonComponent,
+        GoldCoinComponent,
+        SatellitePixiComponent,
+        FallCoinsComponent,
+        BuddhaGlowComponent,
+        ChainMeshComponent,
+        CommonWaveBgComponent,
+        TextGradientComponent,
+        KjuaQrcodeComponent,
     IncomeTrendSimpleChartComponent,
-  ],
-  imports: [],
-  exports: [
-    AliIconComponent,
-    RadioButtonComponent,
-    GoldCoinComponent,
-    SatellitePixiComponent,
-    FallCoinsComponent,
-    BuddhaGlowComponent,
-    ChainMeshComponent,
-    CommonWaveBgComponent,
-    TextGradientComponent,
-    KjuaQrcodeComponent,
+    ],
+    imports: [],
+    exports: [
+        AliIconComponent,
+        RadioButtonComponent,
+        GoldCoinComponent,
+        SatellitePixiComponent,
+        FallCoinsComponent,
+        BuddhaGlowComponent,
+        ChainMeshComponent,
+        CommonWaveBgComponent,
+        TextGradientComponent,
+        KjuaQrcodeComponent,
     IncomeTrendSimpleChartComponent,
-  ],
+    ],
 })
 export class ComponentsModule {}

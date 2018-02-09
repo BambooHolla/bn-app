@@ -52,7 +52,7 @@
       </ion-content>
     </ion-slide>
     <ion-slide>
-      <ion-content [ion-content-scroll-shadow]=""{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}"">
+      <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
         <ion-refresher (ionRefresh)="loadCanVoteList($event)">
           <ion-refresher-content  [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
         </ion-refresher>

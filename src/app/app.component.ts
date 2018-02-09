@@ -1,7 +1,12 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { SplashScreen } from "@ionic-native/splash-screen";
+import { Clipboard } from "@ionic-native/clipboard";
 import { StatusBar } from "@ionic-native/status-bar";
 import { TranslateService } from "@ngx-translate/core";
+import { Storage } from "@ionic/storage";
+import { Keyboard } from "@ionic-native/keyboard";
+import { Toast } from "@ionic-native/toast";
+
 import {
   Config,
   Nav,
@@ -12,14 +17,12 @@ import {
   ModalController,
 } from "ionic-angular";
 
-import { Storage } from "@ionic/storage";
-import { Keyboard } from "@ionic-native/keyboard";
-import { Toast } from "@ionic-native/toast";
-
 import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
+import { MinServiceProvider } from "../providers/min-service/min-service";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
+import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 
@@ -33,11 +36,14 @@ export class MyApp implements OnInit {
     public translate: TranslateService,
     public platform: Platform,
     public config: Config,
+    public clipboard: Clipboard,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
+    public benefitService: BenefitServiceProvider,
     public accountService: AccountServiceProvider,
     public loginService: LoginServiceProvider,
     public appSetting: AppSettingProvider,
+    public minService: MinServiceProvider,
     public storage: Storage,
     public keyboard: Keyboard,
     public toast: Toast,
@@ -48,6 +54,7 @@ export class MyApp implements OnInit {
     public userInfo: UserInfoProvider,
   ) {
     window["ac"] = this;
+    window["clipboard"] = clipboard;
     window["translate"] = translate;
     window["platform"] = platform;
     window["alertCtrl"] = alertCtrl;
@@ -56,8 +63,10 @@ export class MyApp implements OnInit {
     window["toast"] = toast;
     window["modalCtrl"] = modalController;
     window["accountService"] = accountService;
+    window["benefitService"] = benefitService;
     window["userInfo"] = userInfo;
     window["appSetting"] = appSetting;
+    window["minService"] = minService;
     window["myapp"] = this;
     config.setTransition("common-transition", CommonTransition);
 

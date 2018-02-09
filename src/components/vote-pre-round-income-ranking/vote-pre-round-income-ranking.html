@@ -1,0 +1,25 @@
+<div class="header">
+  <div class="title">
+    <ali-icon name="ifm-income-ranking"></ali-icon>
+    上轮收益排名
+  </div>
+  <div class="my-income-assets">
+    IBT {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
+  </div>
+</div>
+<div class="rank-info" [ngClass]="page_status">
+  <div class="item" *ngFor="let rank_item of pre_round_rank_list" [class.me]="rank_item==pre_round_my_benefit">
+    <div class="ranking-val" [ngClass]="'ranking-'+rank_item.rate">{{rank_item.rate}}</div>
+    <div class="ip-address" *ngIf="userInfo.address==rank_item.address">
+      {{'RANK_OF_ME'|translate}}
+    </div>
+    <div class="ip-address" *ngIf="userInfo.address!=rank_item.address">
+      <div class="username" *ngIf="rank_item.rate<=3" [innerHTML]="rank_item.username?rank_item.username:(rank_item.address|mask:'@address')"></div>
+      <div class="amount">
+        {{rank_item.profit|amountEuler|number:'1.8-8'}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="rank-list" [ngClass]="page_status">
+</div>

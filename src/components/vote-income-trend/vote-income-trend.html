@@ -1,0 +1,12 @@
+<div class="header">
+  <div class="title">
+    <ali-icon name="ifm-income-trend"></ali-icon>
+    收益趋势图
+  </div>
+  <div class="my-income-assets">
+    IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
+  </div>
+</div>
+<div class="chart-wrapper">
+  <income-trend-simple-chart class="chart" [list]="income_trend_list"></income-trend-simple-chart>
+</div>

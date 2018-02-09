@@ -1,0 +1,50 @@
+page-cover-tabs-ctrl-model {
+	> .content {
+		background-color: transparent;
+		> .scroll-content {
+			overflow: hidden;
+		}
+	}
+	.bottom-toolbar {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		/* transition-duration: 0.5s;
+		transition-delay: 0.5s; */
+		backdrop-filter: blur(2px);
+		display: flex;
+		justify-content: center;
+		pointer-events: all;
+		> .model-close {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 5.3rem;
+			/* margin-bottom: 1rem; */
+			color: #b9b9b9;
+			background-color: transparent;
+			padding: 0;
+			border: 0;
+			position: relative;
+			transition-duration: 0.8s;
+			transition-timing-function: ease-out;
+			transform: translateY(-0.6rem);
+			> ali-icon {
+				transition-duration: 0.8s;
+				transition-timing-function: ease-out;
+			}
+			&:active {
+				> ali-icon {
+					/* transform: rotate(360deg); */
+					transition-duration: 0.25s;
+					color: #999999;
+					transform: scale(1.05);
+				}
+			}
+		}
+	}
+}
+ion-modal.cover-tabs-ctrl-model {
+	pointer-events: none;
+}

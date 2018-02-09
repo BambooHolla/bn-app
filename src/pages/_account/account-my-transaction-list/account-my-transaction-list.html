@@ -14,7 +14,7 @@
   </div>
 </ion-header>
 <ion-content class="list confimed-page" [class.show]="TranSubPage.CONFIRMED===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
-  <div class="item" *ngFor="let tran of confirmed_transaction_list" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
+  <div class="item" *ngFor="let tran of confirmed_transaction_list;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
     <div class="left">
       <div class="from-to">
         <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
@@ -39,7 +39,7 @@
       </div>
     </div>
   </div>
-  <div class="empty-list" *ngIf="unconfirm_transaction_list.length==0&&confirmed_transaction_config.loading==false">
+  <div class="empty-list" *ngIf="confirmed_transaction_list.length==0&&confirmed_transaction_config.loading==false">
     <img src="assets/imgs/empty-list.png" alt="空列表">
     <div class="message">{{'UNCONFIRM_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
   </div>
@@ -51,7 +51,7 @@
   <ion-refresher (ionRefresh)="loadUnconfirmTransactionList($event)">
     <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_UNCONFIRM_TRANSACTION_LIST'|translate"></ion-refresher-content>
   </ion-refresher>
-  <div class="item" *ngFor="let tran of unconfirm_transaction_list" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
+  <div class="item" *ngFor="let tran of unconfirm_transaction_list;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
     <div class="left">
       <div class="from-to">
         <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
@@ -76,7 +76,7 @@
       </div>
     </div>
   </div>
-  <div class="empty-list" *ngIf="unconfirm_transaction_list.length==0&&confirmed_transaction_config.loading==false">
+  <div class="empty-list" *ngIf="unconfirm_transaction_list.length==0&&unconfirm_transaction_config.loading==false">
     <img src="assets/imgs/empty-list.png" alt="空列表">
     <div class="message">{{'UNCONFIRM_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
   </div>

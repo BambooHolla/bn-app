@@ -74,6 +74,10 @@ export class TabPayPage extends FirstLevelPage {
     await this._submit(password, pay_pwd);
     this.resetFormData();
   }
+  resetFormData(){
+    super.resetFormData()
+    this.formData.transfer_amount = "";
+  }
   @asyncCtrlGenerator.error(() =>
     TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"),
   )

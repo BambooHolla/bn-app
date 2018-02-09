@@ -48,7 +48,7 @@
         <!-- <div class="ani-progress satellite-css" [class.show]="is_show.satellite_pixi"></div> -->
         <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
         <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
-        <div class="wakuang-person"></div>
+        <div class="wakuang-person" [ngClass]="page_status"></div>
         <div class="ani-container">
         </div>
       </div>
@@ -61,7 +61,7 @@
           </div>
         </div>
       </div>
-      <div class="extends-panel">
+      <!-- <div class="extends-panel">
         <ion-slides class="panel-list" [initialSlide]="1">
           <ion-slide class="panel-item">
             <div class="income-ranking">
@@ -76,9 +76,15 @@
               </div>
               <div class="rank-info">
                 <div class="item" *ngFor="let rank_item of pre_round_rank_list" [class.me]="rank_item==pre_round_my_benefit">
-                  <div class="ranking-val">{{rank_item.rate}}</div>
-                  <div class="ip-address" >
-                    {{rank_item.profit|amountEuler|number:'1.8-8'}}
+                  <div class="ranking-val" [ngClass]="'ranking-'+rank_item.rate">{{rank_item.rate}}</div>
+                  <div class="ip-address" *ngIf="userInfo.address==rank_item.address">
+                    {{'RANK_OF_ME'|translate}}
+                  </div>
+                  <div class="ip-address" *ngIf="userInfo.address!=rank_item.address">
+                    <div class="username" *ngIf="rank_item.rate<=3" [innerHTML]="rank_item.username?rank_item.username:(rank_item.address|mask:'@address')"></div>
+                    <div class="amount">
+                      {{rank_item.profit|amountEuler|number:'1.8-8'}}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -189,7 +195,30 @@
             </div>
           </ion-slide>
         </ion-slides>
-      </div>
+      </div> -->
+    </div>
+
+    <div class="extends-panel-page" [ngClass]="page_status">
+      <ion-slides class="panel-list" [initialSlide]="1">
+        <ion-slide class="panel-item">
+          <vote-pre-round-income-ranking [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.incomeRanking)"></vote-pre-round-income-ranking>
+        </ion-slide>
+        <ion-slide class="panel-item">
+          <vote-current-block-income (click)="openExtendsPanel(ExtendsPanel.currentBlockIncome)"></vote-current-block-income>
+        </ion-slide>
+        <ion-slide class="panel-item">
+          <vote-income-trend (click)="openExtendsPanel(ExtendsPanel.incomeTrend)">
+          </vote-income-trend>
+        </ion-slide>
+        <ion-slide class="panel-item">
+          <vote-my-contribution (click)="openExtendsPanel(ExtendsPanel.myContribution)">
+          </vote-my-contribution>
+        </ion-slide>
+        <ion-slide class="panel-item" *ngIf="pre_round_income_rate">
+          <vote-pre-round-income-rate (click)="openExtendsPanel(ExtendsPanel.preRoundIncomeRate)">
+          </vote-pre-round-income-rate>
+        </ion-slide>
+      </ion-slides>
     </div>
   </div>
 </ion-content>
