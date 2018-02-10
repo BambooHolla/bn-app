@@ -38,10 +38,11 @@ export class TabPayPage extends FirstLevelPage {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
     this.event.on("job-finished", ({ id, data }) => {
+      console.log("job-finished", id, data);
       if (id === "account-my-contacts") {
         this.formData.transfer_address = data.address;
       }
-      if (id === "page-account-scan-add-contact") {
+      if (id === "account-scan-add-contact") {
         this.formData.transfer_address = data;
       }
     });

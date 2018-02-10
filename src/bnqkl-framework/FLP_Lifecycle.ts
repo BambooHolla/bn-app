@@ -27,19 +27,19 @@ export class FLP_Lifecycle extends FLP_Tool
     // console.log("ngOnInit",this.content,this.header)
     // this.content.fullscreen = true;
     for (let fun_name of this._oninit_funs) {
-      this[fun_name]();
+      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
     }
     this.tryEmit("onInit");
   }
   ngAfterContentInit() {
     for (let fun_name of this._aftercontentinit_funs) {
-      this[fun_name]();
+      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
     }
     this.tryEmit("afterContentInit");
   }
   ngOnDestroy() {
     for (let fun_name of this._ondestory_funs) {
-      this[fun_name]();
+      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
     }
     this.tryEmit("onDestory");
   }
@@ -49,7 +49,7 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewWillEnter", this.cname);
 
     for (let fun_name of this._will_enter_funs) {
-      this[fun_name]();
+      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
     }
     this.tryEmit("willEnter");
   }
@@ -59,7 +59,7 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewDidEnter", this.cname);
 
     for (let fun_name of this._did_enter_funs) {
-      this[fun_name]();
+      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
     }
     this.tryEmit("didEnter");
   }
@@ -68,7 +68,7 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewWillLeave", this.cname);
 
     for (let fun_name of this._will_leave_funs) {
-      this[fun_name]();
+      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
     }
     this.tryEmit("willLeave");
   }
@@ -77,7 +77,7 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewDidLeave", this.cname);
 
     for (let fun_name of this._did_leave_funs) {
-      this[fun_name]();
+      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
     }
     this.tryEmit("didLeave");
   }

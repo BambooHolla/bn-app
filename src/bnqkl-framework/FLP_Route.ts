@@ -64,7 +64,7 @@ export class FLP_Route extends FLP_Lifecycle {
             this.navCtrl.removeView(viewCtrl);
             const com = preView.instance as FLP_Route;
             com.tryEmit("job-finished", {
-              id: "account-my-contacts",
+              id: viewCtrl.id,
               data: this._job_res
             });
           }

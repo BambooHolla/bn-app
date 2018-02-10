@@ -1,9 +1,21 @@
 <ion-header>
-  <ion-navbar color="transparent">
+  <ion-navbar color="transparent-dark">
     <ion-title>{{titleContent}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E6%89%AB%E4%B8%80%E6%89%AB%E6%B7%BB%E5%8A%A0%E8%81%94%E7%B3%BB%E4%BA%BA.jpg" alt=""> -->
+  <!--   <div class="message">{{message}}</div> -->
   <video id="scan-view" class="scan-view" #video [width]="innerWidth" [height]="innerHeight" autoplay></video>
+  <canvas #canvas class="scan-can" [width]="innerWidth" [height]="innerHeight"></canvas>
+  <div class="mask">
+    <div class="window">
+      <div class="scan-line"></div>
+      <div class="top-left angle"></div>
+      <div class="top-right angle"></div>
+      <div class="bottom-left angle"></div>
+      <div class="bottom-right angle"></div>
+    </div>
+    <div class="tip">将二维码放入框内，即可自动扫描</div>
+  </div>
 </ion-content>

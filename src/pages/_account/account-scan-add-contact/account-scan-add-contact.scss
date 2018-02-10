@@ -1,16 +1,162 @@
 page-account-scan-add-contact {
   @extend .header-no-border;
-  >.content{
-  	background: none;
-  	>.scroll-content{
-	  	background: none;
-  	}
+  > .header {
+    .toolbar-title-ios {
+      color: #fff;
+    }
+
+    .back-button {
+      .button-inner {
+        .back-button-icon {
+          &::before {
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  > .content {
+    /* background: none; */
+    > .scroll-content {
+      /* background: none; */
+      margin-top: 0!important;
+      overflow: hidden;
+    }
+  }
+  .message {
+    position: fixed;
+    top: 2rem;
+    left: 0;
+    width: 100vw;
+    color: red;
+    text-shadow: 0 1rem 2rem #333;
+    font-size: 2rem;
   }
   .scan-view {
     position: fixed;
     top: 0;
-    height: 0;
+    left: 0;
     width: 100vw;
     height: 100vh;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .scan-can {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2;
+    opacity: 0.3;
+    object-fit: cover;
+    z-index: 2;
+  }
+  .mask {
+    background-color: rgba(0, 0, 0, 0.62);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+      /* clip-path: circle(100px at center);//polygon(12vw calc(50vh - 38vw),62vw calc(50vh - 38vw), 0% 100%, 100% 100%); */
+
+    .window {
+      width: 76vw;/* 24=12  38*/
+      height: 76vw;
+      box-sizing: content-box;
+      position: absolute;
+      border-color: rgba(0, 0, 0, 0.3);
+      border-style: solid;
+      border-top-width: calc(50vh - 38vw);
+      border-bottom-width: calc(50vh - 38vw);
+      border-left-width: 12vw;
+      border-right-width: 12vw;
+      flex-shrink: 0;
+      flex-grow: 0;
+      &::before{
+        content: " ";
+        position: absolute;
+        outline: 1px solid rgba(#FFF, 0.8);
+        width: 100%;
+        height: 100%;
+      }
+      .angle {
+        border-color: #05be03;
+        border-style: solid;
+        border-width: 0;
+        width: 1.5rem;
+        height: 1.5rem;
+        position: absolute;
+        $angle-width: 0.2rem;
+        &.top-left {
+          top: -0.1rem;
+          left: -0.1rem;
+          border-left-width: $angle-width;
+          border-top-width: $angle-width;
+        }
+        &.top-right {
+          top: -0.1rem;
+          right: -0.1rem;
+          border-right-width: $angle-width;
+          border-top-width: $angle-width;
+        }
+        &.bottom-left {
+          bottom: -0.1rem;
+          left: -0.1rem;
+          border-left-width: $angle-width;
+          border-bottom-width: $angle-width;
+        }
+        &.bottom-right {
+          bottom: -0.1rem;
+          right: -0.1rem;
+          border-right-width: $angle-width;
+          border-bottom-width: $angle-width;
+        }
+      }
+      .scan-line {
+        width: 100%;
+        background-color: #05be03;
+        height: 0.4rem;
+        border-radius: 50%;
+        filter: blur(0.2rem);
+        transform: scale(0.9, 0.3);
+        position: absolute;
+        animation-name: scan-window;
+        animation-fill-mode: both;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+      @keyframes scan-window {
+        0% {
+          top: 0;
+          opacity: 0;
+        }
+        30% {
+          opacity: 1;
+        }
+        70% {
+          opacity: 1;
+        }
+        100% {
+          top: 100%;
+          opacity: 0;
+        }
+      }
+    }
+    .tip{
+      margin-top: calc(76vw + 4rem);
+      font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
   }
 }

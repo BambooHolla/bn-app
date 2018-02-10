@@ -56,7 +56,7 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<Promise<T> | undefi
       v && v
         .then(data => {
           // 来自缓存数据，有异常
-          this._is_catched_error = data["__source_err__"] || false;
+          this._is_catched_error = (data && data["__source_err__"] )|| false;
         })
         .catch(err => {
           this._is_catched_error = err;

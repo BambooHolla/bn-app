@@ -26,8 +26,19 @@ export class AccountAddContactPage extends SecondLevelPage {
     search_text: "",
   };
 
+  @AccountAddContactPage.willEnter
+  autoAddContact() {
+    const address = this.navParams.get("address");
+    if (address) {
+      this.formData.search_text = address;
+      if (this.navParams.get("auto_search")) {
+        this.searchContacts(0);
+      }
+    }
+  }
+
   private _ti;
-  searchContacts() {
+  searchContacts(t = 200) {
     clearTimeout(this._ti);
     this._ti = setTimeout(() => {
       this.getUserPassword()
@@ -38,7 +49,7 @@ export class AccountAddContactPage extends SecondLevelPage {
         .catch(() => {
           /*密码设置异常不做处理*/
         });
-    }, 200);
+    }, t);
   }
 
   // get canSubmit() {
