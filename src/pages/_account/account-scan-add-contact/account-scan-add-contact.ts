@@ -1,3 +1,4 @@
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { ViewChild, ElementRef, Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
@@ -27,7 +28,8 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public contactService: ContactServiceProvider,
     public viewCtrl: ViewController,
-    public androidPermissions: AndroidPermissions
+    public androidPermissions: AndroidPermissions,
+    public barcodeScanner: BarcodeScanner,
   ) {
     super(navCtrl, navParams, true, tabs);
     // window["Instascan"] = Instascan;
@@ -69,6 +71,8 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     video.src = window.URL.createObjectURL(stream)
     video.play();
   }
+  /**相机获取插件是否初始化完毕 */
+  is_inited = false;
   innerHeight = window.innerHeight;
   innerWidth = window.innerWidth;
   @ViewChild("video") video!: ElementRef;
@@ -76,44 +80,53 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   @AccountScanAddContactPage.willEnter
   @asyncCtrlGenerator.error("扫描异常")
   async openCameraMedia() {
-    var filter_fun = this.navParams.get("filter");
-    if (!(filter_fun instanceof Function)) {
-      filter_fun = () => true
-    }
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-      // IOS 不用检测权限
-    } else {
-      const permission = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA)
-        .then(
-          result => {
-            console.log('Has permission?', result.hasPermission);
-            if (!result.hasPermission) {
-              return this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
-            }
-          },
-          err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
-        );
-      // this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
-    }
+    this.is_inited = false;
+    try {
 
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      this.videoDevices = devices.filter((d) => d.kind === "videoinput").reverse();
-      // Not adding `{ audio: true }` since we only want video now
+      var filter_fun = this.navParams.get("filter");
+      if (!(filter_fun instanceof Function)) {
+        filter_fun = () => true
+      }
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        // IOS 不用检测权限
+      } else {
+        const permission = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA)
+          .then(
+            result => {
+              console.log('Has permission?', result.hasPermission);
+              if (!result.hasPermission) {
+                return this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
+              }
+            },
+            err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
+          );
+        // this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
+      }
 
-      this.useVideoDevice(this.videoDevices[0]);
-      const res = await new Promise(cb => this.startCapture((text => {
-        if (filter_fun(text)) {
-          cb(text)
-          return true;
-        }
-        return false
-      })));
+      var res = ""
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        this.videoDevices = devices.filter((d) => d.kind === "videoinput").reverse();
+        // Not adding `{ audio: true }` since we only want video now
+
+        this.useVideoDevice(this.videoDevices[0]);
+        res = await new Promise<string>(cb => this.startCapture((text => {
+          if (filter_fun(text)) {
+            cb(text)
+            return true;
+          }
+          return false
+        })));
+      } else {
+        this.is_inited = true;
+        res = (await this.barcodeScanner.scan()).text;
+      }
       const mode = this.navParams.get('mode');
       if (mode === 'try-to-add-contact') {
         const m = this.modalCtrl.create("account-add-contact", {
           address: res,
-          auto_search: true
+          auto_search: true,
+          showCloseButton: true,
         });
         m.present();
         m.onDidDismiss(() => {
@@ -123,6 +136,8 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         this.jobRes(res);
         this.finishJob();
       }
+    } finally {
+      this.is_inited = true;
     }
   }
   result_str = ""
@@ -135,6 +150,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       }
       return
     }
+    this.is_inited = true;
     // canvas.style.top = (video.height - video.videoHeight) / 2 + 'px';
     // canvas.style.left = (video.width - video.videoWidth) / 2 + 'px';
     canvas.width = video.videoWidth;

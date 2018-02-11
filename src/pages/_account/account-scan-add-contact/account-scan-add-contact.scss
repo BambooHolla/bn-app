@@ -24,6 +24,31 @@ page-account-scan-add-contact {
       overflow: hidden;
     }
   }
+  .hide{
+    pointer-events: none;
+    opacity: 0;
+  }
+  .initing{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #FFF;
+    text-shadow: 0.05rem 0.05rem 0 #999;
+    font-size: 2rem;
+  }
+  .scan-wrapper{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
   .message {
     position: fixed;
     top: 2rem;
@@ -40,7 +65,7 @@ page-account-scan-add-contact {
     width: 100vw;
     height: 100vh;
     object-fit: cover;
-    z-index: 4;
+    z-index: 1;
   }
   .scan-can {
     position: fixed;

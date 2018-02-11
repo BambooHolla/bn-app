@@ -2,7 +2,7 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
 import { UserInfoProvider } from "../../../providers/user-info/user-info";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
 
@@ -18,6 +18,7 @@ export class AccountAddContactPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public user: UserInfoProvider,
     public contactService: ContactServiceProvider,
+    public viewCtrl: ViewController,
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -25,9 +26,14 @@ export class AccountAddContactPage extends SecondLevelPage {
   formData = {
     search_text: "",
   };
+  showCloseButton = false;
+  closeModal(){
+    this.viewCtrl.dismiss();
+  }
 
   @AccountAddContactPage.willEnter
   autoAddContact() {
+    this.showCloseButton = this.navParams.get("showCloseButton")
     const address = this.navParams.get("address");
     if (address) {
       this.formData.search_text = address;

@@ -7,6 +7,7 @@ import {
   NoopAnimationsModule,
 } from "@angular/platform-browser/animations";
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { Camera } from "@ionic-native/camera";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Keyboard } from "@ionic-native/keyboard";
@@ -89,6 +90,7 @@ const heightLevelModules = [];
   entryComponents: pages,
   providers: [
     AndroidPermissions,
+    BarcodeScanner,
     Camera,
     SplashScreen,
     Keyboard,
