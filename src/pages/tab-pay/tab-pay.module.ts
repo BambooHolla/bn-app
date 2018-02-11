@@ -5,6 +5,7 @@ import { MomentModule } from "angular2-moment";
 import { ComponentsModule } from "../../components/components.module";
 import { DirectivesModule } from "../../directives/directives.module";
 import { PipesModule } from "../../pipes/pipes.module";
+import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
 	declarations: [TabPayPage],
@@ -14,6 +15,7 @@ import { PipesModule } from "../../pipes/pipes.module";
 		ComponentsModule,
 		DirectivesModule,
 		PipesModule,
+		TranslateModule,
 	],
 })
 export class TabPayPageModule {}

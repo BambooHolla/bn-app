@@ -7,7 +7,7 @@
         <input type="search" [placeholder]="('SEARCH_TYPE_'+SearchType[formData.search_type])|translate" [(ngModel)]="formData.search_text" (ngModelChange)="trySearch()">
         <ali-icon name="ifm-reset" class="right" (click)="resetSearchText()"></ali-icon>
       </div>
-      <button class="cancel" (click)="closeSearch()">取消</button>
+      <button class="cancel" (click)="closeSearch()">{{'CANCEL' | translate}}</button>
     </div>
   </ion-navbar>
 </ion-header>
@@ -15,11 +15,11 @@
   <div class="recommend" *ngIf="!search_result_list">
     <!-- 账户、区块、交易、应用 -->
     <div class="hot-search">
-      <div class="title">热门搜索</div>
+      <div class="title">{{'HOT_KEY' | translate}}</div>
       <div class="content">
-        <div class="item" (click)="setSearchType(SearchType.VOTE_INCOME)">挖矿收益</div>
-        <div class="item" (click)="setSearchType(SearchType.BLOCK)">区块链信息</div>
-        <div class="item" (click)="setSearchType(SearchType.ASSETS)">总资产</div>
+        <div class="item" (click)="setSearchType(SearchType.VOTE_INCOME)">{{'VOTE_INCOME' | translate}}</div>
+        <div class="item" (click)="setSearchType(SearchType.BLOCK)">{{'BLOCK_CHAIN_INFO' | translate}}</div>
+        <div class="item" (click)="setSearchType(SearchType.ASSETS)">{{'TOTAL_ASSETS' | translate}}</div>
       </div>
     </div>
   </div>

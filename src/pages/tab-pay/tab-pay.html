@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="transparent">
-    <ion-title>支付</ion-title>
+    <ion-title>{{'PAYMENT' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -18,30 +18,30 @@
   <div class="transfer">
     <div class="input-container">
       <ali-icon class="left" name="ifm-account-detail"></ali-icon>
-      <input type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="请输入地址" />
+      <input type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />
       <button class="right">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
     </div>
     <div class="input-container">
       <ali-icon class="left" name="ifm-amount"></ali-icon>
-      <input type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" placeholder="请输入数量" />
+      <input type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
     </div>
     <div class="input-container">
       <ali-icon class="left" name="ifm-duihua"></ali-icon>
-      <input type="text" [(ngModel)]="formData.transfer_mark" set-input-status="transfer_mark" placeholder="请输入附言" disabled />
+      <input type="text" [(ngModel)]="formData.transfer_mark" set-input-status="transfer_mark" placeholder="{{'PLEASE_MARK_THE_TRANSACTION' | translate}}" disabled />
     </div>
     <div class="fee">
       <ali-icon class="left" name="ifm-info"></ali-icon>
       <span class="value">{{appSetting.settings.default_fee|number:'1.8-8'}}</span>
-      <div class="balance-info">余额：{{userInfo.balance|amountEuler|number:'1.8-8'}}</div>
+      <div class="balance-info">{{'BALANCE' | translate}}：{{userInfo.balance|amountEuler|number:'1.8-8'}}</div>
     </div>
-    <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">确认转出</button>
+    <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'SUBMIT_TRANSFER' | translate}}</button>
   </div>
   <div class="roll-out-logs">
     <div class="title">
       <ali-icon class="left" name="ifm-roll-out-logs"></ali-icon>
-      最近转出记录
+      {{'RECENT_OUT_COME_RECORED' | translate}}
       <ali-icon class="right" name="ifm-arrow-dot-dot"></ali-icon>
     </div>
     <ion-content class="log-list">
@@ -55,10 +55,10 @@
         <div class="amount">{{log.amount|amountEuler|number:'1.8-8'}}</div>
       </div>
       <div class="empty" *ngIf="!roll_out_config.loading&&roll_out_logs.length==0">
-        <i>暂无转出记录</i>
+        <i>{{'NO_OUT_COME_RECORED' | translate}}</i>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreRollOutLogs())" [enabled]="roll_out_config.has_more">
-        <ion-infinite-scroll-content loadingText="加载更多转出记录中……"></ion-infinite-scroll-content>
+        <ion-infinite-scroll-content loadingText="{{'LOADING_OUT_COME_RECORED' | translate}}"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </ion-content>
   </div>
