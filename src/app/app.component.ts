@@ -90,6 +90,7 @@ export class MyApp implements OnInit {
 
     // this.openPage(LoginPage);
 
+    statusBar.overlaysWebView(true);
     statusBar.hide();
     platform.ready().then(() => {
       keyboard.disableScroll(true);
