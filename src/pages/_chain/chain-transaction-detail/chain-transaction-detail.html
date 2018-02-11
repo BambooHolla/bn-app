@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>交易明细</ion-title>
+    <ion-title>{{'CHAIN-TRANSACTION-DETAIL'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -8,7 +8,7 @@
   <div class="common-list base-info">
     <div class="common-item transfer-id">
       <div class="left">
-        交易ID
+        {{'TRANSACTION_id'|translate}}
       </div>
       <div class="right">
         {{transaction?.id}}
@@ -16,7 +16,7 @@
     </div>
     <div class="common-item transfer-id">
       <div class="left">
-        交易类型
+        {{'TRANSACTION_type'|translate}}
       </div>
       <div class="right">
         {{('TRAN_TYPE_NAME_'+transaction.type) | translate}}
@@ -24,7 +24,7 @@
     </div>
     <div class="common-item block-id">
       <div class="left">
-        所属区块ID
+        {{'TRANSACTION_blockId'|translate}}
       </div>
       <div class="right">
         {{transaction?.blockId}}
@@ -32,7 +32,7 @@
     </div>
     <div class="common-item amount">
       <div class="left">
-        交易量
+        {{'TRANSACTION_amount'|translate}}
       </div>
       <div class="right">
         {{transaction?.amount|amountEuler|number:'1.8-8'}}
@@ -41,7 +41,7 @@
     </div>
     <div class="common-item fee">
       <div class="left">
-        手续费
+        {{'TRANSACTION_fee'|translate}}
       </div>
       <div class="right">
         {{transaction?.fee|amountEuler|number:'1.8-8'}}
@@ -50,7 +50,7 @@
     </div>
     <div class="common-item transfer-time">
       <div class="left">
-        交易时间
+        {{'TRANSACTION_timestamp'|translate}}
       </div>
       <div class="right">
         {{transaction?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm:ss"}}
@@ -58,11 +58,11 @@
     </div>
     <div class="common-item dapp" *ngIf="transaction?.dapp">
       <div class="left">
-        所属应用
+        {{'TRANSACTION_dapp'|translate}}
       </div>
       <div class="right">
         <div class="dapp-name">
-          本能理财
+          {{transaction?.dapp}}
           <img src="" alt="" class="app-icon">
         </div>
         <ali-icon name="ifm-arrow-to-right"></ali-icon>
@@ -70,7 +70,7 @@
     </div>
     <div class="common-item extend-data" *ngIf="transaction?.mark">
       <details>
-        <summary>附加数据</summary>
+        <summary>{{'TRANSACTION_mark'|translate}}</summary>
         <content>{{transaction?.mark}}</content>
       </details>
     </div>
@@ -78,13 +78,13 @@
   <div class="common-list detail-info">
     <div class="common-item sender">
       <div class="left">
-        <div class="title">发送者</div>
+        <div class="title">{{'TRANSCATION_SENDER'|translate}}</div>
         <div class="content">{{transaction?.senderId}}</div>
       </div>
     </div>
     <div class="common-item receiver">
       <div class="left">
-        <div class="title">接收者</div>
+        <div class="title">{{'TRANSCATION_RECIPIENT'|translate}}</div>
         <div class="content">{{transaction?.recipientId}}</div>
       </div>
     </div>
