@@ -1,11 +1,11 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>我的联系人</ion-title>
+    <ion-title>{{'ACCOUNT-MY-CONTACTS'|translate}}</ion-title>
     <ion-buttons right>
-      <button title="扫码添加联系人" (click)="routeTo('account-scan-add-contact',{auto_return:true,title:'扫一扫添加',mode:'try-to-add-contact'})">
+      <button [title]="'SCAN_QRCOED_TO_ADD_CONTACT'|translate" (click)="routeTo('account-scan-add-contact',{auto_return:true,title:'扫一扫添加',mode:'try-to-add-contact'})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
-      <button title="输入地址添加联系人" (click)="routeTo('account-add-contact',{auto_return:true})">
+      <button [title]="'INPUT_ADDRESS_TO_ADD_CONTACT'|translate" (click)="routeTo('account-add-contact',{auto_return:true})">
         <ali-icon name="ifm-add"></ali-icon>
       </button>
     </ion-buttons>
@@ -16,7 +16,7 @@
   <div class="unconfim-list list" *ngIf="unconfirm_contact_list.length">
     <div class="header-divider">
       <ali-icon name="ifm-dengdai"></ali-icon>
-      等待确认列表
+      {{'UNCONFIM_CONTACT_LIST'|translate}}
     </div>
     <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list;trackBy:listTrackBy" (click)="tapContact(unconfirm_contact)">
       <div class="left"><div class="username" *ngIf="unconfirm_contact.username">
@@ -44,7 +44,7 @@
       </div>
     </ng-container>
     <div class="divider" *ngIf="!loading_my_contact_list&&my_contact_list.length==0">
-      <i>暂无联系人</i>
+      <i>{{'NO_CONTACT'|translate}}</i>
     </div>
   </div>
   <div class="fast-nav">

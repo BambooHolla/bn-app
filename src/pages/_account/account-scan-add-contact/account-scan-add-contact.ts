@@ -35,7 +35,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     // window["Instascan"] = Instascan;
     // alert(Instascan);
   }
-  titleContent = "扫一扫";
+  titleContent = "SCAN-QR-CODE";
   @AccountScanAddContactPage.willEnter
   initParams() {
     const title = this.navParams.get("title");
@@ -78,7 +78,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   @ViewChild("video") video!: ElementRef;
   @ViewChild("canvas") canvas!: ElementRef;
   @AccountScanAddContactPage.willEnter
-  @asyncCtrlGenerator.error("扫描异常")
+  @asyncCtrlGenerator.error(() => AccountScanAddContactPage.getTranslate("SCAN_ERROR"))
   async openCameraMedia() {
     this.is_inited = false;
     try {

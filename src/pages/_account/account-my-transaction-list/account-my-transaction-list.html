@@ -1,15 +1,15 @@
 <ion-header>
   <ion-navbar color="transparent">
-    <ion-title>我的交易数据</ion-title>
+    <ion-title>{{'ACCOUNT-MY-TRANSACTION-LIST'|translate}}</ion-title>
   </ion-navbar>
   <div class="header-nav">
     <div class="in-vote-list" [class.focus]="TranSubPage.CONFIRMED===current_page" (click)="gotoSubPage(TranSubPage.CONFIRMED)">
       <ali-icon name="ifm-jiaoyichenggong"></ali-icon>
-      <div class="title">已确认交易</div>
+      <div class="title">{{'CONFIRMED_TRANSACTIONS'|translate}}</div>
     </div>
     <div class="out-vote-list" [class.focus]="TranSubPage.UNCONFIRM===current_page" (click)="gotoSubPage(TranSubPage.UNCONFIRM)">
       <ali-icon name="ifm-jiaoyiloudou"></ali-icon>
-      <div class="title">未确认交易</div>
+      <div class="title">{{'UNCONFIRM_TRANSACTIONS'|translate}}</div>
     </div>
   </div>
 </ion-header>

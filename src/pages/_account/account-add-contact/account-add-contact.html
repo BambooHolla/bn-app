@@ -3,7 +3,7 @@
     <ion-buttons *ngIf="showCloseButton">
       <button ion-button (click)="closeModal()"><ion-icon name="close"></ion-icon></button>
     </ion-buttons>
-    <ion-title>{{'添加联系人'|translate}}</ion-title>
+    <ion-title>{{'ACCOUNT-ADD-CONTACT'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -13,14 +13,14 @@
       <div class="right">
         <ali-icon name="ifm-sousuo"></ali-icon>
       </div>
-      <input type="text" [placeholder]="'请输入地址'|" [(ngModel)]="formData.search_text" (ngModelChanged)="searchContacts()">
+      <input type="text" [placeholder]="'PLEASE_INPUT_IBT_ADDRESS'|translate" [(ngModel)]="formData.search_text" (ngModelChanged)="searchContacts()">
     </div>
   </div>
   <div class="account-address">
-    <div class="prefix">本账户地址:</div>
+    <div class="prefix">{{'MY_ACCOUNT_IBT_ADDRESS'|translate}}:</div>
     <div class="address">{{user.address}}</div>
   </div>
   <button class="submit-button" (click)="searchContacts()">
-    确定添加
+    {{'CONFIRM_THEN_ADD'|translate}}
   </button>
 </ion-content>

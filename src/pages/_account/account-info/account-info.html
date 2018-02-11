@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>账户信息</ion-title>
+    <ion-title>{{'ACCOUNT-INFO'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -8,7 +8,7 @@
   <div class="address-info">
     <div class="title">
       <ali-icon name="ifm-account-detail"></ali-icon>
-      账户地址
+      {{'ACCOUNT_IBT_ADRESS'|translate}}
     </div>
     <div class="address-qrcode">
       <kjua-qrcode [text]="userInfo.address" fill="#7b7b7b"></kjua-qrcode>
@@ -18,7 +18,7 @@
   <div class="extends-list common-list">
     <div class="common-item" *ngIf="!userInfo.username;else showUserName" (click)="routeTo('account-set-username',{auto_return:true})">
       <div class="left">
-        设置用户名
+        {{'SET_ACCOUNT_USERNAME'|translate}}
       </div>
       <div class="right">
         <ali-icon name="ifm-arrow-to-right"></ali-icon>

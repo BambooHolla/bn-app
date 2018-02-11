@@ -25,7 +25,7 @@ export class AccountSettingsPage extends SecondLevelPage {
   auto_header_shadow_when_scroll_down = true;
 
   @asyncCtrlGenerator.error(() =>
-    AccountSettingsPage.getTranslate("LOGIN_OUT_ERROR"),
+    AccountSettingsPage.getTranslate("SIGNING_OUT_ERROR"),
   )
   async quitAccount() {
     return this.loginService.loginOut();
