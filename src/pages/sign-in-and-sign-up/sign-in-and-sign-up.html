@@ -14,7 +14,7 @@
       <!--  [@login-in-out]="page_status" -->
       <div class="inputer-container">
         <ali-icon class="lock-icon" name="ifm-lock"></ali-icon>
-        <textarea class="password-textarear" [style.fontFamily]="font_name" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="请输入密码" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
+        <textarea class="password-textarear" [style.fontFamily]="font_name" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="{{'PLEASE_INPUT_PASSPHRASE' | translate}}" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
         <button class="show-pwd-button" [class.show-pwd]="show_pwd" (tap)="togglePWD()">
           <ali-icon name="ifm-jinzhi"></ali-icon>
           <ali-icon name="ifm-show-pwd"></ali-icon>
@@ -27,17 +27,17 @@
               <span class="checked"></span>
           </span>
           <span class="checked"></span>
-          <span class="label-text">记住密码</span>
+          <span class="label-text">{{'REMEMBER' | translate}}</span>
         </label>
       </div>
       <button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
         <!-- <div class="inner">立即开始</div> -->
-        <text-gradient text="立即开始" fontSize="1.8rem" [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+        <text-gradient text="{{'SIGN_IN' | translate}}" fontSize="1.8rem" [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
       </button>
       <div class="goto-container">
         <span class="dot"></span>
         <button class="goto-button" (click)="gotoRegister()">
-          <text-gradient text="生成新密码" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+          <text-gradient text="{{'GENERATE_NEW_PASSPHRASE' | translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
         </button>
         <span class="dot"></span>
       </div>
@@ -47,31 +47,31 @@
       <div class="inputer-container">
         <div class="password-inputer-wrapper">
           <ali-icon name="ifm-email"></ali-icon>
-          <input class="password-inputer" type="email" placeholder="请输入常用邮箱" [(ngModel)]="formData.email" />
+          <input class="password-inputer" type="email" placeholder="{{'PLEASE_INPUT_EMAIL_ADDRESS' | translate}}" [(ngModel)]="formData.email" />
         </div>
         <div class="password-inputer-wrapper">
           <ali-icon name="ifm-cellphone"></ali-icon>
-          <input class="password-inputer" type="tel" placeholder="请输入常用手机" [(ngModel)]="formData.phone" />
+          <input class="password-inputer" type="tel" placeholder="{{'PLEASE_INPUT_PHONE' | translate}}" [(ngModel)]="formData.phone" />
         </div>
         <div class="password-inputer-wrapper">
           <ali-icon name="ifm-signup-account"></ali-icon>
-          <input class="password-inputer" type="text" placeholder="我的个性签名" [(ngModel)]="formData.remark" />
+          <input class="password-inputer" type="text" placeholder="{{'YOUR_UNIQUE_SIGN' | translate }}" [(ngModel)]="formData.remark" />
         </div>
         <div class="password-inputer-wrapper">
           <ali-icon name="ifm-lock"></ali-icon>
-          <input class="password-inputer" type="text" placeholder="请输入密码" [(ngModel)]="formData.gpwd" />
+          <input class="password-inputer" type="text" placeholder="{{'PLEASE_INPUT_CODE' | translate}}" [(ngModel)]="formData.gpwd" />
         </div>
       </div>
       <div class="info">
         <ali-icon name="ifm-info"></ali-icon>
-        仅用于生成密码数据不会保存在区块链上</div>
+        {{'INFORMATION_NOT_SAVE_IN_BLOCKCHAIN' | translate}}</div>
       <button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">
-        <div class="inner">生成新密码</div>
+        <div class="inner">{{'GENERATE_NEW_PASSPHRASE' | translate}}</div>
       </button>
       <div class="goto-container">
         <span class="dot"></span>
         <button class="goto-button" (click)="gotoLogin()">
-          <text-gradient text="我已有密码 立即开始" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+          <text-gradient text="{{'ALREADY_HAS_PASSPHRASE'| translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
         </button>
         <span class="dot"></span>
       </div>

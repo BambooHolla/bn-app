@@ -158,7 +158,7 @@ export class TabPayPage extends FirstLevelPage {
 
   @TabPayPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(
-    "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
+    TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR"),
   )
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {

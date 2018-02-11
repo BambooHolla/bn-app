@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="info" [hidden]="!nodes.length">
-      已扫描到{{nodes.length}}个节点
+      {{'ALREADY_SEARCHED' | translate}}{{nodes.length}}{{'NODES' | translate}}
     </div>
   </div>
 </ion-content>
