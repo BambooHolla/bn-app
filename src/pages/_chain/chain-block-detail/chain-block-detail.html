@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>区块信息</ion-title>
+    <ion-title>{{'CHAIN-BLOCK-DETAIL'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content #parentContent>
@@ -132,11 +132,11 @@
         </div>
       </div>
       <div class="empty-list" *ngIf="tran_list.length==0&&tran_list_config.loading==false">
-        <img src="assets/imgs/empty-list.png" alt="空列表"/>
+        <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST'|translate"/>
         <div class="message">{{'BLOCK_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreTranLogs())" [enabled]="tran_list_config.has_more">
-        <ion-infinite-scroll-content loadingText="加载更多区块交易记录中……"></ion-infinite-scroll-content>
+        <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </ion-content>
   </div>

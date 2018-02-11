@@ -8,6 +8,7 @@
   "RANK_OF_ME": "我",
   "TRANSACTION_FEES": "手续费",
   "SAVE": "保存",
+  "EMPTY_LIST": "空列表",
 
   "BLOCK_generatorId": "锻造者",
   "BLOCK_reward": "区块奖励",
@@ -39,9 +40,13 @@
   "LOAD_MORE_BLOCK_LIST_ERROR": "加载更多区块失败",
 
   "//": "chain-block-detail",
+  "CHAIN-BLOCK-DETAIL": "区块信息",
   "LOAD_TRANSACTION_LIST_ERROR": "加载交易列表失败",
   "LOADING_TRANSACTION_LIST": "加载交易列表中",
   "LOAD_MORE_TRANSACTION_LIST_ERROR": "加载更多交易列表失败",
+  "BLOCK_TRANSACTION_LIST_IS_EMPTY": "区块交易列表为空",
+  "LOADING_MORE_TRANSACTION_LIST": "加载更多区块交易记录中……",
+  "GET_PRE_BLOCK_ID_ERROR": "获取前块ID出错",
 
   "//": "account-my-contacts",
   "IGNORE_UNCONFIRM_CONTACT_ERROR": "拒绝通过联系人失败",
