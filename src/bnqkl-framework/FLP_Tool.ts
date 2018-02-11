@@ -17,13 +17,13 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal modalCtrl!: ModalController;
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
-  @FLP_Tool.FromGlobal _clipboard!: Clipboard;
-  clipboard: {
+  @FLP_Tool.FromGlobal clipboard!: Clipboard;
+  navigatorClipboard: {
     writeText: (text: string) => Promise<void>,
     readText: () => Promise<string>,
   } = navigator["clipboard"] || {
-    writeText: text => this._clipboard.copy(text),
-    readText: () => this._clipboard.paste(),
+    writeText: text => this.clipboard.copy(text),
+    readText: () => this.clipboard.paste(),
   };
   get localName() {
     const { currentLang } = this.translate;

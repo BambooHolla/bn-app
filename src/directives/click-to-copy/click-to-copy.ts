@@ -8,13 +8,13 @@ import { ToastController } from "ionic-angular";
 })
 export class ClickToCopyDirective {
 	@FLP_Tool.FromGlobal toastCtrl!: ToastController;
-	@FLP_Tool.FromGlobal _clipboard!: Clipboard;
-	clipboard: {
+	@FLP_Tool.FromGlobal clipboard!: Clipboard;
+	navigatorClipboard: {
 		writeText: (text: string) => Promise<void>,
 		readText: () => Promise<string>,
 	} = navigator["clipboard"] || {
-		writeText: text => this._clipboard.copy(text),
-		readText: () => this._clipboard.paste(),
+		writeText: text => this.clipboard.copy(text),
+		readText: () => this.clipboard.paste(),
 	};
 	@Input("click-to-copy") text = "";
 	// 这里不用做翻译，外部传入就好
@@ -22,7 +22,7 @@ export class ClickToCopyDirective {
 	@Input("copy-error-toast") error_msg = "复制失败";
 	constructor(public eleRef: ElementRef) {
 		this.eleRef.nativeElement.addEventListener("click", e => {
-			this.clipboard.writeText(this.text).then(() => {
+			this.navigatorClipboard.writeText(this.text).then(() => {
 				this.toastCtrl.create({
 					message: this.success_msg,
 					duration: 2000
