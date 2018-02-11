@@ -194,6 +194,10 @@ export class TabChainPage extends FirstLevelPage {
     end_index: 0,
     height: 0,
   };
+  private _scroll_ele?: HTMLElement
+  get scrollEle() {
+    return (this._scroll_ele || (this._scroll_ele = this.content && this.content.getScrollElement())) as HTMLElement
+  }
   @TabChainPage.addEvent("when-block-list-changed")
   @TabChainPage.willEnter
   bindShowingBlockList() {
@@ -236,10 +240,6 @@ export class TabChainPage extends FirstLevelPage {
         showlist_bind_info.end_index - showlist_bind_info.current_index ===
         end_index - current_index
       ) {
-        // console.log(
-        //   "%c不需要更新 showing_block_list",
-        //   "color:green;background-color:#ddd",
-        // );
         return;
       }
       this.showlist_bind_info = {
@@ -248,38 +248,25 @@ export class TabChainPage extends FirstLevelPage {
         end_index,
         height,
       };
-      // console.log(
-      //   "%c更新 showing_block_list",
-      //   "color:orange;background-color:#ddd",
-      //   this.showlist_bind_info,
-      // );
+
       const from_offset_top = center_block_info.ele.offsetTop;
+      const from_y = (center_block_info.ele.getBoundingClientRect() as DOMRect).y;
       if (this.content) {
-        console.log(from_offset_top , this.content.scrollHeight)
-        // console.log(from_offset_top, this.content && this.content.scrollHeight)
-        if (from_offset_top > this.content.scrollHeight) {
+        if (from_offset_top > this.content.contentHeight) {
           // 跟随当前元素进行滚动
-          console.log('跟随当前元素进行滚动')
           requestAnimationFrame(() => {
-            const cur_offset_top = center_block_info.ele.offsetTop;
             if (this.content) {
-              const diff_offset_top = cur_offset_top - from_offset_top;
+              const to_y = (center_block_info.ele.getBoundingClientRect() as DOMRect).y;
+              const diff_offset_top = to_y - from_y;
               if (diff_offset_top) {
-                this.content.scrollTo(
-                  0,
-                  this.content.scrollTop + diff_offset_top,
-                  0,
-                );
+                this.scrollEle.scrollTop = this.scrollEle.scrollTop + diff_offset_top;
               }
             }
           });
         } else {// 如果处于前面，默认为查看最新区块的模式，所以锁定滚动高度。
-          console.log('锁定滚动高度')
           const cur_scroll_top = this.content.scrollTop;
           requestAnimationFrame(() => {
-            if (this.content) {
-              this.content.scrollTo(0, cur_scroll_top, 0);
-            }
+            this.scrollEle.scrollTop = cur_scroll_top;
           });
         }
       }

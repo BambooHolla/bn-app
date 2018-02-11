@@ -14,6 +14,14 @@
         {{transaction?.id}}
       </div>
     </div>
+    <div class="common-item transfer-id">
+      <div class="left">
+        交易类型
+      </div>
+      <div class="right">
+        {{('TRAN_TYPE_NAME_'+transaction.type) | translate}}
+      </div>
+    </div>
     <div class="common-item block-id">
       <div class="left">
         所属区块ID
