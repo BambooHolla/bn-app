@@ -87,7 +87,7 @@
         "typescript": "^2.7.1"
     },
     "description": "IFMchain client app v2",
-    "pre-commit": [
+    "//pre-commit": [
         "format:diff"
     ],
     "main": "index.js",
