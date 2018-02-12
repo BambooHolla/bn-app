@@ -45,6 +45,7 @@ import { TabChainPage } from "../pages/tab-chain/tab-chain";
 import { TabPayPage } from "../pages/tab-pay/tab-pay";
 import { TabAccountPage } from "../pages/tab-account/tab-account";
 import { CoverTabsCtrlModelPage } from "../pages/cover-tabs-ctrl-model/cover-tabs-ctrl-model";
+import { NewsProvider } from '../providers/news/news';
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
@@ -111,6 +112,7 @@ const heightLevelModules = [];
     MinServiceProvider,
     BenefitServiceProvider,
     UserInfoProvider,
+    NewsProvider,
   ],
 })
 export class AppModule {}

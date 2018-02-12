@@ -43,6 +43,7 @@
         </div>
       </div>
     </div>
+    <div class="before-placeholder" #beforePlaceholder></div>
     <div *ngFor="let block of showing_block_list;trackBy:blockListTrackByFn" class="block-item" (click)="routeTo('chain-block-detail',{block:block})" [attr.data-height]="block.height">
       <div class="header">
         <div class="reward">
@@ -76,6 +77,7 @@
         <div class="right chain"></div>
       </div>
     </div>
+    <div class="after-placeholder" #afterPlaceholder></div>
   </div>
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreBlockList())" [enabled]="block_list_config.has_more">
     <ion-infinite-scroll-content loadingText="加载更多区块中……"></ion-infinite-scroll-content>

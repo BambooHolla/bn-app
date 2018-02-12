@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'ACCOUNT-ABOUT-IBT'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="news-list">
+    <div class="flag">区块链新闻</div>
+    <div class="news-item" *ngFor="let news of news_list">
+      <div class="title">{{news.title}}</div>
+      <div class="base-info">
+        <div class="public-time">
+          {{news.public_time}}
+        </div>
+        <div class="author">
+          {{news.author}}
+        </div>
+      </div>
+      <div class="cover" *ngIf="news.cover">
+        <img [src]="news.cover" alt="封面">
+      </div>
+    </div>
+  </div>
+</ion-content>

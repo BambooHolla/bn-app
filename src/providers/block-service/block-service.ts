@@ -16,6 +16,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
+import io from 'socket.io-client';
 
 export * from "./block.types";
 
@@ -24,6 +25,10 @@ export class BlockServiceProvider {
   ifmJs: any;
   block: any;
   blockArray?: TYPE.BlockModel[] = [];
+  private _io?: SocketIOClient.Socket
+  get io() {
+    return this._io || (this._io = io(AppSettingProvider.SERVER_URL))
+  }
 
   constructor(
     public http: HttpClient,
@@ -37,11 +42,23 @@ export class BlockServiceProvider {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 
-    // 启动轮询更新更新
-    this._loopGetAndSetHeight();
-  }
+    // // 启动轮询更新更新
+    // this._loopGetAndSetHeight();
 
+    // 启动websocket的监听更新
+    this._listenGetAndSetHeight();
+  }
+  /**第二个块的timestamp*/
+  private _timestamp_from?: number;
   async getLastBlockRefreshInterval() {
+    if (this._timestamp_from == undefined) {
+      /*这个代码只能是*/
+      this._timestamp_from = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY, {
+        search: {
+          height: 2
+        }
+      }).then(res => res.blocks.length && res.blocks[0].timestamp);
+    }
     const last_block = await this.lastBlock.getPromise();
     this.appSetting.setHeight(last_block.height);
 
@@ -53,29 +70,17 @@ export class BlockServiceProvider {
 
   private _refresh_interval = 0;
   private _retry_interval = 0;
-  private async _loopGetAndSetHeight() {
-    const do_loop = () => {
+  private async _loopGetAndSetHeight(emit_retry?: boolean) {
+    const do_loop = async () => {
+      const old_data = await this.lastBlock.getPromise()
       this.lastBlock.refresh();
+      const new_data = await this.lastBlock.getPromise()
       // 这里不需要捕捉错误，_loop内有完整的错误捕捉方案。所以只需要执行就可以了
-      this._loopGetAndSetHeight();
+      this._loopGetAndSetHeight(new_data == old_data);
     };
     const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
     try {
-      let diff_time = await this.getLastBlockRefreshInterval();
-      // if (diff_time <= 0) {
-      //   throw new RangeError("Wrong diff time");
-      // }
-      diff_time %= BLOCK_UNIT_TIME;
-      if (diff_time < BLOCK_UNIT_TIME) {
-        this._refresh_interval = 0;
-        console.log(
-          `%c高度将在${new Date(
-            Date.now() + BLOCK_UNIT_TIME - diff_time,
-          ).toLocaleTimeString()}进行更新`,
-          "background-color:#3ef;color:#FFF",
-        );
-        setTimeout(do_loop, BLOCK_UNIT_TIME - diff_time);
-      } else {
+      if (emit_retry) {
         // 刷新时间递增
         if (this._refresh_interval === 0) {
           this._refresh_interval = 1e3;
@@ -85,6 +90,23 @@ export class BlockServiceProvider {
         // 至少二分之一轮要更新一次
         this._refresh_interval = Math.min(BLOCK_UNIT_TIME / 2, this._refresh_interval);
         setTimeout(do_loop, this._refresh_interval);
+      } else {
+
+        let diff_time = await this.getLastBlockRefreshInterval();
+        // if (diff_time <= 0) {
+        //   throw new RangeError("Wrong diff time");
+        // }
+        diff_time %= BLOCK_UNIT_TIME;
+        if (diff_time < BLOCK_UNIT_TIME) {
+          this._refresh_interval = 0;
+          console.log(
+            `%c高度将在${new Date(
+              Date.now() + BLOCK_UNIT_TIME - diff_time,
+            ).toLocaleTimeString()}进行更新`,
+            "background-color:#3ef;color:#FFF",
+          );
+          setTimeout(do_loop, BLOCK_UNIT_TIME - diff_time);
+        }
       }
       this._retry_interval = 0; // 无异常，重置异常计时器
     } catch (err) {
@@ -97,6 +119,15 @@ export class BlockServiceProvider {
       this._retry_interval = Math.min(BLOCK_UNIT_TIME / 2, this._retry_interval);
       setTimeout(do_loop, this._retry_interval);
     }
+  }
+  private async _listenGetAndSetHeight() {
+    this.io.on("blocks/change", (e) => {
+      console.log("%c区块更新", 'color:green;background-color:#eee;font-size:1.2rem')
+      this.lastBlock.refresh();
+    });
+    this.io.on("connect",()=>{
+      this.lastBlock.refresh();
+    });
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
@@ -113,8 +144,15 @@ export class BlockServiceProvider {
    * @returns {Promise<any>}
    */
   async getLastBlock(): Promise<TYPE.SingleBlockModel> {
-    let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
+    // let blocks_res = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY,{
+    //   search:{
+    //     limit:1,
+    //     orderBy:"height:desc",
+    //   }
+    // });
 
+    // return blocks_res.blocks[0];
+    let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
     return data.block;
   }
 

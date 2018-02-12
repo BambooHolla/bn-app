@@ -118,7 +118,7 @@ page-tab-chain {
     display: flex;
     flex-direction: column;
     align-items: center;
-    // transform: translateZ(0);
+    transform: translateZ(0);
     padding-top: #{$block-distance / 2}rem;
     .block-item {
       margin-bottom: #{$block-distance}rem;

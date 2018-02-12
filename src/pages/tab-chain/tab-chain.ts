@@ -250,13 +250,13 @@ export class TabChainPage extends FirstLevelPage {
       };
 
       const from_offset_top = center_block_info.ele.offsetTop;
-      const from_y = (center_block_info.ele.getBoundingClientRect() as DOMRect).y;
+      const from_y = center_block_info.ele.getBoundingClientRect().top;
       if (this.content) {
         if (from_offset_top > this.content.contentHeight) {
           // 跟随当前元素进行滚动
           requestAnimationFrame(() => {
             if (this.content) {
-              const to_y = (center_block_info.ele.getBoundingClientRect() as DOMRect).y;
+              const to_y = center_block_info.ele.getBoundingClientRect().top;
               const diff_offset_top = to_y - from_y;
               if (diff_offset_top) {
                 this.scrollEle.scrollTop = this.scrollEle.scrollTop + diff_offset_top;

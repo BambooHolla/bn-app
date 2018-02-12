@@ -22,6 +22,9 @@
   "BLOCK_pre_block_id": "前块ID",
   "BLOCK_transactions": "交易记录",
 
+  "//": "account-about-ibt",
+  "ACCOUNT-ABOUT-IBT": "关于IBT",
+
   "//": "sign-in-and-sign-up",
   "LOGINNG": "获取授权中",
   "LOGIN_ERROR": "授权失败",
@@ -120,10 +123,10 @@
   "NO_CONTACT": "暂无联系人",
   "ADD_CONTACT": "添加联系人",
 
-  "//":"pay-receive",
-  "PAY-RECEIVE":"接收",
-  "RECENT":"最近",
-  "LOADING_MORE_RECIVE_LIST":"加载更多转入记录中……",
+  "//": "pay-receive",
+  "PAY-RECEIVE": "接收",
+  "RECENT": "最近",
+  "LOADING_MORE_RECIVE_LIST": "加载更多转入记录中……",
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
 

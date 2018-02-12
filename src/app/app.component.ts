@@ -128,7 +128,14 @@ export class MyApp implements OnInit {
           this.translate.use("zh-cmn-Hans");
         }
       } else {
-        this.translate.use(this.translate.getBrowserLang());
+        const langs = this.translate.getLangs();
+        const current_lang = this.translate.getBrowserLang();
+        if (langs.indexOf(current_lang) !== -1) {
+          this.translate.use(current_lang);
+        } else {
+          const maybe_lang = langs.find(lang => current_lang.startsWith(lang)) || "en";
+          this.translate.use(maybe_lang);
+        }
       }
     } else {
       this.translate.use("en"); // Set your language here
