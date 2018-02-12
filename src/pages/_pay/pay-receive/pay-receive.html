@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="transparent">
-    <ion-title>接收</ion-title>
+    <ion-title>{{'PAY-RECEIVE'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -17,7 +17,7 @@
   </div>
   <div class="income-logs">
     <div class="title">
-      最近
+      {{'RECENT'|translate}}
     </div>
     <ion-content #logsContent class="log-list" [ion-content-scroll-shadow]="{from_color: [29, 98, 113, 0],to_color: [29, 98, 113, 0.3]}">
       <!-- <ion-refresher (ionRefresh)="loadReceiveLogs($event)">
@@ -33,7 +33,7 @@
         </div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreReceiveLogs())" [enabled]="receive_config.has_more">
-        <ion-infinite-scroll-content loadingText="加载更多转入记录中……"></ion-infinite-scroll-content>
+        <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_RECIVE_LIST'|translate"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </ion-content>
   </div>

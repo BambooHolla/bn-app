@@ -120,6 +120,13 @@
   "NO_CONTACT": "暂无联系人",
   "ADD_CONTACT": "添加联系人",
 
+  "//":"pay-receive",
+  "PAY-RECEIVE":"接收",
+  "RECENT":"最近",
+  "LOADING_MORE_RECIVE_LIST":"加载更多转入记录中……",
+  "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
+    "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
+
   "//": "vote-list",
   "LOADING_OUT_VOTE_LIST": "加载已投票列表中……",
   "LOAD_OUT_VOTE_LIST_ERROR": "获取已投票列表失败",
@@ -270,14 +277,14 @@
   "TUTORIAL_SKIP_BUTTON": "跳过",
   "TUTORIAL_CONTINUE_BUTTON": "继续",
 
-  "TUTORIAL_SLIDE1_TITLE": "欢迎来到 IFM2.0",
-  "TUTORIAL_SLIDE1_DESCRIPTION": "没有文案",
+  "TUTORIAL_SLIDE1_TITLE": "蔚蓝星球上",
+  "TUTORIAL_SLIDE1_DESCRIPTION": "我们给你无限未来",
 
-  "TUTORIAL_SLIDE2_TITLE": "如何使用 IFM2.0 入门教程",
-  "TUTORIAL_SLIDE2_DESCRIPTION": "没有文案",
+  "TUTORIAL_SLIDE2_TITLE": "有的未来",
+  "TUTORIAL_SLIDE2_DESCRIPTION": "公正公平人人可信",
 
-  "TUTORIAL_SLIDE3_TITLE": "开始",
-  "TUTORIAL_SLIDE3_DESCRIPTION": "没有文案",
+  "TUTORIAL_SLIDE3_TITLE": "有的未来",
+  "TUTORIAL_SLIDE3_DESCRIPTION": "良性竞争万物共存",
 
   "TUTORIAL_SLIDE4_TITLE": "开始进入手机挖矿时代？",
 
