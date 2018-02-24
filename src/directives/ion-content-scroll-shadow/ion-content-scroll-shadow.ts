@@ -6,7 +6,7 @@ import { Subscription } from "rxjs/Subscription";
   selector: "[ion-content-scroll-shadow]", // Attribute selector
 })
 export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
-  constructor(public content: Content,private _r2: Renderer2) {}
+  constructor(public content: Content, private _r2: Renderer2) {}
 
   default_content_shadow_config = {
     distance: 300, // 显示完整阴影所需的位移量
@@ -18,11 +18,11 @@ export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
   };
   @Input("ion-content-scroll-shadow")
   set content_shadow_config(v) {
-    this._content_shadow_config = Object.assign(
-      this.default_content_shadow_config,
-      this._content_shadow_config,
-      v,
-    );
+    this._content_shadow_config = {
+      ...this.default_content_shadow_config,
+      ...this._content_shadow_config,
+      ...v,
+    };
   }
   private _content_shadow_config = { ...this.default_content_shadow_config };
   get content_shadow_config() {
@@ -89,8 +89,8 @@ export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
       );
 
       // this.content.setElementStyle(
-      // 	"box-shadow",
-      // 	`${shadow_style} rgba(${cur_color})`,
+      //   "box-shadow",
+      //   `${shadow_style} rgba(${cur_color})`,
       // );
     });
   }
