@@ -19,7 +19,7 @@ import { MainPage } from "../pages";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import * as plumin from "plumin.js";
 
-@IonicPage({ name: "sign-in-and-sign-up" })
+// @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
   selector: "page-sign-in-and-sign-up",
   templateUrl: "sign-in-and-sign-up.html",

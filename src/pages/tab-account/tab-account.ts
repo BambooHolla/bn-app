@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { UserInfoProvider } from "../../providers/user-info/user-info";
 
-@IonicPage({ name: "tab-account" })
+// @IonicPage({ name: "tab-account" })
 @Component({
   selector: "page-tab-account",
   templateUrl: "tab-account.html",

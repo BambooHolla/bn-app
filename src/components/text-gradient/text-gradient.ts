@@ -97,6 +97,9 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     const bounds = ctx.measureText(text);
     canvas.width = bounds.width;
     canvas.height = fontSize_num;
+    if (canvas.width == 0 || canvas.height == 0) {
+      return;
+    }
     const wh_rate = canvas.width / canvas.height;
     const padding_height = devicePixelRatio;
     const padding_width = devicePixelRatio * wh_rate;

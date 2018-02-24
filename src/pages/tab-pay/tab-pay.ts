@@ -23,7 +23,7 @@ function generateRollOutLog(len = 20, from = Date.now()) {
   });
 }
 
-@IonicPage({ name: "tab-pay" })
+// @IonicPage({ name: "tab-pay" })
 @Component({
   selector: "page-tab-pay",
   templateUrl: "tab-pay.html",
@@ -157,7 +157,7 @@ export class TabPayPage extends FirstLevelPage {
   }
 
   @TabPayPage.addEvent("HEIGHT:CHANGED")
-  @asyncCtrlGenerator.error(
+  @asyncCtrlGenerator.error(() =>
     TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR"),
   )
   @asyncCtrlGenerator.retry()

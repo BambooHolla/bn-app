@@ -38,7 +38,7 @@ export enum ExtendsPanel {
   preRoundIncomeRate = "pre-round-income-rate",
 }
 
-@IonicPage({ name: "tab-vote" })
+// @IonicPage({ name: "tab-vote" })
 @Component({
   selector: "page-tab-vote",
   templateUrl: "tab-vote.html",

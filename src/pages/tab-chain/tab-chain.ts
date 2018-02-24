@@ -20,7 +20,7 @@ import { ChainMeshComponent } from '../../components/chain-mesh/chain-mesh'
 //   y: number;
 // };
 
-@IonicPage({ name: "tab-chain" })
+// @IonicPage({ name: "tab-chain" })
 @Component({
   selector: "page-tab-chain",
   templateUrl: "tab-chain.html",
