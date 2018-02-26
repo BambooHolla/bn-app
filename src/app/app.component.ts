@@ -28,6 +28,16 @@ import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 
 import { CommonTransition } from "./common.transition";
 
+if (
+  window["cordova"] &&
+  window["cordova"].plugins &&
+  window["cordova"].plugins.iosrtc
+) {
+  if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
+    (navigator as any)["mediaDevices"] = window["cordova"].plugins.iosrtc;
+  }
+}
+
 @Component({
   template: `<ion-nav #content></ion-nav>`, // [root]="rootPage"
 })
@@ -133,7 +143,8 @@ export class MyApp implements OnInit {
         if (langs.indexOf(current_lang) !== -1) {
           this.translate.use(current_lang);
         } else {
-          const maybe_lang = langs.find(lang => current_lang.startsWith(lang)) || "en";
+          const maybe_lang =
+            langs.find(lang => current_lang.startsWith(lang)) || "en";
           this.translate.use(maybe_lang);
         }
       }
