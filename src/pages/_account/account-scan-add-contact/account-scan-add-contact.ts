@@ -43,6 +43,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       this.titleContent = title;
     }
   }
+  private _current_stream?: MediaStream
   videoDevices: MediaDeviceInfo[] = [];
   private _cur_video_device?: MediaDeviceInfo
 
@@ -59,7 +60,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     // for(let i =0;i<video.videoTracks.length;i+=1){
     //   const videoTrack = video.videoTracks[i];
     // }
-    const stream = await navigator.mediaDevices
+    const stream = this._current_stream = await navigator.mediaDevices
       .getUserMedia({
         video: {
           width: this.innerWidth,
@@ -198,6 +199,13 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   stopCameraMedia() {
     const video = this.video.nativeElement as HTMLVideoElement;
     video.pause();
+    if (this._current_stream) {
+      if (this._current_stream.stop instanceof Function) {
+        this._current_stream.stop();
+      }
+      this._current_stream.getVideoTracks().forEach(track => track.stop());
+    };
+    window.URL.revokeObjectURL(video.src);
     video.src = "";
   }
 
