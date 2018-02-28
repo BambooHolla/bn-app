@@ -24,6 +24,8 @@
 
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "关于IBT",
+  "ABOUT_IBT_INFO":
+    "IFMChain是全球首款可接入移动终端的区块链3.0产品IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
 
   "//": "sign-in-and-sign-up",
   "LOGINNG": "获取授权中",

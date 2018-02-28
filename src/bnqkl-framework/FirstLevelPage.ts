@@ -64,6 +64,72 @@ export class FirstLevelPage extends FLP_Data {
     }
   }
 
+  private _has_watch_scroll_content_intime = false;
+  private _watch_scroll_content_max_scrollTop = 0;
+  private _watch_scroll_content_intime(distance?: number) {
+    if (this._has_watch_scroll_content_intime) {
+      if (distance) {
+        this._watch_scroll_content_max_scrollTop = Math.max(
+          this._watch_scroll_content_max_scrollTop,
+          distance,
+        );
+      }
+      return;
+    }
+    this._watch_scroll_content_max_scrollTop = distance || window.innerHeight;
+    if (this.content) {
+      const scroll_ele = this.content.getScrollElement();
+      let ts;
+      scroll_ele.addEventListener("touchstart", e => {
+        ts = e.touches[0].clientY;
+      });
+      scroll_ele.addEventListener("touchmove", e => {
+        var te = e.changedTouches[0].clientY;
+        if (ts > te) {
+        }
+        if (this.content && this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
+          const scrollTop = this.content.getScrollElement().scrollTop;
+          if (scrollTop > this._watch_scroll_content_max_scrollTop) {
+            if (ts > te) {
+              this.content.setScrollElementStyle(
+                "-webkit-overflow-scrolling",
+                "touch",
+              );
+            } else {
+              this.content.setScrollElementStyle(
+                "-webkit-overflow-scrolling",
+                "auto",
+              );
+            }
+          } else {
+            this.content.setScrollElementStyle(
+              "-webkit-overflow-scrolling",
+              "auto",
+            );
+          }
+        }
+      });
+    }
+    // const calcScrollTopInTime = () => {
+    //   if (this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
+    //     this.content && this.content.getScrollElement().scrollTop;
+    //     if (this.header) {
+    //       const navbar_ele = (this.header.getNativeElement() as HTMLElement).querySelector(
+    //         "ion-navbar",
+    //       ) as HTMLElement | null;
+    //       if (navbar_ele) {
+    //         navbar_ele.innerHTML =
+    //           (this.content && this.content.getScrollElement().scrollTop) +
+    //           "px" +
+    //           window.pageYOffset;
+    //       }
+    //     }
+    //   }
+    //   requestAnimationFrame(calcScrollTopInTime);
+    // };
+    // calcScrollTopInTime();
+  }
+
   auto_header_shadow_when_scroll_down = false;
   header_shadow_config = {
     distance: 100, // 显示完整阴影所需的位移量
@@ -79,6 +145,7 @@ export class FirstLevelPage extends FLP_Data {
     if (!this.content) {
       return;
     }
+    this._watch_scroll_content_intime(this.header_shadow_config.distance);
     this.content.ionScroll.subscribe(() => {
       if (!this.content || !this.header) {
         return;
@@ -118,6 +185,93 @@ export class FirstLevelPage extends FLP_Data {
     });
   }
 
+  auto_header_progress_when_scrol_down = false;
+  _header_progress_ani_data: any = null;
+  /**页面滚动自动设置滚动动画进度*/
+  @FirstLevelPage.onInit
+  _autoSetHeaderAniProgressWhenScrollDown() {
+    if (!this.content) {
+      return;
+    }
+    this._watch_scroll_content_intime();
+    // const calcScrollTopInTime = () => {
+    //   if (this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
+    //     // this.content && this.content.getScrollElement().scrollTop;
+    //   }
+    //   requestAnimationFrame(calcScrollTopInTime);
+    // };
+    // calcScrollTopInTime();
+    this.content.ionScroll.subscribe(() => {
+      if (!this.content || !this.header) {
+        return;
+      }
+      if (this.auto_header_shadow_when_scroll_down) {
+        if (!this._header_progress_ani_data) {
+          const header_ele = this.header.getElementRef()
+            .nativeElement as HTMLElement;
+          const header_style = getComputedStyle(header_ele);
+          const scroll_content_height = this.content.getScrollElement()
+            .offsetHeight;
+
+          const navbar_ele = header_ele.querySelector(
+            "ion-navbar",
+          ) as HTMLElement | null;
+          const navbar_height = navbar_ele ? navbar_ele.offsetHeight : 0;
+          const distance = header_ele.offsetHeight - navbar_height;
+          this._watch_scroll_content_intime(distance);
+
+          const ani_total_second = parseFloat(
+            header_style.animationDuration || "0s",
+          );
+          this._header_progress_ani_data = {
+            header_ele,
+            header_style,
+            scroll_content_height,
+            navbar_ele,
+            navbar_height,
+            distance,
+            ani_total_second,
+            pre_scroll_process: 0,
+          };
+          this.content.setScrollElementStyle(
+            "height",
+            `${scroll_content_height + distance}px`,
+          );
+        }
+        const {
+          header_ele,
+          header_style,
+          scroll_content_height,
+          navbar_ele,
+          navbar_height,
+          distance,
+          ani_total_second,
+          pre_scroll_process,
+        } = this._header_progress_ani_data;
+        const scrollTop = Math.min(this.content.scrollTop, distance);
+        const process = scrollTop / distance;
+
+        if (process === pre_scroll_process) {
+          return;
+        }
+        this._header_progress_ani_data.pre_scroll_process = process;
+
+        let cur_dealy = -process * ani_total_second;
+        if (process === 1) {
+          cur_dealy += 0.0001;
+        }
+        this.header.setElementStyle("animation-delay", `${cur_dealy}s`);
+        this.content.setScrollElementStyle(
+          "transform",
+          `translateY(${-scrollTop}px)`,
+        );
+      } else {
+        (this.header.setElementStyle as any)("animation-delay", null);
+        this.content.setScrollElementStyle("transform", null);
+      }
+    });
+  }
+
   SearchType = SearchType;
   /**弹出搜索页*/
   openSeach(search_type?: SearchType) {
@@ -145,7 +299,8 @@ export class FirstLevelPage extends FLP_Data {
     }
     let is_first = true;
     this.appSetting.account_address.subscribe(token => {
-      if (is_first) {// 等_height_subscription触发后再说
+      if (is_first) {
+        // 等_height_subscription触发后再说
         this.dispatchEvent(
           "HEIGHT:CHANGED",
           this.appSetting.getHeight(),
@@ -167,7 +322,8 @@ export class FirstLevelPage extends FLP_Data {
     }
     let is_first = true;
     this.appSetting.account_address.subscribe(token => {
-      if (is_first) {// 等_round_subscription触发后再说
+      if (is_first) {
+        // 等_round_subscription触发后再说
         this.dispatchEvent(
           "ROUND:CHANGED",
           this.appSetting.getRound(),

@@ -25,13 +25,17 @@
           </div>
         </div>
       </div>
-      <div class="assets-info">
+      <!-- <div class="assets-info">
         <div class="balance">
           <text-gradient [text]="userInfo.userInfo.votingReward|amountEuler|number:'1.8-8'" from="#f8846f" to="#ffc85e" direction="to right"></text-gradient>
         </div>
         <div class="history-logs">
           <a class="linker" (click)="routeTo('vote-income-logs')">{{'VOTE_INCOME_HISTORY' | translate}}</a>
         </div>
+      </div> -->
+      <div class="start-tip">
+        <ali-icon name="ifm-tip"></ali-icon>
+        <span class="tip-content">按下金色按钮 开启自动挖矿</span>
       </div>
     </div>
     <div class="vote-detail-page" [ngClass]="page_status">

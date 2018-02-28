@@ -37,7 +37,8 @@ page-tab-vote {
     &.bootstrap {
       transform: scale(0.8) translateY(-5%);
     }
-    &.vote-detail, &.extends-panel {
+    &.vote-detail,
+    &.extends-panel {
       transform: scale(0.86) translateY(-15%);
     }
   }
@@ -69,7 +70,8 @@ page-tab-vote {
         animation-iteration-count: infinite;
       }
     }
-    &.vote-detail, &.extends-panel {
+    &.vote-detail,
+    &.extends-panel {
       transform: scale(0.88) translateY(8.6363636363vh);
       // opacity: 1;
     }
@@ -107,7 +109,8 @@ page-tab-vote {
       animation-iteration-count: infinite;
       background-color: #fff;
     }
-    &.vote-detail, &.extends-panel {
+    &.vote-detail,
+    &.extends-panel {
       transform: scale(1);
       opacity: 1;
     }
@@ -275,6 +278,29 @@ page-tab-vote {
       }
     }
   }
+  .start-tip {
+    position: absolute;
+    bottom: 0;
+    height: 20%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    > ali-icon {
+      font-size: 2.6rem;
+      margin:0 0.8rem  0.8rem  0.8rem;
+      > .ifmicon::before {
+        -webkit-background-clip: text;
+        color: transparent;
+-webkit-text-fill-color: transparent;
+        background-image: linear-gradient(to bottom, #fccf51 0%, #fbb460 100%);
+      }
+    }
+    > span {
+      color: #fcc54b;
+    }
+  }
   .vote-detail-page {
     position: absolute;
     top: 0;
@@ -295,7 +321,7 @@ page-tab-vote {
     &.extends-panel {
       opacity: 1;
       transform: scale(1);
-      >* {
+      > * {
         pointer-events: all;
       }
     }
@@ -437,8 +463,8 @@ page-tab-vote {
         border-radius: 50%;
         overflow: hidden;
         &.extends-panel {
-            /* 停止GIF */
-            background-image: none!important;
+          /* 停止GIF */
+          background-image: none !important;
         }
       }
       .ani-container {
@@ -661,10 +687,10 @@ page-tab-vote {
       }
     }
     &.extends-panel {
-      .panel-list{
-        .panel-item{
+      .panel-list {
+        .panel-item {
           box-shadow: 0rem 0.3rem 1.2rem rgba(0, 0, 0, 0.4);
-          .slide-zoom{
+          .slide-zoom {
             height: 100%;
           }
         }
@@ -777,7 +803,8 @@ page-tab-vote {
         opacity: 0;
       }
     }
-    &.vote-detail, &.extends-panel {
+    &.vote-detail,
+    &.extends-panel {
       /* transform: translateY(0%); */
       .wave-1 {
         transform: translateY(-100%);

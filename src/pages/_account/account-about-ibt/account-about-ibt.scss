@@ -1,17 +1,174 @@
 page-account-about-ibt {
-	.flag{
-		
-	}
-	.news-item {
-		padding: 1rem;
-		.title {
-			font-size: 2rem;
-			font-weight: 600;
-			color: #7b7b7b;
+	> .header.custom-ani-header {
+		animation-name: ani-header;
+		animation-iteration-count: infinite;
+		animation-fill-mode: forwards;
+		animation-play-state: paused;
+		animation-duration: 2s;
+		animation-timing-function: linear;
+		/* animation-delay: -2s; */
+		color: #fff;
+		background-position: center 100%;
+		background-image: url(../assets/imgs/about-ibt/header-bg.jpg);
+		background-size: cover;
+		background-blend-mode: lighten;
+		transition-duration: 100ms;
+		/* 	&::before{
+			content: " ";
+			position: absolute;
+			background-image: url('../assets/imgs/about-ibt/header-bg.jpg');
+			background-size: cover;
+			width: 100%;
+			height: 100%;
+			z-index: 0;
+		} */
+		.back-button {
+			color: inherit;
+			.back-button-icon {
+				color: inherit;
+				&::before {
+					color: inherit !important;
+				}
+			}
 		}
-		.base-info{
-			color: #7b7b7b;
-			font-weight: lighter;
+		> .info-wrapper {
+			animation-name: ani-header-info-wrapper;
+			animation-iteration-count: inherit;
+			animation-fill-mode: inherit;
+			animation-play-state: inherit;
+			animation-duration: inherit;
+			animation-timing-function: inherit;
+			animation-delay: inherit;
+			text-align: center;
+			> .info {
+				transform-origin: 50% 0%;
+				animation-name: ani-header-info;
+				animation-iteration-count: inherit;
+				animation-fill-mode: inherit;
+				animation-play-state: inherit;
+				animation-duration: inherit;
+				animation-timing-function: inherit;
+				animation-delay: inherit;
+				> .logo {
+					width: 5.6rem;
+					margin-top: 2.5rem;
+				}
+				> div {
+					color: #fff;
+					padding: 1rem;
+					text-align: left;
+					font-size: 1.4rem;
+					font-weight: lighter;
+					line-height: 2rem;
+				}
+			}
+		}
+		.toolbar-title-ios {
+			color: inherit;
+		}
+		@keyframes ani-header {
+			0% {
+				color: #fff;
+				background-color: #000;
+			}
+			100% {
+				color: #7b7b7b;
+				background-color: #fff;
+			}
+		}
+		@keyframes ani-header-info-wrapper {
+			0% {
+				height: 17rem;
+			}
+			100% {
+				height: 0rem;
+			}
+		}
+		@keyframes ani-header-info {
+			0% {
+				transform: scale(1);
+			}
+			100% {
+				transform: scale(0);
+			}
+		}
+	}
+	> .content {
+		> .scroll-content {
+			background-color: #f0f0f0;
+		}
+	}
+	.news-list {
+		margin-top: 1rem;
+		background-color: #fff;
+		.flag {
+			margin-top: 0.5rem;
+			padding-left: 0.5rem;
+			padding-right: 1.5rem;
+			height: 2.5rem;
+			line-height: 3rem;
+			color: #fff;
+			background: linear-gradient(to bottom, #ff6160 0%, #fe926a 100%);
+			display: inline-block;
+			position: relative;
+			&::after {
+				content: " ";
+				position: absolute;
+				border-top: 2.5rem solid #fff;
+				border-left: 1.5rem solid transparent;
+			}
+		}
+		.news-item {
+			padding: 1rem;
+			padding-bottom: 1.8rem;
+			border-bottom: 1px #f2f2f2 solid;
+			.title {
+				font-size: 1.5rem;
+				font-weight: 600;
+				color: #7b7b7b;
+			}
+			.base-info {
+				font-size: 1.3rem;
+				color: #7b7b7b;
+				font-weight: lighter;
+				display: flex;
+				margin: 0.5rem 0;
+				> .author {
+					margin-left: 0.5rem;
+				}
+			}
+			.cover {
+				font-size: 0;
+				max-width: 100%;
+				box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
+				> iframe {
+					max-width: 100%;
+					max-height: fit-content;
+				}
+			}
+		}
+	}
+	.footer {
+		padding-bottom: 1rem;
+		color: #FFF;
+		background-image: url(../assets/imgs/about-ibt/footer-bg.jpg);
+		background-size: cover;
+		background-position: center top;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		ali-icon {
+			font-size: 2.6rem;
+			margin-top: 1.5rem;
+			&[name="ifm-youjian"] {
+				font-size: 3rem;
+			}
+		}
+		a {
+			color: inherit;
+			text-decoration: none;
+			margin: 0;
+			padding: 0.6rem 0;
 		}
 	}
 }

@@ -1,3 +1,4 @@
+import { DomSanitizer } from "@angular/platform-browser";
 import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -22,13 +23,22 @@ export class AccountAboutIbtPage extends SecondLevelPage {
 		@Optional() public tabs: TabsPage,
 		public viewCtrl: ViewController,
 		public newsService: NewsProvider,
+		public sanitizer: DomSanitizer,
 	) {
 		super(navCtrl, navParams, true, tabs);
+		this.auto_header_shadow_when_scroll_down = true;
+		this.auto_header_progress_when_scrol_down = true;
 	}
 
-	news_list: any[] = []
+	news_list: any[] = [];
 	@AccountAboutIbtPage.willEnter
 	loadNewsList() {
-		this.news_list = this.newsService.getNewsList()
+		const news_list = this.newsService.getNewsList();
+		// news_list.forEach(news => {
+		// 	if (news.type === "embed") {
+		// 		this.sanitizer.bypassSecurityTrustHtml();
+		// 	}
+		// });
+		this.news_list = news_list;
 	}
 }

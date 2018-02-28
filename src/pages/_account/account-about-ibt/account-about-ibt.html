@@ -1,12 +1,18 @@
-<ion-header>
-  <ion-navbar>
+<ion-header class="custom-ani-header">
+  <ion-navbar color="transparent">
     <ion-title>{{'ACCOUNT-ABOUT-IBT'|translate}}</ion-title>
   </ion-navbar>
+  <div class="info-wrapper">
+    <div class="info">
+      <img class="logo" src="assets/imgs/about-ibt/ifmchain-logo-and-title.png" alt="IFMCHAIN"/>
+      <div>{{'ABOUT_IBT_INFO'|translate}}</div>
+    </div>
+  </div>
 </ion-header>
 <ion-content>
   <div class="news-list">
-    <div class="flag">区块链新闻</div>
-    <div class="news-item" *ngFor="let news of news_list">
+    <div class="flag">IFMCHAIN新闻</div>
+    <div class="news-item" *ngFor="let news of news_list" (click)="routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
       <div class="base-info">
         <div class="public-time">
@@ -16,9 +22,28 @@
           {{news.author}}
         </div>
       </div>
-      <div class="cover" *ngIf="news.cover">
-        <img [src]="news.cover" alt="封面">
+      <div [ngSwitch]="news.type">
+        <ng-container *ngSwitchCase="'simple-html'">
+          <div class="cover" *ngIf="news.cover_image_url">
+            <img [src]="news.cover_image_url" alt="封面">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'embed'">
+          <div class="cover" [innerHTML]="news.html">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'video'">
+          <video class="cover" [src]="news.url" controls="true">
+          </video>
+        </ng-container>
       </div>
     </div>
+  </div>
+  <div class="footer">
+    <ali-icon name="ifm-youjian"></ali-icon>
+    <a href="mailto:ifmteam@ifmchain.com">商务合作：ifmteam@ifmchain.com</a>
+    <a href="mailto:service@ifmchain.com">用户服务：service@ifmchain.com</a>
+    <ali-icon name="ifm-shequ"></ali-icon>
+    <a target="_blank" href="http://github.com/ifmchain">开发者社区：github.com/ifmchain</a>
   </div>
 </ion-content>

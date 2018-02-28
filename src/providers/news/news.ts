@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 
 /*
   Generated class for the NewsProvider provider.
@@ -9,7 +10,7 @@ import { Injectable } from "@angular/core";
 */
 @Injectable()
 export class NewsProvider {
-	constructor(public http: HttpClient) {
+	constructor(public http: HttpClient, public sanitizer: DomSanitizer) {
 		console.log("Hello NewsProvider Provider");
 	}
 
@@ -20,6 +21,8 @@ export class NewsProvider {
 				author: "硅谷科技",
 				public_time: "2018-01-19",
 				type: "simple-html",
+				cover_image_url:
+					"http://inews.gtimg.com/newsapp_match/0/2736301665/0",
 				contents: [
 					{
 						type: "p",
@@ -104,6 +107,8 @@ export class NewsProvider {
 				author: "卢晓明",
 				public_time: "2018-01-25",
 				type: "simple-html",
+				cover_image_url:
+					"https://pic.36krcnd.com/avatar/201801/21031740/8xp289eqwpczi5jo.jpg!1200",
 				contents: [
 					{
 						type: "image",
@@ -194,15 +199,18 @@ export class NewsProvider {
 			},
 			{
 				title: "IFMChain移动公有链正式发布",
-				type: "video",
-				url:
-					"https://ugcbsy.qq.com/j053657y0r7.m701.mp4?sdtfrom=v1103&guid=a879d3e2dcc302fae9ff7e8427f04767&vkey=6CF5CFF588E19EFC5347A5A67A1047F9F4DECF7CCE6C93B32EBF420F65C2468B1B91B92B8AA07182F37728DEAF332552C84F51BC5D5D3BBD11AD3B80EA77EDDA80920E233A879D2F055DDDB88FA0572FCCB64DFBB9B7624C285C3FAEB4E14F1BB37211659A55A2D35827B444D9F80A6942E4F197CED89324&platform=2",
+				type: "embed",
+				html: this.sanitizer.bypassSecurityTrustHtml(
+					'<iframe frameborder="0" width="640" height="498" src="https://v.qq.com/iframe/player.html?vid=j053657y0r7&tiny=0&auto=0" allowfullscreen></iframe>',
+				),
 			},
 			{
 				title: "随身的数字资产保险箱 “IFMChain”正式上线",
 				type: "simple-html",
 				author: "新浪深圳",
 				publish_time: "2018-01-19",
+				cover_image_url:
+					"https://n.sinaimg.cn/shenzhen/transform/w550h308/20180119/HOD--fyqtwzu8386417.png",
 				contents: [
 					{
 						type: "blockquote",
