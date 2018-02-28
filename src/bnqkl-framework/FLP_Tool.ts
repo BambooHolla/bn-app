@@ -1,6 +1,7 @@
 import { Clipboard } from "@ionic-native/clipboard";
 import { TranslateService } from "@ngx-translate/core";
 import {
+  ActionSheetController,
   AlertController,
   Platform,
   LoadingController,
@@ -11,6 +12,7 @@ import {
 export class FLP_Tool {
   constructor() { }
   // 全局弹出层控制器
+  @FLP_Tool.FromGlobal actionSheetCtrl!: ActionSheetController;
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
   @FLP_Tool.FromGlobal loadingCtrl!: LoadingController;
   @FLP_Tool.FromGlobal toastCtrl!: ToastController;

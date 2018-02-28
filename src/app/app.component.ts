@@ -11,6 +11,7 @@ import {
   Config,
   Nav,
   Platform,
+  ActionSheetController,
   AlertController,
   LoadingController,
   ToastController,
@@ -57,6 +58,7 @@ export class MyApp implements OnInit {
     public storage: Storage,
     public keyboard: Keyboard,
     public toast: Toast,
+    public actionSheetCtrl: ActionSheetController,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
@@ -71,6 +73,7 @@ export class MyApp implements OnInit {
     window["loadingCtrl"] = loadingCtrl;
     window["toastCtrl"] = toastCtrl;
     window["toast"] = toast;
+    window["actionSheetCtrl"] = actionSheetCtrl;
     window["modalCtrl"] = modalController;
     window["accountService"] = accountService;
     window["benefitService"] = benefitService;

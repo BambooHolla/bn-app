@@ -11,7 +11,7 @@
   <!--   <div class="message">{{message}}</div> -->
   <div class="scan-wrapper" [class.hide]="!is_inited">
     <video id="scan-view" class="scan-view" #video [width]="innerWidth" [height]="innerHeight" autoplay></video>
-    <canvas #canvas class="scan-can" [width]="innerWidth" [height]="innerHeight"></canvas>
+    <canvas #canvas class="scan-can" [class.full-view]="full_view_canvas" [width]="innerWidth" [height]="innerHeight"></canvas>
     <div class="mask">
       <div class="window">
         <div class="scan-line"></div>

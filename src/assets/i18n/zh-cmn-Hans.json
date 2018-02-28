@@ -249,6 +249,12 @@
   "ALIGN_QR_CODE-THEN_AUTOMATIC_SCAN": "将二维码放入框内，即可自动扫描",
   "SCAN_ERROR": "扫描异常",
 
+  "SELECT_THE_WAY_TO_GET_QRCODE": "请选择",
+  "SELECT_PICTURE_TO_SCAN_QRCODE": "从相册中选择二维码图片",
+  "TAKE_PICTURE_FROM_MEDIA_STREAM": "使用摄像头扫描二维码",
+  "PARSE_PICTURE_QRCODE": "解析图片二维码",
+  "QRCODE_PICTURE_PARSE_ERROR":"二维码图片解析失败",
+
   "//": "account-settings",
   "//": "设置页面的跳转的label 与 目标页面title 是不完全一致的",
   "ACCOUNT-SETTINGS": "设置",

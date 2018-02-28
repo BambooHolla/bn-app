@@ -11,6 +11,7 @@ import {
   NavController,
   NavParams,
   ViewController,
+  AlertOptions
 } from "ionic-angular";
 // import * as Instascan from "instascan";
 // window["Instascan"] = Instascan;
@@ -83,11 +84,16 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   async openCameraMedia() {
     this.is_inited = false;
     try {
-
+      const image_url = this.navParams.get("image_url");
+      if (image_url) {
+        return
+      }
+      // 媒体流实时解析模式
       var filter_fun = this.navParams.get("filter");
       if (!(filter_fun instanceof Function)) {
         filter_fun = () => true
       }
+      var res = ""
       if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
         // IOS 不用检测权限
       } else {
@@ -104,16 +110,15 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         // this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
       }
 
-      var res = ""
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const devices = await navigator.mediaDevices.enumerateDevices();
         this.videoDevices = devices.filter((d) => d.kind === "videoinput").reverse();
         // Not adding `{ audio: true }` since we only want video now
 
         this.useVideoDevice(this.videoDevices[0]);
-        res = await new Promise<string>(cb => this.startCapture((text => {
+        res = await new Promise<string>(resolve => this.startCapture((text => {
           if (filter_fun(text)) {
-            cb(text)
+            resolve(text)
             return true;
           }
           return false
@@ -122,23 +127,69 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         this.is_inited = true;
         res = (await this.barcodeScanner.scan()).text;
       }
-      const mode = this.navParams.get('mode');
-      if (mode === 'try-to-add-contact') {
-        const m = this.modalCtrl.create("account-add-contact", {
-          address: res,
-          auto_search: true,
-          showCloseButton: true,
-        });
-        m.present();
-        m.onDidDismiss(() => {
-          this.finishJob();
-        });
-      } else {
-        this.jobRes(res);
-        this.finishJob();
-      }
+      this._handleScanRes(res);
     } finally {
       this.is_inited = true;
+    }
+  }
+  @AccountScanAddContactPage.willEnter
+  @asyncCtrlGenerator.error(() => AccountScanAddContactPage.getTranslate("SCAN_ERROR"), async function(self: AccountScanAddContactPage) {
+    return {
+      buttons: [{
+        text: await self.getTranslate("OK"),
+        handler() {
+          self.finishJob();
+        }
+      }]
+    } as AlertOptions
+  })
+  async parseSingleImage() {
+    const image_url = this.navParams.get("image_url");
+    if (!image_url) {
+      return
+    }
+    // 单张图片解析模式
+    var filter_fun = this.navParams.get("filter");
+    if (!(filter_fun instanceof Function)) {
+      filter_fun = () => true
+    }
+    const canvas = this.canvas.nativeElement as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    window['qrcode'].canvas_qr2 = canvas;
+    window['qrcode'].qrcontext2 = ctx;
+    const image = await new Promise<HTMLImageElement>((reslove, reject) => {
+      const img = new Image();
+      img.src = image_url;
+
+      img.onload = () => {
+        reslove(img);
+      }
+      img.onerror = reject
+    });
+    var res = this._scanQrcodeFrame(image, true, filter_fun);
+    this.full_view_canvas = true;
+    if (!res) {
+      throw new Error(await this.getTranslate("QRCODE_PICTURE_PARSE_ERROR"));
+    }
+    this._handleScanRes(res);
+  }
+  /**是否看到完整的canvas*/
+  full_view_canvas = false;
+  private _handleScanRes(res: string) {
+    const mode = this.navParams.get('mode');
+    if (mode === 'try-to-add-contact') {
+      const m = this.modalCtrl.create("account-add-contact", {
+        address: res,
+        auto_search: true,
+        showCloseButton: true,
+      });
+      m.present();
+      m.onDidDismiss(() => {
+        this.finishJob();
+      });
+    } else {
+      this.jobRes(res);
+      this.finishJob();
     }
   }
   result_str = ""
@@ -167,32 +218,56 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         const diff_t = time - pre_time;
         if (diff_t > check_interval) {
           pre_time = time;
-          ctx.drawImage(video, 0, 0);
-          try {
-            const res = window['qrcode'].decode();
-            this.result_str = res;
-            if (cb(res)) {
-              return
-            }
-          } catch (err) {
-            // this.result_str = err.toString();
-          }
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          const points = window['qrcode'].result_points;
-          if (points instanceof Array) {
-            for (let point of points) {
-              ctx.fillStyle = 'rgba(0, 188, 212, 1)';
-              ctx.beginPath();
-              ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
-              ctx.closePath();
-              ctx.fill();
-            }
-          }
+          this._scanQrcodeFrame(video, false, cb);
         }
         requestAnimationFrame(scanQrCode);
       }
     }
     scanQrCode(performance.now());
+  }
+  private _scanQrcodeFrame(source: HTMLVideoElement | HTMLImageElement, auto_size: boolean, filter?: (res: string) => boolean) {
+    const canvas = this.canvas.nativeElement as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+    var source_width = source.width
+    var source_height = source.height
+    if (source_width > canvas.width) {
+      source_height *= canvas.width / source_width;
+      source_width = canvas.width;
+    }
+    if (source_height > canvas.height) {
+      source_width *= canvas.height / source_height;
+      source_height = canvas.height;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (auto_size) {
+      ctx.drawImage(source, (canvas.width - source_width) / 2, (canvas.height - source_height) / 2, source_width, source_height);
+    } else {
+      ctx.drawImage(source, 0, 0);
+    }
+
+    try {
+      const res = window['qrcode'].decode();
+
+      const points = window['qrcode'].result_points;
+      if (points instanceof Array) {
+        for (let point of points) {
+          ctx.fillStyle = 'rgba(0, 188, 212, 1)';
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+
+      this.result_str = res;
+      if (filter && filter(res)) {
+        return res
+      }
+      return res;
+    } catch (err) {
+      // this.result_str = err.toString();
+    }
   }
 
   @AccountScanAddContactPage.didLeave

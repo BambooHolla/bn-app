@@ -35,7 +35,7 @@ export function isErrorFromAsyncerror(err) {
 
 export function asyncErrorWrapGenerator(
   error_title: any = () => FLP_Tool.getTranslate("ERROR"),
-  opts?: AlertOptions,
+  opts?: AlertOptions | ((self: FLP_Tool) => AlertOptions) | ((self: FLP_Tool) => Promise<AlertOptions>),
   hidden_when_page_leaved = true,
   keep_throw = false
 ) {
@@ -90,8 +90,9 @@ export function asyncErrorWrapGenerator(
             if (error_title instanceof Function) {
               error_title = error_title(err);
             }
-            Promise.all([error_title, err_msg]).then(
-              ([error_title, err_msg]) => {
+
+            Promise.all([error_title, err_msg, opts instanceof Function ? opts(this) : opts]).then(
+              ([error_title, err_msg, opts]) => {
                 alertCtrl
                   .create(
                     Object.assign(
@@ -182,7 +183,7 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
     loading?: Loading;
     promises: Set<Promise<any>>;
   }
->());
+  >());
 export function asyncLoadingWrapGenerator(
   loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
@@ -342,9 +343,9 @@ export function autoRetryWrapGenerator(
     | (() => IterableIterator<number>)
     | number
     | {
-        max_retry_seconed?: number;
-        max_retry_times?: number;
-      },
+      max_retry_seconed?: number;
+      max_retry_times?: number;
+    },
   onAbort?: Function
 ) {
   var max_retry_seconed = 16;
@@ -359,7 +360,7 @@ export function autoRetryWrapGenerator(
   if (maxSeconed_or_timeGenerator instanceof Function) {
     timeGenerator = maxSeconed_or_timeGenerator;
   } else {
-    timeGenerator = function*() {
+    timeGenerator = function* () {
       var second = 1;
       var times = 0;
       do {
