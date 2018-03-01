@@ -44,11 +44,13 @@
   "//": "tab-account",
   "MY_CONTACTS": "我的联系人",
   "MY_TRANSACTION": "我的交易",
+  "ABOUT_IBT": "关于IBT",
 
   "//": "settings-set-default-fee",
   "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",
 
   "//": "tab-vote",
+  "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",
   "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
   "DEFAULT_FEE_NOT_SETTED": "默认交易手续费未设置",
   "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "您是否要去设置默认手续费",
@@ -210,6 +212,8 @@
   "SUBMIT": "提交",
 
   "//": "settings-set-pay-pwd",
+  "SETTINGS-SET-PAY-PWD":"设置支付密码",
+  "CONFIRM_PAY_PASSPHRASE":"再次确认密码",
   "SET_PAY_PWD_SUBMITING": "设置支付密码提交中",
   "SET_PAY_PWD_SUBMIT_ERROR": "设置支付密码提交失败",
   "SET_PAY_PWD_SUBMIT_SUCCESS": "设置支付密码提交成功",
@@ -359,7 +363,7 @@
   "LANG_fr": "法文",
   "LANG_de": "德文",
   "LANG_it": "意大利",
-  "//LANG_ko": "韩文",
+  "LANG_ko": "韩文",
 
   "//": "来自服务端或者provider的错误",
   "not enough balance": "没有足够的IBT",
