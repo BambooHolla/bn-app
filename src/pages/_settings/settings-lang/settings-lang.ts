@@ -33,7 +33,6 @@ export class SettingsLangPage extends SecondLevelPage {
    */
   private _setLangList() {
     if (!this.lang_list) {
-      this.appSetting.settings.lang = this.translate.currentLang;
       const current_lang_map = this.translate.getTranslation(
         this.translate.currentLang,
       );
@@ -65,6 +64,7 @@ export class SettingsLangPage extends SecondLevelPage {
       .use(lang_code)
       .toPromise()
       .then(res => {
+        this.appSetting.settings.lang = this.translate.currentLang;
         this._setLangList();
         return res;
       });
