@@ -65,6 +65,7 @@
   "EXPECED_INCOME": "预期奖励",
   "REWARD_IN_BLOCK": "区块奖励",
   "TRANSACTION_AMOUNT": "交易量",
+  "TOTALAMOUNT": "总数量",
   "HEIGHT": "高度",
   "FEE": "手续费",
   "CHECK_BLOCK": "查看区块",
@@ -212,8 +213,8 @@
   "SUBMIT": "提交",
 
   "//": "settings-set-pay-pwd",
-  "SETTINGS-SET-PAY-PWD":"设置支付密码",
-  "CONFIRM_PAY_PASSPHRASE":"再次确认密码",
+  "SETTINGS-SET-PAY-PWD": "设置支付密码",
+  "CONFIRM_PAY_PASSPHRASE": "再次确认密码",
   "SET_PAY_PWD_SUBMITING": "设置支付密码提交中",
   "SET_PAY_PWD_SUBMIT_ERROR": "设置支付密码提交失败",
   "SET_PAY_PWD_SUBMIT_SUCCESS": "设置支付密码提交成功",

@@ -35,4 +35,15 @@ ali-icon {
       transform: rotate(360deg);
     }
   }
+  &[name="ifm-roll-out-logs"] {
+    > .ifmicon {
+      &::before {
+        background-image: url("../assets/icon/ifm-roll-out-logs.svg");
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        color: transparent; /* 需要来占位不然heigth和width撑不起来 */
+      }
+    }
+  }
 }

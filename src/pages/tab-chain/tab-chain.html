@@ -46,9 +46,9 @@
     <div class="before-placeholder" #beforePlaceholder></div>
     <div *ngFor="let block of showing_block_list;trackBy:blockListTrackByFn" class="block-item" (click)="routeTo('chain-block-detail',{block:block})" [attr.data-height]="block.height">
       <div class="header">
-        <div class="reward">
-          <div class="value">{{block.reward|amountEuler|number:'1.0-0'}}</div>
-          <span class="title"><ali-icon name="ifm-reward"></ali-icon>{{'REWARD_IN_BLOCK' | translate}}</span>
+        <div class="height">
+          <div class="value">{{block.height}}</div>
+          <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>{{'HEIGHT' | translate}}</span>
         </div>
         <div class="trans_num">
           <div class="value">{{block.numberOfTransactions}}</div>
@@ -59,9 +59,9 @@
         <div class="delay" [ngClass]="block.delay?'true':''">
           <ali-icon name="ifm-chain-tran-error"></ali-icon>
         </div>
-        <div class="height">
-          <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>{{'HEIGHT' | translate}}</span>
-          <div class="value">{{block.height}}</div>
+        <div class="total-amount">
+          <span class="title"><ali-icon name="ifm-coins"></ali-icon>{{'TOTALAMOUNT' | translate}}</span>
+          <div class="value">{{block.totalAmount|amountEuler|number:'1.8-8'}}</div>
         </div>
         <div class="fee">
           <span class="title"><ali-icon name="ifm-wallet"></ali-icon>{{'FEE' | translate}}</span>

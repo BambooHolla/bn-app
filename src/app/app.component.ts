@@ -130,8 +130,10 @@ export class MyApp implements OnInit {
   initTranslate() {
     // Set the default language for translation strings, and the current language.
     this.translate.setDefaultLang("en");
-    const browserLang =
-      this.appSetting.settings.lang || this.translate.getBrowserLang();
+    if(this.appSetting.settings.lang){
+      return this.translate.use(this.appSetting.settings.lang);
+    }
+    const browserLang = this.translate.getBrowserLang();
 
     if (browserLang) {
       if (browserLang === "zh") {
