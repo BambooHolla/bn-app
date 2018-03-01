@@ -41,7 +41,7 @@
   </div>
   <div class="empty-list" *ngIf="confirmed_transaction_list.length==0&&confirmed_transaction_config.loading==false">
     <img src="assets/imgs/empty-list.png" alt="空列表">
-    <div class="message">{{'UNCONFIRM_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
+    <div class="message">{{'CONFIRMED_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
   </div>
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreConfirmedTransactionList())" [enabled]="confirmed_transaction_config.has_more">
     <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_CONFIRMED_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>

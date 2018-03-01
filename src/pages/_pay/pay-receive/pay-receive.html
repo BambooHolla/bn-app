@@ -7,7 +7,7 @@
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8E%A5%E6%94%B6.jpg" alt=""> -->
   <div class="info-wrapper">
     <kjua-qrcode class="qrcode" fill="#2e2e2e" [text]="userInfo.address"></kjua-qrcode>
-    <div class="address">
+    <div class="address" [click-to-copy]="userInfo.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}">
       <ali-icon name="ifm-account-detail"></ali-icon>
       {{userInfo.address}}
     </div>

@@ -13,7 +13,7 @@
     <div class="address-qrcode">
       <kjua-qrcode [text]="userInfo.address" fill="#7b7b7b"></kjua-qrcode>
     </div>
-    <div class="address-text" [click-to-copy]="userInfo.address">{{userInfo.address}}</div>
+    <div class="address-text" [click-to-copy]="userInfo.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}">{{userInfo.address}}</div>
   </div>
   <div class="extends-list common-list">
     <div class="common-item" *ngIf="!userInfo.username;else showUserName" (click)="routeTo('account-set-username',{auto_return:true})">
