@@ -34,7 +34,7 @@ if (
   window["cordova"].plugins &&
   window["cordova"].plugins.iosrtc
 ) {
-  if(!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)){
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
     (navigator as any)["mediaDevices"] = window["cordova"].plugins.iosrtc;
   }
 }
@@ -130,7 +130,8 @@ export class MyApp implements OnInit {
   initTranslate() {
     // Set the default language for translation strings, and the current language.
     this.translate.setDefaultLang("en");
-    const browserLang = this.translate.getBrowserLang();
+    const browserLang =
+      this.appSetting.settings.lang || this.translate.getBrowserLang();
 
     if (browserLang) {
       if (browserLang === "zh") {

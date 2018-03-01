@@ -151,6 +151,12 @@
   "LOADING_VOTE_INCOME_LIST": "加载挖矿收益列表中……",
   "LOAD_MORE_VOTE_INCOME_LIST_ERROR": "加载更多挖矿收益出错",
 
+  "//": "settings-set-default-fee",
+  "SETTINGS-SET-DEFAULT-FEE": "设置默认交易手续费",
+  "DEFAULT_TRANSACTION_FEE:": "默认手续费：",
+  "AUTOMATICALLY_USE_THE_BEST_FEE": "自动采用最佳手续费",
+  "MINING_MAX_TRANSACTION_FEE:": "挖矿累计最大手续费：",
+
   "//": "typeCode",
   "//": "SEND",
   "TRAN_TYPE_NAME_0": "转账",
@@ -253,7 +259,7 @@
   "SELECT_PICTURE_TO_SCAN_QRCODE": "从相册中选择二维码图片",
   "TAKE_PICTURE_FROM_MEDIA_STREAM": "使用摄像头扫描二维码",
   "PARSE_PICTURE_QRCODE": "解析图片二维码",
-  "QRCODE_PICTURE_PARSE_ERROR":"二维码图片解析失败",
+  "QRCODE_PICTURE_PARSE_ERROR": "二维码图片解析失败",
 
   "//": "account-settings",
   "//": "设置页面的跳转的label 与 目标页面title 是不完全一致的",

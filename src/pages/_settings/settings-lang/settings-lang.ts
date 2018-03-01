@@ -29,8 +29,11 @@ export class SettingsLangPage extends SecondLevelPage {
     "it",
   ];
   lang_list = this._setLangList();
+  /** 变更语言列表Subtitle内容
+   */
   private _setLangList() {
     if (!this.lang_list) {
+      this.appSetting.settings.lang = this.translate.currentLang;
       const current_lang_map = this.translate.getTranslation(
         this.translate.currentLang,
       );

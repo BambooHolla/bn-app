@@ -216,6 +216,7 @@ export class AppSettingProvider extends EventEmitter {
   }
 
   settings = {
+    lang:"",
     /**指纹保护开关*/
     open_fingerprint_protection: false,
     /**指纹保护密码*/
