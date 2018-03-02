@@ -21,10 +21,10 @@ export class AniBase extends EventEmitter {
     this._loop = this._loop.bind(this);
   }
   ngAfterViewInit() {
-    this._init();
     this.once("init-start", () => {
       this.startAnimation();
     });
+    this._init();
   }
   ngOnDestroy() {
     this.stopAnimation();

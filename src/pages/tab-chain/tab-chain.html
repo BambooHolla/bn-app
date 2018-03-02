@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="white">
     <ion-title>{{'VOTE_INCOME_HISTORY' | translate}}</ion-title>
     <!-- <ion-buttons right>
       <button (click)="openSeach(SearchType.BLOCK)">
@@ -7,9 +7,7 @@
       </button>
     </ion-buttons> -->
   </ion-navbar>
-</ion-header>
-<ion-content>
-  <div class="block-list" list-ani="linkChain">
+  <div class="unconfirm-block-wrapper">
     <div class="unconfirm-block">
       <div class="blur-bg"></div>
       <div class="bg-image">
@@ -43,43 +41,47 @@
         </div>
       </div>
     </div>
-    <div class="before-placeholder" #beforePlaceholder></div>
-    <div *ngFor="let block of showing_block_list;trackBy:blockListTrackByFn" class="block-item" (click)="routeTo('chain-block-detail',{block:block})" [attr.data-height]="block.height">
-      <div class="header">
-        <div class="height">
-          <div class="value">{{block.height}}</div>
-          <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>{{'HEIGHT' | translate}}</span>
-        </div>
-        <div class="trans_num">
-          <div class="value">{{block.numberOfTransactions}}</div>
-          <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'TRANSACTION_AMOUNT' | translate}}</span>
-        </div>
-      </div>
-      <div class="info">
-        <div class="delay" [ngClass]="block.delay?'true':''">
-          <ali-icon name="ifm-chain-tran-error"></ali-icon>
-        </div>
-        <div class="total-amount">
-          <span class="title"><ali-icon name="ifm-coins"></ali-icon>{{'TOTALAMOUNT' | translate}}</span>
-          <div class="value">{{block.totalAmount|amountEuler|number:'1.8-8'}}</div>
-        </div>
-        <div class="fee">
-          <span class="title"><ali-icon name="ifm-wallet"></ali-icon>{{'FEE' | translate}}</span>
-          <div class="value">{{block.totalFee|amountEuler|number:'1.8-8'}}</div>
-        </div>
-      </div>
-      <div class="footer">
-        {{'CHECK_BLOCK' | translate}}
-        <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-      </div>
-      <div class="chain-container">
-        <div class="left chain"></div>
-        <div class="right chain"></div>
-      </div>
-    </div>
-    <div class="after-placeholder" #afterPlaceholder></div>
   </div>
-  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreBlockList())" [enabled]="block_list_config.has_more">
+</ion-header>
+<ion-content>
+  <div class="list-wrapper">
+    <virtual-scroll #vscroll class="block-list" list-ani="linkChain" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
+      <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeTo('chain-block-detail',{block:block})" [attr.data-height]="block.height">
+        <div class="header">
+          <div class="height">
+            <div class="value">{{block.height}}</div>
+            <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>{{'HEIGHT' | translate}}</span>
+          </div>
+          <div class="trans_num">
+            <div class="value">{{block.numberOfTransactions}}</div>
+            <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'TRANSACTION_AMOUNT' | translate}}</span>
+          </div>
+        </div>
+        <div class="info">
+          <div class="delay" [ngClass]="block.delay?'true':''">
+            <ali-icon name="ifm-chain-tran-error"></ali-icon>
+          </div>
+          <div class="total-amount">
+            <span class="title"><ali-icon name="ifm-coins"></ali-icon>{{'TOTALAMOUNT' | translate}}</span>
+            <div class="value">{{block.totalAmount|amountEuler|number:'1.8-8'}}</div>
+          </div>
+          <div class="fee">
+            <span class="title"><ali-icon name="ifm-wallet"></ali-icon>{{'FEE' | translate}}</span>
+            <div class="value">{{block.totalFee|amountEuler|number:'1.8-8'}}</div>
+          </div>
+        </div>
+        <div class="footer">
+          {{'CHECK_BLOCK' | translate}}
+          <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+        </div>
+        <div class="chain-container">
+          <div class="left chain"></div>
+          <div class="right chain"></div>
+        </div>
+      </div>
+    </virtual-scroll>
+  </div>
+<!--   <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreBlockList())" [enabled]="block_list_config.has_more">
     <ion-infinite-scroll-content loadingText="加载更多区块中……"></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  </ion-infinite-scroll> -->
 </ion-content>

@@ -264,7 +264,7 @@ export class MinServiceProvider {
   allMinersPerRound!: AsyncBehaviorSubject<TYPE.DelegateModel[]>;
   @ROUND_AB_Generator("allMinersPerRound")
   allMiners_Executor(promise_pro) {
-    return promise_pro.follow(this.getAllMiners());
+    return promise_pro.follow(this.getAllMiners(1, 57));
   }
 
   /**
@@ -289,7 +289,7 @@ export class MinServiceProvider {
   minersOut!: AsyncBehaviorSubject<TYPE.DelegateModel[]>;
   @ROUND_AB_Generator("minersOut")
   minersOut_Executor(promise_pro) {
-    return promise_pro.follow(this.getAllMinersOutside());
+    return promise_pro.follow(this.getAllMinersOutside(1, 57));
   }
 
   /**

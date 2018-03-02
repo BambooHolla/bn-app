@@ -139,3 +139,12 @@ ion-content {
   font-family: monospace;
   src: local("Menlo");
 }
+
+.follow-parent-ani {
+  animation-iteration-count: inherit;
+  animation-fill-mode: inherit;
+  animation-play-state: inherit;
+  animation-duration: inherit;
+  animation-timing-function: inherit;
+  animation-delay: inherit;
+}

@@ -2,8 +2,14 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
-import { MinServiceProvider, DelegateModel } from "../../../providers/min-service/min-service";
-import { PeerServiceProvider, PeerModel } from "../../../providers/peer-service/peer-service";
+import {
+  MinServiceProvider,
+  DelegateModel,
+} from "../../../providers/min-service/min-service";
+import {
+  PeerServiceProvider,
+  PeerModel,
+} from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-list" })
 @Component({
@@ -38,7 +44,7 @@ export class AccountMinerListPage extends SecondLevelPage {
 
   @AccountMinerListPage.willEnter
   async initMinterList() {
-    const cur_minter_list = await this.minService.getAllMiners(1, 4);
+    const cur_minter_list = await this.minService.allMinersPerRound.getPromise();
 
     this.cur_minter_rank_list = cur_minter_list.map((cur_minter, i) => {
       return {
@@ -47,7 +53,7 @@ export class AccountMinerListPage extends SecondLevelPage {
       };
     });
 
-    const can_minter_list = await this.minService.getAllMinersOutside(1, 4);
+    const can_minter_list = await this.minService.minersOut.getPromise();
     this.can_minter_rank_list = can_minter_list.map((can_minter, i) => {
       return {
         No: i + 1,
@@ -57,10 +63,11 @@ export class AccountMinerListPage extends SecondLevelPage {
   }
   @AccountMinerListPage.willEnter
   async initPeerList() {
-    const peer_list = await this.peerService.getPeersLocal();
-    this.cur_peer_list = peer_list.map(peer => ({
-      ...peer,
-      linked_number: (Math.random() * 50) | 0,
-    }));
+    await this.peerService.sortPeers(peer_list => {
+      this.cur_peer_list = peer_list.map(peer => ({
+        ...peer,
+        linked_number: (Math.random() * 50) | 0,
+      }));
+    });
   }
 }

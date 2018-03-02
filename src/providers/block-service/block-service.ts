@@ -27,7 +27,9 @@ export class BlockServiceProvider {
   blockArray?: TYPE.BlockModel[] = [];
   private _io?: SocketIOClient.Socket
   get io() {
-    return this._io || (this._io = io(AppSettingProvider.SERVER_URL))
+    return this._io || (this._io = io(AppSettingProvider.SERVER_URL, {
+      transports: ['websocket']
+    }))
   }
 
   constructor(
@@ -125,7 +127,7 @@ export class BlockServiceProvider {
       console.log("%c区块更新", 'color:green;background-color:#eee;font-size:1.2rem')
       this.lastBlock.refresh();
     });
-    this.io.on("connect",()=>{
+    this.io.on("connect", () => {
       this.lastBlock.refresh();
     });
   }

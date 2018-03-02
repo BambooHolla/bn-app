@@ -19,6 +19,7 @@ import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
+import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
 import { MyApp } from "./app.component";
 import { AppFetchProvider } from "../providers/app-fetch/app-fetch";
@@ -134,6 +135,7 @@ IonicModule.forRoot = (app, config?, deeplink?) => {
     DirectivesModule,
     PipesModule,
     MomentModule,
+    VirtualScrollModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: pages,

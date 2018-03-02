@@ -6,6 +6,7 @@ import {
   ToolbarTitle,
   Header,
   Content,
+  ScrollEvent,
 } from "ionic-angular";
 
 import { asyncCtrlGenerator } from "./Decorator";
@@ -146,7 +147,7 @@ export class FirstLevelPage extends FLP_Data {
       return;
     }
     this._watch_scroll_content_intime(this.header_shadow_config.distance);
-    this.content.ionScroll.subscribe(() => {
+    this.content.ionScroll.subscribe((scrollEvent: ScrollEvent) => {
       if (!this.content || !this.header) {
         return;
       }
@@ -158,7 +159,7 @@ export class FirstLevelPage extends FLP_Data {
           blur_rem,
           pre_scroll_process,
         } = this.header_shadow_config;
-        const process = Math.min(this.content.scrollTop / distance, 1);
+        const process = Math.min(scrollEvent.scrollTop / distance, 1);
         if (process === pre_scroll_process) {
           return;
         }
@@ -201,7 +202,7 @@ export class FirstLevelPage extends FLP_Data {
     //   requestAnimationFrame(calcScrollTopInTime);
     // };
     // calcScrollTopInTime();
-    this.content.ionScroll.subscribe(() => {
+    this.content.ionScroll.subscribe((scrollEvent: ScrollEvent) => {
       if (!this.content || !this.header) {
         return;
       }
@@ -248,12 +249,14 @@ export class FirstLevelPage extends FLP_Data {
           ani_total_second,
           pre_scroll_process,
         } = this._header_progress_ani_data;
-        const scrollTop = Math.min(this.content.scrollTop, distance);
+
+        const scrollTop = Math.min(scrollEvent.scrollTop, distance);
         const process = scrollTop / distance;
 
         if (process === pre_scroll_process) {
           return;
         }
+        this.tryEmit("header-ani-progress", process);
         this._header_progress_ani_data.pre_scroll_process = process;
 
         let cur_dealy = -process * ani_total_second;
@@ -285,7 +288,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-      )
+    )
       .present();
   }
 

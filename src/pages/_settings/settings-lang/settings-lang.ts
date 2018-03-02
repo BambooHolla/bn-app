@@ -66,6 +66,7 @@ export class SettingsLangPage extends SecondLevelPage {
       .then(res => {
         this.appSetting.settings.lang = this.translate.currentLang;
         this._setLangList();
+        this.finishJob();
         return res;
       });
   }
