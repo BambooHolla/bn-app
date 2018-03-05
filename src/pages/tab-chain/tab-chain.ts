@@ -5,6 +5,7 @@ import {
   NavParams,
   ViewController,
   ScrollEvent,
+  InfiniteScroll,
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
@@ -47,6 +48,8 @@ export class TabChainPage extends FirstLevelPage {
     pageSize: 20,
     has_more: false,
   };
+
+  @ViewChild(InfiniteScroll) infiniteScroll?: InfiniteScroll;
 
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent
   unconfirm_block?: UnconfirmBlockModel;
@@ -122,10 +125,12 @@ export class TabChainPage extends FirstLevelPage {
       block_list_config.loading = false;
     }
   }
-  @ViewChild("vscroll") vscroll!: VirtualScrollComponent;
-  _vscroll_container_ele!: HTMLElement
+  @ViewChild("vscroll") vscroll?: VirtualScrollComponent;
+  _vscroll_container_ele?: HTMLElement
   get vSrollContainer() {
-    return this._vscroll_container_ele || (this._vscroll_container_ele = ((this.vscroll as any).element as ElementRef).nativeElement as HTMLElement)
+    if (this.vscroll) {
+      return this._vscroll_container_ele || (this._vscroll_container_ele = ((this.vscroll as any).element as ElementRef).nativeElement as HTMLElement)
+    }
   }
   private get _vscroll_handle() {
     if (!this[Symbol.for("_vscroll_handle")]) {
@@ -133,30 +138,84 @@ export class TabChainPage extends FirstLevelPage {
       this.event.on("header-ani-progress", (process) => {
         is_scroll_done = process === 1;
       });
-      let ts;
+      let ti;
+      let pre_scrollTop = -1;
+      let zzele = document.createElement("span");
+
+      let from: number;
+      let to: number;
+      let frame_id;
       var res = {
         touchstart: (e: TouchEvent) => {
-          ts = e.touches[0].clientY;
+          from = e.touches[0].clientY;
         },
         touchmove: (e: TouchEvent) => {
-          var te = e.changedTouches[0].clientY;
-          const contentEle = this.vscroll.contentElementRef.nativeElement as HTMLElement;
-          if (is_scroll_done) {
-            if (ts > te) {
-              this.r2.setStyle(contentEle, "-webkit-overflow-scrolling", "touch");
-            } else {
-              this.r2.setStyle(contentEle, "-webkit-overflow-scrolling", "auto");
-            }
-          } else {
-            this.r2.setStyle(contentEle, "-webkit-overflow-scrolling", "auto");
+          if (to !== undefined) {
+            from = to;
           }
+          to = e.changedTouches[0].clientY;
+          const contentEle = e.currentTarget as HTMLElement;
+          // if (!ti) {
+          //   ti = setInterval(() => {
+          //     contentEle.dispatchEvent(new CustomEvent("scroll"))
+          //     this.header && (this.header.getNativeElement().querySelector(".toolbar-title").innerHTML = contentEle.scrollTop + "px");
+          //     if (zzele.parentElement) {
+          //       contentEle.removeChild(zzele);
+          //     } else {
+          //       contentEle.appendChild(zzele);
+          //     }
+          //     contentEle.scrollTop+=1;
+          //     // contentEle.appendChild(document.createElement('br'));
+          //     // requestAnimationFrame(()=>{
+          //     //   requestAnimationFrame(()=>{
+          //     //     if (contentEle.scrollTop == pre_scrollTop) {
+          //     //       this.header && (this.header.getNativeElement().querySelector(".toolbar-title").innerHTML = "done");
+          //     //       clearInterval(ti);
+          //     //       ti = null;
+          //     //       return;
+          //     //     }
+          //     //   });
+          //     // });
+          //     pre_scrollTop = contentEle.scrollTop;
+          //   }, 100);
+          // }
+
+          // if (is_scroll_done) {
+          //   if (ts > te) {
+          //     this.r2.setStyle(contentEle, "webkitOverflowScrolling", "touch");
+          //   } else {
+          //     this.r2.setStyle(contentEle, "webkitOverflowScrolling", "auto");
+          //   }
+          // } else {
+          //   this.r2.setStyle(contentEle, "webkitOverflowScrolling", "auto");
+          // }
+          if (frame_id) {
+            cancelAnimationFrame(frame_id);
+          }
+          let diff = (from - to) / window.devicePixelRatio;
+          let total_diff = diff;
+          const scroll_handle = () => {
+            // this.header && (this.header.getNativeElement().querySelector(".toolbar-title").innerHTML = diff + "px");
+            contentEle.scrollTop += diff * window.devicePixelRatio;
+            // diff /= 2;
+            const cut_diff = total_diff / Math.max(2, Math.abs(diff) / 2);
+            if (diff > 0) {
+              diff -= Math.min(cut_diff, diff / 2);
+            } else {
+              diff -= Math.max(cut_diff, diff / 2);
+            }
+            if (Math.abs(diff) > 0.5) {
+              frame_id = requestAnimationFrame(scroll_handle);
+            }
+          }
+          frame_id = requestAnimationFrame(scroll_handle);
         },
         scroll: (e) => {
-          if (!this.content) {
+          if (!this.content || !this.vSrollContainer) {
             return;
           }
           this.content.ionScroll.next({
-            scrollTop: this._vscroll_container_ele.scrollTop
+            scrollTop: this.vSrollContainer.scrollTop
           } as ScrollEvent)
         }
       }
@@ -167,16 +226,24 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.didEnter
   watchScroll() {
     const scroll_ele = this.vSrollContainer;
-    scroll_ele.addEventListener("touchstart", this._vscroll_handle.touchstart);
-    scroll_ele.addEventListener("touchmove", this._vscroll_handle.touchmove);
-    scroll_ele.addEventListener("scroll", this._vscroll_handle.scroll);
+    if (this.isIOS && scroll_ele) {
+      scroll_ele.addEventListener("touchstart", this._vscroll_handle.touchstart);
+      scroll_ele.addEventListener("touchmove", this._vscroll_handle.touchmove);
+    }
+    if (scroll_ele) {
+      scroll_ele.addEventListener("scroll", this._vscroll_handle.scroll);
+    }
   }
   @TabChainPage.didLeave
   unWatchScroll() {
     const scroll_ele = this.vSrollContainer;
-    scroll_ele.removeEventListener("touchstart", this._vscroll_handle.touchstart)
-    scroll_ele.removeEventListener("touchmove", this._vscroll_handle.touchmove)
-    scroll_ele.addEventListener("scroll", this._vscroll_handle.scroll);
+    if (this.isIOS && scroll_ele) {
+      scroll_ele.removeEventListener("touchstart", this._vscroll_handle.touchstart)
+      scroll_ele.removeEventListener("touchmove", this._vscroll_handle.touchmove)
+      if (scroll_ele) {
+        scroll_ele.removeEventListener("scroll", this._vscroll_handle.scroll);
+      }
+    }
   }
 
   async onListChange(event: ChangeEvent) {
@@ -249,130 +316,5 @@ export class TabChainPage extends FirstLevelPage {
     }
     tasks[tasks.length] = this.loadUnconfirmBlock();
     await Promise.all(tasks);
-  }
-
-  showing_block_list: Array<BlockModel> = [];
-  private showlist_bind_info = {
-    from_index: 0,
-    current_index: 0,
-    end_index: 0,
-    height: 0,
-  };
-  private _scroll_ele?: HTMLElement
-  get scrollEle() {
-    return (this._scroll_ele || (this._scroll_ele = this.content && this.content.getScrollElement())) as HTMLElement
-  }
-  @TabChainPage.addEvent("when-block-list-changed")
-  @TabChainPage.willEnter
-  bindShowingBlockList() {
-    const { showlist_bind_info, block_list_config } = this;
-    if (this.showing_block_list.length === 0) {
-      this.showing_block_list = this.block_list.slice(
-        0,
-        block_list_config.pageSize * 2,
-      );
-    } else {
-      const center_block_info = this._getViewCenterBlock();
-      if (!center_block_info.height) {
-        return;
-      }
-      const height = center_block_info.height;
-      const first_height = this.block_list[0].height;
-      const current_index = first_height - height;
-      let from_index = current_index - block_list_config.pageSize;
-      let end_index = current_index + block_list_config.pageSize;
-      if (from_index < 0) {
-        end_index -= from_index;
-        from_index = 0;
-      }
-      if (end_index > this.block_list.length) {
-        const more_length = end_index - this.block_list.length;
-        end_index = this.block_list.length;
-        from_index -= more_length;
-        if (from_index < 0) {
-          from_index = 0;
-        }
-      }
-
-      if (
-        // 视野中间的block是同一个
-        showlist_bind_info.height === height &&
-        // 且中间的这个区块与算出的起点距离没有发生改变，等于我不在列表的最前面，当前面发生了插入我不也不用在意
-        showlist_bind_info.current_index - showlist_bind_info.from_index ===
-        current_index - from_index &&
-        // 还有与终点的距离
-        showlist_bind_info.end_index - showlist_bind_info.current_index ===
-        end_index - current_index
-      ) {
-        return;
-      }
-      this.showlist_bind_info = {
-        from_index,
-        current_index,
-        end_index,
-        height,
-      };
-
-      const from_offset_top = center_block_info.ele.offsetTop;
-      const from_y = center_block_info.ele.getBoundingClientRect().top;
-      if (this.content) {
-        if (from_offset_top > this.content.contentHeight) {
-          // 跟随当前元素进行滚动
-          requestAnimationFrame(() => {
-            if (this.content) {
-              const to_y = center_block_info.ele.getBoundingClientRect().top;
-              const diff_offset_top = to_y - from_y;
-              if (diff_offset_top) {
-                this.scrollEle.scrollTop = this.scrollEle.scrollTop + diff_offset_top;
-              }
-            }
-          });
-        } else {// 如果处于前面，默认为查看最新区块的模式，所以锁定滚动高度。
-          const cur_scroll_top = this.content.scrollTop;
-          requestAnimationFrame(() => {
-            this.scrollEle.scrollTop = cur_scroll_top;
-          });
-        }
-      }
-      this.showing_block_list = this.block_list.slice(from_index, end_index);
-    }
-  }
-  @TabChainPage.autoUnsubscribe _content_scroll_subscription?: Subscription;
-  private _content_scroll_refresh_showing_list_ti: any;
-  @TabChainPage.didEnter
-  whenContentScroll() {
-    if (!this.content) {
-      return;
-    }
-
-    this._content_scroll_subscription = this.content.ionScroll.subscribe(
-      scroll_info => {
-        if (this._content_scroll_refresh_showing_list_ti) {
-          return;
-        }
-        this._content_scroll_refresh_showing_list_ti = setTimeout(() => {
-          this.bindShowingBlockList();
-          this._content_scroll_refresh_showing_list_ti = null;
-        }, 160);
-      },
-    );
-  }
-
-  private _getViewCenterBlock() {
-    var ele = document.elementFromPoint(
-      document.body.clientWidth / 2,
-      document.body.clientHeight / 2,
-    ) as HTMLElement;
-    while (!ele.classList.contains("block-item")) {
-      if (ele.parentElement) {
-        ele = ele.parentElement;
-      } else {
-        break;
-      }
-    }
-    return {
-      ele,
-      height: parseFloat(ele.dataset["height"] as string),
-    };
   }
 }

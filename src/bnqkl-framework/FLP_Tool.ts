@@ -20,6 +20,8 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
+
+  isIOS = this.platform.is("ios")
   navigatorClipboard: {
     writeText: (text: string) => Promise<void>,
     readText: () => Promise<string>,

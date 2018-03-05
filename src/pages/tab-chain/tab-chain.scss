@@ -27,6 +27,12 @@ page-tab-chain {
         }
       }
     }
+    &.ios {
+      > .scroll-content {
+        overflow: auto;
+        display: block;
+      }
+    }
   }
   .unconfirm-block-wrapper {
     padding: 0.2rem 4vw 0 4vw;
@@ -279,6 +285,7 @@ page-tab-chain {
     flex-direction: column;
     align-items: center;
     transform: translateZ(0);
+    /* -webkit-overflow-scrolling: auto; */
     .block-item {
       margin-right: auto;
       margin-left: auto;

@@ -83,33 +83,72 @@ export class FirstLevelPage extends FLP_Data {
       let ts;
       scroll_ele.addEventListener("touchstart", e => {
         ts = e.touches[0].clientY;
+        from = ts;
       });
+      let from: number;
+      let to: number;
+      let frame_id;
+      let overflowScrolling = "touch";
       scroll_ele.addEventListener("touchmove", e => {
         var te = e.changedTouches[0].clientY;
-        if (ts > te) {
-        }
         if (this.content && this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
           const scrollTop = this.content.getScrollElement().scrollTop;
           if (scrollTop > this._watch_scroll_content_max_scrollTop) {
             if (ts > te) {
-              this.content.setScrollElementStyle(
-                "-webkit-overflow-scrolling",
-                "touch",
-              );
+              overflowScrolling = "touch";
             } else {
-              this.content.setScrollElementStyle(
-                "-webkit-overflow-scrolling",
-                "auto",
-              );
+              overflowScrolling = "auto";
             }
           } else {
-            this.content.setScrollElementStyle(
-              "-webkit-overflow-scrolling",
-              "auto",
-            );
+            overflowScrolling = "auto";
+          }
+          this.content.setScrollElementStyle(
+            "-webkit-overflow-scrolling",
+            overflowScrolling,
+          );
+
+          /*模拟滚动*/
+          if (to !== undefined) {
+            from = to;
+          }
+          to = te;
+
+          if (frame_id) {
+            cancelAnimationFrame(frame_id);
+            frame_id = null;
           }
         }
       });
+      const touchend = (e: TouchEvent) => {
+        const contentEle = e.currentTarget as HTMLElement;
+
+        if (frame_id) {
+          cancelAnimationFrame(frame_id);
+          frame_id = null;
+        }
+        if (overflowScrolling !== "auto") {
+          return
+        }
+        let diff = (from - to) / window.devicePixelRatio;
+        let total_diff = diff;
+        const scroll_handle = () => {
+          // this.header && (this.header.getNativeElement().querySelector(".toolbar-title").innerHTML = diff + "px");
+          contentEle.scrollTop += diff * window.devicePixelRatio;
+          // diff /= 2;
+          const cut_diff = total_diff / Math.max(2, Math.abs(diff) / 2);
+          if (diff > 0) {
+            diff -= Math.min(cut_diff, diff / 2);
+          } else {
+            diff -= Math.max(cut_diff, diff / 2);
+          }
+          if (Math.abs(diff) > 0.5) {
+            frame_id = requestAnimationFrame(scroll_handle);
+          }
+        }
+        frame_id = requestAnimationFrame(scroll_handle);
+      }
+      scroll_ele.addEventListener("touchend", touchend);
+      scroll_ele.addEventListener("touchcancel", touchend);
     }
     // const calcScrollTopInTime = () => {
     //   if (this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
@@ -277,8 +316,9 @@ export class FirstLevelPage extends FLP_Data {
         /* IONIC的content组件使用contentTop来判定是否更新marginTop，由于header高度变动.
          * 我们使用translateY来模拟marginTop变动
          * 所以在页面更新切换更新的时候，不需要去判定header高度的变动*/
-        this.content.contentTop =
-          cTop - (header_height - header_ele.offsetHeight);
+        const diff_offset_height = header_height - header_ele.offsetHeight;
+        this.content.contentTop = cTop - diff_offset_height;
+        this.content._cTop -= diff_offset_height;
       } else {
         (this.header.setElementStyle as any)("animation-delay", null);
         this.content.setScrollElementStyle("transform", null);
@@ -299,7 +339,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-      )
+    )
       .present();
   }
 
