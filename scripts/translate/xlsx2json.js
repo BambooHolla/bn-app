@@ -72,6 +72,15 @@ class LangVisitor extends Visitor {
 	}
 }
 
+const file_hash = nearFileInfo.filename.split(".")[1];
+const output_folder = __dirname + "/output-json/" + file_hash;
+if (
+	!(fs.existsSync(output_folder) && fs.statSync(output_folder).isDirectory())
+) {
+	fs.mkdirSync(output_folder);
+}
+console.log(`输入文件夹: ${output_folder}`);
+
 langs.forEach(lang => {
 	if (lang === "zh-cmn-Hans") {
 		return;
@@ -88,5 +97,6 @@ langs.forEach(lang => {
 		...prettierConfig,
 		parser: "json",
 	});
-	fs.writeFileSync(__dirname + "/output-json/" + lang + ".json", json_str);
+	fs.existsSync();
+	fs.writeFileSync(output_folder + "/" + lang + ".json", json_str);
 });

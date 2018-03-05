@@ -112,4 +112,5 @@
         <variable name="CAMERA_USAGE_DESCRIPTION" value=" " />
     </plugin>
     <allow-navigation href="http://10.32.216.141:8100" />
+    <allow-navigation href="http://192.168.16.171:8100" />
 </widget>

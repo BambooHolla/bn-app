@@ -60,6 +60,7 @@
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加载区块链中",
   "LOAD_BLOCK_LIST_ERROR": "加载区块链失败",
+  "LOADING_MORE_BLOCK_LIST": "加载更多区块中……",
   "LOAD_MORE_BLOCK_LIST_ERROR": "加载更多区块失败",
   "BLOCKCHAIN": "区块链",
   "EXPECED_TRANSACTIONS_AMOUNT": "预期交易量",
