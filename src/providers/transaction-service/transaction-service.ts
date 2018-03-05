@@ -174,7 +174,7 @@ export class TransactionServiceProvider {
         txData.secondSecret &&
         txData.type !== this.transactionTypeCode.SIGNATURE
       ) {
-        let secondPwd = txData.secondPwd;
+        let secondPwd = txData.secondSecret;
         let is_second_true = this.verifySecondPassphrase(secondPwd);
         if (!is_second_true) {
           return this.fetch.ServerResError.translateAndParseErrorMessage<
@@ -381,6 +381,7 @@ export class TransactionServiceProvider {
    * TODO:全部判断地址是否正确
    */
   async transfer(recipientId, amount, password, secondSecret) {
+    debugger
     if (parseFloat(amount) > 0) {
       let txData: any = {
         type: this.transactionTypeCode.SEND,
