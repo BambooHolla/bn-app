@@ -35,7 +35,7 @@ export class TabChainPage extends FirstLevelPage {
     public r2: Renderer2
   ) {
     super(navCtrl, navParams);
-    this.auto_header_shadow_when_scroll_down = true;
+    // this.auto_header_shadow_when_scroll_down = true;
     this.auto_header_progress_when_scrol_down = true;
   }
   unconfirm_block_mesh_thit = 0xa4a2a3;
@@ -180,7 +180,6 @@ export class TabChainPage extends FirstLevelPage {
   }
 
   async onListChange(event: ChangeEvent) {
-    console.log(event);
     if (event.end !== this.block_list.length) return;
     await this.loadMoreBlockList();
     this.block_list = this.block_list.slice();

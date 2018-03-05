@@ -1,14 +1,16 @@
 page-tab-chain {
   @extend .header-no-border;
   $block-distance: 1.6;
-  > .header{
+  > .header {
     /* 启用头部动画 */
     animation-fill-mode: forwards;
     animation-play-state: paused;
     animation-duration: 2s;
     animation-timing-function: linear;
+    animation-name: tabchain-header;
   }
   > .content {
+    height: 100vh;
     > .scroll-content {
       overflow: hidden;
       display: flex;
@@ -27,16 +29,22 @@ page-tab-chain {
     }
   }
   .unconfirm-block-wrapper {
-    padding: 0.2rem 4vw #{$block-distance}rem 4vw;
-    background-color: rgba(255, 255, 255, 1);
+    padding: 0.2rem 4vw 0 4vw;
+    /* margin-bottom: #{$block-distance}rem; */
+    /* background-color: rgba(255, 255, 255, 1); */
+    background-color: transparent;
     @extend .follow-parent-ani;
   }
-  @supports(backdrop-filter: blur(5px)){
-    > .header{
-      backdrop-filter: blur(5px);
-    }
-    .unconfirm-block-wrapper {
-      background-color: rgba(255, 255, 255, 0.6);
+  @supports (backdrop-filter: blur(5px)) {
+    @keyframes tabchain-header {
+      40% {
+        backdrop-filter: blur(0px);
+        background-color: transparent;
+      }
+      100% {
+        backdrop-filter: blur(5px);
+        background-color: rgba(255, 255, 255, 0.6);
+      }
     }
   }
   .unconfirm-block {
@@ -45,7 +53,7 @@ page-tab-chain {
     height: 16.6rem;
     position: relative;
     box-sizing: border-box;
-    padding: 6rem 0.8rem 1.6rem;
+    padding: 0 0.8rem 1.6rem;
 
     animation-name: tabchain-header-unconfirm-block;
     @extend .follow-parent-ani;
@@ -53,13 +61,11 @@ page-tab-chain {
       0% {
         /* transform: scale(1); */
         height: 16.6rem;
-        padding-top: 6rem;
       }
 
       100% {
         /* transform: scale(1, 0.5); */
         height: 6rem;
-        padding-top: 0rem;
       }
     }
     > .blur-bg {
@@ -81,12 +87,19 @@ page-tab-chain {
 
       animation-name: tabchain-header-blur-bg;
       @extend .follow-parent-ani;
-      @keyframes tabchain-header-blur-bg{
+      @keyframes tabchain-header-blur-bg {
         0% {
           opacity: 1;
+          display: block;
+        }
+        60% {
+          opacity: 0;
+          display: none;
+          visibility: hidden;
         }
         100% {
-          opacity: 0;
+          display: none;
+          visibility: hidden;
         }
       }
     }
@@ -111,12 +124,14 @@ page-tab-chain {
 
       animation-name: tabchain-header-bg-image;
       @extend .follow-parent-ani;
-      @keyframes tabchain-header-bg-image{
+      @keyframes tabchain-header-bg-image {
         0% {
           opacity: 1;
         }
         100% {
-          opacity: 0;
+          opacity: 0.4;
+          top: -5rem;
+          height: calc(100% + 5rem);
         }
       }
 
@@ -145,7 +160,8 @@ page-tab-chain {
     }
     > .content {
       display: flex;
-      align-items: center;
+      /* align-items: center; */
+      align-items: stretch;
       text-align: center;
       font-weight: lighter;
       font-size: 1.4rem;
@@ -153,7 +169,7 @@ page-tab-chain {
 
       animation-name: tabchain-header-content;
       @extend .follow-parent-ani;
-      @keyframes tabchain-header-content{
+      @keyframes tabchain-header-content {
         0% {
           color: rgba(255, 255, 255, 0.6);
         }
@@ -170,36 +186,43 @@ page-tab-chain {
       ali-icon {
         font-size: 1.7rem;
       }
-      .left {
+      > .left {
         flex: 1;
       }
-      .center {
+      > .center {
         flex: 1.6;
         font-size: 1.5rem;
         color: rgba(255, 255, 255, 1);
         position: relative;
+        top: 6rem;
 
         animation-name: tabchain-header-center;
         @extend .follow-parent-ani;
-        @keyframes tabchain-header-center{
+        @keyframes tabchain-header-center {
           0% {
             left: 0;
             color: rgba(255, 255, 255, 1);
+            top: 6rem;
           }
           60% {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(122, 122, 122, 0.9);
             text-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.3);
           }
           100% {
             color: rgba(122, 122, 122, 1);
+            text-shadow: 0 0 0.2rem rgba(255, 255, 255, 0.8);
             left: -27.77777vw;
+            top: 0;
           }
         }
         > .trans_num {
+          width: 100%;
+          position: absolute;
           margin-bottom: 1.8rem;
           font-weight: normal;
           > .value {
             font-size: 2.6rem;
+            height: 2.7rem;
           }
           .title {
             font-size: 1.5rem;
@@ -209,44 +232,44 @@ page-tab-chain {
           }
         }
         > .reward {
-          position: relative;
+          width: 100%;
+          position: absolute;
           animation-name: tabchain-header-center_reward;
           @extend .follow-parent-ani;
-          @keyframes tabchain-header-center_reward{
+          @keyframes tabchain-header-center_reward {
             0% {
-              top: 0;
+              top: 6rem;
               left: 0;
             }
             100% {
-              top: -6rem;
+              top: 0rem;
               left: 55vw;
             }
           }
           > .value {
             font-size: 1.7rem;
-            margin-bottom: 0.2rem;
+            height: 2.7rem;
+            line-height: 2.7rem;
           }
         }
       }
-      .right {
+      > .right {
         align-self: flex-start;
         flex: 1;
         position: relative;
-        top: -5.5rem;
+        /* top: -5.5rem; */
+        animation-name: tabchain-header-right;
+        @extend .follow-parent-ani;
+        @keyframes tabchain-header-right {
+          0% {
+            top: 1rem;
+          }
+          100% {
+            top: -3rem;
+          }
+        }
         > .height {
           text-align: right;
-          position: relative;
-          top: 0;
-          animation-name: tabchain-header-right_height;
-          @extend .follow-parent-ani;
-          @keyframes tabchain-header-right_height{
-            0% {
-              top: 0;
-            }
-            100% {
-              top: 3rem;
-            }
-          }
         }
       }
     }
@@ -256,7 +279,6 @@ page-tab-chain {
     flex-direction: column;
     align-items: center;
     transform: translateZ(0);
-    padding-top: #{$block-distance / 2}rem;
     .block-item {
       margin-right: auto;
       margin-left: auto;
@@ -267,6 +289,9 @@ page-tab-chain {
       box-shadow: -0.2rem -0.3rem 2.4rem rgba(0, 0, 0, 0.12),
         0 0rem 0.2rem rgba(0, 0, 0, 0.05);
       position: relative;
+      &:first-child {
+        margin-top: #{$block-distance}rem;
+      }
       > .header {
         padding: 0 1.4rem;
         padding-top: 2.5rem;

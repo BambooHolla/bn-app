@@ -206,7 +206,7 @@ export class FirstLevelPage extends FLP_Data {
       if (!this.content || !this.header) {
         return;
       }
-      if (this.auto_header_shadow_when_scroll_down) {
+      if (this.auto_header_progress_when_scrol_down) {
         if (!this._header_progress_ani_data) {
           const header_ele = this.header.getElementRef()
             .nativeElement as HTMLElement;
@@ -218,7 +218,9 @@ export class FirstLevelPage extends FLP_Data {
             "ion-navbar",
           ) as HTMLElement | null;
           const navbar_height = navbar_ele ? navbar_ele.offsetHeight : 0;
-          const distance = header_ele.offsetHeight - navbar_height;
+          const cTop = this.content._cTop;
+          const header_height = header_ele.offsetHeight;
+          const distance = header_height - navbar_height;
           this._watch_scroll_content_intime(distance);
 
           const ani_total_second = parseFloat(
@@ -227,6 +229,8 @@ export class FirstLevelPage extends FLP_Data {
           this._header_progress_ani_data = {
             header_ele,
             header_style,
+            cTop,
+            header_height,
             scroll_content_height,
             navbar_ele,
             navbar_height,
@@ -242,6 +246,8 @@ export class FirstLevelPage extends FLP_Data {
         const {
           header_ele,
           header_style,
+          cTop,
+          header_height,
           scroll_content_height,
           navbar_ele,
           navbar_height,
@@ -268,6 +274,11 @@ export class FirstLevelPage extends FLP_Data {
           "transform",
           `translateY(${-scrollTop}px)`,
         );
+        /* IONIC的content组件使用contentTop来判定是否更新marginTop，由于header高度变动.
+         * 我们使用translateY来模拟marginTop变动
+         * 所以在页面更新切换更新的时候，不需要去判定header高度的变动*/
+        this.content.contentTop =
+          cTop - (header_height - header_ele.offsetHeight);
       } else {
         (this.header.setElementStyle as any)("animation-delay", null);
         this.content.setScrollElementStyle("transform", null);
@@ -288,7 +299,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-    )
+      )
       .present();
   }
 
