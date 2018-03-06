@@ -7,8 +7,6 @@ import {
   Platform,
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
-
-import { TranslateService } from "@ngx-translate/core";
 import { MyApp } from "../../app/app.component";
 
 export interface Slide {
@@ -31,14 +29,12 @@ export class TutorialPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public menu: MenuController,
-    translate: TranslateService,
-    public platform: Platform,
     public myapp: MyApp,
   ) {
     super(navCtrl, navParams);
-    this.dir = platform.dir();
-    translate
-      .get([
+    this.dir = this.platform.dir();
+    this.translate
+      .stream([
         "TUTORIAL_SLIDE1_TITLE",
         "TUTORIAL_SLIDE1_DESCRIPTION",
         "TUTORIAL_SLIDE2_TITLE",

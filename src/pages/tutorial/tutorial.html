@@ -10,7 +10,7 @@
   </ion-navbar>
 </ion-header>
 <ion-content no-bounce>
-  <ion-slides pager="true" dir="{{dir}}" (ionSlideWillChange)="onSlideChangeStart($event)">
+  <ion-slides pager="true" [dir]="dir" (ionSlideWillChange)="onSlideChangeStart($event)">
     <ion-slide *ngFor="let slide of slides;index as i" [ngClass]="'slide-'+i">
       <img [src]="slide.image" class="slide-image" />
       <div class="text">
