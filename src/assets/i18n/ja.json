@@ -1,5 +1,7 @@
 {
   "OK": "はい",
+  "YES": "はい",
+  "NO": "いいえ",
   "CANCEL": "キャンセル",
   "BACK_BUTTON_TEXT": "戻る",
   "PULLING_REFRESH_LIST": "下にスクロールしリストを更新",

@@ -78,7 +78,7 @@ export class FirstLevelPage extends FLP_Data {
       return;
     }
     this._watch_scroll_content_max_scrollTop = distance || window.innerHeight;
-    if (this.content) {
+    if (this.content && this.isIOS) {
       const scroll_ele = this.content.getScrollElement();
       let ts;
       scroll_ele.addEventListener("touchstart", e => {

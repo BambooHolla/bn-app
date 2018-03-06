@@ -316,9 +316,9 @@ export class TabVotePage extends FirstLevelPage {
               "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE",
             ),
             buttons: [
-              this.translate.instant("CANCEL"),
+              this.translate.instant("NO"),
               {
-                text: this.translate.instant("OK"),
+                text: this.translate.instant("YES"),
                 handler: () => {
                   this.routeTo("settings-set-default-fee", {
                     auto_return: true,

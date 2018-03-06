@@ -1,5 +1,7 @@
 {
   "OK": "确定",
+  "YES": "是",
+  "NO": "否",
   "CANCEL": "取消",
   "BACK_BUTTON_TEXT": "回退",
   "PULLING_REFRESH_LIST": "下拉更新列表",
