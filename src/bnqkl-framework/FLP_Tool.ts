@@ -121,6 +121,9 @@ export class FLP_Tool {
       .take(1)
       .toPromise();
   }
+  getTranslateSync(key: string | string[], interpolateParams?: Object) {
+    return this.translate.instant(key, interpolateParams);
+  }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
 }

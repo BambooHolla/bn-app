@@ -98,6 +98,7 @@
   "TRANSCATION_RECIPIENT": "接收者",
 
   "//": "account-my-contacts",
+  "SCAN_QR_CODE_TO_ADD_CONTACT": "扫一扫添加联系人",
   "IGNORE_UNCONFIRM_CONTACT_ERROR": "拒绝通过联系人失败",
   "ADD_CONTACT_SUBMIT_ERROR": "同意添加联系人提交失败",
   "ADD_CONTACT_SUBMITING": "同意添加联系人提交中",
@@ -257,6 +258,9 @@
     "更新交易记录失败，重试次数过多，已停止重试，请检测网络",
   "CONFIRMED_TRANSACTION_LIST_IS_EMPTY": "已确认交易列表为空",
   "UNCONFIRM_TRANSACTION_LIST_IS_EMPTY": "未确认交易列表为空",
+  "LOADING_UNCONFIRM_TRANSACTION_LIST": "加载未确认交易列表中……",
+  "LOADING_MORE_CONFIRMED_TRANSACTION_LIST": "加载更多已确认交易列表中……",
+  "LOADING_MORE_UNCONFIRM_TRANSACTION_LIST": "加载更多未确认交易列表中……",
 
   "//": "account-peer-list",
   "ACCOUNT-PEER-LIST": "节点列表",
