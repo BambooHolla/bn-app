@@ -40,8 +40,10 @@ export class AccountSetUsernamePage extends SecondLevelPage {
 
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password } = await this.getUserPassword();
-    return this._submit(password);
+    const { password, custom_fee } = await this.getUserPassword({
+      custom_fee: true,
+    });
+    return this._submit(password, custom_fee);
   }
 
   @asyncCtrlGenerator.error(() =>
@@ -53,9 +55,9 @@ export class AccountSetUsernamePage extends SecondLevelPage {
   @asyncCtrlGenerator.success(() =>
     AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_SUCCESS"),
   )
-  async _submit(password: string) {
+  async _submit(password: string, custom_fee?: number) {
     return this.accountService
-      .changeUsername(this.formData.username, password)
+      .changeUsername(this.formData.username, password, undefined, custom_fee)
       .then(() => {
         this.finishJob();
       });

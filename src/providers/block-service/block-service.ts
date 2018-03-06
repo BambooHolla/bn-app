@@ -47,11 +47,11 @@ export class BlockServiceProvider {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 
-    // // 启动轮询更新更新
-    // this._loopGetAndSetHeight();
+    // 启动轮询更新更新
+    this._loopGetAndSetHeight();
 
-    // 启动websocket的监听更新
-    this._listenGetAndSetHeight();
+    // // 启动websocket的监听更新
+    // this._listenGetAndSetHeight();
   }
   /**第二个块的timestamp*/
   private _timestamp_from?: number;

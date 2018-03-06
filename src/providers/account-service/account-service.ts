@@ -91,6 +91,7 @@ export class AccountServiceProvider {
     newUsername: string,
     secret: string,
     secondSecret?: string,
+    fee = parseFloat(this.appSetting.settings.default_fee),
   ) {
     if (!!this.user.userInfo.username) {
       return this.fetch.ServerResError.translateAndParseErrorMessage(
@@ -103,7 +104,7 @@ export class AccountServiceProvider {
           type: this.ifmJs.transactionTypes.USERNAME,
           secret,
           publicKey: this.user.userInfo.publicKey,
-          fee: this.appSetting.settings.default_fee,
+          fee: fee.toString(),
           asset: {
             username: {
               alias: newUsername,
