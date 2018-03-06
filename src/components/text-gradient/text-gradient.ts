@@ -77,11 +77,11 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     const style = getComputedStyle(textEle);
     let font = style.font || "";
-    const style_fontSize = style.fontSize
+    const style_fontSize = style.fontSize;
     let fontSize_num = 0;
     if (style_fontSize) {
       fontSize_num = parseFloat(style_fontSize);
-      let fontSize = style_fontSize
+      let fontSize = style_fontSize;
       if (this.devicePixelRatio !== 1) {
         fontSize = fontSize.replace(
           fontSize_num + "",
@@ -122,8 +122,16 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     ctx.fillText(text, padding_width, canvas.height - 2 * padding_height);
     // 过滤掉空白
     const bound = TextGradientComponent.trim(canvas);
-    if (bound && (canvas.width !== bound.width || canvas.height !== bound.height)) {
-      const data = ctx.getImageData(bound.left, bound.top, bound.width, bound.height);
+    if (
+      bound &&
+      (canvas.width !== bound.width || canvas.height !== bound.height)
+    ) {
+      const data = ctx.getImageData(
+        bound.left,
+        bound.top,
+        bound.width,
+        bound.height,
+      );
       canvas.width = bound.width;
       canvas.height = bound.height;
       ctx.putImageData(data, 0, 0);
@@ -244,8 +252,8 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
-    const trimHeight = bound.height = bound.bottom - bound.top;
-    const trimWidth = bound.width = bound.right - bound.left;
+    const trimHeight = (bound.height = bound.bottom - bound.top);
+    const trimWidth = (bound.width = bound.right - bound.left);
     if (!(trimHeight && trimWidth)) {
       return null;
     }
@@ -262,5 +270,4 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
 
     return bound;
   }
-
 }

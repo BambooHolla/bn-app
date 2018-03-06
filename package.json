@@ -1,6 +1,6 @@
 {
   "name": "ifm-app-v2",
-  "version": "0.1.0",
+  "version": "2.1.0",
   "author": "BNQKL Team",
   "homepage": "http://mainnet.ifmchain.org/",
   "private": true,
@@ -88,7 +88,7 @@
     "json-ast": "^2.1.7",
     "node-xlsx": "^0.11.2",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.9.2",
+    "prettier": "^1.11.1",
     "typescript": "^2.7.1",
     "xlsx": "^0.12.3"
   },

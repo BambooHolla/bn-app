@@ -40,7 +40,7 @@ export enum TransactionTypes {
   /**发送信息*/
   SENDMESSAGE = 12,
   /** 侧链数据存证*/
-  MARK = 13
+  MARK = 13,
 }
 
 @Injectable()
@@ -179,7 +179,7 @@ export class TransactionServiceProvider {
         if (!is_second_true) {
           return this.fetch.ServerResError.translateAndParseErrorMessage<
             boolean
-            >("Second passphrase verified error");
+          >("Second passphrase verified error");
         }
       }
       if (typeof txData.fee === "number") {
@@ -296,8 +296,12 @@ export class TransactionServiceProvider {
     let md5Second =
       publicKey.toString().trim() +
       "-" +
-      this.Crypto.createHash("md5").update(secondSecret.toString().trim()).digest("hex");
-    let secondHash = this.Crypto.createHash("sha256").update(md5Second, "utf-8").digest();
+      this.Crypto.createHash("md5")
+        .update(secondSecret.toString().trim())
+        .digest("hex");
+    let secondHash = this.Crypto.createHash("sha256")
+      .update(md5Second, "utf-8")
+      .digest();
     let secondKeypair = this.nacl.crypto_sign_seed_keypair(secondHash);
     secondKeypair.publicKey = this.Buff.from(secondKeypair.signPk);
     secondKeypair.privateKey = this.Buff.from(secondKeypair.signSk);
@@ -380,13 +384,22 @@ export class TransactionServiceProvider {
    * @param recipientId 接收人
    * TODO:全部判断地址是否正确
    */
-  async transfer(recipientId, amount, fee = parseFloat(this.appSetting.settings.default_fee), password, secondSecret) {
-    debugger
-    if (parseFloat(amount) > 0 && parseFloat(amount) < parseFloat(this.user.balance)) {
-      if(parseFloat(amount) + fee > parseFloat(this.user.balance)) {
+  async transfer(
+    recipientId,
+    amount,
+    fee = parseFloat(this.appSetting.settings.default_fee),
+    password,
+    secondSecret,
+  ) {
+    debugger;
+    if (
+      parseFloat(amount) > 0 &&
+      parseFloat(amount) < parseFloat(this.user.balance)
+    ) {
+      if (parseFloat(amount) + fee > parseFloat(this.user.balance)) {
         return this.fetch.ServerResError.translateAndParseErrorMessage(
-          "Amount error"
-        )
+          "Amount error",
+        );
       }
 
       let txData: any = {

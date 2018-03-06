@@ -6,7 +6,7 @@ import {
   NavParams,
   Platform,
 } from "ionic-angular";
-import { FirstLevelPage } from '../../bnqkl-framework/FirstLevelPage';
+import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
 import { TranslateService } from "@ngx-translate/core";
 import { MyApp } from "../../app/app.component";

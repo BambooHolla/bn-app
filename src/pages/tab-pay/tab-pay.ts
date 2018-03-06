@@ -103,6 +103,7 @@ export class TabPayPage extends FirstLevelPage {
     return this.transactionService.transfer(
       transfer_address,
       transfer_amount,
+      custom_fee,
       password,
       pay_pwd,
     );

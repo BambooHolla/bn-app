@@ -7,13 +7,13 @@ import { MomentModule } from "angular2-moment";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [ChainTransactionDetailPage],
-	imports: [
-		IonicPageModule.forChild(ChainTransactionDetailPage),
-		ComponentsModule,
-		PipesModule,
-		MomentModule,
-		TranslateModule,
-	],
+  declarations: [ChainTransactionDetailPage],
+  imports: [
+    IonicPageModule.forChild(ChainTransactionDetailPage),
+    ComponentsModule,
+    PipesModule,
+    MomentModule,
+    TranslateModule,
+  ],
 })
 export class ChainTransactionDetailPageModule {}

@@ -2,7 +2,12 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  ViewController,
+} from "ionic-angular";
 import { UserInfoProvider } from "../../../providers/user-info/user-info";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
 
@@ -27,13 +32,13 @@ export class AccountAddContactPage extends SecondLevelPage {
     search_text: "",
   };
   showCloseButton = false;
-  closeModal(){
+  closeModal() {
     this.viewCtrl.dismiss();
   }
 
   @AccountAddContactPage.willEnter
   autoAddContact() {
-    this.showCloseButton = this.navParams.get("showCloseButton")
+    this.showCloseButton = this.navParams.get("showCloseButton");
     const address = this.navParams.get("address");
     if (address) {
       this.formData.search_text = address;
@@ -47,10 +52,12 @@ export class AccountAddContactPage extends SecondLevelPage {
   searchContacts(t = 200) {
     clearTimeout(this._ti);
     this._ti = setTimeout(() => {
-      this.getUserPassword()
+      this.getUserPassword({
+        custom_fee: true,
+      })
         .then(pwdData => {
-          const { password, pay_pwd } = pwdData;
-          this._searchContacts(password, pay_pwd);
+          const { password, pay_pwd, custom_fee } = pwdData;
+          this._searchContacts(password, pay_pwd, custom_fee);
         })
         .catch(() => {
           /*密码设置异常不做处理*/
@@ -68,14 +75,15 @@ export class AccountAddContactPage extends SecondLevelPage {
   @asyncCtrlGenerator.success(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
   )
-  private async _searchContacts(password, pay_pwd) {
+  private async _searchContacts(password, pay_pwd, custom_fee?: number) {
     // 直接添加，暂时不支持搜索
     const address = this.formData.search_text;
     const is_success = await this.contactService.addContact(
       password,
       address,
       pay_pwd,
+      custom_fee,
     );
-    this.finishJob()
+    this.finishJob();
   }
 }

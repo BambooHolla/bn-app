@@ -6,6 +6,10 @@ import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
   declarations: [LinkNodePage],
-  imports: [IonicPageModule.forChild(LinkNodePage), ComponentsModule,   TranslateModule,  ],
+  imports: [
+    IonicPageModule.forChild(LinkNodePage),
+    ComponentsModule,
+    TranslateModule,
+  ],
 })
 export class LinkNodePageModule {}

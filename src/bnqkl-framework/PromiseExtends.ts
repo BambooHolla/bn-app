@@ -84,7 +84,7 @@ export function autoAbort(
 ) {
   const fun = descriptor.value;
   let _lock: PromisePro<any> | undefined;
-  descriptor.value = function (...args) {
+  descriptor.value = function(...args) {
     if (_lock) {
       _lock.abort();
       _lock = undefined;

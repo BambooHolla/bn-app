@@ -27,19 +27,31 @@ export class FLP_Lifecycle extends FLP_Tool
     // console.log("ngOnInit",this.content,this.header)
     // this.content.fullscreen = true;
     for (let fun_name of this._oninit_funs) {
-      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
+      try {
+        this[fun_name]();
+      } catch (err) {
+        console.error(fun_name, err);
+      }
     }
     this.tryEmit("onInit");
   }
   ngAfterContentInit() {
     for (let fun_name of this._aftercontentinit_funs) {
-      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
+      try {
+        this[fun_name]();
+      } catch (err) {
+        console.error(fun_name, err);
+      }
     }
     this.tryEmit("afterContentInit");
   }
   ngOnDestroy() {
     for (let fun_name of this._ondestory_funs) {
-      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
+      try {
+        this[fun_name]();
+      } catch (err) {
+        console.error(fun_name, err);
+      }
     }
     this.tryEmit("onDestory");
   }
@@ -49,7 +61,11 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewWillEnter", this.cname);
 
     for (let fun_name of this._will_enter_funs) {
-      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
+      try {
+        this[fun_name]();
+      } catch (err) {
+        console.error(fun_name, err);
+      }
     }
     this.tryEmit("willEnter");
   }
@@ -59,7 +75,11 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewDidEnter", this.cname);
 
     for (let fun_name of this._did_enter_funs) {
-      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
+      try {
+        this[fun_name]();
+      } catch (err) {
+        console.error(fun_name, err);
+      }
     }
     this.tryEmit("didEnter");
   }
@@ -68,7 +88,11 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewWillLeave", this.cname);
 
     for (let fun_name of this._will_leave_funs) {
-      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
+      try {
+        this[fun_name]();
+      } catch (err) {
+        console.error(fun_name, err);
+      }
     }
     this.tryEmit("willLeave");
   }
@@ -77,21 +101,39 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log("ionViewDidLeave", this.cname);
 
     for (let fun_name of this._did_leave_funs) {
-      try{this[fun_name]();}catch(err){console.error(fun_name,err);}
+      try {
+        this[fun_name]();
+      } catch (err) {
+        console.error(fun_name, err);
+      }
     }
     this.tryEmit("didLeave");
   }
-  dispatchEvent(fire_event_name: string, ...args: any[]): void
-  dispatchEvent(fire_event_name: "HEIGHT:CHANGED", height: number, is_init: boolean): void;
-  dispatchEvent(fire_event_name: "ROUND:CHANGED", height: number, is_init: boolean): void;
+  dispatchEvent(fire_event_name: string, ...args: any[]): void;
+  dispatchEvent(
+    fire_event_name: "HEIGHT:CHANGED",
+    height: number,
+    is_init: boolean,
+  ): void;
+  dispatchEvent(
+    fire_event_name: "ROUND:CHANGED",
+    height: number,
+    is_init: boolean,
+  ): void;
   dispatchEvent(fire_event_name: string, ...args: any[]) {
-    console.group("%cdispatchEvent", 'color:blue;background-color:#FFF', fire_event_name);
+    console.group(
+      "%cdispatchEvent",
+      "color:blue;background-color:#FFF",
+      fire_event_name,
+    );
     for (let { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
         try {
           console.log(handle_name);
           this[handle_name](...args);
-        } catch (err) { console.error(err); }
+        } catch (err) {
+          console.error(err);
+        }
       }
     }
     console.groupEnd();
@@ -147,12 +189,16 @@ export class FLP_Lifecycle extends FLP_Tool
   }
 
   @FLP_Lifecycle.cacheFromProtoArray("onEvent")
-  private _on_evnet_funs!: Set<{ handle_name: string, event_name: string }>;
+  private _on_evnet_funs!: Set<{ handle_name: string; event_name: string }>;
   static addEvent(event_name: string) {
-    return function(target: any, handle_name: string, descriptor?: PropertyDescriptor) {
+    return function(
+      target: any,
+      handle_name: string,
+      descriptor?: PropertyDescriptor,
+    ) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
       return descriptor;
-    }
+    };
   }
 
   static autoUnsubscribe(target: FLP_Lifecycle, name: string) {

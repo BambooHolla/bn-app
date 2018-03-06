@@ -6,12 +6,12 @@ import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [AccountAboutIbtPage],
-	imports: [
-		IonicPageModule.forChild(AccountAboutIbtPage),
-		TranslateModule,
-		DirectivesModule,
-		ComponentsModule,
-	],
+  declarations: [AccountAboutIbtPage],
+  imports: [
+    IonicPageModule.forChild(AccountAboutIbtPage),
+    TranslateModule,
+    DirectivesModule,
+    ComponentsModule,
+  ],
 })
 export class AccountAboutIbtPageModule {}

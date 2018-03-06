@@ -60,7 +60,7 @@ page-tab-vote {
     &.bootstrap {
       // 26 + 3.3732 / 0.83
       /* transform-origin: 50% 50%; */
-      transform: scale(0.83) translateY(#{(26 + 3.3732 - 5.4)/ 0.83}vh);
+      transform: scale(0.83) translateY(#{(26 + 3.3732 - 5.4) / 0.83}vh);
       // opacity: 0.2;
       > canvas {
         animation-name: rotate-chain-mesh;
@@ -289,11 +289,11 @@ page-tab-vote {
     justify-content: center;
     > ali-icon {
       font-size: 2.6rem;
-      margin:0 0.8rem  0.8rem  0.8rem;
+      margin: 0 0.8rem 0.8rem 0.8rem;
       > .ifmicon::before {
         -webkit-background-clip: text;
         color: transparent;
--webkit-text-fill-color: transparent;
+        -webkit-text-fill-color: transparent;
         background-image: linear-gradient(to bottom, #fccf51 0%, #fbb460 100%);
       }
     }

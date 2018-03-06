@@ -70,9 +70,9 @@ export class ContactServiceProvider {
     }
   }
   myContact!: AsyncBehaviorSubject<{
-    follower: ContactModel[],
-    following: ContactModel[]
-  }>
+    follower: ContactModel[];
+    following: ContactModel[];
+  }>;
   @HEIGHT_AB_Generator("myContact", true)
   myContact_Executor(promise_pro) {
     return promise_pro.follow(this.getMyContacts());
@@ -167,7 +167,7 @@ export class ContactServiceProvider {
       );
       address_or_username = userAddress.address;
     }
-    
+
     let txData = {
       type: this.transactionTypes.FOLLOW,
       amount: "0",

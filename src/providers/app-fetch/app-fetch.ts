@@ -9,7 +9,7 @@ import { AppSettingProvider } from "../app-setting/app-setting";
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
-  static translateAndParseErrorMessage<T=never>(message, code?): Promise<T> {
+  static translateAndParseErrorMessage<T = never>(message, code?): Promise<T> {
     return (window["translate"] as TranslateService)
       .get(message)
       .take(1)
@@ -35,7 +35,7 @@ export class ServerResError extends Error {
         } else {
           break;
         }
-      } catch (err) { }
+      } catch (err) {}
     }
     return new ServerResError(CODE_LIST, MESSAGE);
   }
@@ -48,7 +48,7 @@ export class ServerResError extends Error {
   CODE_LIST: string[];
   get CODE(): string {
     return this.CODE_LIST[0] || "";
-  };
+  }
   MESSAGE: string;
 }
 export type CommonResponseData<T> = {
@@ -124,7 +124,7 @@ export class AppFetchProvider {
       }
     }
   }
-  private _catchData() { }
+  private _catchData() {}
   private _handlePromise(
     promise: Promise<any>,
     // auto_cache: boolean,
@@ -210,7 +210,7 @@ export class AppFetchProvider {
     // if (timeout_ms === undefined) {
     //   timeout_ms = default_timeout_ms;
     // }
-    let catch_key: string = ""
+    let catch_key: string = "";
     if (auto_cache) {
       const url_info = new URL(url);
       catch_key =
@@ -347,12 +347,12 @@ export class AppFetchProvider {
   private _catch_first_base_on_type = TryGetCatchBaseOn.Height;
 
   tryGetCatchBaseOnHeight() {
-    this.tryGetCatch(true)
-    this._catch_first_base_on_type = TryGetCatchBaseOn.Height
+    this.tryGetCatch(true);
+    this._catch_first_base_on_type = TryGetCatchBaseOn.Height;
   }
   tryGetCatchBaseOnRound() {
-    this.tryGetCatch(true)
-    this._catch_first_base_on_type = TryGetCatchBaseOn.Round
+    this.tryGetCatch(true);
+    this._catch_first_base_on_type = TryGetCatchBaseOn.Round;
   }
 }
 export enum TryGetCatchBaseOn {

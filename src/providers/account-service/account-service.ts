@@ -76,9 +76,9 @@ export class AccountServiceProvider {
     return this.getAccountByUsername(username)
       .then((data: any) => {
         if (Object.keys(data.account).length === 0) {
-          return true
+          return true;
         }
-        return false
+        return false;
       })
       .catch(() => true);
   }
@@ -87,7 +87,11 @@ export class AccountServiceProvider {
    *  更改用户名
    *  @param {string} newUsername
    */
-  async changeUsername(newUsername: string, secret: string, secondSecret?: string) {
+  async changeUsername(
+    newUsername: string,
+    secret: string,
+    secondSecret?: string,
+  ) {
     if (!!this.user.userInfo.username) {
       return this.fetch.ServerResError.translateAndParseErrorMessage(
         "account already has username",
@@ -106,7 +110,7 @@ export class AccountServiceProvider {
               publicKey: this.user.userInfo.publicKey,
             },
           },
-        }
+        };
 
         if (secondSecret) {
           accountData.secondSecret = secondSecret;
@@ -150,7 +154,7 @@ export class AccountServiceProvider {
     password: string,
     secondSecret: string,
     second?: string,
-    fee = parseFloat(this.appSetting.settings.default_fee)
+    fee = parseFloat(this.appSetting.settings.default_fee),
   ) {
     let txData = {
       type: this.transactionType.SIGNATURE,

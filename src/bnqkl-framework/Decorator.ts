@@ -35,9 +35,12 @@ export function isErrorFromAsyncerror(err) {
 
 export function asyncErrorWrapGenerator(
   error_title: any = () => FLP_Tool.getTranslate("ERROR"),
-  opts?: AlertOptions | ((self: FLP_Tool) => AlertOptions) | ((self: FLP_Tool) => Promise<AlertOptions>),
+  opts?:
+    | AlertOptions
+    | ((self: FLP_Tool) => AlertOptions)
+    | ((self: FLP_Tool) => Promise<AlertOptions>),
   hidden_when_page_leaved = true,
-  keep_throw = false
+  keep_throw = false,
 ) {
   return function asyncErrorWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
@@ -74,7 +77,7 @@ export function asyncErrorWrapGenerator(
           if (hidden_when_page_leaved && page_leaved) {
             console.log(
               "%c不弹出异常提示因为页面的切换 " + (this.cname || ""),
-              "color:yellow"
+              "color:yellow",
             );
             return getErrorFromAsyncerror(keep_throw);
           }
@@ -83,7 +86,7 @@ export function asyncErrorWrapGenerator(
             console.warn(
               "需要在",
               target.constructor.name,
-              "中注入 AlertController 依赖"
+              "中注入 AlertController 依赖",
             );
             alert(err_msg);
           } else {
@@ -91,22 +94,24 @@ export function asyncErrorWrapGenerator(
               error_title = error_title(err);
             }
 
-            Promise.all([error_title, err_msg, opts instanceof Function ? opts(this) : opts]).then(
-              ([error_title, err_msg, opts]) => {
-                alertCtrl
-                  .create(
-                    Object.assign(
-                      {
-                        title: String(error_title),
-                        subTitle: String(err_msg),
-                        buttons: ["确定"],
-                      },
-                      opts
-                    )
-                  )
-                  .present();
-              }
-            );
+            Promise.all([
+              error_title,
+              err_msg,
+              opts instanceof Function ? opts(this) : opts,
+            ]).then(([error_title, err_msg, opts]) => {
+              alertCtrl
+                .create(
+                  Object.assign(
+                    {
+                      title: String(error_title),
+                      subTitle: String(err_msg),
+                      buttons: ["确定"],
+                    },
+                    opts,
+                  ),
+                )
+                .present();
+            });
           }
           return getErrorFromAsyncerror(keep_throw);
         });
@@ -119,7 +124,7 @@ export function asyncSuccessWrapGenerator(
   success_msg: any = () => FLP_Tool.getTranslate("SUCCESS"),
   position = "bottom",
   duration = 3000,
-  hidden_when_page_leaved = true
+  hidden_when_page_leaved = true,
 ) {
   return function asyncSuccessWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
@@ -153,7 +158,7 @@ export function asyncSuccessWrapGenerator(
             console.warn(
               "需要在",
               target.constructor.name,
-              "中注入 ToastController 依赖"
+              "中注入 ToastController 依赖",
             );
             alert(String(success_msg));
           } else {
@@ -183,12 +188,12 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
     loading?: Loading;
     promises: Set<Promise<any>>;
   }
-  >());
+>());
 export function asyncLoadingWrapGenerator(
   loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
   opts?: LoadingOptions,
-  id?: string
+  id?: string,
 ) {
   if (id) {
     var id_info = loadingIdLock.get(id);
@@ -209,7 +214,7 @@ export function asyncLoadingWrapGenerator(
       const loadingCtrl: LoadingController = this.loadingCtrl;
       if (!(loadingCtrl instanceof LoadingController)) {
         throw new Error(
-          target.constructor.name + " 缺少 LoadingController 依赖"
+          target.constructor.name + " 缺少 LoadingController 依赖",
         );
       }
       const res = source_fun.apply(this, args);
@@ -235,7 +240,7 @@ export function asyncLoadingWrapGenerator(
           content: String(loading_msg),
           cssClass: "can-goback",
         },
-        opts
+        opts,
       );
       const loading = loadingCtrl.create(loadingOpts);
 
@@ -343,10 +348,10 @@ export function autoRetryWrapGenerator(
     | (() => IterableIterator<number>)
     | number
     | {
-      max_retry_seconed?: number;
-      max_retry_times?: number;
-    },
-  onAbort?: Function
+        max_retry_seconed?: number;
+        max_retry_times?: number;
+      },
+  onAbort?: Function,
 ) {
   var max_retry_seconed = 16;
   var max_retry_times = 5; // 默认最多重试5次
@@ -360,7 +365,7 @@ export function autoRetryWrapGenerator(
   if (maxSeconed_or_timeGenerator instanceof Function) {
     timeGenerator = maxSeconed_or_timeGenerator;
   } else {
-    timeGenerator = function* () {
+    timeGenerator = function*() {
       var second = 1;
       var times = 0;
       do {

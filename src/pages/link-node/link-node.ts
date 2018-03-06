@@ -29,7 +29,7 @@ export class LinkNodePage extends FirstLevelPage {
     this.peerService.sortPeers();
     const peer_list = await this.peerService.getAllPeers();
     this.nodes = peer_list.map(peer => {
-      const {port,ip} = peer;
+      const { port, ip } = peer;
       const node_info = {
         loading: true,
         ping: -1,

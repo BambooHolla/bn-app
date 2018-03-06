@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../../components/components.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [SettingsLangPage],
-	imports: [
-		IonicPageModule.forChild(SettingsLangPage),
-		ComponentsModule,
-		TranslateModule,
-	],
+  declarations: [SettingsLangPage],
+  imports: [
+    IonicPageModule.forChild(SettingsLangPage),
+    ComponentsModule,
+    TranslateModule,
+  ],
 })
 export class SettingsLangPageModule {}

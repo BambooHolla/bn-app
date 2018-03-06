@@ -50,7 +50,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     }
   }
 
-  get lang_code(){
+  get lang_code() {
     return this.translate.currentLang;
   }
 

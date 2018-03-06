@@ -108,7 +108,7 @@ export class SatellitePixiComponent extends AniBase {
       const tail_len =
         min_tail_length +
         (max_tail_length - min_tail_length) *
-        (1 - Math.abs(center_tail_index - i) / center_tail_index);
+          (1 - Math.abs(center_tail_index - i) / center_tail_index);
       const deg = i / (tails_num - 1) * (to_deg - from_deg) + from_deg;
       const x = Math.sin(deg) * 25;
       const y = Math.cos(deg) * 25;
@@ -135,7 +135,6 @@ export class SatellitePixiComponent extends AniBase {
 
     // 沿轨道运动动画
     function shipAddDeg(cur_deg: number) {
-
       ship.rotation = cur_deg;
       const x = -Math.sin(cur_deg) * circle_width;
       const y = Math.cos(cur_deg) * circle_width;
@@ -147,14 +146,16 @@ export class SatellitePixiComponent extends AniBase {
 
     this.addLoop((t, dif_ms) => {
       if (this._add_ms < this._ani_ms) {
-        this._add_ms += dif_ms
+        this._add_ms += dif_ms;
         if (this._add_ms > this._ani_ms) {
-          this._add_ms = this._ani_ms
+          this._add_ms = this._ani_ms;
         }
       } else {
-        return
+        return;
       }
-      const p = this._pre_progress + this.easing(this._add_ms / this._ani_ms) * this._dif_progress;
+      const p =
+        this._pre_progress +
+        this.easing(this._add_ms / this._ani_ms) * this._dif_progress;
       const diff_deg = Math.PI * 2 * p;
       // console.log('zzz',circle_width)
       // const cur_ani_deg = ship.rotation + deg_p;
@@ -183,9 +184,14 @@ export class SatellitePixiComponent extends AniBase {
   private _ani_ms = 500;
   private _add_ms = 0;
 
-  setProgress(progress: number, ani_ms?: number, easing = Easing.Linear, immediate?: boolean) {
+  setProgress(
+    progress: number,
+    ani_ms?: number,
+    easing = Easing.Linear,
+    immediate?: boolean,
+  ) {
     if (ani_ms && isFinite(ani_ms) && ani_ms > 0) {
-      this._ani_ms = ani_ms
+      this._ani_ms = ani_ms;
     }
     this.progress = progress;
     this.easing = easing;
@@ -196,7 +202,7 @@ export class SatellitePixiComponent extends AniBase {
       this.updateImmediate();
     }
   }
-  easing = Easing.Linear
+  easing = Easing.Linear;
 
   startPixiApp() {
     this.app && this.app.start();

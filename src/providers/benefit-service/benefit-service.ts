@@ -105,10 +105,10 @@ export class BenefitServiceProvider {
       let benefitData = await this.getBenefits(query);
       this.benefitList = benefitData;
     }
-    return this.benefitList
+    return this.benefitList;
   }
 
-  top57Benefits!: AsyncBehaviorSubject<TYPE.BenefitModel[]>
+  top57Benefits!: AsyncBehaviorSubject<TYPE.BenefitModel[]>;
   @ROUND_AB_Generator("top57Benefits")
   top57Benefits_Executor(promise_pro) {
     return promise_pro.follow(this.getTop57Benefits(false));

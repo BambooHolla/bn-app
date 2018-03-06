@@ -4,21 +4,20 @@ page-tutorial {
     background: transparent;
     border-color: transparent;
   }
-  >.content{
-    >.scroll-content{
-      margin-top: 0!important;
+  > .content {
+    > .scroll-content {
+      margin-top: 0 !important;
     }
   }
   .lang-select-button {
-
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    color: #FFF;
+    color: #fff;
     background: none;
     border: none;
-    >img{
+    > img {
       width: 1.5rem;
       margin-right: 0.5rem;
     }
@@ -36,55 +35,56 @@ page-tutorial {
     left: 0;
     z-index: 1;
   }
-  .text{
+  .text {
     position: absolute;
     width: 100%;
     bottom: 12.5vh;
     left: 0;
     z-index: 2;
     text-align: center;
-    >*{
+    > * {
       margin: 0;
     }
   }
 
-  .slide-0{
-    .text{
+  .slide-0 {
+    .text {
       color: #59d8f4;
-      .slide-title{
+      .slide-title {
         font-size: 2rem;
         font-weight: lighter;
       }
-      .slide-description{
+      .slide-description {
         font-size: 2.4rem;
         font-weight: 600;
       }
     }
   }
 
-  .slide-1,.slide-2{
-    .text{
-      color: #FFFFFF;
+  .slide-1,
+  .slide-2 {
+    .text {
+      color: #ffffff;
       bottom: 28.5vh;
-      .slide-title{
+      .slide-title {
         font-size: 2rem;
         font-weight: normal;
       }
-      .slide-description{
+      .slide-description {
         font-size: 2rem;
         font-weight: normal;
       }
     }
   }
-  .slide-2{
-    .text{
-      >button{
+  .slide-2 {
+    .text {
+      > button {
         position: absolute;
         width: 100%;
         text-align: center;
         bottom: -5rem;
         left: 0;
-        color: #FFF;
+        color: #fff;
       }
     }
   }

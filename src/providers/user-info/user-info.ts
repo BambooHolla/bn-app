@@ -36,7 +36,7 @@ export class UserInfoProvider {
   get username() {
     return this._username;
   }
-  constructor(public storage: Storage) { }
+  constructor(public storage: Storage) {}
   initUserInfo(userInfo) {
     if (!userInfo) {
       userInfo = {};
