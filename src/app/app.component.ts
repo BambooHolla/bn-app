@@ -194,13 +194,20 @@ export class MyApp implements OnInit {
     );
     this.currentPage = page;
     if (this.nav) {
-      return this.nav.setRoot(page).then(() => this.splashScreen.hide());
+      return this.nav.setRoot(page);
     } else {
       return this._onNavInitedPromise.promise
         .then(() => {
           return this.nav && this.nav.setRoot(page);
-        })
-        .then(() => this.splashScreen.hide());
+        });
     }
+  }
+  private _is_hide = false
+  hideSplashScreen() {
+    if (this._is_hide) {
+      return
+    }
+    this.splashScreen.hide();
+    this._is_hide = true;
   }
 }

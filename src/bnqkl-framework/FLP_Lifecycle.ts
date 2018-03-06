@@ -70,9 +70,11 @@ export class FLP_Lifecycle extends FLP_Tool
     this.tryEmit("willEnter");
   }
 
+  @FLP_Tool.FromGlobal myapp!: any;
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;
     console.log("ionViewDidEnter", this.cname);
+    this.myapp.hideSplashScreen();
 
     for (let fun_name of this._did_enter_funs) {
       try {
