@@ -1,7 +1,13 @@
 import lazy_links from "./serializer-links";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
-import { ErrorHandler, NgModule } from "@angular/core";
+import {
+  ErrorHandler,
+  NgModule,
+  InjectionToken,
+  APP_INITIALIZER,
+  NgZone,
+} from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import {
   BrowserAnimationsModule,
@@ -18,7 +24,23 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
+import {
+  IonicApp,
+  IonicErrorHandler,
+  IonicModule,
+  DeepLinkConfigToken,
+  Config,
+  UrlSerializer,
+  App,
+} from "ionic-angular";
+import { setupPreloading } from "ionic-angular/util/module-loader";
+import {
+  ModuleLoader,
+  provideModuleLoader,
+} from "ionic-angular/util/module-loader";
+import { setupUrlSerializer } from "ionic-angular/navigation/url-serializer";
+// import { MyIonicModule as IonicModule  } from "./module";
+
 import { VirtualScrollModule } from "angular2-virtual-scroll";
 
 import { MyApp } from "./app.component";
@@ -65,6 +87,28 @@ import { VotePreRoundIncomeRankingComponent } from "../components/vote-pre-round
 
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 
+export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
+
+export function customDeepLinkConfig(deepLinkConfig) {
+  const static_links = [
+    { component: TutorialPage, name: "tutorial" },
+    { component: TabsPage, name: "tabs" },
+    { component: SignInAndSignUpPage, name: "sign-in-and-sign-up" },
+    { component: TabVotePage, name: "tab-vote" },
+    { component: TabChainPage, name: "tab-chain" },
+    { component: TabPayPage, name: "tab-pay" },
+    { component: TabAccountPage, name: "tab-account" },
+  ];
+  if (deepLinkConfig && deepLinkConfig.links) {
+    const static_links_name_set = new Set(static_links.map(link => link.name));
+    deepLinkConfig.links = deepLinkConfig.links.filter(
+      link => !static_links_name_set.has(link.name as string),
+    );
+    deepLinkConfig.links.push(...static_links);
+  }
+  return deepLinkConfig;
+}
+
 const pages = [
   MyApp,
   TutorialPage,
@@ -82,29 +126,6 @@ const heightLevelModules = [
   VotePreRoundIncomeRateComponent,
   VotePreRoundIncomeRankingComponent,
 ];
-const static_links = [
-  { component: TutorialPage, name: "tutorial" },
-  { component: TabsPage, name: "tabs" },
-  { component: SignInAndSignUpPage, name: "sign-in-and-sign-up" },
-  { component: TabVotePage, name: "tab-vote" },
-  { component: TabChainPage, name: "tab-chain" },
-  { component: TabPayPage, name: "tab-pay" },
-  { component: TabAccountPage, name: "tab-account" },
-];
-
-const static_links_name_set = new Set(static_links.map(link => link.name));
-
-const forRoot_name = Symbol("forRoot");
-IonicModule[forRoot_name] = IonicModule.forRoot;
-IonicModule.forRoot = (app, config?, deeplink?) => {
-  if (deeplink && deeplink.links) {
-    deeplink.links = deeplink.links.filter(
-      link => !static_links_name_set.has(link.name as string),
-    );
-    deeplink.links.push(...static_links);
-  }
-  return IonicModule[forRoot_name](app, config, deeplink);
-};
 
 @NgModule({
   declarations: [...pages, ...heightLevelModules],
@@ -166,6 +187,16 @@ IonicModule.forRoot = (app, config?, deeplink?) => {
     BenefitServiceProvider,
     UserInfoProvider,
     NewsProvider,
+    {
+      provide: MyDeepLinkConfigToken,
+      useFactory: customDeepLinkConfig,
+      deps: [DeepLinkConfigToken],
+    },
+    {
+      provide: UrlSerializer,
+      useFactory: setupUrlSerializer,
+      deps: [App, MyDeepLinkConfigToken],
+    },
   ],
 })
 export class AppModule {}
