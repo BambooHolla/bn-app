@@ -79,7 +79,9 @@ export class TabPayPage extends FirstLevelPage {
   }
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password, pay_pwd } = await this.getUserPassword();
+    const { password, pay_pwd } = await this.getUserPassword({
+      custom_fee: true,
+    });
     await this._submit(password, pay_pwd);
     this.resetFormData();
   }

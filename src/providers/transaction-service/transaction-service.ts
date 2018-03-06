@@ -75,8 +75,8 @@ export class TransactionServiceProvider {
     this.nacl_factory = this.ifmJs.nacl_factory;
     this.Crypto = this.ifmJs.crypto;
     this.Buff = this.ifmJs.Buff;
-    this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
-    this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
+    // this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
+    // this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
     this.keypairService = this.ifmJs.keypairHelper; //For verify passphrase
     this.addresssCheck = this.ifmJs.addressCheck;
   }
@@ -296,11 +296,11 @@ export class TransactionServiceProvider {
     let md5Second =
       publicKey.toString().trim() +
       "-" +
-      this.md5.update(secondSecret.toString().trim()).digest("hex");
-    let secondHash = this.sha.update(md5Second, "utf-8").digest();
+      this.Crypto.createHash("md5").update(secondSecret.toString().trim()).digest("hex");
+    let secondHash = this.Crypto.createHash("sha256").update(md5Second, "utf-8").digest();
     let secondKeypair = this.nacl.crypto_sign_seed_keypair(secondHash);
-    secondKeypair.publicKey = this.Buff.from(secondKeypair.signPK);
-    secondKeypair.privateKey = this.Buff.from(secondKeypair.signSK);
+    secondKeypair.publicKey = this.Buff.from(secondKeypair.signPk);
+    secondKeypair.privateKey = this.Buff.from(secondKeypair.signSk);
     return secondKeypair;
   }
 

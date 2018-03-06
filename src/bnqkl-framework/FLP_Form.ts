@@ -23,7 +23,7 @@ export class FLP_Form extends FLP_Route {
       error_checks_col[key].push(name);
 
       const source_fun = descriptor.value;
-      descriptor.value = function (...args) {
+      descriptor.value = function(...args) {
         const res = source_fun.apply(this, args);
         const bind_errors = _err_map => {
           const all_errors = this[namespace] || (this[namespace] = {});
@@ -105,10 +105,10 @@ export class FLP_Form extends FLP_Route {
     }
   }
 
-  resetFormData(){
-    for(let key in this.formData){
-      if(typeof this.formData[key]==="string"){
-      this.formData[key] = ""
+  resetFormData() {
+    for (let key in this.formData) {
+      if (typeof this.formData[key] === "string") {
+        this.formData[key] = ""
       }/*else if(typeof this.formData[key]==="number"){
         this.formData[key] = 0
       }*/
@@ -127,12 +127,13 @@ export class FLP_Form extends FLP_Route {
   )
   async getUserPassword(
     opts: {
+      custom_fee?: boolean;
       /**是否一定要输入主密码*/
       force_require_password?: boolean;
     } = {},
   ) {
-    const { force_require_password } = opts;
-    if (!force_require_password) {
+    const { force_require_password,custom_fee } = opts;
+    if (!force_require_password&&!custom_fee) {
       // 登录密码
       const { password, hasSecondPwd } = this.userInfo;
       if (!hasSecondPwd && password) {

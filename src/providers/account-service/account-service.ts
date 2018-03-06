@@ -34,8 +34,8 @@ export class AccountServiceProvider {
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
   ) {
-    this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
-    this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
+    // this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
+    // this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
   }
 
   readonly GET_USER = this.appSetting.APP_URL("/api/accounts/");

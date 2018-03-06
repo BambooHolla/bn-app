@@ -17,6 +17,12 @@
       </div>
       <input type="password" placeholder="{{'PLEASE_INPUT_LOGIN_PASSPHRASE' | translate}}" [(ngModel)]="formData.password" set-input-status="password">
     </div>
+    <div class="input-container" *ngIf="formData.need_custom_fee">
+      <div class="left">
+        <div class="label">{{'TRANSACTION_FEES' | translate}}</div>
+      </div>
+      <input type="number" placeholder="{{'PLEASE_INPUT_TRANSACTION_FEES' | translate}}" [(ngModel)]="formData.custom_fee" set-input-status="password">
+    </div>
   </div>
   <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">提交</button>
 </ion-content>

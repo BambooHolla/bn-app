@@ -19,7 +19,7 @@ const outputXlsxFiles = fs
 			filestat,
 		};
 	})
-	.sort((a, b) => b.mtimeMs - a.mtimeMs);
+	.sort((a, b) => b.filestat.mtimeMs - a.filestat.mtimeMs);
 
 const nearFileInfo = outputXlsxFiles[0];
 
@@ -76,14 +76,12 @@ class ChinaLangVisitor extends Visitor {
 			}
 			// 尽可能找中文是一样的字段来填充
 			if (!tran_value) {
-				tran_value = (chinaValueToKeyMap.get(china_value) || []).filter(
-					key => {
-						const map = dataMap.get(key);
-						if (map) {
-							return map[this.lang];
-						}
-					},
-				)[0];
+				(chinaValueToKeyMap.get(china_value) || []).some(key => {
+					const map = dataMap.get(key);
+					if (map) {
+						return (tran_value = map[this.lang]);
+					}
+				});
 			}
 
 			if (tran_value) {

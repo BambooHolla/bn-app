@@ -41,6 +41,9 @@
   "INFORMATION_NOT_SAVE_IN_BLOCKCHAIN": "仅用于生成密码数据不会保存在区块链上",
   "ALREADY_HAS_PASSPHRASE": "我已有密码 立即开始",
 
+  "//": "pwd-input",
+  "PLEASE_INPUT_TRANSACTION_FEES": "请输入手续费",
+
   "//": "tab-account",
   "MY_CONTACTS": "我的联系人",
   "MY_TRANSACTION": "我的交易",
@@ -119,7 +122,7 @@
   "//": "account-miner-list",
   "ACCOUNT-MINER-LIST": "矿工列表",
   "CUR_MINTER_RANK_RANKING": "当前矿工排名",
-  "CAN_MINTER_RANK_RANKING": "当前矿工排名",
+  "CAN_MINTER_RANK_RANKING": "候选矿工排名",
   "SERVERING_PEER_LIST": "正在服务的节点",
 
   "//": "account-my-contacts",
