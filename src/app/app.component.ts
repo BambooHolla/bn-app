@@ -87,7 +87,8 @@ export class MyApp implements OnInit {
 
     const initPage = (async () => {
       if (!localStorage.getItem("HIDE_WELCOME")) {
-        this.openPage(FirstRunPage);
+        await this.openPage(FirstRunPage);
+        return null;
       }
       const user_token = appSetting.getUserToken();
       if (user_token && user_token.password) {
@@ -111,26 +112,29 @@ export class MyApp implements OnInit {
       statusBar.show();
       statusBar.overlaysWebView(true);
       statusBar.styleDefault();
-      loginService.loginStatus.subscribe(isLogined => {
-        splashScreen.hide();
-        console.log("isLogined", isLogined);
-        this.openPage(isLogined ? MainPage : LoginPage);
-      });
       initPage
         .then(page => {
-          page && this.openPage(page);
+          if (page) {
+            return this.openPage(page)
+          }
         })
         .catch(err => {
           console.warn("INIT PAGE ERRROR", err);
-          this.openPage(LoginPage);
-        });
+          return this.openPage(LoginPage);
+        })
+        .then(() => {
+          loginService.loginStatus.subscribe(isLogined => {
+            console.log("isLogined", isLogined);
+            this.openPage(isLogined ? MainPage : LoginPage)
+          });
+        })
     });
   }
 
   initTranslate() {
     // Set the default language for translation strings, and the current language.
     this.translate.setDefaultLang("en");
-    if(this.appSetting.settings.lang){
+    if (this.appSetting.settings.lang) {
       return this.translate.use(this.appSetting.settings.lang);
     }
     const browserLang = this.translate.getBrowserLang();
@@ -171,16 +175,16 @@ export class MyApp implements OnInit {
 
   currentPage: any;
   tryInPage: any;
-  openPage(page: string, force = false) {
+  async openPage(page: string, force = false) {
     this.tryInPage = page;
     if (!force) {
       if (this.currentPage == FirstRunPage) {
         return;
       }
     }
-    this._openPage(page);
+    return this._openPage(page);
   }
-  private _openPage(page: string) {
+  private async _openPage(page: string) {
     if (this.currentPage === page) {
       return;
     }
@@ -190,11 +194,11 @@ export class MyApp implements OnInit {
     );
     this.currentPage = page;
     if (this.nav) {
-      this.nav.setRoot(page);
+      return this.nav.setRoot(page).then(() => this.splashScreen.hide());
     } else {
-      this._onNavInitedPromise.promise.then(() => {
-        this.nav && this.nav.setRoot(page);
-      });
+      return this._onNavInitedPromise.promise.then(() => {
+        return this.nav && this.nav.setRoot(page);
+      }).then(() => this.splashScreen.hide());
     }
   }
 }

@@ -79,10 +79,10 @@ export class TabPayPage extends FirstLevelPage {
   }
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password, pay_pwd } = await this.getUserPassword({
+    const { password, pay_pwd, custom_fee } = await this.getUserPassword({
       custom_fee: true,
     });
-    await this._submit(password, pay_pwd);
+    await this._submit(password, pay_pwd, custom_fee);
     this.resetFormData();
   }
   resetFormData() {
@@ -98,7 +98,7 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.success(() =>
     TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS"),
   )
-  _submit(password: string, pay_pwd?: string) {
+  _submit(password: string, pay_pwd?: string, custom_fee?: number) {
     const { transfer_address, transfer_amount, transfer_mark } = this.formData;
     return this.transactionService.transfer(
       transfer_address,

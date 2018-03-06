@@ -19,7 +19,7 @@ import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { IonicApp, IonicErrorHandler, IonicModule } from "ionic-angular";
-import { VirtualScrollModule } from 'angular2-virtual-scroll';
+import { VirtualScrollModule } from "angular2-virtual-scroll";
 
 import { MyApp } from "./app.component";
 import { AppFetchProvider } from "../providers/app-fetch/app-fetch";
@@ -42,6 +42,7 @@ import { BenefitServiceProvider } from "../providers/benefit-service/benefit-ser
 import { UserInfoProvider } from "../providers/user-info/user-info";
 
 // 预加载页面
+import { TutorialPage } from "../pages/tutorial/tutorial";
 import { SignInAndSignUpPage } from "../pages/sign-in-and-sign-up/sign-in-and-sign-up";
 import { TabsPage } from "../pages/tabs/tabs";
 import { TabVotePage } from "../pages/tab-vote/tab-vote";
@@ -66,6 +67,7 @@ import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 
 const pages = [
   MyApp,
+  TutorialPage,
   SignInAndSignUpPage,
   TabsPage,
   TabVotePage,
@@ -81,6 +83,7 @@ const heightLevelModules = [
   VotePreRoundIncomeRankingComponent,
 ];
 const static_links = [
+  { component: TutorialPage, name: "tutorial" },
   { component: TabsPage, name: "tabs" },
   { component: SignInAndSignUpPage, name: "sign-in-and-sign-up" },
   { component: TabVotePage, name: "tab-vote" },

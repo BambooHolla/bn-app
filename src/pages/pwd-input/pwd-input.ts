@@ -33,7 +33,7 @@ export class PwdInputPage extends FirstLevelPage {
       pay_pwd: this.userInfo.hasSecondPwd ? "" : "NO NEED",
       need_pay_pwd: this.userInfo.hasSecondPwd,
       need_custom_fee: false,
-      custom_fee: this.appSetting.settings.default_fee,
+      custom_fee: parseFloat(this.appSetting.settings.default_fee),
     };
   }
   // @PwdInputPage.setErrorTo("errors","password",["VerificationFailure"])
@@ -49,6 +49,17 @@ export class PwdInputPage extends FirstLevelPage {
     ) {
       return {
         VerificationFailure: true,
+      };
+    }
+  }
+
+  @PwdInputPage.setErrorTo("errors", "custom_fee", ["ErrorRange"])
+  check_custom_fee() {
+    if (
+      this.formData.custom_fee <= 0 || this.formData.custom_fee > parseFloat(this.userInfo.balance)
+    ) {
+      return {
+        ErrorRange: true,
       };
     }
   }

@@ -91,6 +91,8 @@
     <allow-navigation href="http://192.168.16.107:8100" />
     <allow-navigation href="http://192.168.16.130:8100" />
     <allow-navigation href="http://192.168.16.132:8100" />
+    <allow-navigation href="http://10.32.216.141:8100" />
+    <allow-navigation href="http://192.168.16.171:8100" />
     <engine name="android" spec="6.3.0" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-plugin-crosswalk-webview" spec="^2.3.0">
@@ -111,6 +113,4 @@
     <plugin name="phonegap-plugin-barcodescanner" spec="^7.0.2">
         <variable name="CAMERA_USAGE_DESCRIPTION" value=" " />
     </plugin>
-    <allow-navigation href="http://10.32.216.141:8100" />
-    <allow-navigation href="http://192.168.16.171:8100" />
 </widget>

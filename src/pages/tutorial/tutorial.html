@@ -1,11 +1,14 @@
 <ion-header no-shadow>
   <ion-navbar color="transparent">
+    <ion-buttons start>
+      <button class="lang-select-button" (click)="routeTo('settings-lang')">
+        <img [src]="'./assets/imgs/settings-lang/'+lang_code+'.png'" [alt]="lang_code">{{('LANG_'+lang_code)|translate}}</button>
+    </ion-buttons>
     <ion-buttons end *ngIf="showSkip">
       <button ion-button (click)="startApp()" color="white">{{ 'TUTORIAL_SKIP_BUTTON' | translate}}</button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-
 <ion-content no-bounce>
   <ion-slides pager="true" dir="{{dir}}" (ionSlideWillChange)="onSlideChangeStart($event)">
     <ion-slide *ngFor="let slide of slides;index as i" [ngClass]="'slide-'+i">

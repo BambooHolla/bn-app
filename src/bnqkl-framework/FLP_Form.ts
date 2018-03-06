@@ -131,13 +131,20 @@ export class FLP_Form extends FLP_Route {
       /**是否一定要输入主密码*/
       force_require_password?: boolean;
     } = {},
-  ) {
-    const { force_require_password,custom_fee } = opts;
-    if (!force_require_password&&!custom_fee) {
+  ): Promise<{
+    password: string;
+    have_password?: boolean;
+    pay_pwd?: string;
+    need_pay_pwd?: boolean;
+    need_custom_fee?: boolean;
+    custom_fee?: number;
+  }> {
+    const { force_require_password, custom_fee } = opts;
+    if (!force_require_password && !custom_fee) {
       // 登录密码
       const { password, hasSecondPwd } = this.userInfo;
       if (!hasSecondPwd && password) {
-        return { password, pay_pwd: "" };
+        return { password };
       }
     }
     // 支付密码

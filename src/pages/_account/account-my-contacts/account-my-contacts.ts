@@ -106,7 +106,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   async _addUnconfirmContact(
     password: string,
     address: string,
-    pay_pwd: string,
+    pay_pwd?: string,
   ) {
     return this.contactService.addContact(password, address, pay_pwd);
   }

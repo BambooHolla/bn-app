@@ -9,6 +9,20 @@ page-tutorial {
       margin-top: 0!important;
     }
   }
+  .lang-select-button {
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    background: none;
+    border: none;
+    >img{
+      width: 1.5rem;
+      margin-right: 0.5rem;
+    }
+  }
 
   .slide-zoom {
     height: 100%;

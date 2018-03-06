@@ -3,8 +3,10 @@ import {
   IonicPage,
   MenuController,
   NavController,
+  NavParams,
   Platform,
 } from "ionic-angular";
+import { FirstLevelPage } from '../../bnqkl-framework/FirstLevelPage';
 
 import { TranslateService } from "@ngx-translate/core";
 import { MyApp } from "../../app/app.component";
@@ -15,23 +17,25 @@ export interface Slide {
   image: string;
 }
 
-@IonicPage({ name: "tutorial" })
+// @IonicPage({ name: "tutorial" })
 @Component({
   selector: "page-tutorial",
   templateUrl: "tutorial.html",
 })
-export class TutorialPage {
+export class TutorialPage extends FirstLevelPage {
   slides?: Slide[];
   showSkip = true;
   dir: string = "ltr";
 
   constructor(
     public navCtrl: NavController,
+    public navParams: NavParams,
     public menu: MenuController,
     translate: TranslateService,
     public platform: Platform,
     public myapp: MyApp,
   ) {
+    super(navCtrl, navParams);
     this.dir = platform.dir();
     translate
       .get([
@@ -62,6 +66,9 @@ export class TutorialPage {
           },
         ];
       });
+  }
+  get lang_code() {
+    return this.translate.currentLang;
   }
 
   startApp() {
