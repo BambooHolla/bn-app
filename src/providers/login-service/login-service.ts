@@ -11,7 +11,7 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator"
+import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
@@ -127,19 +127,20 @@ export class LoginServiceProvider {
     }
   }
 
-
   /** 更新用户信息
    */
-  @asyncCtrlGenerator.retry(undefined, (err) => console.error("获取用户信息一直失败，需要检查网络", err))
+  @asyncCtrlGenerator.retry(undefined, err =>
+    console.error("获取用户信息一直失败，需要检查网络", err),
+  )
   async refreshUserInfo() {
     const userinfo = this.appSetting.getUserToken();
     if (!userinfo) {
       return;
     }
     const res = await this.fetch.get<any>(this.SEARCH_ACCOUNT_URL, {
-      search : {
-        "address" : userinfo.address
-      }
+      search: {
+        address: userinfo.address,
+      },
     });
     Object.assign(userinfo, res.account);
     this.appSetting.setUserToken(userinfo);

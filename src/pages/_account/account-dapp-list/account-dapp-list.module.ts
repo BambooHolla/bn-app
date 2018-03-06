@@ -4,7 +4,7 @@ import { AccountDappListPage } from "./account-dapp-list";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [AccountDappListPage],
-	imports: [IonicPageModule.forChild(AccountDappListPage), TranslateModule],
+  declarations: [AccountDappListPage],
+  imports: [IonicPageModule.forChild(AccountDappListPage), TranslateModule],
 })
 export class AccountDappListPageModule {}

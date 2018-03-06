@@ -56,7 +56,8 @@ export class PwdInputPage extends FirstLevelPage {
   @PwdInputPage.setErrorTo("errors", "custom_fee", ["ErrorRange"])
   check_custom_fee() {
     if (
-      this.formData.custom_fee <= 0 || this.formData.custom_fee > parseFloat(this.userInfo.balance)
+      this.formData.custom_fee <= 0 ||
+      this.formData.custom_fee > parseFloat(this.userInfo.balance)
     ) {
       return {
         ErrorRange: true,

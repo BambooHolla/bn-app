@@ -7,7 +7,7 @@ import { TranslateModule } from "@ngx-translate/core";
 @NgModule({
   declarations: [ScanNodesPage],
   imports: [
-    IonicPageModule.forChild(ScanNodesPage), 
+    IonicPageModule.forChild(ScanNodesPage),
     ComponentsModule,
     TranslateModule,
   ],

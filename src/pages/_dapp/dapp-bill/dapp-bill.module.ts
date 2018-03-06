@@ -4,7 +4,7 @@ import { DappBillPage } from "./dapp-bill";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [DappBillPage],
-	imports: [IonicPageModule.forChild(DappBillPage), TranslateModule],
+  declarations: [DappBillPage],
+  imports: [IonicPageModule.forChild(DappBillPage), TranslateModule],
 })
 export class DappBillPageModule {}

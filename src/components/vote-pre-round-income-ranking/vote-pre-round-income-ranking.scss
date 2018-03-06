@@ -1,82 +1,82 @@
 vote-pre-round-income-ranking {
-	/* padding: 1rem; */
-	min-height: 22vh;
-	max-height: 20rem;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding-bottom: 0.3rem;
-	.header {
-		padding: 1rem;
-		width: 100%;
-		flex-grow: 0;
-		flex-shrink: 0;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		color: #7a7a7a;
-		.title {
-			font-size: 1.6rem;
-		}
-		> .my-income-assets {
-			font-size: 1.2rem;
-			font-weight: lighter;
-		}
-	}
-	.rank-info {
-		width: 100%;
-		flex-grow: 1;
-		/* padding: 1rem; */
-		/* padding-bottom: 0rem; */
-		/* padding-top: 1rem; */
-		display: flex;
-		flex-direction: row;
-		justify-content: space-around;
-		align-items: center;
-		.item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: flex-start;
-			margin-top: 0;
-			margin-bottom: auto;
-			color: #aaaaaa;
-			height: 100%;
-			.ip-address {
-				font-size: 1.4rem;
-			}
-		}
-		.ranking-val {
-			width: 4rem;
-			height: 4rem;
-			background-color: #aaaaaa;
-			border-radius: 50%;
-			border: 0.25rem solid #cacaca;
-			font-size: 1.8rem;
-			color: #fff;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin: 0.6rem;
-			&.ranking-1,
-			&.ranking-2,
-			&.ranking-3 {
-				position: relative;
-				background-color: transparent !important;
-				border: none !important;
-				background-image: url("../assets/imgs/tab-vote/rank123.png");
-				border-radius: 0;
-				background-size: auto 65%;
-				background-position: center bottom;
-				background-repeat: no-repeat;
-				align-items: flex-start;
-				/* color: #ffcd5e; */
-				color: #e98956;
-				font-size: 1.45rem;
-				font-weight: bold;
-				transform: scale(1.15);
+  /* padding: 1rem; */
+  min-height: 22vh;
+  max-height: 20rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 0.3rem;
+  .header {
+    padding: 1rem;
+    width: 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    color: #7a7a7a;
+    .title {
+      font-size: 1.6rem;
+    }
+    > .my-income-assets {
+      font-size: 1.2rem;
+      font-weight: lighter;
+    }
+  }
+  .rank-info {
+    width: 100%;
+    flex-grow: 1;
+    /* padding: 1rem; */
+    /* padding-bottom: 0rem; */
+    /* padding-top: 1rem; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    .item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 0;
+      margin-bottom: auto;
+      color: #aaaaaa;
+      height: 100%;
+      .ip-address {
+        font-size: 1.4rem;
+      }
+    }
+    .ranking-val {
+      width: 4rem;
+      height: 4rem;
+      background-color: #aaaaaa;
+      border-radius: 50%;
+      border: 0.25rem solid #cacaca;
+      font-size: 1.8rem;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0.6rem;
+      &.ranking-1,
+      &.ranking-2,
+      &.ranking-3 {
+        position: relative;
+        background-color: transparent !important;
+        border: none !important;
+        background-image: url("../assets/imgs/tab-vote/rank123.png");
+        border-radius: 0;
+        background-size: auto 65%;
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        align-items: flex-start;
+        /* color: #ffcd5e; */
+        color: #e98956;
+        font-size: 1.45rem;
+        font-weight: bold;
+        transform: scale(1.15);
 
-				/* &::before{
+        /* &::before{
                     content: "1";
                     position: absolute;
                     top: 0;
@@ -85,35 +85,34 @@ vote-pre-round-income-ranking {
                     color: #ffcd5e;
                     font-weight: bold;
                   } */
-			}
-			&.ranking-1 {
-				filter: contrast(120%) saturate(125%) sepia(40%)
-					hue-rotate(2deg);
-				color: #f7b022;
-			}
-			&.ranking-2 {
-				filter: grayscale(1);
-			}
-			&.ranking-3 {
-				filter: hue-rotate(-12deg);
-				color: #e69037;
-			}
-		}
-		.me {
-			color: #fcb94e;
-			.ranking-val {
-				/* width: 5rem; */
-				/* height: 5rem; */
-				/* margin-top: 0rem; */
-				/* font-size: 2.4rem; */
-				transform: scale(1.3);
-				background-color: #fcb94e;
-				border: 0.3rem solid #fad495;
-				margin-bottom: 0.8rem;
-			}
-			.ip-address {
-				font-size: 1.8rem;
-			}
-		}
-	}
+      }
+      &.ranking-1 {
+        filter: contrast(120%) saturate(125%) sepia(40%) hue-rotate(2deg);
+        color: #f7b022;
+      }
+      &.ranking-2 {
+        filter: grayscale(1);
+      }
+      &.ranking-3 {
+        filter: hue-rotate(-12deg);
+        color: #e69037;
+      }
+    }
+    .me {
+      color: #fcb94e;
+      .ranking-val {
+        /* width: 5rem; */
+        /* height: 5rem; */
+        /* margin-top: 0rem; */
+        /* font-size: 2.4rem; */
+        transform: scale(1.3);
+        background-color: #fcb94e;
+        border: 0.3rem solid #fad495;
+        margin-bottom: 0.8rem;
+      }
+      .ip-address {
+        font-size: 1.8rem;
+      }
+    }
+  }
 }

@@ -78,7 +78,7 @@ type KjuaConfig = {
   fontcolor: string;
   image?: HTMLImageElement;
 };
-type KjuaOptions = {[key in keyof KjuaConfig]?: KjuaConfig[key]};
+type KjuaOptions = { [key in keyof KjuaConfig]?: KjuaConfig[key] };
 
 @Component({
   selector: "kjua-qrcode",
@@ -147,7 +147,7 @@ export class KjuaQrcodeComponent implements OnInit, OnChanges {
     }
   }
 
-  constructor(public eleRef: ElementRef, public render2: Renderer2) { }
+  constructor(public eleRef: ElementRef, public render2: Renderer2) {}
   ngOnInit() {
     this.update();
   }

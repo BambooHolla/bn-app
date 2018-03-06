@@ -20,7 +20,7 @@ export class BuddhaGlowComponent extends AniBase {
     this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
     return super._init();
   }
-  pt = px => px
+  pt = px => px;
   private initPixiApp() {
     if (this.app) {
       this.app.stage.children.slice().forEach(child => {
@@ -154,7 +154,7 @@ export class BuddhaGlowComponent extends AniBase {
       });
     }
   }
-  loop_skip = 2;// 跳2帧，20fps
+  loop_skip = 2; // 跳2帧，20fps
   lights: PIXI.Sprite[] = [];
   static createLinearGradient(
     x1 = 300,
@@ -194,7 +194,6 @@ export class BuddhaGlowComponent extends AniBase {
 
     var ctx = canvas.getContext("2d");
     if (ctx) {
-
       var gradient = ctx.createRadialGradient(half_r, 0, half_r, half_r, 0, 0);
       for (let stop of stops) {
         gradient.addColorStop(stop[0] as number, stop[1] as string);

@@ -4,7 +4,7 @@ import { DappDetailPage } from "./dapp-detail";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [DappDetailPage],
-	imports: [IonicPageModule.forChild(DappDetailPage), TranslateModule],
+  declarations: [DappDetailPage],
+  imports: [IonicPageModule.forChild(DappDetailPage), TranslateModule],
 })
 export class DappDetailPageModule {}

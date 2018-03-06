@@ -16,7 +16,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
 export * from "./block.types";
 
@@ -25,11 +25,14 @@ export class BlockServiceProvider {
   ifmJs: any;
   block: any;
   blockArray?: TYPE.BlockModel[] = [];
-  private _io?: SocketIOClient.Socket
+  private _io?: SocketIOClient.Socket;
   get io() {
-    return this._io || (this._io = io(AppSettingProvider.SERVER_URL, {
-      transports: ['websocket']
-    }))
+    return (
+      this._io ||
+      (this._io = io(AppSettingProvider.SERVER_URL, {
+        transports: ["websocket"],
+      }))
+    );
   }
 
   constructor(
@@ -55,11 +58,13 @@ export class BlockServiceProvider {
   async getLastBlockRefreshInterval() {
     if (this._timestamp_from == undefined) {
       /*这个代码只能是*/
-      this._timestamp_from = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY, {
-        search: {
-          height: 2
-        }
-      }).then(res => res.blocks.length && res.blocks[0].timestamp);
+      this._timestamp_from = await this.fetch
+        .get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY, {
+          search: {
+            height: 2,
+          },
+        })
+        .then(res => res.blocks.length && res.blocks[0].timestamp);
     }
     const last_block = await this.lastBlock.getPromise();
     this.appSetting.setHeight(last_block.height);
@@ -74,9 +79,9 @@ export class BlockServiceProvider {
   private _retry_interval = 0;
   private async _loopGetAndSetHeight(emit_retry?: boolean) {
     const do_loop = async () => {
-      const old_data = await this.lastBlock.getPromise()
+      const old_data = await this.lastBlock.getPromise();
       this.lastBlock.refresh();
-      const new_data = await this.lastBlock.getPromise()
+      const new_data = await this.lastBlock.getPromise();
       // 这里不需要捕捉错误，_loop内有完整的错误捕捉方案。所以只需要执行就可以了
       this._loopGetAndSetHeight(new_data == old_data);
     };
@@ -90,10 +95,12 @@ export class BlockServiceProvider {
           this._refresh_interval *= 2;
         }
         // 至少二分之一轮要更新一次
-        this._refresh_interval = Math.min(BLOCK_UNIT_TIME / 2, this._refresh_interval);
+        this._refresh_interval = Math.min(
+          BLOCK_UNIT_TIME / 2,
+          this._refresh_interval,
+        );
         setTimeout(do_loop, this._refresh_interval);
       } else {
-
         let diff_time = await this.getLastBlockRefreshInterval();
         // if (diff_time <= 0) {
         //   throw new RangeError("Wrong diff time");
@@ -118,13 +125,19 @@ export class BlockServiceProvider {
       } else {
         this._retry_interval *= 2;
       }
-      this._retry_interval = Math.min(BLOCK_UNIT_TIME / 2, this._retry_interval);
+      this._retry_interval = Math.min(
+        BLOCK_UNIT_TIME / 2,
+        this._retry_interval,
+      );
       setTimeout(do_loop, this._retry_interval);
     }
   }
   private async _listenGetAndSetHeight() {
-    this.io.on("blocks/change", (e) => {
-      console.log("%c区块更新", 'color:green;background-color:#eee;font-size:1.2rem')
+    this.io.on("blocks/change", e => {
+      console.log(
+        "%c区块更新",
+        "color:green;background-color:#eee;font-size:1.2rem",
+      );
       this.lastBlock.refresh();
     });
     this.io.on("connect", () => {
@@ -170,7 +183,7 @@ export class BlockServiceProvider {
     AppSettingProvider.SEED_DATE[4],
     AppSettingProvider.SEED_DATE[5],
     AppSettingProvider.SEED_DATE[6],
-  ) / 1000
+  ) / 1000;
   /**
    * 获取输入的时间戳的完整时间戳,TODO: 和minSer重复了
    * @param timestamp
@@ -349,7 +362,7 @@ export class BlockServiceProvider {
   /**
    * 按照高度刷新块
    */
-  refreshBlock!: AsyncBehaviorSubject<TYPE.BlockModel[]>
+  refreshBlock!: AsyncBehaviorSubject<TYPE.BlockModel[]>;
   @HEIGHT_AB_Generator("refreshBlock")
   refreshBlock_Executor(promise_pro) {
     this.getTopBlocks(true);
@@ -511,7 +524,7 @@ export class BlockServiceProvider {
 
     return data;
   }
-  expectBlockInfo!: AsyncBehaviorSubject<TYPE.UnconfirmBlockModel>
+  expectBlockInfo!: AsyncBehaviorSubject<TYPE.UnconfirmBlockModel>;
   @HEIGHT_AB_Generator("expectBlockInfo")
   expectBlockInfo_Executor(promise_pro) {
     return promise_pro.follow(this.getExpectBlockInfo());
@@ -529,9 +542,9 @@ export class BlockServiceProvider {
 
     return data.count;
   }
-  myForgingCount!: AsyncBehaviorSubject<number>
+  myForgingCount!: AsyncBehaviorSubject<number>;
   @HEIGHT_AB_Generator("myForgingCount", true)
   myForgingCount_Executor(promise_pro) {
-    return promise_pro.follow(this.getMyForgingCount())
+    return promise_pro.follow(this.getMyForgingCount());
   }
 }

@@ -7,8 +7,11 @@ import {
   BlockServiceProvider,
   BlockModel,
 } from "../../../providers/block-service/block-service";
-import { TransactionModel,TransactionTypes } from "../../../providers/transaction-service/transaction-service";
-import { TimestampPipe } from '../../../pipes/timestamp/timestamp';
+import {
+  TransactionModel,
+  TransactionTypes,
+} from "../../../providers/transaction-service/transaction-service";
+import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
 
 @IonicPage({ name: "chain-block-detail" })
 @Component({
@@ -29,10 +32,10 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   }
   isShowFullDate(timestamp: number) {
     const time = TimestampPipe.transform(timestamp);
-    if (time.valueOf() < (Date.now() - 24 * 60 * 60 * 1000)) {
-      return true
+    if (time.valueOf() < Date.now() - 24 * 60 * 60 * 1000) {
+      return true;
     }
-    return false
+    return false;
   }
   block_info!: BlockModel /* = {
 		create_time: new Date(
@@ -71,7 +74,9 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     ChainBlockDetailPage.getTranslate("GET_PRE_BLOCK_ID_ERROR"),
   )
   async getPreBlockId() {
-    this.pre_block_id = await this.blockService.getPreBlockId(this.block_info.height);
+    this.pre_block_id = await this.blockService.getPreBlockId(
+      this.block_info.height,
+    );
   }
 
   @asyncCtrlGenerator.error(() =>

@@ -14,7 +14,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 
 export class AppUrl {
-  constructor(public path) { }
+  constructor(public path) {}
   toString() {
     return AppSettingProvider.SERVER_URL + this.path;
   }
@@ -25,8 +25,8 @@ const net_version =
 const block_unit_time =
   parseFloat(
     getQueryVariable("BLOCK_UNIT_TIME") ||
-    localStorage.getItem("BLOCK_UNIT_TIME") ||
-    "",
+      localStorage.getItem("BLOCK_UNIT_TIME") ||
+      "",
   ) ||
   (net_version === "testnet" && 10e3);
 
@@ -90,7 +90,7 @@ export class AppSettingProvider extends EventEmitter {
               try {
                 value = JSON.parse(current_json_value); //JSON可用
                 should_write_in = false; // 不需要初始化写入
-              } catch (e) { }
+              } catch (e) {}
             }
             if (should_write_in) {
               localStorage.setItem(s_key, JSON.stringify(default_value));
@@ -216,7 +216,7 @@ export class AppSettingProvider extends EventEmitter {
   }
 
   settings = {
-    lang:"",
+    lang: "",
     /**指纹保护开关*/
     open_fingerprint_protection: false,
     /**指纹保护密码*/
@@ -317,7 +317,7 @@ export function TB_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -332,7 +332,7 @@ export function TB_AB_Generator(
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-              this.constructor.name
+                this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -393,7 +393,7 @@ export function HEIGHT_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -409,7 +409,7 @@ export function HEIGHT_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-              this.constructor.name
+                this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -473,7 +473,7 @@ export function ROUND_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -489,7 +489,7 @@ export function ROUND_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-              this.constructor.name
+                this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }

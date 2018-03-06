@@ -127,7 +127,7 @@ export class FirstLevelPage extends FLP_Data {
           frame_id = null;
         }
         if (overflowScrolling !== "auto") {
-          return
+          return;
         }
         let diff = (from - to) / window.devicePixelRatio;
         let total_diff = diff;
@@ -144,9 +144,9 @@ export class FirstLevelPage extends FLP_Data {
           if (Math.abs(diff) > 0.5) {
             frame_id = requestAnimationFrame(scroll_handle);
           }
-        }
+        };
         frame_id = requestAnimationFrame(scroll_handle);
-      }
+      };
       scroll_ele.addEventListener("touchend", touchend);
       scroll_ele.addEventListener("touchcancel", touchend);
     }
@@ -339,7 +339,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-    )
+      )
       .present();
   }
 

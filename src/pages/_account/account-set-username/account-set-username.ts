@@ -7,58 +7,57 @@ import { AccountServiceProvider } from "../../../providers/account-service/accou
 
 @IonicPage({ name: "account-set-username" })
 @Component({
-	selector: "page-account-set-username",
-	templateUrl: "account-set-username.html",
+  selector: "page-account-set-username",
+  templateUrl: "account-set-username.html",
 })
 export class AccountSetUsernamePage extends SecondLevelPage {
-	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		@Optional() public tabs: TabsPage,
-		public accountService: AccountServiceProvider,
-	) {
-		super(navCtrl, navParams, true, tabs);
-	}
-	formData = {
-		username: "",
-	};
-	@AccountSetUsernamePage.setErrorTo("errors", "username", [
-		// "tooShort",
-		"tooLong",
-		"haveSpaces",
-	])
-	check_username() {
-		const res: any = {};
-		if (/\s/.test(this.formData.username)) {
-			res.haveSpaces = true;
-		}
-		if (this.formData.username.length > 20) {
-			res.tooLong = true;
-		}
-		return res;
-	}
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    @Optional() public tabs: TabsPage,
+    public accountService: AccountServiceProvider,
+  ) {
+    super(navCtrl, navParams, true, tabs);
+  }
+  formData = {
+    username: "",
+  };
+  @AccountSetUsernamePage.setErrorTo("errors", "username", [
+    // "tooShort",
+    "tooLong",
+    "haveSpaces",
+  ])
+  check_username() {
+    const res: any = {};
+    if (/\s/.test(this.formData.username)) {
+      res.haveSpaces = true;
+    }
+    if (this.formData.username.length > 20) {
+      res.tooLong = true;
+    }
+    return res;
+  }
 
-	@asyncCtrlGenerator.error()
-	async submit() {
-		const { password } = await this.getUserPassword();
-		return this._submit(password);
-	}
+  @asyncCtrlGenerator.error()
+  async submit() {
+    const { password } = await this.getUserPassword();
+    return this._submit(password);
+  }
 
-	@asyncCtrlGenerator.error(() =>
-		AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_ERROR"),
-	)
-	@asyncCtrlGenerator.loading(() =>
-		AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMITING"),
-	)
-	@asyncCtrlGenerator.success(() =>
-		AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_SUCCESS"),
-	)
-	async _submit(password: string) {
-		return this.accountService.changeUsername(
-			this.formData.username,
-			password,
-		).then(() => {
-			this.finishJob();
-		})
-	}
+  @asyncCtrlGenerator.error(() =>
+    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_ERROR"),
+  )
+  @asyncCtrlGenerator.loading(() =>
+    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMITING"),
+  )
+  @asyncCtrlGenerator.success(() =>
+    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_SUCCESS"),
+  )
+  async _submit(password: string) {
+    return this.accountService
+      .changeUsername(this.formData.username, password)
+      .then(() => {
+        this.finishJob();
+      });
+  }
 }

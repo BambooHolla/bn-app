@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../../components/components.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [AccountSettingsPage],
-	imports: [
-		IonicPageModule.forChild(AccountSettingsPage),
-		ComponentsModule,
-		TranslateModule,
-	],
+  declarations: [AccountSettingsPage],
+  imports: [
+    IonicPageModule.forChild(AccountSettingsPage),
+    ComponentsModule,
+    TranslateModule,
+  ],
 })
 export class AccountSettingsPageModule {}

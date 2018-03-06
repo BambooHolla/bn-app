@@ -8,14 +8,14 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [AccountMyTransactionListPage],
-	imports: [
-		IonicPageModule.forChild(AccountMyTransactionListPage),
-		MomentModule,
-		ComponentsModule,
-		DirectivesModule,
-		PipesModule,
-		TranslateModule,
-	],
+  declarations: [AccountMyTransactionListPage],
+  imports: [
+    IonicPageModule.forChild(AccountMyTransactionListPage),
+    MomentModule,
+    ComponentsModule,
+    DirectivesModule,
+    PipesModule,
+    TranslateModule,
+  ],
 })
 export class AccountMyTransactionListPageModule {}

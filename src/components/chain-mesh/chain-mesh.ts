@@ -17,7 +17,7 @@ import * as SimplexNoise from "simplex-noise";
 export const loader = new PIXI.loaders.Loader();
 export const _load_resource_promiseout = new PromiseOut<
   PIXI.loaders.ResourceDictionary
-  >();
+>();
 export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 for (let i = 0; i < FRAMES_NUM; i += 1) {
@@ -98,7 +98,6 @@ export class ChainMeshComponent extends AniBase {
     // 处理resource成动画帧
     const { stage, renderer, ticker } = app;
     const wh_size = Math.min(renderer.width, renderer.height);
-
 
     const gradient_r_canvas = ChainMeshComponent.createRadialGradient(wh_size, [
       [0, "rgba(255,255,255,0.3)"],
@@ -201,7 +200,7 @@ export class ChainMeshComponent extends AniBase {
   stopPixiApp() {
     this.app && this.app.stop();
   }
-  loop_skip = 1;// 跳帧，跳1帧，等同于30fps
+  loop_skip = 1; // 跳帧，跳1帧，等同于30fps
   static createRadialGradient(r = 300, stops = [[0, "#FFF"], [1, "#000"]]) {
     var canvas = document.createElement("canvas");
 

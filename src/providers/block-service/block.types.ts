@@ -34,4 +34,3 @@ export type UnconfirmBlockModel = {
   uncommited: number;
   height: number;
 };
-

@@ -6,12 +6,12 @@ import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [SettingsSetPayPwdPage],
-	imports: [
-		IonicPageModule.forChild(SettingsSetPayPwdPage),
-		ComponentsModule,
-		DirectivesModule,
-		TranslateModule,
-	],
+  declarations: [SettingsSetPayPwdPage],
+  imports: [
+    IonicPageModule.forChild(SettingsSetPayPwdPage),
+    ComponentsModule,
+    DirectivesModule,
+    TranslateModule,
+  ],
 })
 export class SettingsSetPayPwdPageModule {}

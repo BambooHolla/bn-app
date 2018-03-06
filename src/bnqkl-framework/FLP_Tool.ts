@@ -10,7 +10,7 @@ import {
   ModalController,
 } from "ionic-angular";
 export class FLP_Tool {
-  constructor() { }
+  constructor() {}
   // 全局弹出层控制器
   @FLP_Tool.FromGlobal actionSheetCtrl!: ActionSheetController;
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
@@ -21,10 +21,10 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal translate!: TranslateService;
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
 
-  isIOS = this.platform.is("ios")
+  isIOS = this.platform.is("ios");
   navigatorClipboard: {
-    writeText: (text: string) => Promise<void>,
-    readText: () => Promise<string>,
+    writeText: (text: string) => Promise<void>;
+    readText: () => Promise<string>;
   } = navigator["clipboard"] || {
     writeText: text => this.clipboard.copy(text),
     readText: () => this.clipboard.paste(),
@@ -132,7 +132,11 @@ export class FLP_Tool {
 const CLASS_PROTO_ARRAYDATA_POOL = (window[
   "CLASS_PROTO_ARRAYDATA_POOL"
 ] = new Map<string, classProtoArraydata>());
-const PA_ID_KEY = '@PAID:' + Math.random().toString(36).substr(2);
+const PA_ID_KEY =
+  "@PAID:" +
+  Math.random()
+    .toString(36)
+    .substr(2);
 type classProtoArraydata = Map<string, string[]>;
 export function getProtoArray(target: any, key: string) {
   var res = new Set();
@@ -140,7 +144,7 @@ export function getProtoArray(target: any, key: string) {
   if (CLASS_PROTO_ARRAYDATA) {
     do {
       if (target.hasOwnProperty(PA_ID_KEY)) {
-        const arr_data = CLASS_PROTO_ARRAYDATA.get(target[PA_ID_KEY])
+        const arr_data = CLASS_PROTO_ARRAYDATA.get(target[PA_ID_KEY]);
         if (arr_data) {
           for (let item of arr_data) {
             res.add(item);
@@ -151,7 +155,7 @@ export function getProtoArray(target: any, key: string) {
   }
   return res;
 }
-window['getProtoArray'] = getProtoArray;
+window["getProtoArray"] = getProtoArray;
 
 let PA_ID_VALUE = 0;
 export function addProtoArray(target: any, key: string, value: any) {
@@ -161,7 +165,9 @@ export function addProtoArray(target: any, key: string, value: any) {
     CLASS_PROTO_ARRAYDATA_POOL.set(key, CLASS_PROTO_ARRAYDATA);
   }
 
-  const pa_id = target.hasOwnProperty(PA_ID_KEY) ? target[PA_ID_KEY] : (target[PA_ID_KEY] = ('#' + PA_ID_VALUE++));
+  const pa_id = target.hasOwnProperty(PA_ID_KEY)
+    ? target[PA_ID_KEY]
+    : (target[PA_ID_KEY] = "#" + PA_ID_VALUE++);
   var arr_data = CLASS_PROTO_ARRAYDATA.get(pa_id);
   if (!arr_data) {
     arr_data = [value];

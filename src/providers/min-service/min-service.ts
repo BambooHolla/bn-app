@@ -4,7 +4,7 @@ import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-import { AlertController } from 'ionic-angular'
+import { AlertController } from "ionic-angular";
 import {
   AppSettingProvider,
   ROUND_AB_Generator,
@@ -32,9 +32,9 @@ export class MinServiceProvider {
   transactionTypes: any;
   allVoters?: TYPE.RankModel[];
   allMinersInfo?: {
-    list: TYPE.DelegateModel[],
-    round: number
-  }
+    list: TYPE.DelegateModel[];
+    round: number;
+  };
 
   constructor(
     public http: HttpClient,
@@ -50,7 +50,8 @@ export class MinServiceProvider {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transactionTypes = this.ifmJs.transactionTypes;
     this.appSetting.round.subscribe(r => {
-      if(this.appSetting.getUserToken()){// 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，不需要这里调用
+      if (this.appSetting.getUserToken()) {
+        // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，不需要这里调用
         this.autoVote(r);
       }
     });
@@ -193,7 +194,8 @@ export class MinServiceProvider {
         limit: limit,
       },
     });
-    if (data.success) {//@DDFIX
+    if (data.success) {
+      //@DDFIX
       data.unshift(0, data.length - 1);
       if (this.allVoters) {
         this.allVoters.push(...data);
@@ -252,8 +254,8 @@ export class MinServiceProvider {
       let data = await this.fetch.get<any>(this.MINERS, { search: query });
       this.allMinersInfo = {
         list: data.delegates,
-        round: currentRound
-      }
+        round: currentRound,
+      };
       return this.allMinersInfo.list.slice((page - 1) * limit, limit);
     }
   }
@@ -272,7 +274,10 @@ export class MinServiceProvider {
    * @param page
    * @param limit
    */
-  async getAllMinersOutside(page = 1, limit = 10): Promise<TYPE.DelegateModel[]> {
+  async getAllMinersOutside(
+    page = 1,
+    limit = 10,
+  ): Promise<TYPE.DelegateModel[]> {
     let query = {
       offset: 57 + (page - 1) * limit,
       limit: limit,
@@ -346,33 +351,37 @@ export class MinServiceProvider {
   preRoundMyBenefit!: AsyncBehaviorSubject<TYPE.RankModel | undefined>;
   @ROUND_AB_Generator("preRoundMyBenefit", true)
   preRoundMyBenefit_Executor(promise_pro) {
-    return promise_pro.follow(this.myRank.getPromise().then(pre_round_rank_list => {
-      if (pre_round_rank_list) {
-        return pre_round_rank_list.find(
-          rank_info => rank_info.address == this.user.userInfo.address,
-        )
-      }
-    }));
+    return promise_pro.follow(
+      this.myRank.getPromise().then(pre_round_rank_list => {
+        if (pre_round_rank_list) {
+          return pre_round_rank_list.find(
+            rank_info => rank_info.address == this.user.userInfo.address,
+          );
+        }
+      }),
+    );
   }
-  /** 
+  /**
    * 获取上一轮的投资回报率
    * 从rank中获取上一轮的收益，从上一轮的交易中获取手续费
    * TODO:需要后端在rank中添加手续费字段或者从其他地方获取手续费或者获取交易时可以根据轮次进行获取
-  */
+   */
   async getRateOfReturn() {
     let lastRoundT = await this.transactionService.getTransactions({
-      "type": this.ifmJs.transactionTypes.VOTE,
-      "senderId": this.user.address,
-      "orderBy": "t_timestamp:desc",
-      "limit": 57
+      type: this.ifmJs.transactionTypes.VOTE,
+      senderId: this.user.address,
+      orderBy: "t_timestamp:desc",
+      limit: 57,
     });
 
     let transactions = lastRoundT.transactions;
 
     let totalBenefitList = await this.myRank.getPromise();
-    const myBenefit = totalBenefitList.find(rank_info => rank_info.address === this.user.address);
+    const myBenefit = totalBenefitList.find(
+      rank_info => rank_info.address === this.user.address,
+    );
     if (!myBenefit) {
-      return undefined
+      return undefined;
     }
     let totalBenefit = parseInt(myBenefit.profit);
     let totalFee = 0;
@@ -390,7 +399,7 @@ export class MinServiceProvider {
     return {
       totalBenefit,
       totalFee,
-      rateOfReturn: totalFee ? (totalBenefit / totalFee) : 0
+      rateOfReturn: totalFee ? totalBenefit / totalFee : 0,
     } as TYPE.RateOfReturnModel;
   }
 

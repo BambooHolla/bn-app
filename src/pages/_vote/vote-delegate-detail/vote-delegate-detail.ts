@@ -2,7 +2,10 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular";
-import {BlockServiceProvider,BlockModel} from '../../../providers/block-service/block-service'
+import {
+  BlockServiceProvider,
+  BlockModel,
+} from "../../../providers/block-service/block-service";
 
 @IonicPage({ name: "vote-delegate-detail" })
 @Component({
@@ -14,7 +17,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public blockService: BlockServiceProvider
+    public blockService: BlockServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
   }

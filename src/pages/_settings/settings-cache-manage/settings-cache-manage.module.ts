@@ -4,10 +4,7 @@ import { SettingsCacheManagePage } from "./settings-cache-manage";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [SettingsCacheManagePage],
-	imports: [
-		IonicPageModule.forChild(SettingsCacheManagePage),
-		TranslateModule,
-	],
+  declarations: [SettingsCacheManagePage],
+  imports: [IonicPageModule.forChild(SettingsCacheManagePage), TranslateModule],
 })
 export class SettingsCacheManagePageModule {}

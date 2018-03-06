@@ -44,9 +44,9 @@ export class FLP_Route extends FLP_Lifecycle {
   // 页面B完成任务后，返回页面A，触发任务完成的回调
   // 这个流程相关的API
   viewCtrl?: ViewController;
-  _job_res: any
+  _job_res: any;
   jobRes(data: any) {
-    this._job_res = data
+    this._job_res = data;
   }
   finishJob(
     remove_view_after_finish: boolean = this.navParams.get("auto_return") ||
@@ -65,7 +65,7 @@ export class FLP_Route extends FLP_Lifecycle {
             const com = preView.instance as FLP_Route;
             com.tryEmit("job-finished", {
               id: viewCtrl.id,
-              data: this._job_res
+              data: this._job_res,
             });
           }
         } else {
@@ -247,7 +247,7 @@ export class FLP_Route extends FLP_Lifecycle {
           },
           options,
         ),
-    )
+      )
       .present();
   }
 }
@@ -261,42 +261,45 @@ for (let key in QRCODE_GET_WAY) {
   QRCODE_GET_WAY_value_set.add(QRCODE_GET_WAY[key] as QRCODE_GET_WAY);
 }
 
-FLP_Route.registerRouteToBeforeCheck(["account-scan-add-contact"],
+FLP_Route.registerRouteToBeforeCheck(
+  ["account-scan-add-contact"],
   async (self, to_next_params, { path, params, opts }) => {
     var result: QRCODE_GET_WAY;
-    var inputEle: HTMLInputElement
+    var inputEle: HTMLInputElement;
     const actionSheet = self.actionSheetCtrl.create({
       title: await self.getTranslate("SELECT_THE_WAY_TO_GET_QRCODE"),
-      buttons: [{
-        icon: "image",
-        text: await self.getTranslate(QRCODE_GET_WAY.FromPicture),
-        handler() {
-          // 必须把触发函数写在click里头，不然安全角度来说，是无法正常触发的
-          inputEle = document.createElement('input');
-          inputEle.type = 'file';
-          inputEle.accept = 'image/*';
-          const clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: true
-          });
-          inputEle.dispatchEvent(clickEvent);
-          actionSheet.dismiss(QRCODE_GET_WAY.FromPicture);
-          return false;
-        }
-      },
-      {
-        icon: "qr-scanner",
-        text: await self.getTranslate(QRCODE_GET_WAY.FromCamera),
-        handler() {
-          actionSheet.dismiss(QRCODE_GET_WAY.FromCamera);
-          return false;
-        }
-      },
-      {
-        text: await self.getTranslate(QRCODE_GET_WAY.Cancle),
-        role: 'cancel',
-      }]
+      buttons: [
+        {
+          icon: "image",
+          text: await self.getTranslate(QRCODE_GET_WAY.FromPicture),
+          handler() {
+            // 必须把触发函数写在click里头，不然安全角度来说，是无法正常触发的
+            inputEle = document.createElement("input");
+            inputEle.type = "file";
+            inputEle.accept = "image/*";
+            const clickEvent = new MouseEvent("click", {
+              view: window,
+              bubbles: true,
+              cancelable: true,
+            });
+            inputEle.dispatchEvent(clickEvent);
+            actionSheet.dismiss(QRCODE_GET_WAY.FromPicture);
+            return false;
+          },
+        },
+        {
+          icon: "qr-scanner",
+          text: await self.getTranslate(QRCODE_GET_WAY.FromCamera),
+          handler() {
+            actionSheet.dismiss(QRCODE_GET_WAY.FromCamera);
+            return false;
+          },
+        },
+        {
+          text: await self.getTranslate(QRCODE_GET_WAY.Cancle),
+          role: "cancel",
+        },
+      ],
     });
     const res = await new Promise<QRCODE_GET_WAY>((resolve, reject) => {
       actionSheet.present();
@@ -304,7 +307,7 @@ FLP_Route.registerRouteToBeforeCheck(["account-scan-add-contact"],
         if (QRCODE_GET_WAY_value_set.has(data)) {
           resolve(data);
         } else {
-          resolve(QRCODE_GET_WAY.Cancle)
+          resolve(QRCODE_GET_WAY.Cancle);
         }
       });
     });
@@ -323,14 +326,14 @@ FLP_Route.registerRouteToBeforeCheck(["account-scan-add-contact"],
         };
         const onCancel = () => {
           setTimeout(() => {
-            if ((inputEle.files && inputEle.files.length)) {
+            if (inputEle.files && inputEle.files.length) {
               // cancel select;
               console.log("取消了文件选择");
               resolve();
             }
             document.body.removeEventListener("focus", onCancel);
           }, 250);
-        }
+        };
         document.body.addEventListener("focus", onCancel);
         inputEle.onerror = reject;
       });
@@ -341,7 +344,10 @@ FLP_Route.registerRouteToBeforeCheck(["account-scan-add-contact"],
       });
     }
     return true;
-  }, 0, '询问用户是否要从相册选择图像进行二维码扫描')
+  },
+  0,
+  "询问用户是否要从相册选择图像进行二维码扫描",
+);
 
 type RouteToBeforeCheck = {
   name?: string;

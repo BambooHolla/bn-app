@@ -1,5 +1,10 @@
 import { Component, Optional } from "@angular/core";
-import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  ViewController,
+} from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
@@ -22,7 +27,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public accountService: AccountServiceProvider,
     public contactService: ContactServiceProvider,
-    public viewCtrl: ViewController
+    public viewCtrl: ViewController,
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;

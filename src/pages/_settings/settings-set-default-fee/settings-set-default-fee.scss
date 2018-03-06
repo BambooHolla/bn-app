@@ -1,14 +1,14 @@
 page-settings-set-default-fee {
   @extend .header-no-border;
-  >.content {
+  > .content {
     background-color: #eeeeee;
-    >.scroll-content {
+    > .scroll-content {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
   }
-  .common-form{
-      margin-top: 1rem;
+  .common-form {
+    margin-top: 1rem;
   }
 }

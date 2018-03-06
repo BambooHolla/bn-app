@@ -7,13 +7,13 @@ import { MomentModule } from "angular2-moment";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [VoteIncomeLogsPage],
-	imports: [
-		IonicPageModule.forChild(VoteIncomeLogsPage),
-		ComponentsModule,
-		PipesModule,
-		MomentModule,
-		TranslateModule,
-	],
+  declarations: [VoteIncomeLogsPage],
+  imports: [
+    IonicPageModule.forChild(VoteIncomeLogsPage),
+    ComponentsModule,
+    PipesModule,
+    MomentModule,
+    TranslateModule,
+  ],
 })
 export class VoteIncomeLogsPageModule {}

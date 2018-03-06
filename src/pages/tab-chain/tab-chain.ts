@@ -15,8 +15,8 @@ import {
   UnconfirmBlockModel,
 } from "../../providers/block-service/block-service";
 import { Subscription } from "rxjs/Subscription";
-import { ChainMeshComponent } from '../../components/chain-mesh/chain-mesh'
-import { ChangeEvent, VirtualScrollComponent } from 'angular2-virtual-scroll';
+import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
+import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 
 // type BlockWithPosModel = BlockModel & {
 //   y: number;
@@ -33,7 +33,7 @@ export class TabChainPage extends FirstLevelPage {
     public navParams: NavParams,
     public blockService: BlockServiceProvider,
     public viewCtrl: ViewController,
-    public r2: Renderer2
+    public r2: Renderer2,
   ) {
     super(navCtrl, navParams);
     // this.auto_header_shadow_when_scroll_down = true;
@@ -51,7 +51,7 @@ export class TabChainPage extends FirstLevelPage {
 
   @ViewChild(InfiniteScroll) infiniteScroll?: InfiniteScroll;
 
-  @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent
+  @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
   unconfirm_block?: UnconfirmBlockModel;
   async loadUnconfirmBlock() {
     this.unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
@@ -126,16 +126,20 @@ export class TabChainPage extends FirstLevelPage {
     }
   }
   @ViewChild("vscroll") vscroll?: VirtualScrollComponent;
-  _vscroll_container_ele?: HTMLElement
+  _vscroll_container_ele?: HTMLElement;
   get vSrollContainer() {
     if (this.vscroll) {
-      return this._vscroll_container_ele || (this._vscroll_container_ele = ((this.vscroll as any).element as ElementRef).nativeElement as HTMLElement)
+      return (
+        this._vscroll_container_ele ||
+        (this._vscroll_container_ele = ((this.vscroll as any)
+          .element as ElementRef).nativeElement as HTMLElement)
+      );
     }
   }
   private get _vscroll_handle() {
     if (!this[Symbol.for("_vscroll_handle")]) {
-      let is_scroll_done = false
-      this.event.on("header-ani-progress", (process) => {
+      let is_scroll_done = false;
+      this.event.on("header-ani-progress", process => {
         is_scroll_done = process === 1;
       });
       let ti;
@@ -207,27 +211,30 @@ export class TabChainPage extends FirstLevelPage {
             if (Math.abs(diff) > 0.5) {
               frame_id = requestAnimationFrame(scroll_handle);
             }
-          }
+          };
           frame_id = requestAnimationFrame(scroll_handle);
         },
-        scroll: (e) => {
+        scroll: e => {
           if (!this.content || !this.vSrollContainer) {
             return;
           }
           this.content.ionScroll.next({
-            scrollTop: this.vSrollContainer.scrollTop
-          } as ScrollEvent)
-        }
-      }
+            scrollTop: this.vSrollContainer.scrollTop,
+          } as ScrollEvent);
+        },
+      };
       this[Symbol.for("_vscroll_handle")] = res;
     }
-    return this[Symbol.for("_vscroll_handle")] as typeof res
+    return this[Symbol.for("_vscroll_handle")] as typeof res;
   }
   @TabChainPage.didEnter
   watchScroll() {
     const scroll_ele = this.vSrollContainer;
     if (this.isIOS && scroll_ele) {
-      scroll_ele.addEventListener("touchstart", this._vscroll_handle.touchstart);
+      scroll_ele.addEventListener(
+        "touchstart",
+        this._vscroll_handle.touchstart,
+      );
       scroll_ele.addEventListener("touchmove", this._vscroll_handle.touchmove);
     }
     if (scroll_ele) {
@@ -238,8 +245,14 @@ export class TabChainPage extends FirstLevelPage {
   unWatchScroll() {
     const scroll_ele = this.vSrollContainer;
     if (this.isIOS && scroll_ele) {
-      scroll_ele.removeEventListener("touchstart", this._vscroll_handle.touchstart)
-      scroll_ele.removeEventListener("touchmove", this._vscroll_handle.touchmove)
+      scroll_ele.removeEventListener(
+        "touchstart",
+        this._vscroll_handle.touchstart,
+      );
+      scroll_ele.removeEventListener(
+        "touchmove",
+        this._vscroll_handle.touchmove,
+      );
       if (scroll_ele) {
         scroll_ele.removeEventListener("scroll", this._vscroll_handle.scroll);
       }

@@ -115,7 +115,7 @@ export class MyApp implements OnInit {
       initPage
         .then(page => {
           if (page) {
-            return this.openPage(page)
+            return this.openPage(page);
           }
         })
         .catch(err => {
@@ -125,9 +125,9 @@ export class MyApp implements OnInit {
         .then(() => {
           loginService.loginStatus.subscribe(isLogined => {
             console.log("isLogined", isLogined);
-            this.openPage(isLogined ? MainPage : LoginPage)
+            this.openPage(isLogined ? MainPage : LoginPage);
           });
-        })
+        });
     });
   }
 
@@ -196,9 +196,11 @@ export class MyApp implements OnInit {
     if (this.nav) {
       return this.nav.setRoot(page).then(() => this.splashScreen.hide());
     } else {
-      return this._onNavInitedPromise.promise.then(() => {
-        return this.nav && this.nav.setRoot(page);
-      }).then(() => this.splashScreen.hide());
+      return this._onNavInitedPromise.promise
+        .then(() => {
+          return this.nav && this.nav.setRoot(page);
+        })
+        .then(() => this.splashScreen.hide());
     }
   }
 }

@@ -6,7 +6,7 @@ import * as PIXI from "pixi.js";
 export const loader = new PIXI.loaders.Loader();
 export const _load_resource_promiseout = new PromiseOut<
   PIXI.loaders.ResourceDictionary
-  >();
+>();
 
 export const _is_load_resource = false;
 export const _coin_assets = [
@@ -350,4 +350,4 @@ export type LineOptions = {
   y: number;
   x: number;
   max: number;
-}
+};
