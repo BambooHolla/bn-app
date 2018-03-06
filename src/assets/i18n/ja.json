@@ -31,9 +31,8 @@
   "REMEMBER": "パスワードを保存",
   "PLEASE_INPUT_PASSPHRASE": "パスワードを入力してください。",
   "SIGN_IN": "サインイン",
-  "GENERATE_NEW_PASSPHRASE": "新しいパスワードを生成する。",
-  "PLEASE_INPUT_EMAIL_ADDRESS":
-    "よく使われているメールアドレスを入力してください。",
+  "GENERATE_NEW_PASSPHRASE": "パスワードを生成する",
+  "PLEASE_INPUT_EMAIL_ADDRESS": "メールアドレスを入力してください",
   "PLEASE_INPUT_PHONE": "携帯番号を",
   "YOUR_UNIQUE_SIGN": "マイユニックサイン",
   "PLEASE_INPUT_CODE": "入力してください。",
