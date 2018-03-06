@@ -380,16 +380,22 @@ export class TransactionServiceProvider {
    * @param recipientId 接收人
    * TODO:全部判断地址是否正确
    */
-  async transfer(recipientId, amount, password, secondSecret) {
+  async transfer(recipientId, amount, fee = parseFloat(this.appSetting.settings.default_fee), password, secondSecret) {
     debugger
-    if (parseFloat(amount) > 0) {
+    if (parseFloat(amount) > 0 && parseFloat(amount) < parseFloat(this.user.balance)) {
+      if(parseFloat(amount) + fee > parseFloat(this.user.balance)) {
+        return this.fetch.ServerResError.translateAndParseErrorMessage(
+          "Amount error"
+        )
+      }
+
       let txData: any = {
         type: this.transactionTypeCode.SEND,
         secret: password,
         amount: amount.toString(),
         recipientId: recipientId,
         publicKey: this.user.publicKey,
-        fee: this.appSetting.settings.default_fee.toString(),
+        fee: fee.toString(),
         // secondSecret,
       };
 

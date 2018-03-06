@@ -155,6 +155,7 @@ export class ContactServiceProvider {
     secret: string,
     address_or_username: string,
     secondSecret?: string,
+    fee = parseFloat(this.appSetting.settings.default_fee),
   ) {
     if (!address_or_username) {
       throw new Error("Parameters cannot find address or username");
@@ -166,7 +167,7 @@ export class ContactServiceProvider {
       );
       address_or_username = userAddress.address;
     }
-
+    
     let txData = {
       type: this.transactionTypes.FOLLOW,
       amount: "0",
@@ -176,7 +177,7 @@ export class ContactServiceProvider {
           address: "+" + address_or_username,
         },
       },
-      fee: this.appSetting.settings.default_fee.toString(),
+      fee: fee.toString(),
       publicKey: this.user.userInfo.publicKey,
       secondSecret,
     };

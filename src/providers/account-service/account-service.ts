@@ -150,6 +150,7 @@ export class AccountServiceProvider {
     password: string,
     secondSecret: string,
     second?: string,
+    fee = parseFloat(this.appSetting.settings.default_fee)
   ) {
     let txData = {
       type: this.transactionType.SIGNATURE,
@@ -162,7 +163,7 @@ export class AccountServiceProvider {
       secret: password,
       secondSecret: secondSecret,
       publicKey: this.user.publicKey,
-      fee: this.appSetting.settings.default_fee.toString(),
+      fee: fee.toString(),
     };
 
     let is_success = await this.transactionService.putTransaction(txData);
