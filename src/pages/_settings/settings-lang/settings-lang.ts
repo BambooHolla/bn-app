@@ -28,9 +28,10 @@ export class SettingsLangPage extends SecondLevelPage {
     "de",
     "it",
   ];
-  lang_list = this._setLangList();
+  lang_list: any = null;
   /** 变更语言列表Subtitle内容
    */
+  @SettingsLangPage.willEnter
   private _setLangList() {
     if (!this.lang_list) {
       const current_lang_map = this.translate.getTranslation(
