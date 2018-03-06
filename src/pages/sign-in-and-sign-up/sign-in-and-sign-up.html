@@ -1,6 +1,8 @@
 <ion-header>
 </ion-header>
 <ion-content>
+  <button class="lang-select-button" (click)="routeTo('settings-lang')">
+    <img [src]="'./assets/imgs/settings-lang/'+lang_code+'.png'" [alt]="lang_code">{{('LANG_'+lang_code)|translate}}</button>
   <span id="font-calc" #fontCalc></span>
   <div class="form-wrapper">
     <h1 class="title">IFMCHAIN</h1>

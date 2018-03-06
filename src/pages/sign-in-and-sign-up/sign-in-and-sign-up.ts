@@ -50,6 +50,10 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     }
   }
 
+  get lang_code(){
+    return this.translate.currentLang;
+  }
+
   formData = {
     email: "",
     phone: "",

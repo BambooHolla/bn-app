@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>语言设置</ion-title>
+    <ion-title>{{'SETTINGS-LANG'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
@@ -8,7 +8,7 @@
   <div class="common-list">
     <div class="common-item" *ngFor="let lang of lang_list" (click)="setLang(lang.lang_code)">
       <div class="flag">
-        <img [src]="'../assets/imgs/settings-lang/'+lang.lang_code+'.png'" [alt]="lang.lang_code">
+        <img [src]="'./assets/imgs/settings-lang/'+lang.lang_code+'.png'" [alt]="lang.lang_code">
       </div>
       <div class="names">
         <div class="source-name">{{lang.lang_source_name|async}}</div>

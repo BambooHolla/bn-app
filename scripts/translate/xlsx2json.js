@@ -31,6 +31,20 @@ const langs = fileData[0]
 	})
 	.filter(v => v);
 
+const chinaValueToKeyMap = new Map();
+{
+	const chinaJSON = JSON.parse(geti18nFileData("zh-cmn-Hans"));
+	Object.keys(chinaJSON).map(key => {
+		if (key !== "//") {
+			const value = chinaJSON[key];
+			if (chinaValueToKeyMap.has(value)) {
+				chinaValueToKeyMap.get(value).push(key);
+			} else {
+				chinaValueToKeyMap.set(value, [key]);
+			}
+		}
+	});
+}
 const dataMap = new Map();
 fileData.slice(1).forEach(row => {
 	const map = {};
@@ -40,7 +54,7 @@ fileData.slice(1).forEach(row => {
 	dataMap.set(row[0], map);
 });
 
-class LangVisitor extends Visitor {
+class ChinaLangVisitor extends Visitor {
 	constructor(lang) {
 		super();
 		this.lang = lang;
@@ -49,20 +63,33 @@ class LangVisitor extends Visitor {
 
 	property(propertyNode) {
 		const key = propertyNode.key.value;
-		const value = propertyNode.value.value;
+		const china_value = propertyNode.value.value;
 		if (key == "//") {
 			this.json_str_list.push(
-				JSON.stringify(key) + ":" + JSON.stringify(value),
+				JSON.stringify(key) + ":" + JSON.stringify(china_value),
 			);
 		} else {
 			const map = dataMap.get(key);
+			let tran_value;
 			if (map) {
-				const tran_value = map[this.lang];
-				if (tran_value) {
-					this.json_str_list.push(
-						JSON.stringify(key) + ":" + JSON.stringify(tran_value),
-					);
-				}
+				tran_value = map[this.lang];
+			}
+			// 尽可能找中文是一样的字段来填充
+			if (!tran_value) {
+				tran_value = (chinaValueToKeyMap.get(china_value) || []).filter(
+					key => {
+						const map = dataMap.get(key);
+						if (map) {
+							return map[this.lang];
+						}
+					},
+				)[0];
+			}
+
+			if (tran_value) {
+				this.json_str_list.push(
+					JSON.stringify(key) + ":" + JSON.stringify(tran_value),
+				);
 			}
 		}
 	}
@@ -90,10 +117,10 @@ langs.forEach(lang => {
 		verbose: false,
 		junker: false,
 	});
-	const langVisitor = new LangVisitor(lang);
-	langVisitor.visit(ast);
+	const chinaLangVisitor = new ChinaLangVisitor(lang);
+	chinaLangVisitor.visit(ast);
 	// 格式化解析结果
-	const json_str = prettier.format(langVisitor.toJSONString(), {
+	const json_str = prettier.format(chinaLangVisitor.toJSONString(), {
 		...prettierConfig,
 		parser: "json",
 	});

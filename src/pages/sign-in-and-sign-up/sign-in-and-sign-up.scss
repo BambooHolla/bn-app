@@ -58,6 +58,23 @@ page-sign-in-and-sign-up {
       transform: rotate(360deg);
     }
   }
+  .lang-select-button {
+    z-index: 10;
+    position: fixed;
+    right: 1rem;
+    top: 3rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    background: none;
+    border: none;
+    >img{
+      width: 1.5rem;
+      margin-right: 0.5rem;
+    }
+  }
   .bg-mask {
     // background: radial-gradient(
     //   ellipse at center,

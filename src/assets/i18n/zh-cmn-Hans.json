@@ -270,6 +270,9 @@
   "PARSE_PICTURE_QRCODE": "解析图片二维码",
   "QRCODE_PICTURE_PARSE_ERROR": "二维码图片解析失败",
 
+  "//": "settings-lang",
+  "SETTINGS-LANG": "语言设置",
+
   "//": "account-settings",
   "//": "设置页面的跳转的label 与 目标页面title 是不完全一致的",
   "ACCOUNT-SETTINGS": "设置",
