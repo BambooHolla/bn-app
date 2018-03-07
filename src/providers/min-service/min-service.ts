@@ -125,7 +125,7 @@ export class MinServiceProvider {
         }
 
         //设置投票的参数
-        let txData = {
+        let txData:any = {
           type: this.transactionTypes.VOTE,
           secret: secret,
           publicKey: this.user.userInfo.publicKey,
@@ -134,7 +134,6 @@ export class MinServiceProvider {
           asset: {
             votes: voteList,
           },
-          secondSecret,
         };
 
         if (secondSecret) {

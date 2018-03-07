@@ -168,7 +168,7 @@ export class ContactServiceProvider {
       address_or_username = userAddress.address;
     }
 
-    let txData = {
+    let txData:any = {
       type: this.transactionTypes.FOLLOW,
       amount: "0",
       secret: secret,
@@ -179,7 +179,6 @@ export class ContactServiceProvider {
       },
       fee: fee.toString(),
       publicKey: this.user.userInfo.publicKey,
-      secondSecret,
     };
 
     if (secondSecret) {
