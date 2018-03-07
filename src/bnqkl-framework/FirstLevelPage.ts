@@ -26,6 +26,38 @@ export class FirstLevelPage extends FLP_Data {
   @ViewChild(Header) header?: Header;
   @ViewChild(Content) content?: Content;
 
+  @FirstLevelPage.didEnter
+  private _initStyleMagic() {
+    if (this.content) {
+      let navbarEle: HTMLElement | null = null;
+      const pageEle = this.content.getNativeElement()
+        .parentElement as HTMLElement;
+      const t1 = pageEle.querySelectorAll("[add-navbar-height-to-padding-top]");
+      if (t1.length) {
+        let navbar_height = 0;
+        if (!navbarEle) {
+          navbarEle = pageEle.querySelector("ion-navbar");
+        }
+        if (navbarEle) {
+          navbar_height = navbarEle.offsetHeight;
+        }
+        if (navbar_height) {
+          for (
+            let i = 0, ele: HTMLElement;
+            (ele = t1[i] as HTMLElement);
+            i += 1
+          ) {
+            if (!ele.style.paddingTop) {
+              const old_padding_top =
+                parseFloat(getComputedStyle(ele).paddingTop || "") || 0;
+              ele.style.paddingTop = old_padding_top + navbar_height + "px";
+            }
+          }
+        }
+      }
+    }
+  }
+
   // 启用实验性的backdropFilter功能
   @FirstLevelPage.didEnter
   private _initBackdropFilter() {
@@ -256,9 +288,20 @@ export class FirstLevelPage extends FLP_Data {
           const navbar_ele = header_ele.querySelector(
             "ion-navbar",
           ) as HTMLElement | null;
-          const navbar_height = navbar_ele ? navbar_ele.offsetHeight : 0;
+          const _navbar_ani_height =
+            navbar_ele && navbar_ele.getAttribute("navbar-ani-height");
+          const navbar_height =
+            (_navbar_ani_height
+              ? parseFloat(_navbar_ani_height)
+              : navbar_ele && navbar_ele.offsetHeight) || 0;
           const cTop = this.content._cTop;
-          const header_height = header_ele.offsetHeight;
+          const _header_ani_height = header_ele.getAttribute(
+            "header-ani-height",
+          );
+          const header_height =
+            (_header_ani_height
+              ? parseFloat(_header_ani_height)
+              : header_ele.offsetHeight) || 0;
           const distance = header_height - navbar_height;
           this._watch_scroll_content_intime(distance);
 
@@ -304,7 +347,12 @@ export class FirstLevelPage extends FLP_Data {
         this.tryEmit("header-ani-progress", process);
         this._header_progress_ani_data.pre_scroll_process = process;
 
-        let cur_dealy = -process * ani_total_second;
+        let _process = -process;
+        // 省电模式下，关闭动画
+        if (this.appSetting.settings.power_saving_mode) {
+          _process = Math.round(_process);
+        }
+        let cur_dealy = _process * ani_total_second;
         if (process === 1) {
           cur_dealy += 0.0001;
         }
@@ -339,7 +387,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-      )
+    )
       .present();
   }
 

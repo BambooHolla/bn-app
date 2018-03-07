@@ -5,6 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 // import { PromisePro } from "../../bnqkl-framework/RxExtends";
+import {asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
   AppSettingProvider,
@@ -47,11 +48,11 @@ export class BlockServiceProvider {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 
-    // 启动轮询更新更新
-    this._loopGetAndSetHeight();
+    // // 启动轮询更新更新
+    // this._loopGetAndSetHeight();
 
-    // // 启动websocket的监听更新
-    // this._listenGetAndSetHeight();
+    // 启动websocket的监听更新
+    this._listenGetAndSetHeight();
   }
   /**第二个块的timestamp*/
   private _timestamp_from?: number;
@@ -132,16 +133,22 @@ export class BlockServiceProvider {
       setTimeout(do_loop, this._retry_interval);
     }
   }
+  @asyncCtrlGenerator.retry()
+  private async _updateHeight(){
+    this.lastBlock.refresh();
+    const last_block = await this.lastBlock.getPromise();
+    this.appSetting.setHeight(last_block.height);
+  }
   private async _listenGetAndSetHeight() {
     this.io.on("blocks/change", e => {
       console.log(
         "%c区块更新",
         "color:green;background-color:#eee;font-size:1.2rem",
       );
-      this.lastBlock.refresh();
+      this._updateHeight();
     });
     this.io.on("connect", () => {
-      this.lastBlock.refresh();
+      this._updateHeight();
     });
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(

@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-navbar color="transparent">
+<ion-header header-ani-height="266">
+  <ion-navbar color="transparent" navbar-ani-height="0">
     <ion-title>{{'VOTE_INCOME_HISTORY' | translate}}</ion-title>
     <!-- <ion-buttons right>
       <button (click)="openSeach(SearchType.BLOCK)">
@@ -7,43 +7,46 @@
       </button>
     </ion-buttons> -->
   </ion-navbar>
-  <div class="unconfirm-block-wrapper">
-    <div class="unconfirm-block">
-      <div class="blur-bg"></div>
-      <div class="bg-image">
-        <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
-      </div>
-      <div class="content">
-        <div class="left">
-          <!-- <div class="fee">
-            <div class="value">{{unconfirm_block?.fee|number:'1.8-8'}}</div>
-            <span class="title"><ali-icon name="ifm-wallet"></ali-icon>预期手续费</span>
-          </div> -->
+  <div class="unconfirm-block-padding-wrapper" add-navbar-height-to-padding-top>
+    <div class="unconfirm-block-wrapper">
+      <div class="unconfirm-block">
+        <div class="blur-bg"></div>
+        <div class="bg-image">
+          <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
         </div>
-        <div class="center">
-          <div class="trans_num">
-            <div class="value">{{unconfirm_block?.uncommited}}</div>
-            <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'EXPECED_TRANSACTIONS_AMOUNT' | translate}}</span>
+        <div class="content">
+          <div class="left">
+            <!-- <div class="fee">
+              <div class="value">{{unconfirm_block?.fee|number:'1.8-8'}}</div>
+              <span class="title"><ali-icon name="ifm-wallet"></ali-icon>预期手续费</span>
+            </div> -->
           </div>
-          <div class="reward">
-            <div class="value">{{unconfirm_block?.reward|amountEuler|number:'1.8-8'}}</div>
-            <span class="title"><ali-icon name="ifm-reward"></ali-icon>{{'EXPECED_INCOME' | translate}}</span>
+          <div class="center">
+            <div class="trans_num">
+              <div class="value">{{unconfirm_block?.uncommited}}</div>
+              <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'EXPECED_TRANSACTIONS_AMOUNT' | translate}}</span>
+            </div>
+            <div class="reward">
+              <div class="value">{{unconfirm_block?.reward|amountEuler|number:'1.8-8'}}</div>
+              <span class="title"><ali-icon name="ifm-reward"></ali-icon>{{'EXPECED_INCOME' | translate}}</span>
+            </div>
           </div>
-        </div>
-        <div class="right">
-          <!-- <div class="height">
-            <div class="value">{{unconfirm_block?.height}}</div>
-            <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>预期高度</span>
-          </div> -->
-          <div class="height">
-            <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block?.height}}
+          <div class="right">
+            <!-- <div class="height">
+              <div class="value">{{unconfirm_block?.height}}</div>
+              <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>预期高度</span>
+            </div> -->
+            <div class="height">
+              <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block?.height}}
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </ion-header>
-<ion-content [class.ios]="isIOS">
+<ion-content>
+<!-- <ion-content [class.ios]="isIOS">
   <ng-container *ngIf="isIOS">
     <div class="block-list" list-ani="linkChain">
       <div *ngFor="let block of block_list;trackBy:blockListTrackByFn" class="block-item" (click)="routeTo('chain-block-detail',{block:block})" [attr.data-height]="block.height">
@@ -122,5 +125,42 @@
         </div>
       </virtual-scroll>
     </div>
-  </ng-container>
+  </ng-container> -->
+  <div class="list-wrapper">
+    <virtual-scroll #vscroll class="block-list" list-ani="linkChain" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
+      <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeTo('chain-block-detail',{block:block})" [attr.data-height]="block.height">
+        <div class="header">
+          <div class="height">
+            <div class="value">{{block.height}}</div>
+            <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>{{'HEIGHT' | translate}}</span>
+          </div>
+          <div class="trans_num">
+            <div class="value">{{block.numberOfTransactions}}</div>
+            <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'TRANSACTION_AMOUNT' | translate}}</span>
+          </div>
+        </div>
+        <div class="info">
+          <div class="delay" [ngClass]="block.delay?'true':''">
+            <ali-icon name="ifm-chain-tran-error"></ali-icon>
+          </div>
+          <div class="total-amount">
+            <span class="title"><ali-icon name="ifm-coins"></ali-icon>{{'TOTALAMOUNT' | translate}}</span>
+            <div class="value">{{block.totalAmount|amountEuler|number:'1.8-8'}}</div>
+          </div>
+          <div class="fee">
+            <span class="title"><ali-icon name="ifm-wallet"></ali-icon>{{'FEE' | translate}}</span>
+            <div class="value">{{block.totalFee|amountEuler|number:'1.8-8'}}</div>
+          </div>
+        </div>
+        <div class="footer">
+          {{'CHECK_BLOCK' | translate}}
+          <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+        </div>
+        <div class="chain-container">
+          <div class="left chain"></div>
+          <div class="right chain"></div>
+        </div>
+      </div>
+    </virtual-scroll>
+  </div>
 </ion-content>

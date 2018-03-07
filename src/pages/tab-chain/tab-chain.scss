@@ -9,6 +9,16 @@ page-tab-chain {
     animation-timing-function: linear;
     animation-name: tabchain-header;
   }
+  @supports (backdrop-filter: blur(5px)) {
+    @keyframes tabchain-header {
+    /*   40% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: rgba(255, 255, 255, 0.6);
+      } */
+    }
+  }
   > .content {
     height: 100vh;
     > .scroll-content {
@@ -34,6 +44,30 @@ page-tab-chain {
       }
     }
   }
+  .unconfirm-block-padding-wrapper{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+    z-index: -1;
+    @extend .follow-parent-ani;
+    animation-name: tabchain-header-unconfirm-block-padding-wrapper;
+    transform-origin: top;
+  }
+  @keyframes tabchain-header-unconfirm-block-padding-wrapper {
+    0% {
+      transform: scale(1);
+      backdrop-filter: blur(0px);
+        background-color: transparent;
+    }
+    40% {
+    }
+    100% {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.6);
+      transform: scale(1, .5);
+    }
+  }
   .unconfirm-block-wrapper {
     padding: 0.2rem 4vw 0 4vw;
     /* margin-bottom: #{$block-distance}rem; */
@@ -41,20 +75,9 @@ page-tab-chain {
     background-color: transparent;
     @extend .follow-parent-ani;
   }
-  @supports (backdrop-filter: blur(5px)) {
-    @keyframes tabchain-header {
-      40% {
-        backdrop-filter: blur(0px);
-        background-color: transparent;
-      }
-      100% {
-        backdrop-filter: blur(5px);
-        background-color: rgba(255, 255, 255, 0.6);
-      }
-    }
-  }
   .unconfirm-block {
     transform-origin: top;
+    pointer-events: none;
 
     height: 16.6rem;
     position: relative;
@@ -65,13 +88,15 @@ page-tab-chain {
     @extend .follow-parent-ani;
     @keyframes tabchain-header-unconfirm-block {
       0% {
-        /* transform: scale(1); */
-        height: 16.6rem;
+        transform: scale(1);
+        /* height: 16.6rem; */
       }
-
+      50% {
+        transform: scale(1, 1/0.75);
+      }
       100% {
-        /* transform: scale(1, 0.5); */
-        height: 6rem;
+        transform: scale(1, 2) translateY(2.6rem);
+        /* height: 6rem; */
       }
     }
     > .blur-bg {
@@ -136,8 +161,7 @@ page-tab-chain {
         }
         100% {
           opacity: 0.4;
-          top: -5rem;
-          height: calc(100% + 5rem);
+          transform: translateY(-6rem);
         }
       }
 
@@ -240,16 +264,15 @@ page-tab-chain {
         > .reward {
           width: 100%;
           position: absolute;
+          top: 5rem;
+          left: 0;
           animation-name: tabchain-header-center_reward;
           @extend .follow-parent-ani;
           @keyframes tabchain-header-center_reward {
             0% {
-              top: 6rem;
-              left: 0;
             }
             100% {
-              top: 0rem;
-              left: 55vw;
+              transform: translate(55vw,-6rem);
             }
           }
           > .value {
@@ -263,15 +286,15 @@ page-tab-chain {
         align-self: flex-start;
         flex: 1;
         position: relative;
+        top: 1rem;
         /* top: -5.5rem; */
         animation-name: tabchain-header-right;
         @extend .follow-parent-ani;
         @keyframes tabchain-header-right {
           0% {
-            top: 1rem;
           }
           100% {
-            top: -3rem;
+            transform: translateY(-3.8rem);
           }
         }
         > .height {
@@ -285,6 +308,7 @@ page-tab-chain {
     flex-direction: column;
     align-items: center;
     transform: translateZ(0);
+    margin-top: 16.6rem;
     /* -webkit-overflow-scrolling: auto; */
     .block-item {
       margin-right: auto;

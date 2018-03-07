@@ -158,41 +158,12 @@ export class TabChainPage extends FirstLevelPage {
             from = to;
           }
           to = e.changedTouches[0].clientY;
+          if (frame_id) {
+            cancelAnimationFrame(frame_id);
+          }
+        },
+        touchend: (e: TouchEvent) => {
           const contentEle = e.currentTarget as HTMLElement;
-          // if (!ti) {
-          //   ti = setInterval(() => {
-          //     contentEle.dispatchEvent(new CustomEvent("scroll"))
-          //     this.header && (this.header.getNativeElement().querySelector(".toolbar-title").innerHTML = contentEle.scrollTop + "px");
-          //     if (zzele.parentElement) {
-          //       contentEle.removeChild(zzele);
-          //     } else {
-          //       contentEle.appendChild(zzele);
-          //     }
-          //     contentEle.scrollTop+=1;
-          //     // contentEle.appendChild(document.createElement('br'));
-          //     // requestAnimationFrame(()=>{
-          //     //   requestAnimationFrame(()=>{
-          //     //     if (contentEle.scrollTop == pre_scrollTop) {
-          //     //       this.header && (this.header.getNativeElement().querySelector(".toolbar-title").innerHTML = "done");
-          //     //       clearInterval(ti);
-          //     //       ti = null;
-          //     //       return;
-          //     //     }
-          //     //   });
-          //     // });
-          //     pre_scrollTop = contentEle.scrollTop;
-          //   }, 100);
-          // }
-
-          // if (is_scroll_done) {
-          //   if (ts > te) {
-          //     this.r2.setStyle(contentEle, "webkitOverflowScrolling", "touch");
-          //   } else {
-          //     this.r2.setStyle(contentEle, "webkitOverflowScrolling", "auto");
-          //   }
-          // } else {
-          //   this.r2.setStyle(contentEle, "webkitOverflowScrolling", "auto");
-          // }
           if (frame_id) {
             cancelAnimationFrame(frame_id);
           }
