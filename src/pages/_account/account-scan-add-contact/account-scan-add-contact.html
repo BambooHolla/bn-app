@@ -21,6 +21,9 @@
         <div class="bottom-right angle"></div>
       </div>
       <div class="tip">{{'ALIGN_QR_CODE-THEN_AUTOMATIC_SCAN'|translate}}</div>
+      <button (click)="toggleVideoInput()" *ngIf="videoDevices.length>1">
+        <ali-icon name="ifm-qiehuanshexiangtou1"></ali-icon>
+      </button>
     </div>
   </div>
 </ion-content>

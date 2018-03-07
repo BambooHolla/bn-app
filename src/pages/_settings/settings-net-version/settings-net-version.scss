@@ -1,2 +1,15 @@
 page-settings-net-version {
+	.common-list{
+		.common-item{
+			.right{
+				display: none;
+				color: green;
+			}
+			&.selected{
+				.right{
+					display: block;
+				}
+			}
+		}
+	}
 }

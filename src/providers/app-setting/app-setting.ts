@@ -279,6 +279,13 @@ console.log(
   "font-size:2em;color:green;background-color:#DDD",
   AppSettingProvider.SERVER_URL,
 );
+
+if (AppSettingProvider.NET_VERSION === "testnet") {
+  const testnet_flag = document.createElement("div");
+  testnet_flag.className = "testnet-flag";
+  testnet_flag.innerHTML = `TESTNET`;
+  document.body.appendChild(testnet_flag);
+}
 /**
  * 基于token的AsyncBehaviorSubjuet类型的属性/方法生成器
  * tokenBaseAsyncBehaviorSubjectGenerator

@@ -5,11 +5,17 @@
 </ion-header>
 <ion-content>
   <div class="common-list">
-    <div class="common-item" [class.selected]="net_version=='mainnet'">
-      正式网络
+    <div class="common-item" (click)="changeNetVersion('mainnet')" [class.selected]="net_version=='mainnet'">
+      <div class="left">{{'NET_VERSION_OF_MAINNET'|translate}}</div>
+      <div class="right">
+        <ali-icon name="ifm-dagou"></ali-icon>
+      </div>
     </div>
-    <div class="common-item" [class.selected]="net_version=='testnet'">
-      测试网络
+    <div class="common-item" (click)="changeNetVersion('testnet')" [class.selected]="net_version=='testnet'">
+      <div class="left">{{'NET_VERSION_OF_TESTNET'|translate}}</div>
+      <div class="right">
+        <ali-icon name="ifm-dagou"></ali-icon>
+      </div>
     </div>
   </div>
 </ion-content>

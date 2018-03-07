@@ -104,14 +104,13 @@ export class MyApp implements OnInit {
 
     // this.openPage(LoginPage);
 
-    statusBar.overlaysWebView(true);
+    this.overlaysWebView();
     statusBar.hide();
     platform.ready().then(() => {
       keyboard.disableScroll(true);
       keyboard.hideKeyboardAccessoryBar(true);
       statusBar.show();
-      statusBar.overlaysWebView(true);
-      statusBar.styleDefault();
+      this.overlaysWebView();
       initPage
         .then(page => {
           if (page) {
@@ -129,6 +128,13 @@ export class MyApp implements OnInit {
           });
         });
     });
+  }
+  overlaysWebView() {
+    this.statusBar.overlaysWebView(false);
+    setTimeout(() => {
+      this.statusBar.overlaysWebView(true);
+      this.statusBar.styleDefault();
+    }, 50);
   }
 
   initTranslate() {

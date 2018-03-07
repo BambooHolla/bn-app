@@ -20,9 +20,25 @@ export class SettingsNetVersionPage extends SecondLevelPage {
   get net_version() {
     return AppSettingProvider.NET_VERSION;
   }
-  changeNetVersion(net_version) {
+  async changeNetVersion(net_version) {
+    return this.alertCtrl
+      .create({
+        title: await this.getTranslate("APP_WILL_RESTART"),
+        buttons: [
+          {
+            text: await this.getTranslate("CANCEL"),
+          },
+          {
+            text: await this.getTranslate("OK"),
+            handler: () => this._changeNetVersion(net_version),
+          },
+        ],
+      })
+      .present();
+  }
+  private _changeNetVersion(net_version: string) {
     if (this.net_version !== net_version) {
-      if (net_version !== "testnet" || net_version !== "mainnet") {
+      if (net_version !== "testnet" && net_version !== "mainnet") {
         return;
       }
       if (net_version == "testnet") {
@@ -34,7 +50,10 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       } else if (net_version == "mainnet") {
         localStorage.removeItem("NET_VERSION");
         localStorage.removeItem("SERVER_HOST");
+      } else {
+        return;
       }
+      location.reload();
     }
   }
 }

@@ -46,6 +46,15 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   }
   private _current_stream?: MediaStream;
   videoDevices: MediaDeviceInfo[] = [];
+  toggleVideoInput() {
+    this.useVideoDevice(
+      this.videoDevices[
+        (this.videoDevices.indexOf(this._cur_video_device as MediaDeviceInfo) +
+          1) %
+          this.videoDevices.length
+      ],
+    );
+  }
   private _cur_video_device?: MediaDeviceInfo;
 
   useNextVideoDevice() {
@@ -60,8 +69,19 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     }
     this._cur_video_device = videoDevice;
     const video = this.video.nativeElement as HTMLVideoElement;
-    // for(let i =0;i<video.videoTracks.length;i+=1){
-    //   const videoTrack = video.videoTracks[i];
+    // let getUserMedia = navigator[
+    //   "webkitGetUserMedia"
+    // ] as typeof navigator.mediaDevices.getUserMedia;
+    // if (
+    //   navigator["webkitGetUserMedia"] &&
+    //   navigator["webkitGetUserMedia"] !== navigator.getUserMedia
+    // ) {
+    //   getUserMedia = arg =>
+    //     new Promise((resolve, reject) => {
+    //       navigator["webkitGetUserMedia"](arg, resolve, reject);
+    //     });
+    // } else {
+    //   getUserMedia = navigator.mediaDevices.getUserMedia;
     // }
     const stream = (this._current_stream = await navigator.mediaDevices.getUserMedia(
       {
@@ -73,7 +93,8 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         audio: false,
       },
     ));
-    video.src = window.URL.createObjectURL(stream);
+    // video.src = window.URL.createObjectURL(stream);
+    video.srcObject = stream;
     video.play();
   }
   /**相机获取插件是否初始化完毕 */
@@ -88,64 +109,64 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   )
   async openCameraMedia() {
     this.is_inited = false;
-    try {
-      const image_url = this.navParams.get("image_url");
-      if (image_url) {
-        return;
-      }
-      // 媒体流实时解析模式
-      var filter_fun = this.navParams.get("filter");
-      if (!(filter_fun instanceof Function)) {
-        filter_fun = () => true;
-      }
-      var res = "";
-      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        // IOS 不用检测权限
-      } else {
-        const permission = await this.androidPermissions
-          .checkPermission(this.androidPermissions.PERMISSION.CAMERA)
-          .then(
-            result => {
-              console.log("Has permission?", result.hasPermission);
-              if (!result.hasPermission) {
-                return this.androidPermissions.requestPermission(
-                  this.androidPermissions.PERMISSION.CAMERA,
-                );
-              }
-            },
-            err =>
-              this.androidPermissions.requestPermission(
-                this.androidPermissions.PERMISSION.CAMERA,
-              ),
-          );
-        // this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
-      }
-
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        this.videoDevices = devices
-          .filter(d => d.kind === "videoinput")
-          .reverse();
-        // Not adding `{ audio: true }` since we only want video now
-
-        this.useVideoDevice(this.videoDevices[0]);
-        res = await new Promise<string>(resolve =>
-          this.startCapture(text => {
-            if (filter_fun(text)) {
-              resolve(text);
-              return true;
-            }
-            return false;
-          }),
-        );
-      } else {
-        this.is_inited = true;
-        res = (await this.barcodeScanner.scan()).text;
-      }
-      this._handleScanRes(res);
-    } finally {
-      this.is_inited = true;
+    const image_url = this.navParams.get("image_url");
+    if (image_url) {
+      return;
     }
+    // 媒体流实时解析模式
+    var filter_fun = this.navParams.get("filter");
+    if (!(filter_fun instanceof Function)) {
+      filter_fun = () => true;
+    }
+    var res = "";
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+      // IOS 不用检测权限
+    } else {
+      const permission = await this.androidPermissions
+        .checkPermission(this.androidPermissions.PERMISSION.CAMERA)
+        .then(
+          result => {
+            console.log("Has permission?", result.hasPermission);
+            if (!result.hasPermission) {
+              return this.androidPermissions.requestPermission(
+                this.androidPermissions.PERMISSION.CAMERA,
+              );
+            }
+          },
+          err =>
+            this.androidPermissions.requestPermission(
+              this.androidPermissions.PERMISSION.CAMERA,
+            ),
+        );
+      // this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
+    }
+
+    // if (
+    //   navigator.mediaDevices &&
+    //   navigator.mediaDevices.getUserMedia
+    // ) {
+    //   const devices = await navigator.mediaDevices.enumerateDevices();
+    //   this.videoDevices = devices
+    //     .filter(d => d.kind === "videoinput")
+    //     .reverse();
+    //   // Not adding `{ audio: true }` since we only want video now
+
+    //   await this.useVideoDevice(this.videoDevices[0]);
+    //   this.is_inited = true;
+    //   res = await new Promise<string>(resolve =>
+    //     this.startCapture(text => {
+    //       if (filter_fun(text)) {
+    //         resolve(text);
+    //         return true;
+    //       }
+    //       return false;
+    //     }),
+    //   );
+    // } else {
+    this.is_inited = true;
+    res = (await this.barcodeScanner.scan()).text;
+    // }
+    this._handleScanRes(res);
   }
   @AccountScanAddContactPage.willEnter
   @asyncCtrlGenerator.error(
