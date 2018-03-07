@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{"SETTINGS-NET-VERSION"|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="common-list">
+    <div class="common-item" [class.selected]="net_version=='mainnet'">
+      正式网络
+    </div>
+    <div class="common-item" [class.selected]="net_version=='testnet'">
+      测试网络
+    </div>
+  </div>
+</ion-content>
