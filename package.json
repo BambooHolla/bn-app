@@ -46,7 +46,7 @@
     "cordova-ios": "^4.4.0",
     "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-camera": "^4.0.2",
-    "cordova-plugin-crosswalk-webview": "^2.3.0",
+    "cordova-plugin-crosswalk-webview": "^2.4.0",
     "cordova-plugin-device": "^1.1.4",
     "cordova-plugin-file": "^6.0.1",
     "cordova-plugin-ionic-webview": "^1.1.16",
@@ -101,11 +101,7 @@
   "license": "MIT",
   "cordova": {
     "plugins": {
-      "cordova-plugin-crosswalk-webview": {
-        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security"
-      },
       "cordova-plugin-x-toast": {},
-      "ionic-plugin-keyboard": {},
       "cordova-plugin-whitelist": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
@@ -118,11 +114,19 @@
       "cordova-plugin-media-capture": {},
       "phonegap-plugin-barcodescanner": {
         "CAMERA_USAGE_DESCRIPTION": " "
-      }
+      },
+      "cordova-plugin-crosswalk-webview": {
+        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security",
+        "XWALK_VERSION": "23+",
+        "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
+        "XWALK_MODE": "embedded",
+        "XWALK_MULTIPLEAPK": "true"
+      },
+      "ionic-plugin-keyboard": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

@@ -63,6 +63,10 @@ export class TutorialPage extends FirstLevelPage {
         ];
       });
   }
+  @TutorialPage.willEnter
+  fixStaturBug() {
+    this.myapp.overlaysWebView();
+  }
   get lang_code() {
     return this.translate.currentLang;
   }

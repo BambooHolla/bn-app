@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { IonicPage, NavController, Tabs } from "ionic-angular";
+import { MyApp } from "../../app/app.component";
 
 import { Tab1Root } from "../pages";
 import { Tab2Root } from "../pages";
@@ -26,6 +27,7 @@ export class TabsPage implements OnInit {
   constructor(
     public navCtrl: NavController,
     public translateService: TranslateService,
+    public myapp:MyApp
   ) {
     translateService
       .stream(["TAB1_TITLE", "TAB2_TITLE", "TAB3_TITLE", "TAB4_TITLE"])
@@ -41,6 +43,10 @@ export class TabsPage implements OnInit {
       const selected_index = this.tabs.getIndex(this.tabs.getSelected());
       this.tabs.setElementAttribute("select-index", selected_index);
     });
+  }
+
+  ionViewWillEnter(){
+     this.myapp.overlaysWebView();
   }
 
   private _hidden_tabs = new Set();

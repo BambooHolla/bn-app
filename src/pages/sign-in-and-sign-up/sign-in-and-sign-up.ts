@@ -40,6 +40,11 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
+  @SignInAndSignUpPage.willEnter
+  fixStaturBug() {
+    this.myapp.overlaysWebView();
+  }
+
   @ViewChild("passwordTextarear") passwordTextarear?: ElementRef;
   @ViewChild(ChainMeshComponent) cmesh?: ChainMeshComponent;
 
