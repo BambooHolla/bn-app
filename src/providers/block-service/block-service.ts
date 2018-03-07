@@ -5,7 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 // import { PromisePro } from "../../bnqkl-framework/RxExtends";
-import {asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
   AppSettingProvider,
@@ -134,7 +134,7 @@ export class BlockServiceProvider {
     }
   }
   @asyncCtrlGenerator.retry()
-  private async _updateHeight(){
+  private async _updateHeight() {
     this.lastBlock.refresh();
     const last_block = await this.lastBlock.getPromise();
     this.appSetting.setHeight(last_block.height);

@@ -105,7 +105,7 @@ export class MinServiceProvider {
    * @param secret 主密码
    * @param secondSecret 支付密码
    */
-  async vote(secret: string, secondSecret?: string) {
+  private async vote(secret: string, secondSecret?: string) {
     //首先获取时间戳
     let voteTimestamp = await this.transactionService.getTimestamp();
     if (voteTimestamp.success) {
@@ -125,7 +125,7 @@ export class MinServiceProvider {
         }
 
         //设置投票的参数
-        let txData:any = {
+        let txData: any = {
           type: this.transactionTypes.VOTE,
           secret: secret,
           publicKey: this.user.userInfo.publicKey,
@@ -165,9 +165,20 @@ export class MinServiceProvider {
     let password: string;
     let secondSecret: any;
     let passwordObj: any;
-    if (voteSwitch == true && voteRound < round) {
-      const { password, pay_pwd } = await FLP_Form.prototype.getUserPassword();
-      await this.vote(password, pay_pwd);
+    if (voteSwitch == true) {
+      await this.tryVote(round);
+    }
+  }
+  async tryVote(
+    round = this.appSetting.getRound(),
+    userPWD?: { password: string; pay_pwd?: string },
+  ) {
+    let voteRound: number = this.appSetting.settings.digRound;
+    if (voteRound < round) {
+      if (!userPWD) {
+        userPWD = await FLP_Form.prototype.getUserPassword();
+      }
+      return this.vote(userPWD.password, userPWD.pay_pwd);
     }
   }
 

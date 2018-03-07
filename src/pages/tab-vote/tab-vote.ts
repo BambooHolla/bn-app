@@ -333,21 +333,20 @@ export class TabVotePage extends FirstLevelPage {
           .present();
         return;
       }
+
       const pwdData = await this.getUserPassword();
-      await this.minService
-        .vote(pwdData.password, pwdData.pay_pwd)
-        .catch(err => {
-          if (err === "you have already voted") {
-            // 启动倒计时界面
-            console.log(
-              "%c已经投票，倒计时等待结果",
-              "font-size:3em;color:green;",
-            );
-            return err;
-          } else {
-            return Promise.reject(err);
-          }
-        });
+      await this.minService.tryVote(undefined, pwdData).catch(err => {
+        if (err === "you have already voted") {
+          // 启动倒计时界面
+          console.log(
+            "%c已经投票，倒计时等待结果",
+            "font-size:3em;color:green;",
+          );
+          return err;
+        } else {
+          return Promise.reject(err);
+        }
+      });
       this.routeToVoteDetail();
     } finally {
       this.min_starting = false;

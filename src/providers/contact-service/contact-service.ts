@@ -168,7 +168,7 @@ export class ContactServiceProvider {
       address_or_username = userAddress.address;
     }
 
-    let txData:any = {
+    let txData: any = {
       type: this.transactionTypes.FOLLOW,
       amount: "0",
       secret: secret,

@@ -58,6 +58,7 @@
   "//": "tab-vote",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",
   "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
+  "AUTO_VOTE_ERROR": "自动挖矿失败",
   "DEFAULT_FEE_NOT_SETTED": "默认交易手续费未设置",
   "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "您是否要去设置默认手续费",
   "VOTE_INCOME_HISTORY": "历史挖矿收益",

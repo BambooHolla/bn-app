@@ -11,7 +11,7 @@ page-tab-chain {
   }
   @supports (backdrop-filter: blur(5px)) {
     @keyframes tabchain-header {
-    /*   40% {
+      /*   40% {
         background-color: transparent;
       }
       100% {
@@ -44,7 +44,7 @@ page-tab-chain {
       }
     }
   }
-  .unconfirm-block-padding-wrapper{
+  .unconfirm-block-padding-wrapper {
     position: fixed;
     top: 0;
     width: 100%;
@@ -58,18 +58,18 @@ page-tab-chain {
     0% {
       transform: scale(1);
       backdrop-filter: blur(0px);
-        background-color: transparent;
+      background-color: transparent;
     }
     40% {
     }
     100% {
       backdrop-filter: blur(10px);
       background-color: rgba(255, 255, 255, 0.6);
-      transform: scale(1, .5);
+      transform: scale(1, 0.5);
     }
   }
   .unconfirm-block-wrapper {
-    padding: 0.2rem 4vw 0 4vw;
+    padding: 0.2rem 4vw 1rem 4vw;
     /* margin-bottom: #{$block-distance}rem; */
     /* background-color: rgba(255, 255, 255, 1); */
     background-color: transparent;

@@ -1,4 +1,7 @@
 .common-list {
+  > .divider {
+    height: 1rem;
+  }
   > .common-item {
     min-height: 4.6rem;
     padding: 0.6rem 1.4rem;
