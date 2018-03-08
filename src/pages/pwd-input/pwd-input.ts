@@ -36,6 +36,16 @@ export class PwdInputPage extends FirstLevelPage {
       custom_fee: parseFloat(this.appSetting.settings.default_fee),
     };
   }
+  ignore_keys = ["pay_pwd"];
+  get canSubmit() {
+    const canSubmit = super.canSubmit;
+    if (canSubmit) {
+      if (this.formData.need_pay_pwd) {
+        return !!this.formData.pay_pwd;
+      }
+    }
+    return canSubmit;
+  }
   // @PwdInputPage.setErrorTo("errors","password",["VerificationFailure"])
   // check_password(){
   //   if(this.formData.password!==this.userInfo.password){

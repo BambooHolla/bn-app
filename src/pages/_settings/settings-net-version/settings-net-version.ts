@@ -21,6 +21,11 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     return AppSettingProvider.NET_VERSION;
   }
   async changeNetVersion(net_version) {
+    if (this.net_version !== net_version) {
+      if (net_version !== "testnet" && net_version !== "mainnet") {
+        return;
+      }
+    }
     return this.alertCtrl
       .create({
         title: await this.getTranslate("APP_WILL_RESTART"),
@@ -37,23 +42,18 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       .present();
   }
   private _changeNetVersion(net_version: string) {
-    if (this.net_version !== net_version) {
-      if (net_version !== "testnet" && net_version !== "mainnet") {
-        return;
-      }
-      if (net_version == "testnet") {
-        localStorage.setItem("NET_VERSION", net_version);
-        localStorage.setItem(
-          "SERVER_HOST",
-          "FULL:http://test1.ifmchain.org:19002",
-        );
-      } else if (net_version == "mainnet") {
-        localStorage.removeItem("NET_VERSION");
-        localStorage.removeItem("SERVER_HOST");
-      } else {
-        return;
-      }
-      location.reload();
+    if (net_version == "testnet") {
+      localStorage.setItem("NET_VERSION", net_version);
+      localStorage.setItem(
+        "SERVER_HOST",
+        "FULL:http://test1.ifmchain.org:19002",
+      );
+    } else if (net_version == "mainnet") {
+      localStorage.removeItem("NET_VERSION");
+      localStorage.removeItem("SERVER_HOST");
+    } else {
+      return;
     }
+    location.reload();
   }
 }
