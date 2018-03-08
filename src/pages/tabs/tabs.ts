@@ -2,6 +2,7 @@ import { Component, ViewChild, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { IonicPage, NavController, Tabs } from "ionic-angular";
 import { MyApp } from "../../app/app.component";
+import { FLP_Lifecycle} from "../../bnqkl-framework/FLP_Lifecycle";
 
 import { Tab1Root } from "../pages";
 import { Tab2Root } from "../pages";
@@ -13,7 +14,7 @@ import { Tab4Root } from "../pages";
   selector: "page-tabs",
   templateUrl: "tabs.html",
 })
-export class TabsPage implements OnInit {
+export class TabsPage extends FLP_Lifecycle {
   tab1Root: any = Tab1Root;
   tab2Root: any = Tab2Root;
   tab3Root: any = Tab3Root;
@@ -29,6 +30,7 @@ export class TabsPage implements OnInit {
     public translateService: TranslateService,
     public myapp:MyApp
   ) {
+    super();
     translateService
       .stream(["TAB1_TITLE", "TAB2_TITLE", "TAB3_TITLE", "TAB4_TITLE"])
       .subscribe(values => {
@@ -38,16 +40,17 @@ export class TabsPage implements OnInit {
         this.tab4Title = values["TAB4_TITLE"];
       });
   }
-  ngOnInit() {
+  @TabsPage.onInit
+  watchSelectIndex() {
     this.tabs.ionChange.subscribe(() => {
       const selected_index = this.tabs.getIndex(this.tabs.getSelected());
       this.tabs.setElementAttribute("select-index", selected_index);
     });
   }
-
-  ionViewWillEnter(){
-     this.myapp.overlaysWebView();
-  }
+  // @TabsPage.willEnter
+  // fixStaturBug() {
+  //    this.myapp.tryOverlaysWebView();
+  // }
 
   private _hidden_tabs = new Set();
   @ViewChild(Tabs) tabs!: Tabs;

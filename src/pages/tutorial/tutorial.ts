@@ -29,7 +29,7 @@ export class TutorialPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public menu: MenuController,
-    public myapp: MyApp,
+    public myapp: MyApp
   ) {
     super(navCtrl, navParams);
     this.dir = this.platform.dir();
@@ -63,10 +63,10 @@ export class TutorialPage extends FirstLevelPage {
         ];
       });
   }
-  @TutorialPage.willEnter
-  fixStaturBug() {
-    this.myapp.overlaysWebView();
-  }
+  // @TutorialPage.willEnter
+  // fixStaturBug() {
+  //   this.myapp.tryOverlaysWebView();
+  // }
   get lang_code() {
     return this.translate.currentLang;
   }
@@ -80,12 +80,14 @@ export class TutorialPage extends FirstLevelPage {
     this.showSkip = !slider.isEnd();
   }
 
-  ionViewDidEnter() {
+  @TutorialPage.didEnter
+  disableMenu() {
     // the root left menu should be disabled on the tutorial page
     this.menu.enable(false);
   }
 
-  ionViewWillLeave() {
+  @TutorialPage.didLeave
+  enableMenu() {
     // enable the root left menu when leaving the tutorial page
     this.menu.enable(true);
   }

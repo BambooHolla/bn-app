@@ -43,6 +43,7 @@ if (
   template: `<ion-nav #content></ion-nav>`, // [root]="rootPage"
 })
 export class MyApp implements OnInit {
+  static WINDOW_MAX_HEIGHT = 0;
   constructor(
     public translate: TranslateService,
     public platform: Platform,
@@ -63,7 +64,7 @@ export class MyApp implements OnInit {
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     public modalController: ModalController,
-    public userInfo: UserInfoProvider,
+    public userInfo: UserInfoProvider
   ) {
     window["ac"] = this;
     window["clipboard"] = clipboard;
@@ -136,6 +137,28 @@ export class MyApp implements OnInit {
       this.statusBar.styleDefault();
     }, 50);
   }
+  _isIOS?: boolean;
+  get isIOS() {
+    if (this._isIOS === undefined) {
+      this._isIOS = this.platform.is("ios");
+    }
+    return this._isIOS;
+  }
+  tryOverlaysWebView(loop_times: number = 0) {
+    if (this.isIOS) {
+      return;
+    }
+    if (window.innerHeight < MyApp.WINDOW_MAX_HEIGHT) {
+      // 如果高度不对劲的话，尽可能重新搞一下
+      this.overlaysWebView();
+    }
+    if (loop_times > 0) {
+      // 等一下再看看是否修正正确了，不行就再来一次
+      setTimeout(() => {
+        this.tryOverlaysWebView(loop_times - 1);
+      }, 100);
+    }
+  }
 
   initTranslate() {
     // Set the default language for translation strings, and the current language.
@@ -196,7 +219,7 @@ export class MyApp implements OnInit {
     }
     console.log(
       `%c Open Page:[${page}] and set as root`,
-      "font-size:1.2rem;color:yellow;",
+      "font-size:1.2rem;color:yellow;"
     );
     this.currentPage = page;
     if (this.nav) {
@@ -216,3 +239,23 @@ export class MyApp implements OnInit {
     this._is_hide = true;
   }
 }
+
+/*获取window正确的最大高度，可能对于分屏支持有问题*/
+var resizeInfo = document.createElement("div");
+function onresize() {
+  if (!resizeInfo.parentElement && document.body) {
+    resizeInfo.style.cssText =
+      "display:none;position:fixed;top:100px;left:100px;background:rgba(0,0,0,0.5);color:#FFF;opacity:0.3;pointer-events:none;";
+    document.body.appendChild(resizeInfo);
+  }
+  resizeInfo.innerHTML += `<p>${[
+    window.innerHeight,
+    document.body.clientHeight,
+  ]}</p>`;
+  MyApp.WINDOW_MAX_HEIGHT = Math.max(
+    MyApp.WINDOW_MAX_HEIGHT,
+    window.innerHeight
+  );
+}
+onresize();
+window.addEventListener("resize", onresize);

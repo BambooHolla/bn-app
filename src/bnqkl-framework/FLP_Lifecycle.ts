@@ -2,6 +2,7 @@ import { OnInit, AfterContentInit, OnDestroy } from "@angular/core";
 import { EventEmitter } from "eventemitter3";
 import { PAGE_STATUS } from "./const";
 import { FLP_Tool } from "./FLP_Tool";
+// import { MyApp } from "../app/app.component";
 
 export class FLP_Lifecycle extends FLP_Tool
   implements OnInit, AfterContentInit, OnDestroy {
@@ -75,6 +76,7 @@ export class FLP_Lifecycle extends FLP_Tool
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;
     console.log("ionViewDidEnter", this.cname);
     this.myapp.hideSplashScreen();
+    this.myapp.tryOverlaysWebView(3);
 
     for (let fun_name of this._did_enter_funs) {
       try {
@@ -115,18 +117,18 @@ export class FLP_Lifecycle extends FLP_Tool
   dispatchEvent(
     fire_event_name: "HEIGHT:CHANGED",
     height: number,
-    is_init: boolean,
+    is_init: boolean
   ): void;
   dispatchEvent(
     fire_event_name: "ROUND:CHANGED",
     height: number,
-    is_init: boolean,
+    is_init: boolean
   ): void;
   dispatchEvent(fire_event_name: string, ...args: any[]) {
     console.group(
       "%cdispatchEvent",
       "color:blue;background-color:#FFF",
-      fire_event_name,
+      fire_event_name
     );
     for (let { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
@@ -154,7 +156,7 @@ export class FLP_Lifecycle extends FLP_Tool
   static afterContentInit(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     FLP_Tool.addProtoArray(target, "afterContentInit", name);
     return descriptor;
@@ -196,7 +198,7 @@ export class FLP_Lifecycle extends FLP_Tool
     return function(
       target: any,
       handle_name: string,
-      descriptor?: PropertyDescriptor,
+      descriptor?: PropertyDescriptor
     ) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
       return descriptor;

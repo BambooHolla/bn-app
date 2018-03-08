@@ -32,7 +32,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public loginService: LoginServiceProvider,
-    public myApp: MyApp,
+    public myapp: MyApp,
     public blockService: BlockServiceProvider,
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer,
@@ -40,10 +40,10 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
-  @SignInAndSignUpPage.willEnter
-  fixStaturBug() {
-    this.myapp.overlaysWebView();
-  }
+  // @SignInAndSignUpPage.willEnter
+  // fixStaturBug() {
+  //   this.myapp.tryOverlaysWebView();
+  // }
 
   @ViewChild("passwordTextarear") passwordTextarear?: ElementRef;
   @ViewChild(ChainMeshComponent) cmesh?: ChainMeshComponent;
@@ -213,7 +213,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     );
     if (result) {
       // this.routeTo("scan-nodes");
-      this.myApp.openPage(MainPage);
+      this.myapp.openPage(MainPage);
     }
   }
   gotoRegister() {

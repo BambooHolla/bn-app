@@ -30,7 +30,7 @@ export class PwdInputPage extends FirstLevelPage {
     return {
       password: this.userInfo.password,
       have_password: !!this.userInfo.password,
-      pay_pwd: this.userInfo.hasSecondPwd ? "" : "NO NEED",
+      pay_pwd: "",
       need_pay_pwd: this.userInfo.hasSecondPwd,
       need_custom_fee: false,
       custom_fee: parseFloat(this.appSetting.settings.default_fee),
