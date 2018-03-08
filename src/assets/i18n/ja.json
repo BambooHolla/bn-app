@@ -267,6 +267,7 @@
   "SETTINGS_SET_PAY_PWD": "支払暗証番号の設置",
   "MINING_INCOME_NOTICE": "マイニング収益通知",
   "SETTINGS_LANG": "言語の設定",
+  "SETTINGS_NET_VERSION": "ネットワーク設定",
   "MINING_ONLY_IN_WIFI": "Wi-Fi接続時のみマイニング",
   "FINGERPRINT_PROTECTION": "指紋保護",
   "BACKGROUND_MINING": "バックグランドマイニング",
