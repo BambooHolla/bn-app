@@ -21,10 +21,11 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     return AppSettingProvider.NET_VERSION;
   }
   async changeNetVersion(net_version) {
-    if (this.net_version !== net_version) {
-      if (net_version !== "testnet" && net_version !== "mainnet") {
-        return;
-      }
+    if (this.net_version === net_version) {
+      return;
+    }
+    if (net_version !== "testnet" && net_version !== "mainnet") {
+      return;
     }
     return this.alertCtrl
       .create({
