@@ -167,4 +167,15 @@ export class TabPayPage extends FirstLevelPage {
   async watchHeightChange(height) {
     return this.loadRollOutLogs();
   }
+
+  @TabPayPage.didEnter
+  testTransferReceipt() {
+    this.modalCtrl
+      .create("pay-transfer-receipt", undefined, {
+        cssClass: "transfer-receipt-modal",
+        showBackdrop: true,
+        enableBackdropDismiss: true,
+      })
+      .present();
+  }
 }

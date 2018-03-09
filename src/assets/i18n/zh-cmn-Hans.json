@@ -26,8 +26,7 @@
 
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "关于IBT",
-  "ABOUT_IBT_INFO":
-    "IFMChain是全球首款可接入移动终端的区块链3.0产品IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
+  "ABOUT_IBT_INFO": "IFMChain是全球首款可接入移动终端的区块链3.0产品IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
 
   "//": "sign-in-and-sign-up",
   "LOGINNG": "获取授权中",
@@ -55,11 +54,11 @@
   "//": "settings-set-default-fee",
   "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",
 
-  "//":"settings-net-version",
+  "//": "settings-net-version",
   "SETTINGS-NET-VERSION": "设置网络",
   "NET_VERSION_OF_MAINNET": "正式网络",
   "NET_VERSION_OF_TESTNET": "测试网络",
-  "APP_WILL_RESTART":"应用将会重启",
+  "APP_WILL_RESTART": "应用将会重启",
 
   "//": "tab-vote",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",
@@ -147,8 +146,7 @@
   "PAY-RECEIVE": "接收",
   "RECENT": "最近",
   "LOADING_MORE_RECIVE_LIST": "加载更多转入记录中……",
-  "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
-    "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
+  "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK": "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
 
   "//": "vote-list",
   "LOADING_OUT_VOTE_LIST": "加载已投票列表中……",
@@ -241,12 +239,11 @@
   "SET_USERNAME_SUBMITING": "设置用户名提交中",
   "SET_USERNAME_SUBMIT_SUCCESS": "设置用户名提交成功",
 
-  "//": "pay",
+  "//": "tab-pay",
   "TRANSFER_SUBMIT_ERROR": "转账提交失败",
   "TRANSFER_SUBMITING": "转账提交中",
   "TRANSFER_SUBMIT_SUCCESS": "转账提交成功",
-  "TRANSFER_UPDATE_ERROR":
-    "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
+  "TRANSFER_UPDATE_ERROR": "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
   "PAYMENT": "支付",
   "PLEASE_INPUT_ADDRESS": "请输入地址",
   "PLEASE_INPUT_AMOUNT": "请输入数量",
@@ -256,6 +253,10 @@
   "RECENT_OUT_COME_RECORED": "最近转出记录",
   "NO_OUT_COME_RECORED": "暂无转出记录",
   "LOADING_OUT_COME_RECORED": "加载更多转出记录中……",
+  "TRANSFER": "转账",
+  "PAYER": "支付人",
+  "TRANSACTION_ID": "交易号",
+  "TRANSACTION_ID": "交易号",
 
   "//": "account-my-transaction-list",
   "ACCOUNT-MY-TRANSACTION-LIST": "我的交易数据",
@@ -263,8 +264,7 @@
   "UNCONFIRM_TRANSACTIONS": "未确认交易",
   "LOAD_MORE_CONFIRMED_TRANSACTION_LIST_ERROR": "加载更多已确认交易列表失败",
   "LOAD_MORE_UNCONFIRM_TRANSACTION_LIST_ERROR": "加载更多未确认交易列表失败",
-  "UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
-    "更新交易记录失败，重试次数过多，已停止重试，请检测网络",
+  "UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK": "更新交易记录失败，重试次数过多，已停止重试，请检测网络",
   "CONFIRMED_TRANSACTION_LIST_IS_EMPTY": "已确认交易列表为空",
   "UNCONFIRM_TRANSACTION_LIST_IS_EMPTY": "未确认交易列表为空",
   "LOADING_UNCONFIRM_TRANSACTION_LIST": "加载未确认交易列表中……",

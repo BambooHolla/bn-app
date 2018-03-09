@@ -1,0 +1,67 @@
+<ion-header></ion-header>
+<ion-content>
+  <div class="transfer-receipt">
+    <div class="header">
+      <div class="buttons">
+        <button class="share">
+          <ali-icon name="ifm-share1"></ali-icon>
+        </button>
+      </div>
+      <div class="title">{{'TRANSFER'|translate}}</div>
+      <div class="amount">{{current_transfer.amount|amountEuler|number:'1.8-8'}}</div>
+      <div class="recipient">
+        <span class="label">{{'TRANSCATION_RECIPIENT'|translate}}</span>
+        <span [innerHTML]="current_transfer.recipientUsername?current_transfer.recipientUsername:(current_transfer.recipientId|mask:'@address')"></span>
+      </div>
+      <div class="create-time">
+        <ali-icon name="ifm-clock"></ali-icon>
+        {{current_transfer?.timestamp|timestamp|amDateFormat:"YYYY-MM-DD"}}
+      </div>
+    </div>
+    <div class="detail">
+      <common-wave-bg class="bg" [wave2-opacity]="0.5" wave2-color="#FFF" [wave3-opacity]="0.3" wave3-color="#FFF"></common-wave-bg>
+      <div class="chapter">
+        <img src="assets/imgs/pay-transfer-receipt/章.png" alt="chapter">
+      </div>
+      <div class="common-list">
+        <div class="sender common-item">
+          <div class="left">
+            {{'PAYER' | translate}}
+          </div>
+          <div class="content" [innerHTML]="current_transfer.senderUsername?current_transfer.senderUsername:(current_transfer.senderId|mask:'@address')"></div>
+        </div>
+        <div class="fee common-item">
+          <div class="left">
+            {{'FEE' | translate}}
+          </div>
+          <div class="content">{{current_transfer.fee|amountEuler|number:'1.8-8'}}</div>
+        </div>
+        <div class="transaction-number common-item">
+          <div class="left">
+            {{'TRANSACTION_ID' | translate}}
+          </div>
+          <div class="content">{{current_transfer.id}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="progress">
+        <div class="time-point submitted-time">
+          <div class="dot"></div>
+          <div class="time">9:45</div>
+          <div class="status">已提交</div>
+        </div>
+        <div class="time-point expected-confirmation-time">
+          <div class="dot"></div>
+          <div class="time">10:28</div>
+          <div class="status">预计确认</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-buttons">
+    <button class="close-button animated bounceIn">
+      <ali-icon name="ifm-guanbi"></ali-icon>
+    </button>
+  </div>
+</ion-content>
