@@ -21,6 +21,8 @@ import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
 import { Clipboard } from "@ionic-native/clipboard";
 import { StatusBar } from "@ionic-native/status-bar";
+import { Screenshot } from '@ionic-native/screenshot';
+import { SocialSharing } from '@ionic-native/social-sharing';
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -172,6 +174,8 @@ const heightLevelModules = [
     Toast,
     Clipboard,
     StatusBar,
+    Screenshot,
+    SocialSharing,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppFetchProvider,
