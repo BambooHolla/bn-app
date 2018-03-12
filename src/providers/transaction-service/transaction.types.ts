@@ -27,3 +27,8 @@ export type timeStampModel = {
   success?: boolean;
   timestamp: number;
 };
+
+export type putTransactionReturn = {
+  success?: boolean;
+  transactionId: string;
+};

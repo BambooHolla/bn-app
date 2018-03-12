@@ -144,13 +144,29 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTransactionById(id: string) {
-    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS_BY_ID, {
-      search: {
-        id: id,
+    let data = await this.fetch.get<{ transaction: TYPE.TransactionModel }>(
+      this.GET_TRANSACTIONS_BY_ID,
+      {
+        search: {
+          id: id,
+        },
       },
-    });
+    );
 
     return data.transaction;
+  }
+
+  async getUnconfirmedById(id: string) {
+    let data = await this.fetch.get<{ transactions: TYPE.TransactionModel[] }>(
+      this.UNCONFIRMED,
+      {
+        search: {
+          id: id,
+        },
+      },
+    );
+
+    return data.transactions[0];
   }
 
   /**
@@ -206,7 +222,10 @@ export class TransactionServiceProvider {
       this.ifmJs.transaction.createTransaction,
     )(txData);
 
-    return this.fetch.put<TYPE.TransactionModel>(transactionUrl, transaction);
+    return this.fetch.put<TYPE.putTransactionReturn>(
+      transactionUrl,
+      transaction,
+    );
   }
 
   /**

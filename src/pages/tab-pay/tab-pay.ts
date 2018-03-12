@@ -82,9 +82,39 @@ export class TabPayPage extends FirstLevelPage {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
       custom_fee: true,
     });
-    await this._submit(password, pay_pwd, custom_fee);
+    const { transactionId } = await this._submit(password, pay_pwd, custom_fee);
     this.resetFormData();
+    this.showTransferReceipt(transactionId);
   }
+  @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
+  @asyncCtrlGenerator.retry()
+  async showTransferReceipt(transactionId: string) {
+    const transfer = await Promise.all([
+      this.transactionService.getUnconfirmedById(transactionId),
+      this.transactionService
+        .getTransactionById(transactionId)
+        .catch(err => null),
+    ]).then(ts => {
+      return ts.filter(t => t)[0];
+    });
+    if (!transfer) {
+      throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
+    }
+    return this.modalCtrl
+      .create(
+        "pay-transfer-receipt",
+        {
+          transfer,
+        },
+        {
+          cssClass: "transfer-receipt-modal",
+          showBackdrop: true,
+          enableBackdropDismiss: true,
+        },
+      )
+      .present();
+  }
+
   resetFormData() {
     super.resetFormData();
     this.formData.transfer_amount = "";
@@ -166,16 +196,5 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {
     return this.loadRollOutLogs();
-  }
-
-  @TabPayPage.didEnter
-  testTransferReceipt() {
-    this.modalCtrl
-      .create("pay-transfer-receipt", undefined, {
-        cssClass: "transfer-receipt-modal",
-        showBackdrop: true,
-        enableBackdropDismiss: true,
-      })
-      .present();
   }
 }

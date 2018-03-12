@@ -40,14 +40,16 @@ export class PayTransferReceiptPage extends SecondLevelPage {
 	@ViewChild("transferReceiptEle") transferReceiptEle!: ElementRef;
 	@ViewChild(CommonWaveBgComponent) wages!: CommonWaveBgComponent;
 	/* 回执 */
-	current_transfer = {
-		senderUsername: "Gasubee",
-		fee: "1",
-		id: "bfe77120be31990bf6d398b3666bdd09657182b08678e4c2f7e2df79cdc8",
-		recipientId: "e31990bf6d398b3666bdd09657",
-		timestamp: 4613782,
-		amount: "888888888",
-	};
+	current_transfer?: TransactionModel;
+	@PayTransferReceiptPage.willEnter
+	initData() {
+		const transfer = this.navParams.get("transfer");
+		if (!transfer) {
+			return this.navCtrl.goToRoot({});
+		}
+		this.current_transfer = transfer;
+	}
+
 	@asyncCtrlGenerator.loading(() =>
 		PayTransferReceiptPage.getTranslate("GENERATING_CAPTURE"),
 	)
