@@ -22,6 +22,17 @@ export class ServerResError extends Error {
         );
       });
   }
+  static getI18nError(message, code?) {
+    return (window["translate"] as TranslateService)
+      .get(message)
+      .take(1)
+      .toPromise()
+      .then(err_translated_msg => {
+        return code
+          ? ServerResError.parseErrorMessage(code, message)
+          : new Error(err_translated_msg);
+      });
+  }
   static parseErrorMessage(code, message) {
     const CODE_LIST = [code + ""];
     var MESSAGE = message;

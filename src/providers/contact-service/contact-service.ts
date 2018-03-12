@@ -185,11 +185,11 @@ export class ContactServiceProvider {
       txData.secondSecret = secondSecret;
     }
 
-    let data: boolean = await this.transactionService.putTransaction(txData);
-
-    if (data) {
-      return data;
-    } else {
+    try {
+      await this.transactionService.putTransaction(txData);
+      return true;
+    } catch (err) {
+      console.error(err);
       throw new Error("Add contact transaction error");
     }
   }

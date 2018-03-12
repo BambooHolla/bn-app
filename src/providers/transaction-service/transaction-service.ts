@@ -169,54 +169,44 @@ export class TransactionServiceProvider {
    * @returns {Promise<boolean>}
    */
   async putTransaction(txData) {
-    if (this.user.userInfo.balance > 0) {
-      if (
-        txData.secondSecret &&
-        txData.type !== this.transactionTypeCode.SIGNATURE
-      ) {
-        let secondPwd = txData.secondSecret;
-        let is_second_true = this.verifySecondPassphrase(secondPwd);
-        if (!is_second_true) {
-          return this.fetch.ServerResError.translateAndParseErrorMessage<
-            boolean
-          >("Second passphrase verified error");
-        }
-      }
-      if (typeof txData.fee === "number") {
-        txData.fee = txData.fee.toString();
-      }
-
-      if (this.validateTxdata(txData)) {
-        //获取url，获取类型
-        let transactionUrl = this.appSetting
-          .APP_URL("/api/" + this.getTransactionLink(txData.type))
-          .toString();
-        console.log(transactionUrl);
-        // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
-        //获取时间戳
-        let timestampRes = await this.getTimestamp();
-        if (timestampRes.success) {
-          //时间戳加入转账对象
-          txData.timestamp = timestampRes.timestamp;
-          //生成转账        await上层包裹的函数需要async
-          const transaction = await promisify(
-            this.ifmJs.transaction.createTransaction,
-          )(txData);
-
-          let data = await this.fetch.put<any>(transactionUrl, transaction);
-          return true;
-        }
-      } else {
-        return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
-          "validate error",
+    if (this.user.userInfo.balance <= 0) {
+      throw await this.fetch.ServerResError.getI18nError("not enough balance");
+    }
+    if (
+      txData.secondSecret &&
+      txData.type !== this.transactionTypeCode.SIGNATURE
+    ) {
+      let secondPwd = txData.secondSecret;
+      let is_second_true = this.verifySecondPassphrase(secondPwd);
+      if (!is_second_true) {
+        throw await this.fetch.ServerResError.getI18nError(
+          "Second passphrase verified error",
         );
       }
-    } else {
-      return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
-        "not enough balance",
-      );
     }
-    return false;
+    if (typeof txData.fee === "number") {
+      txData.fee = txData.fee.toString();
+    }
+
+    if (!this.validateTxdata(txData)) {
+      throw await this.fetch.ServerResError.getI18nError("validate error");
+    }
+    //获取url，获取类型
+    let transactionUrl = this.appSetting
+      .APP_URL("/api/" + this.getTransactionLink(txData.type))
+      .toString();
+    console.log(transactionUrl);
+    // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
+    //获取时间戳
+    let timestampRes = await this.getTimestamp();
+    //时间戳加入转账对象
+    txData.timestamp = timestampRes.timestamp;
+    //生成转账        await上层包裹的函数需要async
+    const transaction = await promisify(
+      this.ifmJs.transaction.createTransaction,
+    )(txData);
+
+    return this.fetch.put<TYPE.TransactionModel>(transactionUrl, transaction);
   }
 
   /**
@@ -391,39 +381,29 @@ export class TransactionServiceProvider {
     password,
     secondSecret,
   ) {
-    debugger;
-    if (
-      parseFloat(amount) > 0 &&
-      parseFloat(amount) < parseFloat(this.user.balance)
-    ) {
-      if (parseFloat(amount) + fee > parseFloat(this.user.balance)) {
-        return this.fetch.ServerResError.translateAndParseErrorMessage(
-          "Amount error",
-        );
-      }
-
-      let txData: any = {
-        type: this.transactionTypeCode.SEND,
-        secret: password,
-        amount: amount.toString(),
-        recipientId: recipientId,
-        publicKey: this.user.publicKey,
-        fee: fee.toString(),
-        // secondSecret,
-      };
-
-      if (secondSecret) {
-        txData.secondSecret = secondSecret;
-      }
-
-      let is_success: boolean = await this.putTransaction(txData);
-
-      return is_success;
-    } else {
-      return this.fetch.ServerResError.translateAndParseErrorMessage<boolean>(
-        "Amount error",
-      );
+    amount = parseFloat(amount);
+    if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
+      throw await this.fetch.ServerResError.getI18nError("Amount error");
     }
+    if (amount + fee > parseFloat(this.user.balance)) {
+      throw await this.fetch.ServerResError.getI18nError("Amount error");
+    }
+
+    let txData: any = {
+      type: this.transactionTypeCode.SEND,
+      secret: password,
+      amount: amount.toString(),
+      recipientId: recipientId,
+      publicKey: this.user.publicKey,
+      fee: fee.toString(),
+      // secondSecret,
+    };
+
+    if (secondSecret) {
+      txData.secondSecret = secondSecret;
+    }
+
+    return this.putTransaction(txData);
   }
 
   /**

@@ -94,45 +94,41 @@ export class AccountServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
   ) {
     if (!!this.user.userInfo.username) {
-      return this.fetch.ServerResError.translateAndParseErrorMessage(
+      throw await this.fetch.ServerResError.getI18nError(
         "account already has username",
       );
-    } else {
-      let is_existed = await this.checkUsernameExisted(newUsername);
-      if (!!is_existed) {
-        let accountData: any = {
-          type: this.ifmJs.transactionTypes.USERNAME,
-          secret,
+    }
+    let is_existed = await this.checkUsernameExisted(newUsername);
+    if (!is_existed) {
+      throw await this.fetch.ServerResError.getI18nError(
+        "this username has already exist",
+      );
+    }
+    let accountData: any = {
+      type: this.ifmJs.transactionTypes.USERNAME,
+      secret,
+      publicKey: this.user.userInfo.publicKey,
+      fee: fee.toString(),
+      asset: {
+        username: {
+          alias: newUsername,
           publicKey: this.user.userInfo.publicKey,
-          fee: fee.toString(),
-          asset: {
-            username: {
-              alias: newUsername,
-              publicKey: this.user.userInfo.publicKey,
-            },
-          },
-        };
+        },
+      },
+    };
 
-        if (secondSecret) {
-          accountData.secondSecret = secondSecret;
-        }
+    if (secondSecret) {
+      accountData.secondSecret = secondSecret;
+    }
 
-        let is_success = await this.transactionService.putTransaction(
-          accountData,
-        );
-        if (is_success) {
-          this.user.userInfo.username = newUsername;
-          return true;
-        } else {
-          return this.fetch.ServerResError.translateAndParseErrorMessage(
-            "change username error",
-          );
-        }
-      } else {
-        return this.fetch.ServerResError.translateAndParseErrorMessage(
-          "this username has already exist",
-        );
-      }
+    try {
+      await this.transactionService.putTransaction(accountData);
+      this.user.userInfo.username = newUsername;
+      return true;
+    } catch (err) {
+      throw await this.fetch.ServerResError.getI18nError(
+        "change username error",
+      );
     }
   }
 
@@ -171,10 +167,11 @@ export class AccountServiceProvider {
       fee: fee.toString(),
     };
 
-    let is_success = await this.transactionService.putTransaction(txData);
-    if (is_success) {
+    try {
+      await this.transactionService.putTransaction(txData);
       return true;
-    } else {
+    } catch (err) {
+      console.error(err);
       throw new Error("Set second passphrase error");
     }
   }

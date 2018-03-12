@@ -108,49 +108,50 @@ export class MinServiceProvider {
   private async vote(secret: string, secondSecret?: string) {
     //首先获取时间戳
     let voteTimestamp = await this.transactionService.getTimestamp();
-    if (voteTimestamp.success) {
-      //获取投票的人
-      const resp = await this.fetch.get<any>(this.VOTE_URL, {
-        search: { address: this.user.address },
-      });
-      //如果没有可投票的人，一般都是已经投了57票
-      if (resp.delegate.length === 0) {
-        throw "you have already voted";
-      } else {
-        let delegateArr: string[] = resp.delegate;
-        let voteList: string[] = [];
-        //票投给所有获取回来的人
-        for (let delegate of delegateArr) {
-          voteList.push("+" + delegate);
-        }
 
-        //设置投票的参数
-        let txData: any = {
-          type: this.transactionTypes.VOTE,
-          secret: secret,
-          publicKey: this.user.userInfo.publicKey,
-          fee: this.appSetting.settings.default_fee.toString(),
-          timestamp: resp.timestamp,
-          asset: {
-            votes: voteList,
-          },
-        };
+    //获取投票的人
+    const resp = await this.fetch.get<any>(this.VOTE_URL, {
+      search: { address: this.user.address },
+    });
+    //如果没有可投票的人，一般都是已经投了57票
+    if (resp.delegate.length === 0) {
+      throw await this.fetch.ServerResError.getI18nError(
+        "you have already voted",
+      );
+    }
+    let delegateArr: string[] = resp.delegate;
+    let voteList: string[] = [];
+    //票投给所有获取回来的人
+    for (let delegate of delegateArr) {
+      voteList.push("+" + delegate);
+    }
 
-        if (secondSecret) {
-          txData.secondSecret = secondSecret;
-        }
+    //设置投票的参数
+    let txData: any = {
+      type: this.transactionTypes.VOTE,
+      secret: secret,
+      publicKey: this.user.userInfo.publicKey,
+      fee: this.appSetting.settings.default_fee.toString(),
+      timestamp: resp.timestamp,
+      asset: {
+        votes: voteList,
+      },
+    };
 
-        //成功完成交易
-        let isDone: boolean = await this.transactionService.putTransaction(
-          txData,
-        );
-        if (isDone) {
-          this.appSetting.settings.digRound = this.appSetting.getRound();
-          this.appSetting.settings.background_mining = true;
-        } else {
-          throw "vote transaction error";
-        }
-      }
+    if (secondSecret) {
+      txData.secondSecret = secondSecret;
+    }
+
+    //成功完成交易
+    try {
+      await this.transactionService.putTransaction(txData);
+      this.appSetting.settings.digRound = this.appSetting.getRound();
+      this.appSetting.settings.background_mining = true;
+    } catch (err) {
+      console.error(err);
+      throw await this.fetch.ServerResError.getI18nError(
+        "vote transaction error",
+      );
     }
   }
 
