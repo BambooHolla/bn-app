@@ -33,7 +33,7 @@ export class PwdInputPage extends FirstLevelPage {
       pay_pwd: "",
       need_pay_pwd: this.userInfo.hasSecondPwd,
       need_custom_fee: false,
-      custom_fee: parseFloat(this.appSetting.settings.default_fee),
+      custom_fee: this.appSetting.settings.default_fee,
     };
   }
   ignore_keys = ["pay_pwd"];
@@ -65,10 +65,8 @@ export class PwdInputPage extends FirstLevelPage {
 
   @PwdInputPage.setErrorTo("errors", "custom_fee", ["ErrorRange"])
   check_custom_fee() {
-    if (
-      this.formData.custom_fee <= 0 ||
-      this.formData.custom_fee > parseFloat(this.userInfo.balance)
-    ) {
+    const custom_fee = parseFloat(this.formData.custom_fee);
+    if (custom_fee <= 0 || custom_fee > parseFloat(this.userInfo.balance)) {
       return {
         ErrorRange: true,
       };
@@ -90,6 +88,10 @@ export class PwdInputPage extends FirstLevelPage {
     }
   }
   submitData() {
-    this.viewCtrl.dismiss(this.formData);
+    const formData = {
+      ...this.formData,
+      custom_fee: parseFloat(this.formData.custom_fee),
+    };
+    this.viewCtrl.dismiss(formData);
   }
 }
