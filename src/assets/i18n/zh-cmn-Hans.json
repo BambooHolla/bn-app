@@ -256,6 +256,8 @@
   "RECENT_OUT_COME_RECORED": "最近转出记录",
   "NO_OUT_COME_RECORED": "暂无转出记录",
   "LOADING_OUT_COME_RECORED": "加载更多转出记录中……",
+  "SHOW_TRANSFER_RECEIPT_FAIL": "转账收据打印失败",
+  "COULD_NOT_FOUND_TRANSFER": "找不到指定转账交易",
 
   "//": "pay-transfer-receipt",
   "TRANSFER": "转账",

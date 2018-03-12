@@ -14,6 +14,7 @@ import { PAGE_STATUS } from "./const";
 
 import { FLP_Data } from "./FLP_Data";
 import { SearchType } from "../pages/search/search.const";
+import { AniBase } from "../components/AniBase";
 
 export class FirstLevelPage extends FLP_Data {
   constructor(
@@ -259,6 +260,7 @@ export class FirstLevelPage extends FLP_Data {
 
   auto_header_progress_when_scrol_down = false;
   _header_progress_ani_data: any = null;
+  _progress_ani_duration = 250;
   /**页面滚动自动设置滚动动画进度*/
   @FirstLevelPage.onInit
   _autoSetHeaderAniProgressWhenScrollDown() {
@@ -336,6 +338,7 @@ export class FirstLevelPage extends FLP_Data {
           distance,
           ani_total_second,
           pre_scroll_process,
+          ani_from_to,
         } = this._header_progress_ani_data;
 
         const scrollTop = Math.min(scrollEvent.scrollTop, distance);
@@ -347,16 +350,81 @@ export class FirstLevelPage extends FLP_Data {
         this.tryEmit("header-ani-progress", process);
         this._header_progress_ani_data.pre_scroll_process = process;
 
-        let _process = -process;
-        // 省电模式下，关闭动画
+        let _to = process;
+        // 省电模式下，关闭跟随动画
         if (this.appSetting.settings.power_saving_mode) {
-          _process = Math.round(_process);
+          _to = Math.round(_to);
+          const new_ani_from_to = "TO:" + _to;
+          if (new_ani_from_to !== ani_from_to) {
+            this._header_progress_ani_data.ani_from_to = new_ani_from_to;
+            if (this._header_progress_ani_data.abort) {
+              this._header_progress_ani_data.abort();
+              this._header_progress_ani_data.abort = null;
+            }
+
+            const header_ele = this.header.getNativeElement();
+
+            // if (_to === 1) {
+            //   this.header.setElementStyle("animation-direction", "normal");
+            // } else {
+            //   this.header.setElementStyle("animation-direction", "reverse");
+            // }
+            // this.header.setElementStyle(
+            //   "animation-duration",
+            //   this._progress_ani_duration + "ms",
+            // );
+            // this.header.setElementStyle("animation-play-state", "running");
+            // this.header.setElementStyle("animation-iteration-count", "1");
+            // this.header.setElementStyle("animation-fill-mode", "forwards");
+            // this.fixIOSCacheBug(this.header.getNativeElement());
+
+            // const ti = setTimeout(() => {
+            //   this._header_progress_ani_data.abort = null;
+            //   this.header &&
+            //     this.header.setElementStyle("animation-play-state", "paused");
+            // }, this._progress_ani_duration);
+            // this._header_progress_ani_data.abort = () => {
+            //   this._header_progress_ani_data.abort = null;
+            //   clearTimeout(ti);
+            // };
+
+            AniBase.animateNumber(
+              this._header_progress_ani_data.ani_v || 0,
+              _to === 1 ? _to - 0.00001 : _to,
+              this._progress_ani_duration,
+            )(
+              (v, abort) => {
+                this._header_progress_ani_data.ani_v = v;
+                this._header_progress_ani_data.abort = abort;
+                const to = -v;
+
+                let cur_dealy = to * ani_total_second;
+                if (process === 1) {
+                  cur_dealy += 0.0001;
+                }
+                this.header &&
+                  this.setElementAnimateDelay(
+                    this.header.getNativeElement(),
+                    cur_dealy,
+                  );
+              },
+              () => {
+                this._header_progress_ani_data.abort = null;
+              },
+            );
+          }
+        } else {
+          // 根据高度实时响应
+          let cur_dealy = -process * ani_total_second;
+          if (process === 1) {
+            cur_dealy += 0.0001;
+          }
+          this.setElementAnimateDelay(
+            this.header.getNativeElement(),
+            cur_dealy,
+          );
         }
-        let cur_dealy = _process * ani_total_second;
-        if (process === 1) {
-          cur_dealy += 0.0001;
-        }
-        this.header.setElementStyle("animation-delay", `${cur_dealy}s`);
+
         this.content.setScrollElementStyle(
           "transform",
           `translateY(${-scrollTop}px)`,
@@ -368,10 +436,36 @@ export class FirstLevelPage extends FLP_Data {
         this.content.contentTop = cTop - diff_offset_height;
         this.content._cTop -= diff_offset_height;
       } else {
-        (this.header.setElementStyle as any)("animation-delay", null);
+        this.setElementAnimateDelay(this.header.getNativeElement(), null);
         this.content.setScrollElementStyle("transform", null);
       }
     });
+  }
+  _fuck_ios_bug_placeholder_ele = document.createComment(
+    this.cname + " header placeholder",
+  );
+  setElementAnimateDelay(ele: HTMLElement, second?: number | null) {
+    if (typeof second === "number") {
+      ele.style.animationDelay = second + "s";
+    } else {
+      ele.style.animationDelay = "";
+    }
+    this.fixIOSCacheBug(ele);
+  }
+  fixIOSCacheBug(ele: HTMLElement) {
+    if (this.isIOS) {
+      this.fixIOSCacheBug = (ele: HTMLElement) => {
+        if (this.PAGE_STATUS === PAGE_STATUS.DID_ENTER) {
+          const parent = ele.parentElement as HTMLElement;
+          const placeholder_ele = this._fuck_ios_bug_placeholder_ele;
+          parent.replaceChild(placeholder_ele, ele);
+          parent.replaceChild(ele, placeholder_ele);
+        }
+      };
+    } else {
+      this.fixIOSCacheBug = () => {};
+    }
+    this.fixIOSCacheBug(ele);
   }
 
   SearchType = SearchType;

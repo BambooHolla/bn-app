@@ -168,8 +168,12 @@ export class AniBase extends EventEmitter {
     easing_function = Easing.Linear,
   ) {
     const diff = to - from;
+    let frame_id;
+    const abort = () => {
+      cancelAnimationFrame(frame_id);
+    };
     return function(
-      cb: (v: number) => void | boolean,
+      cb: (v: number, abort: () => void) => void | boolean,
       after_finished?: () => void,
     ) {
       const start_time = performance.now();
@@ -177,10 +181,10 @@ export class AniBase extends EventEmitter {
         const cur_time = performance.now();
         const progress = Math.min((cur_time - start_time) / duration, 1);
         const v = from + diff * easing_function(progress);
-        const res = cb(v);
+        const res = cb(v, abort);
         if (progress !== 1) {
           if (res !== false) {
-            requestAnimationFrame(ani);
+            frame_id = requestAnimationFrame(ani);
           }
         } else {
           after_finished && after_finished();

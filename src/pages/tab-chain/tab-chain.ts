@@ -1,4 +1,10 @@
-import { Component, ElementRef, ViewChild, Renderer2 } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  Renderer2,
+  AfterViewChecked,
+} from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -9,6 +15,7 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { PAGE_STATUS } from "../../bnqkl-framework/const";
 import {
   BlockServiceProvider,
   BlockModel,
@@ -38,6 +45,21 @@ export class TabChainPage extends FirstLevelPage {
     super(navCtrl, navParams);
     // this.auto_header_shadow_when_scroll_down = true;
     this.auto_header_progress_when_scrol_down = true;
+  }
+  @TabChainPage.didEnter
+  fixIOSanimationBug() {
+    if (this.isIOS) {
+      const header_ele = this.header && this.header.getNativeElement();
+      const loop = () => {
+        this.fixIOSCacheBug(header_ele);
+      };
+      const scroll_ele =
+        this.content && (this.content.getScrollElement() as HTMLElement);
+      if (scroll_ele) {
+        scroll_ele.addEventListener("touchstart", loop);
+        scroll_ele.addEventListener("touchend", loop);
+      }
+    }
   }
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
