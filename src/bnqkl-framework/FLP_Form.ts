@@ -67,6 +67,21 @@ export class FLP_Form extends FLP_Route {
     return true;
   }
 
+  @FLP_Form.didEnter
+  _preCheckWhenShowPage() {
+    const error_checks_col = this._error_checks_col;
+    Object.keys(this.formData).forEach(key => {
+      if (error_checks_col[key] instanceof Array) {
+        const val = this.formData[key];
+        if (val !== "" || val !== undefined) {
+          error_checks_col[key].forEach(method_name => {
+            this[method_name]();
+          });
+        }
+      }
+    });
+  }
+
   ignore_keys: string[] = [];
   get canSubmit() {
     return (
