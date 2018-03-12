@@ -1,4 +1,4 @@
-import { Component, Optional, ViewChild } from "@angular/core";
+import { Component, Optional, ViewChild, ElementRef } from "@angular/core";
 import {
 	IonicPage,
 	NavController,
@@ -18,6 +18,7 @@ import { CommonWaveBgComponent } from "../../../components/common-wave-bg/common
 
 import { Screenshot } from "@ionic-native/screenshot";
 import { SocialSharing } from "@ionic-native/social-sharing";
+import domtoimage from "dom-to-image";
 
 @IonicPage({ name: "pay-transfer-receipt" })
 @Component({
@@ -35,6 +36,8 @@ export class PayTransferReceiptPage extends SecondLevelPage {
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
+	domtoimage = domtoimage;
+	@ViewChild("transferReceiptEle") transferReceiptEle!: ElementRef;
 	@ViewChild(CommonWaveBgComponent) wages!: CommonWaveBgComponent;
 	/* 回执 */
 	current_transfer = {
@@ -45,25 +48,48 @@ export class PayTransferReceiptPage extends SecondLevelPage {
 		timestamp: 4613782,
 		amount: "888888888",
 	};
-
-	is_screenshotting = false;
-	capture_uri?: string;
-	async share() {
+	@asyncCtrlGenerator.loading(() =>
+		PayTransferReceiptPage.getTranslate("GENERATING_CAPTURE"),
+	)
+	@asyncCtrlGenerator.success(() =>
+		PayTransferReceiptPage.getTranslate("CAPTURE_GENERATE_SUCCESS"),
+	)
+	async capture() {
+		this.is_screenshotting = true;
 		try {
-			this.is_screenshotting = true;
-			if (!this.capture_uri) {
-				const res = await this.screenshot.URI(80);
-				console.log(res);
-				this.capture_uri = res.URI;
-			}
-			const share_res = await this.socialSharing.share(
-				undefined,
-				undefined,
-				this.capture_uri,
-			);
-			console.log(share_res);
+			const tr = this.transferReceiptEle.nativeElement;
+			const t = tr.style.transform;
+			tr.style.transform = "scale(1)";
+			const toimage_promise = this.domtoimage.toJpeg(tr, {
+				width: tr.clientWidth,
+				height: tr.clientHeight,
+			});
+			requestAnimationFrame(() => {
+				tr.style.transform = t;
+			});
+			return toimage_promise;
 		} finally {
 			this.is_screenshotting = false;
 		}
+	}
+
+	is_screenshotting = false;
+	capture_uri?: string;
+	@asyncCtrlGenerator.error("@@SHARE_ERROR")
+	async share() {
+		if (!this.capture_uri) {
+			console.time("capture");
+			// const res = await this.screenshot.URI(80);
+			const res = await this.capture();
+			console.timeEnd("capture");
+			// console.log(res);
+			this.capture_uri = res;
+		}
+		const share_res = await this.socialSharing.share(
+			undefined,
+			undefined,
+			this.capture_uri,
+		);
+		console.log(share_res);
 	}
 }

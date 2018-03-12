@@ -90,6 +90,13 @@ export function asyncErrorWrapGenerator(
             );
             alert(err_msg);
           } else {
+            if (
+              typeof error_title === "string" &&
+              error_title.startsWith("@@")
+            ) {
+              const i18n_key = error_title.substr(2);
+              error_title = () => this.getTranslate(i18n_key);
+            }
             if (error_title instanceof Function) {
               error_title = error_title(err);
             }
@@ -143,6 +150,10 @@ export function asyncSuccessWrapGenerator(
           return data;
         }
 
+        if (typeof success_msg === "string" && success_msg.startsWith("@@")) {
+          const i18n_key = success_msg.substr(2);
+          success_msg = () => this.getTranslate(i18n_key);
+        }
         if (success_msg instanceof Function) {
           success_msg = success_msg(data);
         }
@@ -228,6 +239,10 @@ export function asyncLoadingWrapGenerator(
         id_info.promises.add(res);
       }
 
+      if (typeof loading_msg === "string" && loading_msg.startsWith("@@")) {
+        const i18n_key = loading_msg.substr(2);
+        loading_msg = () => this.getTranslate(i18n_key);
+      }
       if (loading_msg instanceof Function) {
         loading_msg = loading_msg();
       }

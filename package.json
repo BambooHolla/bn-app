@@ -61,6 +61,7 @@
     "cordova-plugin-x-toast": "^2.6.0",
     "cordova-sqlite-storage": "^2.1.5",
     "danielsogl-cordova-plugin-clipboard": "^1.0.2",
+    "dom-to-image": "^2.6.0",
     "es6-promise-plugin": "^4.2.2",
     "es6-promisify": "5.0.0",
     "eventemitter3": "3.0.0",

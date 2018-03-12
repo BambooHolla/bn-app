@@ -1,6 +1,6 @@
 <ion-header></ion-header>
 <ion-content>
-  <div class="transfer-receipt">
+  <div class="transfer-receipt" #transferReceiptEle>
     <div class="header">
       <div class="buttons">
         <button class="share" (click)="share()">
@@ -49,12 +49,12 @@
         <div class="time-point submitted-time">
           <div class="dot"></div>
           <div class="time">9:45</div>
-          <div class="status">已提交</div>
+          <div class="status">{{'SUBMITTED_TIME'|translate}}</div>
         </div>
         <div class="time-point expected-confirmation-time">
           <div class="dot"></div>
           <div class="time">10:28</div>
-          <div class="status">预计确认</div>
+          <div class="status">{{'EXPECTED_CONFIRMATION_TIME'|translate}}</div>
         </div>
       </div>
     </div>
