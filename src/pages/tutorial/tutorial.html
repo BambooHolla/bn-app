@@ -10,16 +10,19 @@
   </ion-navbar>
 </ion-header>
 <ion-content no-bounce>
-  <ion-slides pager="true" [dir]="dir" (ionSlideWillChange)="onSlideChangeStart($event)">
-    <ion-slide *ngFor="let slide of slides;index as i" [ngClass]="'slide-'+i">
+  <ion-slides pager="true" [dir]="dir" (ionSlideWillChange)="onSlideChangeStart($event)" (ionSlideDrag)="onSlideDrag($event)" (click)="onSlideTap($event)">
+    <ion-slide *ngFor="let slide of slides;index as i" [ngClass]="slide.class">
       <img [src]="slide.image" class="slide-image" />
+      <img [src]="slide.image" class="slide-image effect e1" />
+      <img [src]="slide.image" class="slide-image effect e2" />
+      <img [src]="slide.image" class="slide-image effect e3" />
       <div class="text">
         <h2 class="slide-title" [innerHTML]="slide.title"></h2>
         <p class="slide-description" [innerHTML]="slide.description"></p>
-        <button *ngIf="i==slides.length-1" ion-button icon-end large clear (click)="startApp()">
-          <!-- {{ 'TUTORIAL_CONTINUE_BUTTON' | translate }} -->
+        <!-- <button *ngIf="i==slides.length-1" ion-button icon-end large clear (click)="startApp()">
+          {{ 'TUTORIAL_CONTINUE_BUTTON' | translate }}
           <ion-icon name="arrow-forward"></ion-icon>
-        </button>
+        </button> -->
       </div>
     </ion-slide>
   </ion-slides>

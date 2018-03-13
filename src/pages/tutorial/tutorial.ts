@@ -5,11 +5,13 @@ import {
   NavController,
   NavParams,
   Platform,
+  Slides,
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { MyApp } from "../../app/app.component";
 
-export interface Slide {
+export interface SlideItem {
+  class: string;
   title: string;
   description: string;
   image: string;
@@ -21,7 +23,7 @@ export interface Slide {
   templateUrl: "tutorial.html",
 })
 export class TutorialPage extends FirstLevelPage {
-  slides?: Slide[];
+  slides?: SlideItem[];
   showSkip = true;
   dir: string = "ltr";
 
@@ -29,7 +31,7 @@ export class TutorialPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public menu: MenuController,
-    public myapp: MyApp
+    public myapp: MyApp,
   ) {
     super(navCtrl, navParams);
     this.dir = this.platform.dir();
@@ -46,19 +48,22 @@ export class TutorialPage extends FirstLevelPage {
         console.log("Loaded values", values);
         this.slides = [
           {
-            title: values.TUTORIAL_SLIDE1_TITLE,
-            description: values.TUTORIAL_SLIDE1_DESCRIPTION,
-            image: "assets/imgs/tutorial/1.jpg",
-          },
-          {
+            class: "slide-1",
             title: values.TUTORIAL_SLIDE2_TITLE,
             description: values.TUTORIAL_SLIDE2_DESCRIPTION,
             image: "assets/imgs/tutorial/2.jpg",
           },
           {
+            class: "slide-2",
             title: values.TUTORIAL_SLIDE3_TITLE,
             description: values.TUTORIAL_SLIDE3_DESCRIPTION,
             image: "assets/imgs/tutorial/3.jpg",
+          },
+          {
+            class: "slide-0",
+            title: values.TUTORIAL_SLIDE1_TITLE,
+            description: values.TUTORIAL_SLIDE1_DESCRIPTION,
+            image: "assets/imgs/tutorial/1.jpg",
           },
         ];
       });
@@ -72,12 +77,27 @@ export class TutorialPage extends FirstLevelPage {
   }
 
   startApp() {
+    console.log("startApp");
     localStorage.setItem("HIDE_WELCOME", "1");
     this.myapp.openPage(this.myapp.tryInPage, true);
   }
 
-  onSlideChangeStart(slider) {
+  onSlideChangeStart(slider: Slides) {
     this.showSkip = !slider.isEnd();
+  }
+
+  onSlideDrag(slider: Slides) {
+    const touchs = slider._touches;
+    if (!this.showSkip && touchs.diff < -150) {
+      console.log("drag", touchs.diff);
+      this.startApp();
+    }
+  }
+  onSlideTap() {
+    if (!this.showSkip) {
+      console.log("tap");
+      this.startApp();
+    }
   }
 
   @TutorialPage.didEnter

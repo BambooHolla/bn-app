@@ -60,6 +60,41 @@ page-tutorial {
         font-weight: 600;
       }
     }
+    .effect{
+      $duration: 3;
+      mask-image: radial-gradient(circle ,
+        rgba(0, 0, 0, 1) 0%,
+        rgba(0, 0, 0, 0.8) 40%,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(0, 0, 0, 0) 100%);
+      animation-name: zoom-in-slide-image;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-out;
+      animation-duration: #{$duration}s;
+      &.e1{
+        animation-delay: 0s;
+      }
+      &.e2{
+        animation-delay: #{$duration/2/3}s;
+      }
+      &.e3{
+        animation-delay: #{$duration/2*2/3}s;
+      }
+    }
+    @keyframes zoom-in-slide-image {
+      0%{
+        opacity: 0;
+        transform: scale(0.4);
+      }
+      50%{
+        opacity: 0.2;
+        transform: scale(0.8);
+      }
+      100%{
+        opacity: 0;
+        transform: scale(1.2);
+      }
+    }
   }
 
   .slide-1,
@@ -77,16 +112,14 @@ page-tutorial {
       }
     }
   }
-  .slide-2 {
-    .text {
-      > button {
-        position: absolute;
-        width: 100%;
-        text-align: center;
-        bottom: -5rem;
-        left: 0;
-        color: #fff;
-      }
+  .text {
+    > button {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      bottom: -5rem;
+      left: 0;
+      color: #fff;
     }
   }
 }
