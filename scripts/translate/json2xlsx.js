@@ -3,9 +3,10 @@ const { parse, Visitor, AST } = require("json-ast");
 const crypto = require("crypto");
 const fs = require("fs");
 const { geti18nFileData } = require("./helper");
+const { simpleToTradition } = require("./chinese");
 
 const zh_CN_json_obj = JSON.parse(geti18nFileData("zh-cmn-Hans"));
-const langs = ["zh-cmn-Hans", "en", "ja"];
+const langs = ["zh-cmn-Hans", "zh-cmn-Hant", "en", "ja"];
 const tableData = [
 	[
 		"编码",
@@ -40,6 +41,7 @@ for (let key in zh_CN_json_obj) {
 			.replace(/[\-\_]/g, " ")
 			.replace(/\#([\w\W]+?)\#/, "{{$1}}")
 			.toLowerCase(),
+		"zh-cmn-Hant": simpleToTradition(zh_CN_json_obj[key]),
 	});
 }
 // 解析语言包到dataMap
