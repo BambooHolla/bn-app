@@ -11,6 +11,7 @@
   "TRANSACTION_FEES": "手数料",
   "SAVE": "セーブ",
   "EMPTY_LIST": "空リスト",
+  "TESTNET_FLAG": "テスト",
   "BLOCK_generatorId": "ブロック　ジェネレートリッド",
   "BLOCK_reward": "ブロック　レワード",
   "BLOCK_numberOfTransactions": "取引量",

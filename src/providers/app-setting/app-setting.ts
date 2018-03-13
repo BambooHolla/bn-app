@@ -12,6 +12,7 @@ import { EventEmitter } from "eventemitter3";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
+import { TranslateService } from "@ngx-translate/core";
 
 export class AppUrl {
   constructor(public path) {}
@@ -29,6 +30,10 @@ const block_unit_time =
       "",
   ) ||
   (net_version === "testnet" && 10e3);
+
+const testnet_flag = document.createElement("div");
+testnet_flag.id = "testnetFlag";
+testnet_flag.innerHTML = `TESTNET`;
 
 @Injectable()
 export class AppSettingProvider extends EventEmitter {
@@ -52,7 +57,11 @@ export class AppSettingProvider extends EventEmitter {
   }
 
   static SETTING_KEY_PERFIX = "SETTING@";
-  constructor(public http: Http, public user: UserInfoProvider) {
+  constructor(
+    public http: Http,
+    public user: UserInfoProvider,
+    public translate: TranslateService,
+  ) {
     super();
     console.log("Hello AppSettingProvider Provider");
 
@@ -146,6 +155,31 @@ export class AppSettingProvider extends EventEmitter {
       toggle_update(this.settings.animation_switch);
       this.on("changed@setting.animation_switch", toggle_update);
     }
+
+    // 测试网络角标内容
+    let ani_flag_frame_id;
+    let pre_flag_transform;
+    translate.stream(["TESTNET_FLAG"]).subscribe(values => {
+      if (ani_flag_frame_id) {
+        cancelAnimationFrame(ani_flag_frame_id);
+        ani_flag_frame_id = null;
+      }
+      function setTran(transform: string | null) {
+        testnet_flag.style.transform = testnet_flag.style.webkitTransform = transform;
+      }
+      function setTranDur(transitionDuration: string | null) {
+        testnet_flag.style.transitionDuration = testnet_flag.style.webkitTransitionDuration = transitionDuration;
+      }
+      testnet_flag.innerHTML = values.TESTNET_FLAG;
+      setTran(null);
+      setTranDur("0ms"); // 确保下面计算出来的值是正确的
+      const bound_rect = testnet_flag.getBoundingClientRect(); //reflow
+      setTran(pre_flag_transform);
+      requestAnimationFrame(() => {
+        setTranDur(null);
+        setTran((pre_flag_transform = `scale(${55 / bound_rect.width})`));
+      });
+    });
   }
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
   user_token: BehaviorSubject<string>;
@@ -245,7 +279,12 @@ export class AppSettingProvider extends EventEmitter {
     sound_effect: true,
   };
 }
-
+if (AppSettingProvider.NET_VERSION === "testnet") {
+  const testnet_flag_wrapper = document.createElement("div");
+  testnet_flag_wrapper.appendChild(testnet_flag);
+  testnet_flag_wrapper.className = "testnet-flag";
+  document.body.appendChild(testnet_flag_wrapper);
+}
 function getQueryVariable(variable) {
   var query = window.location.search.substring(1);
   var vars = query.split("&");
@@ -280,12 +319,6 @@ console.log(
   AppSettingProvider.SERVER_URL,
 );
 
-if (AppSettingProvider.NET_VERSION === "testnet") {
-  const testnet_flag = document.createElement("div");
-  testnet_flag.className = "testnet-flag";
-  testnet_flag.innerHTML = `TESTNET`;
-  document.body.appendChild(testnet_flag);
-}
 /**
  * 基于token的AsyncBehaviorSubjuet类型的属性/方法生成器
  * tokenBaseAsyncBehaviorSubjectGenerator

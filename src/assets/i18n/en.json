@@ -11,6 +11,7 @@
   "TRANSACTION_FEES": "transaction fees",
   "SAVE": "save",
   "EMPTY_LIST": "empty list",
+  "TESTNET_FLAG": "TEST",
   "BLOCK_generatorId": "block generatorid",
   "BLOCK_reward": "block reward",
   "BLOCK_numberOfTransactions": "block numberoftransactions",

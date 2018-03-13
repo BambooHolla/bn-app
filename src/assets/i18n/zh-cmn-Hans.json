@@ -11,6 +11,7 @@
   "TRANSACTION_FEES": "手续费",
   "SAVE": "保存",
   "EMPTY_LIST": "空列表",
+  "TESTNET_FLAG": "测试网络",
 
   "BLOCK_generatorId": "锻造者",
   "BLOCK_reward": "区块奖励",
@@ -112,6 +113,10 @@
   "ADD_CONTACT_SUBMIT_ERROR": "同意添加联系人提交失败",
   "ADD_CONTACT_SUBMITING": "同意添加联系人提交中",
   "ADD_CONTACT_SUBMIT_SUCCESS": "同意添加联系人提交成功",
+
+  "//":"account-news-detail",
+  "ACCOUNT-NEWS-DETAIL":"动态详情",
+  
 
   "//": "account-add-contact",
   "ACCOUNT-ADD-CONTACT": "添加联系人",
