@@ -1,18 +1,25 @@
-<!--
-  Generated template for the AccountNewsDetailPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>account-news-detail</ion-title>
+  <ion-navbar color="white">
+    <ion-title>{{'ACCOUNT-NEWS-DETAIL'|translate}}</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
 <ion-content padding>
-
+  <div class="news-wrapper">
+    <h2 class="title">{{news_detail?.title}}</h2>
+    <div class="public-time">{{news_detail?.public_time}}</div>
+    <div class="embed" *ngIf="news_detail?.type=='embed'" [innerHTML]="news_detail?.html">
+    </div>
+    <div class="news-content">
+      <ng-container *ngFor="let c of news_detail?.contents">
+        <ng-container [ngSwitch]="c.type">
+          <ng-container *ngSwitchCase="'image'">
+            <img [src]="c.content" />
+          </ng-container>
+          <ng-container *ngSwitchCase="'p'">
+            <p [innerHTML]="c.content"></p>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
 </ion-content>

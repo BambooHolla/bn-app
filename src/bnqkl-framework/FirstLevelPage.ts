@@ -14,7 +14,7 @@ import { PAGE_STATUS } from "./const";
 
 import { FLP_Data } from "./FLP_Data";
 import { SearchType } from "../pages/search/search.const";
-import { AniBase } from "../components/AniBase";
+import { AniBase, Easing } from "../components/AniBase";
 
 export class FirstLevelPage extends FLP_Data {
   constructor(
@@ -111,96 +111,102 @@ export class FirstLevelPage extends FLP_Data {
       return;
     }
     this._watch_scroll_content_max_scrollTop = distance || window.innerHeight;
-    if (this.content && this.isIOS) {
-      const scroll_ele = this.content.getScrollElement();
-      let ts;
-      scroll_ele.addEventListener("touchstart", e => {
-        ts = e.touches[0].clientY;
-        from = ts;
-      });
-      let from: number;
-      let to: number;
-      let frame_id;
-      let overflowScrolling = "touch";
-      scroll_ele.addEventListener("touchmove", e => {
-        var te = e.changedTouches[0].clientY;
-        if (this.content && this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
-          const scrollTop = this.content.getScrollElement().scrollTop;
-          if (scrollTop > this._watch_scroll_content_max_scrollTop) {
-            if (ts > te) {
-              overflowScrolling = "touch";
-            } else {
-              overflowScrolling = "auto";
-            }
+    if (!this.content || !this.isIOS) {
+      return;
+    }
+
+    const scroll_ele = this.content.getScrollElement();
+    let ts;
+    scroll_ele.addEventListener("touchstart", e => {
+      ts = e.touches[0].clientY;
+      from = ts;
+      to = from;
+      from_time = performance.now();
+      to_time = from_time;
+    });
+    let from: number;
+    let from_time: number;
+    let to: number;
+    let to_time: number;
+    let frame_id;
+    let overflowScrolling = "touch";
+    const from_to_max_span = 120;
+    scroll_ele.addEventListener("touchmove", e => {
+      var te = e.changedTouches[0].clientY;
+      if (this.content && this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
+        const scrollTop = this.content.getScrollElement().scrollTop;
+        if (scrollTop > this._watch_scroll_content_max_scrollTop) {
+          if (ts > te) {
+            // 向下
+            overflowScrolling = "touch";
           } else {
-            overflowScrolling = "auto";
+            overflowScrolling = "touch"; //"auto";
           }
-          this.content.setScrollElementStyle(
-            "-webkit-overflow-scrolling",
-            overflowScrolling,
-          );
-
-          /*模拟滚动*/
-          if (to !== undefined) {
-            from = to;
-          }
-          to = te;
-
-          if (frame_id) {
-            cancelAnimationFrame(frame_id);
-            frame_id = null;
-          }
+        } else {
+          overflowScrolling = "auto";
         }
-      });
-      const touchend = (e: TouchEvent) => {
-        const contentEle = e.currentTarget as HTMLElement;
+        this.content.setScrollElementStyle(
+          "-webkit-overflow-scrolling",
+          overflowScrolling,
+        );
+
+        const now = performance.now();
+        /*模拟滚动*/
+
+        from = to;
+        from_time = to_time;
+        to = te;
+        to_time = now;
 
         if (frame_id) {
           cancelAnimationFrame(frame_id);
           frame_id = null;
         }
-        if (overflowScrolling !== "auto") {
+      }
+    });
+    const touchend = (e: TouchEvent) => {
+      const contentEle = e.currentTarget as HTMLElement;
+
+      if (frame_id) {
+        cancelAnimationFrame(frame_id);
+        frame_id = null;
+      }
+      if (overflowScrolling !== "auto") {
+        return;
+      }
+      if (to_time == from_time) {
+        return;
+      }
+      if (to_time - from_time > from_to_max_span) {
+        return;
+      }
+      let source_speed = 10 * (to - from) / (to_time - from_time);
+      // const dir = -source_speed / Math.abs(source_speed);
+      const total_will_ani_time = source_speed * 10;
+      const total_will_move = source_speed / 2 * total_will_ani_time;
+
+      // let pre_t = performance.now();
+      const start_t = performance.now();
+      const from_scrollTop = contentEle.scrollTop;
+      // const to_scrollTop =   contentEle.scrollTop+total_will_move;
+      const scroll_handle = cur_t => {
+        const dif_t = cur_t - start_t;
+        const progress = Math.min(dif_t / total_will_ani_time, 1);
+        const cur_scrollTop =
+          from_scrollTop + Easing.Circular_In(progress) * total_will_move;
+        if (isNaN(cur_scrollTop)) {
           return;
         }
-        let diff = (from - to) / window.devicePixelRatio;
-        let total_diff = diff;
-        const scroll_handle = () => {
-          // this.header && (this.header.getNativeElement().querySelector(".toolbar-title").innerHTML = diff + "px");
-          contentEle.scrollTop += diff * window.devicePixelRatio;
-          // diff /= 2;
-          const cut_diff = total_diff / Math.max(2, Math.abs(diff) / 2);
-          if (diff > 0) {
-            diff -= Math.min(cut_diff, diff / 2);
-          } else {
-            diff -= Math.max(cut_diff, diff / 2);
-          }
-          if (Math.abs(diff) > 0.5) {
-            frame_id = requestAnimationFrame(scroll_handle);
-          }
-        };
-        frame_id = requestAnimationFrame(scroll_handle);
+        contentEle.scrollTop = cur_scrollTop;
+
+        if (progress < 1) {
+          frame_id = requestAnimationFrame(scroll_handle);
+        }
       };
-      scroll_ele.addEventListener("touchend", touchend);
-      scroll_ele.addEventListener("touchcancel", touchend);
-    }
-    // const calcScrollTopInTime = () => {
-    //   if (this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
-    //     this.content && this.content.getScrollElement().scrollTop;
-    //     if (this.header) {
-    //       const navbar_ele = (this.header.getNativeElement() as HTMLElement).querySelector(
-    //         "ion-navbar",
-    //       ) as HTMLElement | null;
-    //       if (navbar_ele) {
-    //         navbar_ele.innerHTML =
-    //           (this.content && this.content.getScrollElement().scrollTop) +
-    //           "px" +
-    //           window.pageYOffset;
-    //       }
-    //     }
-    //   }
-    //   requestAnimationFrame(calcScrollTopInTime);
-    // };
-    // calcScrollTopInTime();
+      frame_id = requestAnimationFrame(scroll_handle);
+    };
+    // scroll_ele.addEventListener("touchend", touchend);
+    // scroll_ele.addEventListener("touchcancel", touchend);
   }
 
   auto_header_shadow_when_scroll_down = false;

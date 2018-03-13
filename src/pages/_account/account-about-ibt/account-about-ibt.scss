@@ -7,21 +7,15 @@ page-account-about-ibt {
     animation-duration: 2s;
     animation-timing-function: linear;
     /* animation-delay: -2s; */
-    color: #fff;
+    color: #7b7b7b;
     background-position: center 100%;
     background-image: url(../assets/imgs/about-ibt/header-bg.jpg);
     background-size: cover;
     background-blend-mode: lighten;
     transition-duration: 100ms;
-    /* 	&::before{
-			content: " ";
-			position: absolute;
-			background-image: url('../assets/imgs/about-ibt/header-bg.jpg');
-			background-size: cover;
-			width: 100%;
-			height: 100%;
-			z-index: 0;
-		} */
+    * {
+      @extend .follow-parent-ani;
+    }
     .back-button {
       color: inherit;
       .back-button-icon {
@@ -33,22 +27,10 @@ page-account-about-ibt {
     }
     > .info-wrapper {
       animation-name: ani-header-info-wrapper;
-      animation-iteration-count: inherit;
-      animation-fill-mode: inherit;
-      animation-play-state: inherit;
-      animation-duration: inherit;
-      animation-timing-function: inherit;
-      animation-delay: inherit;
       text-align: center;
       > .info {
-        transform-origin: 50% 0%;
+        transform-origin: 50% -10%;
         animation-name: ani-header-info;
-        animation-iteration-count: inherit;
-        animation-fill-mode: inherit;
-        animation-play-state: inherit;
-        animation-duration: inherit;
-        animation-timing-function: inherit;
-        animation-delay: inherit;
         > .logo {
           width: 5.6rem;
           margin-top: 2.5rem;
