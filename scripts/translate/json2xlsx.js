@@ -48,6 +48,10 @@ for (let key in zh_CN_json_obj) {
 langs.forEach(lang => {
 	const jsonData = geti18nFileData(lang);
 	const ast = parse(jsonData, { verbose: false, junker: false });
+	if (lang === "zh-cmn-Hant") {
+		// 繁体中文不用管，直接简体直译
+		return;
+	}
 	const langVistor = new LangVisitor(lang);
 	langVistor.visit(ast);
 });
