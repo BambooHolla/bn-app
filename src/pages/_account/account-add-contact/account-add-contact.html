@@ -16,7 +16,7 @@
       <input type="text" [placeholder]="'PLEASE_INPUT_IBT_ADDRESS'|translate" [(ngModel)]="formData.search_text" (ngModelChanged)="searchContacts()">
     </div>
   </div>
-  <div class="account-address">
+  <div class="account-address" [click-to-copy]="user.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}">
     <div class="prefix">{{'MY_ACCOUNT_IBT_ADDRESS'|translate}}:</div>
     <div class="address">{{user.address}}</div>
   </div>

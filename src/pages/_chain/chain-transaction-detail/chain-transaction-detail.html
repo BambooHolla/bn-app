@@ -6,7 +6,7 @@
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E4%BA%A4%E6%98%93%E6%98%8E%E7%BB%86%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="common-list base-info">
-    <div class="common-item transfer-id">
+    <div class="common-item transfer-id" [click-to-copy]="transaction?.id" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSACTION_id'|translate)}">
       <div class="left">
         {{'TRANSACTION_id'|translate}}
       </div>
@@ -22,7 +22,7 @@
         {{('TRAN_TYPE_NAME_'+transaction?.type) | translate}}
       </div>
     </div>
-    <div class="common-item block-id">
+    <div class="common-item block-id" [click-to-copy]="transaction?.blockId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSACTION_blockId'|translate)}">
       <div class="left">
         {{'TRANSACTION_blockId'|translate}}
       </div>
@@ -76,13 +76,13 @@
     </div>
   </div>
   <div class="common-list detail-info">
-    <div class="common-item sender">
+    <div class="common-item sender" [click-to-copy]="transaction?.senderId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_SENDER'|translate)}">
       <div class="left">
         <div class="title">{{'TRANSCATION_SENDER'|translate}}</div>
         <div class="content">{{transaction?.senderId}}</div>
       </div>
     </div>
-    <div class="common-item receiver">
+    <div class="common-item receiver" [click-to-copy]="transaction?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}">
       <div class="left">
         <div class="title">{{'TRANSCATION_RECIPIENT'|translate}}</div>
         <div class="content">{{transaction?.recipientId}}</div>
