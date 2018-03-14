@@ -1,21 +1,21 @@
 page-settings-net-version {
-	> .content {
-		> .scroll-content {
-			background-color: #eeeeee;
-		}
-	}
-	.common-list {
-		margin-top: 1rem;
-		.common-item {
-			.right {
-				display: none;
-				color: green;
-			}
-			&.selected {
-				.right {
-					display: block;
-				}
-			}
-		}
-	}
+  > .content {
+    > .scroll-content {
+      background-color: #eeeeee;
+    }
+  }
+  .common-list {
+    margin-top: 1rem;
+    .common-item {
+      .right {
+        display: none;
+        color: green;
+      }
+      &.selected {
+        .right {
+          display: block;
+        }
+      }
+    }
+  }
 }

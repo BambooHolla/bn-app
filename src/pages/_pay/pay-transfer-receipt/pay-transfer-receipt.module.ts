@@ -8,14 +8,14 @@ import { MomentModule } from "angular2-moment";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [PayTransferReceiptPage],
-	imports: [
-		IonicPageModule.forChild(PayTransferReceiptPage),
-		ComponentsModule,
-		DirectivesModule,
-		PipesModule,
-		MomentModule,
-		TranslateModule,
-	],
+  declarations: [PayTransferReceiptPage],
+  imports: [
+    IonicPageModule.forChild(PayTransferReceiptPage),
+    ComponentsModule,
+    DirectivesModule,
+    PipesModule,
+    MomentModule,
+    TranslateModule,
+  ],
 })
 export class PayTransferReceiptPageModule {}

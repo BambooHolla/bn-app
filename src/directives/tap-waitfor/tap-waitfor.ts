@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive } from "@angular/core";
 
 /**
  * Generated class for the TapWaitforDirective directive.
@@ -7,12 +7,10 @@ import { Directive } from '@angular/core';
  * Directives.
  */
 @Directive({
-  selector: '[tap-waitfor]' // Attribute selector
+  selector: "[tap-waitfor]", // Attribute selector
 })
 export class TapWaitforDirective {
-
   constructor() {
-    console.log('Hello TapWaitforDirective Directive');
+    console.log("Hello TapWaitforDirective Directive");
   }
-
 }

@@ -112,7 +112,7 @@ export function asyncErrorWrapGenerator(
                     {
                       title: String(error_title),
                       subTitle: String(err_msg),
-                      buttons: ["确定"],
+                      buttons: [this.getTranslateSync("OK")],
                     },
                     opts,
                   ),

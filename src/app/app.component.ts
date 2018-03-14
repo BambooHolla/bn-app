@@ -64,7 +64,7 @@ export class MyApp implements OnInit {
     public loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     public modalController: ModalController,
-    public userInfo: UserInfoProvider
+    public userInfo: UserInfoProvider,
   ) {
     window["ac"] = this;
     window["clipboard"] = clipboard;
@@ -219,7 +219,7 @@ export class MyApp implements OnInit {
     }
     console.log(
       `%c Open Page:[${page}] and set as root`,
-      "font-size:1.2rem;color:yellow;"
+      "font-size:1.2rem;color:yellow;",
     );
     this.currentPage = page;
     if (this.nav) {
@@ -254,7 +254,7 @@ function onresize() {
   ]}</p>`;
   MyApp.WINDOW_MAX_HEIGHT = Math.max(
     MyApp.WINDOW_MAX_HEIGHT,
-    window.innerHeight
+    window.innerHeight,
   );
 }
 onresize();

@@ -117,18 +117,18 @@ export class FLP_Lifecycle extends FLP_Tool
   dispatchEvent(
     fire_event_name: "HEIGHT:CHANGED",
     height: number,
-    is_init: boolean
+    is_init: boolean,
   ): void;
   dispatchEvent(
     fire_event_name: "ROUND:CHANGED",
     height: number,
-    is_init: boolean
+    is_init: boolean,
   ): void;
   dispatchEvent(fire_event_name: string, ...args: any[]) {
     console.group(
       "%cdispatchEvent",
       "color:blue;background-color:#FFF",
-      fire_event_name
+      fire_event_name,
     );
     for (let { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
@@ -156,7 +156,7 @@ export class FLP_Lifecycle extends FLP_Tool
   static afterContentInit(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor
+    descriptor?: PropertyDescriptor,
   ) {
     FLP_Tool.addProtoArray(target, "afterContentInit", name);
     return descriptor;
@@ -198,7 +198,7 @@ export class FLP_Lifecycle extends FLP_Tool
     return function(
       target: any,
       handle_name: string,
-      descriptor?: PropertyDescriptor
+      descriptor?: PropertyDescriptor,
     ) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
       return descriptor;

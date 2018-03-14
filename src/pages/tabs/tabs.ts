@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { IonicPage, NavController, Tabs } from "ionic-angular";
 import { MyApp } from "../../app/app.component";
-import { FLP_Lifecycle} from "../../bnqkl-framework/FLP_Lifecycle";
+import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
 
 import { Tab1Root } from "../pages";
 import { Tab2Root } from "../pages";
@@ -28,7 +28,7 @@ export class TabsPage extends FLP_Lifecycle {
   constructor(
     public navCtrl: NavController,
     public translateService: TranslateService,
-    public myapp:MyApp
+    public myapp: MyApp,
   ) {
     super();
     translateService
