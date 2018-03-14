@@ -253,7 +253,7 @@ export function asyncLoadingWrapGenerator(
       const loadingOpts = Object.assign(
         {
           content: String(loading_msg),
-          cssClass: "can-goback",
+          cssClass: (this.PAGE_LEVEL | 0) > 1 ? "can-goback" : "",
         },
         opts,
       );
