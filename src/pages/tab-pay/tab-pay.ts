@@ -109,7 +109,7 @@ export class TabPayPage extends FirstLevelPage {
         {
           cssClass: "transfer-receipt-modal",
           showBackdrop: true,
-          enableBackdropDismiss: true,
+          enableBackdropDismiss: false,
         },
       )
       .present();

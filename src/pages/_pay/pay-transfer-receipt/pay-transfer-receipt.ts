@@ -5,6 +5,7 @@ import {
 	NavParams,
 	Refresher,
 	Content,
+	ViewController,
 } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -33,6 +34,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
 		@Optional() public tabs: TabsPage,
 		public screenshot: Screenshot,
 		public socialSharing: SocialSharing,
+		public viewCtrl:ViewController
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
@@ -93,5 +95,8 @@ export class PayTransferReceiptPage extends SecondLevelPage {
 			this.capture_uri,
 		);
 		console.log(share_res);
+	}
+	closeModal(){
+		return this.viewCtrl.dismiss();
 	}
 }

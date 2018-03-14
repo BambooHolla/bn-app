@@ -11,7 +11,7 @@
       <div class="amount">{{current_transfer?.amount|amountEuler|number:'1.8-8'}}</div>
       <div class="recipient">
         <span class="label">{{'TRANSCATION_RECIPIENT'|translate}}</span>
-        <span [innerHTML]="current_transfer?.recipientUsername?current_transfer?.recipientUsername:(current_transfer?.recipientId|mask:'@address')"></span>
+        <span [innerHTML]="current_transfer?.recipientUsername?current_transfer?.recipientUsername:(current_transfer?.recipientId|mask:'@address')" [click-to-copy]="current_transfer?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}"></span>
       </div>
       <div class="create-time">
         <ali-icon name="ifm-clock"></ali-icon>
@@ -28,7 +28,7 @@
           <div class="left">
             {{'PAYER' | translate}}
           </div>
-          <div class="content" [innerHTML]="current_transfer?.senderUsername?current_transfer?.senderUsername:(current_transfer?.senderId|mask:'@address')"></div>
+          <div class="content" [innerHTML]="current_transfer?.senderUsername?current_transfer?.senderUsername:(current_transfer?.senderId|mask:'@address')" [click-to-copy]="current_transfer?.senderId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('PAYER'|translate)}"></div>
         </div>
         <div class="fee common-item">
           <div class="left">
@@ -36,7 +36,7 @@
           </div>
           <div class="content">{{current_transfer?.fee|amountEuler|number:'1.8-8'}}</div>
         </div>
-        <div class="transaction-number common-item">
+        <div class="transaction-number common-item" [click-to-copy]="current_transfer?.id" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSACTION_ID'|translate)}">
           <div class="left">
             {{'TRANSACTION_ID' | translate}}
           </div>
@@ -66,7 +66,7 @@
     </div>
   </div>
   <div class="footer-buttons">
-    <button class="close-button animated bounceIn">
+    <button class="close-button animated bounceIn" (click)="closeModal()">
       <ali-icon name="ifm-guanbi"></ali-icon>
     </button>
   </div>
