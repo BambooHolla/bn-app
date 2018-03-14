@@ -21,8 +21,8 @@ import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
 import { Clipboard } from "@ionic-native/clipboard";
 import { StatusBar } from "@ionic-native/status-bar";
-import { Screenshot } from '@ionic-native/screenshot';
-import { SocialSharing } from '@ionic-native/social-sharing';
+import { Screenshot } from "@ionic-native/screenshot";
+import { SocialSharing } from "@ionic-native/social-sharing";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -66,6 +66,7 @@ import { BenefitServiceProvider } from "../providers/benefit-service/benefit-ser
 import { UserInfoProvider } from "../providers/user-info/user-info";
 
 // 预加载页面
+import { CustomDialogPage } from "../pages/custom-dialog/custom-dialog";
 import { TutorialPage } from "../pages/tutorial/tutorial";
 import { SignInAndSignUpPage } from "../pages/sign-in-and-sign-up/sign-in-and-sign-up";
 import { TabsPage } from "../pages/tabs/tabs";
@@ -93,6 +94,7 @@ export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
 export function customDeepLinkConfig(deepLinkConfig) {
   const static_links = [
+    { component: CustomDialogPage, name: "custom-dialog" },
     { component: TutorialPage, name: "tutorial" },
     { component: TabsPage, name: "tabs" },
     { component: SignInAndSignUpPage, name: "sign-in-and-sign-up" },
@@ -113,6 +115,7 @@ export function customDeepLinkConfig(deepLinkConfig) {
 
 const pages = [
   MyApp,
+  CustomDialogPage,
   TutorialPage,
   SignInAndSignUpPage,
   TabsPage,

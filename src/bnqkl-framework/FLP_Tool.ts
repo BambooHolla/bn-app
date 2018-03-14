@@ -3,6 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import {
   ActionSheetController,
   AlertController,
+  Alert,
   Platform,
   LoadingController,
   Loading,
@@ -20,6 +21,71 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
+
+  async showConfirmDialog(
+    message: string,
+    ok_handle?: Function,
+    cancel_handle?: Function,
+    auto_open = true,
+  ) {
+    const dialog = this.modalCtrl.create("custom-dialog", {
+      message,
+      buttons: [
+        {
+          text: await this.getTranslate("CANCEL"),
+          cssClass: "cancel",
+          handler: () => {
+            if (cancel_handle instanceof Function) {
+              return cancel_handle();
+            }
+          },
+        },
+        {
+          text: await this.getTranslate("OK"),
+          cssClass: "ok",
+          handler: () => {
+            if (ok_handle instanceof Function) {
+              return ok_handle();
+            }
+          },
+        },
+      ],
+    });
+    if (auto_open) {
+      await dialog.present();
+    }
+    return dialog;
+  }
+  async showWarningDialog(message: string, auto_open = true) {
+    const dialog = this.modalCtrl.create("custom-dialog", {
+      message,
+      iconType: "warning",
+    });
+    if (auto_open) {
+      await dialog.present();
+    }
+    return dialog;
+  }
+  async showSuccessDialog(message: string, auto_open = true) {
+    const dialog = this.modalCtrl.create("custom-dialog", {
+      message,
+      iconType: "success",
+    });
+    if (auto_open) {
+      await dialog.present();
+    }
+    return dialog;
+  }
+  async showErrorDialog(message: string, auto_open = true) {
+    const dialog = this.modalCtrl.create("custom-dialog", {
+      message,
+      iconType: "error",
+    });
+    if (auto_open) {
+      await dialog.present();
+    }
+    return dialog;
+  }
 
   isIOS = this.platform.is("ios");
   navigatorClipboard: {
