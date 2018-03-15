@@ -165,6 +165,7 @@ export class FLP_Tool {
   }
 
   isIOS = this.platform.is("ios");
+  isAndroid = this.platform.is("android");
   navigatorClipboard: {
     writeText: (text: string) => Promise<void>;
     readText: () => Promise<string>;

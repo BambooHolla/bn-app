@@ -1,4 +1,5 @@
 import { Component, Optional, ViewChild, ElementRef } from "@angular/core";
+import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 import {
   IonicPage,
   NavController,
@@ -37,10 +38,12 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
     public transfer: FileTransfer,
     public file: File,
     public fileOpener: FileOpener,
+    public sanitizer: DomSanitizer,
   ) {
     super(navCtrl, navParams);
   }
   version_info!: LATEST_VERSION_INFO;
+  @VersionUpdateDialogPage.willEnter
   initData() {
     this.version_info = this.navParams.get("version_info");
     if (!this.version_info) {
@@ -48,33 +51,64 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
     }
   }
   closeDialog() {
-    this.viewCtrl.dismiss();
+    if (this.isDownloading) {
+      this.showConfirmDialog(
+        this.getTranslateSync("ENSURE_TO_CANCEL_UPDATE"),
+        () => {
+          this.fileTransfer && this.fileTransfer.abort();
+          this.viewCtrl.dismiss();
+        },
+      );
+    } else {
+      this.viewCtrl.dismiss();
+    }
   }
+  fileTransfer?: FileTransferObject;
+  isDownloading = false;
+  download_progress: SafeStyle = "--progress:0%";
   @asyncCtrlGenerator.error("@@UPDATE_APK_FAIL")
   async androidUpadate() {
-    const fileTransfer: FileTransferObject = this.transfer.create();
-    const apk_url = this.version_info.download_link_android;
-    const filename = apk_url.split("/").pop();
-    // fileTransfer.
-    const dialog = await this._showCustomDialog({
-      title: "准备开始下载……",
-    });
-    fileTransfer.onProgress(e => {
-      console.log(e);
-      dialog.setTitle(`下载中`);
-      dialog.setMessage(`${(e.loaded / e.total * 100).toFixed(2)}%`);
-    });
-    const entry = await fileTransfer.download(
-      apk_url,
-      this.file.dataDirectory + filename,
-    );
-    dialog.setTitle("下载完成，准备安装……");
-    dialog.setMessage("");
-    console.log("download complete: " + entry.toURL());
-    await this.fileOpener.open(
-      entry.toURL(),
-      "application/vnd.android.package-archive",
-    );
-    return dialog.dismiss();
+    this.isDownloading = true;
+    try {
+      this.fileTransfer = this.transfer.create();
+      const apk_url = this.version_info.download_link_android;
+      const filename = apk_url.split("/").pop();
+      // fileTransfer.
+
+      this.download_progress = this.sanitizer.bypassSecurityTrustStyle(
+        "--progress:0%",
+      );
+      this.fileTransfer.onProgress(e => {
+        this.download_progress = this.sanitizer.bypassSecurityTrustStyle(
+          `--progress:${e.loaded / e.total * 100}%`,
+        );
+      });
+      const entry = await this.fileTransfer.download(
+        apk_url,
+        this.file.dataDirectory + filename,
+      );
+      this.fileTransfer = undefined;
+      this.isDownloading = false;
+
+      console.log("download complete: " + entry.toURL());
+      await this.fileOpener.open(
+        entry.toURL(),
+        "application/vnd.android.package-archive",
+      );
+    } finally {
+      this.isDownloading = false;
+    }
+  }
+  backgroundDownload() {
+    this.viewCtrl.dismiss();
+  }
+
+  iosUpdatge() {
+    if (this.version_info.itunes_link) {
+      // TODO, 使用app store进行更新
+    } else {
+      // TODO, 测试plist是否可以通过这种方式更新
+      window.open(this.version_info.download_link_web, "_system");
+    }
   }
 }

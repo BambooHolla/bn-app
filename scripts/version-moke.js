@@ -1,8 +1,12 @@
 const http = require("http");
 const fs = require("fs");
+const querystring = require("querystring");
+const url = require("url");
+
+/*MOKE DATA*/
 const package_json = require("../package.json");
 const latest_version_info = JSON.stringify({
-	version: package_json.version,
+	version: package_json.version + "-aplha",
 	changelogs: [`没什么变动，真的`, `啊哈哈哈哈`],
 	hotreload_version: "",
 	download_link_android:
@@ -16,9 +20,20 @@ const latest_version_info = JSON.stringify({
 	"//": "……",
 	success: true,
 });
+
+/*API SERVER*/
 http
 	.createServer((req, res) => {
-		if (req.url.startsWith("/api/app/version/latest")) {
+		const url_info = url.parse(req.url);
+		const query = querystring.parse(url_info.query);
+
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Methods", "GET");
+
+		if (url_info.pathname === "/api/app/version/latest") {
+			const lang = query.lang;
+			// TODO: return diffrent result for diffrent language.
+
 			res.setHeader("Content-Type", "application/json");
 			res.end(latest_version_info);
 			return;

@@ -26,8 +26,8 @@ page-version-update-dialog {
     top: -11vh;
     > .close-button {
       position: absolute;
-      width: 1.9rem;
-      height: 1.9rem;
+      width: 2.2rem;
+      height: 2.2rem;
       font-size: 1.7rem;
       color: #fff;
       background-color: #929292;
@@ -48,53 +48,54 @@ page-version-update-dialog {
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      > .icon {
-        flex: 1;
-        font-size: 5.6rem;
+      > .header {
+        color: #a0b9cf;
+        width: 100%;
         display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        &.error {
-          > ali-icon {
-            margin-top: auto;
-            .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #ff5a5a 0%, #fc9f7a 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
-            }
-          }
+        padding: 1rem;
+        box-sizing: border-box;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 1.6rem;
+        background-image: url("../assets/imgs/version-update-dialog/bg.png");
+        background-size: 170vw;
+        background-repeat: no-repeat;
+        height: 9rem;
+        background-position: center bottom;
+        > .icon {
+          width: 4rem;
         }
-        &.warning {
-          > ali-icon {
-            margin-top: auto;
-            .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #ffcd4a 0%, #fba656 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
-            }
-          }
-        }
-        &.success {
-          > ali-icon {
-            margin-top: auto;
-            .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #3de0da 0%, #c3d97b 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
-            }
-          }
+        > .title {
+          font-size: 1.5rem;
+          padding: 0.5rem;
+          font-weight: bold;
         }
       }
       > .content {
+        width: 100%;
+        padding: 0.6rem 1.2rem;
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        max-height: 50vh;
+        overflow-y: auto;
         color: #787878;
+        > .item {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          &.changelogs {
+            align-items: flex-start;
+            flex-direction: column;
+            > .detail {
+              margin: 0;
+            }
+          }
+          font-size: 1.35rem;
+          color: #7c7c7c;
+          > .label {
+            font-weight: bold;
+          }
+        }
       }
       > .buttons {
         width: 100%;
@@ -114,8 +115,58 @@ page-version-update-dialog {
           align-items: center;
           font-size: 1.4rem;
           &.ok {
-            background-color: #ff6769;
             color: #fff;
+            background-color: #ff6769;
+          }
+          &.downloading {
+            color: #fff;
+            background-color: rgba(#ff6769, 0.6);
+            position: relative;
+            border-radius: 0 0 0.8rem 0;
+            overflow: hidden;
+            z-index: 1;
+            --progress: 0%;
+            &::before {
+              box-shadow: inset 0.1rem 0.1rem 0.6rem rgba(0, 0, 0, 0.5);
+              content: " ";
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              left: 0;
+              top: 0;
+              z-index: -2;
+              background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.2) 75%,
+                transparent 75%
+              );
+              background-size: 40px 100%;
+              animation: move 2s linear infinite;
+            }
+            &::after {
+              content: " ";
+              position: absolute;
+              width: var(--progress);
+              height: 100%;
+              left: 0;
+              top: 0;
+              z-index: -1;
+              background-color: #ff6769;
+              box-shadow: 0.1rem 0 0.6rem rgba(0, 0, 0, 0.5);
+              transition-duration: 250ms;
+            }
+          }
+          @keyframes move {
+            0% {
+              background-position: 0 0;
+            }
+            100% {
+              background-position: 40px 0;
+            }
           }
         }
       }

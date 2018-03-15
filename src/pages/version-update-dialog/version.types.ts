@@ -1,6 +1,8 @@
 export type LATEST_VERSION_INFO = {
   [x: string]: any;
-  version: any;
+  version: string;
+  android_version: string;
+  ios_version: string;
   changelogs: string[];
   hotreload_version: string;
   download_link_android: string;
@@ -9,5 +11,6 @@ export type LATEST_VERSION_INFO = {
   create_time: number;
   apk_size: number;
   plist_size: number;
+  ios_app_store_link: string;
   "//": string;
 };

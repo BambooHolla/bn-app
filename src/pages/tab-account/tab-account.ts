@@ -38,10 +38,18 @@ export class TabAccountPage extends FirstLevelPage {
       {
         search: {
           lang: this.translate.currentLang,
+          ua: navigator.userAgent,
         },
       },
     );
-    if (app_version_info.version !== AppSettingProvider.APP_VERSION) {
+    var version = app_version_info.version;
+    if (this.isAndroid && app_version_info.android_version) {
+      version = app_version_info.android_version;
+    }
+    if (this.isIOS && app_version_info.ios_version) {
+      version = app_version_info.ios_version;
+    }
+    if (version !== AppSettingProvider.APP_VERSION) {
       return this.modalCtrl
         .create(
           "version-update-dialog",

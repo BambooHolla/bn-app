@@ -54,6 +54,10 @@
       <span class="title">{{'POWER_SAVING_MODE'|translate}}</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.power_saving_mode"></ion-toggle>
     </div>
+    <div class="item" (click)="checkUpdate()">
+      <span class="title">{{'CHECK_UPDATE'|translate}}</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+    </div>
     <div class="divider"></div>
     <div class="item" (click)="routeTo('settings-cache-manage')">
       <span class="title">{{'CLEAR_LOCAL_CACHE'|translate}}</span>

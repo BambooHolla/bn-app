@@ -106,10 +106,11 @@
     "xlsx": "^0.12.3"
   },
   "description": "IFMchain client app v2",
-  "//pre-commit": ["format:diff"],
+  "//pre-commit": [
+    "format:diff"
+  ],
   "main": "index.js",
-  "repository":
-    "ssh://git@130.211.241.191/home/work/git/repo/mars/ifm-app-v2.git",
+  "repository": "ssh://git@130.211.241.191/home/work/git/repo/mars/ifm-app-v2.git",
   "license": "MIT",
   "cordova": {
     "plugins": {
@@ -126,8 +127,7 @@
       "cordova-plugin-media-capture": {},
       "ionic-plugin-keyboard": {},
       "cordova-plugin-crosswalk-webview": {
-        "XWALK_COMMANDLINE":
-          "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security",
+        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security",
         "XWALK_VERSION": "23+",
         "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
         "XWALK_MODE": "embedded",
@@ -140,6 +140,9 @@
       "cordova-plugin-file": {},
       "cordova-plugin-file-opener2": {}
     },
-    "platforms": ["ios", "android"]
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }
