@@ -37,6 +37,7 @@ testnet_flag.innerHTML = `TESTNET`;
 
 @Injectable()
 export class AppSettingProvider extends EventEmitter {
+  static APP_VERSION = window["APP_VERSION"];
   static SERVER_URL = "http://mainnet.ifmchain.org";
   // static SERVER_URL = "http://47.104.142.234:6062";
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
@@ -56,6 +57,9 @@ export class AppSettingProvider extends EventEmitter {
     return new AppUrl(path);
   }
 
+  static LATEST_APP_VERSION_URL = getQueryVariable("LATEST_APP_VERSION_URL") ||
+    localStorage.getItem("LATEST_APP_VERSION_URL") ||
+    "http://www.ifmchain.com/api/app/version/latest";
   static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,

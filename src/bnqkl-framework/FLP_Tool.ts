@@ -63,32 +63,51 @@ export class FLP_Tool {
     }
     return dialog;
   }
-  private async _showCustomDialogWithIcon(
-    title: string,
-    iconType: string,
-    subTitle?: string,
-    message?: string,
-    buttons?: any[],
+  async _showCustomDialog(
+    data: {
+      title: string;
+      iconType?: string;
+      subTitle?: string;
+      message?: string;
+      buttons?: any[];
+    },
     auto_open = true,
   ) {
-    const dialog = this.modalCtrl.create(
-      "custom-dialog",
-      {
-        title,
-        subTitle,
-        message,
-        buttons,
-        iconType,
-      },
-      {
-        enterAnimation: "custom-dialog-pop-in",
-        leaveAnimation: "custom-dialog-pop-out",
-      },
-    );
+    const dialog = this.modalCtrl.create("custom-dialog", data, {
+      enterAnimation: "custom-dialog-pop-in",
+      leaveAnimation: "custom-dialog-pop-out",
+    });
     if (auto_open) {
       await dialog.present();
     }
-    return dialog;
+    const getComponentInstance = () =>
+      dialog && dialog.overlay && dialog.overlay["instance"];
+    return Object.assign(dialog, {
+      setTitle(new_title: string) {
+        const instance = getComponentInstance();
+        if (instance) {
+          instance.content_title = new_title;
+        } else {
+          data.title = new_title;
+        }
+      },
+      setSubTitle(new_subTitle: string) {
+        const instance = getComponentInstance();
+        if (instance) {
+          instance.content_subTitle = new_subTitle;
+        } else {
+          data.subTitle = new_subTitle;
+        }
+      },
+      setMessage(new_message: string) {
+        const instance = getComponentInstance();
+        if (instance) {
+          instance.content_message = new_message;
+        } else {
+          data.message = new_message;
+        }
+      },
+    });
   }
   async showWarningDialog(
     title: string,
@@ -97,12 +116,14 @@ export class FLP_Tool {
     buttons?: any[],
     auto_open = true,
   ) {
-    return this._showCustomDialogWithIcon(
-      title,
-      "warning",
-      subTitle,
-      message,
-      buttons,
+    return this._showCustomDialog(
+      {
+        title,
+        iconType: "warning",
+        subTitle,
+        message,
+        buttons,
+      },
       auto_open,
     );
   }
@@ -113,12 +134,14 @@ export class FLP_Tool {
     buttons?: any[],
     auto_open = true,
   ) {
-    return this._showCustomDialogWithIcon(
-      title,
-      "success",
-      subTitle,
-      message,
-      buttons,
+    return this._showCustomDialog(
+      {
+        title,
+        iconType: "success",
+        subTitle,
+        message,
+        buttons,
+      },
       auto_open,
     );
   }
@@ -129,12 +152,14 @@ export class FLP_Tool {
     buttons?: any[],
     auto_open = true,
   ) {
-    return this._showCustomDialogWithIcon(
-      title,
-      "error",
-      subTitle,
-      message,
-      buttons,
+    return this._showCustomDialog(
+      {
+        title,
+        iconType: "error",
+        subTitle,
+        message,
+        buttons,
+      },
       auto_open,
     );
   }

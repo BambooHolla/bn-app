@@ -1,0 +1,43 @@
+<ion-header></ion-header>
+<ion-content>
+  <div class="dialog-wrapper">
+    <button class="close-button" (click)="closeDialog()">
+      <ali-icon name="ifm-guanbi"></ali-icon>
+    </button>
+    <div class="dialog-content">
+      <div class="header">
+        {{'#VERSION#_VERSION_UPDATE'|translate:version_info}}
+      </div>
+      </ng-container>
+      <div class="content">
+        <div class="item">
+          <div class="label">{{'NEWEST_VERSION'|translate}}</div>
+          <div class="text">V{{version_info.version}}</div>
+        </div>
+        <div class="item">
+          <div class="label">{{'VERSION_SIZE'|translate}}</div>
+          <div class="text">V{{(isIOS?version_info.plist_size :version_info.apk_size)|bytes}}</div>
+        </div>
+        <div class="item">
+          <div class="label">{{'CHANGELOGS'|translate}}</div>
+          <ul class="changelogs">
+            <li class="line" *ngFor="let line of version_info.changelogs">
+              {{line}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="buttons">
+        <div class="button cancel" (click)="closeDialog()">
+          {{'CANCEL'|translate}}
+        </div>
+        <div *ngIf="!isIOS" class="button ok" (click)="androidUpadate()">
+          {{'NOW_DOWNLOAD'|translate}}
+        </div>
+        <div *ngIf="!isIOS" class="button ok" (click)="iosUpdatge()">
+          {{'GO_DOWNLOAD'|translate}}
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

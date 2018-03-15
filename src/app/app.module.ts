@@ -23,6 +23,9 @@ import { Clipboard } from "@ionic-native/clipboard";
 import { StatusBar } from "@ionic-native/status-bar";
 import { Screenshot } from "@ionic-native/screenshot";
 import { SocialSharing } from "@ionic-native/social-sharing";
+import { FileTransfer } from "@ionic-native/file-transfer";
+import { File } from "@ionic-native/file";
+import { FileOpener } from "@ionic-native/file-opener";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -179,6 +182,9 @@ const heightLevelModules = [
     StatusBar,
     Screenshot,
     SocialSharing,
+    FileTransfer,
+    File,
+    FileOpener,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppFetchProvider,

@@ -11,7 +11,9 @@
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
     "format:diff": "node scripts/format.js --from-git-diff",
-    "format:all": "node scripts/format.js --all"
+    "format:all": "node scripts/format.js --all",
+    "ionic:watch:before": "node package-hooks/add_version.js",
+    "ionic:build:before": "node package-hooks/add_version.js"
   },
   "dependencies": {
     "@angular/animations": "^5.1.2",
@@ -28,6 +30,9 @@
     "@ionic-native/camera": "4.3.3",
     "@ionic-native/clipboard": "^4.5.3",
     "@ionic-native/core": "4.4.0",
+    "@ionic-native/file": "^4.5.3",
+    "@ionic-native/file-opener": "^4.5.3",
+    "@ionic-native/file-transfer": "^4.5.3",
     "@ionic-native/keyboard": "^4.5.2",
     "@ionic-native/native-page-transitions": "^4.5.2",
     "@ionic-native/qr-scanner": "^4.5.3",
@@ -52,6 +57,8 @@
     "cordova-plugin-crosswalk-webview": "^2.3.0",
     "cordova-plugin-device": "^1.1.4",
     "cordova-plugin-file": "^6.0.1",
+    "cordova-plugin-file-opener2": "^2.0.19",
+    "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-media-capture": "^3.0.1",
     "cordova-plugin-splashscreen": "^4.0.3",
@@ -99,11 +106,10 @@
     "xlsx": "^0.12.3"
   },
   "description": "IFMchain client app v2",
-  "//pre-commit": [
-    "format:diff"
-  ],
+  "//pre-commit": ["format:diff"],
   "main": "index.js",
-  "repository": "ssh://git@130.211.241.191/home/work/git/repo/mars/ifm-app-v2.git",
+  "repository":
+    "ssh://git@130.211.241.191/home/work/git/repo/mars/ifm-app-v2.git",
   "license": "MIT",
   "cordova": {
     "plugins": {
@@ -120,7 +126,8 @@
       "cordova-plugin-media-capture": {},
       "ionic-plugin-keyboard": {},
       "cordova-plugin-crosswalk-webview": {
-        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security",
+        "XWALK_COMMANDLINE":
+          "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security",
         "XWALK_VERSION": "23+",
         "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
         "XWALK_MODE": "embedded",
@@ -128,11 +135,11 @@
       },
       "phonegap-plugin-barcodescanner": {},
       "cordova-plugin-x-socialsharing": {},
-      "com.darktalker.cordova.screenshot": {}
+      "com.darktalker.cordova.screenshot": {},
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-file-opener2": {}
     },
-    "platforms": [
-      "ios",
-      "android"
-    ]
+    "platforms": ["ios", "android"]
   }
 }

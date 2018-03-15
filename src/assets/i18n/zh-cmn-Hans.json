@@ -53,6 +53,15 @@
   "MINER_LIST": "矿工列表",
   "ABOUT_IBT": "关于IBT",
 
+  "//": "version-update-dialog",
+  "#VERSION#_VERSION_UPDATE": "V{{version}}版本更新",
+  "NEWEST_VERSION": "最新版本",
+  "VERSION_SIZE": "版本大小",
+  "CHANGELOGS": "更新内容",
+  "NOW_DOWNLOAD":"立即下载",
+  "GO_DOWNLOAD":"去下载",
+  "UPDATE_APK_FAIL":"应用更新失败",
+
   "//": "settings-set-default-fee",
   "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",
 
@@ -114,9 +123,8 @@
   "ADD_CONTACT_SUBMITING": "同意添加联系人提交中",
   "ADD_CONTACT_SUBMIT_SUCCESS": "同意添加联系人提交成功",
 
-  "//":"account-news-detail",
-  "ACCOUNT-NEWS-DETAIL":"动态详情",
-  
+  "//": "account-news-detail",
+  "ACCOUNT-NEWS-DETAIL": "动态详情",
 
   "//": "account-add-contact",
   "ACCOUNT-ADD-CONTACT": "添加联系人",
