@@ -463,7 +463,7 @@ export const asyncCtrlGenerator = {
   loading: asyncLoadingWrapGenerator,
   // error: asyncErrorWrapGenerator,
   retry: autoRetryWrapGenerator,
-  error: (
+  error(
     error_title?: any,
     opts?:
       | AlertOptions
@@ -471,7 +471,7 @@ export const asyncCtrlGenerator = {
       | ((self: FLP_Tool) => Promise<AlertOptions>),
     hidden_when_page_leaved?: boolean,
     keep_throw?: boolean,
-  ) => {
+  ) {
     return asyncErrorWrapGenerator(
       error_title,
       opts,
@@ -496,7 +496,7 @@ export const asyncCtrlGenerator = {
       },
     );
   },
-  warning: (
+  warning(
     error_title?: any,
     opts?:
       | AlertOptions
@@ -504,7 +504,7 @@ export const asyncCtrlGenerator = {
       | ((self: FLP_Tool) => Promise<AlertOptions>),
     hidden_when_page_leaved?: boolean,
     keep_throw?: boolean,
-  ) => {
+  ) {
     return asyncErrorWrapGenerator(
       error_title,
       opts,
