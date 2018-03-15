@@ -7,20 +7,20 @@ page-custom-dialog {
       display: flex;
       align-items: center;
       justify-content: center;
-      animation-name: aplha-dark-bg-in;
-      animation-duration: 1000ms;
-      animation-delay: 250ms;
-      animation-fill-mode: forwards;
+      /* animation-name: aplha-dark-bg-in;
+      animation-duration: 300ms;
+      animation-delay: 400ms;
+      animation-fill-mode: forwards; */
     }
   }
-  @keyframes aplha-dark-bg-in {
+/*   @keyframes aplha-dark-bg-in {
     0% {
       background-color: transparent;
     }
     100% {
       background-color: rgba(0, 0, 0, 0.6);
     }
-  }
+  } */
   .dialog-wrapper {
     position: relative;
     top: -11vh;
@@ -91,6 +91,7 @@ page-custom-dialog {
       > .content {
         flex: 1;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         color: #787878;

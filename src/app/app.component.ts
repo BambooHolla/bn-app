@@ -28,6 +28,10 @@ import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 
 import { CommonTransition } from "./common.transition";
+import {
+  CustomDialogPopIn,
+  CustomDialogPopOut,
+} from "../pages/custom-dialog/custom-dialog.transform";
 
 if (
   window["cordova"] &&
@@ -83,6 +87,8 @@ export class MyApp implements OnInit {
     window["minService"] = minService;
     window["myapp"] = this;
     config.setTransition("common-transition", CommonTransition);
+    config.setTransition("custom-dialog-pop-in", CustomDialogPopIn);
+    config.setTransition("custom-dialog-pop-out", CustomDialogPopOut);
 
     this.initTranslate();
 

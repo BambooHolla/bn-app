@@ -28,63 +28,115 @@ export class FLP_Tool {
     cancel_handle?: Function,
     auto_open = true,
   ) {
-    const dialog = this.modalCtrl.create("custom-dialog", {
-      message,
-      buttons: [
-        {
-          text: await this.getTranslate("CANCEL"),
-          cssClass: "cancel",
-          handler: () => {
-            if (cancel_handle instanceof Function) {
-              return cancel_handle();
-            }
+    const dialog = this.modalCtrl.create(
+      "custom-dialog",
+      {
+        message,
+        buttons: [
+          {
+            text: await this.getTranslate("CANCEL"),
+            cssClass: "cancel",
+            handler: () => {
+              if (cancel_handle instanceof Function) {
+                return cancel_handle();
+              }
+            },
           },
-        },
-        {
-          text: await this.getTranslate("OK"),
-          cssClass: "ok",
-          handler: () => {
-            if (ok_handle instanceof Function) {
-              return ok_handle();
-            }
+          {
+            text: await this.getTranslate("OK"),
+            cssClass: "ok",
+            handler: () => {
+              if (ok_handle instanceof Function) {
+                return ok_handle();
+              }
+            },
           },
-        },
-      ],
-    });
+        ],
+      },
+      {
+        enterAnimation: "custom-dialog-pop-in",
+        leaveAnimation: "custom-dialog-pop-out",
+      },
+    );
     if (auto_open) {
       await dialog.present();
     }
     return dialog;
   }
-  async showWarningDialog(message: string, auto_open = true) {
-    const dialog = this.modalCtrl.create("custom-dialog", {
-      message,
-      iconType: "warning",
-    });
+  private async _showCustomDialogWithIcon(
+    title: string,
+    iconType: string,
+    subTitle?: string,
+    message?: string,
+    buttons?: any[],
+    auto_open = true,
+  ) {
+    const dialog = this.modalCtrl.create(
+      "custom-dialog",
+      {
+        title,
+        subTitle,
+        message,
+        buttons,
+        iconType,
+      },
+      {
+        enterAnimation: "custom-dialog-pop-in",
+        leaveAnimation: "custom-dialog-pop-out",
+      },
+    );
     if (auto_open) {
       await dialog.present();
     }
     return dialog;
   }
-  async showSuccessDialog(message: string, auto_open = true) {
-    const dialog = this.modalCtrl.create("custom-dialog", {
+  async showWarningDialog(
+    title: string,
+    subTitle?: string,
+    message?: string,
+    buttons?: any[],
+    auto_open = true,
+  ) {
+    return this._showCustomDialogWithIcon(
+      title,
+      "warning",
+      subTitle,
       message,
-      iconType: "success",
-    });
-    if (auto_open) {
-      await dialog.present();
-    }
-    return dialog;
+      buttons,
+      auto_open,
+    );
   }
-  async showErrorDialog(message: string, auto_open = true) {
-    const dialog = this.modalCtrl.create("custom-dialog", {
+  async showSuccessDialog(
+    title: string,
+    subTitle?: string,
+    message?: string,
+    buttons?: any[],
+    auto_open = true,
+  ) {
+    return this._showCustomDialogWithIcon(
+      title,
+      "success",
+      subTitle,
       message,
-      iconType: "error",
-    });
-    if (auto_open) {
-      await dialog.present();
-    }
-    return dialog;
+      buttons,
+      auto_open,
+    );
+  }
+  showErrorDialog(
+    title: string,
+    subTitle?: string,
+    message?: string,
+    buttons?: any[],
+    auto_open = true,
+  ) {
+    return this._showCustomDialogWithIcon(
+      title,
+      "error",
+      subTitle,
+      message,
+      buttons,
+      auto_open,
+    );
   }
 
   isIOS = this.platform.is("ios");

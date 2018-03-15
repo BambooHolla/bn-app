@@ -7,6 +7,8 @@ import {
   Loading,
   Content,
   ToastController,
+  Modal,
+  Alert,
 } from "ionic-angular";
 import { PAGE_STATUS } from "./const";
 import { Toast } from "@ionic-native/toast";
@@ -41,6 +43,10 @@ export function asyncErrorWrapGenerator(
     | ((self: FLP_Tool) => Promise<AlertOptions>),
   hidden_when_page_leaved = true,
   keep_throw = false,
+  dialogGenerator?: (
+    params,
+    self: FLP_Tool,
+  ) => Modal | Alert | Promise<Modal> | Promise<Alert>,
 ) {
   return function asyncErrorWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
@@ -81,45 +87,56 @@ export function asyncErrorWrapGenerator(
             );
             return getErrorFromAsyncerror(keep_throw);
           }
-          const alertCtrl: AlertController = this.alertCtrl;
-          if (!(alertCtrl instanceof AlertController)) {
-            console.warn(
-              "需要在",
-              target.constructor.name,
-              "中注入 AlertController 依赖",
-            );
-            alert(err_msg);
-          } else {
-            if (
-              typeof error_title === "string" &&
-              error_title.startsWith("@@")
-            ) {
-              const i18n_key = error_title.substr(2);
-              error_title = () => this.getTranslate(i18n_key);
-            }
-            if (error_title instanceof Function) {
-              error_title = error_title(err);
-            }
 
-            Promise.all([
-              error_title,
-              err_msg,
-              opts instanceof Function ? opts(this) : opts,
-            ]).then(([error_title, err_msg, opts]) => {
-              alertCtrl
-                .create(
-                  Object.assign(
-                    {
-                      title: String(error_title),
-                      subTitle: String(err_msg),
-                      buttons: [this.getTranslateSync("OK")],
-                    },
-                    opts,
-                  ),
-                )
-                .present();
-            });
+          if (!dialogGenerator) {
+            const alertCtrl: AlertController = this.alertCtrl;
+            if (!(alertCtrl instanceof AlertController)) {
+              console.warn(
+                "需要在",
+                target.constructor.name,
+                "中注入 AlertController 依赖",
+              );
+              dialogGenerator = (params: { title: string }) => {
+                return {
+                  present() {
+                    alert(params.title);
+                  },
+                } as any;
+              };
+            } else {
+              dialogGenerator = params => {
+                return alertCtrl.create(params);
+              };
+            }
           }
+          const _dialogGenerator = dialogGenerator;
+
+          if (typeof error_title === "string" && error_title.startsWith("@@")) {
+            const i18n_key = error_title.substr(2);
+            error_title = () => this.getTranslate(i18n_key);
+          }
+          if (error_title instanceof Function) {
+            error_title = error_title(err);
+          }
+
+          Promise.all([
+            error_title,
+            err_msg,
+            opts instanceof Function ? opts(this) : opts,
+          ]).then(([error_title, err_msg, opts]) => {
+            const present_able = _dialogGenerator(
+              Object.assign(
+                {
+                  title: String(error_title),
+                  subTitle: String(err_msg),
+                  buttons: [this.getTranslateSync("OK")],
+                },
+                opts,
+              ),
+              this,
+            );
+            Promise.resolve<Modal | Alert>(present_able).then(p => p.present());
+          });
           return getErrorFromAsyncerror(keep_throw);
         });
     };
@@ -440,6 +457,72 @@ export function autoRetryWrapGenerator(
 export const asyncCtrlGenerator = {
   success: asyncSuccessWrapGenerator,
   loading: asyncLoadingWrapGenerator,
-  error: asyncErrorWrapGenerator,
+  // error: asyncErrorWrapGenerator,
   retry: autoRetryWrapGenerator,
+  error: (
+    error_title?: any,
+    opts?:
+      | AlertOptions
+      | ((self: FLP_Tool) => AlertOptions)
+      | ((self: FLP_Tool) => Promise<AlertOptions>),
+    hidden_when_page_leaved?: boolean,
+    keep_throw?: boolean,
+  ) => {
+    return asyncErrorWrapGenerator(
+      error_title,
+      opts,
+      hidden_when_page_leaved,
+      keep_throw,
+      (params, self: FLP_Tool) => {
+        const buttons = params.buttons;
+        if (
+          buttons &&
+          buttons.length == 1 &&
+          buttons[0] === self.getTranslateSync("OK")
+        ) {
+          buttons.length = 0;
+        }
+        return self.showErrorDialog(
+          params.title,
+          params.subTitle,
+          params.message,
+          params.buttons,
+          false,
+        );
+      },
+    );
+  },
+  warning: (
+    error_title?: any,
+    opts?:
+      | AlertOptions
+      | ((self: FLP_Tool) => AlertOptions)
+      | ((self: FLP_Tool) => Promise<AlertOptions>),
+    hidden_when_page_leaved?: boolean,
+    keep_throw?: boolean,
+  ) => {
+    return asyncErrorWrapGenerator(
+      error_title,
+      opts,
+      hidden_when_page_leaved,
+      keep_throw,
+      (params, self: FLP_Tool) => {
+        const buttons = params.buttons;
+        if (
+          buttons &&
+          buttons.length == 1 &&
+          buttons[0] === self.getTranslateSync("OK")
+        ) {
+          buttons.length = 0;
+        }
+        return self.showWarningDialog(
+          params.title,
+          params.subTitle,
+          params.message,
+          params.buttons,
+          false,
+        );
+      },
+    );
+  },
 };

@@ -35,7 +35,18 @@ export class CustomDialogPage extends FirstLevelPage {
   iconType = "";
   @CustomDialogPage.willEnter
   initParams() {
-    this.buttons = this.navParams.get("buttons");
+    var buttons = this.navParams.get("buttons");
+    if (buttons instanceof Array) {
+      buttons = buttons.map(b => {
+        if (typeof b === "string") {
+          return {
+            text: b,
+          };
+        }
+        return b;
+      });
+      this.buttons = buttons;
+    }
     this.content_title = this.navParams.get("title");
     this.content_subTitle = this.navParams.get("subTitle");
     this.content_message = this.navParams.get("message");
