@@ -63,6 +63,23 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       this.viewCtrl.dismiss();
     }
   }
+  get changelogs() {
+    if (!this.version_info) {
+      return undefined;
+    }
+    var res = this.version_info.changelogs;
+    if (this.isAndroid) {
+      if (this.version_info.android_changelogs) {
+        res = this.version_info.android_changelogs;
+      }
+    }
+    if (this.isIOS) {
+      if (this.version_info.ios_changelogs) {
+        res = this.version_info.ios_changelogs;
+      }
+    }
+    return res;
+  }
   fileTransfer?: FileTransferObject;
   isDownloading = false;
   download_progress: SafeStyle = "--progress:0%";

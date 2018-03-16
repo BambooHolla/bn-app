@@ -5,6 +5,8 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { AppSettingProvider } from "../../../providers/app-setting/app-setting";
 import { LoginServiceProvider } from "../../../providers/login-service/login-service";
+import { AppFetchProvider } from "../../../providers/app-fetch/app-fetch";
+import { LATEST_VERSION_INFO } from "../../version-update-dialog/version.types";
 import { TabAccountPage } from "../../tab-account/tab-account";
 
 @IonicPage({ name: "account-settings" })
@@ -20,7 +22,7 @@ export class AccountSettingsPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public appSetting: AppSettingProvider,
     public loginService: LoginServiceProvider,
-    @Optional() public tabAccount: TabAccountPage,
+    public fetch: AppFetchProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -32,9 +34,8 @@ export class AccountSettingsPage extends SecondLevelPage {
   async quitAccount() {
     return this.loginService.loginOut();
   }
+
   checkUpdate() {
-    if (this.tabAccount) {
-      return this.tabAccount.checkAndroidUpdate();
-    }
+    return TabAccountPage.prototype.checkAndroidUpdate.call(this);
   }
 }
