@@ -34,7 +34,9 @@ page-share-app-panel {
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
+        padding-bottom: 2rem;
         .row {
+          padding-top: 1rem;
           width: 100%;
           display: flex;
           align-items: center;
@@ -46,6 +48,19 @@ page-share-app-panel {
             align-items: center;
             > .icon {
               width: 3rem;
+              &.more {
+                width: 3rem;
+                height: 3rem;
+                color: #7c7c7c;
+                background-color: #eeeeee;
+                border-radius: 50%;
+                font-size: 2.2rem;
+                line-height: 3.6rem;
+                text-align: center;
+              }
+            }
+            > .label {
+              padding-top: 0.2rem;
             }
           }
         }

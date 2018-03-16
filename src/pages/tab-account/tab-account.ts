@@ -30,18 +30,24 @@ export class TabAccountPage extends FirstLevelPage {
   get address() {
     return this.user.address;
   }
+  app_version_info?: LATEST_VERSION_INFO;
 
   async openSharePanel() {
     var message = await this.getTranslate("WELCOME_TO_DOWNLOAD_IBT_APP");
     var web_link = "https://www.ifmchain.com/downloadv2.0.html";
+    var image_url;
     if (this.app_version_info) {
-      message = this.app_version_info.download_message || message;
-      web_link = this.app_version_info.download_link_web || web_link;
+      message = this.app_version_info.share_message || message;
+      web_link =
+        this.app_version_info.share_link ||
+        this.app_version_info.download_link_web ||
+        web_link;
+      image_url = this.app_version_info.share_image_url || image_url;
     }
     this.modalCtrl
       .create(
         "share-app-panel",
-        { message, link: web_link },
+        { message, link: web_link, image_url },
         {
           enterAnimation: "custom-dialog-pop-in",
           leaveAnimation: "custom-dialog-pop-out",
@@ -49,7 +55,6 @@ export class TabAccountPage extends FirstLevelPage {
       )
       .present();
   }
-  app_version_info?: LATEST_VERSION_INFO;
   @TabAccountPage.onInit
   @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
   async checkAndroidUpdate() {

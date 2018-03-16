@@ -1,12 +1,12 @@
 import { Component, Optional, ViewChild, ElementRef } from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 import {
-	IonicPage,
-	NavController,
-	NavParams,
-	Refresher,
-	Content,
-	ViewController,
+  IonicPage,
+  NavController,
+  NavParams,
+  Refresher,
+  Content,
+  ViewController,
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
@@ -14,53 +14,75 @@ import { SocialSharing } from "@ionic-native/social-sharing";
 
 @IonicPage({ name: "share-app-panel" })
 @Component({
-	selector: "page-share-app-panel",
-	templateUrl: "share-app-panel.html",
+  selector: "page-share-app-panel",
+  templateUrl: "share-app-panel.html",
 })
 export class ShareAppPanelPage extends FirstLevelPage {
-	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		public viewCtrl: ViewController,
-		public socialSharing: SocialSharing,
-	) {
-		super(navCtrl, navParams);
-	}
-	shareItems = ["TWITTER", "FACEBOOK", "INSTAGRAM"];
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public viewCtrl: ViewController,
+    public socialSharing: SocialSharing,
+  ) {
+    super(navCtrl, navParams);
+  }
+  shareItems = [
+    { title: "TWITTER", via: "" },
+    { title: "FACEBOOK", via: "" },
+    { title: "INSTAGRAM", via: "" },
+  ];
 
-	share_message!: string;
-	share_link?: string;
-	logo_link!: string;
-	@ShareAppPanelPage.willEnter
-	initData() {
-		const a = document.createElement("a");
-		a.href = "assets/imgs/logo.png";
-		this.logo_link = a.href;
-		this.share_message = this.navParams.get("message");
-		this.share_link = this.navParams.get("link");
-	}
-	@asyncCtrlGenerator.error("@@SHARE_APP_ERROR")
-	async shareVia(type: string) {
-		if (type === "TWITTER") {
-			return this.socialSharing.shareViaTwitter(
-				this.share_message,
-				this.logo_link,
-				this.share_link,
-			);
-		} else if (type === "FACEBOOK") {
-			return this.socialSharing.shareViaFacebook(
-				this.share_message,
-				this.logo_link,
-				this.share_link,
-			);
-		} else if (type === "INSTAGRAM") {
-			return this.socialSharing.shareViaInstagram(
-				this.share_message + " " + this.share_link,
-				this.logo_link,
-			);
-		}
-	}
-	closeModal() {
-		return this.viewCtrl.dismiss();
-	}
+  share_message!: string;
+  share_link?: string;
+  share_image_url!: string;
+  @ShareAppPanelPage.willEnter
+  initData() {
+    this.share_message = this.navParams.get("message");
+    this.share_link = this.navParams.get("link");
+    this.share_image_url = this.navParams.get("image_url");
+    if (!this.share_image_url) {
+      const a = document.createElement("a");
+      a.href = "assets/imgs/logo.png";
+      this.share_image_url = a.href;
+    }
+    // this.socialSharing.canShareVia()
+  }
+  @asyncCtrlGenerator.error("@@SHARE_APP_ERROR")
+  async shareVia(type: string) {
+    try {
+      if (type === "TWITTER") {
+        await this.socialSharing.shareViaTwitter(
+          this.share_message,
+          this.share_image_url,
+          this.share_link,
+        );
+      } else if (type === "FACEBOOK") {
+        await this.socialSharing.shareViaFacebook(
+          this.share_message,
+          this.share_image_url,
+          this.share_link,
+        );
+      } else if (type === "INSTAGRAM") {
+        await this.socialSharing.shareViaInstagram(
+          this.share_message + " " + this.share_link,
+          this.share_image_url,
+        );
+      }
+    } catch (err) {
+      console.error(err);
+      throw await this.getTranslate("YOU_SEEMS_TO_HAS_NO_INSTALL_THIS_APP");
+    }
+  }
+  @asyncCtrlGenerator.error("@@SHARE_APP_ERROR")
+  async shareMore() {
+    return this.socialSharing.share(
+      this.share_message,
+      undefined,
+      this.share_image_url,
+      this.share_link,
+    );
+  }
+  closeModal() {
+    return this.viewCtrl.dismiss();
+  }
 }

@@ -10,7 +10,9 @@ export type LATEST_VERSION_INFO = {
   download_link_android: string;
   download_link_ios_plist: string;
   download_link_web: string;
-  download_message?: string;
+  share_message?: string;
+  share_link?: string;
+  share_image_url?: string;
   create_time: number;
   apk_size: number;
   plist_size: number;
