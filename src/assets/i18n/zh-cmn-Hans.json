@@ -53,6 +53,15 @@
   "MINER_LIST": "矿工列表",
   "ABOUT_IBT": "关于IBT",
   "GET_LATEST_APP_VERSION_INFO_ERROR": "获取最新版本应用信息失败",
+  "WELCOME_TO_DOWNLOAD_IBT_APP": "欢迎下载IBT应用",
+
+  "//": "share-app-panel",
+  "SHARE_TO": "分享到",
+  "WECHAT": "微信",
+  "TWITTER": "推特",
+  "FACEBOOK": "脸书",
+  "INSTAGRAM": "Instagram",
+  "SHARE_APP_ERROR": "应用分享失败",
 
   "//": "version-update-dialog",
   "VERSION_UPDATE": "版本更新",
