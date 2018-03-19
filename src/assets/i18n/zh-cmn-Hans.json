@@ -347,10 +347,11 @@
   "CLEAR_LOCAL_CACHE": "清空本地缓存",
   "SIGNING_OUT": "安全退出",
   "SIGNING_OUT_ERROR": "退出登录出错",
+  "SWITCH_PAGE_ERROR": "页面切换异常",
 
   "SUCCESS": "成功",
   "ERROR": "错误",
-  "PLEASE_WAIT": "请稍后",
+  "PLEASE_WAIT": "请稍候",
   "PAY_INPUT_ERROR": "密码输入错误",
   "PAY_INPUT_CANCEL": "密码输入已取消",
 

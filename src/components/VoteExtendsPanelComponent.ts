@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, Input } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  HostBinding,
+} from "@angular/core";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { UserInfoProvider } from "../providers/user-info/user-info";
@@ -15,8 +21,12 @@ export class VoteExtendsPanelComponent extends EventEmitter
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
   @FLP_Tool.FromGlobal toastCtrl!: ToastController;
   @FLP_Tool.FromGlobal userInfo!: UserInfoProvider;
+  constructor() {
+    super();
+    window["extendsPanelOf" + this.constructor.name] = this;
+  }
 
-  _show_detail = false;
+  @HostBinding("class.show-detail") _show_detail = false;
   setShowDetail(v: boolean) {
     v = !!v;
     if (this._show_detail !== v) {

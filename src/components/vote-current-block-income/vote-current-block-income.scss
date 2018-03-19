@@ -13,21 +13,33 @@ vote-current-block-income {
     transparent 100%
   );
   background-repeat: no-repeat;
-  /* &::before {
-              content: " ";
-              position: absolute;
-              width: 50%;
-              height: 100%;
-              transform: rotate(5deg) scale(0, 0);
-              background: linear-gradient(
-                to right,
-                #fcbd4d 0%,
-                #fccf45 100%
-              );
-              z-index: -1;
-              left: 0;
-              top: 0;
-            } */
+
+  &.show-detail {
+    .header {
+      visibility: none;
+    }
+    .header2 {
+      display: flex;
+    }
+  }
+  .header2 {
+    padding: 1rem;
+    width: 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: none;
+    flex-direction: row;
+    justify-content: space-between;
+    color: #7a7a7a;
+    .title {
+      font-size: 1.6rem;
+    }
+    > .my-income-assets {
+      font-size: 1.2rem;
+      font-weight: lighter;
+    }
+  }
+
   .header {
     flex: 1;
     display: flex;

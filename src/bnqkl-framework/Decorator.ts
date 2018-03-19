@@ -35,6 +35,23 @@ export function isErrorFromAsyncerror(err) {
   return err && err.code === _ERROR_FROM_ASYNCERROR_CODE;
 }
 
+export function translateMessage(self: FLP_Tool, message: any, arg: any) {
+  if (message instanceof Function) {
+    message = message(arg);
+  }
+  return Promise.resolve(message).then(message => {
+    message = "" + message;
+    if (typeof message === "string" && message.startsWith("@@")) {
+      const i18n_key = message.substr(2);
+      message = () => this.getTranslate(i18n_key);
+    }
+    if (message instanceof Function) {
+      message = message(arg);
+    }
+    return message as string;
+  });
+}
+
 export function asyncErrorWrapGenerator(
   error_title: any = () => FLP_Tool.getTranslate("ERROR"),
   opts?:
@@ -115,13 +132,7 @@ export function asyncErrorWrapGenerator(
           }
           const _dialogGenerator = dialogGenerator;
 
-          if (typeof error_title === "string" && error_title.startsWith("@@")) {
-            const i18n_key = error_title.substr(2);
-            error_title = () => this.getTranslate(i18n_key);
-          }
-          if (error_title instanceof Function) {
-            error_title = error_title(err);
-          }
+          error_title = translateMessage(this, error_title, err);
 
           Promise.all([
             error_title,
@@ -170,14 +181,7 @@ export function asyncSuccessWrapGenerator(
           console.log("不弹出成功提示因为页面的切换");
           return data;
         }
-
-        if (typeof success_msg === "string" && success_msg.startsWith("@@")) {
-          const i18n_key = success_msg.substr(2);
-          success_msg = () => this.getTranslate(i18n_key);
-        }
-        if (success_msg instanceof Function) {
-          success_msg = success_msg(data);
-        }
+        success_msg = translateMessage(this, success_msg, data);
 
         if ("plugins" in window && "toast" in window["plugins"]) {
           const toast = window["toast"] as Toast;
@@ -260,13 +264,8 @@ export function asyncLoadingWrapGenerator(
         id_info.promises.add(res);
       }
 
-      if (typeof loading_msg === "string" && loading_msg.startsWith("@@")) {
-        const i18n_key = loading_msg.substr(2);
-        loading_msg = () => this.getTranslate(i18n_key);
-      }
-      if (loading_msg instanceof Function) {
-        loading_msg = loading_msg();
-      }
+      loading_msg = translateMessage(this, loading_msg, null);
+
       Promise.resolve(loading_msg).then(loading_msg => {
         loading.setContent(String(loading_msg));
       });

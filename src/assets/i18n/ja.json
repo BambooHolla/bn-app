@@ -49,6 +49,8 @@
   "MY_TRANSACTION": "私の取引",
   "MINER_LIST": "マイナーリスト",
   "ABOUT_IBT": "IBTについて",
+  "//": "share-app-panel",
+  "//": "version-update-dialog",
   "//": "settings-set-default-fee",
   "DEFAULT_FEE_SET_SUCCESS": "デフォルト手続料の設定済み",
   "//": "settings-net-version",

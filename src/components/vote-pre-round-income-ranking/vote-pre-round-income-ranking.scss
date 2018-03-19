@@ -23,28 +23,14 @@ vote-pre-round-income-ranking {
       font-weight: lighter;
     }
   }
-  .rank-info {
-    width: 100%;
-    flex-grow: 1;
-    /* padding: 1rem; */
-    /* padding-bottom: 0rem; */
-    /* padding-top: 1rem; */
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    .item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      margin-top: 0;
-      margin-bottom: auto;
-      color: #aaaaaa;
-      height: 100%;
-      .ip-address {
-        font-size: 1.4rem;
-      }
+
+  .item {
+    margin-top: 0;
+    margin-bottom: auto;
+    color: #aaaaaa;
+    height: 100%;
+    .ip-address {
+      font-size: 1.4rem;
     }
     .ranking-val {
       width: 4rem;
@@ -58,9 +44,12 @@ vote-pre-round-income-ranking {
       justify-content: center;
       align-items: center;
       margin: 0.6rem;
-      &.ranking-1,
-      &.ranking-2,
-      &.ranking-3 {
+    }
+
+    &.ranking-1,
+    &.ranking-2,
+    &.ranking-3 {
+      .ranking-val {
         position: relative;
         background-color: transparent !important;
         border: none !important;
@@ -75,30 +64,26 @@ vote-pre-round-income-ranking {
         font-size: 1.45rem;
         font-weight: bold;
         transform: scale(1.15);
-
-        /* &::before{
-                    content: "1";
-                    position: absolute;
-                    top: 0;
-                    left: calc(50% - 0.7rem);
-                    font-size: 1.4rem;
-                    color: #ffcd5e;
-                    font-weight: bold;
-                  } */
       }
-      &.ranking-1 {
+    }
+    &.ranking-1 {
+      .ranking-val {
         filter: contrast(120%) saturate(125%) sepia(40%) hue-rotate(2deg);
         color: #f7b022;
       }
-      &.ranking-2 {
+    }
+    &.ranking-2 {
+      .ranking-val {
         filter: grayscale(1);
       }
-      &.ranking-3 {
+    }
+    &.ranking-3 {
+      .ranking-val {
         filter: hue-rotate(-12deg);
         color: #e69037;
       }
     }
-    .me {
+    &.me {
       color: #fcb94e;
       .ranking-val {
         /* width: 5rem; */
@@ -112,6 +97,106 @@ vote-pre-round-income-ranking {
       }
       .ip-address {
         font-size: 1.8rem;
+      }
+    }
+  }
+  .rank-info {
+    width: 100%;
+    flex-grow: 1;
+    /* padding: 1rem; */
+    /* padding-bottom: 0rem; */
+    /* padding-top: 1rem; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    animation-name: fadeInUp;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    &.leave {
+      display: none;
+    }
+
+    .loading {
+      font-size: 4rem;
+      color: #7a7a7a;
+    }
+    .item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+  }
+  .rank-list {
+    flex-grow: 1;
+    overflow: hidden;
+    width: 100%;
+    display: none;
+    position: relative;
+    >.list-container{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+    &.enter {
+      display: block;
+      animation-name: fadeInUp;
+      animation-fill-mode: forwards;
+      animation-duration: 0.5s;
+    }
+    .loading {
+      font-size: 4rem;
+      color: #7a7a7a;
+    }
+    .item {
+      height: auto;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+
+      &.rank-of-me {
+        display: none;
+      }
+      &.rank-of-other {
+        display: block;
+      }
+      &.me {
+        &.rank-of-me {
+          display: block;
+        }
+        &.rank-of-other {
+          display: none;
+        }
+      }
+
+      > .ranking-val {
+        flex-grow: 0;
+        width: 3rem;
+        height: 3rem;
+        margin: 0.5rem;
+        border-bottom: 1px solid #eee;
+        &.ranking-1,
+        &.ranking-2,
+        &.ranking-3 {
+          margin: 0rem;
+          width: 4rem;
+          height: 5rem;
+          border-bottom: none;
+        }
+      }
+      > .ip-address {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      &.list-of-me {
+        .ranking-val {
+          background-color: #fcb94e;
+          border: 0.3rem solid #fad495;
+        }
       }
     }
   }

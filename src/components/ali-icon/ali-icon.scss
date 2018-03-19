@@ -20,11 +20,11 @@ ali-icon {
   }
   &.ani-rotate-45deg {
     animation-name: ani-rotate-45deg;
-    animation-duration: 0.8s;
+    animation-duration: 0.6s;
     animation-iteration-count: infinite;
     animation-timing-function: steps(8);
     &[name="ifm-loading"] {
-      transform-origin: 52% 52%;
+      transform-origin: 51.4% 56.2%;
     }
   }
   @keyframes ani-rotate-45deg {

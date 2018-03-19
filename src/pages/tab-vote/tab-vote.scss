@@ -129,6 +129,9 @@ page-tab-vote {
     overflow: hidden;
   }
   .bootstrap-page {
+    position: absolute;
+    top: 0;
+    left: 0;
     overflow: hidden;
     height: 100%;
     width: 100%;
@@ -677,7 +680,7 @@ page-tab-vote {
           transition-duration: 0ms;
         }
         > .slide-zoom {
-          > div {
+          > .panel-content {
             height: $panel-height;
             min-height: $panel-min-height;
             max-height: $panel-max-height;
@@ -692,6 +695,10 @@ page-tab-vote {
           box-shadow: 0rem 0.3rem 1.2rem rgba(0, 0, 0, 0.4);
           .slide-zoom {
             height: 100%;
+            > .panel-content {
+              max-height: unset;
+              height: 100%;
+            }
           }
         }
       }
