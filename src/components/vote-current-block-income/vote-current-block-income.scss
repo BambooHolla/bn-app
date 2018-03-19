@@ -13,16 +13,21 @@ vote-current-block-income {
     transparent 100%
   );
   background-repeat: no-repeat;
-
+  /* transition-duration: 0.5s; */
   &.show-detail {
-    .header {
-      visibility: none;
+    padding: 0;
+    flex-direction: column;
+    background: none;
+    > .header,
+    > .block-info {
+      display: none;
     }
-    .header2 {
+    > .header2,
+    > .block-detail {
       display: flex;
     }
   }
-  .header2 {
+  > .header2 {
     padding: 1rem;
     width: 100%;
     flex-grow: 0;
@@ -40,7 +45,7 @@ vote-current-block-income {
     }
   }
 
-  .header {
+  > .header {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -67,7 +72,7 @@ vote-current-block-income {
       }
     }
   }
-  .block-info {
+  > .block-info {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -92,14 +97,73 @@ vote-current-block-income {
         text-align: left;
         flex: 1;
         /* flex-grow: 1; */
-        padding-left: 0.5rem;
-        // background: linear-gradient( // to right, // #f78464 0%, // #fecc49 100% // );
+        padding-left: 0.5rem; // background: linear-gradient( // to right, // #f78464 0%, // #fecc49 100% // );
         // -webkit-background-clip: text;
         // -webkit-text-fill-color: transparent;
         > text-gradient {
           justify-content: flex-start;
         }
       }
+    }
+  }
+  > .block-detail {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    flex-grow: 1;
+    > .header,
+    > .footer {
+      color: #7d7d7d;
+      height: 5rem;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 0;
+      > .title {
+        padding-right: 1rem;
+      }
+    }
+    > .my-block-list {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      > .nav {
+        color: #7d7d7d;
+        font-size: 1.7rem;
+        padding: 1rem;
+        text-align: left;
+        flex-grow: 0;
+        font-weight: bold;
+        background-color: #eeeeee;
+      }
+      > .table-wrapper {
+        flex-grow: 1;
+        .row {
+          height: 2.8rem;
+          font-size: 1.4rem;
+          display: flex;
+          /* align-items: center;
+          justify-content: space-between; */
+          > .item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: lighter;
+          }
+        }
+        > .th {
+          height: 3rem;
+          background-color: #f6f6f6;
+          font-size: 1.45rem;
+          color: #7c7c7c;
+        }
+      }
+    }
+    > .footer{
+      border-top: 1px solid #eee;
     }
   }
 }

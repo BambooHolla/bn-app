@@ -13,7 +13,7 @@
     本轮挖矿收益
   </div>
   <div class="my-income-assets">
-    {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
+    IBT {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
   </div>
 </div>
 <div class="block-info">
@@ -35,6 +35,57 @@
     <div class="val">
       <text-gradient [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
       </text-gradient>
+    </div>
+  </div>
+</div>
+<div class="block-detail">
+  <div class="header">
+    <div class="title">
+      当前轮数
+    </div>
+    <div class="value">
+      <text-gradient [text]="cur_round_income_info.round" from="#f78464" to="#fecc49" fontSize="2rem" fontWeight="600"></text-gradient>
+    </div>
+  </div>
+  <div class="my-block-list">
+    <div class="nav">我的区块</div>
+    <div class="table-wrapper">
+      <div class="th row">
+        <div class="item block-id">区块ID</div>
+        <div class="item height">高度</div>
+        <div class="item income">收益</div>
+      </div>
+      <div class="list">
+        <div class="row">
+          <div class="item block-id">c3f5***9a3d</div>
+          <div class="item height">666</div>
+          <div class="item income">
+            <text-gradient text="+12.3" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
+          </div>
+        </div>
+        <div class="row">
+          <div class="item block-id">c3f5***9a3d</div>
+          <div class="item height">666</div>
+          <div class="item income">
+            <text-gradient text="+12.3" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
+          </div>
+        </div>
+        <div class="row">
+          <div class="item block-id">c3f5***9a3d</div>
+          <div class="item height">666</div>
+          <div class="item income">
+            <text-gradient text="+12.3" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="title">
+      最近收益
+    </div>
+    <div class="value">
+      <text-gradient [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="2rem" fontWeight="600"></text-gradient>
     </div>
   </div>
 </div>
