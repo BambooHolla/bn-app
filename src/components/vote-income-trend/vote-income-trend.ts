@@ -6,6 +6,7 @@ import {
 
 import { VoteExtendsPanelComponent } from "../VoteExtendsPanelComponent";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 
 @Component({
   selector: "vote-income-trend",
@@ -31,5 +32,22 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
       ? income_trend_list
       : undefined;
   }
-  async refreshDetailData() {}
+
+  income_trend_blist: any[] = [];
+  async refreshDetailData() {
+    this.income_trend_blist = Array.from({ length: 100 })
+      .map((_, i) => {
+        return {
+          round: i,
+          income: 100 * Math.random() * 1e8,
+          time: new Date(Date.now() - (101 - i) * 57 * 128e3),
+        };
+      })
+      .reverse();
+  }
+  async loadMoreIncomeTrendList() {}
+  async onListChange(event: ChangeEvent) {
+    if (event.end !== this.income_trend_blist.length) return;
+    await this.loadMoreIncomeTrendList();
+  }
 }

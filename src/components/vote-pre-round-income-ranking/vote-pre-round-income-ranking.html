@@ -8,24 +8,26 @@
   </div>
 </div>
 <div class="rank-info" [class.leave]="show_detail">
-  <div class="loading" *ngIf="loading_pre_round_rank_list">
+  <div class="loading" *ngIf="loading_pre_round_rank_list" [class.has-list]="pre_round_rank_list?.length">
     <ali-icon class="ani-rotate-45deg" name="ifm-loading"></ali-icon>
   </div>
-  <div class="item" *ngFor="let rank_item of pre_round_rank_list" [class.me]="rank_item==pre_round_my_benefit" [ngClass]="'ranking-'+rank_item.rate">
-    <div class="ranking-val">{{rank_item.rate}}</div>
-    <div class="ip-address" *ngIf="userInfo.address==rank_item.address">
-      {{'RANK_OF_ME'|translate}}
-    </div>
-    <div class="ip-address" *ngIf="userInfo.address!=rank_item.address">
-      <div class="username" *ngIf="rank_item.rate<=3" [innerHTML]="rank_item.username?rank_item.username:(rank_item.address|mask:'@address')"></div>
-      <div class="amount">
-        {{rank_item.profit|amountEuler|number:'1.8-8'}}
+  <ng-container *ngIf="!loading_pre_round_rank_list">
+    <div class="item" *ngFor="let rank_item of pre_round_rank_list" [class.me]="rank_item==pre_round_my_benefit" [ngClass]="'ranking-'+rank_item.rate">
+      <div class="ranking-val">{{rank_item.rate}}</div>
+      <div class="ip-address" *ngIf="userInfo.address==rank_item.address">
+        {{'RANK_OF_ME'|translate}}
+      </div>
+      <div class="ip-address" *ngIf="userInfo.address!=rank_item.address">
+        <div class="username" *ngIf="rank_item.rate<=3" [innerHTML]="rank_item.username?rank_item.username:(rank_item.address|mask:'@address')"></div>
+        <div class="amount">
+          {{rank_item.profit|amountEuler|number:'1.8-8'}}
+        </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 </div>
 <div class="rank-list" [class.enter]="show_detail">
-  <div class="loading" *ngIf="loading_pre_round_rank_blist">
+  <div class="loading" *ngIf="page_info.loading">
     <ali-icon class="ani-rotate-45deg" name="ifm-loading"></ali-icon>
   </div>
   <virtual-scroll #vscroll class="list-container" [items]="pre_round_rank_blist" (update)="viewPortItems = $event" (change)="onListChange($event)">

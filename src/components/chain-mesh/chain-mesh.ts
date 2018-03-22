@@ -24,7 +24,9 @@ for (let i = 0; i < FRAMES_NUM; i += 1) {
   const i_str = ("00000" + i).substr(-5);
   loader.add("img" + i_str, "assets/imgs/400-60/earth-" + i_str + ".png");
 }
-loader.onError.add(err => _load_resource_promiseout.reject(err));
+loader.onError.add(err => {
+  _load_resource_promiseout.reject(err);
+});
 loader.load((loader, resources) => {
   for (let i = 0; i < FRAMES_NUM; i += 1) {
     const i_str = ("00000" + i).substr(-5);
@@ -131,7 +133,7 @@ export class ChainMeshComponent extends AniBase {
       const start_frame_num = 0; //(frames_list.length / 3 * Math.random()) | 0;
       const end_frame_num = frames_list.length - 1;
       // (frames_list.length * 2 / 3 +
-      // 	frames_list.length / 3 * Math.random()) |
+      //   frames_list.length / 3 * Math.random()) |
       // 0;
       const frame_num = end_frame_num - start_frame_num;
       const half_frame_num = frame_num / 2;

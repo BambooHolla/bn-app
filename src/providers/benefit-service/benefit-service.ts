@@ -181,6 +181,7 @@ export class BenefitServiceProvider {
   benefitThisRound!: AsyncBehaviorSubject<number>;
   @HEIGHT_AB_Generator("benefitThisRound", true)
   benefitThisRound_Executor(promise_pro) {
+    console.log("更新 benefitThisRound%c",'color:red;background:#FFF');
     return promise_pro.follow(this.getBenefitThisRound());
   }
 

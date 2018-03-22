@@ -113,7 +113,6 @@ export class TabVotePage extends FirstLevelPage {
       if (this.satellite_pixi.is_inited) {
         this.satellite_pixi.progress = 0;
         this.blockService.getLastBlockRefreshInterval().then(diff_time => {
-          console.log("ani diff_time", diff_time);
           const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
           diff_time %= BLOCK_UNIT_TIME;
           // if (diff_time < BLOCK_UNIT_TIME) {

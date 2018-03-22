@@ -105,6 +105,7 @@ export function customDeepLinkConfig(deepLinkConfig) {
     { component: TabChainPage, name: "tab-chain" },
     { component: TabPayPage, name: "tab-pay" },
     { component: TabAccountPage, name: "tab-account" },
+    { component: CoverTabsCtrlModelPage, name: "cover-tabs-ctrl-model" },
   ];
   if (deepLinkConfig && deepLinkConfig.links) {
     const static_links_name_set = new Set(static_links.map(link => link.name));
@@ -126,6 +127,7 @@ const pages = [
   TabChainPage,
   TabPayPage,
   TabAccountPage,
+  CoverTabsCtrlModelPage,
 ];
 const heightLevelModules = [
   VoteCurrentBlockIncomeComponent,

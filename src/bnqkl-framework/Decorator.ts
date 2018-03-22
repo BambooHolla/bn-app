@@ -43,7 +43,7 @@ export function translateMessage(self: FLP_Tool, message: any, arg: any) {
     message = "" + message;
     if (typeof message === "string" && message.startsWith("@@")) {
       const i18n_key = message.substr(2);
-      message = () => this.getTranslate(i18n_key);
+      message = () => self.getTranslate(i18n_key);
     }
     if (message instanceof Function) {
       message = message(arg);

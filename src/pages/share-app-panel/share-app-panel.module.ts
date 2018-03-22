@@ -6,12 +6,12 @@ import { TranslateModule } from "@ngx-translate/core";
 import { PipesModule } from "../../pipes/pipes.module";
 
 @NgModule({
-	declarations: [ShareAppPanelPage],
-	imports: [
-		IonicPageModule.forChild(ShareAppPanelPage),
-		ComponentsModule,
-		TranslateModule,
-		PipesModule,
-	],
+  declarations: [ShareAppPanelPage],
+  imports: [
+    IonicPageModule.forChild(ShareAppPanelPage),
+    ComponentsModule,
+    TranslateModule,
+    PipesModule,
+  ],
 })
 export class ShareAppPanelPageModule {}

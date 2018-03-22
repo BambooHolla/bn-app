@@ -110,9 +110,7 @@ vote-pre-round-income-ranking {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    animation-name: fadeInUp;
-    animation-duration: 0.5s;
-    animation-fill-mode: forwards;
+    animation: fadeInUp 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
     &.leave {
       display: none;
     }
@@ -120,6 +118,14 @@ vote-pre-round-income-ranking {
     .loading {
       font-size: 4rem;
       color: #7a7a7a;
+      &.has-list{
+        position: absolute;
+        top: 0;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 1rem;
+        background-color: rgba(#FFF, 0.3);
+      }
     }
     .item {
       display: flex;
@@ -134,16 +140,14 @@ vote-pre-round-income-ranking {
     width: 100%;
     display: none;
     position: relative;
-    >.list-container{
+    > .list-container {
       position: absolute;
       width: 100%;
       height: 100%;
     }
     &.enter {
       display: block;
-      animation-name: fadeInUp;
-      animation-fill-mode: forwards;
-      animation-duration: 0.5s;
+      animation: fadeInUp 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
     }
     .loading {
       font-size: 4rem;
@@ -156,17 +160,17 @@ vote-pre-round-income-ranking {
       align-items: center;
       padding: 0 2rem;
 
-      &.rank-of-me {
+      .rank-of-me {
         display: none;
       }
-      &.rank-of-other {
+      .rank-of-other {
         display: block;
       }
       &.me {
-        &.rank-of-me {
+        .rank-of-me {
           display: block;
         }
-        &.rank-of-other {
+        .rank-of-other {
           display: none;
         }
       }

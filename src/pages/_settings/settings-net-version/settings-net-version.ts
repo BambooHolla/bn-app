@@ -55,6 +55,14 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     } else {
       return;
     }
+    this._clearDigRound();
     location.reload();
+  }
+  private _clearDigRound() {
+    for (let key in localStorage) {
+      if (key.startsWith("SETTING@digRound:")) {
+        localStorage.removeItem("key");
+      }
+    }
   }
 }

@@ -14,6 +14,11 @@ import { AlertController, ToastController } from "ionic-angular";
 import { EventEmitter } from "eventemitter3";
 import { asyncCtrlGenerator } from "../bnqkl-framework/Decorator";
 
+export enum DATA_REFRESH_FREQUENCY {
+  BY_ROUND,
+  BY_HEIGHT,
+}
+
 export class VoteExtendsPanelComponent extends EventEmitter
   implements OnInit, OnDestroy {
   @FLP_Tool.FromGlobal appSetting!: AppSettingProvider;
@@ -25,6 +30,8 @@ export class VoteExtendsPanelComponent extends EventEmitter
     super();
     window["extendsPanelOf" + this.constructor.name] = this;
   }
+  static DATA_REFRESH_FREQUENCY = DATA_REFRESH_FREQUENCY;
+  data_refresh_frequency = DATA_REFRESH_FREQUENCY.BY_ROUND;
 
   @HostBinding("class.show-detail") _show_detail = false;
   setShowDetail(v: boolean) {
@@ -38,6 +45,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
   }
 
   private _is_inited = false;
+  private _height_subscript?: Subscription;
   private _round_subscript?: Subscription;
   private _token_subscript?: Subscription;
   ngOnInit() {
@@ -46,7 +54,24 @@ export class VoteExtendsPanelComponent extends EventEmitter
         this.refreshData();
       }
     });
-    this._round_subscript = this.appSetting.round.subscribe(() => {
+    this._height_subscript = this.appSetting.after_height.subscribe(() => {
+      if (this.appSetting.getUserToken()) {
+        this.refreshCommonData();
+      }
+
+      if (this.data_refresh_frequency !== DATA_REFRESH_FREQUENCY.BY_HEIGHT) {
+        return;
+      }
+      // this.emit("roundChanged");
+      if (this.appSetting.getUserToken()) {
+        this.refreshData();
+      }
+    });
+    this._round_subscript = this.appSetting.after_round.subscribe(() => {
+      if (this.data_refresh_frequency !== DATA_REFRESH_FREQUENCY.BY_ROUND) {
+        return;
+      }
+      // this.emit("roundChanged");
       if (this.appSetting.getUserToken()) {
         this.refreshData();
       }
@@ -54,26 +79,28 @@ export class VoteExtendsPanelComponent extends EventEmitter
     this._is_inited = true;
   }
   ngOnDestroy() {
+    this._height_subscript && this._height_subscript.unsubscribe();
     this._round_subscript && this._round_subscript.unsubscribe();
     this._token_subscript && this._token_subscript.unsubscribe();
+    this.removeAllListeners();
   }
   cur_round_income_amount = 0;
 
   @asyncCtrlGenerator.error()
   @asyncCtrlGenerator.retry(undefined, console.warn)
   private async refreshData() {
-    const tasks: Promise<any>[] = [];
-    tasks[tasks.length] = this.refreshCommonData();
     if (this._show_detail) {
-      tasks[tasks.length] = this.refreshDetailData();
+      await this.refreshDetailData();
     } else {
-      tasks[tasks.length] = this.refreshBaseData();
+      await this.refreshBaseData();
     }
-    await Promise.all(tasks);
   }
 
+  @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.retry(undefined, console.warn)
   private async refreshCommonData(): Promise<any> {
     this.cur_round_income_amount = await this.benefitService.benefitThisRound.getPromise();
+    console.log("this.cur_round_income_amount",this.cur_round_income_amount)
   }
   async refreshBaseData(): Promise<any> {
     throw new Error("refreshBaseData没有定义");

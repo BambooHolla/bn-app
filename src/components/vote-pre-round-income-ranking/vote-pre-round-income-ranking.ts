@@ -3,6 +3,7 @@ import {
   MinServiceProvider,
   RankModel,
 } from "../../providers/min-service/min-service";
+import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 
 import { VoteExtendsPanelComponent } from "../VoteExtendsPanelComponent";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
@@ -13,7 +14,10 @@ import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
   templateUrl: "vote-pre-round-income-ranking.html",
 })
 export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponent {
-  constructor(public minService: MinServiceProvider) {
+  constructor(
+    public minService: MinServiceProvider,
+    public appSetting: AppSettingProvider,
+  ) {
     super();
   }
   @Input("show-detail")
@@ -34,39 +38,51 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
       this.loading_pre_round_rank_list = false;
     }
   }
-  loading_pre_round_rank_blist = false;
+
+  private _default_page_info = {
+    page: 1,
+    pageSize: this.minService.default_rank_list_pageSize,
+    hasMore: true,
+    loading: false,
+  };
+  page_info = {
+    ...this._default_page_info,
+  };
+
   pre_round_rank_blist: RankModel[] = [];
   async refreshDetailData() {
-    this.loading_pre_round_rank_blist = true;
+    // 重置分页信息
+    this.page_info = {
+      ...this._default_page_info,
+    };
+    this.pre_round_rank_blist = [];
+    await this._loadDetailData();
+  }
+  private async _loadDetailData() {
+    this.page_info.loading = true;
     try {
-      const pre_round_rank_list = await this.minService.myRank.getPromise();
-      this.pre_round_rank_blist = pre_round_rank_list
-        .concat(pre_round_rank_list)
-        .concat(pre_round_rank_list)
-        .concat(pre_round_rank_list)
-        .concat(pre_round_rank_list)
-        .concat(pre_round_rank_list)
-        .map((r, i) => {
-          return { ...r, copyed: true, rate: i + 1 + "" };
-        });
+      const list = await this.minService.getRankList(
+        this.page_info.page,
+        this.page_info.pageSize,
+      );
+      this.pre_round_rank_blist.push(...list);
+      this.page_info.hasMore = list.length === this.page_info.pageSize;
+      return this.page_info.hasMore;
     } finally {
-      this.loading_pre_round_rank_blist = false;
+      this.page_info.loading = false;
     }
   }
   async loadMoreRankList() {
-    const pre_round_rank_list = await this.minService.myRank.getPromise();
-    const append_list = pre_round_rank_list.map((r, i) => {
-      return {
-        ...r,
-        copyed: true,
-        rate: this.pre_round_rank_blist.length + i + 1 + "",
-      };
-    });
-    this.pre_round_rank_blist.push(...append_list);
+    this.page_info.page += 1;
+    return await this._loadDetailData();
   }
   async onListChange(event: ChangeEvent) {
     if (event.end !== this.pre_round_rank_blist.length) return;
-    await this.loadMoreRankList();
-    this.pre_round_rank_blist = this.pre_round_rank_blist.slice();
+    if (this.page_info.loading || !this.page_info.hasMore) {
+      return;
+    }
+    if (await this.loadMoreRankList()) {
+      this.pre_round_rank_blist = this.pre_round_rank_blist.slice();
+    }
   }
 }

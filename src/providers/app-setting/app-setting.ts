@@ -59,7 +59,7 @@ export class AppSettingProvider extends EventEmitter {
 
   static LATEST_APP_VERSION_URL = getQueryVariable("LATEST_APP_VERSION_URL") ||
     localStorage.getItem("LATEST_APP_VERSION_URL") ||
-    "http://www.ifmchain.com/api/app/version/latest";
+    "https://www.ifmchain.com/api/app/version/latest";
   static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,
@@ -230,13 +230,18 @@ export class AppSettingProvider extends EventEmitter {
   }
   /**高度*/
   height: BehaviorSubject<number> = new BehaviorSubject(1);
+  /**当高度发生改变后要触发的，应用级别使用这个。
+  确保不会因为height绑定而更新数据的触发函数还没触发就触发了应用界别的请求函数*/
+  after_height: BehaviorSubject<number> = new BehaviorSubject(1);
   /**轮次*/
   round: BehaviorSubject<number> = new BehaviorSubject(1);
+  after_round: BehaviorSubject<number> = new BehaviorSubject(1);
   setHeight(height: number) {
     if (this.getHeight() == height) {
       return;
     }
     this.height.next(height);
+    this.after_height.next(height);
     const pre_round = this.getRound();
     const cur_round = Math.floor(height / 57);
     if (cur_round !== pre_round) {
@@ -248,6 +253,7 @@ export class AppSettingProvider extends EventEmitter {
   }
   setRound(round: number) {
     this.round.next(round);
+    this.after_round.next(round);
   }
   getRound() {
     return this.round.getValue();

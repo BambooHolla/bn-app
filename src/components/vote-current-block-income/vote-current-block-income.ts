@@ -3,7 +3,10 @@ import { RankModel } from "../../providers/min-service/min-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { BenefitServiceProvider } from "../../providers/benefit-service/benefit-service";
 
-import { VoteExtendsPanelComponent } from "../VoteExtendsPanelComponent";
+import {
+  VoteExtendsPanelComponent,
+  DATA_REFRESH_FREQUENCY,
+} from "../VoteExtendsPanelComponent";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 
 @Component({
@@ -23,6 +26,7 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
     public benefitService: BenefitServiceProvider,
   ) {
     super();
+    this.data_refresh_frequency = DATA_REFRESH_FREQUENCY.BY_HEIGHT;
   }
 
   cur_round_income_info = {

@@ -510,7 +510,7 @@ export class FirstLevelPage extends FLP_Data {
         );
       }
     });
-    this._height_subscription = this.appSetting.height.subscribe(height => {
+    this._height_subscription = this.appSetting.after_height.subscribe(height => {
       this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
       is_first = false;
     });
@@ -533,7 +533,7 @@ export class FirstLevelPage extends FLP_Data {
         );
       }
     });
-    this._round_subscription = this.appSetting.round.subscribe(round => {
+    this._round_subscription = this.appSetting.after_round.subscribe(round => {
       this.dispatchEvent("ROUND:CHANGED", round, is_first);
       is_first = false;
     });

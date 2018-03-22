@@ -5,9 +5,32 @@ vote-income-trend {
   background: linear-gradient(to right, #faaf52 0%, #fdd04e 100%);
   display: flex;
   flex-direction: column;
-  .header {
+  /* transition-duration: 0.8s; */
+  /* transition-timing-function: cubic-bezier(0.11, 0.99, 0.18, 1); */
+  &.show-detail {
+    padding: 0rem;
+    background: linear-gradient(to bottom, #fdd04e 0%, #faaf52 100%);
+    > .header {
+      padding: 1rem;
+      .title {
+        text-align: left;
+        margin-left: 0;
+        margin-right: auto;
+        align-self: flex-start;
+      }
+    }
+    > .chart-wrapper {
+      display: none;
+    }
+    > .list-wrapper {
+      display: block;
+    }
+  }
+  > .header {
+    flex-grow: 0;
     position: relative;
     display: flex;
+    align-items: center;
     flex-direction: row;
     justify-content: center;
     color: #ffffff;
@@ -24,6 +47,9 @@ vote-income-trend {
     }
     .my-income-assets {
       position: absolute;
+      right: 0;
+      justify-self: flex-end;
+      margin-left: auto;
       right: 1rem;
       font-size: 1.2rem;
       font-weight: lighter;
@@ -32,8 +58,43 @@ vote-income-trend {
                 margin-left: auto; */
     }
   }
-  .chart-wrapper {
+  > .chart-wrapper {
+    flex: 1;
     width: 100%;
     height: 6rem;
+    animation: fadeInDown 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
+    overflow: hidden;
+  }
+  > .list-wrapper {
+    flex: 1;
+    display: none;
+    animation: fadeInUp 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
+    overflow: hidden;
+    > .list-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      padding: 1rem 0;
+      box-sizing: border-box;
+      .item {
+        padding: 0.6rem 1.6rem;
+        color: #fff;
+        border-bottom: 0.55px solid #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        > .left {
+          > .title {
+            font-size: 1.6rem;
+          }
+          > .subtitle {
+            font-size: 1.4rem;
+          }
+        }
+        >.right{
+          font-size: 1.7rem;
+        }
+      }
+    }
   }
 }

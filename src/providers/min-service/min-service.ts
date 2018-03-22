@@ -69,7 +69,8 @@ export class MinServiceProvider {
   );
   readonly MINERS = this.appSetting.APP_URL("/api/delegates");
   readonly MY_VOTES = this.appSetting.APP_URL("/api/accounts/delegates");
-  readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
+  readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/myProfitRanking");
+  readonly ALL_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
 
   /**
    * 获取本轮剩余时间
@@ -359,6 +360,31 @@ export class MinServiceProvider {
   myRank_Executor(promise_pro) {
     return promise_pro.follow(this.getMyRank());
   }
+
+  default_rank_list_pageSize = 20;
+  async getRankList(
+    page = 1,
+    pageSize = this.default_rank_list_pageSize,
+    force_get = false,
+  ): Promise<TYPE.RankModel[]> {
+    if (page === 1 && pageSize === this.default_rank_list_pageSize && !force_get) {
+      return this.rankListOf20.getPromise();
+    }
+    let query = {
+      page,
+      pageSize,
+    };
+    let data = await this.fetch.get<any>(this.ALL_RANK, { search: query });
+
+    return data.ranks || [];
+  }
+  // 这里只缓存最常用的初始20条
+  rankListOf20!: AsyncBehaviorSubject<TYPE.RankModel[]>;
+  @ROUND_AB_Generator("rankListOf20", true)
+  rankListOf20_Executor(promise_pro) {
+    return promise_pro.follow(this.getRankList(undefined, undefined, true));
+  }
+
   preRoundMyBenefit!: AsyncBehaviorSubject<TYPE.RankModel | undefined>;
   @ROUND_AB_Generator("preRoundMyBenefit", true)
   preRoundMyBenefit_Executor(promise_pro) {

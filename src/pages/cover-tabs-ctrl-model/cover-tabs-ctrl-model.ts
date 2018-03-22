@@ -7,7 +7,6 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 
-@IonicPage({ name: "cover-tabs-ctrl-model" })
 @Component({
   selector: "page-cover-tabs-ctrl-model",
   templateUrl: "cover-tabs-ctrl-model.html",

@@ -4,9 +4,25 @@
     收益趋势图
   </div>
   <div class="my-income-assets">
-    IBT {{pre_round_my_benefit?.profit|amountEuler|number:'1.8-8'}}
+    IBT {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
   </div>
 </div>
 <div class="chart-wrapper">
   <income-trend-simple-chart class="chart" [list]="income_trend_list"></income-trend-simple-chart>
+</div>
+<div class="list-wrapper">
+  <virtual-scroll #vscroll class="list-container" [items]="income_trend_blist" (update)="viewPortItems = $event" (change)="onListChange($event)">
+    <div class="item" *ngFor="let round_income of viewPortItems">
+      <div class="left">
+        <div class="title">第{{round_income.round}}轮收益</div>
+        <div class="subtitle create-time">
+          {{round_income.time|amDateFormat:"MM-DD hh:mm"}}
+        </div>
+      </div>
+      
+      <div class="right amount">
+      	{{round_income.income|amountEuler|number:'1.8-8'}}
+      </div>
+    </div>
+  </virtual-scroll>
 </div>

@@ -44,7 +44,6 @@ vote-current-block-income {
       font-weight: lighter;
     }
   }
-
   > .header {
     flex: 1;
     display: flex;
@@ -52,6 +51,7 @@ vote-current-block-income {
     justify-content: center;
     align-items: center;
     color: #fff;
+    animation: fadeInLeft 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
     .title {
       font-size: 2.8rem;
       display: flex;
@@ -80,6 +80,7 @@ vote-current-block-income {
     align-items: flex-start;
     box-sizing: border-box;
     padding: 1rem 0;
+    animation: fadeInRight 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
     .info-item {
       display: flex;
       width: 100%;
@@ -87,8 +88,7 @@ vote-current-block-income {
       align-items: center;
       .title {
         padding-left: 1.2rem;
-        font-size: 1.5rem;
-        /* flex-basis: 7rem; */
+        font-size: 1.5rem; /* flex-basis: 7rem; */
         flex-shrink: 0;
         flex-grow: 0;
         color: #7d7d7d;
@@ -97,9 +97,9 @@ vote-current-block-income {
         text-align: left;
         flex: 1;
         /* flex-grow: 1; */
-        padding-left: 0.5rem; // background: linear-gradient( // to right, // #f78464 0%, // #fecc49 100% // );
-        // -webkit-background-clip: text;
-        // -webkit-text-fill-color: transparent;
+        padding-left: 0.5rem;
+        // background: linear-gradient( // to right, // #f78464 0%, // #fecc49 100% // );
+        // -webkit-background-clip: text; // -webkit-text-fill-color: transparent;
         > text-gradient {
           justify-content: flex-start;
         }
@@ -111,6 +111,7 @@ vote-current-block-income {
     flex-direction: column;
     width: 100%;
     flex-grow: 1;
+    animation: fadeInUp 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
     > .header,
     > .footer {
       color: #7d7d7d;
@@ -143,8 +144,7 @@ vote-current-block-income {
         .row {
           height: 2.8rem;
           font-size: 1.4rem;
-          display: flex;
-          /* align-items: center;
+          display: flex; /* align-items: center;
           justify-content: space-between; */
           > .item {
             flex: 1;
@@ -162,7 +162,7 @@ vote-current-block-income {
         }
       }
     }
-    > .footer{
+    > .footer {
       border-top: 1px solid #eee;
     }
   }
