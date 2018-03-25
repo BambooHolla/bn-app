@@ -7,6 +7,7 @@ import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
+import { versionToNumber } from "../version-update-dialog/version-update-dialog";
 
 @Component({
   selector: "page-tab-account",
@@ -73,7 +74,7 @@ export class TabAccountPage extends FirstLevelPage {
     if (this.isIOS && app_version_info.ios_version) {
       version = app_version_info.ios_version;
     }
-    if (version !== AppSettingProvider.APP_VERSION) {
+    if (versionToNumber(version) > versionToNumber(AppSettingProvider.APP_VERSION)) {
       return this.modalCtrl
         .create(
           "version-update-dialog",

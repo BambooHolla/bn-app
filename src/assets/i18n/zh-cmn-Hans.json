@@ -93,6 +93,13 @@
   "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "您是否要去设置默认手续费",
   "VOTE_INCOME_HISTORY": "历史挖矿收益",
 
+  "//":"cur-round-income-amount",
+  "CUR-ROUND-INCOME-AMOUNT":"本轮挖矿收益",
+  "CURRENT_ROUND":"当前轮数",
+  "MY_BLOCKS":"我的区块",
+  "RECENT_BENEFIT":"最近收益",
+  "BLOCK_benefit": "区块收益",
+
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加载区块链中",
   "LOAD_BLOCK_LIST_ERROR": "加载区块链失败",

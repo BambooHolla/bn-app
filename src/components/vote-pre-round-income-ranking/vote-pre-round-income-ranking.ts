@@ -58,13 +58,14 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
     this.pre_round_rank_blist = [];
     await this._loadDetailData();
   }
-  private async _loadDetailData() {
+  private async _loadDetailData(page = this.page_info.page) {
     this.page_info.loading = true;
     try {
       const list = await this.minService.getRankList(
-        this.page_info.page,
+        page,
         this.page_info.pageSize,
       );
+      this.page_info.page = page;
       this.pre_round_rank_blist.push(...list);
       this.page_info.hasMore = list.length === this.page_info.pageSize;
       return this.page_info.hasMore;
@@ -73,8 +74,7 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
     }
   }
   async loadMoreRankList() {
-    this.page_info.page += 1;
-    return await this._loadDetailData();
+    return await this._loadDetailData(this.page_info.page + 1);
   }
   async onListChange(event: ChangeEvent) {
     if (event.end !== this.pre_round_rank_blist.length) return;

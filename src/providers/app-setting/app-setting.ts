@@ -231,7 +231,7 @@ export class AppSettingProvider extends EventEmitter {
   /**高度*/
   height: BehaviorSubject<number> = new BehaviorSubject(1);
   /**当高度发生改变后要触发的，应用级别使用这个。
-  确保不会因为height绑定而更新数据的触发函数还没触发就触发了应用界别的请求函数*/
+   确保不会因为height绑定而更新数据的触发函数还没触发就触发了应用界别的请求函数*/
   after_height: BehaviorSubject<number> = new BehaviorSubject(1);
   /**轮次*/
   round: BehaviorSubject<number> = new BehaviorSubject(1);
@@ -243,10 +243,13 @@ export class AppSettingProvider extends EventEmitter {
     this.height.next(height);
     this.after_height.next(height);
     const pre_round = this.getRound();
-    const cur_round = Math.floor(height / 57);
+    const cur_round = this.calcRoundByHeight(height);
     if (cur_round !== pre_round) {
       this.setRound(cur_round);
     }
+  }
+  calcRoundByHeight(height) {
+    return Math.ceil(height / 57);
   }
   getHeight() {
     return this.height.getValue();

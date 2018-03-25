@@ -308,9 +308,9 @@ export class TabChainPage extends FirstLevelPage {
   async watchHeightChange(height) {
     const tasks: Promise<any>[] = [];
     if (this.block_list.length === 0) {
-      tasks[tasks.length] = this.loadBlockList().then(()=>{
-         this.block_list = this.block_list.slice();// 迫使vscroll进行更新
-      })
+      tasks[tasks.length] = this.loadBlockList().then(() => {
+        this.block_list = this.block_list.slice(); // 迫使vscroll进行更新
+      });
     } else {
       const current_length = this.block_list[0].height;
       // TODO：暂停预期块的动画=>实现块进入的动画=>再次开启预期块的动画
@@ -319,6 +319,8 @@ export class TabChainPage extends FirstLevelPage {
         tasks[tasks.length] = this.loadBlockList({
           increment: true,
           increment_length: height - current_length,
+        }).then(() => {
+          this.block_list = this.block_list.slice(); // 迫使vscroll进行更新
         });
       }
     }

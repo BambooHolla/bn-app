@@ -27,7 +27,7 @@
   </ng-container>
 </div>
 <div class="rank-list" [class.enter]="show_detail">
-  <div class="loading" *ngIf="page_info.loading">
+  <div class="loading" [class.has-list]="pre_round_rank_blist.length" *ngIf="page_info.loading">
     <ali-icon class="ani-rotate-45deg" name="ifm-loading"></ali-icon>
   </div>
   <virtual-scroll #vscroll class="list-container" [items]="pre_round_rank_blist" (update)="viewPortItems = $event" (change)="onListChange($event)">

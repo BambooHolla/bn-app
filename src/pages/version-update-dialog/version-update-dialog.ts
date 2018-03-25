@@ -25,6 +25,23 @@ type buttonOptions = {
   cssClass?: string;
 };
 
+export function versionToNumber(version: string) {
+  const vcodes = version.split(".");
+  /* 一共分三位：
+   * 大版本号：*100000
+   * 中版本号：*1000
+   * 小版本号：*1
+   * 小版本尾号(1.1.1-2中的2)：*0.0001
+   */
+  var res = 0;
+  res += (parseInt(vcodes[0]) || 0) * 100000;
+  res += (parseInt(vcodes[1]) || 0) * 1000;
+  const last_info = vcodes[1].split("-");
+  res += parseInt(last_info[0]) || 0;
+  res += (parseInt(last_info[1]) || 0) * 0.0001;
+  return res;
+}
+
 @IonicPage({ name: "version-update-dialog" })
 @Component({
   selector: "page-version-update-dialog",
@@ -128,4 +145,5 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       window.open(this.version_info.download_link_web, "_system");
     }
   }
+  static versionToNumber = versionToNumber
 }

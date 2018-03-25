@@ -27,7 +27,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
   income_trend_list?: BenefitModel[];
 
   async refreshBaseData() {
-    const income_trend_list = await this.benefitService.top57Benefits.getPromise();
+    const income_trend_list = await this.benefitService.topBenefits.getPromise();
     this.income_trend_list = income_trend_list.length
       ? income_trend_list
       : undefined;

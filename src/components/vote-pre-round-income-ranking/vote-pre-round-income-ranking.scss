@@ -152,6 +152,16 @@ vote-pre-round-income-ranking {
     .loading {
       font-size: 4rem;
       color: #7a7a7a;
+      &.has-list{
+        position: absolute;
+        top: -2px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 1rem;
+        background:linear-gradient(to bottom, #FFF 0%, rgba(#FFF, 0) 100%);
+        z-index: 3;
+        height: 10rem;
+      }
     }
     .item {
       height: auto;
@@ -159,6 +169,7 @@ vote-pre-round-income-ranking {
       display: flex;
       align-items: center;
       padding: 0 2rem;
+      border-bottom: 0.55px solid #eeeeee;
 
       .rank-of-me {
         display: none;
@@ -166,7 +177,8 @@ vote-pre-round-income-ranking {
       .rank-of-other {
         display: block;
       }
-      &.me {
+      &.list-of-me {
+        background-color: #f8f8f8;
         .rank-of-me {
           display: block;
         }
