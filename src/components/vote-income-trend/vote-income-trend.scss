@@ -1,7 +1,8 @@
 vote-income-trend {
   min-height: 22vh;
   max-height: 20rem;
-  padding: 1rem;
+  padding: 0.5rem;
+  padding-top: 1rem;
   background: linear-gradient(to right, #faaf52 0%, #fdd04e 100%);
   display: flex;
   flex-direction: column;
@@ -10,8 +11,8 @@ vote-income-trend {
   &.show-detail {
     padding: 0rem;
     background: linear-gradient(to bottom, #fdd04e 0%, #faaf52 100%);
+    padding: 1rem;
     > .header {
-      padding: 1rem;
       .title {
         text-align: left;
         margin-left: 0;
