@@ -16,6 +16,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { FLP_Tool } from "./FLP_Tool";
 import { AbortError } from "./PromiseExtends";
 
+function getTranslateSync(key: string | string[], interpolateParams?: Object) {
+    return window['translate'].instant(key, interpolateParams);
+}
+
 const _ERROR_FROM_ASYNCERROR_CODE =
   "CATCHED_ERROR@" +
   Math.random()
@@ -144,7 +148,7 @@ export function asyncErrorWrapGenerator(
                 {
                   title: String(error_title),
                   subTitle: String(err_msg),
-                  buttons: [this.getTranslateSync("OK")],
+                  buttons: [getTranslateSync("OK")],
                 },
                 opts,
               ),
@@ -477,11 +481,15 @@ export const asyncCtrlGenerator = {
       hidden_when_page_leaved,
       keep_throw,
       (params, self: FLP_Tool) => {
+        if(!(self instanceof FLP_Tool)){
+          alert((params.title+"\n"+params.subTitle+"\n"+params.message).trim());
+          throw new TypeError("asyncErrorWrapGenerator must within FLP_TOOL subclass");
+        }
         const buttons = params.buttons;
         if (
           buttons &&
           buttons.length == 1 &&
-          buttons[0] === self.getTranslateSync("OK")
+          buttons[0] === getTranslateSync("OK")
         ) {
           buttons.length = 0;
         }
@@ -514,7 +522,7 @@ export const asyncCtrlGenerator = {
         if (
           buttons &&
           buttons.length == 1 &&
-          buttons[0] === self.getTranslateSync("OK")
+          buttons[0] === getTranslateSync("OK")
         ) {
           buttons.length = 0;
         }

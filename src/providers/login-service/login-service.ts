@@ -11,6 +11,7 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
+import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
@@ -23,7 +24,7 @@ export type UserModel = {
   email: string;
 };
 @Injectable()
-export class LoginServiceProvider {
+export class LoginServiceProvider extends FLP_Tool{
   loginStatus: Observable<boolean>;
   ifmJs: any;
   Mnemonic: any;
@@ -37,6 +38,7 @@ export class LoginServiceProvider {
     public accountService: AccountServiceProvider,
     public user: UserInfoProvider,
   ) {
+    super();
     console.group("Hello LoginServiceProvider Provider");
     window["LoginServiceProviderInstance"] = this;
     this.loginStatus = this.appSetting.user_token.map(val => {

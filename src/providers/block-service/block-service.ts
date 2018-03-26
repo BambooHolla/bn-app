@@ -5,6 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 // import { PromisePro } from "../../bnqkl-framework/RxExtends";
+import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
@@ -22,7 +23,7 @@ import io from "socket.io-client";
 export * from "./block.types";
 
 @Injectable()
-export class BlockServiceProvider {
+export class BlockServiceProvider extends FLP_Tool{
   ifmJs: any;
   block: any;
   blockArray?: TYPE.BlockModel[] = [];
@@ -45,6 +46,7 @@ export class BlockServiceProvider {
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
   ) {
+    super();
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 

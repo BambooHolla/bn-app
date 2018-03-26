@@ -16,6 +16,7 @@ import { TransactionServiceProvider } from "../transaction-service/transaction-s
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
+import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../../src/bnqkl-framework/Decorator";
 import * as TYPE from "./min.types";
 export * from "./min.types";
@@ -27,7 +28,7 @@ export * from "./min.types";
   and Angular DI.
 */
 @Injectable()
-export class MinServiceProvider {
+export class MinServiceProvider extends FLP_Tool{
   ifmJs: any;
   transactionTypes: any;
   allVoters?: TYPE.RankModel[];
@@ -47,6 +48,7 @@ export class MinServiceProvider {
     public blockService: BlockServiceProvider,
     public user: UserInfoProvider,
   ) {
+    super();
     this.ifmJs = AppSettingProvider.IFMJS;
     this.transactionTypes = this.ifmJs.transactionTypes;
     this.appSetting.round.subscribe(r => {

@@ -67,6 +67,12 @@ export class TabAccountPage extends FirstLevelPage {
         ua: navigator.userAgent,
       },
     }));
+    if (app_version_info.disable_android && this.isAndroid) {
+      return;
+    }
+    if (app_version_info.disable_ios && this.isIOS) {
+      return;
+    }
     var version = app_version_info.version;
     if (this.isAndroid && app_version_info.android_version) {
       version = app_version_info.android_version;
@@ -74,7 +80,9 @@ export class TabAccountPage extends FirstLevelPage {
     if (this.isIOS && app_version_info.ios_version) {
       version = app_version_info.ios_version;
     }
-    if (versionToNumber(version) > versionToNumber(AppSettingProvider.APP_VERSION)) {
+    if (
+      versionToNumber(version) > versionToNumber(AppSettingProvider.APP_VERSION)
+    ) {
       return this.modalCtrl
         .create(
           "version-update-dialog",
