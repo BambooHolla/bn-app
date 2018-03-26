@@ -163,9 +163,20 @@ export class FLP_Tool {
       auto_open,
     );
   }
-
-  isIOS = this.platform.is("ios");
-  isAndroid = this.platform.is("android");
+  private _isIOS?: boolean;
+  get isIOS() {
+    if (this._isIOS === undefined) {
+      this._isIOS = this.platform.is("ios");
+    }
+    return this._isIOS;
+  }
+  private _isAndroid?: boolean;
+  get isAndroid() {
+    if (this._isAndroid === undefined) {
+      this._isAndroid = this.platform.is("android");
+    }
+    return this._isAndroid;
+  }
   navigatorClipboard: {
     writeText: (text: string) => Promise<void>;
     readText: () => Promise<string>;
