@@ -100,7 +100,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
   @asyncCtrlGenerator.retry(undefined, console.warn)
   private async refreshCommonData(): Promise<any> {
     this.cur_round_income_amount = await this.benefitService.benefitThisRound.getPromise();
-    console.log("this.cur_round_income_amount",this.cur_round_income_amount)
+    console.log("this.cur_round_income_amount", this.cur_round_income_amount);
   }
   async refreshBaseData(): Promise<any> {
     throw new Error("refreshBaseData没有定义");

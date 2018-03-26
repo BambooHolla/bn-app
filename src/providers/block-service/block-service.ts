@@ -23,7 +23,7 @@ import io from "socket.io-client";
 export * from "./block.types";
 
 @Injectable()
-export class BlockServiceProvider extends FLP_Tool{
+export class BlockServiceProvider extends FLP_Tool {
   ifmJs: any;
   block: any;
   blockArray?: TYPE.BlockModel[] = [];

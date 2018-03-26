@@ -12,7 +12,10 @@ import {
   HEIGHT_AB_Generator,
 } from "../app-setting/app-setting";
 import { AccountServiceProvider } from "../account-service/account-service";
-import { TransactionServiceProvider } from "../transaction-service/transaction-service";
+import {
+  TransactionServiceProvider,
+  TransactionTypes,
+} from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import { ContactModel } from "./contact.types";
@@ -22,7 +25,7 @@ export * from "./contact.types";
 export class ContactServiceProvider {
   ifmJs: any;
   contact: any;
-  transactionTypes: any;
+  TransactionTypes = TransactionTypes;
   addressCheck: any;
   followingList?: any[] = [];
   followerList?: any[] = [];
@@ -37,7 +40,6 @@ export class ContactServiceProvider {
     public user: UserInfoProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
-    this.transactionTypes = this.ifmJs.transactionTypes;
     this.addressCheck = this.ifmJs.addressCheck;
   }
 
@@ -169,7 +171,7 @@ export class ContactServiceProvider {
     }
 
     let txData: any = {
-      type: this.transactionTypes.FOLLOW,
+      type: this.TransactionTypes.FOLLOW,
       amount: "0",
       secret: secret,
       asset: {

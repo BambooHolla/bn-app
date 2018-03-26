@@ -145,5 +145,5 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       window.open(this.version_info.download_link_web, "_system");
     }
   }
-  static versionToNumber = versionToNumber
+  static versionToNumber = versionToNumber;
 }

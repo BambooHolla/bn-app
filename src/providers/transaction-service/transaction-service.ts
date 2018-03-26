@@ -48,7 +48,7 @@ export class TransactionServiceProvider {
   ifmJs = AppSettingProvider.IFMJS;
   transaction: any;
   // block: any;
-  transactionTypeCode: any;
+  TransactionTypes = TransactionTypes;
   nacl_factory: any;
   Buff: any;
   Crypto: any;
@@ -71,7 +71,6 @@ export class TransactionServiceProvider {
       AppSettingProvider.HTTP_PROVIDER,
     ).transaction;
     // this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
-    this.transactionTypeCode = this.ifmJs.transactionTypes;
     this.nacl_factory = this.ifmJs.nacl_factory;
     this.Crypto = this.ifmJs.crypto;
     this.Buff = this.ifmJs.Buff;
@@ -94,28 +93,28 @@ export class TransactionServiceProvider {
 
   getTransactionLink(type) {
     switch (type) {
-      case this.transactionTypeCode.SEND:
+      case this.TransactionTypes.SEND:
         return "transactions/tx";
       //“签名”交易
-      case this.transactionTypeCode.SIGNATURE:
+      case this.TransactionTypes.SIGNATURE:
         return "signatures/tx";
       //注册为受托人
-      case this.transactionTypeCode.DELEGATE:
+      case this.TransactionTypes.DELEGATE:
         return "delegates/tx";
       //投票
-      case this.transactionTypeCode.VOTE:
+      case this.TransactionTypes.VOTE:
         return "accounts/tx/delegates";
       //注册用户别名地址
-      case this.transactionTypeCode.USERNAME:
+      case this.TransactionTypes.USERNAME:
         return "accounts/tx/username";
       //添加联系人
-      case this.transactionTypeCode.FOLLOW:
+      case this.TransactionTypes.FOLLOW:
         return "contacts/tx";
       //注册多重签名帐号
-      case this.transactionTypeCode.MULTI:
+      case this.TransactionTypes.MULTI:
         return "multisignatures/tx";
       // 侧链应用
-      case this.transactionTypeCode.DAPP:
+      case this.TransactionTypes.DAPP:
         return "dapps/tx";
       // //转入Dapp资金
       // case transactionTypes.IN_TRANSFER:
@@ -124,16 +123,16 @@ export class TransactionServiceProvider {
       // case transactionTypes.OUT_TRANSFER:
       // return "xxxxx"
       //点赞
-      case this.transactionTypeCode.FABULOUS:
+      case this.TransactionTypes.FABULOUS:
         return "fabulous/tx";
       //打赏
-      case this.transactionTypeCode.GRATUITY:
+      case this.TransactionTypes.GRATUITY:
         return "gratuities/tx";
       //发送信息
-      case this.transactionTypeCode.SENDMESSAGE:
+      case this.TransactionTypes.SENDMESSAGE:
         return "messages/tx";
       //侧链数据存证
-      case this.transactionTypeCode.MARK:
+      case this.TransactionTypes.MARK:
         return "marks/tx";
     }
   }
@@ -190,7 +189,7 @@ export class TransactionServiceProvider {
     }
     if (
       txData.secondSecret &&
-      txData.type !== this.transactionTypeCode.SIGNATURE
+      txData.type !== this.TransactionTypes.SIGNATURE
     ) {
       let secondPwd = txData.secondSecret;
       let is_second_true = this.verifySecondPassphrase(secondPwd);
@@ -409,7 +408,7 @@ export class TransactionServiceProvider {
     }
 
     let txData: any = {
-      type: this.transactionTypeCode.SEND,
+      type: this.TransactionTypes.SEND,
       secret: password,
       amount: amount.toString(),
       recipientId: recipientId,

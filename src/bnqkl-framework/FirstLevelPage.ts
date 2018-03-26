@@ -510,10 +510,12 @@ export class FirstLevelPage extends FLP_Data {
         );
       }
     });
-    this._height_subscription = this.appSetting.after_height.subscribe(height => {
-      this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
-      is_first = false;
-    });
+    this._height_subscription = this.appSetting.after_height.subscribe(
+      height => {
+        this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
+        is_first = false;
+      },
+    );
   }
   /**通用的轮次监控*/
   @FirstLevelPage.autoUnsubscribe private _round_subscription?: Subscription;

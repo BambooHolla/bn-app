@@ -12,7 +12,10 @@ import {
 } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
-import { TransactionServiceProvider } from "../transaction-service/transaction-service";
+import {
+  TransactionServiceProvider,
+  TransactionTypes,
+} from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
@@ -28,9 +31,9 @@ export * from "./min.types";
   and Angular DI.
 */
 @Injectable()
-export class MinServiceProvider extends FLP_Tool{
+export class MinServiceProvider extends FLP_Tool {
   ifmJs: any;
-  transactionTypes: any;
+  TransactionTypes = TransactionTypes;
   allVoters?: TYPE.RankModel[];
   allMinersInfo?: {
     list: TYPE.DelegateModel[];
@@ -50,7 +53,6 @@ export class MinServiceProvider extends FLP_Tool{
   ) {
     super();
     this.ifmJs = AppSettingProvider.IFMJS;
-    this.transactionTypes = this.ifmJs.transactionTypes;
     this.appSetting.round.subscribe(r => {
       if (this.appSetting.getUserToken()) {
         // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，不需要这里调用
@@ -131,7 +133,7 @@ export class MinServiceProvider extends FLP_Tool{
 
     //设置投票的参数
     let txData: any = {
-      type: this.transactionTypes.VOTE,
+      type: this.TransactionTypes.VOTE,
       secret: secret,
       publicKey: this.user.userInfo.publicKey,
       fee: this.appSetting.settings.default_fee.toString(),
@@ -369,7 +371,11 @@ export class MinServiceProvider extends FLP_Tool{
     pageSize = this.default_rank_list_pageSize,
     force_get = false,
   ): Promise<TYPE.RankModel[]> {
-    if (page === 1 && pageSize === this.default_rank_list_pageSize && !force_get) {
+    if (
+      page === 1 &&
+      pageSize === this.default_rank_list_pageSize &&
+      !force_get
+    ) {
       return this.rankListOf20.getPromise();
     }
     let query = {

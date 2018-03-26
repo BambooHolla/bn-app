@@ -6,7 +6,10 @@ import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
-import { TransactionServiceProvider } from "../../providers/transaction-service/transaction-service";
+import {
+  TransactionServiceProvider,
+  TransactionTypes,
+} from "../../providers/transaction-service/transaction-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { PeerServiceProvider } from "../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
@@ -27,7 +30,7 @@ import * as plumin from "plumin.js";
 })
 export class SignInAndSignUpPage extends FirstLevelPage {
   ifmJs = AppSettingProvider.IFMJS;
-  transactionType = this.ifmJs.transactionTypes;
+  TransactionTypes = TransactionTypes;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,

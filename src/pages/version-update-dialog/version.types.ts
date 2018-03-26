@@ -17,7 +17,7 @@ export type LATEST_VERSION_INFO = {
   apk_size: number;
   plist_size: number;
   ios_app_store_link: string;
-  disable_android?:boolean;
-  disable_ios?:boolean;
+  disable_android?: boolean;
+  disable_ios?: boolean;
   "//": string;
 };

@@ -17,7 +17,7 @@ import { FLP_Tool } from "./FLP_Tool";
 import { AbortError } from "./PromiseExtends";
 
 function getTranslateSync(key: string | string[], interpolateParams?: Object) {
-    return window['translate'].instant(key, interpolateParams);
+  return window["translate"].instant(key, interpolateParams);
 }
 
 const _ERROR_FROM_ASYNCERROR_CODE =
@@ -481,9 +481,19 @@ export const asyncCtrlGenerator = {
       hidden_when_page_leaved,
       keep_throw,
       (params, self: FLP_Tool) => {
-        if(!(self instanceof FLP_Tool)){
-          alert((params.title+"\n"+params.subTitle+"\n"+params.message).trim());
-          throw new TypeError("asyncErrorWrapGenerator must within FLP_TOOL subclass");
+        if (!(self instanceof FLP_Tool)) {
+          alert(
+            (
+              params.title +
+              "\n" +
+              params.subTitle +
+              "\n" +
+              params.message
+            ).trim(),
+          );
+          throw new TypeError(
+            "asyncErrorWrapGenerator must within FLP_TOOL subclass",
+          );
         }
         const buttons = params.buttons;
         if (

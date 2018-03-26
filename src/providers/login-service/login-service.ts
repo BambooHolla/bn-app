@@ -24,7 +24,7 @@ export type UserModel = {
   email: string;
 };
 @Injectable()
-export class LoginServiceProvider extends FLP_Tool{
+export class LoginServiceProvider extends FLP_Tool {
   loginStatus: Observable<boolean>;
   ifmJs: any;
   Mnemonic: any;

@@ -3,7 +3,10 @@ import { Injectable } from "@angular/core";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
-import { TransactionServiceProvider } from "../transaction-service/transaction-service";
+import {
+  TransactionServiceProvider,
+  TransactionTypes,
+} from "../transaction-service/transaction-service";
 import { Storage } from "@ionic/storage";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./account.types";
@@ -17,7 +20,7 @@ export class AccountServiceProvider {
   Mnemonic = this.ifmJs.Mnemonic;
   account = AppSettingProvider.IFMJS.Api(AppSettingProvider.HTTP_PROVIDER)
     .account;
-  transactionType = this.ifmJs.transactionTypes;
+  TransactionTypes = TransactionTypes;
   nacl_factory = this.ifmJs.nacl_factory;
   Buff = this.ifmJs.Buff;
   keypair = this.ifmJs.keypairHelper;
@@ -154,7 +157,7 @@ export class AccountServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
   ) {
     let txData = {
-      type: this.transactionType.SIGNATURE,
+      type: this.TransactionTypes.SIGNATURE,
       asset: {
         signature: {
           publicKey: this.user.userInfo.publicKey,
