@@ -259,7 +259,7 @@ export class MinServiceProvider extends FLP_Tool {
    */
   async getAllMiners(page = 1, limit = 10): Promise<TYPE.DelegateModel[]> {
     let currentBlock = await this.blockService.getLastBlock();
-    let currentRound = Math.floor(currentBlock.height / 57);
+    let currentRound = this.appSetting.calcRoundByHeight(currentBlock.height / 57);
 
     if (this.allMinersInfo && this.allMinersInfo.round === currentRound) {
       return this.allMinersInfo.list.slice((page - 1) * limit, limit);
@@ -431,7 +431,7 @@ export class MinServiceProvider extends FLP_Tool {
     let totalBenefit = parseInt(myBenefit.profit);
     let totalFee = 0;
     for (let i of transactions) {
-      if (Math.floor(i.height / 57) == this.appSetting.getRound()) {
+      if (this.appSetting.calcRoundByHeight(i.height / 57) == this.appSetting.getRound()) {
         totalFee += parseFloat(i.fee);
       } else {
         break;
