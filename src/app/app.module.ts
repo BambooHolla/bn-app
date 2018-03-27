@@ -26,6 +26,7 @@ import { SocialSharing } from "@ionic-native/social-sharing";
 import { FileTransfer } from "@ionic-native/file-transfer";
 import { File } from "@ionic-native/file";
 import { FileOpener } from "@ionic-native/file-opener";
+import { FingerprintAIO } from "./native/fingerprint-aio";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -187,6 +188,7 @@ const heightLevelModules = [
     FileTransfer,
     File,
     FileOpener,
+    FingerprintAIO,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppFetchProvider,

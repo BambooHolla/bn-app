@@ -8,6 +8,7 @@ import { LoginServiceProvider } from "../../../providers/login-service/login-ser
 import { AppFetchProvider } from "../../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../../version-update-dialog/version.types";
 import { TabAccountPage } from "../../tab-account/tab-account";
+import { FingerprintAIO } from "../../../app/native/fingerprint-aio";
 
 @IonicPage({ name: "account-settings" })
 @Component({
@@ -23,10 +24,20 @@ export class AccountSettingsPage extends SecondLevelPage {
     public appSetting: AppSettingProvider,
     public loginService: LoginServiceProvider,
     public fetch: AppFetchProvider,
+    public faio: FingerprintAIO,
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
+  is_support_fingerprint = this.faio
+    .isAvailable()
+    .then(() => {
+      return true;
+    })
+    .catch(err => {
+      console.warn("不支持指纹识别");
+      return false;
+    });
 
   @asyncCtrlGenerator.error(() =>
     AccountSettingsPage.getTranslate("SIGNING_OUT_ERROR"),

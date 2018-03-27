@@ -37,7 +37,7 @@
       <span class="title">{{'MINING_ONLY_IN_WIFI'|translate}}</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_only_in_wifi"></ion-toggle>
     </div>
-    <div class="item">
+    <div class="item" [class.disabled]="!(is_support_fingerprint|async)">
       <span class="title">{{'FINGERPRINT_PROTECTION'|translate}}</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.open_fingerprint_protection"></ion-toggle>
     </div>

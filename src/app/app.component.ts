@@ -6,6 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
+import { FingerprintAIO } from "./native/fingerprint-aio";
 
 import {
   Config,
@@ -69,6 +70,7 @@ export class MyApp implements OnInit {
     public toastCtrl: ToastController,
     public modalController: ModalController,
     public userInfo: UserInfoProvider,
+    public faio: FingerprintAIO,
   ) {
     window["ac"] = this;
     window["clipboard"] = clipboard;
@@ -89,6 +91,9 @@ export class MyApp implements OnInit {
     config.setTransition("common-transition", CommonTransition);
     config.setTransition("custom-dialog-pop-in", CustomDialogPopIn);
     config.setTransition("custom-dialog-pop-out", CustomDialogPopOut);
+
+    document.addEventListener("Resume",()=>{
+    });
 
     this.initTranslate();
 
@@ -243,6 +248,13 @@ export class MyApp implements OnInit {
     }
     this.splashScreen.hide();
     this._is_hide = true;
+  }
+  showEnterFAIO(id){
+    if(this.appSetting.settings.open_fingerprint_protection){
+      this.faio.show({
+        clientId:id,
+      })
+    }
   }
 }
 
