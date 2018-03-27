@@ -107,17 +107,22 @@ export class BenefitServiceProvider {
   //   }
   //   return this.benefitList;
   // }
-
-  async getLatestRoundBenefits(limit = this.top_benefit_size) {
-    // TODO::::
+  async getBenefitsByRound(
+    limit = this.top_benefit_size,
+    rounds = this.appSetting.getRound(),
+  ) {
     let query = {
       limit,
       orderBy: "md_timestamp:desc",
       address: this.user.userInfo.address,
-      rounds: this.appSetting.getRound(),
+      rounds,
     };
     let benefitData = await this.getBenefits(query);
     return benefitData;
+  }
+
+  getLatestRoundBenefits(limit = this.top_benefit_size) {
+    return this.getBenefitsByRound(limit, this.appSetting.getRound());
   }
 
   top_benefit_size = 57;

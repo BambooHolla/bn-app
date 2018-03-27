@@ -46,4 +46,16 @@ ali-icon {
       }
     }
   }
+  &[name="ifm-pre-round-income-rate"] {
+    > .ifmicon {
+      &::before {
+        content: " ";
+        background-image: url("../assets/icon/上轮回报率-icon.png");
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        color: transparent; /* 需要来占位不然heigth和width撑不起来 */
+      }
+    }
+  }
 }

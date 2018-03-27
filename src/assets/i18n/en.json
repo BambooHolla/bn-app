@@ -87,6 +87,7 @@
   "DEFAULT_FEE_NOT_SETTED": "default fee hasn't been setted",
   "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "do you want to set  default fee",
   "VOTE_INCOME_HISTORY": "mining income history",
+  "//": "cur-round-income-amount",
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "loading blockchain",
   "LOAD_BLOCK_LIST_ERROR": "load blockchain error",

@@ -82,6 +82,7 @@
   "DEFAULT_FEE_NOT_SETTED": "默認交易手續費未設置",
   "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "您是否要去設置默認手續費",
   "VOTE_INCOME_HISTORY": "曆史挖礦收益",
+  "//": "cur-round-income-amount",
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加載區塊鏈中",
   "LOAD_BLOCK_LIST_ERROR": "加載區塊鏈失敗",
