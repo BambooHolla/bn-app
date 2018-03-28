@@ -13,7 +13,12 @@ export interface FingerprintOptions {
   clientSecret?: string;
 
   /**
-   * Disable 'use backup' option. Only for android (optional)
+   * Disable cancel button option. Only for android (optional)
+   */
+  disableCancel?: boolean;
+
+  /**
+   * Disable 'use backup 手势密码' option. Only for android (optional)
    */
   disableBackup?: boolean;
 

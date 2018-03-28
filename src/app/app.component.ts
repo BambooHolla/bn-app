@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from "@angular/core";
+import { Component, ViewChild, OnInit, Renderer2 } from "@angular/core";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Clipboard } from "@ionic-native/clipboard";
 import { StatusBar } from "@ionic-native/status-bar";
@@ -19,6 +19,7 @@ import {
   ModalController,
 } from "ionic-angular";
 
+import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
@@ -50,6 +51,7 @@ if (
 export class MyApp implements OnInit {
   static WINDOW_MAX_HEIGHT = 0;
   constructor(
+    public r2: Renderer2,
     public translate: TranslateService,
     public platform: Platform,
     public config: Config,
@@ -71,6 +73,7 @@ export class MyApp implements OnInit {
     public modalController: ModalController,
     public userInfo: UserInfoProvider,
     public faio: FingerprintAIO,
+    public androidPermissions: AndroidPermissions,
   ) {
     window["ac"] = this;
     window["clipboard"] = clipboard;
@@ -91,8 +94,20 @@ export class MyApp implements OnInit {
     config.setTransition("common-transition", CommonTransition);
     config.setTransition("custom-dialog-pop-in", CustomDialogPopIn);
     config.setTransition("custom-dialog-pop-out", CustomDialogPopOut);
+    this.androidPermissions.PERMISSION.USE_FINGERPRINT ||
+      (this.androidPermissions.PERMISSION.USE_FINGERPRINT =
+        "android.permission.USE_FINGERPRINT");
 
-    document.addEventListener("Resume",()=>{
+    let _cur_show_enter_faio: Promise<any> | undefined;
+    document.addEventListener("Resume", async () => {
+      if (_cur_show_enter_faio) {
+        return;
+      }
+      if (this.currentPage === MainPage) {
+        _cur_show_enter_faio = this.showEnterFAIO();
+        await _cur_show_enter_faio;
+        _cur_show_enter_faio = undefined;
+      }
     });
 
     this.initTranslate();
@@ -167,7 +182,7 @@ export class MyApp implements OnInit {
       // 等一下再看看是否修正正确了，不行就再来一次
       setTimeout(() => {
         this.tryOverlaysWebView(loop_times - 1);
-      }, 100);
+      }, 500);
     }
   }
 
@@ -214,6 +229,7 @@ export class MyApp implements OnInit {
   }
 
   currentPage: any;
+  _currentOpeningPage: any; // 前置对象 锁
   tryInPage: any;
   async openPage(page: string, force = false) {
     this.tryInPage = page;
@@ -225,20 +241,31 @@ export class MyApp implements OnInit {
     return this._openPage(page);
   }
   private async _openPage(page: string) {
-    if (this.currentPage === page) {
+    if (this.currentPage === page || this._currentOpeningPage === page) {
       return;
     }
-    console.log(
-      `%c Open Page:[${page}] and set as root`,
-      "font-size:1.2rem;color:yellow;",
-    );
-    this.currentPage = page;
-    if (this.nav) {
-      return this.nav.setRoot(page);
-    } else {
-      return this._onNavInitedPromise.promise.then(() => {
-        return this.nav && this.nav.setRoot(page);
-      });
+    try {
+      this._currentOpeningPage = page;
+      console.log(
+        `%c Open Page:[${page}] and set as root`,
+        "font-size:1.2rem;color:yellow;",
+      );
+      if (page === MainPage) {
+        if (!await this.showEnterFAIO()) {
+          return;
+        }
+      }
+      this.currentPage = page;
+      if (this.nav) {
+        return this.nav.setRoot(page);
+      } else {
+        return this._onNavInitedPromise.promise.then(() => {
+          return this.nav && this.nav.setRoot(page);
+        });
+      }
+    } finally {
+      // 还原临时对象
+      this._currentOpeningPage = this.currentPage;
     }
   }
   private _is_hide = false;
@@ -249,11 +276,67 @@ export class MyApp implements OnInit {
     this.splashScreen.hide();
     this._is_hide = true;
   }
-  showEnterFAIO(id){
-    if(this.appSetting.settings.open_fingerprint_protection){
-      this.faio.show({
-        clientId:id,
-      })
+  /*Android会返回OK，IOS会返回finger或者face*/
+  faio_support_info = this.faio.isAvailable().catch(err => {
+    console.warn("不支持指纹识别");
+    return false;
+  });
+
+  has_finger_permission = false;
+  isAndroid = this.platform.is("android");
+  async showEnterFAIO() {
+    if (
+      this.appSetting.settings.open_fingerprint_protection &&
+      this.userInfo.address
+    ) {
+      if (!this.has_finger_permission && this.isAndroid) {
+        // 获取Android权限
+        const permission = await this.androidPermissions
+          .checkPermission(this.androidPermissions.PERMISSION.USE_FINGERPRINT)
+          .then(
+            result => {
+              console.log("Has permission?", result.hasPermission);
+              if (!result.hasPermission) {
+                return this.androidPermissions.requestPermission(
+                  this.androidPermissions.PERMISSION.USE_FINGERPRINT,
+                );
+              }
+              return result;
+            },
+            err =>
+              this.androidPermissions.requestPermission(
+                this.androidPermissions.PERMISSION.USE_FINGERPRINT,
+              ),
+          );
+        this.has_finger_permission = permission && permission.hasPermission;
+      }
+
+      const support_info = await this.faio_support_info;
+      try {
+        this.r2.setStyle(document.body, "filter", "blur(20px)");
+        const res = await this.faio.show({
+          clientId: this.userInfo.address + "@LOGIN",
+          clientSecret: this.userInfo.address,
+          disableCancel: true,
+          disableBackup: true, // 禁用手势密码
+          localizedReason:
+            support_info === "face" ? "账户信息保护校验" : "账户信息保护校验",
+          fingerprint_auth_dialog_title: "账户信息保护校验",
+        });
+        if (res.withPassword === true) {
+          // 使用手势密码解锁了
+        }
+        console.log("faio:", res);
+        return res;
+      } catch (err) {
+        console.error(err);
+        return false;
+        // if (err === "Cancelled") {
+        //   return this.showEnterFAIO(); // 再次调用，
+        // }
+      } finally {
+        this.r2.setStyle(document.body, "filter", null);
+      }
     }
   }
 }
