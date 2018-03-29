@@ -1,7 +1,7 @@
 <div class="header">
   <div class="title">
     <ali-icon name="ifm-pre-round-income-rate"></ali-icon>
-    上轮回报率
+    {{'VOTE-PRE-ROUND-INCOME-RATE'|translate}}
   </div>
   <div class="my-income-assets">
     IBT {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
@@ -9,14 +9,14 @@
 </div>
 <div class="detail">
   <div class="rate-of-return">
-    <text-gradient class="value" [text]="pre_round_income_rate?.rateOfReturn.toFixed(0)+'倍'" from="#f78464" to="#fdcf48" fontSize="3.5rem" fontWeight="600"></text-gradient>
+    <text-gradient class="value" [text]="'#NUM#_TIMES'|translate:{num:pre_round_income_rate?.rateOfReturn.toFixed(0)}" from="#f78464" to="#fdcf48" fontSize="3.5rem" fontWeight="600"></text-gradient>
   </div>
   <div class="extends-info">
     <div class="left">
-      投入 {{pre_round_income_rate?.totalFee|amountEuler|number:'1.8-8'}}
+      {{'INVESTMENT'|translate}} {{pre_round_income_rate?.totalFee|amountEuler|number:'1.8-8'}}
     </div>
     <div class="right">
-      产出 {{pre_round_income_rate?.totalBenefit|amountEuler|number:'1.8-8'}}
+      {{'RETURN_ON_INVESTMENT'|translate}} {{pre_round_income_rate?.totalBenefit|amountEuler|number:'1.8-8'}}
     </div>
   </div>
 </div>

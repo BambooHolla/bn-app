@@ -1,7 +1,7 @@
 <div class="header">
   <div class="title">
     <ali-icon name="ifm-income-trend"></ali-icon>
-    收益趋势图
+    {{'VOTE-INCOME-TREND'|translate}}
   </div>
   <div class="my-income-assets">
     IBT {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
@@ -14,7 +14,7 @@
   <virtual-scroll #vscroll class="list-container" [items]="income_trend_blist" (update)="viewPortItems = $event" (change)="onListChange($event)">
     <div class="item" *ngFor="let round_income of viewPortItems">
       <div class="left">
-        <div class="title">第{{round_income.round}}轮收益</div>
+        <div class="title">{{'THE_#ROUND#_ROUND_BENEFIT'|translate:({round:round_income.round})}}</div>
         <div class="subtitle create-time">
           {{round_income.time|amDateFormat:"MM-DD hh:mm"}}
         </div>

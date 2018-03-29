@@ -1,7 +1,7 @@
 <div class="header">
   <div class="title">
     <ali-icon name="ifm-shujuxian"></ali-icon>
-    我的贡献
+    {{'VOTE-MY-CONTRIBUTION'|translate}}
   </div>
   <div class="my-income-assets">
     IBT {{cur_round_income_amount|amountEuler|number:'1.8-8'}}
@@ -10,11 +10,11 @@
 <div class="detail">
   <div class="transaction-processed item">
     <text-gradient class="value" [text]="'0'" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
-    <div class="label">处理交易</div>
+    <div class="label">{{'PROCESSED_TRAN_NUM'|translate}}</div>
   </div>
   <div class="contributed-traffic item">
     <text-gradient class="value" [text]="'0MB'" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
-    <div class="label">贡献流量</div>
+    <div class="label">{{'CONTRIBUTION_TRAFFIC'|translate}}</div>
   </div>
 </div>
 <div class="wave-bg">

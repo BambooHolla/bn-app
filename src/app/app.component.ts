@@ -162,19 +162,19 @@ export class MyApp implements OnInit {
         });
     });
   }
-  overlaysWebView() {
-    this.statusBar.overlaysWebView(false);
-    setTimeout(() => {
-      this.statusBar.overlaysWebView(true);
-      this.statusBar.styleDefault();
-    }, 50);
-  }
   _isIOS?: boolean;
   get isIOS() {
     if (this._isIOS === undefined) {
       this._isIOS = this.platform.is("ios");
     }
     return this._isIOS;
+  }
+  overlaysWebView() {
+    this.statusBar.overlaysWebView(false);
+    setTimeout(() => {
+      this.statusBar.overlaysWebView(true);
+      this.statusBar.styleDefault();
+    }, 50);
   }
   tryOverlaysWebView(loop_times: number = 0) {
     if (this.isIOS) {
@@ -338,8 +338,16 @@ export class MyApp implements OnInit {
     }
     return true;
   }
+  getTranslateSync(key: string | string[], interpolateParams?: Object) {
+    return this.translate.instant(key, interpolateParams);
+  }
   private async _ResumeToCheckFAIO() {
     const support_info = await this.faio_support_info;
+    const dialog_title = this.getTranslateSync(
+      support_info === "face"
+        ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME_WITH_FACE"
+        : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME",
+    );
     try {
       this.r2.setStyle(document.body, "filter", "blur(20px)");
       const res = await this.faio.show({
@@ -347,9 +355,26 @@ export class MyApp implements OnInit {
         clientSecret: this.userInfo.address,
         disableCancel: true,
         disableBackup: true, // 禁用手势密码
-        localizedReason:
-          support_info === "face" ? "账户信息保护校验" : "账户信息保护校验",
-        fingerprint_auth_dialog_title: "账户信息保护校验",
+        localizedReason: dialog_title,
+        fingerprint_auth_dialog_title: dialog_title,
+
+        fingerprint_cancel: this.getTranslateSync("FINGERPRINT_CANCEL"),
+        fingerprint_use_backup: this.getTranslateSync("FINGERPRINT_USE_BACKUP"),
+        fingerprint_ok: this.getTranslateSync("FINGERPRINT_OK"),
+        fingerprint_description: this.getTranslateSync(
+          "FINGERPRINT_DESCRIPTION",
+        ),
+        fingerprint_hint: this.getTranslateSync("FINGERPRINT_HINT"),
+        fingerprint_not_recognized: this.getTranslateSync(
+          "FINGERPRINT_NOT_RECOGNIZED",
+        ),
+        fingerprint_success: this.getTranslateSync("FINGERPRINT_SUCCESS"),
+        new_fingerprint_enrolled_description: this.getTranslateSync(
+          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION",
+        ),
+        secure_lock_screen_required: this.getTranslateSync(
+          "SECURE_LOCK_SCREEN_REQUIRED",
+        ),
       });
       if (res.withPassword === true) {
         // 使用手势密码解锁了
@@ -368,14 +393,39 @@ export class MyApp implements OnInit {
   }
   private async _LoginToCheckFAIO() {
     try {
+      const support_info = await this.faio_support_info;
+      const dialog_title = this.getTranslateSync(
+        support_info === "face"
+          ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN_WITH_FACE"
+          : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN",
+      );
       const res = await this.faio.show({
         clientId: this.userInfo.address + "@LOGIN",
         clientSecret: this.userInfo.address,
         disableCancel: false,
         disableBackup: true, // 禁用手势密码
-        localizedReason: "账户登录校验",
-        fingerprint_auth_dialog_title: "账户登录校验",
-        fingerprint_cancel: "登录其它账户",
+        localizedReason: dialog_title,
+        fingerprint_auth_dialog_title: dialog_title,
+        fingerprint_cancel: this.getTranslateSync(
+          "FINGERPRINT_CANCEL_USER_OTHER_ACCOUNT",
+        ),
+
+        fingerprint_use_backup: this.getTranslateSync("FINGERPRINT_USE_BACKUP"),
+        fingerprint_ok: this.getTranslateSync("FINGERPRINT_OK"),
+        fingerprint_description: this.getTranslateSync(
+          "FINGERPRINT_DESCRIPTION",
+        ),
+        fingerprint_hint: this.getTranslateSync("FINGERPRINT_HINT"),
+        fingerprint_not_recognized: this.getTranslateSync(
+          "FINGERPRINT_NOT_RECOGNIZED",
+        ),
+        fingerprint_success: this.getTranslateSync("FINGERPRINT_SUCCESS"),
+        new_fingerprint_enrolled_description: this.getTranslateSync(
+          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION",
+        ),
+        secure_lock_screen_required: this.getTranslateSync(
+          "SECURE_LOCK_SCREEN_REQUIRED",
+        ),
       });
       if (res.withPassword === true) {
         // 使用手势密码解锁了
