@@ -45,6 +45,11 @@ if (
   }
 }
 
+enum FAIO_CHECK {
+  Login,
+  Resume,
+}
+
 @Component({
   template: `<ion-nav #content></ion-nav>`, // [root]="rootPage"
 })
@@ -100,11 +105,12 @@ export class MyApp implements OnInit {
 
     let _cur_show_enter_faio: Promise<any> | undefined;
     document.addEventListener("Resume", async () => {
+      //Resume
       if (_cur_show_enter_faio) {
         return;
       }
       if (this.currentPage === MainPage) {
-        _cur_show_enter_faio = this.showEnterFAIO();
+        _cur_show_enter_faio = this.showFAIO(FAIO_CHECK.Resume);
         await _cur_show_enter_faio;
         _cur_show_enter_faio = undefined;
       }
@@ -231,16 +237,16 @@ export class MyApp implements OnInit {
   currentPage: any;
   _currentOpeningPage: any; // 前置对象 锁
   tryInPage: any;
-  async openPage(page: string, force = false) {
+  async openPage(page: string, force = false, loading_content?: string | null) {
     this.tryInPage = page;
     if (!force) {
       if (this.currentPage == FirstRunPage) {
         return;
       }
     }
-    return this._openPage(page);
+    return this._openPage(page, loading_content);
   }
-  private async _openPage(page: string) {
+  private async _openPage(page: string, loading_content?: string | null) {
     if (this.currentPage === page || this._currentOpeningPage === page) {
       return;
     }
@@ -251,17 +257,31 @@ export class MyApp implements OnInit {
         "font-size:1.2rem;color:yellow;",
       );
       if (page === MainPage) {
-        if (!await this.showEnterFAIO()) {
+        if (!await this.showFAIO(FAIO_CHECK.Login)) {
           return;
         }
+        if (loading_content === undefined) {
+          loading_content = await this.translate.get("LOGINNG").toPromise();
+        }
       }
+
       this.currentPage = page;
-      if (this.nav) {
-        return this.nav.setRoot(page);
-      } else {
-        return this._onNavInitedPromise.promise.then(() => {
-          return this.nav && this.nav.setRoot(page);
-        });
+      const loadinger = loading_content
+        ? this.loadingCtrl.create({
+            content: loading_content,
+          })
+        : null;
+      await (loadinger && loadinger.present());
+      try {
+        if (this.nav) {
+          await this.nav.setRoot(page);
+        } else {
+          await this._onNavInitedPromise.promise.then(() => {
+            return this.nav && this.nav.setRoot(page);
+          });
+        }
+      } finally {
+        await (loadinger && loadinger.dismiss());
       }
     } finally {
       // 还原临时对象
@@ -284,7 +304,7 @@ export class MyApp implements OnInit {
 
   has_finger_permission = false;
   isAndroid = this.platform.is("android");
-  async showEnterFAIO() {
+  async showFAIO(type: FAIO_CHECK) {
     if (
       this.appSetting.settings.open_fingerprint_protection &&
       this.userInfo.address
@@ -310,33 +330,62 @@ export class MyApp implements OnInit {
           );
         this.has_finger_permission = permission && permission.hasPermission;
       }
-
-      const support_info = await this.faio_support_info;
-      try {
-        this.r2.setStyle(document.body, "filter", "blur(20px)");
-        const res = await this.faio.show({
-          clientId: this.userInfo.address + "@LOGIN",
-          clientSecret: this.userInfo.address,
-          disableCancel: true,
-          disableBackup: true, // 禁用手势密码
-          localizedReason:
-            support_info === "face" ? "账户信息保护校验" : "账户信息保护校验",
-          fingerprint_auth_dialog_title: "账户信息保护校验",
-        });
-        if (res.withPassword === true) {
-          // 使用手势密码解锁了
-        }
-        console.log("faio:", res);
-        return res;
-      } catch (err) {
-        console.error(err);
-        return false;
-        // if (err === "Cancelled") {
-        //   return this.showEnterFAIO(); // 再次调用，
-        // }
-      } finally {
-        this.r2.setStyle(document.body, "filter", null);
+      if (type === FAIO_CHECK.Resume) {
+        return this._ResumeToCheckFAIO();
+      } else if (type === FAIO_CHECK.Login) {
+        return this._LoginToCheckFAIO();
       }
+    }
+    return true;
+  }
+  private async _ResumeToCheckFAIO() {
+    const support_info = await this.faio_support_info;
+    try {
+      this.r2.setStyle(document.body, "filter", "blur(20px)");
+      const res = await this.faio.show({
+        clientId: this.userInfo.address + "@REMUNE",
+        clientSecret: this.userInfo.address,
+        disableCancel: true,
+        disableBackup: true, // 禁用手势密码
+        localizedReason:
+          support_info === "face" ? "账户信息保护校验" : "账户信息保护校验",
+        fingerprint_auth_dialog_title: "账户信息保护校验",
+      });
+      if (res.withPassword === true) {
+        // 使用手势密码解锁了
+      }
+      console.log("remuse faio:", res);
+      return res;
+    } catch (err) {
+      console.error(err);
+      return false;
+      // if (err === "Cancelled") {
+      //   return this.showEnterFAIO(); // 再次调用，
+      // }
+    } finally {
+      this.r2.setStyle(document.body, "filter", null);
+    }
+  }
+  private async _LoginToCheckFAIO() {
+    try {
+      const res = await this.faio.show({
+        clientId: this.userInfo.address + "@LOGIN",
+        clientSecret: this.userInfo.address,
+        disableCancel: false,
+        disableBackup: true, // 禁用手势密码
+        localizedReason: "账户登录校验",
+        fingerprint_auth_dialog_title: "账户登录校验",
+        fingerprint_cancel: "登录其它账户",
+      });
+      if (res.withPassword === true) {
+        // 使用手势密码解锁了
+      }
+      console.log("login faio:", res);
+      return res;
+    } catch (err) {
+      console.error(err);
+      this.loginService.loginOut();
+      return false;
     }
   }
 }
@@ -360,3 +409,8 @@ function onresize() {
 }
 onresize();
 window.addEventListener("resize", onresize);
+window["importLS"] = function(o) {
+  for (let k in o) {
+    localStorage.setItem(k, o[k]);
+  }
+};

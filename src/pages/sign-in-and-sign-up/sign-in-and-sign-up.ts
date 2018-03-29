@@ -216,7 +216,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     );
     if (result) {
       // this.routeTo("scan-nodes");
-      this.myapp.openPage(MainPage);
+      await this.myapp.openPage(MainPage, undefined, null);
     }
   }
   gotoRegister() {
