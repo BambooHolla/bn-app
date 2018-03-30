@@ -183,4 +183,34 @@ export class FLP_Form extends FLP_Route {
       }
     });
   }
+
+  async getCustomFee(current_fee?: number) {
+    return new Promise<{ custom_fee: number }>((resolve, reject) => {
+      try {
+        const model = this.modalCtrl.create(
+          "fee-input",
+          { current_fee },
+          {
+            enableBackdropDismiss: true,
+            cssClass: "fee-input-modal",
+            showBackdrop: true,
+          },
+        );
+        model.present();
+        model.onDidDismiss(data => {
+          if (data) {
+            resolve(data);
+          } else {
+            if (current_fee && isFinite(current_fee)) {
+              resolve({ custom_fee: current_fee }); //返回默认值
+            } else {
+              this.getTranslate("FEE_INPUT_CANCEL").then(reject);
+            }
+          }
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
 }

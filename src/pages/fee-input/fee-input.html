@@ -1,0 +1,18 @@
+<ion-header>
+<!--   <ion-navbar color="transparent">
+  <ion-title>输入密码</ion-title>
+</ion-navbar> -->
+</ion-header>
+<ion-content>
+  <div class="title">
+    <div class="label">{{'PLEASE_INPUT_TRANSACTION_FEES' | translate}}</div>
+  </div>
+  <div class="common-form">
+    <div class="input-container">
+      <input type="number" [placeholder]="'TRANSACTION_FEES' | translate" min="0.00000001" [(ngModel)]="formData.custom_fee" set-input-status="custom_fee">
+    </div>
+  </div>
+  <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">
+    {{'OK'|translate}}
+  </button>
+</ion-content>

@@ -24,5 +24,5 @@
       <input type="number" placeholder="{{'PLEASE_INPUT_TRANSACTION_FEES' | translate}}" min="0.00000001" [(ngModel)]="formData.custom_fee" set-input-status="custom_fee">
     </div>
   </div>
-  <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">提交</button>
+  <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">{{'SUBMIT'|translate}}</button>
 </ion-content>

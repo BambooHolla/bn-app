@@ -128,8 +128,8 @@
   "//": "vote-pre-round-income-rate",
   "VOTE-PRE-ROUND-INCOME-RATE": "上轮回报率",
   "#NUM#_TIMES": "{{num}}倍",
-  "INVESTMENT":"投入",
-  "RETURN_ON_INVESTMENT":"产出",
+  "INVESTMENT": "投入",
+  "RETURN_ON_INVESTMENT": "产出",
 
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加载区块链中",
@@ -392,6 +392,8 @@
   "PLEASE_WAIT": "请稍候",
   "PAY_INPUT_ERROR": "密码输入错误",
   "PAY_INPUT_CANCEL": "密码输入已取消",
+  "FEE_INPUT_CANCEL": "手续费输入已取消",
+  "FEE_INPUT_ERROR": "手续费输入异常",
 
   "TAB1_TITLE": "挖矿",
   "TAB2_TITLE": "区块链",

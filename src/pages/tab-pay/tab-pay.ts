@@ -51,7 +51,14 @@ export class TabPayPage extends FirstLevelPage {
     transfer_address: "",
     transfer_amount: "",
     transfer_mark: "",
+    transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+
+  @asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
+  async setTransferFee() {
+    const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
+    this.formData.transfer_fee = custom_fee;
+  }
 
   @TabPayPage.setErrorTo("errors", "transfer_address", ["wrongAddress"])
   check_transfer_address() {

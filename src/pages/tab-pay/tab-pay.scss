@@ -291,7 +291,7 @@ page-tab-pay {
     bottom: 0;
     width: 100%;
     height: 25vh;
-    background: linear-gradient(to bottom, #3cdfdc 0%, #fcdd64 100%);
+    background: linear-gradient(to bottom, rgba(#3cdfdc , 0) 0%, #fcdd64 100%);
     z-index: -1;
     chain-mesh {
       width: 100%;

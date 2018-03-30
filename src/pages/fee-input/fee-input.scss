@@ -1,0 +1,49 @@
+.fee-input-modal.show-page {
+  > ion-backdrop {
+    visibility: visible;
+  }
+  > .modal-wrapper {
+    position: relative;
+    width: 80%;
+    /* height: 40%; */
+    height: 16rem;
+    /* position: relative; */
+    left: 10%;
+    top: 15%;
+  }
+}
+page-fee-input {
+  @extend .header-no-border;
+  > .content {
+    background-color: transparent;
+    > .scroll-content {
+      backdrop-filter: blur(5px);
+      background-color: rgba(#fff, 0.8);
+      overflow: hidden;
+      padding-top: 2rem;
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  .title{
+    color: #000;
+    font-weight: 600;
+    font-size: 1.6rem;
+    padding-bottom: 1rem;
+  }
+  .common-form {
+    > .input-container {
+      background-color: transparent;
+      input{
+        background-color: #FFF;
+        border-radius: 0.2rem;
+        padding: 0.5rem;
+      }
+    }
+  }
+  .label {
+    padding-right: 0.5rem;
+  }
+}

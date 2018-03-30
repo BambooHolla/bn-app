@@ -31,9 +31,9 @@
       <ali-icon class="left" name="ifm-duihua"></ali-icon>
       <input type="text" [(ngModel)]="formData.transfer_mark" set-input-status="transfer_mark" placeholder="{{'PLEASE_MARK_THE_TRANSACTION' | translate}}" disabled />
     </div>
-    <div class="fee">
+    <div class="fee" (click)="setTransferFee()">
       <ali-icon class="left" name="ifm-info"></ali-icon>
-      <span class="value">{{appSetting.settings.default_fee|number:'1.8-8'}}</span>
+      <span class="value">{{formData.transfer_fee|number:'1.8-8'}}</span>
       <div class="balance-info">{{'BALANCE' | translate}}：{{userInfo.balance|amountEuler|number:'1.8-8'}}</div>
     </div>
     <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'SUBMIT_TRANSFER' | translate}}</button>
