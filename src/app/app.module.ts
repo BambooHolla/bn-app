@@ -9,10 +9,10 @@ import {
   NgZone,
 } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import {
-  BrowserAnimationsModule,
-  NoopAnimationsModule,
-} from "@angular/platform-browser/animations";
+// import {
+//   BrowserAnimationsModule,
+//   NoopAnimationsModule,
+// } from "@angular/platform-browser/animations";
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner";
 import { Camera } from "@ionic-native/camera";
@@ -142,7 +142,8 @@ const heightLevelModules = [
   declarations: [...pages, ...heightLevelModules],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
+    // NoopAnimationsModule,
     HttpClientModule,
     HttpModule,
     TranslateModule.forRoot({

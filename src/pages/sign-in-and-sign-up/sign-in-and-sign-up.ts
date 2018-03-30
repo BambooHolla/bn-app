@@ -14,10 +14,10 @@ import { AccountServiceProvider } from "../../providers/account-service/account-
 import { PeerServiceProvider } from "../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { MyApp } from "../../app/app.component";
-import {
-  LoginFormInOut,
-  RegisterFormInOut,
-} from "./sign-in-and-sign-up.animations";
+// import {
+//   LoginFormInOut,
+//   RegisterFormInOut,
+// } from "./sign-in-and-sign-up.animations";
 import { MainPage } from "../pages";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import * as plumin from "plumin.js";
@@ -26,7 +26,7 @@ import * as plumin from "plumin.js";
 @Component({
   selector: "page-sign-in-and-sign-up",
   templateUrl: "sign-in-and-sign-up.html",
-  animations: [LoginFormInOut, RegisterFormInOut],
+  // animations: [LoginFormInOut, RegisterFormInOut],
 })
 export class SignInAndSignUpPage extends FirstLevelPage {
   ifmJs = AppSettingProvider.IFMJS;
