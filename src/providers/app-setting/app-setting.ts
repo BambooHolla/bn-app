@@ -164,7 +164,6 @@ export class AppSettingProvider extends EventEmitter {
 
     // 声音开关
     {
-      const play_method_name = Symbol("play");
       const _play = PIXI.sound.play;
       const noop = function(...args) {
         if (this.force_play_sound) {
