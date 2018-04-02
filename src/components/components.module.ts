@@ -10,6 +10,7 @@ import { CommonWaveBgComponent } from "./common-wave-bg/common-wave-bg";
 import { TextGradientComponent } from "./text-gradient/text-gradient";
 import { KjuaQrcodeComponent } from "./kjua-qrcode/kjua-qrcode";
 import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/income-trend-simple-chart";
+import { MiningPersonComponent } from "./mining-person/mining-person";
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/inc
     TextGradientComponent,
     KjuaQrcodeComponent,
     IncomeTrendSimpleChartComponent,
+    MiningPersonComponent,
   ],
   imports: [],
   exports: [
@@ -38,6 +40,7 @@ import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/inc
     TextGradientComponent,
     KjuaQrcodeComponent,
     IncomeTrendSimpleChartComponent,
+    MiningPersonComponent,
   ],
 })
 export class ComponentsModule {}

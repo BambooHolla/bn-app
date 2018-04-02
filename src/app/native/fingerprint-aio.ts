@@ -33,44 +33,44 @@ export interface FingerprintOptions {
   localizedReason?: string;
 
   /**
-    * default is 取消 . Only for Android
-    */
+   * default is 取消 . Only for Android
+   */
   fingerprint_cancel?: string;
   /**
-    * default is 使用手势密码 . Only for Android
-    */
+   * default is 使用手势密码 . Only for Android
+   */
   fingerprint_use_backup?: string;
   /**
-    * default is 指纹识别 . Only for Android
-    */
+   * default is 指纹识别 . Only for Android
+   */
   fingerprint_auth_dialog_title?: string;
   /**
-    * default is 确认 . Only for Android
-    */
+   * default is 确认 . Only for Android
+   */
   fingerprint_ok?: string;
   /**
-    * default is 指纹识别 . Only for Android
-    */
+   * default is 指纹识别 . Only for Android
+   */
   fingerprint_description?: string;
   /**
-    * default is 请触摸指纹识传感器 . Only for Android
-    */
+   * default is 请触摸指纹识传感器 . Only for Android
+   */
   fingerprint_hint?: string;
   /**
-    * default is 指纹无法识别，请再试一次 . Only for Android
-    */
+   * default is 指纹无法识别，请再试一次 . Only for Android
+   */
   fingerprint_not_recognized?: string;
   /**
-    * default is 指纹识别成功 . Only for Android
-    */
+   * default is 指纹识别成功 . Only for Android
+   */
   fingerprint_success?: string;
   /**
-    * default is 添加一个新的指纹，需要设置密码 . Only for Android
-    */
+   * default is 添加一个新的指纹，需要设置密码 . Only for Android
+   */
   new_fingerprint_enrolled_description?: string;
   /**
-    * default is 需要安全锁屏 . Only for Android
-    */
+   * default is 需要安全锁屏 . Only for Android
+   */
   secure_lock_screen_required?: string;
 }
 

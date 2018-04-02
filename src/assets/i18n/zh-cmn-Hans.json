@@ -109,6 +109,7 @@
   "DEFAULT_FEE_NOT_SETTED": "默认交易手续费未设置",
   "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "您是否要去设置默认手续费",
   "VOTE_INCOME_HISTORY": "历史挖矿收益",
+  "START_VOTE_VERIFY": "开启挖矿校验",
 
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "本轮挖矿收益",
@@ -118,7 +119,7 @@
   "BLOCK_benefit": "区块收益",
   "//": "vote-income-trend",
   "VOTE-INCOME-TREND": "收益趋势图",
-  "THE_#ROUND#_ROUND_BENEFIT": "第{{}}轮收益",
+  "THE_#ROUND#_ROUND_BENEFIT": "第{{round}}轮收益",
   "//": "vote-my-contribution",
   "VOTE-MY-CONTRIBUTION": "我的贡献",
   "PROCESSED_TRAN_NUM": "处理交易",

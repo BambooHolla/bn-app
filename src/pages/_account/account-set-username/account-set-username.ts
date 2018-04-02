@@ -21,6 +21,7 @@ export class AccountSetUsernamePage extends SecondLevelPage {
   }
   formData = {
     username: "",
+    transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
   @AccountSetUsernamePage.setErrorTo("errors", "username", [
     // "tooShort",
@@ -37,13 +38,16 @@ export class AccountSetUsernamePage extends SecondLevelPage {
     }
     return res;
   }
+  @asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
+  async setTransferFee() {
+    const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
+    this.formData.transfer_fee = custom_fee;
+  }
 
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password, custom_fee } = await this.getUserPassword({
-      custom_fee: true,
-    });
-    return this._submit(password, custom_fee);
+    const { password } = await this.getUserPassword();
+    return this._submit(password, this.formData.transfer_fee);
   }
 
   @asyncCtrlGenerator.error(() =>

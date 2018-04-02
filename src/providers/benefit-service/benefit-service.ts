@@ -7,7 +7,7 @@ import {
 } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, Subscription } from "rxjs";
 import {
   AppSettingProvider,
   TB_AB_Generator,
@@ -21,13 +21,16 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./benefit.types";
 export * from "./benefit.types";
 import * as IFM from "ifmchain-ibt";
+import {
+  PromiseOut,
+  PromisePro,
+} from "../../../src/bnqkl-framework/PromiseExtends";
+import * as PIXI_SOUND from "pixi-sound";
+console.log("--PIXI_SOUND", PIXI_SOUND);
+PIXI.sound.add("coinSoundFew", "assets/sounds/coinFew.wav");
+PIXI.sound.add("coinSoundMore", "assets/sounds/coinMore.wav");
+PIXI.sound.add("coinSoundMuch", "assets/sounds/coinMuch.wav");
 
-/*
-  Generated class for the BenefitServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class BenefitServiceProvider {
   ifmJs: any;
@@ -221,6 +224,41 @@ export class BenefitServiceProvider {
   benefitThisRound_Executor(promise_pro) {
     console.log("更新 benefitThisRound%c", "color:red;background:#FFF");
     return promise_pro.follow(this.getBenefitThisRound(this.user.address));
+  }
+
+  private _play_mining_sound_register!: AsyncBehaviorSubject<void>;
+  private _play_mining_sound_sub?: Subscription;
+  private _pre_mining_block?: TYPE.BenefitModel;
+  @TB_AB_Generator("_play_mining_sound_register")
+  private _play_mining_sound_register_Executor(promise_pro: PromisePro<void>) {
+    if (this._play_mining_sound_sub) {
+      this._play_mining_sound_sub.unsubscribe();
+      this._pre_mining_block = undefined;
+    }
+    this._play_mining_sound_sub = this.appSetting.height.subscribe(async r => {
+      const benefitList = await this.topBenefits.getPromise();
+      // 初始化 _pre_mining_block
+      if (this._pre_mining_block === undefined) {
+        this._pre_mining_block = benefitList[0];
+        return;
+      }
+
+      const cur_block_benefit = benefitList[0];
+      if (cur_block_benefit.height > this._pre_mining_block.height) {
+        const cur_benefit = parseFloat(cur_block_benefit.amount);
+        const pre_benefit = parseFloat(this._pre_mining_block.amount);
+
+        const equal_range = [pre_benefit * 0.9, cur_benefit * 1.1];
+        let sound_type = "coinSoundMore";
+        if (Math.max(...equal_range, pre_benefit) === pre_benefit) {
+          let sound_type = "coinSoundMuch";
+        } else if (Math.min(...equal_range, pre_benefit) === cur_benefit) {
+          let sound_type = "coinSoundFew";
+        }
+        PIXI.sound.play(sound_type);
+      }
+    });
+    return promise_pro.reject();
   }
 
   /**

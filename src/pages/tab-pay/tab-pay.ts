@@ -86,10 +86,12 @@ export class TabPayPage extends FirstLevelPage {
   }
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password, pay_pwd, custom_fee } = await this.getUserPassword({
-      custom_fee: true,
-    });
-    const { transactionId } = await this._submit(password, pay_pwd, custom_fee);
+    const { password, pay_pwd } = await this.getUserPassword();
+    const { transactionId } = await this._submit(
+      password,
+      pay_pwd,
+      this.formData.transfer_fee,
+    );
     this.resetFormData();
     this.showTransferReceipt(transactionId);
   }

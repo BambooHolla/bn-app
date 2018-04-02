@@ -142,6 +142,7 @@ export class FLP_Form extends FLP_Route {
   )
   async getUserPassword(
     opts: {
+      title?: string;
       custom_fee?: boolean;
       /**是否一定要输入主密码*/
       force_require_password?: boolean;

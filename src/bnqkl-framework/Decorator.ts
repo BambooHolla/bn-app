@@ -14,7 +14,7 @@ import { PAGE_STATUS } from "./const";
 import { Toast } from "@ionic-native/toast";
 import { TranslateService } from "@ngx-translate/core";
 import { FLP_Tool } from "./FLP_Tool";
-import { AbortError } from "./PromiseExtends";
+import { AbortError, PromiseOut } from "./PromiseExtends";
 
 function getTranslateSync(key: string | string[], interpolateParams?: Object) {
   return window["translate"].instant(key, interpolateParams);
@@ -460,8 +460,29 @@ export function autoRetryWrapGenerator(
     return descriptor;
   };
 }
+export function singleRunWrap() {
+  return function(target, name, descriptor) {
+    const source_fun = descriptor.value;
+    var run_lock: PromiseOut<any> | undefined;
+    descriptor.value = async function lock(...args) {
+      if (!run_lock) {
+        run_lock = new PromiseOut();
+      }
+      try {
+        run_lock.resolve(source_fun.apply(this, args));
+      } catch (err) {
+        run_lock.reject(err);
+      } finally {
+        run_lock = undefined;
+      }
+    };
+    descriptor.value.source_fun = source_fun;
+    return descriptor;
+  };
+}
 
 export const asyncCtrlGenerator = {
+  single: singleRunWrap,
   success: asyncSuccessWrapGenerator,
   loading: asyncLoadingWrapGenerator,
   // error: asyncErrorWrapGenerator,

@@ -13,10 +13,10 @@
       <input type="password" [placeholder]="'CONFIRM_PAY_PASSPHRASE'|translate" [(ngModel)]="formData.confrim_pay_pwd" set-input-status="confrim_pay_pwd" [watch-input-keys]="['pay_pwd']">
     </div>
   </div>
-  <div class="fee-info">
+  <div class="fee-info" (click)="setTransferFee()">
     <ali-icon name="ifm-info"></ali-icon>
     {{'TRANSACTION_FEES'|translate}}
-    <span class="fee">{{appSetting.settings.default_fee|number:'1.8-8'}}</span>
+    <span class="fee">{{formData.transfer_fee|number:'1.8-8'}}</span>
   </div>
   <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'OK'|translate}}</button>
 </ion-content>

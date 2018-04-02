@@ -3,11 +3,12 @@ import { Injectable } from "@angular/core";
 import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, Subscription } from "rxjs";
 import { AlertController } from "ionic-angular";
 import {
   AppSettingProvider,
   ROUND_AB_Generator,
+  TB_AB_Generator,
   AsyncBehaviorSubject,
 } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
@@ -21,6 +22,10 @@ import * as IFM from "ifmchain-ibt";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
 import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../../src/bnqkl-framework/Decorator";
+import {
+  PromiseOut,
+  PromisePro,
+} from "../../../src/bnqkl-framework/PromiseExtends";
 import * as TYPE from "./min.types";
 export * from "./min.types";
 
@@ -53,12 +58,22 @@ export class MinServiceProvider extends FLP_Tool {
   ) {
     super();
     this.ifmJs = AppSettingProvider.IFMJS;
-    this.appSetting.round.subscribe(r => {
+  }
+
+  private _auto_vote_register!: AsyncBehaviorSubject<void>;
+  private _auto_vote_sub?: Subscription;
+  @TB_AB_Generator("_auto_vote_register")
+  private _auto_vote_register_Executor(promise_pro: PromisePro<void>) {
+    if (this._auto_vote_sub) {
+      this._auto_vote_sub.unsubscribe();
+    }
+    this._auto_vote_sub = this.appSetting.round.subscribe(r => {
       if (this.appSetting.getUserToken()) {
-        // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，不需要这里调用
-        this.autoVote(r);
+        // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，这里属于重复调用，但是autoVote会自动处理重复情况
+        this.autoVote(r, "from-round-change");
       }
     });
+    return promise_pro.reject();
   }
 
   readonly ROUND_TIME = this.appSetting.APP_URL("/api/delegates/roundTime");
@@ -164,27 +179,45 @@ export class MinServiceProvider extends FLP_Tool {
    * 自动投票
    */
   @FLP_Form.FromGlobal alertCtrl!: AlertController;
+  @asyncCtrlGenerator.single()
   @asyncCtrlGenerator.error(() => FLP_Form.getTranslate("AUTO_VOTE_ERROR"))
-  async autoVote(round) {
-    let voteSwitch: boolean = this.appSetting.settings.background_mining;
-    let voteRound: number = this.appSetting.settings.digRound;
-    let password: string;
-    let secondSecret: any;
-    let passwordObj: any;
-    if (voteSwitch == true) {
-      await this.tryVote(round);
+  async autoVote(round, from?: any) {
+    if (this.appSetting.settings.background_mining) {
+      if ("from-round-change" === from) {
+        const cache_key = this.user.publicKey + "|" + this.user.secondPublicKey;
+        if (
+          this._pre_round_pwd_info &&
+          this._pre_round_pwd_info.cache_key != cache_key
+        ) {
+          // 二次密码发生了变动，或者帐号发生了变动
+          this._pre_round_pwd_info = undefined;
+        }
+        if (!this.user.address) {
+          // 如果已经没有用户处于在线状态，终止挖矿
+          return;
+        }
+        if (!this._pre_round_pwd_info) {
+          this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword();
+        }
+      }
+      await this.tryVote(round, this._pre_round_pwd_info);
     }
   }
+  private _pre_round_pwd_info?: any;
+
+  @asyncCtrlGenerator.single()
   async tryVote(
     round = this.appSetting.getRound(),
     userPWD?: { password: string; pay_pwd?: string },
+    from?: any,
   ) {
-    let voteRound: number = this.appSetting.settings.digRound;
-    if (voteRound < round) {
+    if (this.appSetting.settings.digRound < round) {
+      if (this._pre_round_pwd_info) {
+      }
       if (!userPWD) {
         userPWD = await FLP_Form.prototype.getUserPassword();
       }
-      return this.vote(userPWD.password, userPWD.pay_pwd);
+      await this.vote(userPWD.password, userPWD.pay_pwd);
     }
   }
 
@@ -259,7 +292,9 @@ export class MinServiceProvider extends FLP_Tool {
    */
   async getAllMiners(page = 1, limit = 10): Promise<TYPE.DelegateModel[]> {
     let currentBlock = await this.blockService.getLastBlock();
-    let currentRound = this.appSetting.calcRoundByHeight(currentBlock.height / 57);
+    let currentRound = this.appSetting.calcRoundByHeight(
+      currentBlock.height / 57,
+    );
 
     if (this.allMinersInfo && this.allMinersInfo.round === currentRound) {
       return this.allMinersInfo.list.slice((page - 1) * limit, limit);

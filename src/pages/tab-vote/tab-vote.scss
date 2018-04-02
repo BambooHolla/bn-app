@@ -450,6 +450,23 @@ page-tab-vote {
           opacity: 1;
         }
       }
+      .ani-mining-person {
+        contain: strict;
+        position: absolute;
+        pointer-events: none;
+        width: 90%;
+        height: 35%;
+        bottom: 7%;
+        left: 17.5%;
+        z-index: 0;
+        display: none;
+        opacity: 0;
+        transition-duration: 0.25s;
+        &.show {
+          display: block;
+          opacity: 1;
+        }
+      }
       .wakuang-person {
         contain: strict;
         position: absolute;

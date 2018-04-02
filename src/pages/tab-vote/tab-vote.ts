@@ -8,6 +8,7 @@ import { SatellitePixiComponent } from "../../components/satellite-pixi/satellit
 import { FallCoinsComponent } from "../../components/fall-coins/fall-coins";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
+import { MiningPersonComponent } from "../../components/mining-person/mining-person";
 import { AniBase, Easing } from "../../components/AniBase";
 import { TabsPage } from "../tabs/tabs";
 import {
@@ -162,6 +163,9 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
     this._set_satellite_pixi_progress(true);
+    this.mining_person &&
+      this.mining_person.is_inited &&
+      this.mining_person.startAnimation();
     this.buddha_glow &&
       this.buddha_glow.is_inited &&
       this.buddha_glow.startAnimation();
@@ -171,8 +175,9 @@ export class TabVotePage extends FirstLevelPage {
         // 先显示阳光
         this.is_show.buddha_glow = true;
         setTimeout(() => {
-          // 再显示卫星
+          // 再显示卫星与挖矿的人
           this.is_show.satellite_pixi = true;
+          this.is_show.mining_person = true;
           setTimeout(() => {
             // 最后显示金币
             this.is_show.fall_coins = true;
@@ -212,13 +217,21 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
   }
-  private _stopVoteAnimate(opts: { is_force_stop_chain_mesh?: boolean } = {}) {
+  private _stopVoteAnimate(
+    opts: {
+      is_force_stop_chain_mesh?: boolean;
+      is_keep_mining_person_sound?: boolean;
+    } = {},
+  ) {
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.stopAnimation();
     this.satellite_pixi &&
       this.satellite_pixi.is_inited &&
       this.satellite_pixi.stopAnimation();
+    this.mining_person &&
+      this.mining_person.is_inited &&
+      this.mining_person.stopAnimation(opts.is_keep_mining_person_sound);
     this.buddha_glow &&
       this.buddha_glow.is_inited &&
       this.buddha_glow.stopAnimation();
@@ -255,6 +268,7 @@ export class TabVotePage extends FirstLevelPage {
   @ViewChild(SatellitePixiComponent) satellite_pixi?: SatellitePixiComponent;
   @ViewChild(BuddhaGlowComponent) buddha_glow?: BuddhaGlowComponent;
   @ViewChild(ChainMeshComponent) chain_mesh?: ChainMeshComponent;
+  @ViewChild(MiningPersonComponent) mining_person?: MiningPersonComponent;
 
   _earth_disabled_config = {
     body_color: 0xececec,
@@ -296,6 +310,7 @@ export class TabVotePage extends FirstLevelPage {
     fall_coins: false,
     show_big_fall_icon: false,
     round_ani: false,
+    mining_person: false,
   };
 
   try_min_starting = false;
@@ -333,7 +348,9 @@ export class TabVotePage extends FirstLevelPage {
         return;
       }
 
-      const pwdData = await this.getUserPassword();
+      const pwdData = await this.getUserPassword({
+        title: "@@START_VOTE_VERIFY",
+      });
       await this.minService.tryVote(undefined, pwdData).catch(err => {
         if (err === "you have already voted") {
           // 启动倒计时界面
@@ -384,7 +401,10 @@ export class TabVotePage extends FirstLevelPage {
       return;
     }
     this.page_status = VotePage.ExtendsPanel;
-    this._stopVoteAnimate({ is_force_stop_chain_mesh: true });
+    this._stopVoteAnimate({
+      is_force_stop_chain_mesh: true,
+      is_keep_mining_person_sound: true,
+    });
     CoverTabsCtrlModelPage.open(this, {
       onclose: () => {
         this.routeToVoteDetail();

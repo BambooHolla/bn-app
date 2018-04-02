@@ -18,7 +18,7 @@
   <div class="fee-info">
     <ali-icon name="ifm-info"></ali-icon>
     {{'TRANSACTION_FEES'|translate}}
-    <span class="fee">{{appSetting.settings.default_fee|number:"1.8-8"}}</span>
+    <span class="fee">{{formData.transfer_fee|number:"1.8-8"}}</span>
   </div>
   <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'SAVE'|translate}}</button>
 </ion-content>

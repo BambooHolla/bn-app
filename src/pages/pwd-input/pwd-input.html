@@ -4,6 +4,9 @@
 </ion-navbar> -->
 </ion-header>
 <ion-content>
+  <div class="title" *ngIf="title">
+    <div class="label">{{title | translate}}</div>
+  </div>
   <div class="common-form">
     <div class="input-container" *ngIf="formData.need_pay_pwd">
       <div class="left">

@@ -22,15 +22,20 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
   formData = {
     pay_pwd: "",
     confrim_pay_pwd: "",
+    transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+  @asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
+  async setTransferFee() {
+    const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
+    this.formData.transfer_fee = custom_fee;
+  }
 
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password, custom_fee } = await this.getUserPassword({
-      custom_fee: true,
+    const { password } = await this.getUserPassword({
       force_require_password: true,
     });
-    return this._submit(password, custom_fee);
+    return this._submit(password, this.formData.transfer_fee);
   }
   @asyncCtrlGenerator.loading(() =>
     SettingsSetPayPwdPage.getTranslate("SET_PAY_PWD_SUBMITING"),
