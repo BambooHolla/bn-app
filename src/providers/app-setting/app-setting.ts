@@ -13,6 +13,8 @@ import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
+import * as PIXI_SOUND from "pixi-sound";
+console.log(PIXI_SOUND);
 
 export class AppUrl {
   constructor(public path) {}
@@ -158,6 +160,22 @@ export class AppSettingProvider extends EventEmitter {
       };
       toggle_update(this.settings.animation_switch);
       this.on("changed@setting.animation_switch", toggle_update);
+    }
+
+    // 声音开关
+    {
+      const play_method_name = Symbol("play");
+      const _play = PIXI.sound.play;
+      const noop = function(...args) {
+        if (this.force_play_sound) {
+          _play.apply(this, args);
+        }
+      } as typeof PIXI_SOUND.play;
+      const toggle_play = is_play_sound => {
+        PIXI.sound.play = is_play_sound ? _play : noop;
+      };
+      toggle_play(this.settings.sound_effect);
+      this.on("changed@setting.sound_effect", toggle_play);
     }
 
     // 测试网络角标内容
