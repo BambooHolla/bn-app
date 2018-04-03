@@ -40,8 +40,8 @@
     </div>
     <div class="vote-detail-page" [ngClass]="page_status">
       <div class="toolbar">
-        <button>
-          <ali-icon name="ifm-close-sound"></ali-icon>
+        <button (click)="toggleSoundEffect()">
+          <ali-icon [name]="appSetting.settings.sound_effect?'ifm-shi':'ifm-close-sound'"></ali-icon>
         </button>
         <button (click)="routeTo('vote-list')">
           <ali-icon name="ifm-caikuang"></ali-icon>

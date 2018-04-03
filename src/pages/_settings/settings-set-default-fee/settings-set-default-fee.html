@@ -5,12 +5,12 @@
 </ion-header>
 <ion-content>
   <div class="common-form">
-    <div class="input-container">
+    <div class="input-container" [class.disabled]="appSetting.settings.auto_update_default_fee_to_pre_round_min">
       <div class="left">{{'DEFAULT_TRANSACTION_FEE:'|translate}}</div>
       <input type="text" [(ngModel)]="formData.default_fee" set-input-status="default_fee"><!--  min="0.00000001" step="0.00000001" -->
       <!-- <div class="right">尧币</div> -->
     </div>
-    <div class="input-container">
+    <div class="input-container" [class.disabled]="!appSetting.settings.auto_update_default_fee_to_pre_round_min">
       <!-- [disabled]="!appSetting.settings.auto_update_default_fee_to_pre_round_min" -->
       <div class="left">{{'MINING_MAX_TRANSACTION_FEE:'|translate}}</div>
       <input type="text" [(ngModel)]="formData.max_fee" set-input-status="default_fee"><!--  min="0.00000001" step="0.00000001" -->

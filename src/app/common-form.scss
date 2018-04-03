@@ -49,6 +49,7 @@
     }
     &.disabled {
       color: #a7a7a7;
+      pointer-events: none;
       > input {
         color: #999999;
         &::-webkit-input-placeholder {

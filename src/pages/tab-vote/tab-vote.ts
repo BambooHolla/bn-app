@@ -58,6 +58,10 @@ export class TabVotePage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
+  toggleSoundEffect() {
+    this.appSetting.settings.sound_effect = !this.appSetting.settings
+      .sound_effect;
+  }
 
   @TabVotePage.didEnter
   hiddenTabBg() {
