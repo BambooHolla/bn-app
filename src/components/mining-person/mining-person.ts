@@ -17,7 +17,17 @@ for (let i = 0; i < FRAMES_NUM; i += 1) {
     `assets/imgs/tab-vote/human-work3/_${i_str}_图层-${FRAMES_NUM - i}.png`,
   );
 }
-PIXI.sound.add("miningSound", "assets/sounds/mining.wav");
+const miningSounds = [
+  // "mining",
+  "miner (1)",
+  "miner (2)",
+  "miner (3)",
+  "miner (4)",
+  "miner (5)",
+];
+miningSounds.forEach(name => {
+  PIXI.sound.add(name, `assets/sounds/${name}.wav`);
+});
 loader.onError.add(err => {
   _load_resource_promiseout.reject(err);
 });
@@ -128,9 +138,10 @@ export class MiningPersonComponent extends AniBase {
         mc.texture = frames_list[cur_frame_i];
       }
       if (cur_frame_i === 41) {
-        PIXI.sound.play("miningSound", {
+        PIXI.sound.play(miningSounds[(Math.random()*miningSounds.length)|0], {
           loop: false,
           speed: 0.5,
+          volume: 0.1,
         });
       }
     });
