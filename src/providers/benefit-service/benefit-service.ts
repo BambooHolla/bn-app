@@ -226,7 +226,7 @@ export class BenefitServiceProvider {
     return promise_pro.follow(this.getBenefitThisRound(this.user.address));
   }
 
-  private _play_mining_sound_register!: AsyncBehaviorSubject<void>;
+  _play_mining_sound_register!: AsyncBehaviorSubject<void>;
   private _play_mining_sound_sub?: Subscription;
   private _pre_mining_block?: TYPE.BenefitModel;
   @TB_AB_Generator("_play_mining_sound_register")
@@ -258,7 +258,7 @@ export class BenefitServiceProvider {
         PIXI.sound.play(sound_type);
       }
     });
-    return promise_pro.reject();
+    return promise_pro.resolve();
   }
 
   /**
