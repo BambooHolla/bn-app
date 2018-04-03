@@ -90,11 +90,24 @@ export class TabVotePage extends FirstLevelPage {
   initAniContainerSize() {
     // 初始化容器大小
     if (this.aniWrapper) {
+      const viewHeight = document.body.clientHeight;
+      const bg2_top = 0.076 * viewHeight;
+      const bg2_size = 0.5622 * viewHeight * 0.88;
+      const ele_size = 0.5622 * viewHeight * 0.8;
+      const ele_top = bg2_top + (bg2_size - ele_size) / 2;
+
       const targetEle = this.aniWrapper.nativeElement;
-      targetEle.style.transform = `scale(${document.body.clientWidth *
-        0.8 /
-        targetEle.clientWidth})`;
+      targetEle.style.top = ele_top + "px";
+      // targetEle.style.transform = `scale(${document.body.clientWidth *
+      //   0.8 /
+      //   targetEle.clientWidth})`;
     }
+  }
+  @TabVotePage.onInit
+  initBenefitSound(){
+    this.benefitService._play_mining_sound_register.getPromise().then(()=>{
+      console.log("开始监听收入变动，并播放音效")
+    }).catch(console.error)
   }
   private _set_fall_coin_progress() {
     if (this.fall_coin) {
