@@ -16,6 +16,7 @@ import {
   HEIGHT_AB_Generator,
 } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
+import { LoginServiceProvider } from "../login-service/login-service";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./benefit.types";
@@ -45,8 +46,20 @@ export class BenefitServiceProvider {
     public blockService: BlockServiceProvider,
     public accountService: AccountServiceProvider,
     public user: UserInfoProvider,
+    public loginService: LoginServiceProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
+    this.loginService.loginStatus.subscribe(isLogined => {
+      if (isLogined) {
+        this._play_mining_sound_register_Executor();
+      } else {
+        if (this._play_mining_sound_sub) {
+          this._play_mining_sound_sub.unsubscribe();
+          this._play_mining_sound_sub = undefined;
+          this._pre_mining_block = undefined;
+        }
+      }
+    });
   }
 
   readonly GET_BENEFIT = this.appSetting.APP_URL(
@@ -226,11 +239,9 @@ export class BenefitServiceProvider {
     return promise_pro.follow(this.getBenefitThisRound(this.user.address));
   }
 
-  _play_mining_sound_register!: AsyncBehaviorSubject<void>;
   private _play_mining_sound_sub?: Subscription;
   private _pre_mining_block?: TYPE.BenefitModel;
-  @TB_AB_Generator("_play_mining_sound_register")
-  private _play_mining_sound_register_Executor(promise_pro: PromisePro<void>) {
+  private _play_mining_sound_register_Executor() {
     if (this._play_mining_sound_sub) {
       this._play_mining_sound_sub.unsubscribe();
       this._pre_mining_block = undefined;
@@ -258,7 +269,6 @@ export class BenefitServiceProvider {
         PIXI.sound.play(sound_type);
       }
     });
-    return promise_pro.resolve();
   }
 
   /**

@@ -103,12 +103,12 @@ export class TabVotePage extends FirstLevelPage {
       //   targetEle.clientWidth})`;
     }
   }
-  @TabVotePage.onInit
-  initBenefitSound(){
-    this.benefitService._play_mining_sound_register.getPromise().then(()=>{
-      console.log("开始监听收入变动，并播放音效")
-    }).catch(console.error)
-  }
+  // @TabVotePage.onInit
+  // initBenefitSound(){
+  //   this.benefitService._play_mining_sound_register.getPromise().then(()=>{
+  //     console.log("开始监听收入变动，并播放音效")
+  //   }).catch(console.error)
+  // }
   private _set_fall_coin_progress() {
     if (this.fall_coin) {
       if (this.fall_coin.is_inited) {
