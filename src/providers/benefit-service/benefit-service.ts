@@ -25,6 +25,7 @@ import * as IFM from "ifmchain-ibt";
 import {
   PromiseOut,
   PromisePro,
+  sleep
 } from "../../../src/bnqkl-framework/PromiseExtends";
 import * as PIXI_SOUND from "pixi-sound";
 console.log("--PIXI_SOUND", PIXI_SOUND);
@@ -49,7 +50,7 @@ export class BenefitServiceProvider {
     public loginService: LoginServiceProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
-    this.loginService.loginStatus.subscribe(isLogined => {
+    this.loginService.loginStatus.distinctUntilChanged().subscribe(isLogined => {
       if (isLogined) {
         this._play_mining_sound_register_Executor();
       } else {
@@ -247,6 +248,7 @@ export class BenefitServiceProvider {
       this._pre_mining_block = undefined;
     }
     this._play_mining_sound_sub = this.appSetting.height.subscribe(async r => {
+      await sleep(100);
       const benefitList = await this.topBenefits.getPromise();
       // 初始化 _pre_mining_block
       if (this._pre_mining_block === undefined) {

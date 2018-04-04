@@ -137,3 +137,7 @@ export class DelayPromise<T> extends Promise<T> {
     return super.catch(onrejected);
   }
 }
+
+export const sleep = (ms: number) => {
+  return new Promise(cb => setTimeout(cb, ms));
+};
