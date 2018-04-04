@@ -28,15 +28,19 @@ page-custom-dialog {
       position: absolute;
       width: 1.9rem;
       height: 1.9rem;
+      padding: 0;
+      box-sizing: border-box;
       font-size: 1.7rem;
       color: #fff;
       background-color: #929292;
       border-radius: 50%;
       right: -0.7rem;
       top: -0.7rem;
-      display: flex;
+      text-align: center;
+      line-height: 1.8rem;
+      /* display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: center; */
     }
     > .dialog-content {
       width: 76vw;
