@@ -8,13 +8,20 @@ page-account-about-ibt {
     animation-timing-function: linear;
     /* animation-delay: -2s; */
     color: #7b7b7b;
-    background-position: center 100%;
-    background-image: url(../assets/imgs/about-ibt/header-bg.jpg);
-    background-size: cover;
-    background-blend-mode: lighten;
     transition-duration: 100ms;
     * {
       @extend .follow-parent-ani;
+    }
+    > .bg-img {
+      position: absolute;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      background-position: center 100%;
+      background-image: url(../assets/imgs/about-ibt/header-bg.jpg);
+      background-size: cover;
+      background-blend-mode: lighten;
+      animation-name: ani-header;
     }
     .back-button {
       color: inherit;
@@ -51,7 +58,7 @@ page-account-about-ibt {
     @keyframes ani-header {
       0% {
         color: #fff;
-        background-color: #000;
+        background-color: rgba(#000, 0);
       }
       100% {
         color: #7b7b7b;
