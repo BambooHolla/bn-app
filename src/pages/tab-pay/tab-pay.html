@@ -19,7 +19,7 @@
     <div class="input-container">
       <ali-icon class="left" name="ifm-account-detail"></ali-icon>
       <input type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />
-      <button class="right">
+      <button class="right" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
     </div>

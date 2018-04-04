@@ -25,7 +25,7 @@ import * as IFM from "ifmchain-ibt";
 import {
   PromiseOut,
   PromisePro,
-  sleep
+  sleep,
 } from "../../../src/bnqkl-framework/PromiseExtends";
 import * as PIXI_SOUND from "pixi-sound";
 console.log("--PIXI_SOUND", PIXI_SOUND);
@@ -50,17 +50,19 @@ export class BenefitServiceProvider {
     public loginService: LoginServiceProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
-    this.loginService.loginStatus.distinctUntilChanged().subscribe(isLogined => {
-      if (isLogined) {
-        this._play_mining_sound_register_Executor();
-      } else {
-        if (this._play_mining_sound_sub) {
-          this._play_mining_sound_sub.unsubscribe();
-          this._play_mining_sound_sub = undefined;
-          this._pre_mining_block = undefined;
+    this.loginService.loginStatus
+      .distinctUntilChanged()
+      .subscribe(isLogined => {
+        if (isLogined) {
+          this._play_mining_sound_register_Executor();
+        } else {
+          if (this._play_mining_sound_sub) {
+            this._play_mining_sound_sub.unsubscribe();
+            this._play_mining_sound_sub = undefined;
+            this._pre_mining_block = undefined;
+          }
         }
-      }
-    });
+      });
   }
 
   readonly GET_BENEFIT = this.appSetting.APP_URL(
@@ -257,7 +259,11 @@ export class BenefitServiceProvider {
       }
 
       const cur_block_benefit = benefitList[0];
-      if (cur_block_benefit.height > this._pre_mining_block.height) {
+      if (
+        !this._pre_mining_block ||
+        (cur_block_benefit &&
+          cur_block_benefit.height > this._pre_mining_block.height)
+      ) {
         const cur_benefit = parseFloat(cur_block_benefit.amount);
         const pre_benefit = parseFloat(this._pre_mining_block.amount);
 
@@ -269,6 +275,8 @@ export class BenefitServiceProvider {
           let sound_type = "coinSoundFew";
         }
         PIXI.sound.play(sound_type);
+
+        this._pre_mining_block = cur_block_benefit;
       }
     });
   }
