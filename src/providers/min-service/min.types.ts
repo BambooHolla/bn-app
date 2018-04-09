@@ -23,3 +23,8 @@ export type RateOfReturnModel = {
   totalFee: number;
   rateOfReturn: number;
 };
+
+export type DelegatesResModel = {
+  delegates: DelegateModel[];
+  totalCount: number;
+};

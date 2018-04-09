@@ -16,7 +16,7 @@ const is_dev = (() => {
 })();
 export function tryRegisterGlobal(name, obj) {
   if (is_dev) {
-    return window[name] = obj;
+    return (window[name] = obj);
   }
 }
 export class FLP_Tool {

@@ -84,7 +84,7 @@ export class PeerServiceProvider extends EventEmitter {
             onChange(peersArray);
           }
         } catch (err) {
-          console.error("PING PEER ERROR:", err);
+          console.warn("PING PEER ERROR:", err);
           this.emit("peer-ping-error", err, peer);
           this.emit("peer-ping-error:" + peer, err);
         }
@@ -146,7 +146,7 @@ export class PeerServiceProvider extends EventEmitter {
         let data: any;
         if (peer.hasOwnProperty("ip")) {
           await this.fetch
-            .get<{ peers: any[] }>(
+            .get<{ peers: TYPE.PeerModel[] }>(
               "http://" + peer.ip + ":" + peer.port + this.PEERS_URL.path,
             )
             .then(res => {

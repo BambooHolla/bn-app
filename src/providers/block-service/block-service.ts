@@ -554,13 +554,16 @@ export class BlockServiceProvider extends FLP_Tool {
     page = 1,
     pageSize = this.default_my_forging_pagesize,
   ) {
-    const data = await this.fetch.get<TYPE.ForgingBlockResModel>(this.GET_MY_FORGING, {
-      search: {
-        generatorPublicKey,
-        offset: (page - 1) * pageSize,
-        limit: pageSize,
+    const data = await this.fetch.get<TYPE.ForgingBlockResModel>(
+      this.GET_MY_FORGING,
+      {
+        search: {
+          generatorPublicKey,
+          offset: (page - 1) * pageSize,
+          limit: pageSize,
+        },
       },
-    });
+    );
     return data;
   }
   getMyForgingByPage(page?: number, pageSize?: number) {

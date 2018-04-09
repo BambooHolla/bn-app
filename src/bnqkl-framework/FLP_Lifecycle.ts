@@ -1,4 +1,9 @@
-import { OnInit, AfterContentInit, OnDestroy,ChangeDetectorRef } from "@angular/core";
+import {
+  OnInit,
+  AfterContentInit,
+  OnDestroy,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { EventEmitter } from "eventemitter3";
 import { PAGE_STATUS } from "./const";
 import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
@@ -30,6 +35,7 @@ export class FLP_Lifecycle extends FLP_Tool
    */
   registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function) {
     let should_emit: any = null;
+    // TODO，要监听页面堆栈，压入一个新的页面的时候，下面的页面也会处于DID_ENTER状态
     const proxy_handle = (...args) => {
       if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
         should_emit = args; // 页面不属于激活状态，不去更新
@@ -106,10 +112,10 @@ export class FLP_Lifecycle extends FLP_Tool
   }
 
   @FLP_Tool.FromGlobal myapp!: any;
-  cdRef?:ChangeDetectorRef;
+  cdRef?: ChangeDetectorRef;
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;
-    if(this.cdRef instanceof ChangeDetectorRef){
+    if (this.cdRef instanceof ChangeDetectorRef) {
       this.cdRef.reattach();
     }
 
@@ -141,7 +147,7 @@ export class FLP_Lifecycle extends FLP_Tool
   }
   ionViewDidLeave() {
     this.PAGE_STATUS = PAGE_STATUS.DID_LEAVE;
-    if(this.cdRef instanceof ChangeDetectorRef){
+    if (this.cdRef instanceof ChangeDetectorRef) {
       this.cdRef.detach();
     }
     console.log("ionViewDidLeave", this.cname);

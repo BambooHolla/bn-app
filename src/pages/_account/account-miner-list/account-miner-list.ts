@@ -1,5 +1,11 @@
-import { Component, Optional } from "@angular/core";
+import {
+  Component,
+  Optional,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import {
@@ -15,6 +21,7 @@ import {
 @Component({
   selector: "page-account-miner-list",
   templateUrl: "account-miner-list.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountMinerListPage extends SecondLevelPage {
   constructor(
@@ -23,6 +30,7 @@ export class AccountMinerListPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public minService: MinServiceProvider,
     public peerService: PeerServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -42,9 +50,9 @@ export class AccountMinerListPage extends SecondLevelPage {
 
   cur_peer_list?: PeerModel[];
 
-  @AccountMinerListPage.willEnter
+  // @AccountMinerListPage.willEnter
   async initMinterList() {
-    const cur_minter_list = await this.minService.allMinersPerRound.getPromise();
+    const cur_minter_list = await this.minService.allMinersCurRound.getPromise();
 
     this.cur_minter_rank_list = cur_minter_list.map((cur_minter, i) => {
       return {
@@ -60,6 +68,8 @@ export class AccountMinerListPage extends SecondLevelPage {
         ...can_minter,
       };
     });
+    // 更新页面
+    this.cdRef.markForCheck();
   }
   @AccountMinerListPage.willEnter
   async initPeerList() {
@@ -69,5 +79,14 @@ export class AccountMinerListPage extends SecondLevelPage {
         linked_number: (Math.random() * 50) | 0,
       }));
     });
+  }
+
+  @AccountMinerListPage.addEvent("ROUND:CHANGED")
+  @asyncCtrlGenerator.error(() =>
+    AccountMinerListPage.getTranslate("LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR"),
+  )
+  @asyncCtrlGenerator.retry()
+  async watchRoundChange(height) {
+    return this.initMinterList();
   }
 }

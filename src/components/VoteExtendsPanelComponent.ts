@@ -58,8 +58,8 @@ export class VoteExtendsPanelComponent extends EventEmitter
     this._height_subscript = this.appSetting.after_height.subscribe(() => {
       if (this.appSetting.getUserToken()) {
         this.refreshCommonData();
-      }else{
-        console.log("NO LOGIN ,IGNORE")
+      } else {
+        console.log("NO LOGIN ,IGNORE");
       }
 
       if (this.data_refresh_frequency !== DATA_REFRESH_FREQUENCY.BY_HEIGHT) {

@@ -85,7 +85,7 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<
     const old_asyncer = this._asyncer;
     if (force_abort) {
       old_asyncer.abort(msg);
-    }else if (!old_asyncer.is_done) {
+    } else if (!old_asyncer.is_done) {
       old_asyncer.follow(new_asyncer.promise);
     }
     this._asyncer = new_asyncer;

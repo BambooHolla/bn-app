@@ -44,7 +44,6 @@ export type ForgingBlockResModel = {
   blocks: ForgingBlockModel[];
 };
 
-
 export type BlockResModel = {
   success: boolean;
   count: number;

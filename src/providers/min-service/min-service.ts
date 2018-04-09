@@ -291,10 +291,7 @@ export class MinServiceProvider extends FLP_Tool {
    * @param limit
    */
   async getAllMiners(page = 1, limit = 10): Promise<TYPE.DelegateModel[]> {
-    let currentBlock = await this.blockService.getLastBlock();
-    let currentRound = this.appSetting.calcRoundByHeight(
-      currentBlock.height / 57,
-    );
+    const currentRound = this.appSetting.getRound();
 
     if (this.allMinersInfo && this.allMinersInfo.round === currentRound) {
       return this.allMinersInfo.list.slice((page - 1) * limit, limit);
@@ -302,7 +299,7 @@ export class MinServiceProvider extends FLP_Tool {
       let query = {
         orderBy: "rate:asc",
       };
-      let data = await this.fetch.get<any>(this.MINERS, { search: query });
+      let data = await this.fetch.get<TYPE.DelegatesResModel>(this.MINERS, { search: query });
       this.allMinersInfo = {
         list: data.delegates,
         round: currentRound,
@@ -314,9 +311,9 @@ export class MinServiceProvider extends FLP_Tool {
   /**
    * 获取本轮矿工
    */
-  allMinersPerRound!: AsyncBehaviorSubject<TYPE.DelegateModel[]>;
-  @ROUND_AB_Generator("allMinersPerRound")
-  allMiners_Executor(promise_pro) {
+  allMinersCurRound!: AsyncBehaviorSubject<TYPE.DelegateModel[]>;
+  @ROUND_AB_Generator("allMinersCurRound")
+  allMinersCurRound_Executor(promise_pro) {
     return promise_pro.follow(this.getAllMiners(1, 57));
   }
 
@@ -334,7 +331,7 @@ export class MinServiceProvider extends FLP_Tool {
       limit: limit,
       orderBy: "rate:asc",
     };
-    let data = await this.fetch.get<any>(this.MINERS, { search: query });
+    let data = await this.fetch.get<TYPE.DelegatesResModel>(this.MINERS, { search: query });
 
     return data.delegates;
   }

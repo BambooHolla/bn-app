@@ -197,6 +197,11 @@
   "CUR_MINTER_RANK_RANKING": "当前矿工排名",
   "CAN_MINTER_RANK_RANKING": "候选矿工排名",
   "SERVERING_PEER_LIST": "正在服务的节点",
+  "LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR": "获取矿工列表与节点出错",
+
+  "//": "account-miner-scroll-list",
+  "ACCOUNT-MINER-SCROLL-LIST": "矿工列表",
+  "LOAD_ALL_MINER_LIST_ERROR": "获取所有矿工列表出错",
 
   "//": "account-my-contacts",
   "ACCOUNT-MY-CONTACTS": "我的联系人",

@@ -406,17 +406,19 @@ export function TB_AB_Generator(
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
-          (this.appSetting as AppSettingProvider).account_address.distinctUntilChanged().subscribe(token => {
-            if (need_token && !token) {
-              return;
-            }
-            if (!_v) {
-              _v = new AsyncBehaviorSubject(executor.bind(this));
-              expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
-            } else {
-              _v.refresh(target_prop_name);
-            }
-          });
+          (this.appSetting as AppSettingProvider).account_address
+            .distinctUntilChanged()
+            .subscribe(token => {
+              if (need_token && !token) {
+                return;
+              }
+              if (!_v) {
+                _v = new AsyncBehaviorSubject(executor.bind(this));
+                expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
+              } else {
+                _v.refresh(target_prop_name);
+              }
+            });
         }
         return _v;
       },
