@@ -1,10 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Storage } from "@ionic/storage";
+import { EventEmitter } from "eventemitter3";
 
 @Injectable()
 // 用户缓存用户的基本信息，相比getUserToken，速度更快
-export class UserInfoProvider {
+export class UserInfoProvider extends EventEmitter {
   private _userInfo: any;
   get userInfo() {
     return this._userInfo || {};
@@ -36,7 +37,9 @@ export class UserInfoProvider {
   get username() {
     return this._username;
   }
-  constructor(public storage: Storage) {}
+  constructor(public storage: Storage) {
+    super();
+  }
   initUserInfo(userInfo) {
     if (!userInfo) {
       userInfo = {};
@@ -48,5 +51,6 @@ export class UserInfoProvider {
     this._publicKey = userInfo.publicKey;
     this._username = userInfo.username;
     this._password = userInfo.remember ? userInfo.password : null;
+    this.emit("changed");
   }
 }

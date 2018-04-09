@@ -1,4 +1,4 @@
-import { OnInit, AfterContentInit, OnDestroy } from "@angular/core";
+import { OnInit, AfterContentInit, OnDestroy,ChangeDetectorRef } from "@angular/core";
 import { EventEmitter } from "eventemitter3";
 import { PAGE_STATUS } from "./const";
 import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
@@ -23,6 +23,40 @@ export class FLP_Lifecycle extends FLP_Tool
     if (this._event) {
       this._event.emit(eventanme, ...args);
     }
+  }
+  /** 注册视图层相关的事件
+   *  注册后，在leave期间，事件不会触发，但会收集，等再次进入页面的时候按需更新一次
+   *  这个函数主要是用来配合ChangeDetectorRef进行手动更新视图用的
+   */
+  registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function) {
+    let should_emit: any = null;
+    const proxy_handle = (...args) => {
+      if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
+        should_emit = args; // 页面不属于激活状态，不去更新
+        return;
+      }
+      handle(...args);
+    };
+    let offed = false;
+    const off_listen = () => {
+      if (offed) {
+        return;
+      }
+      offed = true;
+      emitter.off(evetname, proxy_handle);
+    };
+    emitter.on(evetname, proxy_handle);
+    this.event.on("onDestory", off_listen);
+    this.event.on("didEnter", () => {
+      if (!should_emit) {
+        return;
+      }
+      try {
+        handle(...should_emit);
+      } finally {
+        should_emit = null;
+      }
+    });
   }
   ngOnInit() {
     // console.log("ngOnInit",this.content,this.header)
@@ -72,8 +106,13 @@ export class FLP_Lifecycle extends FLP_Tool
   }
 
   @FLP_Tool.FromGlobal myapp!: any;
+  cdRef?:ChangeDetectorRef;
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;
+    if(this.cdRef instanceof ChangeDetectorRef){
+      this.cdRef.reattach();
+    }
+
     console.log("ionViewDidEnter", this.cname);
     this.myapp.hideSplashScreen();
     this.myapp.tryOverlaysWebView(3);
@@ -102,6 +141,9 @@ export class FLP_Lifecycle extends FLP_Tool
   }
   ionViewDidLeave() {
     this.PAGE_STATUS = PAGE_STATUS.DID_LEAVE;
+    if(this.cdRef instanceof ChangeDetectorRef){
+      this.cdRef.detach();
+    }
     console.log("ionViewDidLeave", this.cname);
 
     for (let fun_name of this._did_leave_funs) {

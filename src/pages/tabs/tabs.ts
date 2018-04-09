@@ -1,4 +1,10 @@
-import { Component, ViewChild, OnInit } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { IonicPage, NavController, Tabs } from "ionic-angular";
 import { MyApp } from "../../app/app.component";

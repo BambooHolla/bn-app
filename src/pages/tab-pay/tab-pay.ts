@@ -1,4 +1,8 @@
-import { Component } from "@angular/core";
+import {
+  Component,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -34,6 +38,7 @@ export class TabPayPage extends FirstLevelPage {
     public navParams: NavParams,
     // public transfer: TransferProvider,
     public transactionService: TransactionServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;

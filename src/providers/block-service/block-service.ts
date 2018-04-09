@@ -359,12 +359,21 @@ export class BlockServiceProvider extends FLP_Tool {
         return await this.getTopBlocks(false, amount);
       }
     } else {
-      let data = await this.getBlocks({
-        limit: amount,
-        orderBy: "height:desc",
-      });
-      this.blockArray = data.blocks;
-      return this.blockArray;
+      // 服务器限制最大的查询数是100;
+      const tasks: Array<Promise<TYPE.BlockResModel>> = [];
+      let max_offset = amount;
+      const res: TYPE.BlockModel[] = [];
+      for (let offset = 0; offset < max_offset; offset += 100) {
+        tasks[tasks.length] = this.getBlocks({
+          offset,
+          limit: Math.min(max_offset - offset, 100),
+          orderBy: "height:desc",
+        });
+      }
+      return (await Promise.all(tasks)).reduce(
+        (res, data) => res.concat(data.blocks),
+        [] as TYPE.BlockModel[],
+      );
     }
   }
 

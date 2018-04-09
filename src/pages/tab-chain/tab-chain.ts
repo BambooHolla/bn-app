@@ -109,6 +109,7 @@ export class TabChainPage extends FirstLevelPage {
       // 只初始化加载一次列表
       return;
     }
+    // TODO:这里可能需要暂存最后一次请求的函数，只保留最后一次的，然后等完成后，再将最后一次的拿出来执行。
     if (block_list_config.loading) {
       // 规避快速的列表切换
       return;

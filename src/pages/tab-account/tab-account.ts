@@ -1,4 +1,8 @@
-import { Component } from "@angular/core";
+import {
+  Component,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
@@ -12,24 +16,29 @@ import { versionToNumber } from "../version-update-dialog/version-update-dialog"
 @Component({
   selector: "page-tab-account",
   templateUrl: "tab-account.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabAccountPage extends FirstLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public user: UserInfoProvider,
     public fetch: AppFetchProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
+    this.registerViewEvent(this.userInfo, "changed", () => {
+      this.cdRef.markForCheck();
+    });
   }
+
   get ibt() {
-    return this.user.balance;
+    return this.userInfo.balance;
   }
   get dollar() {
-    return parseFloat(this.user.balance) * 20;
+    return parseFloat(this.userInfo.balance) * 20;
   }
   get address() {
-    return this.user.address;
+    return this.userInfo.address;
   }
   app_version_info?: LATEST_VERSION_INFO;
 

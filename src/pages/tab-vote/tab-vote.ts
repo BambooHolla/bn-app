@@ -1,4 +1,9 @@
-import { Component, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
@@ -55,6 +60,7 @@ export class TabVotePage extends FirstLevelPage {
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
     public blockService: BlockServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
   }
