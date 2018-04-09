@@ -6,6 +6,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { AppUrl } from "../app-setting/app-setting";
 
 import { AppSettingProvider } from "../app-setting/app-setting";
+import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
+
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
@@ -81,20 +83,7 @@ export class AppFetchProvider {
     public translateService: TranslateService,
   ) {
     console.log("Hello AppFetchProvider Provider");
-    window["FETCH"] = this;
-    // this.appSetting.user_token.subscribe(val => {
-    //   this._user_token = val;
-    // });
-
-    // const methods = [
-    //   "get",
-    //   "delete",
-    //   "head",
-    //   "options",
-    //   "post",
-    //   "put",
-    //   "patch",
-    // ];
+    tryRegisterGlobal("FETCH", this);
   }
 
   private _handleResThen(res) {

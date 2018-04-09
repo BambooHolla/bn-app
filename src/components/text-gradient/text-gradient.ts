@@ -8,11 +8,13 @@ import {
   SimpleChanges,
   SimpleChange,
   ViewChild,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import * as PIXI from "pixi.js";
 @Component({
   selector: "text-gradient",
   templateUrl: "text-gradient.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild("textPanel") canvasRef!: ElementRef;

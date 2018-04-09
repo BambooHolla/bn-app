@@ -375,7 +375,7 @@ export function TB_AB_Generator(
       const do_refresh = () => {
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
-          _v.refresh();
+          _v.refresh(target_prop_name);
           if (expiry_time_opts && expiry_time_opts.loop) {
             timeout_auto_refresh(refresh_time);
           }
@@ -406,7 +406,7 @@ export function TB_AB_Generator(
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
-          this.appSetting.user_token.subscribe(token => {
+          (this.appSetting as AppSettingProvider).account_address.distinctUntilChanged().subscribe(token => {
             if (need_token && !token) {
               return;
             }
@@ -494,9 +494,9 @@ export function HEIGHT_AB_Generator(
               _v.refresh(target_prop_name);
             }
           };
-          appSetting.height.subscribe(runner);
+          appSetting.height.distinctUntilChanged().subscribe(runner);
           if (need_token) {
-            appSetting.account_address.subscribe(runner);
+            appSetting.account_address.distinctUntilChanged().subscribe(runner);
           }
         }
         return _v;
@@ -531,7 +531,7 @@ export function ROUND_AB_Generator(
       const do_refresh = () => {
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
-          _v.refresh();
+          _v.refresh(target_prop_name);
           if (expiry_time_opts && expiry_time_opts.loop) {
             timeout_auto_refresh(refresh_time);
           }
@@ -574,9 +574,9 @@ export function ROUND_AB_Generator(
               _v.refresh(target_prop_name);
             }
           };
-          appSetting.round.subscribe(runner);
+          appSetting.round.distinctUntilChanged().subscribe(runner);
           if (need_token) {
-            appSetting.account_address.subscribe(runner);
+            appSetting.account_address.distinctUntilChanged().subscribe(runner);
           }
         }
         return _v;

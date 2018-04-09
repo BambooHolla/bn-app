@@ -1,10 +1,16 @@
-import { Component, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { AniBase } from "../AniBase";
 import { ChainMeshComponent } from "../chain-mesh/chain-mesh";
 import * as PIXI from "pixi.js";
 @Component({
   selector: "buddha-glow",
   templateUrl: "buddha-glow.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BuddhaGlowComponent extends AniBase {
   // noise = new SimplexNoise();
@@ -125,7 +131,7 @@ export class BuddhaGlowComponent extends AniBase {
       sp.width = (Math.random() + 0.3) * pt(8);
       sp.height = sp.height * 2; // * (Math.random() / 4 + 2);
       // if (Math.random() > 0.5) {
-      // 	sp.blendMode = PIXI.BLEND_MODES.SCREEN;
+      //   sp.blendMode = PIXI.BLEND_MODES.SCREEN;
       // } else {
       sp.blendMode = PIXI.BLEND_MODES.ADD;
       // }

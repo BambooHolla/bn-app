@@ -1,5 +1,7 @@
 import { EventEmitter } from "eventemitter3";
 import * as PIXI from "pixi.js";
+import { tryRegisterGlobal } from "../bnqkl-framework/FLP_Tool";
+
 // PIXI.settings.TARGET_FPMS = 0.03;
 // const _raf = requestAnimationFrame;
 // window["requestAnimationFrame"] = cb => _raf(() => _raf(cb));
@@ -17,7 +19,7 @@ export class AniBase extends EventEmitter {
   }
   constructor() {
     super();
-    window["ani_" + this.cname] = this;
+    tryRegisterGlobal("ani_" + this.cname, this);
     this._loop = this._loop.bind(this);
   }
   ngAfterViewInit() {

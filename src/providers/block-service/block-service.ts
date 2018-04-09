@@ -137,7 +137,7 @@ export class BlockServiceProvider extends FLP_Tool {
   }
   @asyncCtrlGenerator.retry()
   private async _updateHeight() {
-    this.lastBlock.refresh();
+    this.lastBlock.refresh("update Height");
     const last_block = await this.lastBlock.getPromise();
     this.appSetting.setHeight(last_block.height);
   }

@@ -4,11 +4,12 @@ import {
   OnDestroy,
   Input,
   HostBinding,
+  ChangeDetectorRef,
 } from "@angular/core";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { UserInfoProvider } from "../providers/user-info/user-info";
-import { FLP_Tool } from "../bnqkl-framework/FLP_Tool";
+import { FLP_Tool, tryRegisterGlobal } from "../bnqkl-framework/FLP_Tool";
 import { Subscription } from "rxjs/Subscription";
 import { AlertController, ToastController } from "ionic-angular";
 import { EventEmitter } from "eventemitter3";
@@ -26,9 +27,9 @@ export class VoteExtendsPanelComponent extends EventEmitter
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
   @FLP_Tool.FromGlobal toastCtrl!: ToastController;
   @FLP_Tool.FromGlobal userInfo!: UserInfoProvider;
-  constructor() {
+  constructor(public cdRef: ChangeDetectorRef) {
     super();
-    window["extendsPanelOf" + this.constructor.name] = this;
+    tryRegisterGlobal("extendsPanelOf" + this.constructor.name, this);
   }
   static DATA_REFRESH_FREQUENCY = DATA_REFRESH_FREQUENCY;
   data_refresh_frequency = DATA_REFRESH_FREQUENCY.BY_ROUND;
@@ -57,6 +58,8 @@ export class VoteExtendsPanelComponent extends EventEmitter
     this._height_subscript = this.appSetting.after_height.subscribe(() => {
       if (this.appSetting.getUserToken()) {
         this.refreshCommonData();
+      }else{
+        console.log("NO LOGIN ,IGNORE")
       }
 
       if (this.data_refresh_frequency !== DATA_REFRESH_FREQUENCY.BY_HEIGHT) {
@@ -94,6 +97,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
     } else {
       await this.refreshBaseData();
     }
+    this.cdRef.markForCheck();
   }
 
   @asyncCtrlGenerator.error()
@@ -101,6 +105,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
   private async refreshCommonData(): Promise<any> {
     this.cur_round_income_amount = await this.benefitService.benefitThisRound.getPromise();
     console.log("this.cur_round_income_amount", this.cur_round_income_amount);
+    this.cdRef.markForCheck();
   }
   async refreshBaseData(): Promise<any> {
     throw new Error("refreshBaseData没有定义");

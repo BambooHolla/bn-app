@@ -13,8 +13,7 @@ import {
   ViewController,
   AlertOptions,
 } from "ionic-angular";
-// import * as Instascan from "instascan";
-// window["Instascan"] = Instascan;
+
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
 
 @IonicPage({ name: "account-scan-add-contact" })
@@ -33,8 +32,6 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     public barcodeScanner: BarcodeScanner,
   ) {
     super(navCtrl, navParams, true, tabs);
-    // window["Instascan"] = Instascan;
-    // alert(Instascan);
   }
   titleContent = "SCAN-QR-CODE";
   @AccountScanAddContactPage.willEnter

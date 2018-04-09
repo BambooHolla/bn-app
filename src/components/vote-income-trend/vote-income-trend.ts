@@ -1,4 +1,9 @@
-import { Component, Input } from "@angular/core";
+import {
+  Component,
+  Input,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import {
   BenefitServiceProvider,
   BenefitModel,
@@ -14,6 +19,7 @@ import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 @Component({
   selector: "vote-income-trend",
   templateUrl: "vote-income-trend.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
   @Input("show-detail")
@@ -28,8 +34,8 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
   get show_detail() {
     return this._show_detail;
   }
-  constructor() {
-    super();
+  constructor(cdRef: ChangeDetectorRef) {
+    super(cdRef);
   }
 
   income_trend_list?: BenefitModel[];

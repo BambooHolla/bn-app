@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 
 /**
  * Generated class for the CommonWaveBgComponent component.
@@ -7,15 +7,16 @@ import { Component, Input } from "@angular/core";
  * Components.
  */
 @Component({
-  selector: "common-wave-bg",
-  templateUrl: "common-wave-bg.html",
+	selector: "common-wave-bg",
+	templateUrl: "common-wave-bg.html",
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommonWaveBgComponent {
-  @Input("show") show = true;
-  @Input("wave1-color") color1 = "#FFF";
-  @Input("wave1-opacity") opacity1 = 1;
-  @Input("wave2-color") color2 = "#fc874b";
-  @Input("wave2-opacity") opacity2 = 0.8;
-  @Input("wave3-color") color3 = "#fc6739";
-  @Input("wave3-opacity") opacity3 = 0.6;
+	@Input("show") show = true;
+	@Input("wave1-color") color1 = "#FFF";
+	@Input("wave1-opacity") opacity1 = 1;
+	@Input("wave2-color") color2 = "#fc874b";
+	@Input("wave2-opacity") opacity2 = 0.8;
+	@Input("wave3-color") color3 = "#fc6739";
+	@Input("wave3-opacity") opacity3 = 0.6;
 }

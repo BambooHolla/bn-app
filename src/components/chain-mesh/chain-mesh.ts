@@ -7,6 +7,7 @@ import {
   OnDestroy,
   Input,
   Output,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { AniBase } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
@@ -39,6 +40,7 @@ loader.load((loader, resources) => {
 @Component({
   selector: "chain-mesh",
   templateUrl: "chain-mesh.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChainMeshComponent extends AniBase {
   @ViewChild("canvas") canvasRef!: ElementRef;

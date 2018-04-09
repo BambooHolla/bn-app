@@ -11,7 +11,10 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
+import {
+  FLP_Tool,
+  tryRegisterGlobal,
+} from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
@@ -40,7 +43,7 @@ export class LoginServiceProvider extends FLP_Tool {
   ) {
     super();
     console.group("Hello LoginServiceProvider Provider");
-    window["LoginServiceProviderInstance"] = this;
+    tryRegisterGlobal("LoginServiceProviderInstance", this);
     this.loginStatus = this.appSetting.user_token.map(val => {
       // console.log("USER TOKEN:", val);
       return !!val;
@@ -61,30 +64,15 @@ export class LoginServiceProvider extends FLP_Tool {
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
   readonly SEARCH_ACCOUNT_URL = this.appSetting.APP_URL("/api/accounts/");
-  // _loginerInfo: AsyncBehaviorSubject<CommonResponseData<UserModel>>
+
+  // loginerInfo!: AsyncBehaviorSubject<UserModel>;
   // // 按需生成，否则直接生成的话发起请求，在返回的末端没有其它地方接手这个请求catch错误的话，会导致异常抛出到全局
-  // get loginerInfo() {
-  //   if (!this._loginerInfo) {
-  //     this.appSetting.user_token.subscribe(token => {
-  //       if (!this._loginerInfo) {
-  //         this._loginerInfo = new AsyncBehaviorSubject(promise_pro => {
-  //           return promise_pro.follow(this.fetch.get(this.GET_LOGINER_DATA_URL, { search: { type: "1" } }));
-  //         });
-  //       } else {
-  //         this._loginerInfo.refresh();
-  //       }
-  //     })
-  //   }
-  //   return this._loginerInfo;
+  // @TB_AB_Generator("loginerInfo")
+  // loginerInfo_Executor(promise_pro) {
+  //   return promise_pro.follow(
+  //     this.fetch.autoCache(true).get(this.LOGIN_URL, { search: { type: "1" } }),
+  //   );
   // }
-  loginerInfo!: AsyncBehaviorSubject<UserModel>;
-  // 按需生成，否则直接生成的话发起请求，在返回的末端没有其它地方接手这个请求catch错误的话，会导致异常抛出到全局
-  @TB_AB_Generator("loginerInfo")
-  loginerInfo_Executor(promise_pro) {
-    return promise_pro.follow(
-      this.fetch.autoCache(true).get(this.LOGIN_URL, { search: { type: "1" } }),
-    );
-  }
   private USER_PWD_STORE_KEY = "IFM_USER_LOGIN_PWD";
   /**
    * 登录账户

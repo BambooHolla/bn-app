@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input ,ChangeDetectorRef,ChangeDetectionStrategy} from "@angular/core";
 import {
   MinServiceProvider,
   RankModel,
@@ -12,13 +12,15 @@ import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 @Component({
   selector: "vote-pre-round-income-ranking",
   templateUrl: "vote-pre-round-income-ranking.html",
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponent {
   constructor(
     public minService: MinServiceProvider,
     public appSetting: AppSettingProvider,
+    cdRef: ChangeDetectorRef
   ) {
-    super();
+    super(cdRef);
   }
   @Input("show-detail")
   set show_detail(v) {

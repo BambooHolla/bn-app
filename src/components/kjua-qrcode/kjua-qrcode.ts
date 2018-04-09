@@ -7,6 +7,7 @@ import {
   OnChanges,
   SimpleChanges,
   SimpleChange,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import * as kjua from "kjua";
 
@@ -83,6 +84,7 @@ type KjuaOptions = { [key in keyof KjuaConfig]?: KjuaConfig[key] };
 @Component({
   selector: "kjua-qrcode",
   templateUrl: "kjua-qrcode.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KjuaQrcodeComponent implements OnInit, OnChanges {
   _config: KjuaOptions = {};

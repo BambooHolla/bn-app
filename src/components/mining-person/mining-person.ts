@@ -1,4 +1,10 @@
-import { Component, ViewChild, ElementRef, Input } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  Input,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { AniBase } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import * as PIXI_SOUND from "pixi-sound";
@@ -43,6 +49,7 @@ loader.load((loader, resources) => {
 @Component({
   selector: "mining-person",
   templateUrl: "mining-person.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MiningPersonComponent extends AniBase {
   @Input("auto-start") auto_start = false;
@@ -138,11 +145,14 @@ export class MiningPersonComponent extends AniBase {
         mc.texture = frames_list[cur_frame_i];
       }
       if (cur_frame_i === 41) {
-        PIXI.sound.play(miningSounds[(Math.random()*miningSounds.length)|0], {
-          loop: false,
-          speed: 0.5,
-          volume: 0.1,
-        });
+        PIXI.sound.play(
+          miningSounds[(Math.random() * miningSounds.length) | 0],
+          {
+            loop: false,
+            speed: 0.5,
+            volume: 0.1,
+          },
+        );
       }
     });
     stage.addChild(mc);

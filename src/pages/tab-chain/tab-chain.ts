@@ -4,6 +4,8 @@ import {
   ViewChild,
   Renderer2,
   AfterViewChecked,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from "@angular/core";
 import {
   IonicPage,
@@ -33,6 +35,7 @@ import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 @Component({
   selector: "page-tab-chain",
   templateUrl: "tab-chain.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabChainPage extends FirstLevelPage {
   constructor(
@@ -41,6 +44,7 @@ export class TabChainPage extends FirstLevelPage {
     public blockService: BlockServiceProvider,
     public viewCtrl: ViewController,
     public r2: Renderer2,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
     // this.auto_header_shadow_when_scroll_down = true;
@@ -326,5 +330,6 @@ export class TabChainPage extends FirstLevelPage {
     }
     tasks[tasks.length] = this.loadUnconfirmBlock();
     await Promise.all(tasks);
+    this.cdRef.markForCheck();
   }
 }

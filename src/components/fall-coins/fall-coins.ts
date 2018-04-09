@@ -1,4 +1,9 @@
-import { Component, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { AniBase } from "../AniBase";
 import * as PIXI from "pixi.js";
@@ -34,6 +39,7 @@ loader.load();
 @Component({
   selector: "fall-coins",
   templateUrl: "fall-coins.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FallCoinsComponent extends AniBase {
   @ViewChild("canvas") canvasRef!: ElementRef;

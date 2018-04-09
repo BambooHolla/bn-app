@@ -93,9 +93,6 @@
   "BACKGROUND_DOWNLOAD": "后台下载",
   "ENSURE_TO_CANCEL_UPDATE": "确定要取消更新吗？",
 
-  "//": "settings-set-default-fee",
-  "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",
-
   "//": "settings-net-version",
   "SETTINGS-NET-VERSION": "设置网络",
   "NET_VERSION_OF_MAINNET": "正式网络",
@@ -240,6 +237,9 @@
   "DEFAULT_TRANSACTION_FEE:": "默认手续费：",
   "AUTOMATICALLY_USE_THE_BEST_FEE": "自动采用最佳手续费",
   "MINING_MAX_TRANSACTION_FEE:": "挖矿累计最大手续费：",
+  "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",
+  "USE_THE_AVERAGE_FEE_OF_THE_PREVIOUS_ROUND_AS_THE_BEST_FEE":
+    "使用上一轮的平均手续费作为最佳手续费",
 
   "//": "typeCode",
   "//": "SEND",

@@ -1,7 +1,7 @@
 import { OnInit, AfterContentInit, OnDestroy } from "@angular/core";
 import { EventEmitter } from "eventemitter3";
 import { PAGE_STATUS } from "./const";
-import { FLP_Tool } from "./FLP_Tool";
+import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
 // import { MyApp } from "../app/app.component";
 
 export class FLP_Lifecycle extends FLP_Tool
@@ -9,7 +9,7 @@ export class FLP_Lifecycle extends FLP_Tool
   constructor() {
     super();
     console.log(this.cname, this);
-    window["instanceOf" + this.cname] = this;
+    tryRegisterGlobal("instanceOf" + this.cname, this);
   }
   cname = this.constructor.name;
   PAGE_LEVEL = 1;

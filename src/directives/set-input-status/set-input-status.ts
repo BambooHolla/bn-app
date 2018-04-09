@@ -8,6 +8,7 @@ import {
   Injector,
 } from "@angular/core";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
+import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 
 /**
  * Generated class for the SetInputStatusDirective directive.
@@ -26,12 +27,12 @@ export class SetInputStatusDirective implements OnInit, OnDestroy {
   constructor(private elementRef: ElementRef, public view: ViewContainerRef) {
     // console.log('Hello BackdropBlurDirective Directive');
     // if(this.ele.tagName!=="INPUT"){
-    // 	throw new TypeError("[set-input-status] Directive must use in input elememnt");
+    //   throw new TypeError("[set-input-status] Directive must use in input elememnt");
     // }
     this._addEvent("blur");
     this._addEvent("input");
     this._addEvent("focus");
-    console.log((window["sis"] = this));
+    tryRegisterGlobal("sis", this);
     // FIXIT: 这不是标准的方法，找到稳定的API来实现获取Component
     this.page = view["_view"].component as FirstLevelPage;
   }
@@ -74,9 +75,9 @@ export class SetInputStatusDirective implements OnInit, OnDestroy {
       this.ele.addEventListener(name, on_blur);
     } else if (name === "input") {
       // this.ele.addEventListener(name, e => {
-      // 	if(e.target.value){
-      // 	ionItemEle.classList.remove('input-has-focus');
-      // 	}
+      //   if(e.target.value){
+      //   ionItemEle.classList.remove('input-has-focus');
+      //   }
       // });
     }
   }

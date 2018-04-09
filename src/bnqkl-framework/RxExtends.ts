@@ -40,8 +40,8 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<
   setupExecutor(executor: Executor<T>) {
     this._executor = executor;
   }
-  refresh(msg?: string) {
-    this.abort(msg);
+  refresh(msg?: string, force_abort?: boolean) {
+    this.abort(msg, force_abort);
     this.runExcutor();
   }
   private _promise?: Promise<T>;
@@ -80,9 +80,15 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<
     }
   }
   // 中断请求
-  abort(msg?: string) {
-    this._asyncer.abort(msg);
-    this._asyncer = new PromisePro<T>();
+  abort(msg?: string, force_abort?: boolean) {
+    const new_asyncer = new PromisePro<T>();
+    const old_asyncer = this._asyncer;
+    if (force_abort) {
+      old_asyncer.abort(msg);
+    }else if (!old_asyncer.is_done) {
+      old_asyncer.follow(new_asyncer.promise);
+    }
+    this._asyncer = new_asyncer;
     this.promise = undefined;
   }
   // static CATCH_POOL = new Map<string, AsyncBehaviorSubject<any>>();

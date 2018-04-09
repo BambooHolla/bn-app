@@ -1,4 +1,9 @@
-import { Component, Input } from "@angular/core";
+import {
+  Component,
+  Input,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import {
   RateOfReturnModel,
   MinServiceProvider,
@@ -10,6 +15,7 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 @Component({
   selector: "vote-pre-round-income-rate",
   templateUrl: "vote-pre-round-income-rate.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
   @Input("show-detail")
@@ -19,8 +25,8 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
   get show_detail() {
     return this._show_detail;
   }
-  constructor(public minService: MinServiceProvider) {
-    super();
+  constructor(public minService: MinServiceProvider, cdRef: ChangeDetectorRef) {
+    super(cdRef);
   }
 
   pre_round_income_rate?: RateOfReturnModel;

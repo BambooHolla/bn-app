@@ -6,6 +6,7 @@ import {
   OnChanges,
   SimpleChanges,
   SimpleChange,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { AniBase } from "../AniBase";
 import { BenefitModel } from "../../providers/benefit-service/benefit.types";
@@ -13,6 +14,7 @@ import { BenefitModel } from "../../providers/benefit-service/benefit.types";
 @Component({
   selector: "income-trend-simple-chart",
   templateUrl: "income-trend-simple-chart.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class IncomeTrendSimpleChartComponent extends AniBase
   implements OnChanges {

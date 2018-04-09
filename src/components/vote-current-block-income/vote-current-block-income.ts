@@ -1,4 +1,9 @@
-import { Component, Input } from "@angular/core";
+import {
+  Component,
+  Input,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { RankModel } from "../../providers/min-service/min-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { BenefitServiceProvider } from "../../providers/benefit-service/benefit-service";
@@ -12,6 +17,7 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 @Component({
   selector: "vote-current-block-income",
   templateUrl: "vote-current-block-income.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
   @Input("show-detail")
@@ -24,8 +30,9 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
   constructor(
     public blockService: BlockServiceProvider,
     public benefitService: BenefitServiceProvider,
+    cdRef: ChangeDetectorRef,
   ) {
-    super();
+    super(cdRef);
     this.data_refresh_frequency = DATA_REFRESH_FREQUENCY.BY_HEIGHT;
   }
 

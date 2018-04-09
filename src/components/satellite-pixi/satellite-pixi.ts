@@ -1,4 +1,9 @@
-import { Component, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { AniBase, Easing } from "../AniBase";
 import * as PIXI from "pixi.js";
 import * as SimplexNoise from "simplex-noise";
@@ -6,6 +11,7 @@ import * as SimplexNoise from "simplex-noise";
 @Component({
   selector: "satellite-pixi",
   templateUrl: "satellite-pixi.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SatellitePixiComponent extends AniBase {
   protected root_circle?: PIXI.Graphics;
@@ -124,13 +130,13 @@ export class SatellitePixiComponent extends AniBase {
 
     // // 推进器火焰动画
     // this._loop_runs.push(() => {
-    // 	for (let tail of tails) {
-    // 		if (tail.scale.x > 1) {
-    // 			tail.scale.x -= 0.05;
-    // 		} else {
-    // 			tail.scale.x += Math.random();
-    // 		}
-    // 	}
+    //   for (let tail of tails) {
+    //     if (tail.scale.x > 1) {
+    //       tail.scale.x -= 0.05;
+    //     } else {
+    //       tail.scale.x += Math.random();
+    //     }
+    //   }
     // });
 
     // 沿轨道运动动画

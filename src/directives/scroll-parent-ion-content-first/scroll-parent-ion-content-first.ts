@@ -8,13 +8,14 @@ import {
 } from "@angular/core";
 import { Content } from "ionic-angular";
 import { Subscription } from "rxjs/Subscription";
+import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 
 @Directive({
   selector: "[scroll-parent-ion-content-first]", // Attribute selector
 })
 export class ScrollParentIonContentFirstDirective implements OnInit, OnDestroy {
   constructor(public content: Content) {
-    window["spicf"] = this;
+    tryRegisterGlobal("spicf", this);
   }
   @Input("scroll-parent-ion-content-first") parent_content?: Content;
   private _sub?: Subscription;
@@ -28,9 +29,9 @@ export class ScrollParentIonContentFirstDirective implements OnInit, OnDestroy {
     this._sub = this.content.ionScroll.subscribe(v => {
       const bound = ele.getBoundingClientRect();
       // console.log(
-      // 	v,
-      // 	document.body.clientHeight - bound.top,
-      // 	bound.height,
+      //   v,
+      //   document.body.clientHeight - bound.top,
+      //   bound.height,
       // );
       if (this.parent_content) {
         const content_view_height = document.body.clientHeight - bound.top;

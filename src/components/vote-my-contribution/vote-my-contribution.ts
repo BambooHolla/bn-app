@@ -1,4 +1,9 @@
-import { Component, Input } from "@angular/core";
+import {
+  Component,
+  Input,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import {
   BenefitServiceProvider,
   BenefitModel,
@@ -10,6 +15,7 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 @Component({
   selector: "vote-my-contribution",
   templateUrl: "vote-my-contribution.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VoteMyContributionComponent extends VoteExtendsPanelComponent {
   @Input("show-detail")
@@ -19,8 +25,8 @@ export class VoteMyContributionComponent extends VoteExtendsPanelComponent {
   get show_detail() {
     return this._show_detail;
   }
-  constructor() {
-    super();
+  constructor(cdRef: ChangeDetectorRef) {
+    super(cdRef);
   }
 
   my_contribution = {};
