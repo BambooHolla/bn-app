@@ -140,11 +140,16 @@ vote-current-block-income {
       }
       > .table-wrapper {
         flex-grow: 1;
+        display: flex;
+        width: 100%;
+        flex-direction: column;
         .row {
           height: 2.8rem;
           font-size: 1.4rem;
           display: flex; /* align-items: center;
           justify-content: space-between; */
+          flex-grow: 0;
+          flex-shrink: 0;
           > .item {
             flex: 1;
             display: flex;
@@ -158,6 +163,10 @@ vote-current-block-income {
           background-color: #f6f6f6;
           font-size: 1.45rem;
           color: #7c7c7c;
+        }
+        > .list-container{
+          flex-grow: 1;
+
         }
       }
     }

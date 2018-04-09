@@ -55,29 +55,15 @@
         <div class="item height">{{'BLOCK_height'|translate}}</div>
         <div class="item income">{{'BLOCK_benefit'|translate}}</div>
       </div>
-      <div class="list">
-        <div class="row">
-          <div class="item block-id">c3f5***9a3d</div>
-          <div class="item height">666</div>
+      <virtual-scroll #vscroll class="list-container" [items]="my_forging_block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
+        <div class="row" *ngFor="let block of viewPortItems">
+          <div class="item block-id">{{block.id|mask:"@address"}}</div>
+          <div class="item height">{{block.height}}</div>
           <div class="item income">
-            <text-gradient text="+12.3" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
+            <text-gradient [text]="'+'+(block.totalAmount|amountEuler|number:'1.8-8')" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
           </div>
         </div>
-        <div class="row">
-          <div class="item block-id">c3f5***9a3d</div>
-          <div class="item height">666</div>
-          <div class="item income">
-            <text-gradient text="+12.3" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
-          </div>
-        </div>
-        <div class="row">
-          <div class="item block-id">c3f5***9a3d</div>
-          <div class="item height">666</div>
-          <div class="item income">
-            <text-gradient text="+12.3" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
-          </div>
-        </div>
-      </div>
+      </virtual-scroll>
     </div>
   </div>
   <div class="footer">

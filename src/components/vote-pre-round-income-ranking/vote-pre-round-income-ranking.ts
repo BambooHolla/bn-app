@@ -75,7 +75,7 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
       this.page_info.loading = false;
     }
   }
-  async loadMoreRankList() {
+  private async _loadMoreRankList() {
     return await this._loadDetailData(this.page_info.page + 1);
   }
   async onListChange(event: ChangeEvent) {
@@ -83,8 +83,9 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
     if (this.page_info.loading || !this.page_info.hasMore) {
       return;
     }
-    if (await this.loadMoreRankList()) {
+    if (await this._loadMoreRankList()) {
       this.pre_round_rank_blist = this.pre_round_rank_blist.slice();
+      this.cdRef.markForCheck();
     }
   }
 }

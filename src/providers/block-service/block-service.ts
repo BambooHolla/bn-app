@@ -548,16 +548,29 @@ export class BlockServiceProvider extends FLP_Tool {
     return promise_pro.follow(this.getExpectBlockInfo());
   }
 
+  default_my_forging_pagesize = 20;
+  async getForgingByPage(
+    generatorPublicKey: string,
+    page = 1,
+    pageSize = this.default_my_forging_pagesize,
+  ) {
+    const data = await this.fetch.get<TYPE.ForgingBlockResModel>(this.GET_MY_FORGING, {
+      search: {
+        generatorPublicKey,
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
+      },
+    });
+    return data;
+  }
+  getMyForgingByPage(page?: number, pageSize?: number) {
+    return this.getForgingByPage(this.user.publicKey, page, pageSize);
+  }
   /**
    * 获取我锻造的区块数
    */
   async getMyForgingCount(): Promise<number> {
-    let data = await this.fetch.get<TYPE.BlockResModel>(this.GET_MY_FORGING, {
-      search: {
-        generatorPublicKey: this.user.publicKey,
-      },
-    });
-
+    const data = await this.getMyForgingByPage(1, 1);
     return data.count;
   }
   myForgingCount!: AsyncBehaviorSubject<number>;
