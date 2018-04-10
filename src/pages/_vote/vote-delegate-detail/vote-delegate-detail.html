@@ -52,12 +52,12 @@
     </div>
     <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[255,133,112,0.3]}">
       <div class="common-list">
-        <div class="common-item row" *ngFor="let block of forgin_block_list">
+        <div class="common-item row" *ngFor="let block of forgin_block_list" (click)="routeTo('chain-block-detail', {block:block})">
           <div class="item">
             {{block.timestamp|timestamp|amDateFormat:"YYYY.MM.DD"}}
           </div>
           <div class="item">
-            {{block.reward|amountEuler|number:"1.0-0"}}
+            {{block.reward|amountEuler|number:"1.2-2"}}
           </div>
           <div class="item">
             {{block.height}}

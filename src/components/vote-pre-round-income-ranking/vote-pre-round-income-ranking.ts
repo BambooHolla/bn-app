@@ -57,7 +57,14 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
   };
 
   pre_round_rank_blist: RankModel[] = [];
+  fetchd_round_info: number = 0;
   async refreshDetailData() {
+    const current_round = this.appSetting.getRound();
+    // 避免多余的数据刷新
+    if (this.fetchd_round_info === current_round) {
+      return;
+    }
+    this.fetchd_round_info = current_round;
     // 重置分页信息
     this.page_info = {
       ...this._default_page_info,

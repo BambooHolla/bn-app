@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { RankModel } from "../../providers/min-service/min-service";
+import { NavController, NavParams } from "ionic-angular";
 import {
   BlockServiceProvider,
   BlockModel,
@@ -32,7 +33,12 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
   get show_detail() {
     return this._show_detail;
   }
+  routeTo(page, params) {
+    this.navCtrl.push(page, params);
+  }
   constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
     public blockService: BlockServiceProvider,
     public benefitService: BenefitServiceProvider,
     cdRef: ChangeDetectorRef,
@@ -103,15 +109,20 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
     this.page_info = {
       ...this._default_page_info,
     };
-    this.my_forging_block_list = [];
     try {
       tasks[tasks.length] = this.blockService.myForgingCount
         .getPromise()
         .then(v => {
           // 如果count没有变，就不需要更新列表
-          if (v === cur_round_income_info.block_num) {
+          if (
+            v === cur_round_income_info.block_num &&
+            !(v !== 0 && this.my_forging_block_list.length === 0)
+          ) {
             return false;
           }
+          cur_round_income_info.block_num = v;
+          this.my_forging_block_list = [];
+          this.page_info.page = 1;
           return this._loadDetailData();
         });
       tasks[tasks.length] = this._refreshSameData();

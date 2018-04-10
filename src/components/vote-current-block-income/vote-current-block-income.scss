@@ -116,6 +116,7 @@ vote-current-block-income {
     > .footer {
       color: #7d7d7d;
       height: 5rem;
+      flex-shrink: 0;
       font-size: 2rem;
       display: flex;
       align-items: center;
@@ -158,6 +159,12 @@ vote-current-block-income {
             align-items: center;
             justify-content: center;
             font-weight: lighter;
+            &:first-child{
+              flex: 1.4;
+            }
+            &:nth-child(2){
+              flex: 1.2;
+            }
           }
         }
         > .th {

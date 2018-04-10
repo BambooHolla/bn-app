@@ -51,16 +51,43 @@
     <div class="nav">{{'MY_BLOCKS'|translate}}</div>
     <div class="table-wrapper">
       <div class="th row">
-        <div class="item block-id">{{'BLOCK_id'|translate}}</div>
-        <div class="item height">{{'BLOCK_height'|translate}}</div>
-        <div class="item income">{{'BLOCK_benefit'|translate}}</div>
+        <div class="item">
+          <ali-icon name="ifm-clock"></ali-icon>
+          <!-- <div class="title">{{'BLOCK_time'|translate}}</div> -->
+        </div>
+        <div class="item">
+          <ali-icon name="ifm-reward"></ali-icon>
+          <!-- <div class="title">{{'BLOCK_reward'|translate}}</div> -->
+        </div>
+        <div class="item">
+          <ali-icon name="ifm-resize-height"></ali-icon>
+          <!-- <div class="title">{{'BLOCK_height'|translate}}</div> -->
+        </div>
+        <div class="item">
+          <ali-icon name="ifm-qukuaiguanli"></ali-icon>
+          <!-- <div class="title">{{'BLOCK_blockSize'|translate}}</div> -->
+        </div>
+        <div class="item">
+          <ali-icon name="ifm-tran"></ali-icon>
+          <!-- <div class="title">{{'BLOCK_numberOfTransactions'|translate}}</div> -->
+        </div>
       </div>
       <virtual-scroll #vscroll class="list-container" [items]="my_forging_block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
-        <div class="row" *ngFor="let block of viewPortItems">
-          <div class="item block-id">{{block.id|mask:"@address"}}</div>
-          <div class="item height">{{block.height}}</div>
-          <div class="item income">
-            <text-gradient [text]="'+'+(block.totalAmount|amountEuler|number:'1.8-8')" from="#f78464" to="#fecc49" fontSize="1.3rem"></text-gradient>
+        <div class="row" *ngFor="let block of viewPortItems" (click)="routeTo('chain-block-detail',{block:block})">
+          <div class="item">
+            {{block.timestamp|timestamp|amDateFormat:"YYYY.MM.DD"}}
+          </div>
+          <div class="item">
+            {{block.reward|amountEuler|number:"1.2-2"}}
+          </div>
+          <div class="item">
+            {{block.height}}
+          </div>
+          <div class="item">
+            {{block.blockSize|bytes}}
+          </div>
+          <div class="item">
+            {{block.numberOfTransactions}}
           </div>
         </div>
       </virtual-scroll>
