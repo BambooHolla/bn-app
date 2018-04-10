@@ -111,6 +111,7 @@ page-vote-delegate-detail {
     display: flex;
     flex-direction: column;
     .row {
+      padding: 0;
       width: 100%;
       flex-shrink: 0;
       flex-grow: 0;
@@ -124,7 +125,7 @@ page-vote-delegate-detail {
         align-items: center;
         flex: 1;
         &:first-child {
-          flex: 1.2;
+          flex: 1.4;
         }
       }
     }

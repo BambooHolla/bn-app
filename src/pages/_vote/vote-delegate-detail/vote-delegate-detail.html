@@ -54,24 +54,24 @@
       <div class="common-list">
         <div class="common-item row" *ngFor="let block of forgin_block_list">
           <div class="item">
-            {{block.timestamp|timestamp|amLocale:localName}}
+            {{block.timestamp|timestamp|amDateFormat:"YYYY.MM.DD"}}
           </div>
           <div class="item">
-            {{block.reward|number:"1.0-0"}}
+            {{block.reward|amountEuler|number:"1.0-0"}}
           </div>
           <div class="item">
             {{block.height}}
           </div>
           <div class="item">
-            {{block.block_size|number:"1.2-2"}}
+            {{block.blockSize|bytes}}
           </div>
           <div class="item">
-            {{block.tran_logs.length}}
+            {{block.numberOfTransactions}}
           </div>
         </div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreBlockList())" [enabled]="page_info.hasMore">
-        <ion-infinite-scroll-content loadingText="'LOADING_MORE_FOGIN_BLOCK_LIST'|translate"></ion-infinite-scroll-content>
+        <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_FOGIN_BLOCK_LIST'|translate"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </ion-content>
   </div>

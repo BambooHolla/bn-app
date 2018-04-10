@@ -6,6 +6,7 @@ import {
 } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
+import { PromisePro } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular";
 import {
@@ -35,17 +36,28 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
+  _wait_delegate_info?:PromisePro<DelegateModel>
+  get wait_delegate_info(){
+    if(!this._wait_delegate_info){
+      this._wait_delegate_info = new PromisePro();
+    }
+    return this._wait_delegate_info
+  }
   delegate_info?: DelegateModel;
-  current_info_round: number = 0;
+  current_info_height: number = 0;
   @VoteDelegateDetailPage.willEnter
   async initData() {
     const delegate_info = this.navParams.get("delegate_info");
     if (!delegate_info) {
+      this.wait_delegate_info.reject();
       this.navCtrl.goToRoot({});
       return;
     }
     this.delegate_info = delegate_info;
-    this.current_info_round = this.appSetting.getRound();
+    this.current_info_height = this.appSetting.getHeight();
+    this.wait_delegate_info.resolve(delegate_info);
+    // 更新页面
+    this.cdRef.markForCheck();
   }
 
   async loadMoreBlockList() {
@@ -56,10 +68,12 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     page_info.page += 1;
     const forgin_blocks = await this._getForginBlocks();
     this.forgin_block_list.push(...forgin_blocks);
+    // 更新页面
+    this.cdRef.markForCheck();
   }
 
   page_info = {
-    page: 0,
+    page: 1,
     pageSize: 20,
     loading: false,
     hasMore: true,
@@ -70,6 +84,8 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
   @VoteDelegateDetailPage.addEvent("ROUND:CHANGED")
   async watchRoundChanged() {
     this.total_vote = await this.minService.totalVote.getPromise();
+    // 更新页面
+    this.cdRef.markForCheck();
   }
 
   @VoteDelegateDetailPage.addEvent("HEIGHT:CHANGED")
@@ -78,7 +94,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
       return;
     }
     const old_producedblocks = this.delegate_info.producedblocks;
-    if (this.current_info_round !== this.appSetting.getRound()) {
+    if (this.current_info_height !== this.appSetting.getHeight()) {
       this.delegate_info = await this.minService.getDelegateInfo(
         this.delegate_info.publicKey,
       );
@@ -91,11 +107,14 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
       return;
     }
     // 重新开始分页加载
-    this.page_info.page = 0;
+    this.page_info.page = 1;
     this.forgin_block_list = await this._getForginBlocks();
+    // 更新页面
+    this.cdRef.markForCheck();
   }
   @asyncCtrlGenerator.error("@@GET_FORGIN_BLOCK_ERROR")
   private async _getForginBlocks() {
+    await this.wait_delegate_info;
     const { page_info } = this;
     page_info.loading = true;
     try {
