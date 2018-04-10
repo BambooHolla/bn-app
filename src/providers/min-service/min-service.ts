@@ -503,10 +503,12 @@ export class MinServiceProvider extends FLP_Tool {
   }
 
   getDelegateInfo(publicKey: string) {
-    return this.fetch.get<TYPE.DelegateInfoResModel>(this.DELEGATE_INFO, {
-      search: {
-        publicKey,
-      },
-    });
+    return this.fetch
+      .get<TYPE.DelegateInfoResModel>(this.DELEGATE_INFO, {
+        search: {
+          publicKey,
+        },
+      })
+      .then(data => data.delegate);
   }
 }
