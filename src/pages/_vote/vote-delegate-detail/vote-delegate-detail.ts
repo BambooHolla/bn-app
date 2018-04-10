@@ -1,16 +1,28 @@
-import { Component, Optional } from "@angular/core";
+import {
+  Component,
+  Optional,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular";
 import {
   BlockServiceProvider,
   BlockModel,
+  ForgingBlockModel,
 } from "../../../providers/block-service/block-service";
+import {
+  MinServiceProvider,
+  DelegateModel,
+} from "../../../providers/min-service/min-service";
 
 @IonicPage({ name: "vote-delegate-detail" })
 @Component({
   selector: "page-vote-delegate-detail",
   templateUrl: "vote-delegate-detail.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VoteDelegateDetailPage extends SecondLevelPage {
   constructor(
@@ -18,61 +30,85 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
+    public minService: MinServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
   }
-  delegate_info: any;
+  delegate_info?: DelegateModel;
+  current_info_round: number = 0;
   @VoteDelegateDetailPage.willEnter
   async initData() {
-    await new Promise(cb => setTimeout(cb, 1000));
-    this.delegate_info = {
-      username: "Gaubee",
-      address: "aFJe90Uwc4SsmKI122fmKI122f90faOKJFES90faOKJFESIOe",
-      get_vote_rate: Math.random() * 100,
-    };
-    await this.loadBlockList();
-  }
-
-  block_list?: BlockModel[];
-  block_list_config = {
-    page: 1,
-    pageSize: 20,
-    has_more: false,
-  };
-  async loadBlockList(refresher?: Refresher) {
-    await new Promise(cb => setTimeout(cb, 1000));
-    const { block_list_config } = this;
-    block_list_config.page = 1;
-    block_list_config.has_more = true;
-    if (refresher) {
-      refresher.complete();
+    const delegate_info = this.navParams.get("delegate_info");
+    if (!delegate_info) {
+      this.navCtrl.goToRoot({});
+      return;
     }
+    this.delegate_info = delegate_info;
+    this.current_info_round = this.appSetting.getRound();
   }
 
   async loadMoreBlockList() {
-    await new Promise(cb => setTimeout(cb, 1000));
-    const { block_list_config } = this;
-    block_list_config.page += 1;
+    const { page_info } = this;
+    if (page_info.loading) {
+      return;
+    }
+    page_info.page += 1;
+    const forgin_blocks = await this._getForginBlocks();
+    this.forgin_block_list.push(...forgin_blocks);
+  }
 
-    // this.block_list.push(
-    //   ...Array.from(Array(block_list_config.pageSize)).map((_, i) => {
-    //     return {
-    //       create_time: new Date(Date.now() - (i + 1) * 3 * 128 * 1000),
-    //       address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
-    //       reward: 200 * Math.random(),
-    //       height: (1000 * Math.random()) | 0,
-    //       is_delay: Math.random() > 0.5,
-    //       trans_num: (Math.random() * 5000) | 0,
-    //       trans_assets: Math.random() * 10000,
-    //       fee: 5000 * Math.random() * 0.00000001,
-    //       tran_logs: Array.from(Array((Math.random() * 100) | 0)),
-    //       block_size: Math.random() * 10,
-    //     };
-    //   }),
-    // );
-    // block_list_config.has_more = this.block_list.length < 110;
-    // if (!block_list_config.has_more) {
-    //   this.block_list.length = 110;
-    // }
+  page_info = {
+    page: 0,
+    pageSize: 20,
+    loading: false,
+    hasMore: true,
+  };
+  forgin_block_list: ForgingBlockModel[] = [];
+
+  total_vote = Infinity;
+  @VoteDelegateDetailPage.addEvent("ROUND:CHANGED")
+  async watchRoundChanged() {
+    this.total_vote = await this.minService.totalVote.getPromise();
+  }
+
+  @VoteDelegateDetailPage.addEvent("HEIGHT:CHANGED")
+  async watchHeightChanged() {
+    if (!this.delegate_info) {
+      return;
+    }
+    const old_producedblocks = this.delegate_info.producedblocks;
+    if (this.current_info_round !== this.appSetting.getRound()) {
+      this.delegate_info = await this.minService.getDelegateInfo(
+        this.delegate_info.publicKey,
+      );
+    }
+    const new_producedblocks = this.delegate_info.producedblocks;
+    if (
+      new_producedblocks === old_producedblocks &&
+      this.forgin_block_list.length > 0
+    ) {
+      return;
+    }
+    // 重新开始分页加载
+    this.page_info.page = 0;
+    this.forgin_block_list = await this._getForginBlocks();
+  }
+  @asyncCtrlGenerator.error("@@GET_FORGIN_BLOCK_ERROR")
+  private async _getForginBlocks() {
+    const { page_info } = this;
+    page_info.loading = true;
+    try {
+      const forgin_blocks_info = await this.blockService.getForgingByPage(
+        (this.delegate_info as DelegateModel).publicKey,
+        page_info.page,
+        page_info.pageSize,
+      );
+      page_info.hasMore =
+        forgin_blocks_info.blocks.length === page_info.pageSize;
+      return forgin_blocks_info.blocks;
+    } finally {
+      page_info.loading = false;
+    }
   }
 }

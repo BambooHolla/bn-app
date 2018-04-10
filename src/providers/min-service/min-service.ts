@@ -90,6 +90,19 @@ export class MinServiceProvider extends FLP_Tool {
   readonly MY_VOTES = this.appSetting.APP_URL("/api/accounts/delegates");
   readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/myProfitRanking");
   readonly ALL_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
+  readonly TOTAL_VOTE = this.appSetting.APP_URL("/api/delegates/getTotalVote");
+  readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
+
+  getTotalVote() {
+    return this.fetch
+      .get<{ totalVoteByRound: number }>(this.TOTAL_VOTE)
+      .then(data => data.totalVoteByRound);
+  }
+  totalVote!: AsyncBehaviorSubject<number>;
+  @ROUND_AB_Generator("totalVote")
+  totalVote_Executor(promise_pro: PromisePro<number>) {
+    return promise_pro.follow(this.getTotalVote());
+  }
 
   /**
    * 获取本轮剩余时间
@@ -299,7 +312,9 @@ export class MinServiceProvider extends FLP_Tool {
       let query = {
         orderBy: "rate:asc",
       };
-      let data = await this.fetch.get<TYPE.DelegatesResModel>(this.MINERS, { search: query });
+      let data = await this.fetch.get<TYPE.DelegatesResModel>(this.MINERS, {
+        search: query,
+      });
       this.allMinersInfo = {
         list: data.delegates,
         round: currentRound,
@@ -331,7 +346,9 @@ export class MinServiceProvider extends FLP_Tool {
       limit: limit,
       orderBy: "rate:asc",
     };
-    let data = await this.fetch.get<TYPE.DelegatesResModel>(this.MINERS, { search: query });
+    let data = await this.fetch.get<TYPE.DelegatesResModel>(this.MINERS, {
+      search: query,
+    });
 
     return data.delegates;
   }
@@ -483,5 +500,13 @@ export class MinServiceProvider extends FLP_Tool {
   @ROUND_AB_Generator("rateOfReturn", true)
   rateOfReturn_Executor(promise_pro) {
     return promise_pro.follow(this.getRateOfReturn());
+  }
+
+  getDelegateInfo(publicKey: string) {
+    return this.fetch.get<TYPE.DelegateModel>(this.DELEGATE_INFO, {
+      search: {
+        publicKey,
+      },
+    });
   }
 }

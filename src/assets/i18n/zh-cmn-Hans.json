@@ -31,6 +31,7 @@
   "SECURE_LOCK_SCREEN_REQUIRED": "需要安全锁屏",
 
   "BLOCK_generatorId": "锻造者",
+  "BLOCK_time": "时间",
   "BLOCK_reward": "区块奖励",
   "BLOCK_numberOfTransactions": "交易量",
   "BLOCK_height": "高度",
@@ -202,6 +203,13 @@
   "//": "account-miner-scroll-list",
   "ACCOUNT-MINER-SCROLL-LIST": "矿工列表",
   "LOAD_ALL_MINER_LIST_ERROR": "获取所有矿工列表出错",
+
+  "//": "vote-delegate-detail",
+  "VOTE-DELEGATE-DETAIL": "委托人",
+  "DELEGATE_PRODUCTIVITY": "在线率",
+  "DELEGATE_VOTE_RATE": "得票率",
+  "GET_FORGIN_BLOCK_ERROR": "获取委托人打造的区块出错",
+  "LOADING_MORE_FOGIN_BLOCK_LIST":"加载更多打快节点中……"
 
   "//": "account-my-contacts",
   "ACCOUNT-MY-CONTACTS": "我的联系人",

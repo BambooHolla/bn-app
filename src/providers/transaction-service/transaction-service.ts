@@ -7,6 +7,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
 import { UserInfoProvider } from "../user-info/user-info";
+import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import * as IFM from "ifmchain-ibt";
@@ -66,6 +67,7 @@ export class TransactionServiceProvider {
     public fetch: AppFetchProvider,
     public user: UserInfoProvider,
   ) {
+    tryRegisterGlobal("transactionService", this);
     console.log("Hello TransactionServiceProvider Provider");
     this.transaction = this.ifmJs.Api(
       AppSettingProvider.HTTP_PROVIDER,

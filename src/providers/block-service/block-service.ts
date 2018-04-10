@@ -18,6 +18,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
+import { DelegateModel } from "../min-service/min.types";
 import io from "socket.io-client";
 
 export * from "./block.types";
@@ -56,6 +57,15 @@ export class BlockServiceProvider extends FLP_Tool {
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
   }
+  readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
+    "/api/blocks/getLastBlock",
+  );
+  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
+  readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
+  readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
+  readonly GET_FORGING_BLOCK = this.appSetting.APP_URL(
+    "/api/blocks/getForgingBlocks",
+  );
   /**第二个块的timestamp*/
   private _timestamp_from?: number;
   async getLastBlockRefreshInterval() {
@@ -153,15 +163,6 @@ export class BlockServiceProvider extends FLP_Tool {
       this._updateHeight();
     });
   }
-  readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
-    "/api/blocks/getLastBlock",
-  );
-  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
-  readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
-  readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
-  readonly GET_MY_FORGING = this.appSetting.APP_URL(
-    "/api/blocks/getForgingBlocks",
-  );
 
   /**
    * 获取当前区块链的块高度
@@ -555,7 +556,7 @@ export class BlockServiceProvider extends FLP_Tool {
     pageSize = this.default_my_forging_pagesize,
   ) {
     const data = await this.fetch.get<TYPE.ForgingBlockResModel>(
-      this.GET_MY_FORGING,
+      this.GET_FORGING_BLOCK,
       {
         search: {
           generatorPublicKey,
@@ -572,9 +573,21 @@ export class BlockServiceProvider extends FLP_Tool {
   /**
    * 获取我锻造的区块数
    */
-  async getMyForgingCount(): Promise<number> {
-    const data = await this.getMyForgingByPage(1, 1);
-    return data.count;
+  readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
+  getMyForgingCount(){
+    return this.fetch
+      .get<DelegateModel>(this.DELEGATE_INFO, {
+        search: {
+          publicKey: this.user.publicKey,
+        },
+      })
+      .then(data => {
+        return data.producedblocks;
+      })
+      .catch(err => {
+        console.warn(err);
+        return 0;
+      });
   }
   myForgingCount!: AsyncBehaviorSubject<number>;
   @HEIGHT_AB_Generator("myForgingCount", true)

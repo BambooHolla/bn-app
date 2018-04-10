@@ -5,7 +5,7 @@
 </ion-header>
 <ion-content>
   <div class="common-list cur-rank-list">
-    <div class="common-item" *ngFor="let minter of cur_minter_rank_list" (click)="routeTo('vote-delegate-detail')">
+    <div class="common-item" *ngFor="let minter of cur_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
       <div class="left">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
         <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="common-list can-rank-list">
-    <div class="common-item" *ngFor="let minter of can_minter_rank_list">
+    <div class="common-item" *ngFor="let minter of can_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
       <div class="left">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
         <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
