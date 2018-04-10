@@ -32,7 +32,7 @@
         <ali-icon name="ifm-arrow-dot-dot"></ali-icon>
       </div>
     </div>
-    <div class="common-item" *ngFor="let minter of show_can_minter_rank_list">
+    <div class="common-item" *ngFor="let minter of show_can_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
       <div class="left">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
         <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>

@@ -351,7 +351,7 @@
   "SHARE_ERROR": "分享失败",
 
   "//": "account-my-transaction-list",
-  "ACCOUNT-MY-TRANSACTION-LIST": "我的交易数据",
+  "ACCOUNT-MY-TRANSACTION-LIST": "交易数据",
   "CONFIRMED_TRANSACTIONS": "已确认交易",
   "UNCONFIRM_TRANSACTIONS": "未确认交易",
   "LOAD_MORE_CONFIRMED_TRANSACTION_LIST_ERROR": "加载更多已确认交易列表失败",
