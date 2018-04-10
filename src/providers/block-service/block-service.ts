@@ -5,7 +5,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 // import { PromisePro } from "../../bnqkl-framework/RxExtends";
-import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
+import {
+  FLP_Tool,
+  tryRegisterGlobal,
+} from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
@@ -18,7 +21,7 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
-import { DelegateModel } from "../min-service/min.types";
+import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import io from "socket.io-client";
 
 export * from "./block.types";
@@ -48,6 +51,7 @@ export class BlockServiceProvider extends FLP_Tool {
     public user: UserInfoProvider,
   ) {
     super();
+    tryRegisterGlobal("blockService", this);
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 
@@ -574,15 +578,15 @@ export class BlockServiceProvider extends FLP_Tool {
    * 获取我锻造的区块数
    */
   readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
-  getMyForgingCount(){
+  getMyForgingCount() {
     return this.fetch
-      .get<DelegateModel>(this.DELEGATE_INFO, {
+      .get<DelegateInfoResModel>(this.DELEGATE_INFO, {
         search: {
           publicKey: this.user.publicKey,
         },
       })
       .then(data => {
-        return data.producedblocks;
+        return data.delegate.producedblocks;
       })
       .catch(err => {
         console.warn(err);

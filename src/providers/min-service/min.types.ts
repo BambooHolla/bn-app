@@ -63,3 +63,6 @@ export type DelegatesResModel = {
   delegates: DelegateModel[];
   totalCount: number;
 };
+export type DelegateInfoResModel = {
+  delegate: DelegateModel;
+};
