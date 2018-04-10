@@ -566,6 +566,7 @@ export class BlockServiceProvider extends FLP_Tool {
           generatorPublicKey,
           offset: (page - 1) * pageSize,
           limit: pageSize,
+          orderBy: "height:desc",
         },
       },
     );
