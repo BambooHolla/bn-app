@@ -331,7 +331,7 @@ export class MyApp implements OnInit {
         this.has_finger_permission = permission && permission.hasPermission;
       }
       if (type === FAIO_CHECK.Resume) {
-        return this._ResumeToCheckFAIO();
+        return this._ResumeToCheckFAIO(0);
       } else if (type === FAIO_CHECK.Login) {
         return this._LoginToCheckFAIO();
       }
@@ -341,13 +341,16 @@ export class MyApp implements OnInit {
   getTranslateSync(key: string | string[], interpolateParams?: Object) {
     return this.translate.instant(key, interpolateParams);
   }
-  private async _ResumeToCheckFAIO() {
+  private async _ResumeToCheckFAIO(call_times: number) {
     const support_info = await this.faio_support_info;
-    const dialog_title = this.getTranslateSync(
-      support_info === "face"
-        ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME_WITH_FACE"
-        : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME",
-    );
+    const dialog_title =
+      call_times === 1
+        ? this.getTranslateSync(
+            support_info === "face"
+              ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME_WITH_FACE"
+              : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME",
+          )
+        : this.getTranslateSync("IOS_CANCEL_AGAIN_WILL_LOGINOUT");
     try {
       this.r2.setStyle(document.body, "filter", "blur(20px)");
       const res = await this.faio.show({
@@ -382,11 +385,14 @@ export class MyApp implements OnInit {
       console.log("remuse faio:", res);
       return res;
     } catch (err) {
-      console.error(err);
-      return false;
-      // if (err === "Cancelled") {
-      //   return this.showEnterFAIO(); // 再次调用，
-      // }
+      alert(err.message ? "MSG:" + err.message : err.toString());
+      if (call_times >= 1) {
+        this.loginService.loginOut();
+        return false;
+      } else {
+        // if (err === "Cancelled") {
+        return this._ResumeToCheckFAIO(call_times + 1); // 再次调用，
+      }
     } finally {
       this.r2.setStyle(document.body, "filter", null);
     }
