@@ -344,7 +344,7 @@ export class MyApp implements OnInit {
   private async _ResumeToCheckFAIO(call_times: number) {
     const support_info = await this.faio_support_info;
     const dialog_title =
-      call_times === 1
+      call_times === 0
         ? this.getTranslateSync(
             support_info === "face"
               ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME_WITH_FACE"
@@ -385,7 +385,6 @@ export class MyApp implements OnInit {
       console.log("remuse faio:", res);
       return res;
     } catch (err) {
-      alert(err.message ? "MSG:" + err.message : err.toString());
       if (call_times >= 1) {
         this.loginService.loginOut();
         return false;
