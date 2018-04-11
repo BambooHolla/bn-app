@@ -18,13 +18,22 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
   }
   get net_version() {
+    const BLOCK_UNIT_TIME =
+      parseFloat(localStorage.getItem("BLOCK_UNIT_TIME") || "") / 1000;
+    if (BLOCK_UNIT_TIME) {
+      return AppSettingProvider.NET_VERSION + BLOCK_UNIT_TIME;
+    }
     return AppSettingProvider.NET_VERSION;
   }
   async changeNetVersion(net_version) {
     if (this.net_version === net_version) {
       return;
     }
-    if (net_version !== "testnet" && net_version !== "mainnet") {
+    if (
+      net_version !== "testnet" &&
+      net_version !== "mainnet" &&
+      net_version !== "testnet128"
+    ) {
       return;
     }
     return this.alertCtrl
@@ -49,9 +58,15 @@ export class SettingsNetVersionPage extends SecondLevelPage {
         "SERVER_HOST",
         "FULL:http://test1.ifmchain.org:19002",
       );
+      localStorage.removeItem("BLOCK_UNIT_TIME");
     } else if (net_version == "mainnet") {
       localStorage.removeItem("NET_VERSION");
       localStorage.removeItem("SERVER_HOST");
+      localStorage.removeItem("BLOCK_UNIT_TIME");
+    } else if (net_version === "testnet128") {
+      localStorage.setItem("NET_VERSION", "testnet");
+      localStorage.setItem("BLOCK_UNIT_TIME", "" + 128e3);
+      localStorage.setItem("SERVER_HOST", "FULL:http://35.194.190.61:19000");
     } else {
       return;
     }

@@ -99,6 +99,7 @@
   "SETTINGS-NET-VERSION": "设置网络",
   "NET_VERSION_OF_MAINNET": "正式网络",
   "NET_VERSION_OF_TESTNET": "测试网络",
+  "NET_VERSION_OF_TESTNET128": "测试网络（128s）",
   "APP_WILL_RESTART": "应用将会重启",
 
   "//": "tab-vote",

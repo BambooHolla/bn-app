@@ -1,6 +1,7 @@
 <ion-header>
 </ion-header>
 <ion-content>
+  <button class="net-select-button" (click)="routeTo('settings-net-version')"><ali-icon name="ifm-jiedian"></ali-icon>切换网络</button>
   <button class="lang-select-button" (click)="routeTo('settings-lang')">
     <img [src]="'./assets/imgs/settings-lang/'+lang_code+'.png'" [alt]="lang_code">{{('LANG_'+lang_code)|translate}}</button>
   <span id="font-calc" #fontCalc></span>

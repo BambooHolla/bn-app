@@ -17,5 +17,11 @@
         <ali-icon name="ifm-dagou"></ali-icon>
       </div>
     </div>
+    <div class="common-item" (click)="changeNetVersion('testnet128')" [class.selected]="net_version=='testnet128'">
+      <div class="left">{{'NET_VERSION_OF_TESTNET128'|translate}}</div>
+      <div class="right">
+        <ali-icon name="ifm-dagou"></ali-icon>
+      </div>
+    </div>
   </div>
 </ion-content>
