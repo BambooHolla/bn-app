@@ -71,7 +71,9 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       return;
     }
     this._clearDigRound();
-    location.reload();
+    this.navCtrl.goToRoot({}).then(() => {
+      location.reload();
+    });
   }
   private _clearDigRound() {
     for (let key in localStorage) {
