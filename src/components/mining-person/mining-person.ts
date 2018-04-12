@@ -1,3 +1,4 @@
+/*使用css的top效率最高，高于Transform*/
 import {
   Component,
   ViewChild,
@@ -5,24 +6,11 @@ import {
   Input,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { AniBase } from "../AniBase";
+import { CssAniBase } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
-import * as PIXI_SOUND from "pixi-sound";
-console.log("PIXI_SOUND", PIXI_SOUND);
-// debugger
-export const loader = new PIXI.loaders.Loader();
-export const _load_resource_promiseout = new PromiseOut<
-  PIXI.loaders.ResourceDictionary
->();
-export const FRAMES_NUM = 51;
-export const frames_list: PIXI.Texture[] = [];
-for (let i = 0; i < FRAMES_NUM; i += 1) {
-  const i_str = ("0000" + i).substr(-4);
-  loader.add(
-    "img" + i_str,
-    `assets/imgs/tab-vote/human-work3/_${i_str}_图层-${FRAMES_NUM - i}.png`,
-  );
-}
+import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+
+const FRAMES_NUM = 51;
 const miningSounds = [
   // "mining",
   "miner (1)",
@@ -34,30 +22,19 @@ const miningSounds = [
 miningSounds.forEach(name => {
   PIXI.sound.add(name, `assets/sounds/${name}.wav`);
 });
-loader.onError.add(err => {
-  _load_resource_promiseout.reject(err);
-});
-loader.load((loader, resources) => {
-  for (let i = 0; i < FRAMES_NUM; i += 1) {
-    const i_str = ("0000" + i).substr(-4);
-    const resource = resources["img" + i_str] as PIXI.loaders.Resource;
-    frames_list.unshift(resource.texture);
-  }
-  _load_resource_promiseout.resolve(resources);
-});
 
 @Component({
   selector: "mining-person",
   templateUrl: "mining-person.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MiningPersonComponent extends AniBase {
+export class MiningPersonComponent extends CssAniBase {
   @Input("auto-start") auto_start = false;
-  constructor() {
+  constructor(public appSetting: AppSettingProvider) {
     super();
-    this.on("init-start", this.initPixiApp.bind(this));
-    this.on("start-animation", this.startPixiApp.bind(this));
-    this.on("stop-animation", this.stopPixiApp.bind(this));
+    this.on("init-start", this.initCssApp.bind(this));
+    this.on("start-animation", this.startCssApp.bind(this));
+    this.on("stop-animation", this.stopCssApp.bind(this));
     this.force_update = true;
     this.loop_skip = 1; //30fps
   }
@@ -73,77 +50,55 @@ export class MiningPersonComponent extends AniBase {
       super.stopAnimation();
     }
   }
-  @ViewChild("canvas") canvasRef!: ElementRef;
+  @ViewChild("container") containerRef!: ElementRef;
 
   _init() {
-    this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
+    this.containerNode ||
+      (this.containerNode = this.containerRef.nativeElement);
     return super._init();
   }
-  async initPixiApp() {
-    if (this.app) {
-      this.app.stage.children.slice().forEach(child => {
-        return child.destroy();
-      });
-      this._loop_runs.length = 0;
-    }
-    const { pt, px, canvasNode } = this;
-    if (!canvasNode) {
+  frames_list: HTMLImageElement[] = [];
+  async initCssApp() {
+    const { pt, px, containerNode, frames_list } = this;
+    if (!containerNode) {
       throw new Error("call init first");
     }
-    if (!this.app) {
-      this.app = new PIXI.Application({
-        antialias: true,
-        transparent: true,
-        view: canvasNode,
-        height: pt(canvasNode.clientHeight),
-        width: pt(canvasNode.clientWidth),
-        autoStart: this.auto_start,
-      });
+    if (frames_list.length !== 0) {
+      // 重新初始化
+      containerNode.innerHTML = "";
+      this._loop_runs.length = 0;
+      frames_list.length = 0;
     }
-    const app = this.app;
-    const resources = await _load_resource_promiseout.promise;
-    console.log("MiningPersonComponent resources", resources);
+    for (let i = 0; i < FRAMES_NUM; i += 1) {
+      const i_str = ("0000" + i).substr(-4);
+      const img = new Image();
+      img.src = `assets/imgs/tab-vote/human-work3/_${i_str}_图层-${FRAMES_NUM -
+        i}.png`;
+      frames_list.push(img);
+      containerNode.appendChild(img);
+    }
 
-    const { stage, renderer, ticker } = app;
-    const { width: W, height: H } = renderer;
-    const wh_max_size = Math.max(W, H);
-    const wh_rate = W / H;
+    /// loop
 
     let cur_frame_i = 0;
-    const mc = new PIXI.Sprite(frames_list[cur_frame_i]);
-    const mc_wh_rate = mc.width / mc.height;
-    if (mc_wh_rate === wh_rate) {
-      mc.width = W;
-      mc.height = H;
-    } else if (wh_rate > mc_wh_rate) {
-      //render的宽比较大，采用height
-      mc.height = H;
-      mc.width = mc_wh_rate * H;
-      canvasNode.style.width = "auto";
-    } else {
-      mc.width = W;
-      mc.height = W / mc_wh_rate;
-      canvasNode.style.height = "auto";
-    }
-    if (mc.width > mc.height) {
-      if (mc.width > wh_max_size) {
-        mc.width = wh_max_size;
-        mc.height = wh_max_size / mc_wh_rate;
-      }
-    } else {
-      if (mc.height > wh_max_size) {
-        mc.height = wh_max_size;
-        mc.width = wh_max_size * mc_wh_rate;
-      }
-    }
-    // 重新改变大小，以最节省的画布大小的模式进行绘制
-    renderer.resize(mc.width, mc.height);
+    let pre_frame = frames_list[cur_frame_i];
+
+    let is_saving_power_mode = this.appSetting.settings.power_saving_mode;
+    this.appSetting.on(
+      "changed@setting.power_saving_mode",
+      is_saving => (is_saving_power_mode = is_saving),
+    );
 
     this.addLoop(() => {
-      cur_frame_i = (cur_frame_i + 1) % FRAMES_NUM;
-      if (!this.only_play_sound) {
-        mc.texture = frames_list[cur_frame_i];
+      const cur_frame = frames_list[cur_frame_i];
+      if (!is_saving_power_mode || (cur_frame_i === 41 || cur_frame_i === 10)) {
+        pre_frame.style.top = "";
+        cur_frame.style.top = "0";
       }
+
+      cur_frame_i = (cur_frame_i + 1) % frames_list.length;
+      pre_frame = cur_frame;
+
       if (cur_frame_i === 41) {
         PIXI.sound.play(
           miningSounds[(Math.random() * miningSounds.length) | 0],
@@ -155,13 +110,12 @@ export class MiningPersonComponent extends AniBase {
         );
       }
     });
-    stage.addChild(mc);
   }
-  startPixiApp() {
+  startCssApp() {
     this.app && this.app.start();
   }
 
-  stopPixiApp() {
+  stopCssApp() {
     this.app && this.app.stop();
   }
 }

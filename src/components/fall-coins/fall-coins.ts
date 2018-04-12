@@ -150,7 +150,7 @@ export class FallCoinsComponent extends AniBase {
       var speed = 0;
       const frames = frames_list[(Math.random() * frames_list.length) | 0];
       const ani = new PIXI.extras.AnimatedSprite(frames);
-      const ani_uuid = ani_uuid_adder++;
+      const ani_uuid = String(ani_uuid_adder++);
       ani.width = u_size;
       ani.height = u_size;
       // ani.animationSpeed = Math.random() + 0.5; // 金币的旋转速度

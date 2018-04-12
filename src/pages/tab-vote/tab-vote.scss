@@ -627,11 +627,13 @@ page-tab-vote {
     }
     opacity: 0;
     transform: scale(0.4);
+    display: none;
     &.show-big-fall-icon {
       transition-duration: 0.7s;
       transition-timing-function: ease-out;
       opacity: 1;
       transform: scale(1);
+      display: block;
       .icon-flip-ani {
         animation-duration: 0.3s;
       }

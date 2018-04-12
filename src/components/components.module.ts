@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { AliIconComponent } from "./ali-icon/ali-icon";
 import { RadioButtonComponent } from "./radio-button/radio-button";
 import { GoldCoinComponent } from "./gold-coin/gold-coin";
+import { SatelliteCssComponent } from "./satellite-css/satellite-css";
 import { SatellitePixiComponent } from "./satellite-pixi/satellite-pixi";
 import { FallCoinsComponent } from "./fall-coins/fall-coins";
 import { BuddhaGlowComponent } from "./buddha-glow/buddha-glow";
@@ -18,6 +19,7 @@ import { MiningPersonComponent } from "./mining-person/mining-person";
     RadioButtonComponent,
     GoldCoinComponent,
     SatellitePixiComponent,
+    SatelliteCssComponent,
     FallCoinsComponent,
     BuddhaGlowComponent,
     ChainMeshComponent,
@@ -33,6 +35,7 @@ import { MiningPersonComponent } from "./mining-person/mining-person";
     RadioButtonComponent,
     GoldCoinComponent,
     SatellitePixiComponent,
+    SatelliteCssComponent,
     FallCoinsComponent,
     BuddhaGlowComponent,
     ChainMeshComponent,

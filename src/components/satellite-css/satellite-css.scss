@@ -1,0 +1,41 @@
+satellite-css {
+  display: block;
+  #statellite-pixi-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    >.track {
+      transform: scale(0.9);
+    }
+    >.statellite-wrapper {
+      width: 0;
+      height: 0;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      >.statellite {
+        width: 6vw;
+        height: 6vw;
+        position: relative;
+        left: -3vw;
+        top: -3vw;
+        transform: translateY(-56.5vw);
+        >.statellite-header {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          z-index: 2;
+        }
+        >.statellite-footer {
+          position: absolute;
+          top: 0;
+          left: 1rem;
+          min-width: 4rem;
+          transform: rotate(180deg);
+          transform-origin: 0 50%;
+          z-index: 1;
+        }
+      }
+    }
+  }
+}

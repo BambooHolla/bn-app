@@ -9,7 +9,7 @@ import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
-import { SatellitePixiComponent } from "../../components/satellite-pixi/satellite-pixi";
+import { SatelliteCssComponent } from "../../components/satellite-css/satellite-css";
 import { FallCoinsComponent } from "../../components/fall-coins/fall-coins";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
@@ -135,7 +135,7 @@ export class TabVotePage extends FirstLevelPage {
     clearInterval(this._waiting_ani);
     if (can_run() && this.satellite_pixi) {
       if (this.satellite_pixi.is_inited) {
-        this.satellite_pixi.progress = 0;
+        this.satellite_pixi.resetProgress();
         this.blockService.getLastBlockRefreshInterval().then(diff_time => {
           const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
           diff_time %= BLOCK_UNIT_TIME;
@@ -143,9 +143,17 @@ export class TabVotePage extends FirstLevelPage {
           if (can_run() && this.satellite_pixi) {
             if (immediate) {
               // 立即更新现在的进度
-              this.satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
+              this.satellite_pixi.setProgress(
+                diff_time / BLOCK_UNIT_TIME,
+                0,
+                "ease-in-out",
+              );
             }
-            this.satellite_pixi.setProgress(1, BLOCK_UNIT_TIME - diff_time);
+            this.satellite_pixi.setProgress(
+              1,
+              BLOCK_UNIT_TIME - diff_time,
+              "ease-in-out",
+            );
           }
           // } else {
           //   // 延迟了，等
@@ -288,7 +296,7 @@ export class TabVotePage extends FirstLevelPage {
     this._stopVoteAnimate();
   }
   @ViewChild(FallCoinsComponent) fall_coin?: FallCoinsComponent;
-  @ViewChild(SatellitePixiComponent) satellite_pixi?: SatellitePixiComponent;
+  @ViewChild(SatelliteCssComponent) satellite_pixi?: SatelliteCssComponent;
   @ViewChild(BuddhaGlowComponent) buddha_glow?: BuddhaGlowComponent;
   @ViewChild(ChainMeshComponent) chain_mesh?: ChainMeshComponent;
   @ViewChild(MiningPersonComponent) mining_person?: MiningPersonComponent;

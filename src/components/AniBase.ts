@@ -98,13 +98,13 @@ export class AniBase extends EventEmitter {
   get force_update() {
     return this._force_update;
   }
-  private _force_update_set = new Set<string | number>();
-  upForceUpdate(key: string | number) {
+  private _force_update_set = new Set<string>();
+  upForceUpdate(key: string) {
     const { _force_update_set } = this;
     _force_update_set.add(key);
     this.force_update = !!_force_update_set.size;
   }
-  downForceUpdate(key: string | number) {
+  downForceUpdate(key: string) {
     const { _force_update_set } = this;
     _force_update_set.delete(key);
     this.force_update = !!_force_update_set.size;
@@ -232,6 +232,29 @@ export class AniBase extends EventEmitter {
     };
   }
   Easing = Easing;
+}
+
+export class CssAniBase extends AniBase {
+  containerNode?: HTMLElement;
+  _init() {
+    // 重新初始化
+    this._loop_runs.length = 0;
+    if (
+      !(
+        this.containerNode &&
+        this.containerNode.clientHeight &&
+        this.containerNode.clientWidth
+      )
+    ) {
+      requestAnimationFrame(() => this._init());
+      return false;
+    }
+    console.group("init-start");
+    this.emit("init-start", this.containerNode);
+    console.groupEnd();
+    this.is_inited = true;
+    return true;
+  }
 }
 
 export const Easing = {
