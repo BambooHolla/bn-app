@@ -91,13 +91,14 @@ export class MiningPersonComponent extends CssAniBase {
 
     this.addLoop(() => {
       const cur_frame = frames_list[cur_frame_i];
-      if (!is_saving_power_mode || (cur_frame_i === 41 || cur_frame_i === 10)) {
+      const is_ani =
+        !is_saving_power_mode || (cur_frame_i === 41 || cur_frame_i === 20);
+      if (is_ani) {
         pre_frame.style.top = "";
         cur_frame.style.top = "0";
       }
 
       cur_frame_i = (cur_frame_i + 1) % frames_list.length;
-      pre_frame = cur_frame;
 
       if (cur_frame_i === 41) {
         PIXI.sound.play(
@@ -108,6 +109,10 @@ export class MiningPersonComponent extends CssAniBase {
             volume: 0.1,
           },
         );
+      }
+      ////
+      if (is_ani) {
+        pre_frame = cur_frame;
       }
     });
   }

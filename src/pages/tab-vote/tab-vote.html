@@ -74,21 +74,21 @@
     <div class="extends-panel-page" [ngClass]="page_status">
       <ion-slides class="panel-list" [initialSlide]="1">
         <ion-slide class="panel-item">
-          <vote-pre-round-income-ranking class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.incomeRanking)"></vote-pre-round-income-ranking>
+          <vote-pre-round-income-ranking #extendsPanel1 class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.incomeRanking)"></vote-pre-round-income-ranking>
         </ion-slide>
         <ion-slide class="panel-item">
-          <vote-current-block-income class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.currentBlockIncome)"></vote-current-block-income>
+          <vote-current-block-income #extendsPanel2 class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.currentBlockIncome)"></vote-current-block-income>
         </ion-slide>
         <ion-slide class="panel-item">
-          <vote-income-trend class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.incomeTrend)">
+          <vote-income-trend #extendsPanel3 class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.incomeTrend)">
           </vote-income-trend>
         </ion-slide>
         <ion-slide class="panel-item">
-          <vote-my-contribution class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.myContribution)">
+          <vote-my-contribution #extendsPanel4 class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.myContribution)">
           </vote-my-contribution>
         </ion-slide>
         <ion-slide class="panel-item">
-          <vote-pre-round-income-rate class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.preRoundIncomeRate)">
+          <vote-pre-round-income-rate #extendsPanel5 class="panel-content" [show-detail]="page_status==VotePage.ExtendsPanel" (click)="openExtendsPanel(ExtendsPanel.preRoundIncomeRate)">
           </vote-pre-round-income-rate>
         </ion-slide>
       </ion-slides>

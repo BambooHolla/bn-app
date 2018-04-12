@@ -29,6 +29,11 @@ import {
   BenefitModel,
 } from "../../providers/benefit-service/benefit-service";
 import { CoverTabsCtrlModelPage } from "../cover-tabs-ctrl-model/cover-tabs-ctrl-model";
+import { VotePreRoundIncomeRankingComponent } from "../../components/vote-pre-round-income-ranking/vote-pre-round-income-ranking";
+import { VoteCurrentBlockIncomeComponent } from "../../components/vote-current-block-income/vote-current-block-income";
+import { VoteIncomeTrendComponent } from "../../components/vote-income-trend/vote-income-trend";
+import { VoteMyContributionComponent } from "../../components/vote-my-contribution/vote-my-contribution";
+import { VotePreRoundIncomeRateComponent } from "../../components/vote-pre-round-income-rate/vote-pre-round-income-rate";
 
 export enum VotePage {
   None = "",
@@ -238,12 +243,12 @@ export class TabVotePage extends FirstLevelPage {
       if (key.indexOf("_color") != -1) {
         AniBase.animateColor(from, to, 500)(v => {
           earth_config[key] = (v[0] << 16) + (v[1] << 8) + v[2];
-          return this.page_status == "vote-detail";
+          return this.page_status == VotePage.VoteDetail;
         });
       } else {
         AniBase.animateNumber(from, to, 500)(v => {
           earth_config[key] = v;
-          return this.page_status == "vote-detail";
+          return this.page_status == VotePage.VoteDetail;
         });
       }
     }
@@ -414,6 +419,7 @@ export class TabVotePage extends FirstLevelPage {
     if (this.page_status === VotePage.VoteDetail) {
       this._set_fall_coin_progress();
       this._set_satellite_pixi_progress(is_init);
+      this.notifyExtendPanel("HEIGHT:CHANGED");
     }
   }
 
@@ -449,11 +455,35 @@ export class TabVotePage extends FirstLevelPage {
    */
   @TabVotePage.addEvent("ROUND:CHANGED")
   watchRoundChanged(cur_round) {
-    if (this.page_status === "vote-detail") {
+    if (this.page_status === VotePage.VoteDetail) {
       if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
         this._whenRoundChangeAni(); // 执行动画
       }
       this._pre_ani_round = cur_round;
+      this.notifyExtendPanel("ROUND:CHANGED");
+    }
+  }
+
+  @ViewChild("extendsPanel1") extendsPanel1?: VotePreRoundIncomeRankingComponent;
+  @ViewChild("extendsPanel2") extendsPanel2?: VoteCurrentBlockIncomeComponent;
+  @ViewChild("extendsPanel3") extendsPanel3?: VoteIncomeTrendComponent;
+  @ViewChild("extendsPanel4") extendsPanel4?: VoteMyContributionComponent;
+  @ViewChild("extendsPanel5") extendsPanel5?: VotePreRoundIncomeRateComponent;
+  notifyExtendPanel(eventname) {
+    if (this.extendsPanel1) {
+      this.notifyViewEvent(this.extendsPanel1, eventname);
+    }
+    if (this.extendsPanel2) {
+      this.notifyViewEvent(this.extendsPanel2, eventname);
+    }
+    if (this.extendsPanel3) {
+      this.notifyViewEvent(this.extendsPanel3, eventname);
+    }
+    if (this.extendsPanel4) {
+      this.notifyViewEvent(this.extendsPanel4, eventname);
+    }
+    if (this.extendsPanel5) {
+      this.notifyViewEvent(this.extendsPanel5, eventname);
     }
   }
   private _whenRoundChangeAni() {

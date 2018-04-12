@@ -8,6 +8,7 @@ import { EventEmitter } from "eventemitter3";
 import { PAGE_STATUS } from "./const";
 import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
 // import { MyApp } from "../app/app.component";
+var uuid = 0;
 
 export class FLP_Lifecycle extends FLP_Tool
   implements OnInit, AfterContentInit, OnDestroy {
@@ -16,6 +17,7 @@ export class FLP_Lifecycle extends FLP_Tool
     console.log(this.cname, this);
     tryRegisterGlobal("instanceOf" + this.cname, this);
   }
+  instance_id = ++uuid;
   cname = this.constructor.name;
   PAGE_LEVEL = 1;
   _event?: EventEmitter;
@@ -35,7 +37,6 @@ export class FLP_Lifecycle extends FLP_Tool
    */
   registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function) {
     let should_emit: any = null;
-    // TODO，要监听页面堆栈，压入一个新的页面的时候，下面的页面也会处于DID_ENTER状态
     const proxy_handle = (...args) => {
       if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
         should_emit = args; // 页面不属于激活状态，不去更新
@@ -63,6 +64,43 @@ export class FLP_Lifecycle extends FLP_Tool
         should_emit = null;
       }
     });
+  }
+
+  /** 广播视图层相关的事件
+   *  和registerViewEvent相反，用来发布通知：
+   *  和直接使用emitter.emit不同的是，如果视图处于离线状态，emit并不会触发
+   */
+  notifyViewEvent(
+    emitter: EventEmitter,
+    evetname: string,
+    description?: string,
+    get_args?: Function | any[],
+  ) {
+    const emit = () => {
+      if (get_args instanceof Function) {
+        emitter.emit(evetname, ...get_args());
+      } else if (get_args instanceof Array) {
+        emitter.emit(evetname, ...get_args);
+      } else {
+        emitter.emit(evetname);
+      }
+    };
+    if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
+      // 视图处于离线状态，监听视图激活
+      const check_id = `${
+        this.instance_id
+      }:notifyViewEvent:${evetname}:${description}`;
+      if (!emitter[check_id]) {
+        emitter[check_id] = true;
+        this.event.once("willEnter", () => {
+          emitter[check_id] = false;
+          emit();
+        });
+      }
+    } else {
+      // 视图处于激活状态，直接触发
+      emit();
+    }
   }
   ngOnInit() {
     // console.log("ngOnInit",this.content,this.header)

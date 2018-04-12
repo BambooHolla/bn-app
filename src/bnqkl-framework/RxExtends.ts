@@ -21,6 +21,7 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<
   getPromise(): Promise<T> {
     // super.toPromise();
     const res = new PromisePro<Promise<T>>();
+    this._checkPrepare();
     this.take(1).subscribe(res.resolve, res.reject);
     return res.promise.then(v => v);
   }
@@ -40,9 +41,17 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<
   setupExecutor(executor: Executor<T>) {
     this._executor = executor;
   }
+  /**准备执行状态，用于懒更新*/
+  private _prepare_run_excutor = false;
+  private _checkPrepare() {
+    if (this._prepare_run_excutor) {
+      this.runExcutor();
+      this._prepare_run_excutor = false;
+    }
+  }
   refresh(msg?: string, force_abort?: boolean) {
     this.abort(msg, force_abort);
-    this.runExcutor();
+    this._prepare_run_excutor = true;
   }
   private _promise?: Promise<T>;
   get promise() {
@@ -72,6 +81,7 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<
       this._is_catched_error = false;
       this.refresh();
     }
+    this._checkPrepare();
     return super.subscribe(next, error, complete);
   }
   runExcutor() {

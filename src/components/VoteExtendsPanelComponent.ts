@@ -46,8 +46,6 @@ export class VoteExtendsPanelComponent extends EventEmitter
   }
 
   private _is_inited = false;
-  private _height_subscript?: Subscription;
-  private _round_subscript?: Subscription;
   private _token_subscript?: Subscription;
   ngOnInit() {
     this._token_subscript = this.appSetting.account_address.subscribe(() => {
@@ -55,7 +53,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
         this.refreshData();
       }
     });
-    this._height_subscript = this.appSetting.after_height.subscribe(() => {
+    this.on("HEIGHT:CHANGED", () => {
       if (this.appSetting.getUserToken()) {
         this.refreshCommonData();
       } else {
@@ -70,7 +68,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
         this.refreshData();
       }
     });
-    this._round_subscript = this.appSetting.after_round.subscribe(() => {
+    this.on("ROUND:CHANGED", () => {
       if (this.data_refresh_frequency !== DATA_REFRESH_FREQUENCY.BY_ROUND) {
         return;
       }
@@ -82,8 +80,6 @@ export class VoteExtendsPanelComponent extends EventEmitter
     this._is_inited = true;
   }
   ngOnDestroy() {
-    this._height_subscript && this._height_subscript.unsubscribe();
-    this._round_subscript && this._round_subscript.unsubscribe();
     this._token_subscript && this._token_subscript.unsubscribe();
     this.removeAllListeners();
   }

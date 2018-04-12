@@ -59,23 +59,21 @@ export class SatelliteCssComponent extends CssAniBase {
   // private _dif_progress = 0;
   private _progress = 0;
   set progress(v: number) {
-    if (isFinite(v)) {
-      // v = Math.max(0, v);
-      // v = Math.min(1, v);
-      if (v !== this._progress) {
-        // this._pre_progress = this._progress;
-        this._progress = v;
-        // this._dif_progress = v - this._pre_progress;
-        // this._add_ms = 0;
-        this.emit("progress", v);
-        const { satelliteCtrlNode } = this;
-        if (satelliteCtrlNode) {
-          const rotate = (this._cur_progress_deg =
-            360 * this._progress + this._base_progress_deg);
-          satelliteCtrlNode.style.cssText = `transform:rotate(${rotate}deg);transition-duration:${
-            this._ani_ms
-          }ms;transition-timing-function:${this.easing}`;
-        }
+    // v = Math.max(0, v);
+    // v = Math.min(1, v);
+    if (v !== this._progress) {
+      // this._pre_progress = this._progress;
+      this._progress = v;
+      // this._dif_progress = v - this._pre_progress;
+      // this._add_ms = 0;
+      this.emit("progress", v);
+      const { satelliteCtrlNode } = this;
+      if (satelliteCtrlNode) {
+        const rotate = (this._cur_progress_deg =
+          360 * this._progress + this._base_progress_deg);
+        satelliteCtrlNode.style.cssText = `transform:rotate(${rotate}deg);transition-duration:${
+          this._ani_ms
+        }ms;transition-timing-function:${this.easing}`;
       }
     }
   }
@@ -88,10 +86,8 @@ export class SatelliteCssComponent extends CssAniBase {
   private _base_progress_deg = 0;
 
   resetProgress() {
-    if (this.satelliteCtrlNode) {
-      this._base_progress_deg = this._cur_progress_deg;
-    }
-    this.setProgress(0, 0);
+    this._base_progress_deg = this._cur_progress_deg;
+    this._progress = 0;
   }
 
   setProgress(progress: number, ani_ms?: number, easing?: string) {
