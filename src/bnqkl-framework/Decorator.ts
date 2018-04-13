@@ -294,7 +294,7 @@ export function asyncLoadingWrapGenerator(
         loading.present();
         const checkLoadingPageRef = () => {
           if (!loading.pageRef()) {
-            return requestAnimationFrame(checkLoadingPageRef);
+            return FLP_Tool.raf(checkLoadingPageRef);
           }
           if (
             this.content instanceof Content &&
@@ -305,7 +305,7 @@ export function asyncLoadingWrapGenerator(
             console.log(loadingEle, this.content._hdrHeight);
           }
         };
-        requestAnimationFrame(checkLoadingPageRef);
+        FLP_Tool.raf(checkLoadingPageRef);
       };
       const loading_present = (...args) => {
         if (id_info) {

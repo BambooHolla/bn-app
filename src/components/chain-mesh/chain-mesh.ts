@@ -86,7 +86,7 @@ export class ChainMeshComponent extends AniBase {
       throw new Error("call init first");
     }
     if (!this.app) {
-      this.app = new PIXI.Application({
+      this.app = this.PIXIAppbuilder({
         antialias: true,
         transparent: true,
         view: canvasNode,

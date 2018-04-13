@@ -1,10 +1,12 @@
 satellite-css {
   display: block;
   #statellite-pixi-container {
+    contain: strict;
     width: 100%;
     height: 100%;
     position: relative;
     >.track {
+      contain: strict;
       transform: scale(0.9);
     }
     >.statellite-wrapper {
@@ -13,6 +15,7 @@ satellite-css {
       position: absolute;
       left: 50%;
       top: 50%;
+      will-change: "transform";
       >.statellite {
         width: 6vw;
         height: 6vw;

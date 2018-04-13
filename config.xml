@@ -3,7 +3,7 @@
     <name>IBT</name>
     <description>Ifmchain Official Client</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.16.226:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -98,6 +98,7 @@
     <allow-navigation href="http://192.168.16.171:8100" />
     <allow-navigation href="http://192.168.16.159:8100" />
     <allow-navigation href="http://192.168.16.164:8100" />
+    <allow-navigation href="http://192.168.16.226:8100" />
     <engine name="ios" spec="^4.4.0" />
     <engine name="android" spec="^6.3.0" />
     <plugin name="cordova-plugin-x-toast" spec="^2.6.0" />
@@ -126,5 +127,4 @@
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <plugin name="cordova-plugin-file-opener2" spec="^2.0.19" />
     <plugin name="cordova-plugin-fingerprint-aio-gaubee" spec="^1.4.1" />
-    <allow-navigation href="http://192.168.16.226:8100" />
 </widget>

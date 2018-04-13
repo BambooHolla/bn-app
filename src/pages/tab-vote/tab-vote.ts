@@ -325,7 +325,7 @@ export class TabVotePage extends FirstLevelPage {
     // 执行一帧，并停止
     if (this.chain_mesh) {
       const _loop = () => {
-        requestAnimationFrame(() => {
+        this.raf(() => {
           this.chain_mesh &&
             this.chain_mesh.app &&
             this.chain_mesh.app.ticker.update();
@@ -470,6 +470,7 @@ export class TabVotePage extends FirstLevelPage {
   @ViewChild("extendsPanel4") extendsPanel4?: VoteMyContributionComponent;
   @ViewChild("extendsPanel5") extendsPanel5?: VotePreRoundIncomeRateComponent;
   notifyExtendPanel(eventname) {
+    // TODO: 根据激活的卡片进行优化通知
     if (this.extendsPanel1) {
       this.notifyViewEvent(this.extendsPanel1, eventname);
     }

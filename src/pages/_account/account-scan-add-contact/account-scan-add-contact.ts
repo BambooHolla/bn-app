@@ -236,7 +236,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     const video = this.video.nativeElement as HTMLVideoElement;
     if (video.videoHeight * video.videoWidth == 0) {
       if (this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
-        requestAnimationFrame(() => this.startCapture(cb));
+        this.raf(() => this.startCapture(cb));
       }
       return;
     }
@@ -258,7 +258,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
           pre_time = time;
           this._scanQrcodeFrame(video, false, cb);
         }
-        requestAnimationFrame(scanQrCode);
+        this.raf(scanQrCode);
       }
     };
     scanQrCode(performance.now());

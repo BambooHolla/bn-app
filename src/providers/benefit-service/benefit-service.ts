@@ -250,6 +250,9 @@ export class BenefitServiceProvider {
       this._pre_mining_block = undefined;
     }
     this._play_mining_sound_sub = this.appSetting.height.subscribe(async r => {
+      if (!this.appSetting.settings.sound_effect) {
+        return;
+      }
       await sleep(100);
       const benefitList = await this.topBenefits.getPromise();
       // 初始化 _pre_mining_block

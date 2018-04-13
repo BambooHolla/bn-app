@@ -15,6 +15,7 @@ import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
 import * as PIXI_SOUND from "pixi-sound";
 console.log(PIXI_SOUND);
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 
 export class AppUrl {
   constructor(public path) {}
@@ -196,7 +197,7 @@ export class AppSettingProvider extends EventEmitter {
       setTranDur("0ms"); // 确保下面计算出来的值是正确的
       const bound_rect = testnet_flag.getBoundingClientRect(); //reflow
       setTran(pre_flag_transform);
-      requestAnimationFrame(() => {
+      FLP_Tool.raf(() => {
         setTranDur(null);
         setTran((pre_flag_transform = `scale(${55 / bound_rect.width})`));
       });

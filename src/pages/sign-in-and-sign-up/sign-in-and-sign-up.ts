@@ -75,7 +75,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
 
   autoReHeightPWDTextArea(stop_loop?: boolean) {
     if (!stop_loop) {
-      requestAnimationFrame(() => {
+      this.raf(() => {
         this.autoReHeightPWDTextArea(true);
       });
     }
@@ -97,7 +97,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
   togglePWD() {
     this.show_pwd = !this.show_pwd;
-    requestAnimationFrame(() => {
+    this.raf(() => {
       this.autoReHeightPWDTextArea();
     });
   }

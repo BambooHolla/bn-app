@@ -43,7 +43,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
       throw new Error("call init first");
     }
     if (!this.app) {
-      this.app = new PIXI.Application({
+      this.app = this.PIXIAppbuilder({
         antialias: true,
         transparent: true,
         // backgroundColor: 0xebbb57,

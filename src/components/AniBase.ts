@@ -1,16 +1,40 @@
 import { EventEmitter } from "eventemitter3";
 import * as PIXI from "pixi.js";
-import { tryRegisterGlobal } from "../bnqkl-framework/FLP_Tool";
+import { tryRegisterGlobal, FLP_Tool } from "../bnqkl-framework/FLP_Tool";
+function _tick(time) {
+  this._requestId = null;
 
+  if (this.started) {
+    // Invoke listeners now
+    this.update(time);
+    // Listener side effects may have modified ticker state.
+    if (this.started && this._requestId === null && this._head.next) {
+      this._requestId = FLP_Tool.raf(() => this._tick());
+    }
+  }
+}
+PIXI.ticker.shared["_tick"] = _tick;
+PIXI.ticker.Ticker.prototype["_requestIfNeeded"] = function _requestIfNeeded() {
+  if (this._requestId === null && this._head.next) {
+    // ensure callbacks get correct delta
+    this.lastTime = performance.now();
+    this._requestId = FLP_Tool.raf(() => this._tick());
+  }
+};
 // PIXI.settings.TARGET_FPMS = 0.03;
-// const _raf = requestAnimationFrame;
-// window["requestAnimationFrame"] = cb => _raf(() => _raf(cb));
+
 export class AniBase extends EventEmitter {
   cname = this.constructor.name;
   _app?: PIXI.Application;
   get app() {
     return this._app;
   }
+  static PIXIAppbuilder(options?: PIXI.ApplicationOptions) {
+    const app = new PIXI.Application(options);
+    app.ticker["_tick"] = _tick;
+    return app;
+  }
+  PIXIAppbuilder = AniBase.PIXIAppbuilder;
   set app(v: PIXI.Application | undefined) {
     this._app = v;
     if (v) {
@@ -35,6 +59,10 @@ export class AniBase extends EventEmitter {
   devicePixelRatio = window.devicePixelRatio;
   pt = px => this.devicePixelRatio * px;
   px = pt => pt / this.devicePixelRatio;
+  static raf = FLP_Tool.raf;
+  raf = FLP_Tool.raf;
+  static caf = FLP_Tool.caf;
+  caf = FLP_Tool.caf;
   is_started = false;
   startAnimation() {
     if (this.is_started) {
@@ -45,7 +73,7 @@ export class AniBase extends EventEmitter {
     console.group("start-animation:" + this.cname);
     this.emit("start-animation");
     console.groupEnd();
-    requestAnimationFrame(t => {
+    this.raf(t => {
       this.pre_t = t;
       this._loop(t);
     });
@@ -68,7 +96,7 @@ export class AniBase extends EventEmitter {
         this.canvasNode.clientWidth
       )
     ) {
-      requestAnimationFrame(() => this._init());
+      this.raf(() => this._init());
       return false;
     }
     console.group("init-start");
@@ -83,7 +111,7 @@ export class AniBase extends EventEmitter {
     const diff_t = t - this.pre_t;
     this.pre_t = t;
     this._update(t, diff_t);
-    if (this.is_started) requestAnimationFrame(this._loop);
+    if (this.is_started) this.raf(this._loop);
   }
   /**在省电模式下是否依旧强制运行*/
   _force_update = false;
@@ -113,10 +141,8 @@ export class AniBase extends EventEmitter {
   static power_saving_mode = false;
   forceRenderOneFrame() {
     this.force_update = true;
-    cancelAnimationFrame(this["__UPDATER_ID__"]);
-    this["__UPDATER_ID__"] = requestAnimationFrame(
-      () => (this.force_update = false),
-    );
+    this.caf(this["__UPDATER_ID__"]);
+    this["__UPDATER_ID__"] = this.raf(() => (this.force_update = false));
   }
   _update(t, diff_t) {
     if (this.loop_skip) {
@@ -172,12 +198,12 @@ export class AniBase extends EventEmitter {
     const diff = to - from;
     let frame_id;
     const abort = () => {
-      cancelAnimationFrame(frame_id);
+      this.caf(frame_id);
     };
-    return function(
+    return (
       cb: (v: number, abort: () => void) => void | boolean,
       after_finished?: () => void,
-    ) {
+    ) => {
       const start_time = performance.now();
       const ani = () => {
         const cur_time = performance.now();
@@ -186,7 +212,7 @@ export class AniBase extends EventEmitter {
         const res = cb(v, abort);
         if (progress !== 1) {
           if (res !== false) {
-            frame_id = requestAnimationFrame(ani);
+            frame_id = this.raf(ani);
           }
         } else {
           after_finished && after_finished();
@@ -246,7 +272,7 @@ export class CssAniBase extends AniBase {
         this.containerNode.clientWidth
       )
     ) {
-      requestAnimationFrame(() => this._init());
+      this.raf(() => this._init());
       return false;
     }
     console.group("init-start");

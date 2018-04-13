@@ -42,7 +42,6 @@ export class SatelliteCssComponent extends CssAniBase {
     this.on("init-start", this.initCssApp.bind(this));
     this.on("start-animation", this.startCssApp.bind(this));
     this.on("stop-animation", this.stopCssApp.bind(this));
-    this.force_update = true;
   }
 
   initCssApp() {

@@ -68,7 +68,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
         width: tr.clientWidth,
         height: tr.clientHeight,
       });
-      requestAnimationFrame(() => {
+      this.raf(() => {
         tr.style.transform = t;
       });
       return toimage_promise;

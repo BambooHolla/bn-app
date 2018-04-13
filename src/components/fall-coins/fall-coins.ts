@@ -77,7 +77,7 @@ export class FallCoinsComponent extends AniBase {
       throw new Error("call init first");
     }
     if (!this.app) {
-      this.app = new PIXI.Application({
+      this.app = this.PIXIAppbuilder({
         antialias: true,
         transparent: true,
         view: canvasNode,
@@ -196,7 +196,7 @@ export class FallCoinsComponent extends AniBase {
         if (ani.y >= end_y) {
           ani.y = end_y;
           this.removeLoop(coin_ani);
-          requestAnimationFrame(() => this.downForceUpdate(ani_uuid));
+          this.raf(() => this.downForceUpdate(ani_uuid));
           target_line.in_ani -= 1;
         }
         if (target_line.in_ani === 0) {

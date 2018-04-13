@@ -290,6 +290,23 @@ export class FLP_Tool {
   }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
+
+  static raf(callback) {
+    this.raf =
+      window["__zone_symbol__requestAnimationFrame"] ||
+      window["webkitRequestAnimationFrame"];
+    this.raf = this.raf.bind(window);
+    return this.raf(callback);
+  }
+  raf = FLP_Tool.raf;
+  static caf(rafId) {
+    this.caf =
+      window["__zone_symbol__cancelAnimationFrame"] ||
+      window["webkitCancelAnimationFrame"];
+    this.caf = this.caf.bind(window);
+    return this.caf(rafId);
+  }
+  caf = FLP_Tool.caf;
 }
 
 // 存储在原型链上的数据（字符串）集合

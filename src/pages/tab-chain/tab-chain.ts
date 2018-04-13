@@ -207,10 +207,10 @@ export class TabChainPage extends FirstLevelPage {
               diff -= Math.max(cut_diff, diff / 2);
             }
             if (Math.abs(diff) > 0.5) {
-              frame_id = requestAnimationFrame(scroll_handle);
+              frame_id = this.raf(scroll_handle);
             }
           };
-          frame_id = requestAnimationFrame(scroll_handle);
+          frame_id = this.raf(scroll_handle);
         },
         scroll: e => {
           if (!this.content || !this.vSrollContainer) {

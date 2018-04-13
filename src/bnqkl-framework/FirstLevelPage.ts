@@ -117,7 +117,7 @@ export class FirstLevelPage extends FLP_Data {
 
     const scroll_ele = this.content.getScrollElement();
     let ts;
-    scroll_ele.addEventListener("touchstart", e => {
+    scroll_ele.addEventListener("touchstart", (e: TouchEvent) => {
       ts = e.touches[0].clientY;
       from = ts;
       to = from;
@@ -131,7 +131,7 @@ export class FirstLevelPage extends FLP_Data {
     let frame_id;
     let overflowScrolling = "touch";
     const from_to_max_span = 120;
-    scroll_ele.addEventListener("touchmove", e => {
+    scroll_ele.addEventListener("touchmove", (e: TouchEvent) => {
       var te = e.changedTouches[0].clientY;
       if (this.content && this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
         const scrollTop = this.content.getScrollElement().scrollTop;
@@ -159,7 +159,7 @@ export class FirstLevelPage extends FLP_Data {
         to_time = now;
 
         if (frame_id) {
-          cancelAnimationFrame(frame_id);
+          this.caf(frame_id);
           frame_id = null;
         }
       }
@@ -168,7 +168,7 @@ export class FirstLevelPage extends FLP_Data {
       const contentEle = e.currentTarget as HTMLElement;
 
       if (frame_id) {
-        cancelAnimationFrame(frame_id);
+        this.caf(frame_id);
         frame_id = null;
       }
       if (overflowScrolling !== "auto") {
@@ -200,10 +200,10 @@ export class FirstLevelPage extends FLP_Data {
         contentEle.scrollTop = cur_scrollTop;
 
         if (progress < 1) {
-          frame_id = requestAnimationFrame(scroll_handle);
+          frame_id = this.raf(scroll_handle);
         }
       };
-      frame_id = requestAnimationFrame(scroll_handle);
+      frame_id = this.raf(scroll_handle);
     };
     // scroll_ele.addEventListener("touchend", touchend);
     // scroll_ele.addEventListener("touchcancel", touchend);
@@ -278,7 +278,7 @@ export class FirstLevelPage extends FLP_Data {
     //   if (this.PAGE_STATUS <= PAGE_STATUS.DID_ENTER) {
     //     // this.content && this.content.getScrollElement().scrollTop;
     //   }
-    //   requestAnimationFrame(calcScrollTopInTime);
+    //   this.raf(calcScrollTopInTime);
     // };
     // calcScrollTopInTime();
     this.content.ionScroll.subscribe((scrollEvent: ScrollEvent) => {
