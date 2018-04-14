@@ -3,6 +3,14 @@ page-tab-vote {
   $panel-max-height: 20rem;
   $panel-height: 20vh;
   background-color: #fff;
+  /* 省电模式 */
+  .power-saving-mode {
+    #bg3 {
+      &::after {
+        animation: none!important;
+      }
+    }
+  }
   &::before {
     position: absolute;
     width: 128vh;

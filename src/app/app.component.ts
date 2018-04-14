@@ -104,9 +104,20 @@ export class MyApp implements OnInit {
         "android.permission.USE_FINGERPRINT");
 
     let _cur_show_enter_faio: Promise<any> | undefined;
-    document.addEventListener("Resume", async () => {
+    let pause_time = Date.now();
+    // 离线2分钟后才开始检查指纹
+    // 这个方案可以处理选择图片之类的操作会引发Resume事件的问题
+    const CHECK_FIAO_TIMESPAN = 2 * 60 * 1e3;
+    document.addEventListener("pause", () => {
+      pause_time = Date.now();
+    });
+    document.addEventListener("resume", async () => {
       //Resume
       if (_cur_show_enter_faio) {
+        return;
+      }
+      const resume_time = Date.now();
+      if (resume_time - pause_time < CHECK_FIAO_TIMESPAN) {
         return;
       }
       if (this.currentPage === MainPage) {

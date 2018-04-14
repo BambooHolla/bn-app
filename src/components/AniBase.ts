@@ -139,10 +139,17 @@ export class AniBase extends EventEmitter {
   }
   /**是否处于省电模式*/
   static power_saving_mode = false;
+  __UPDATER_ID__: null | number = null;
   forceRenderOneFrame() {
+    if (this.force_update) {
+      return;
+    }
     this.force_update = true;
-    this.caf(this["__UPDATER_ID__"]);
-    this["__UPDATER_ID__"] = this.raf(() => (this.force_update = false));
+    this.__UPDATER_ID__ !== null && this.caf(this.__UPDATER_ID__);
+    this.__UPDATER_ID__ = this.raf(() => {
+      this.force_update = false;
+      this.__UPDATER_ID__;
+    });
   }
   _update(t, diff_t) {
     if (this.loop_skip) {
@@ -246,14 +253,14 @@ export class AniBase extends EventEmitter {
     const to_color = AniBase.toColor(to);
     const diff_color = from_color.map((from_v, i) => to_color[i] - from_v);
     return (
-      cb: (v: number[]) => void | boolean,
+      cb: (v: number[], abort: () => void) => void | boolean,
       after_finished?: () => void,
     ) => {
-      AniBase.animateNumber(0, 1, duration, easing_function)(p => {
+      AniBase.animateNumber(0, 1, duration, easing_function)((p, abort) => {
         const cur_color = from_color.map(
           (from_v, i) => (from_v + diff_color[i] * p) | 0,
         );
-        return cb(cur_color);
+        return cb(cur_color, abort);
       }, after_finished);
     };
   }

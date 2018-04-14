@@ -9,6 +9,7 @@ import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { SatelliteCssComponent } from "../../components/satellite-css/satellite-css";
 import { FallCoinsComponent } from "../../components/fall-coins/fall-coins";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
@@ -233,32 +234,84 @@ export class TabVotePage extends FirstLevelPage {
     this._startVoteAnimate();
 
     const { _earth_enabled_config, earth_config } = this;
-    for (const key in _earth_enabled_config) {
-      const from = earth_config[key];
-      const to = _earth_enabled_config[key];
-      if (from == to) {
-        continue;
-      }
+    this._doChainMeshPropAni(
+      earth_config,
+      _earth_enabled_config,
+      VotePage.VoteDetail,
+    );
+  }
 
+  /*由于多个异步竞争控制这个chain-mesh，所以每次动画前必须确保控制权的检测*/
+  private _chain_mesh_ctrl?: PromiseOut<void>;
+  private _doChainMeshPropAni(
+    from_config: typeof TabVotePage.prototype.earth_config,
+    to_config: typeof TabVotePage.prototype.earth_config,
+    to_page_status: VotePage,
+  ) {
+    /*初始化新的动画控制权*/
+    const chain_mesh_ctrl = (this._chain_mesh_ctrl = new PromiseOut());
+    const _ani_id =
+      "stopVoteAnimate_" + (Math.random() + Date.now()).toString(36);
+    /*检测控制权是否还在自身，需要在每一个异步中执行一次*/
+    const check_ani_power = () => chain_mesh_ctrl === this._chain_mesh_ctrl;
+    chain_mesh_ctrl.promise
+      .then(() => {
+        // 等angular脏检测完成
+        this.raf(() => {
+          // 等pixi渲染完成
+          this.raf(() => {
+            if (this.chain_mesh && check_ani_power()) {
+              this.chain_mesh.stopAnimation();
+            }
+          });
+        });
+      })
+      .catch(err => {
+        console.info("stopAnimation chain_mesh 被中断");
+      })
+      .then(() => {
+        // 检测控制权是否还在自身
+        if (check_ani_power()) {
+          this._chain_mesh_ctrl = undefined;
+          this.chain_mesh && this.chain_mesh.downForceUpdate(_ani_id); // 关闭强制更新
+        }
+      });
+    let _ani_acc = 0;
+    this.chain_mesh && this.chain_mesh.upForceUpdate(_ani_id); // 启用强制更新
+    for (const key in to_config) {
+      _ani_acc += 1;
+      const from = from_config[key];
+      const to = to_config[key];
+      const finish_fun = () => {
+        _ani_acc -= 1;
+        if (_ani_acc === 0) {
+          chain_mesh_ctrl && chain_mesh_ctrl.resolve();
+        }
+      };
       if (key.indexOf("_color") != -1) {
         AniBase.animateColor(from, to, 500)(v => {
-          earth_config[key] = (v[0] << 16) + (v[1] << 8) + v[2];
-          return this.page_status == VotePage.VoteDetail;
-        });
+          from_config[key] = (v[0] << 16) + (v[1] << 8) + v[2];
+          console.log(key, from_config[key]);
+          return this.page_status == to_page_status && check_ani_power();
+        }, finish_fun);
       } else {
         AniBase.animateNumber(from, to, 500)(v => {
-          earth_config[key] = v;
-          return this.page_status == VotePage.VoteDetail;
-        });
+          from_config[key] = v;
+          return this.page_status == to_page_status && check_ani_power();
+        }, finish_fun);
       }
     }
   }
+
   private _stopVoteAnimate(
     opts: {
       is_force_stop_chain_mesh?: boolean;
       is_keep_mining_person_sound?: boolean;
     } = {},
   ) {
+    if (this._stop_chain_mesh) {
+      this._stop_chain_mesh.reject();
+    }
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.stopAnimation();
@@ -275,24 +328,11 @@ export class TabVotePage extends FirstLevelPage {
       this.chain_mesh && this.chain_mesh.stopAnimation();
     } else {
       const { _earth_disabled_config, earth_config } = this;
-      for (const key in _earth_disabled_config) {
-        const from = earth_config[key];
-        const to = _earth_disabled_config[key];
-        const finish_fun = () => {
-          this.chain_mesh && this.chain_mesh.stopAnimation();
-        };
-        if (key.indexOf("_color") != -1) {
-          AniBase.animateColor(from, to, 500)(v => {
-            earth_config[key] = (v[0] << 16) + (v[1] << 8) + v[2];
-            return this.page_status == "bootstrap";
-          }, finish_fun);
-        } else {
-          AniBase.animateNumber(from, to, 500)(v => {
-            earth_config[key] = v;
-            return this.page_status == "bootstrap";
-          }, finish_fun);
-        }
-      }
+      this._doChainMeshPropAni(
+        earth_config,
+        _earth_disabled_config,
+        VotePage.Bootstrap,
+      );
     }
   }
   routeToBootstrap() {
@@ -319,7 +359,19 @@ export class TabVotePage extends FirstLevelPage {
     line_color: 0xffd246,
     line_opacity: 1,
   };
-  earth_config = { ...this._earth_disabled_config };
+  earth_config = (() => {
+    const self = this;
+    return {
+      get body_color() {
+        return this._body_color;
+      },
+      set body_color(v) {
+        this._body_color = v;
+        self.chain_mesh && (self.chain_mesh.tint = v);
+      },
+      ...this._earth_disabled_config,
+    };
+  })();
   @TabVotePage.didEnter
   initEarchNetMesh() {
     // 执行一帧，并停止
@@ -464,7 +516,8 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
 
-  @ViewChild("extendsPanel1") extendsPanel1?: VotePreRoundIncomeRankingComponent;
+  @ViewChild("extendsPanel1")
+  extendsPanel1?: VotePreRoundIncomeRankingComponent;
   @ViewChild("extendsPanel2") extendsPanel2?: VoteCurrentBlockIncomeComponent;
   @ViewChild("extendsPanel3") extendsPanel3?: VoteIncomeTrendComponent;
   @ViewChild("extendsPanel4") extendsPanel4?: VoteMyContributionComponent;

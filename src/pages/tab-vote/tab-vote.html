@@ -1,8 +1,8 @@
 <ion-header>
   <!-- 挖矿 -->
 </ion-header>
-<ion-content>
-  <chain-mesh id="bg2" [ngClass]="page_status" [tint]="earth_config.body_color" [class.show-big-fall-icon]="is_show.show_big_fall_icon"></chain-mesh>
+<ion-content [class.power-saving-mode]="appSetting.settings.power_saving_mode">
+  <chain-mesh id="bg2" [ngClass]="page_status" [class.show-big-fall-icon]="is_show.show_big_fall_icon"></chain-mesh>
   <div id="bg3" [ngClass]="page_status"></div>
   <div class="wave-container" [ngClass]="page_status">
     <div class="wave-3">
