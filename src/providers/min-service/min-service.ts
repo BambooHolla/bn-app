@@ -257,13 +257,12 @@ export class MinServiceProvider extends FLP_Tool {
     await this.vote(userPWD.password, userPWD.pay_pwd)
       .then(() => {
         this.tryEmit("vote-success");
+        this.vote_status_detail = null;
         this.vote_status.next(true);
       })
       .catch(err => {
-        let has_handler = false;
-        if (this.tryEmit("vote-error", err)) {
-          has_handler = true;
-        }
+        this.vote_status_detail = err;
+        const has_handler = this.tryEmit("vote-error", err);
         this.vote_status.next(false);
         if (!has_handler) {
           throw err;
@@ -271,6 +270,8 @@ export class MinServiceProvider extends FLP_Tool {
       });
     // }
   }
+
+  vote_status_detail: Error | null = null;
 
   /**
    * 取消自动投票

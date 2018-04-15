@@ -76,15 +76,15 @@ export class TabVotePage extends FirstLevelPage {
         this.routeToBootstrap();
       }
     });
-    this.registerViewEvent(
-      this.minService.event,
-      "vote-error",
-      (err: Error) => {
-        this.showErrorDialog(err.message);
-        this.stopMin();
-        this.autoStartButtonPressOut();// 取消按钮动画，必要的话
-      },
-    );
+    this.registerViewEvent(this.minService.event, "vote-error", () => {
+      const err = minService.vote_status_detail;
+      if (!err) {
+        return;
+      }
+      this.showErrorDialog(err.message);
+      this.stopMin();
+      this.autoStartButtonPressOut(); // 取消按钮动画，必要的话
+    });
   }
   toggleSoundEffect() {
     this.appSetting.settings.sound_effect = !this.appSetting.settings
