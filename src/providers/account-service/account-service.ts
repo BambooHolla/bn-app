@@ -97,13 +97,13 @@ export class AccountServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
   ) {
     if (!!this.user.userInfo.username) {
-      throw await this.fetch.ServerResError.getI18nError(
+      throw this.fetch.ServerResError.getI18nError(
         "account already has username",
       );
     }
     let is_existed = await this.checkUsernameExisted(newUsername);
     if (!is_existed) {
-      throw await this.fetch.ServerResError.getI18nError(
+      throw this.fetch.ServerResError.getI18nError(
         "this username has already exist",
       );
     }
@@ -129,7 +129,7 @@ export class AccountServiceProvider {
       this.user.userInfo.username = newUsername;
       return true;
     } catch (err) {
-      throw await this.fetch.ServerResError.getI18nError(
+      throw this.fetch.ServerResError.getI18nError(
         "change username error",
       );
     }

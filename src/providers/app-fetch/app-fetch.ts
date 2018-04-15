@@ -11,29 +11,26 @@ import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
-  static translateAndParseErrorMessage<T = never>(message, code?): Promise<T> {
-    return (window["translate"] as TranslateService)
-      .get(message)
-      .take(1)
-      .toPromise()
-      .then(err_translated_msg => {
-        return Promise.reject(
-          code
-            ? ServerResError.parseErrorMessage(code, message)
-            : new Error(err_translated_msg),
-        );
-      });
+  static translateAndParseErrorMessage(message, code?) {
+    const err_translated_msg = (window[
+      "translate"
+    ] as TranslateService).instant(message);
+    return code
+      ? ServerResError.parseErrorMessage(code, message)
+      : new Error(err_translated_msg);
   }
   static getI18nError(message, code?) {
-    return (window["translate"] as TranslateService)
-      .get(message)
-      .take(1)
-      .toPromise()
-      .then(err_translated_msg => {
-        return code
-          ? ServerResError.parseErrorMessage(code, message)
-          : new Error(err_translated_msg);
-      });
+    const err_translated_msg = (window[
+      "translate"
+    ] as TranslateService).instant(message);
+    const err = code
+      ? ServerResError.parseErrorMessage(code, message)
+      : new Error(err_translated_msg);
+    return this.removeErrorCurrentStackLine(err);
+  }
+  static removeErrorCurrentStackLine(err: Error) {
+    err.stack = (err.stack || "").replace(/\n[\w\W]+?\n/, "\n");
+    return err;
   }
   static parseErrorMessage(code, message) {
     const CODE_LIST = [code + ""];
@@ -50,7 +47,8 @@ export class ServerResError extends Error {
         }
       } catch (err) {}
     }
-    return new ServerResError(CODE_LIST, MESSAGE);
+    const err = new ServerResError(CODE_LIST, MESSAGE);
+    return this.removeErrorCurrentStackLine(err);
   }
   constructor(code_list: string[], message: string) {
     super(code_list.map(c => `<small>${c}</small>`).join("") + message);
@@ -103,12 +101,12 @@ export class AppFetchProvider {
       debugger;
       const err_message = data.error && data.error.message;
       if (err_message) {
-        return ServerResError.translateAndParseErrorMessage(
+        throw ServerResError.translateAndParseErrorMessage(
           err_message,
           error.code,
         );
       } else {
-        return Promise.reject(data.error);
+        throw new Error(data.error);
       }
     } else {
       if (data) {
@@ -116,11 +114,11 @@ export class AppFetchProvider {
           data.constructor.name === "ProgressEvent" ||
           data.constructor.name === "XMLHttpRequestProgressEvent"
         ) {
-          return Promise.reject("网络异常");
+          throw new Error("网络异常");
         }
-        return Promise.reject(data);
+        throw new Error(data);
       } else {
-        return Promise.reject("未知异常");
+        throw new Error("未知异常");
       }
     }
   }
@@ -149,9 +147,11 @@ export class AppFetchProvider {
               if (!cache_data) {
                 throw null;
               }
-              cache_data.__source_err__ = await this._handleResCatch(
-                response,
-              ).catch(err => err);
+              try {
+                this._handleResCatch(response);
+              } catch (err) {
+                cache_data.__source_err__ = err;
+              }
               response.json = () => cache_data;
               return response;
             } catch (err) {

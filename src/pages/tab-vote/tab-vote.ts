@@ -69,6 +69,22 @@ export class TabVotePage extends FirstLevelPage {
     public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
+    this.minService.vote_status.subscribe(is_voting => {
+      if (is_voting) {
+        this.routeToVoteDetail();
+      } else {
+        this.routeToBootstrap();
+      }
+    });
+    this.registerViewEvent(
+      this.minService.event,
+      "vote-error",
+      (err: Error) => {
+        this.showErrorDialog(err.message);
+        this.stopMin();
+        this.autoStartButtonPressOut();// 取消按钮动画，必要的话
+      },
+    );
   }
   toggleSoundEffect() {
     this.appSetting.settings.sound_effect = !this.appSetting.settings
@@ -291,7 +307,6 @@ export class TabVotePage extends FirstLevelPage {
       if (key.indexOf("_color") != -1) {
         AniBase.animateColor(from, to, 500)(v => {
           from_config[key] = (v[0] << 16) + (v[1] << 8) + v[2];
-          console.log(key, from_config[key]);
           return this.page_status == to_page_status && check_ani_power();
         }, finish_fun);
       } else {
@@ -309,8 +324,8 @@ export class TabVotePage extends FirstLevelPage {
       is_keep_mining_person_sound?: boolean;
     } = {},
   ) {
-    if (this._stop_chain_mesh) {
-      this._stop_chain_mesh.reject();
+    if (this._chain_mesh_ctrl) {
+      this._chain_mesh_ctrl.reject();
     }
     this.fall_coin &&
       this.fall_coin.is_inited &&
@@ -403,6 +418,24 @@ export class TabVotePage extends FirstLevelPage {
 
   try_min_starting = false;
   min_starting = false;
+  autoStartButtonPressDown() {
+    this.try_min_starting = true;
+  }
+  autoStartButtonPressUp(event: TouchEvent | MouseEvent) {
+    console.log(event);
+    if (
+      // mobile模式下，只监听touch
+      (this.isMobile && event.type.indexOf("touch") != -1) ||
+      // 开发的桌面模式下，
+      (!this.isMobile && event.type.indexOf("mouse") != -1)
+    ) {
+      this.try_min_starting = false;
+      this.startMin();
+    }
+  }
+  autoStartButtonPressOut() {
+    this.try_min_starting = false;
+  }
   /** 开启挖矿*/
   @asyncCtrlGenerator.error(() =>
     TabVotePage.getTranslate("START_AUTO_VOTE_ERROR"),
@@ -451,7 +484,7 @@ export class TabVotePage extends FirstLevelPage {
           return Promise.reject(err);
         }
       });
-      this.routeToVoteDetail();
+      // this.routeToVoteDetail();
     } finally {
       this.min_starting = false;
     }

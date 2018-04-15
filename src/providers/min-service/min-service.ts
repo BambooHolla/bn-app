@@ -11,6 +11,7 @@ import {
   TB_AB_Generator,
   AsyncBehaviorSubject,
 } from "../app-setting/app-setting";
+import { LoginServiceProvider } from "../login-service/login-service";
 import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
 import {
@@ -54,27 +55,45 @@ export class MinServiceProvider extends FLP_Tool {
     public accountService: AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
     public blockService: BlockServiceProvider,
-    public user: UserInfoProvider,
+    public userInfo: UserInfoProvider,
+    public loginService: LoginServiceProvider,
   ) {
     super();
     this.ifmJs = AppSettingProvider.IFMJS;
-  }
-
-  private _auto_vote_register!: AsyncBehaviorSubject<void>;
-  private _auto_vote_sub?: Subscription;
-  @TB_AB_Generator("_auto_vote_register")
-  private _auto_vote_register_Executor(promise_pro: PromisePro<void>) {
-    if (this._auto_vote_sub) {
-      this._auto_vote_sub.unsubscribe();
-    }
-    this._auto_vote_sub = this.appSetting.round.subscribe(r => {
-      if (this.appSetting.getUserToken()) {
-        // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，这里属于重复调用，但是autoVote会自动处理重复情况
-        this.autoVote(r, "from-round-change");
+    // this._auto_vote_register.getPromise();
+    this.loginService.loginStatus.distinctUntilChanged().subscribe(is_login => {
+      this._auto_vote_sub && this._auto_vote_sub.unsubscribe();
+      if (is_login) {
+        this._auto_vote_sub = this.appSetting.round.subscribe(r => {
+          if (this.appSetting.getUserToken()) {
+            // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，这里属于重复调用，但是autoVote会自动处理重复情况
+            this.autoVote(r, "from-round-change").catch(err => {
+              console.error("AUTO VOTE ERROR", err);
+            });
+          }
+        });
       }
     });
-    return promise_pro.reject();
+    // this.appSetting.login
   }
+
+  // private _auto_vote_register!: AsyncBehaviorSubject<void>;
+  private _auto_vote_sub?: Subscription;
+  // @TB_AB_Generator("_auto_vote_register")
+  // private _auto_vote_register_Executor(promise_pro: PromisePro<void>) {
+  //   if (this._auto_vote_sub) {
+  //     this._auto_vote_sub.unsubscribe();
+  //   }
+  //   this._auto_vote_sub = this.appSetting.round.subscribe(r => {
+  //     if (this.appSetting.getUserToken()) {
+  //       // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，这里属于重复调用，但是autoVote会自动处理重复情况
+  //       this.autoVote(r, "from-round-change").catch(err => {
+  //         console.error("AUTO VOTE ERROR", err);
+  //       });
+  //     }
+  //   });
+  //   return promise_pro.resolve();
+  // }
 
   readonly ROUND_TIME = this.appSetting.APP_URL("/api/delegates/roundTime");
   readonly VOTE_URL = this.appSetting.APP_URL(
@@ -111,7 +130,7 @@ export class MinServiceProvider extends FLP_Tool {
   async getRoundRemainTime() {
     let roundTimeUrl = this.ROUND_TIME;
     let roundTimeReq = {
-      publicKey: this.user.userInfo.publicKey,
+      publicKey: this.userInfo.publicKey,
     };
     let roundProgress: any;
 
@@ -144,13 +163,15 @@ export class MinServiceProvider extends FLP_Tool {
 
     //获取投票的人
     const resp = await this.fetch.get<any>(this.VOTE_URL, {
-      search: { address: this.user.address },
+      search: { address: this.userInfo.address },
     });
     //如果没有可投票的人，一般都是已经投了57票
     if (resp.delegate.length === 0) {
-      throw await this.fetch.ServerResError.getI18nError(
-        "you have already voted",
-      );
+      console.warn("已经投过票了");
+      return;
+      // throw this.fetch.ServerResError.getI18nError(
+      //   "you have already voted",
+      // );
     }
     let delegateArr: string[] = resp.delegate;
     let voteList: string[] = [];
@@ -163,7 +184,7 @@ export class MinServiceProvider extends FLP_Tool {
     let txData: any = {
       type: this.TransactionTypes.VOTE,
       secret: secret,
-      publicKey: this.user.userInfo.publicKey,
+      publicKey: this.userInfo.publicKey,
       fee: this.appSetting.settings.default_fee.toString(),
       timestamp: resp.timestamp,
       asset: {
@@ -176,16 +197,16 @@ export class MinServiceProvider extends FLP_Tool {
     }
 
     //成功完成交易
-    try {
-      await this.transactionService.putTransaction(txData);
-      this.appSetting.settings.digRound = this.appSetting.getRound();
-      this.appSetting.settings.background_mining = true;
-    } catch (err) {
-      console.error(err);
-      throw await this.fetch.ServerResError.getI18nError(
-        "vote transaction error",
-      );
-    }
+    // try {
+    await this.transactionService.putTransaction(txData);
+    this.appSetting.settings.digRound = this.appSetting.getRound();
+    this.appSetting.settings.background_mining = true;
+    // } catch (err) {
+    //   console.error(err);
+    //   throw this.fetch.ServerResError.getI18nError(
+    //     "vote transaction error",
+    //   );
+    // }
   }
 
   /**
@@ -197,7 +218,8 @@ export class MinServiceProvider extends FLP_Tool {
   async autoVote(round, from?: any) {
     if (this.appSetting.settings.background_mining) {
       if ("from-round-change" === from) {
-        const cache_key = this.user.publicKey + "|" + this.user.secondPublicKey;
+        const cache_key =
+          this.userInfo.publicKey + "|" + this.userInfo.secondPublicKey;
         if (
           this._pre_round_pwd_info &&
           this._pre_round_pwd_info.cache_key != cache_key
@@ -205,18 +227,22 @@ export class MinServiceProvider extends FLP_Tool {
           // 二次密码发生了变动，或者帐号发生了变动
           this._pre_round_pwd_info = undefined;
         }
-        if (!this.user.address) {
+        if (!this.userInfo.address) {
           // 如果已经没有用户处于在线状态，终止挖矿
           return;
         }
         if (!this._pre_round_pwd_info) {
-          this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword();
+          this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword.call(
+            this,
+          );
         }
       }
       await this.tryVote(round, this._pre_round_pwd_info);
     }
   }
   private _pre_round_pwd_info?: any;
+  /*是否处于挖矿状态*/
+  vote_status = new BehaviorSubject(false);
 
   @asyncCtrlGenerator.single()
   async tryVote(
@@ -224,14 +250,26 @@ export class MinServiceProvider extends FLP_Tool {
     userPWD?: { password: string; pay_pwd?: string },
     from?: any,
   ) {
-    if (this.appSetting.settings.digRound < round) {
-      if (this._pre_round_pwd_info) {
-      }
-      if (!userPWD) {
-        userPWD = await FLP_Form.prototype.getUserPassword();
-      }
-      await this.vote(userPWD.password, userPWD.pay_pwd);
+    // if (this.appSetting.settings.digRound < round) {
+    if (!userPWD) {
+      userPWD = await FLP_Form.prototype.getUserPassword();
     }
+    await this.vote(userPWD.password, userPWD.pay_pwd)
+      .then(() => {
+        this.tryEmit("vote-success");
+        this.vote_status.next(true);
+      })
+      .catch(err => {
+        let has_handler = false;
+        if (this.tryEmit("vote-error", err)) {
+          has_handler = true;
+        }
+        this.vote_status.next(false);
+        if (!has_handler) {
+          throw err;
+        }
+      });
+    // }
   }
 
   /**
@@ -251,7 +289,7 @@ export class MinServiceProvider extends FLP_Tool {
 
     let data = await this.fetch.get<any>(voteForMeUrl, {
       search: {
-        publicKey: this.user.publicKey,
+        publicKey: this.userInfo.publicKey,
         offset: (page - 1) * limit,
         limit: limit,
       },
@@ -286,7 +324,7 @@ export class MinServiceProvider extends FLP_Tool {
    */
   async getMyVotes(page = 1, limit = 10) {
     let query = {
-      address: this.user.userInfo.address,
+      address: this.userInfo.userInfo.address,
       offset: (page - 1) * limit,
       limit: limit,
     };
@@ -368,7 +406,7 @@ export class MinServiceProvider extends FLP_Tool {
    */
   async getForgeStaus() {
     let query = {
-      publicKey: this.user.userInfo.publicKey,
+      publicKey: this.userInfo.userInfo.publicKey,
     };
     let data = await this.fetch.get<any>(this.FORGE_STATUS, { search: query });
     return data.enabled;
@@ -401,7 +439,7 @@ export class MinServiceProvider extends FLP_Tool {
    */
   async getMyRank(): Promise<TYPE.RankModel[]> {
     let query = {
-      address: this.user.userInfo.address,
+      address: this.userInfo.userInfo.address,
     };
     let data = await this.fetch.get<any>(this.MY_RANK, { search: query });
 
@@ -449,7 +487,7 @@ export class MinServiceProvider extends FLP_Tool {
       this.myRank.getPromise().then(pre_round_rank_list => {
         if (pre_round_rank_list) {
           return pre_round_rank_list.find(
-            rank_info => rank_info.address == this.user.userInfo.address,
+            rank_info => rank_info.address == this.userInfo.userInfo.address,
           );
         }
       }),
@@ -463,7 +501,7 @@ export class MinServiceProvider extends FLP_Tool {
   async getRateOfReturn() {
     let lastRoundT = await this.transactionService.getTransactions({
       type: this.ifmJs.transactionTypes.VOTE,
-      senderId: this.user.address,
+      senderId: this.userInfo.address,
       orderBy: "t_timestamp:desc",
       limit: 57,
     });
@@ -472,7 +510,7 @@ export class MinServiceProvider extends FLP_Tool {
 
     let totalBenefitList = await this.myRank.getPromise();
     const myBenefit = totalBenefitList.find(
-      rank_info => rank_info.address === this.user.address,
+      rank_info => rank_info.address === this.userInfo.address,
     );
     if (!myBenefit) {
       return undefined;

@@ -1,4 +1,5 @@
 import { FLP_Route } from "./FLP_Route";
+import { FLP_Tool } from "./FLP_Tool";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { asyncCtrlGenerator } from "./Decorator";
@@ -166,7 +167,7 @@ export class FLP_Form extends FLP_Route {
     // 支付密码
     return new Promise<{ password; pay_pwd }>((resolve, reject) => {
       try {
-        const model = this.modalCtrl.create("pwd-input", opts, {
+        const model = (this as FLP_Tool).modalCtrl.create("pwd-input", opts, {
           enableBackdropDismiss: true,
           cssClass: "pwd-input-modal",
           showBackdrop: true,

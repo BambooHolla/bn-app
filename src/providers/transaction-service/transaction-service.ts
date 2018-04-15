@@ -187,7 +187,7 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     if (this.user.userInfo.balance <= 0) {
-      throw await this.fetch.ServerResError.getI18nError("not enough balance");
+      throw this.fetch.ServerResError.getI18nError("not enough balance");
     }
     if (
       txData.secondSecret &&
@@ -196,7 +196,7 @@ export class TransactionServiceProvider {
       let secondPwd = txData.secondSecret;
       let is_second_true = this.verifySecondPassphrase(secondPwd);
       if (!is_second_true) {
-        throw await this.fetch.ServerResError.getI18nError(
+        throw this.fetch.ServerResError.getI18nError(
           "Second passphrase verified error",
         );
       }
@@ -206,7 +206,7 @@ export class TransactionServiceProvider {
     }
 
     if (!this.validateTxdata(txData)) {
-      throw await this.fetch.ServerResError.getI18nError("validate error");
+      throw this.fetch.ServerResError.getI18nError("validate error");
     }
     //获取url，获取类型
     let transactionUrl = this.appSetting
@@ -403,10 +403,10 @@ export class TransactionServiceProvider {
   ) {
     amount = parseFloat(amount);
     if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
-      throw await this.fetch.ServerResError.getI18nError("Amount error");
+      throw this.fetch.ServerResError.getI18nError("Amount error");
     }
     if (amount + fee > parseFloat(this.user.balance)) {
-      throw await this.fetch.ServerResError.getI18nError("Amount error");
+      throw this.fetch.ServerResError.getI18nError("Amount error");
     }
 
     let txData: any = {

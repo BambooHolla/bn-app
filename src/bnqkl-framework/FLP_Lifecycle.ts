@@ -4,8 +4,8 @@ import {
   OnDestroy,
   ChangeDetectorRef,
 } from "@angular/core";
-import { EventEmitter } from "eventemitter3";
 import { PAGE_STATUS } from "./const";
+import { EventEmitter } from "eventemitter3";
 import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
 // import { MyApp } from "../app/app.component";
 var uuid = 0;
@@ -20,17 +20,8 @@ export class FLP_Lifecycle extends FLP_Tool
   instance_id = ++uuid;
   cname = this.constructor.name;
   PAGE_LEVEL = 1;
-  _event?: EventEmitter;
-  get event() {
-    return this._event || (this._event = new EventEmitter());
-  }
   PAGE_STATUS = PAGE_STATUS.UNLOAD;
 
-  tryEmit(eventanme, ...args) {
-    if (this._event) {
-      this._event.emit(eventanme, ...args);
-    }
-  }
   /** 注册视图层相关的事件
    *  注册后，在leave期间，事件不会触发，但会收集，等再次进入页面的时候按需更新一次
    *  这个函数主要是用来配合ChangeDetectorRef进行手动更新视图用的

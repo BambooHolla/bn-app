@@ -1,5 +1,6 @@
 import { Clipboard } from "@ionic-native/clipboard";
 import { TranslateService } from "@ngx-translate/core";
+import { EventEmitter } from "eventemitter3";
 import {
   ActionSheetController,
   AlertController,
@@ -30,6 +31,16 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
+  _event?: EventEmitter;
+  get event() {
+    return this._event || (this._event = new EventEmitter());
+  }
+  tryEmit(eventanme, ...args) {
+    if (this._event) {
+      return this._event.emit(eventanme, ...args);
+    }
+    return false;
+  }
 
   async showConfirmDialog(
     message: string,
@@ -186,6 +197,14 @@ export class FLP_Tool {
     }
     return this._isAndroid;
   }
+  private _isMobile?: boolean;
+  get isMobile() {
+    if (this._isMobile === undefined) {
+      this._isMobile = this.platform.is("mobile");
+    }
+    return this._isMobile;
+  }
+
   navigatorClipboard: {
     writeText: (text: string) => Promise<void>;
     readText: () => Promise<string>;
