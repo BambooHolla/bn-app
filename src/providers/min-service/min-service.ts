@@ -8,11 +8,11 @@ import { AlertController } from "ionic-angular";
 import {
   AppSettingProvider,
   ROUND_AB_Generator,
+  HEIGHT_AB_Generator,
   TB_AB_Generator,
   AsyncBehaviorSubject,
 } from "../app-setting/app-setting";
 import { LoginServiceProvider } from "../login-service/login-service";
-import { BlockServiceProvider } from "../block-service/block-service";
 import { AccountServiceProvider } from "../account-service/account-service";
 import {
   TransactionServiceProvider,
@@ -40,7 +40,6 @@ export * from "./min.types";
 export class MinServiceProvider extends FLP_Tool {
   ifmJs: any;
   TransactionTypes = TransactionTypes;
-  allVoters?: TYPE.RankModel[];
   allMinersInfo?: {
     list: TYPE.DelegateModel[];
     round: number;
@@ -54,7 +53,6 @@ export class MinServiceProvider extends FLP_Tool {
     public appSetting: AppSettingProvider,
     public accountService: AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
-    public blockService: BlockServiceProvider,
     public userInfo: UserInfoProvider,
     public loginService: LoginServiceProvider,
   ) {
@@ -152,6 +150,23 @@ export class MinServiceProvider extends FLP_Tool {
     return roundProgress;
   }
 
+  getVoteAbleDelegate(address = this.userInfo.address) {
+    return this.fetch.get<{ delegate: string[]; timestamp: string }>(
+      this.VOTE_URL,
+      {
+        search: { address: this.userInfo.address },
+      },
+    );
+  }
+  voteAbleDelegate!: AsyncBehaviorSubject<{
+    delegate: string[];
+    timestamp: string;
+  }>;
+  @ROUND_AB_Generator("voteAbleDelegate", true)
+  voteAbleDelegate_Executor(promise_pro) {
+    return promise_pro.follow(this.getVoteAbleDelegate());
+  }
+
   /**
    * 投票
    * @param secret 主密码
@@ -159,12 +174,9 @@ export class MinServiceProvider extends FLP_Tool {
    */
   private async vote(secret: string, secondSecret?: string) {
     //首先获取时间戳
-    let voteTimestamp = await this.transactionService.getTimestamp();
 
     //获取投票的人
-    const resp = await this.fetch.get<any>(this.VOTE_URL, {
-      search: { address: this.userInfo.address },
-    });
+    const resp = await this.voteAbleDelegate.getPromise();
     //如果没有可投票的人，一般都是已经投了57票
     if (resp.delegate.length === 0) {
       console.warn("已经投过票了");
@@ -174,12 +186,9 @@ export class MinServiceProvider extends FLP_Tool {
       //   "you have already voted",
       // );
     }
-    let delegateArr: string[] = resp.delegate;
-    let voteList: string[] = [];
+
     //票投给所有获取回来的人
-    for (let delegate of delegateArr) {
-      voteList.push("+" + delegate);
-    }
+    const voteList = resp.delegate.map(delegate => "+" + delegate);
 
     //设置投票的参数
     let txData: any = {
@@ -198,16 +207,9 @@ export class MinServiceProvider extends FLP_Tool {
     }
 
     //成功完成交易
-    // try {
     await this.transactionService.putTransaction(txData);
     this.appSetting.settings.digRound = this.appSetting.getRound();
     this.appSetting.settings.background_mining = true;
-    // } catch (err) {
-    //   console.error(err);
-    //   throw this.fetch.ServerResError.getI18nError(
-    //     "vote transaction error",
-    //   );
-    // }
   }
 
   /**
@@ -281,42 +283,44 @@ export class MinServiceProvider extends FLP_Tool {
     this.appSetting.settings.background_mining = false;
   }
 
+  async getVotersForMe(page = 1, pageSize = this.default_vote_for_me_pageSize) {
+    if (page === 1 && pageSize <= this.default_vote_for_me_pageSize) {
+      const list = await this.voteForMe.getPromise();
+      return list.slice(0, pageSize);
+    }
+    const data = await this._getVotersForMe(page, pageSize);
+    return data.voters;
+  }
   /**
    * 返回所有的投票人
    * @param page
    * @param limit
    */
-  async getAllVotersForMe(page = 1, limit = 10) {
-    let voteForMeUrl = this.VOTE_FOR_ME;
-
-    let data = await this.fetch.get<any>(voteForMeUrl, {
+  private async _getVotersForMe(page: number, pageSize: number) {
+    return this.fetch.get<{
+      voters: any[];
+      count: number;
+    }>(this.VOTE_FOR_ME, {
       search: {
         publicKey: this.userInfo.publicKey,
-        offset: (page - 1) * limit,
-        limit: limit,
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
       },
     });
-    if (data.success) {
-      //@DDFIX
-      data.unshift(0, data.length - 1);
-      if (this.allVoters) {
-        this.allVoters.push(...data);
-      } else {
-        this.allVoters = data;
-      }
-      return this.allVoters;
-    } else {
-      return this.allVoters;
-    }
   }
 
+  default_vote_for_me_pageSize = 20;
   /**
    * 给我投票的人
    */
   voteForMe!: AsyncBehaviorSubject<TYPE.RankModel[]>;
-  @ROUND_AB_Generator("voteForMe", true)
+  @HEIGHT_AB_Generator("voteForMe", true)
   voteForMe_Executor(promise_pro) {
-    return promise_pro.follow(this.getAllVotersForMe());
+    return promise_pro.follow(
+      this._getVotersForMe(1, this.default_rank_list_pageSize).then(
+        data => data.voters,
+      ),
+    );
   }
 
   /**
@@ -550,5 +554,12 @@ export class MinServiceProvider extends FLP_Tool {
         },
       })
       .then(data => data.delegate);
+  }
+  myDelegateInfo!: AsyncBehaviorSubject<TYPE.DelegateModel | null>;
+  @HEIGHT_AB_Generator("myDelegateInfo")
+  myDelegateInfo_Executor(promise_pro) {
+    return promise_pro.follow(
+      this.getDelegateInfo(this.userInfo.publicKey).catch(() => null),
+    );
   }
 }

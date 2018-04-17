@@ -22,6 +22,7 @@ import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
+import { MinServiceProvider } from "../min-service/min-service";
 import io from "socket.io-client";
 
 export * from "./block.types";
@@ -49,6 +50,7 @@ export class BlockServiceProvider extends FLP_Tool {
     public translateService: TranslateService,
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
+    public minService: MinServiceProvider,
   ) {
     super();
     tryRegisterGlobal("blockService", this);
@@ -578,25 +580,13 @@ export class BlockServiceProvider extends FLP_Tool {
   /**
    * 获取我锻造的区块数
    */
-  readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
-  getMyForgingCount() {
-    return this.fetch
-      .get<DelegateInfoResModel>(this.DELEGATE_INFO, {
-        search: {
-          publicKey: this.user.publicKey,
-        },
-      })
-      .then(data => {
-        return data.delegate.producedblocks;
-      })
-      .catch(err => {
-        console.warn(err);
-        return 0;
-      });
-  }
   myForgingCount!: AsyncBehaviorSubject<number>;
   @HEIGHT_AB_Generator("myForgingCount", true)
   myForgingCount_Executor(promise_pro) {
-    return promise_pro.follow(this.getMyForgingCount());
+    return promise_pro.follow(
+      this.minService.myDelegateInfo.getPromise().then(delegate => {
+        return delegate ? delegate.producedblocks : 0;
+      }),
+    );
   }
 }

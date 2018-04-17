@@ -6,6 +6,7 @@ import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular";
 import {
   MinServiceProvider,
   DelegateModel,
+  RankModel,
 } from "../../../providers/min-service/min-service";
 
 enum InOutSubPage {
@@ -50,7 +51,7 @@ export class VoteListPage extends SecondLevelPage {
     has_more: true,
     need_refresh: true,
   };
-  can_vote_list: DelegateModel[] = [];
+  can_vote_list: string[] = [];
   can_vote_list_config = {
     page: 1,
     pageSize: 20,
@@ -59,19 +60,20 @@ export class VoteListPage extends SecondLevelPage {
   };
   /**被投的票*/
   in_vote_mill_list: any[] = [];
-  in_vote_list: DelegateModel[] = [];
+  in_vote_list: RankModel[] = [];
   in_vote_list_config = {
     page: 1,
-    pageSize: 20,
+    pageSize: this.minService.default_vote_for_me_pageSize,
     has_more: true,
     need_refresh: true,
   };
   @VoteListPage.willEnter
-  loadDataWhenEnter() {
+  async loadDataWhenEnter() {
     const page = this.navParams.get("page");
     if (page) {
       this.gotoSubPage(page);
     }
+    // TODO: 我的矿机
   }
 
   @VoteListPage.addEvent("HEIGHT:CHANGED")
@@ -85,6 +87,19 @@ export class VoteListPage extends SecondLevelPage {
       this.initOutVoteList();
       this.initCanVoteList();
     }
+
+    // 如果当前账户是委托人，就加入到矿机列表中
+    this.minService.myDelegateInfo.getPromise().then(myDelegateInfo => {
+      if (myDelegateInfo) {
+        if (
+          this.in_vote_mill_list.find(
+            item => item && item.address === myDelegateInfo.address,
+          )
+        ) {
+          this.in_vote_mill_list.push(myDelegateInfo);
+        }
+      }
+    });
   }
 
   // @asyncCtrlGenerator.loading(() =>
@@ -143,11 +158,7 @@ export class VoteListPage extends SecondLevelPage {
     // 重置分页
     can_vote_list_config.page = 1;
 
-    const list = await this.minService.getMyVotes(
-      can_vote_list_config.page,
-      can_vote_list_config.pageSize,
-    );
-    this.can_vote_list = list;
+    this.can_vote_list = await this._getCanVoteList();
     if (refresher) {
       refresher.complete();
     }
@@ -160,14 +171,18 @@ export class VoteListPage extends SecondLevelPage {
     // 重置分页
     can_vote_list_config.page += 1;
 
-    const list = await this.minService.getMyVotes(
-      can_vote_list_config.page,
-      can_vote_list_config.pageSize,
-    );
-    this.can_vote_list.push(...list);
+    this.can_vote_list.push(...(await this._getCanVoteList()));
+  }
+  private async _getCanVoteList() {
+    const { can_vote_list_config } = this;
+    const { page, pageSize } = can_vote_list_config;
+
+    const all = (await this.minService.voteAbleDelegate.getPromise()).delegate;
+    const list = all.slice((page - 1) * pageSize, page * pageSize);
 
     can_vote_list_config.has_more =
       list.length >= can_vote_list_config.pageSize;
+    return list;
   }
   // @asyncCtrlGenerator.loading(() =>
   //   VoteListPage.getTranslate("LOADING_IN_VOTE_LIST"),
@@ -184,11 +199,7 @@ export class VoteListPage extends SecondLevelPage {
     // 重置分页
     in_vote_list_config.page = 1;
 
-    const list = await this.minService.getMyVotes(
-      in_vote_list_config.page,
-      in_vote_list_config.pageSize,
-    );
-    this.in_vote_list = list;
+    this.in_vote_list = await this._getInVoteList();
     if (refresher) {
       refresher.complete();
     }
@@ -201,6 +212,14 @@ export class VoteListPage extends SecondLevelPage {
     // 重置分页
     in_vote_list_config.page += 1;
     this.in_vote_list.push(...Array.from(Array(in_vote_list_config.pageSize)));
-    in_vote_list_config.has_more = this.in_vote_list.length < 110;
+  }
+  async _getInVoteList() {
+    const { in_vote_list_config } = this;
+    const { page, pageSize } = in_vote_list_config;
+
+    const list = await this.minService.getVotersForMe(page, pageSize);
+
+    in_vote_list_config.has_more = list.length >= in_vote_list_config.pageSize;
+    return list;
   }
 }

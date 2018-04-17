@@ -68,8 +68,8 @@
             <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
           </ion-refresher>
           <div class="common-list">
-            <div class="common-item" *ngFor="let vote of can_vote_list">
-              <div class="left">{{vote.username||vote.address}}</div>
+            <div class="common-item" *ngFor="let delegatePubKey of can_vote_list">
+              <div class="left">{{delegatePubKey}}</div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>
