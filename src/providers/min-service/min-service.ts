@@ -168,7 +168,8 @@ export class MinServiceProvider extends FLP_Tool {
     //如果没有可投票的人，一般都是已经投了57票
     if (resp.delegate.length === 0) {
       console.warn("已经投过票了");
-      return;
+      throw new Error("you have already voted");
+      // return;
       // throw this.fetch.ServerResError.getI18nError(
       //   "you have already voted",
       // );
@@ -271,7 +272,7 @@ export class MinServiceProvider extends FLP_Tool {
     // }
   }
 
-  vote_status_detail: Error | null = null;
+  vote_status_detail: Error | string | null = null;
 
   /**
    * 取消自动投票

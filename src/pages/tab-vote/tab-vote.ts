@@ -81,7 +81,13 @@ export class TabVotePage extends FirstLevelPage {
       if (!err) {
         return;
       }
-      this.showErrorDialog(err.message);
+      const err_message = err instanceof Error ? err.message : err;
+      if (err_message === "you have already voted") {
+        // 启动倒计时界面
+        console.log("%c已经投票，倒计时等待结果", "font-size:3em;color:green;");
+        return err;
+      }
+      this.showErrorDialog(err_message);
       this.stopMin();
       this.autoStartButtonPressOut(); // 取消按钮动画，必要的话
     });
@@ -422,7 +428,6 @@ export class TabVotePage extends FirstLevelPage {
     this.try_min_starting = true;
   }
   autoStartButtonPressUp(event: TouchEvent | MouseEvent) {
-    console.log(event);
     if (
       // mobile模式下，只监听touch
       (this.isMobile && event.type.indexOf("touch") != -1) ||
@@ -472,18 +477,7 @@ export class TabVotePage extends FirstLevelPage {
       const pwdData = await this.getUserPassword({
         title: "@@START_VOTE_VERIFY",
       });
-      await this.minService.tryVote(undefined, pwdData).catch(err => {
-        if (err === "you have already voted") {
-          // 启动倒计时界面
-          console.log(
-            "%c已经投票，倒计时等待结果",
-            "font-size:3em;color:green;",
-          );
-          return err;
-        } else {
-          return Promise.reject(err);
-        }
-      });
+      await this.minService.tryVote(undefined, pwdData);
       // this.routeToVoteDetail();
     } finally {
       this.min_starting = false;

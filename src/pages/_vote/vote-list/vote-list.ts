@@ -35,6 +35,12 @@ export class VoteListPage extends SecondLevelPage {
       return;
     }
     this.current_page = page;
+    if (this.current_page === InOutSubPage.IN_VOTE) {
+      this.in_vote_list_config.need_refresh && this.initInVoteList();
+    } else {
+      this.out_vote_list_config.need_refresh && this.initOutVoteList();
+      this.can_vote_list_config.need_refresh && this.initCanVoteList();
+    }
   }
   /**投出去的票*/
   out_vote_list: DelegateModel[] = [];
@@ -42,12 +48,14 @@ export class VoteListPage extends SecondLevelPage {
     page: 1,
     pageSize: 20,
     has_more: true,
+    need_refresh: true,
   };
   can_vote_list: DelegateModel[] = [];
   can_vote_list_config = {
     page: 1,
     pageSize: 20,
     has_more: true,
+    need_refresh: true,
   };
   /**被投的票*/
   in_vote_mill_list: any[] = [];
@@ -56,6 +64,7 @@ export class VoteListPage extends SecondLevelPage {
     page: 1,
     pageSize: 20,
     has_more: true,
+    need_refresh: true,
   };
   @VoteListPage.willEnter
   loadDataWhenEnter() {
@@ -63,16 +72,24 @@ export class VoteListPage extends SecondLevelPage {
     if (page) {
       this.gotoSubPage(page);
     }
-    // if (this.current_page === InOutSubPage.IN_VOTE) {
-    //   this.initInVoteList();
-    // } else {
-    //   this.initOutVoteList();
-    // }
   }
 
-  @asyncCtrlGenerator.loading(() =>
-    VoteListPage.getTranslate("LOADING_OUT_VOTE_LIST"),
-  )
+  @VoteListPage.addEvent("HEIGHT:CHANGED")
+  watchHeightChanged(height, is_init) {
+    this.out_vote_list_config.need_refresh = true;
+    this.can_vote_list_config.need_refresh = true;
+    this.in_vote_list_config.need_refresh = true;
+    if (this.current_page === InOutSubPage.IN_VOTE) {
+      this.initInVoteList();
+    } else {
+      this.initOutVoteList();
+      this.initCanVoteList();
+    }
+  }
+
+  // @asyncCtrlGenerator.loading(() =>
+  //   VoteListPage.getTranslate("LOADING_OUT_VOTE_LIST"),
+  // )
   initOutVoteList() {
     return this.loadOutVoteList();
   }
@@ -81,6 +98,7 @@ export class VoteListPage extends SecondLevelPage {
   )
   async loadOutVoteList(refresher?: Refresher) {
     const { out_vote_list_config } = this;
+    out_vote_list_config.need_refresh = false;
     // 重置分页
     out_vote_list_config.page = 1;
 
@@ -110,9 +128,9 @@ export class VoteListPage extends SecondLevelPage {
     out_vote_list_config.has_more =
       list.length >= out_vote_list_config.pageSize;
   }
-  @asyncCtrlGenerator.loading(() =>
-    VoteListPage.getTranslate("LOADING_CAN_VOTE_LIST"),
-  )
+  // @asyncCtrlGenerator.loading(() =>
+  //   VoteListPage.getTranslate("LOADING_CAN_VOTE_LIST"),
+  // )
   async initCanVoteList() {
     return this.loadCanVoteList();
   }
@@ -121,6 +139,7 @@ export class VoteListPage extends SecondLevelPage {
   )
   async loadCanVoteList(refresher?: Refresher) {
     const { can_vote_list_config } = this;
+    can_vote_list_config.need_refresh = false;
     // 重置分页
     can_vote_list_config.page = 1;
 
@@ -150,9 +169,9 @@ export class VoteListPage extends SecondLevelPage {
     can_vote_list_config.has_more =
       list.length >= can_vote_list_config.pageSize;
   }
-  @asyncCtrlGenerator.loading(() =>
-    VoteListPage.getTranslate("LOADING_IN_VOTE_LIST"),
-  )
+  // @asyncCtrlGenerator.loading(() =>
+  //   VoteListPage.getTranslate("LOADING_IN_VOTE_LIST"),
+  // )
   async initInVoteList() {
     return this.loadInVoteList();
   }
@@ -161,6 +180,7 @@ export class VoteListPage extends SecondLevelPage {
   )
   async loadInVoteList(refresher?: Refresher) {
     const { in_vote_list_config } = this;
+    in_vote_list_config.need_refresh = false;
     // 重置分页
     in_vote_list_config.page = 1;
 
