@@ -308,6 +308,8 @@ export class AppSettingProvider extends EventEmitter {
     auto_update_default_fee_max_amount: "1.00000000",
     /**音效*/
     sound_effect: true,
+    /**是否有过挖矿收益*/
+    _has_mining_income: false
   };
 }
 if (AppSettingProvider.NET_VERSION === "testnet") {

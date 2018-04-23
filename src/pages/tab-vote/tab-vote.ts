@@ -99,6 +99,9 @@ export class TabVotePage extends FirstLevelPage {
     this.appSetting.settings.sound_effect = !this.appSetting.settings
       .sound_effect;
   }
+  get show_mining_history() {
+    return this.appSetting.settings._has_mining_income;
+  }
 
   @TabVotePage.didEnter
   hiddenTabBg() {
@@ -431,13 +434,13 @@ export class TabVotePage extends FirstLevelPage {
     this.try_min_starting = true;
   }
   autoStartButtonPressUp(event: TouchEvent | MouseEvent) {
+    this.try_min_starting = false;
     if (
       // mobile模式下，只监听touch
       (this.isMobile && event.type.indexOf("touch") != -1) ||
       // 开发的桌面模式下，
       (!this.isMobile && event.type.indexOf("mouse") != -1)
     ) {
-      this.try_min_starting = false;
       this.startMin();
     }
   }
@@ -449,6 +452,9 @@ export class TabVotePage extends FirstLevelPage {
     TabVotePage.getTranslate("START_AUTO_VOTE_ERROR"),
   )
   async startMin() {
+    if (this.min_starting) {
+      return;
+    }
     this.min_starting = true;
     try {
       if (parseFloat(this.appSetting.settings.default_fee) == 0) {

@@ -279,7 +279,7 @@ export class BenefitServiceProvider {
         //   let sound_type = "coinSoundFew";
         // }
         // PIXI.sound.play(sound_type);
-        PIXI.sound.play('coinSingle');
+        PIXI.sound.play("coinSingle");
 
         this._pre_mining_block = cur_block_benefit;
       }
@@ -291,11 +291,14 @@ export class BenefitServiceProvider {
    */
   async getRecentBenefit(): Promise<number> {
     const benefitList = await this.topBenefits.getPromise();
+    var res = 0;
     if (benefitList && benefitList.length > 0) {
-      return parseInt(benefitList[0].amount);
-    } else {
-      return 0;
+      res = parseInt(benefitList[0].amount);
+      if (res > 0 && !this.appSetting.settings._has_mining_income) {
+        this.appSetting.settings._has_mining_income = true;
+      }
     }
+    return res;
   }
 
   recentBenefit!: AsyncBehaviorSubject<number>;

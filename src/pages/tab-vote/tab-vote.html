@@ -25,18 +25,20 @@
           </div>
         </div>
       </div>
-      <!-- <div class="assets-info">
+      <div class="assets-info" *ngIf="show_mining_history;else showTapStartMining">
         <div class="balance">
           <text-gradient [text]="userInfo.userInfo.votingReward|amountEuler|number:'1.8-8'" from="#f8846f" to="#ffc85e" direction="to right"></text-gradient>
         </div>
         <div class="history-logs">
           <a class="linker" (click)="routeTo('vote-income-logs')">{{'VOTE_INCOME_HISTORY' | translate}}</a>
         </div>
-      </div> -->
-      <div class="start-tip">
-        <ali-icon name="ifm-tip"></ali-icon>
-        <span class="tip-content">{{'TAP_GOLD_BUTTON_THEN_AUTO_MINING'|translate}}</span>
       </div>
+      <template #showTapStartMining>
+        <div class="start-tip">
+          <ali-icon name="ifm-tip"></ali-icon>
+          <span class="tip-content">{{'TAP_GOLD_BUTTON_THEN_AUTO_MINING'|translate}}</span>
+        </div>
+      </template>
     </div>
     <div class="vote-detail-page" [ngClass]="page_status">
       <div class="toolbar">
