@@ -100,16 +100,16 @@ export class MiningPersonComponent extends CssAniBase {
 
       cur_frame_i = (cur_frame_i + 1) % frames_list.length;
 
-      if (cur_frame_i === 41) {
-        PIXI.sound.play(
-          miningSounds[(Math.random() * miningSounds.length) | 0],
-          {
-            loop: false,
-            speed: 0.5,
-            volume: 0.1,
-          },
-        );
-      }
+      // if (cur_frame_i === 41) {
+      //   PIXI.sound.play(
+      //     miningSounds[(Math.random() * miningSounds.length) | 0],
+      //     {
+      //       loop: false,
+      //       speed: 0.5,
+      //       volume: 0.1,
+      //     },
+      //   );
+      // }
       ////
       if (is_ani) {
         pre_frame = cur_frame;

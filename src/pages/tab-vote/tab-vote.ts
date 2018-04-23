@@ -71,7 +71,10 @@ export class TabVotePage extends FirstLevelPage {
     super(navCtrl, navParams);
     this.minService.vote_status.subscribe(is_voting => {
       if (is_voting) {
-        this.routeToVoteDetail();
+        if (this.page_status === VotePage.Bootstrap) {
+          this.routeToVoteDetail();
+        }
+        // 在挖矿或者卡片详情中不用管。
       } else {
         this.routeToBootstrap();
       }

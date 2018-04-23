@@ -32,7 +32,9 @@ export class VoteMyContributionComponent extends VoteExtendsPanelComponent {
   my_contribution = {};
 
   async refreshBaseData() {
-    console.error("还未接入“我的贡献”相关的接口");
+    
   }
-  async refreshDetailData() {}
+  async refreshDetailData() {
+    
+  }
 }

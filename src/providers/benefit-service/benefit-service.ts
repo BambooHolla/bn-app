@@ -29,6 +29,7 @@ import {
 } from "../../../src/bnqkl-framework/PromiseExtends";
 import * as PIXI_SOUND from "pixi-sound";
 console.log("--PIXI_SOUND", PIXI_SOUND);
+PIXI.sound.add("coinSingle", "assets/sounds/coinSingle.wav");
 PIXI.sound.add("coinSoundFew", "assets/sounds/coinFew.wav");
 PIXI.sound.add("coinSoundMore", "assets/sounds/coinMore.wav");
 PIXI.sound.add("coinSoundMuch", "assets/sounds/coinMuch.wav");
@@ -271,13 +272,14 @@ export class BenefitServiceProvider {
         const pre_benefit = parseFloat(this._pre_mining_block.amount);
 
         const equal_range = [pre_benefit * 0.9, cur_benefit * 1.1];
-        let sound_type = "coinSoundMore";
-        if (Math.max(...equal_range, pre_benefit) === pre_benefit) {
-          let sound_type = "coinSoundMuch";
-        } else if (Math.min(...equal_range, pre_benefit) === cur_benefit) {
-          let sound_type = "coinSoundFew";
-        }
-        PIXI.sound.play(sound_type);
+        // let sound_type = "coinSoundMore";
+        // if (Math.max(...equal_range, pre_benefit) === pre_benefit) {
+        //   let sound_type = "coinSoundMuch";
+        // } else if (Math.min(...equal_range, pre_benefit) === cur_benefit) {
+        //   let sound_type = "coinSoundFew";
+        // }
+        // PIXI.sound.play(sound_type);
+        PIXI.sound.play('coinSingle');
 
         this._pre_mining_block = cur_block_benefit;
       }
