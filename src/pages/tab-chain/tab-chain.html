@@ -39,8 +39,8 @@
 </ion-header>
 <ion-content>
   <div class="list-wrapper">
-    <virtual-scroll #vscroll class="block-list" list-ani="linkChain" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
-      <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeTo('chain-block-detail',{block:block})" [attr.data-height]="block.height">
+    <virtual-scroll #vscroll class="block-list" [list-ani]="_is_into_second_page?'linkChain':''" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
+      <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeToChainBlockDetail(block)" [attr.data-height]="block.height">
         <div class="header">
           <div class="height">
             <div class="value">{{block.height}}</div>

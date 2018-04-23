@@ -363,6 +363,8 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
   routeToBootstrap() {
+    this.try_min_starting = false;
+    this.min_starting = false;
     this.tabs.setBgTransparent(true, this.cname);
     this.page_status = VotePage.Bootstrap;
     this._stopVoteAnimate();

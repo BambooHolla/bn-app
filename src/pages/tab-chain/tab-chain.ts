@@ -84,14 +84,14 @@ export class TabChainPage extends FirstLevelPage {
     this.chainMesh && this.chainMesh.forceRenderOneFrame();
   }
 
-  // @asyncCtrlGenerator.loading(
-  //   () => TabChainPage.getTranslate("LOADING_BLOCK_LIST"),
-  //   undefined,
-  //   {
-  //     cssClass: "can-tap",
-  //     showBackdrop: false,
-  //   },
-  // )
+  private _is_into_second_page = false;
+  private _into_block?: BlockModel;
+  routeToChainBlockDetail(block: BlockModel) {
+    this._is_into_second_page = true;
+    this._into_block = block;
+    this.routeTo("chain-block-detail", { block });
+  }
+
   @TabChainPage.willEnter
   @asyncCtrlGenerator.error(() =>
     TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
@@ -103,6 +103,21 @@ export class TabChainPage extends FirstLevelPage {
       increment_length?: number;
     } = {},
   ) {
+    if (this._into_block && this.vscroll) {
+      const view_index = this.block_list.indexOf(this._into_block) - 1;
+      const view_item = this.block_list[view_index];
+      if(view_item){
+        const scrollAnimationTime = this.vscroll.scrollAnimationTime;
+        this.vscroll.scrollAnimationTime = 0;
+        this.vscroll.scrollInto(view_item);
+        this.vscroll.scrollAnimationTime = scrollAnimationTime;
+      }
+      this._into_block = undefined;
+    }
+    if (this._is_into_second_page) {
+      this._is_into_second_page = false;
+      return;
+    }
     const { block_list_config, block_list } = this;
     const increment = !!opts.increment;
     if (block_list.length && !opts.force && !increment) {
@@ -325,7 +340,10 @@ export class TabChainPage extends FirstLevelPage {
           increment: true,
           increment_length: height - current_length,
         }).then(() => {
-          this.block_list = this.block_list.slice(); // 迫使vscroll进行更新
+          // this.block_list = this.block_list.slice(); // 迫使vscroll进行更新
+          if (this.vscroll) {
+            this.vscroll.refresh();
+          }
         });
       }
     }
