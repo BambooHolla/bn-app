@@ -8,6 +8,10 @@ import {
   BenefitServiceProvider,
   BenefitModel,
 } from "../../providers/benefit-service/benefit-service";
+import {
+  AccountServiceProvider,
+  AccountRoundProfitModel,
+} from "../../providers/account-service/account-service";
 
 import {
   VoteExtendsPanelComponent,
@@ -34,7 +38,10 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
   get show_detail() {
     return this._show_detail;
   }
-  constructor(cdRef: ChangeDetectorRef) {
+  constructor(
+    cdRef: ChangeDetectorRef,
+    public accountService: AccountServiceProvider,
+  ) {
     super(cdRef);
   }
 
@@ -70,21 +77,46 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
     this.income_trend_list = filled_income_trend_list;
   }
 
-  income_trend_blist: any[] = [];
+  income_trend_blist: AccountRoundProfitModel[] = [];
+  page_info = {
+    page: 1,
+    pageSize: 20,
+    round: 0,
+    loading: false,
+    hasMore: true,
+  };
   async refreshDetailData() {
-    this.income_trend_blist = Array.from({ length: 100 })
-      .map((_, i) => {
-        return {
-          round: i,
-          income: 100 * Math.random() * 1e8,
-          time: new Date(Date.now() - (101 - i) * 57 * 128e3),
-        };
-      })
-      .reverse();
+    const cur_round = this.appSetting.getRound();
+    const { page_info } = this;
+    if (cur_round === page_info.round) {
+      return;
+    }
+    page_info.page = 1;
+    this.income_trend_blist = await this.loadMoreIncomeTrendList();
+    page_info.round = cur_round;
   }
-  async loadMoreIncomeTrendList() {}
+  async loadMoreIncomeTrendList() {
+    const { page_info } = this;
+    page_info.loading = true;
+    try {
+      const data = await this.accountService.getAccountPreRoundProfits(
+        this.userInfo.address,
+        page_info.page,
+        page_info.pageSize,
+      );
+      page_info.hasMore = data.profits.length === page_info.pageSize;
+      return data.profits;
+    } finally {
+      page_info.loading = false;
+    }
+  }
   async onListChange(event: ChangeEvent) {
     if (event.end !== this.income_trend_blist.length) return;
-    await this.loadMoreIncomeTrendList();
+    if (this.page_info.loading || !this.page_info.hasMore) {
+      return;
+    }
+    this.page_info.page += 1;
+    const list = await this.loadMoreIncomeTrendList();
+    this.income_trend_blist.push(...list);
   }
 }

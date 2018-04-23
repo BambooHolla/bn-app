@@ -10,6 +10,7 @@ import {
 import { Storage } from "@ionic/storage";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./account.types";
+export * from "./account.types";
 import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from "ifmchain-ibt";
 
@@ -44,6 +45,9 @@ export class AccountServiceProvider {
   readonly GET_USER = this.appSetting.APP_URL("/api/accounts/");
   readonly GET_USER_BY_USERNAME = this.appSetting.APP_URL(
     "/api/accounts/username/get",
+  );
+  readonly GET_ACCOUNT_PROFITS = this.appSetting.APP_URL(
+    "/api/accounts/accountProfits",
   );
 
   /**
@@ -129,9 +133,7 @@ export class AccountServiceProvider {
       this.user.userInfo.username = newUsername;
       return true;
     } catch (err) {
-      throw this.fetch.ServerResError.getI18nError(
-        "change username error",
-      );
+      throw this.fetch.ServerResError.getI18nError("change username error");
     }
   }
 
@@ -144,6 +146,20 @@ export class AccountServiceProvider {
     let password = this.keypair.generatePassPhraseWithInfo(options, lang);
 
     return password;
+  }
+
+  getAccountPreRoundProfits(address: string, page: number, pageSize: number) {
+    return this.fetch.get<TYPE.AccountProfitsResModel>(
+      this.GET_ACCOUNT_PROFITS,
+      {
+        search: {
+          offset: (page - 1) * pageSize,
+          limit: pageSize,
+          address,
+          orderBy: "round:desc",
+        },
+      },
+    );
   }
 
   /**
