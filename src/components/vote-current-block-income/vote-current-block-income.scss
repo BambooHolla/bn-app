@@ -53,6 +53,7 @@ vote-current-block-income {
     color: #fff;
     animation: fadeInLeft 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
     .title {
+      letter-spacing: -1px;
       font-size: 2.8rem;
       display: flex;
       align-items: center;
