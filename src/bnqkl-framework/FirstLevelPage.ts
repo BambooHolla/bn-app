@@ -101,6 +101,9 @@ export class FirstLevelPage extends FLP_Data {
   private _has_watch_scroll_content_intime = false;
   private _watch_scroll_content_max_scrollTop = 0;
   private _watch_scroll_content_intime(distance?: number) {
+    if (this.isIOS) {
+      return; // 暂时关闭，垃圾IOS，使用touch强行让ios尽量渲染滚动，给人的感觉会反而很不好
+    }
     if (this._has_watch_scroll_content_intime) {
       if (distance) {
         this._watch_scroll_content_max_scrollTop = Math.max(
