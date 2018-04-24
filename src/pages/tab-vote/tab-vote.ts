@@ -218,7 +218,7 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   private _startVoteAnimate() {
-    if(this.countdown){
+    if (this.countdown) {
       this.countdown.startAnimation();
     }
     if (this.fall_coin) {
@@ -261,6 +261,7 @@ export class TabVotePage extends FirstLevelPage {
   }
   page_status = VotePage.None;
   routeToVoteDetail() {
+    this.min_starting = false;
     this.tabs.setBgTransparent(false, this.cname);
     this.page_status = VotePage.VoteDetail;
     // page_status更新后，触发数据获取函数
@@ -345,6 +346,7 @@ export class TabVotePage extends FirstLevelPage {
     if (this._chain_mesh_ctrl) {
       this._chain_mesh_ctrl.reject();
     }
+    this.countdown && this.countdown.stopAnimation();
     this.fall_coin &&
       this.fall_coin.is_inited &&
       this.fall_coin.stopAnimation();
@@ -432,7 +434,7 @@ export class TabVotePage extends FirstLevelPage {
     satellite_pixi: false,
     buddha_glow: false,
     fall_coins: false,
-    countdown:false,
+    countdown: false,
     show_big_fall_icon: false,
     round_ani: false,
     mining_person: false,
@@ -498,8 +500,10 @@ export class TabVotePage extends FirstLevelPage {
       });
       await this.minService.tryVote(undefined, pwdData);
       // this.routeToVoteDetail();
-    } finally {
+    } catch (err) {
       this.min_starting = false;
+    } finally {
+      // this.min_starting = false;
     }
   }
   /** 关闭挖矿*/
