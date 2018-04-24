@@ -19,9 +19,9 @@ const miningSounds = [
   "miner (4)",
   "miner (5)",
 ];
-miningSounds.forEach(name => {
-  PIXI.sound.add(name, `assets/sounds/${name}.wav`);
-});
+// miningSounds.forEach(name => {
+//   PIXI.sound.add(name, `assets/sounds/${name}.wav`);
+// });
 
 @Component({
   selector: "mining-person",

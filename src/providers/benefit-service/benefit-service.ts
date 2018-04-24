@@ -30,9 +30,9 @@ import {
 import * as PIXI_SOUND from "pixi-sound";
 console.log("--PIXI_SOUND", PIXI_SOUND);
 PIXI.sound.add("coinSingle", "assets/sounds/coinSingle.wav");
-PIXI.sound.add("coinSoundFew", "assets/sounds/coinFew.wav");
-PIXI.sound.add("coinSoundMore", "assets/sounds/coinMore.wav");
-PIXI.sound.add("coinSoundMuch", "assets/sounds/coinMuch.wav");
+// PIXI.sound.add("coinSoundFew", "assets/sounds/coinFew.wav");
+// PIXI.sound.add("coinSoundMore", "assets/sounds/coinMore.wav");
+// PIXI.sound.add("coinSoundMuch", "assets/sounds/coinMuch.wav");
 
 @Injectable()
 export class BenefitServiceProvider {
