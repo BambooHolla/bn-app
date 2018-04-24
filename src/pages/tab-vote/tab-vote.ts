@@ -132,9 +132,10 @@ export class TabVotePage extends FirstLevelPage {
     // 初始化容器大小
     if (this.aniWrapper) {
       const viewHeight = document.body.clientHeight;
+      const viewWidth = document.body.clientWidth;
       const bg2_top = 0.076 * viewHeight;
-      const bg2_size = 0.5622 * viewHeight * 0.88;
-      const ele_size = 0.5622 * viewHeight * 0.8;
+      const bg2_size = 1.006 * viewWidth * 0.88;
+      const ele_size = 1.006 * viewWidth * 0.8;
       const ele_top = bg2_top + (bg2_size - ele_size) / 2;
 
       const targetEle = this.aniWrapper.nativeElement;

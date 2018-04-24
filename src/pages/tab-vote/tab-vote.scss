@@ -730,10 +730,14 @@ page-tab-vote {
           transition-duration: 0ms;
         }
         > .slide-zoom {
+          height: $panel-height;
+          // min-height: $panel-min-height;
+          max-height: $panel-max-height;
           > .panel-content {
-            height: $panel-height;
-            min-height: $panel-min-height;
-            max-height: $panel-max-height;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
             width: 100%;
           }
         }
