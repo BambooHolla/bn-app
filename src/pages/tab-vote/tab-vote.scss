@@ -463,6 +463,24 @@ page-tab-vote {
           opacity: 1;
         }
       }
+      .ani-countdown{
+        contain: strict;
+        position: absolute;
+        width: 94%;
+        height: 24%;
+        top: 15%;
+        left: 3%;
+        display: none;
+        opacity: 0;
+        transition-duration: 0.25s;
+        color: rgba(#fec641, 0.1);
+        /* 0.0882 */
+        mix-blend-mode: multiply;
+        &.show {
+          display: block;
+          opacity: 1;
+        }
+      }
       .ani-mining-person {
         contain: strict;
         position: absolute;

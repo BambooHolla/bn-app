@@ -269,6 +269,9 @@ export class AppSettingProvider extends EventEmitter {
   calcRoundByHeight(height) {
     return Math.ceil(height / 57);
   }
+  getBlockNumberToRoundEnd(cur_height) {
+    return 57 - cur_height % 57;
+  }
   getHeight() {
     return this.height.getValue();
   }
@@ -309,7 +312,7 @@ export class AppSettingProvider extends EventEmitter {
     /**音效*/
     sound_effect: true,
     /**是否有过挖矿收益*/
-    _has_mining_income: false
+    _has_mining_income: false,
   };
 }
 if (AppSettingProvider.NET_VERSION === "testnet") {

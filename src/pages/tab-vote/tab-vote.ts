@@ -35,6 +35,7 @@ import { VoteCurrentBlockIncomeComponent } from "../../components/vote-current-b
 import { VoteIncomeTrendComponent } from "../../components/vote-income-trend/vote-income-trend";
 import { VoteMyContributionComponent } from "../../components/vote-my-contribution/vote-my-contribution";
 import { VotePreRoundIncomeRateComponent } from "../../components/vote-pre-round-income-rate/vote-pre-round-income-rate";
+import { CountdownComponent } from "../../components/countdown/countdown";
 
 export enum VotePage {
   None = "",
@@ -216,6 +217,9 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   private _startVoteAnimate() {
+    if(this.countdown){
+      this.countdown.startAnimation();
+    }
     if (this.fall_coin) {
       if (this.fall_coin.is_inited) {
         this.fall_coin.startAnimation();
@@ -239,6 +243,8 @@ export class TabVotePage extends FirstLevelPage {
       setTimeout(() => {
         // 先显示阳光
         this.is_show.buddha_glow = true;
+        // 与计时器
+        this.is_show.countdown = true;
         setTimeout(() => {
           // 再显示卫星与挖矿的人
           this.is_show.satellite_pixi = true;
@@ -250,7 +256,6 @@ export class TabVotePage extends FirstLevelPage {
         }, 250);
       }, 100);
     }
-
     this.chain_mesh && this.chain_mesh.startAnimation();
   }
   page_status = VotePage.None;
@@ -369,6 +374,7 @@ export class TabVotePage extends FirstLevelPage {
     this.page_status = VotePage.Bootstrap;
     this._stopVoteAnimate();
   }
+  @ViewChild(CountdownComponent) countdown?: CountdownComponent;
   @ViewChild(FallCoinsComponent) fall_coin?: FallCoinsComponent;
   @ViewChild(SatelliteCssComponent) satellite_pixi?: SatelliteCssComponent;
   @ViewChild(BuddhaGlowComponent) buddha_glow?: BuddhaGlowComponent;
@@ -425,6 +431,7 @@ export class TabVotePage extends FirstLevelPage {
     satellite_pixi: false,
     buddha_glow: false,
     fall_coins: false,
+    countdown:false,
     show_big_fall_icon: false,
     round_ani: false,
     mining_person: false,

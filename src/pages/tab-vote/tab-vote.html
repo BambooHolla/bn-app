@@ -52,6 +52,7 @@
         <!-- <div class="ani-progress satellite-css" [class.show]="is_show.satellite_pixi"></div> -->
         <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
         <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
+        <countdown class="ani-countdown" [end-data]="blockService.round_end_time" [class.show]="is_show.countdown"></countdown>
         <!-- <div class="wakuang-person" [ngClass]="page_status">
           <audio #coinMining autoplay loop preload>
             <source src="assets/sounds/mining.wav" type="audio/wav" />

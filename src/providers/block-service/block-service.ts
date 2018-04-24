@@ -88,8 +88,8 @@ export class BlockServiceProvider extends FLP_Tool {
     const last_block = await this.lastBlock.getPromise();
     this.appSetting.setHeight(last_block.height);
 
-    let lastTime = this.getFullTimestamp(last_block.timestamp);
-    let currentTime = Date.now();
+    const lastTime = this.getFullTimestamp(last_block.timestamp);
+    const currentTime = Date.now();
     const diff_time = currentTime - lastTime;
     return diff_time;
   }
@@ -151,10 +151,16 @@ export class BlockServiceProvider extends FLP_Tool {
       setTimeout(do_loop, this._retry_interval);
     }
   }
+  round_end_time = new Date();
   @asyncCtrlGenerator.retry()
   private async _updateHeight() {
     this.lastBlock.refresh("update Height");
     const last_block = await this.lastBlock.getPromise();
+    this.round_end_time = new Date(
+      Date.now() +
+        this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
+          this.appSetting.BLOCK_UNIT_TIME,
+    );
     this.appSetting.setHeight(last_block.height);
   }
   private async _listenGetAndSetHeight() {
