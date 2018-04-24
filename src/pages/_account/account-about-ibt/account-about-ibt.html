@@ -3,7 +3,7 @@
   <ion-navbar color="transparent">
     <ion-title>{{'ACCOUNT-ABOUT-IBT'|translate}}</ion-title>
   </ion-navbar>
-  <div class="info-wrapper">
+  <div class="info-wrapper" (press)="showVersionInfo()">
     <div class="info">
       <img class="logo" src="assets/imgs/about-ibt/ifmchain-logo-and-title.png" alt="IFMCHAIN"/>
       <div>{{'ABOUT_IBT_INFO'|translate}}</div>

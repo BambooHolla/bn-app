@@ -53,9 +53,9 @@ page-tab-vote {
   #bg2 {
     overflow: hidden;
     position: fixed;
-    height: 56.22vh;
-    width: 56.22vh;
-    left: calc(50vw - 56.22vh / 2);
+    height: 100.6vw;
+    width: 100.6vw;
+    left: calc(50vw - 100.6vw / 2);
     top: 0;
     z-index: -1;
     // background-color: purple;
@@ -358,9 +358,9 @@ page-tab-vote {
       flex-shrink: 0;
       flex-grow: 0;
       position: absolute;
-      left: calc(50vw - 56.22vh / 2);
-      height: 56.22vh;
-      width: 56.22vh;
+      left: calc(50vw - 100.6vw / 2);
+      height: 100.6vw;
+      width: 100.6vw;
       transform: scale(0.8); // translateY(8.6363636363vh)
       transform-origin: top;
       will-change: opacity, transform;

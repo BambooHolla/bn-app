@@ -72,6 +72,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     }
     this._clearDigRound();
     this.navCtrl.goToRoot({});
+    location.hash = "";
     location.reload();
   }
   private _clearDigRound() {

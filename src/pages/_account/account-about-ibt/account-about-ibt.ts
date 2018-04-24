@@ -10,6 +10,7 @@ import {
   ViewController,
 } from "ionic-angular";
 import { NewsProvider } from "../../../providers/news/news";
+import { AppSettingProvider } from "../../../providers/app-setting/app-setting";
 
 @IonicPage({ name: "account-about-ibt" })
 @Component({
@@ -35,10 +36,13 @@ export class AccountAboutIbtPage extends SecondLevelPage {
   loadNewsList() {
     const news_list = this.newsService.getNewsList();
     // news_list.forEach(news => {
-    // 	if (news.type === "embed") {
-    // 		this.sanitizer.bypassSecurityTrustHtml();
-    // 	}
+    //   if (news.type === "embed") {
+    //     this.sanitizer.bypassSecurityTrustHtml();
+    //   }
     // });
     this.news_list = news_list;
+  }
+  showVersionInfo() {
+    this.showConfirmDialog(`v${AppSettingProvider.APP_VERSION}`);
   }
 }
