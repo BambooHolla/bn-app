@@ -3,7 +3,7 @@ import {
   ViewChild,
   ElementRef,
   ChangeDetectorRef,
-  HostBinding
+  HostBinding,
 } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
@@ -58,8 +58,9 @@ export enum ExtendsPanel {
   templateUrl: "tab-vote.html",
 })
 export class TabVotePage extends FirstLevelPage {
-  @HostBinding("class.power-saving-mode") get is_power_saving_mode(){
-    return this.appSetting.settings.power_saving_mode
+  @HostBinding("class.power-saving-mode")
+  get is_power_saving_mode() {
+    return this.appSetting.settings.power_saving_mode;
   }
   VotePage = VotePage;
   constructor(
@@ -76,6 +77,10 @@ export class TabVotePage extends FirstLevelPage {
     super(navCtrl, navParams);
     this.minService.vote_status.subscribe(is_voting => {
       if (is_voting) {
+        if (this._user_agree_auto_mining_in_background) {
+          this._user_agree_auto_mining_in_background = false;
+          this.appSetting.settings.background_mining = true;
+        }
         if (this.page_status === VotePage.Bootstrap) {
           this.routeToVoteDetail();
         }
@@ -463,6 +468,10 @@ export class TabVotePage extends FirstLevelPage {
   autoStartButtonPressOut() {
     this.try_min_starting = false;
   }
+
+  /**点击了按钮，就等于同意了自动后台挖矿的协议*/
+  private _user_agree_auto_mining_in_background = false;
+
   /** 开启挖矿*/
   @asyncCtrlGenerator.error(() =>
     TabVotePage.getTranslate("START_AUTO_VOTE_ERROR"),
@@ -471,6 +480,7 @@ export class TabVotePage extends FirstLevelPage {
     if (this.min_starting) {
       return;
     }
+    this._user_agree_auto_mining_in_background = true;
     this.min_starting = true;
     try {
       if (parseFloat(this.appSetting.settings.default_fee) == 0) {

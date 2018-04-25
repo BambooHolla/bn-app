@@ -30,12 +30,6 @@ import {
 import * as TYPE from "./min.types";
 export * from "./min.types";
 
-/*
-  Generated class for the MinServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class MinServiceProvider extends FLP_Tool {
   ifmJs: any;
@@ -209,7 +203,6 @@ export class MinServiceProvider extends FLP_Tool {
     //成功完成交易
     await this.transactionService.putTransaction(txData);
     this.appSetting.settings.digRound = this.appSetting.getRound();
-    this.appSetting.settings.background_mining = true;
   }
 
   /**
