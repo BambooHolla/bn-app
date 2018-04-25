@@ -193,9 +193,9 @@ export class NewsProvider {
       },
       {
         title: "IFMChain移动公有链正式发布",
-        type: "embed",
-        html: this.sanitizer.bypassSecurityTrustHtml(
-          '<iframe frameborder="0" width="640" height="498" src="https://v.qq.com/iframe/player.html?vid=j053657y0r7&tiny=0&auto=0" allowfullscreen="true" webkitallowfullscreen="true"></iframe>',
+        type: "video",
+        url: this.sanitizer.bypassSecurityTrustUrl(
+          "https://www.ifmchain.com/files/IFMChain%E7%A7%BB%E5%8A%A8%E5%85%AC%E6%9C%89%E9%93%BE%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83.mp4",
         ),
       },
       {

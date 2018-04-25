@@ -23,7 +23,7 @@
           {{news.author}}
         </div>
       </div>
-      <div [ngSwitch]="news.type">
+      <div [ngSwitch]="news.type" class="cover-wrapper" [ngClass]="news.type">
         <ng-container *ngSwitchCase="'simple-html'">
           <div class="cover" *ngIf="news.cover_image_url">
             <img [src]="news.cover_image_url" alt="封面">

@@ -72,11 +72,14 @@ page-share-app-panel {
     position: fixed;
     width: 100%;
     bottom: 15%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    left: 0;
+    // display: flex;
+    // justify-content: space-around;
+    // align-items: center;
     > button {
-      display: inline-block;
+      // margin-left: calc(50vw - 3.1rem / 2);
+      margin: 0 auto;
+      display: block;
       width: 3.1rem;
       height: 3.1rem;
       border-radius: 50%;
