@@ -64,6 +64,7 @@ export class FallCoinsComponent extends AniBase {
         return child.destroy();
       });
       this._loop_runs.length = 0;
+      this._force_update_set.clear();
     }
     const {
       pt,

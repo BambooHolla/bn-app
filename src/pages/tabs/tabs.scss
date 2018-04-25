@@ -31,6 +31,13 @@ page-tabs {
         }
       }
     }
+    &.power-saving {
+      .tab-button[aria-selected="true"] {
+        &::after {
+          animation: none !important;
+        }
+      }
+    }
     .tab-button {
       color: #7b7b7b !important;
       .tab-button-text {

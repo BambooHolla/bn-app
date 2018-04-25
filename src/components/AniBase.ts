@@ -126,7 +126,7 @@ export class AniBase extends EventEmitter {
   get force_update() {
     return this._force_update;
   }
-  private _force_update_set = new Set<string>();
+  protected _force_update_set = new Set<string>();
   upForceUpdate(key: string) {
     const { _force_update_set } = this;
     _force_update_set.add(key);

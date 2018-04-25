@@ -3,6 +3,7 @@ import {
   ViewChild,
   ElementRef,
   ChangeDetectorRef,
+  HostBinding
 } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
@@ -57,6 +58,9 @@ export enum ExtendsPanel {
   templateUrl: "tab-vote.html",
 })
 export class TabVotePage extends FirstLevelPage {
+  @HostBinding("class.power-saving-mode") get is_power_saving_mode(){
+    return this.appSetting.settings.power_saving_mode
+  }
   VotePage = VotePage;
   constructor(
     public navCtrl: NavController,
@@ -492,6 +496,7 @@ export class TabVotePage extends FirstLevelPage {
             ],
           })
           .present();
+        this.min_starting = false;
         return;
       }
 
@@ -502,6 +507,7 @@ export class TabVotePage extends FirstLevelPage {
       // this.routeToVoteDetail();
     } catch (err) {
       this.min_starting = false;
+      throw err;
     } finally {
       // this.min_starting = false;
     }

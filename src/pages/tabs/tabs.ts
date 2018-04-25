@@ -9,6 +9,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { IonicPage, NavController, Tabs } from "ionic-angular";
 import { MyApp } from "../../app/app.component";
 import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
+import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 
 import { Tab1Root } from "../pages";
 import { Tab2Root } from "../pages";
@@ -35,6 +36,7 @@ export class TabsPage extends FLP_Lifecycle {
     public navCtrl: NavController,
     public translateService: TranslateService,
     public myapp: MyApp,
+    public appSetting: AppSettingProvider,
   ) {
     super();
     translateService
@@ -46,6 +48,10 @@ export class TabsPage extends FLP_Lifecycle {
         this.tab4Title = values["TAB4_TITLE"];
       });
   }
+  get is_power_saving_mode() {
+    return this.appSetting.settings.power_saving_mode;
+  }
+
   @TabsPage.onInit
   watchSelectIndex() {
     this.tabs.ionChange.subscribe(() => {

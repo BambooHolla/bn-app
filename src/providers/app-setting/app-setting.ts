@@ -291,7 +291,7 @@ export class AppSettingProvider extends EventEmitter {
     fingerprint_protection: "",
     /**后台挖矿*/
     background_mining: false,
-    /** ? 不知道这个是什么用的，要问俊杰*/
+    /**缓存用户最后一次发送投票的轮次*/
     digRound: 0,
     /**挖矿收益通知*/
     mining_income_notice: false,
@@ -302,7 +302,7 @@ export class AppSettingProvider extends EventEmitter {
     /**动画开关*/
     animation_switch: true,
     /**省电模式*/
-    power_saving_mode: false,
+    power_saving_mode: true, // 默认开启省电模式
     /**自动更新*/
     auto_update_app: false,
     /**自动更新手续费到前一轮的最低值*/

@@ -4,11 +4,19 @@ page-tab-vote {
   $panel-height: 22vh;
   background-color: #fff;
   /* 省电模式 */
-  .power-saving-mode {
+  &.power-saving-mode {
     #bg3 {
       &::after {
-        animation: none!important;
+        animation: none !important;
       }
+    }
+    #bg2 {
+      > canvas {
+        animation: none !important;
+      }
+    }
+    &::before {
+      animation: none !important;
     }
   }
   &::before {
@@ -463,7 +471,7 @@ page-tab-vote {
           opacity: 1;
         }
       }
-      .ani-countdown{
+      .ani-countdown {
         contain: strict;
         position: absolute;
         width: 94%;

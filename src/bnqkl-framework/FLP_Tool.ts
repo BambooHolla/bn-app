@@ -309,21 +309,57 @@ export class FLP_Tool {
   }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
+  static _raf_id_acc = 0;
+  static _raf_map = new Map<number, Function>();
+  private static _raf_register(callback) {
+    this._raf_map.set(++this._raf_id_acc, callback);
+    if (this._cur_raf_id === null) {
+      this._cur_raf_id = this.native_raf(t => {
+        const cbs = [...this._raf_map.values()];
+        this._raf_map.clear();
+        this._cur_raf_id = null;
+        for (let cb of cbs) {
+          try {
+            cb(t);
+          } catch (err) {
+            console.error(err);
+          }
+        }
+      });
+    }
+    return this._raf_id_acc;
+  }
+  private static _raf_unregister(id) {
+    this._raf_map.delete(id);
+    if (this._raf_map.size === 0 && this._cur_raf_id !== null) {
+      this.native_unraf(this._cur_raf_id);
+      this._cur_raf_id = null;
+    }
+  }
+  private static _cur_raf_id: number | null = null;
+  static native_raf(callback) {
+    const raf = (
+      window["__zone_symbol__requestAnimationFrame"] ||
+      window["webkitRequestAnimationFrame"]
+    ).bind(window);
+    this.native_raf = raf;
+    return raf(callback);
+  }
+  static native_unraf(rafId) {
+    const caf = (
+      window["__zone_symbol__cancelAnimationFrame"] ||
+      window["webkitCancelAnimationFrame"]
+    ).bind(window);
+    this.native_unraf = caf;
+    return caf(rafId);
+  }
 
   static raf(callback) {
-    this.raf =
-      window["__zone_symbol__requestAnimationFrame"] ||
-      window["webkitRequestAnimationFrame"];
-    this.raf = this.raf.bind(window);
-    return this.raf(callback);
+    return FLP_Tool._raf_register(callback);
   }
   raf = FLP_Tool.raf;
   static caf(rafId) {
-    this.caf =
-      window["__zone_symbol__cancelAnimationFrame"] ||
-      window["webkitCancelAnimationFrame"];
-    this.caf = this.caf.bind(window);
-    return this.caf(rafId);
+    return FLP_Tool._raf_unregister(rafId);
   }
   caf = FLP_Tool.caf;
 }
