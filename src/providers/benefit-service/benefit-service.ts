@@ -5,6 +5,7 @@ import {
   CommonResponseData,
   ServerResError,
 } from "../app-fetch/app-fetch";
+import { Platform } from "ionic-angular";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject, Subscription } from "rxjs";
@@ -27,6 +28,7 @@ import {
   PromisePro,
   sleep,
 } from "../../../src/bnqkl-framework/PromiseExtends";
+import { LocalNotifications } from "@ionic-native/local-notifications";
 import * as PIXI_SOUND from "pixi-sound";
 console.log("--PIXI_SOUND", PIXI_SOUND);
 PIXI.sound.add("coinSingle", "assets/sounds/coinSingle.wav");
@@ -49,6 +51,8 @@ export class BenefitServiceProvider {
     public accountService: AccountServiceProvider,
     public user: UserInfoProvider,
     public loginService: LoginServiceProvider,
+    public localNotifications: LocalNotifications,
+    public platform: Platform,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.loginService.loginStatus
@@ -280,6 +284,16 @@ export class BenefitServiceProvider {
         // }
         // PIXI.sound.play(sound_type);
         PIXI.sound.play("coinSingle");
+        this.localNotifications.schedule({
+          id: this.appSetting.getHeight(),
+          text: this.translate.instant("MINING_INCOME_#AMOUNT#IBT", {
+            amount: cur_block_benefit.amount,
+          }),
+          sound: this.platform.is("android")
+            ? "file://sound.mp3"
+            : "file://beep.caf",
+          // data: { secret: key },
+        });
 
         this._pre_mining_block = cur_block_benefit;
       }
