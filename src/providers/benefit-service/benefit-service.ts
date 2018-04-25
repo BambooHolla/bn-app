@@ -287,7 +287,7 @@ export class BenefitServiceProvider {
         this.localNotifications.schedule({
           id: this.appSetting.getHeight(),
           text: this.translate.instant("MINING_INCOME_#AMOUNT#IBT", {
-            amount: cur_block_benefit.amount,
+            amount: (parseFloat(cur_block_benefit.amount) / 1e8).toFixed(8),
           }),
           sound: this.platform.is("android")
             ? "file://sound.mp3"

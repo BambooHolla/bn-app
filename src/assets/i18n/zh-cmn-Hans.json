@@ -13,7 +13,7 @@
   "EMPTY_LIST": "空列表",
   "TESTNET_FLAG": "测试网络",
   "MORE": "更多",
-  "MINING_INCOME_#AMOUNT#IBT": "挖矿收益{{amount}}个IBT",
+  "MINING_INCOME_#AMOUNT#IBT": "参与贡献获得收益：{{amount}}个IBT",
 
   "//": "fingerprint-optional",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN": "账户登录校验",
