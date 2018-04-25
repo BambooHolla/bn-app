@@ -1,4 +1,9 @@
-import { Component, Optional } from "@angular/core";
+import {
+  Component,
+  Optional,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
@@ -14,6 +19,7 @@ import {
 @Component({
   selector: "page-vote-income-logs",
   templateUrl: "vote-income-logs.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VoteIncomeLogsPage extends SecondLevelPage {
   constructor(
@@ -23,38 +29,34 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
+  @VoteIncomeLogsPage.addEvent("HEIGHT:CHANGED")
+  watchHeightChanged(height, is_init) {
+    this.loadIncomeLogList();
+  }
 
   income_log_list: BenefitModel[] = [];
   income_log_list_config = {
-    loaded: false,
+    loading: false,
     page: 1,
     pageSize: 20,
-    has_more: true,
+    hasMore: true,
   };
-  @VoteIncomeLogsPage.willEnter
+  // @VoteIncomeLogsPage.willEnter
   @asyncCtrlGenerator.error(() =>
     VoteIncomeLogsPage.getTranslate("LOAD_VOTE_INCOME_LIST_ERROR"),
   )
-  @asyncCtrlGenerator.loading(() =>
-    VoteIncomeLogsPage.getTranslate("LOADING_VOTE_INCOME_LIST"),
-  )
-  async loadIncomeLogList(refresher?: Refresher) {
+  async loadIncomeLogList() {
     const { income_log_list_config } = this;
     // 重置分页
     income_log_list_config.page = 1;
-    const list = await this.benefitService.getBenefitsByPage(
-      income_log_list_config.page,
-      income_log_list_config.pageSize,
-    );
+    const list = await this._getIncomeLogData();
     this.income_log_list = list;
-    income_log_list_config.loaded = true;
-    if (refresher) {
-      refresher.complete();
-    }
+    this.cdRef.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
     VoteIncomeLogsPage.getTranslate("LOAD_MORE_VOTE_INCOME_LIST_ERROR"),
@@ -64,12 +66,23 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     const { income_log_list_config } = this;
     // 重置分页
     income_log_list_config.page += 1;
-    const list = await this.benefitService.getBenefitsByPage(
-      income_log_list_config.page,
-      income_log_list_config.pageSize,
-    );
+    const list = await this._getIncomeLogData();
     this.income_log_list.push(...list);
-    income_log_list_config.has_more =
-      list.length >= income_log_list_config.pageSize;
+    this.cdRef.markForCheck();
+  }
+  private async _getIncomeLogData() {
+    const { income_log_list_config } = this;
+    income_log_list_config.loading = true;
+    try {
+      const list = await this.benefitService.getBenefitsByPage(
+        income_log_list_config.page,
+        income_log_list_config.pageSize,
+      );
+      income_log_list_config.hasMore =
+        list.length >= income_log_list_config.pageSize;
+      return list;
+    } finally {
+      income_log_list_config.loading = false;
+    }
   }
 }

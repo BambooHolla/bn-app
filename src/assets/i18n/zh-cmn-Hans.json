@@ -246,6 +246,7 @@
   "LOAD_VOTE_INCOME_LIST_ERROR": "加载挖矿收益列表出错",
   "LOADING_VOTE_INCOME_LIST": "加载挖矿收益列表中……",
   "LOAD_MORE_VOTE_INCOME_LIST_ERROR": "加载更多挖矿收益出错",
+  "LOADING_MORE_VOTE_INCOME_LIST": "加载更多挖矿收益中……",
 
   "//": "settings-set-default-fee",
   "SETTINGS-SET-DEFAULT-FEE": "设置默认交易手续费",
