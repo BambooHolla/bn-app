@@ -148,7 +148,7 @@ export class MinServiceProvider extends FLP_Tool {
     return this.fetch.get<{ delegate: string[]; timestamp: string }>(
       this.VOTE_URL,
       {
-        search: { address: this.userInfo.address },
+        search: { address },
       },
     );
   }
@@ -549,7 +549,7 @@ export class MinServiceProvider extends FLP_Tool {
       .then(data => data.delegate);
   }
   myDelegateInfo!: AsyncBehaviorSubject<TYPE.DelegateModel | null>;
-  @HEIGHT_AB_Generator("myDelegateInfo")
+  @HEIGHT_AB_Generator("myDelegateInfo", true)
   myDelegateInfo_Executor(promise_pro) {
     return promise_pro.follow(
       this.getDelegateInfo(this.userInfo.publicKey).catch(() => null),

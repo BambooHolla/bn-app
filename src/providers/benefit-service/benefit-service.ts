@@ -78,28 +78,29 @@ export class BenefitServiceProvider {
   async getBenefitsByRound(
     limit = this.top_benefit_size,
     rounds = this.appSetting.getRound(),
+    address = this.user.userInfo.address,
   ) {
     let query = {
       limit,
       orderBy: "md_timestamp:desc",
-      address: this.user.userInfo.address,
+      address,
       rounds,
     };
     let benefitData = await this.getBenefits(query);
     return benefitData;
   }
 
-  getLatestRoundBenefits(limit = this.top_benefit_size) {
+  getMyLatestRoundBenefits(limit = this.top_benefit_size) {
     return this.getBenefitsByRound(limit, this.appSetting.getRound());
   }
 
   top_benefit_size = 57;
   private _topBenefits?: TYPE.BenefitModel[];
   topBenefits!: AsyncBehaviorSubject<TYPE.BenefitModel[]>;
-  @HEIGHT_AB_Generator("topBenefits")
+  @HEIGHT_AB_Generator("topBenefits", true)
   topBenefits_Executor(promise_pro) {
     return promise_pro.follow(
-      this.getLatestRoundBenefits().then(list => {
+      this.getMyLatestRoundBenefits().then(list => {
         if (this._topBenefits && list.length) {
           this._topBenefits.unshift(...list);
           this._topBenefits.sort((a, b) => {
@@ -111,7 +112,7 @@ export class BenefitServiceProvider {
               filter_res[filter_res.length - 1].height !=
               this._topBenefits[i].height
             ) {
-              // 过滤掉一样的，尽管从逻辑上来说，不可能存在
+              // 过滤掉一样的
               filter_res.push(this._topBenefits[i]);
             }
             if (filter_res.length >= this.top_benefit_size) {
@@ -229,7 +230,7 @@ export class BenefitServiceProvider {
         //   let sound_type = "coinSoundFew";
         // }
         // PIXI.sound.play(sound_type);
-        setTimeout(()=>{
+        setTimeout(() => {
           PIXI.sound.play("coinSingle");
         }, 500);
 
