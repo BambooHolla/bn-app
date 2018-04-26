@@ -11,11 +11,14 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
+import { SatellitePixiComponent } from "../../components/satellite-pixi/satellite-pixi";
 import { SatelliteCssComponent } from "../../components/satellite-css/satellite-css";
 import { FallCoinsComponent } from "../../components/fall-coins/fall-coins";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { BuddhaGlowComponent } from "../../components/buddha-glow/buddha-glow";
 import { MiningPersonComponent } from "../../components/mining-person/mining-person";
+import { CountdownComponent } from "../../components/countdown/countdown";
+import { EffectCountdownComponent } from "../../components/effect-countdown/effect-countdown";
 import { AniBase, Easing } from "../../components/AniBase";
 import { TabsPage } from "../tabs/tabs";
 import {
@@ -36,11 +39,11 @@ import { VoteCurrentBlockIncomeComponent } from "../../components/vote-current-b
 import { VoteIncomeTrendComponent } from "../../components/vote-income-trend/vote-income-trend";
 import { VoteMyContributionComponent } from "../../components/vote-my-contribution/vote-my-contribution";
 import { VotePreRoundIncomeRateComponent } from "../../components/vote-pre-round-income-rate/vote-pre-round-income-rate";
-import { CountdownComponent } from "../../components/countdown/countdown";
 
 export enum VotePage {
   None = "",
   Bootstrap = "bootstrap",
+  Countdown = "countdown",
   VoteDetail = "vote-detail",
   ExtendsPanel = "extends-panel",
 }
@@ -62,6 +65,10 @@ export class TabVotePage extends FirstLevelPage {
   get is_power_saving_mode() {
     return this.appSetting.settings.power_saving_mode;
   }
+  @HostBinding("class.in-countdown")
+  get is_in_countdown_page() {
+    return this.page_status === VotePage.Countdown;
+  }
   VotePage = VotePage;
   constructor(
     public navCtrl: NavController,
@@ -82,7 +89,15 @@ export class TabVotePage extends FirstLevelPage {
           this.appSetting.settings.background_mining = true;
         }
         if (this.page_status === VotePage.Bootstrap) {
-          this.routeToVoteDetail();
+          this.accountService.is_pre_round_has_vote
+            .getPromise()
+            .then(is_pre_round_has_vote => {
+              if (is_pre_round_has_vote) {
+                this.routeToVoteDetail();
+              } else {
+                this.routeToCountdown();
+              }
+            });
         }
         // 在挖矿或者卡片详情中不用管。
       } else {
@@ -126,7 +141,8 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
     this.tabs.setBgTransparent(
-      this.page_status === VotePage.Bootstrap,
+      this.page_status === VotePage.Bootstrap ||
+        this.page_status === VotePage.Countdown,
       this.cname,
     );
   }
@@ -180,44 +196,45 @@ export class TabVotePage extends FirstLevelPage {
     clearInterval(this._waiting_ani);
     if (can_run() && this.satellite_pixi) {
       if (this.satellite_pixi.is_inited) {
-        this.satellite_pixi.resetProgress();
-        this.blockService.getLastBlockRefreshInterval().then(diff_time => {
-          const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
-          diff_time %= BLOCK_UNIT_TIME;
-          // if (diff_time < BLOCK_UNIT_TIME) {
-          if (can_run() && this.satellite_pixi) {
-            if (immediate) {
-              // 立即更新现在的进度
-              this.satellite_pixi.setProgress(
-                diff_time / BLOCK_UNIT_TIME,
-                0,
+        if (this.satellite_pixi instanceof SatelliteCssComponent) {
+          const satellite_css = this.satellite_pixi;
+          satellite_css.resetProgress();
+          this.blockService.getLastBlockRefreshInterval().then(diff_time => {
+            const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
+            diff_time %= BLOCK_UNIT_TIME;
+            // if (diff_time < BLOCK_UNIT_TIME) {
+            if (can_run() && satellite_css) {
+              if (immediate) {
+                // 立即更新现在的进度
+                satellite_css.setProgress(
+                  diff_time / BLOCK_UNIT_TIME,
+                  0,
+                  "ease-in-out",
+                );
+              }
+              satellite_css.setProgress(
+                1,
+                BLOCK_UNIT_TIME - diff_time,
                 "ease-in-out",
               );
             }
-            this.satellite_pixi.setProgress(
-              1,
-              BLOCK_UNIT_TIME - diff_time,
-              "ease-in-out",
-            );
-          }
-          // } else {
-          //   // 延迟了，等
-          //   const ani_dur = 1000;
-          //   const doWaitingAni = () => {
-          //     if (this.satellite_pixi) {
-          //       this.satellite_pixi.setProgress(
-          //         this.satellite_pixi.progress + 1,
-          //         ani_dur,
-          //         Easing.Quartic_InOut,
-          //       );
-          //     } else {
-          //       clearInterval(this._waiting_ani);
-          //     }
-          //   };
-          //   doWaitingAni();
-          //   this._waiting_ani = setInterval(doWaitingAni, ani_dur);
-          // }
-        });
+          });
+        } else {
+          const satellite_pixi = this.satellite_pixi;
+          satellite_pixi.resetProgress();
+          this.blockService.getLastBlockRefreshInterval().then(diff_time => {
+            const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
+            diff_time %= BLOCK_UNIT_TIME;
+            // if (diff_time < BLOCK_UNIT_TIME) {
+            if (can_run() && satellite_pixi) {
+              if (immediate) {
+                // 立即更新现在的进度
+                satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
+              }
+              satellite_pixi.setProgress(1, BLOCK_UNIT_TIME - diff_time);
+            }
+          });
+        }
       } else {
         this.satellite_pixi.once("init-start", () => {
           this.platform.raf(this._set_satellite_pixi_progress.bind(this));
@@ -269,6 +286,35 @@ export class TabVotePage extends FirstLevelPage {
     this.chain_mesh && this.chain_mesh.startAnimation();
   }
   page_status = VotePage.None;
+
+  @ViewChild(EffectCountdownComponent)
+  effect_countdown!: EffectCountdownComponent;
+  private _countdown_round_end_time?: Date;
+  get countdown_round_end_time() {
+    if (
+      !this._countdown_round_end_time &&
+      this.blockService.round_end_time &&
+      this.page_status === VotePage.Countdown
+    ) {
+      // 一次性赋值，只需要赋值一次
+      this._countdown_round_end_time = this.blockService.round_end_time;
+      this.effect_countdown.autoStartAnimation();
+    }
+    return this._countdown_round_end_time;
+  }
+  routeToCountdown() {
+    this.min_starting = false;
+    this.tabs.setBgTransparent(true, this.cname);
+    this.page_status = VotePage.Countdown; // countdown_round_end_time的赋值开关
+  }
+  onCountdownEnd() {
+    if (this.page_status === VotePage.Countdown) {
+      this._countdown_round_end_time = undefined;
+      this.effect_countdown.stopAnimation();
+      this.routeToVoteDetail();
+    }
+  }
+
   routeToVoteDetail() {
     this.min_starting = false;
     this.tabs.setBgTransparent(false, this.cname);
@@ -388,7 +434,8 @@ export class TabVotePage extends FirstLevelPage {
   }
   @ViewChild(CountdownComponent) countdown?: CountdownComponent;
   @ViewChild(FallCoinsComponent) fall_coin?: FallCoinsComponent;
-  @ViewChild(SatelliteCssComponent) satellite_pixi?: SatelliteCssComponent;
+  @ViewChild(SatelliteCssComponent)
+  satellite_pixi?: SatellitePixiComponent | SatelliteCssComponent;
   @ViewChild(BuddhaGlowComponent) buddha_glow?: BuddhaGlowComponent;
   @ViewChild(ChainMeshComponent) chain_mesh?: ChainMeshComponent;
   @ViewChild(MiningPersonComponent) mining_person?: MiningPersonComponent;

@@ -272,6 +272,9 @@ export class AppSettingProvider extends EventEmitter {
   getBlockNumberToRoundEnd(cur_height) {
     return 57 - cur_height % 57;
   }
+  getRoundStartHeight(round_num: number) {
+    return (round_num - 1) * 57 + 1;
+  }
   getHeight() {
     return this.height.getValue();
   }

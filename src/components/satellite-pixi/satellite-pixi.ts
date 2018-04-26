@@ -190,6 +190,9 @@ export class SatellitePixiComponent extends AniBase {
   private _ani_ms = 500;
   private _add_ms = 0;
 
+  resetProgress() {
+    this.setProgress(0, 0);
+  }
   setProgress(
     progress: number,
     ani_ms?: number,

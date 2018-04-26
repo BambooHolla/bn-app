@@ -4,7 +4,11 @@ import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-import { AppSettingProvider } from "../app-setting/app-setting";
+import {
+  AppSettingProvider,
+  ROUND_AB_Generator,
+  AsyncBehaviorSubject,
+} from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
 import { UserInfoProvider } from "../user-info/user-info";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
@@ -353,9 +357,12 @@ export class TransactionServiceProvider {
    * @returns {Promise<{}>}
    */
   async getTransactions(query) {
-    let data = await this.fetch.get<any>(this.GET_TRANSACTIONS, {
-      search: query,
-    });
+    let data = await this.fetch.get<TYPE.QueryTransactionsResModel>(
+      this.GET_TRANSACTIONS,
+      {
+        search: query,
+      },
+    );
 
     return data;
   }

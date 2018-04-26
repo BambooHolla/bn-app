@@ -2,21 +2,30 @@ import {
 	Component,
 	Input,
 	ChangeDetectorRef,
+	Output,
+	EventEmitter,
 	ChangeDetectionStrategy,
 } from "@angular/core";
 
 @Component({
-	selector: "countdown",
-	templateUrl: "countdown.html",
+	selector: "effect-countdown",
+	templateUrl: "effect-countdown.html",
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CountdownComponent {
+export class EffectCountdownComponent {
 	@Input("end-data")
 	set end_data(v) {
 		this._end_data = v;
+		if (this._auto_start) {
+			this.startAnimation();
+		}
 	}
 	get end_data() {
 		return this._end_data;
+	}
+	private _auto_start = false;
+	autoStartAnimation() {
+		this._auto_start = true;
 	}
 	_end_data?: Date;
 	constructor(public cdRef: ChangeDetectorRef) {}
@@ -31,6 +40,10 @@ export class CountdownComponent {
 			this.hour = "00";
 			this.minute = "00";
 			this.second = "00";
+			this.cdRef.markForCheck();
+			if (end_data) {
+				this.end.emit();
+			}
 			return false;
 		}
 		let hour = end_data.getHours() - cur_data.getHours();
@@ -50,6 +63,7 @@ export class CountdownComponent {
 		this.cdRef.markForCheck();
 		return true;
 	}
+	@Output("end") end = new EventEmitter<void>();
 	private _ti;
 	startAnimation() {
 		if (!this.update()) {

@@ -13,6 +13,7 @@ import { KjuaQrcodeComponent } from "./kjua-qrcode/kjua-qrcode";
 import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/income-trend-simple-chart";
 import { MiningPersonComponent } from "./mining-person/mining-person";
 import { CountdownComponent } from './countdown/countdown';
+import { EffectCountdownComponent } from './effect-countdown/effect-countdown';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { CountdownComponent } from './countdown/countdown';
     IncomeTrendSimpleChartComponent,
     MiningPersonComponent,
     CountdownComponent,
+    EffectCountdownComponent,
   ],
   imports: [],
   exports: [
@@ -47,6 +49,7 @@ import { CountdownComponent } from './countdown/countdown';
     IncomeTrendSimpleChartComponent,
     MiningPersonComponent,
     CountdownComponent,
+    EffectCountdownComponent,
   ],
 })
 export class ComponentsModule {}

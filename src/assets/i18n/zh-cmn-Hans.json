@@ -110,6 +110,7 @@
   "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE": "您是否要去设置默认手续费",
   "VOTE_INCOME_HISTORY": "历史挖矿收益",
   "START_VOTE_VERIFY": "开启挖矿校验",
+  "WATING_VOTE_CONFIRM": "投票等待确认中",
 
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "本轮挖矿收益",

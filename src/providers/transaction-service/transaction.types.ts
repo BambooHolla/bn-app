@@ -5,7 +5,7 @@ export type transactionsModel = {
 };
 export type TransactionModel = {
   id: string;
-  height: string;
+  height: number;
   blockId: string;
   type: number;
   timestamp: number;
@@ -32,3 +32,9 @@ export type putTransactionReturn = {
   success?: boolean;
   transactionId: string;
 };
+
+export type QueryTransactionsResModel = {
+  success: boolean;
+  transactions:TransactionModel[],
+  count:number
+}

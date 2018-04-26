@@ -1,6 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AppSettingProvider } from "../app-setting/app-setting";
+import {
+  AppSettingProvider,
+  AsyncBehaviorSubject,
+  ROUND_AB_Generator,
+} from "../app-setting/app-setting";
 import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import {
@@ -49,6 +53,28 @@ export class AccountServiceProvider {
   readonly GET_ACCOUNT_PROFITS = this.appSetting.APP_URL(
     "/api/accounts/accountProfits",
   );
+
+  /**上轮是否有投票*/
+  async isPreRoundHasVote(address: string) {
+    const cur_round = this.appSetting.getRound();
+    const data = await this.transactionService.getTransactions({
+      type: TransactionTypes.VOTE,
+      senderId: address,
+      startHeight: this.appSetting.getRoundStartHeight(cur_round - 1),
+      limit: 1,
+    });
+
+    const tran = data.transactions[0];
+    if (tran && tran.height < this.appSetting.getRoundStartHeight(cur_round)) {
+      return true;
+    }
+    return false;
+  }
+  is_pre_round_has_vote!: AsyncBehaviorSubject<boolean>;
+  @ROUND_AB_Generator("is_pre_round_has_vote", true)
+  is_pre_round_has_vote_Executor(promise_pro) {
+    return promise_pro.follow(this.isPreRoundHasVote(this.user.address));
+  }
 
   /**
    * 根据地址获取账户信息
