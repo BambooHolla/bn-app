@@ -9,6 +9,8 @@ import { Platform } from "ionic-angular";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject, Subscription } from "rxjs";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+
 import {
   AppSettingProvider,
   TB_AB_Generator,
@@ -27,7 +29,7 @@ import {
   PromiseOut,
   PromisePro,
   sleep,
-} from "../../../src/bnqkl-framework/PromiseExtends";
+} from "../../bnqkl-framework/PromiseExtends";
 import * as PIXI from "pixi.js";
 import { LocalNotifications } from "@ionic-native/local-notifications";
 import * as PIXI_SOUND from "pixi-sound";
@@ -233,47 +235,48 @@ export class BenefitServiceProvider {
         setTimeout(() => {
           PIXI.sound.play("coinSingle");
         }, 500);
+        // 系统通知
+        if (FLP_Tool.isInCordova) {
+          let mode = "single";
+          if (this._notify_id !== null) {
+            if (await this.localNotifications.isPresent(this._notify_id)) {
+              mode = "multi";
+            } else {
+              this._notify_id = null;
+              this._acc_notify_blocks.length = 0; // 清空缓存
+            }
+          }
 
-        let mode = "single";
-        if (this._notify_id !== null) {
-          if (await this.localNotifications.isPresent(this._notify_id)) {
-            mode = "multi";
-          } else {
-            this._notify_id = null;
-            this._acc_notify_blocks.length = 0; // 清空缓存
+          this._acc_notify_blocks.push(cur_block_benefit);
+
+          if (mode === "single") {
+            this.localNotifications.schedule({
+              id: (this._notify_id = this.appSetting.getHeight()),
+              text: this.translate.instant("MINING_INCOME_#AMOUNT#IBT", {
+                amount: (parseFloat(cur_block_benefit.amount) / 1e8).toFixed(8),
+              }),
+              sound: this.platform.is("android")
+                ? "file://sound.mp3"
+                : "file://beep.caf",
+              // data: { secret: key },
+            });
+          } else if (mode === "multi") {
+            const total_amount = this._acc_notify_blocks.reduce(
+              (acc_amount, benefit) => acc_amount + parseFloat(benefit.amount),
+              0,
+            );
+            this.localNotifications.update({
+              id: this._notify_id as number,
+              text: this.translate.instant(
+                "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT",
+                {
+                  times: this._acc_notify_blocks.length,
+                  amount: (total_amount / 1e8).toFixed(8),
+                },
+              ),
+            });
           }
         }
-
-        this._acc_notify_blocks.push(cur_block_benefit);
-
-        if (mode === "single") {
-          this.localNotifications.schedule({
-            id: (this._notify_id = this.appSetting.getHeight()),
-            text: this.translate.instant("MINING_INCOME_#AMOUNT#IBT", {
-              amount: (parseFloat(cur_block_benefit.amount) / 1e8).toFixed(8),
-            }),
-            sound: this.platform.is("android")
-              ? "file://sound.mp3"
-              : "file://beep.caf",
-            // data: { secret: key },
-          });
-        } else if (mode === "multi") {
-          const total_amount = this._acc_notify_blocks.reduce(
-            (acc_amount, benefit) => acc_amount + parseFloat(benefit.amount),
-            0,
-          );
-          this.localNotifications.update({
-            id: this._notify_id as number,
-            text: this.translate.instant(
-              "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT",
-              {
-                times: this._acc_notify_blocks.length,
-                amount: (total_amount / 1e8).toFixed(8),
-              },
-            ),
-          });
-        }
-
         this._pre_mining_block = cur_block_benefit;
       }
     });

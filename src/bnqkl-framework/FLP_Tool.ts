@@ -41,6 +41,9 @@ export class FLP_Tool {
     }
     return false;
   }
+  static get isInCordova() {
+    return window["cordova"] && !(window["cordova"] instanceof HTMLElement);
+  }
 
   async showConfirmDialog(
     message: string,
