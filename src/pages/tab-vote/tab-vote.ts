@@ -82,7 +82,26 @@ export class TabVotePage extends FirstLevelPage {
     public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
-    this.minService.vote_status.subscribe(is_voting => {
+
+    this.registerViewEvent(this.minService.event, "vote-error", () => {
+      const err = minService.vote_status_detail;
+      if (!err) {
+        return;
+      }
+      const err_message = err instanceof Error ? err.message : err;
+      if (err_message === "you have already voted") {
+        // 启动倒计时界面
+        console.log("%c已经投票，倒计时等待结果", "font-size:3em;color:green;");
+        return err;
+      }
+      this.showErrorDialog(err_message);
+      this.stopMin();
+      this.autoStartButtonPressOut(); // 取消按钮动画，必要的话
+    });
+  }
+  @TabVotePage.autoUnsubscribe({ ignore_did_leve: true })
+  private _vote_status_sub = this.minService.vote_status.subscribe(
+    is_voting => {
       if (is_voting) {
         if (this._user_agree_auto_mining_in_background) {
           this._user_agree_auto_mining_in_background = false;
@@ -103,23 +122,9 @@ export class TabVotePage extends FirstLevelPage {
       } else {
         this.routeToBootstrap();
       }
-    });
-    this.registerViewEvent(this.minService.event, "vote-error", () => {
-      const err = minService.vote_status_detail;
-      if (!err) {
-        return;
-      }
-      const err_message = err instanceof Error ? err.message : err;
-      if (err_message === "you have already voted") {
-        // 启动倒计时界面
-        console.log("%c已经投票，倒计时等待结果", "font-size:3em;color:green;");
-        return err;
-      }
-      this.showErrorDialog(err_message);
-      this.stopMin();
-      this.autoStartButtonPressOut(); // 取消按钮动画，必要的话
-    });
-  }
+    },
+  );
+
   toggleSoundEffect() {
     this.appSetting.settings.sound_effect = !this.appSetting.settings
       .sound_effect;
@@ -308,11 +313,8 @@ export class TabVotePage extends FirstLevelPage {
     this.page_status = VotePage.Countdown; // countdown_round_end_time的赋值开关
   }
   onCountdownEnd() {
-    if (this.page_status === VotePage.Countdown) {
-      this._countdown_round_end_time = undefined;
-      this.effect_countdown.stopAnimation();
-      this.routeToVoteDetail();
-    }
+    // if (this.page_status === VotePage.Countdown) {
+    // }
   }
 
   routeToVoteDetail() {
@@ -619,13 +621,26 @@ export class TabVotePage extends FirstLevelPage {
    *  然后更新相关的数据
    */
   @TabVotePage.addEvent("ROUND:CHANGED")
-  watchRoundChanged(cur_round) {
+  async watchRoundChanged(cur_round) {
     if (this.page_status === VotePage.VoteDetail) {
       if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
         this._whenRoundChangeAni(); // 执行动画
       }
       this._pre_ani_round = cur_round;
       this.notifyExtendPanel("ROUND:CHANGED");
+    }
+
+    if (this.page_status === VotePage.Countdown) {
+      const is_pre_round_has_vote = await this.accountService.is_pre_round_has_vote.getPromise();
+      if (is_pre_round_has_vote) {
+        this._countdown_round_end_time = undefined;
+        this.effect_countdown.stopAnimation();
+        this.routeToVoteDetail();
+      } else {
+        // 继续倒计时
+        this._countdown_round_end_time = this.blockService.round_end_time;
+        this.effect_countdown.autoStartAnimation();
+      }
     }
   }
 

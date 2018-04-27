@@ -494,9 +494,9 @@ export class FirstLevelPage extends FLP_Data {
       .present();
   }
 
-  @FirstLevelPage.autoUnsubscribe private _token_subscription?: Subscription;
+  @FirstLevelPage.autoUnsubscribe() private _token_subscription?: Subscription;
   /**通用的高度监控*/
-  @FirstLevelPage.autoUnsubscribe private _height_subscription?: Subscription;
+  @FirstLevelPage.autoUnsubscribe() private _height_subscription?: Subscription;
   @FirstLevelPage.willEnter
   __watchHeightChanged() {
     if (this._height_subscription) {
@@ -521,7 +521,7 @@ export class FirstLevelPage extends FLP_Data {
     );
   }
   /**通用的轮次监控*/
-  @FirstLevelPage.autoUnsubscribe private _round_subscription?: Subscription;
+  @FirstLevelPage.autoUnsubscribe() private _round_subscription?: Subscription;
   @FirstLevelPage.willEnter
   __watchRoundChanged() {
     if (this._round_subscription) {

@@ -282,18 +282,22 @@ export class FLP_Lifecycle extends FLP_Tool
     };
   }
 
-  static autoUnsubscribe(target: FLP_Lifecycle, name: string) {
-    const cache_key = `-AU-${name}-`;
-    if (!target[cache_key]) {
-      target[cache_key] = function() {
-        if (this[name]) {
-          this[name].unsubscribe();
-          this[name] = null;
+  static autoUnsubscribe(opts: { ignore_did_leve?: boolean } = {}) {
+    return (target: FLP_Lifecycle, name: string) => {
+      const cache_key = `-AU-${name}-`;
+      if (!target[cache_key]) {
+        target[cache_key] = function() {
+          if (this[name]) {
+            this[name].unsubscribe();
+            this[name] = null;
+          }
+        };
+        if (!opts.ignore_did_leve) {
+          FLP_Tool.addProtoArray(target, "didLeave", cache_key);
         }
-      };
-      FLP_Tool.addProtoArray(target, "didLeave", cache_key);
-      FLP_Tool.addProtoArray(target, "onDestory", cache_key);
-    }
+        FLP_Tool.addProtoArray(target, "onDestory", cache_key);
+      }
+    };
   }
 
   static cacheFromProtoArray(key) {
