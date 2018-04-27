@@ -66,9 +66,11 @@ export class CustomDialogPage extends FirstLevelPage {
       this.closeDialog();
     }
   }
-  tryCloseDialog() {
-    if (this.buttons.length == 0) {
-      this.closeDialog();
+  tryCloseDialog(event) {
+    if (event.target.classList.contains("scroll-content")) {
+      if (this.buttons.length == 0) {
+        this.closeDialog();
+      }
     }
   }
 }
