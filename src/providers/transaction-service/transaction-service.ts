@@ -7,6 +7,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import {
   AppSettingProvider,
   ROUND_AB_Generator,
+  HEIGHT_AB_Generator,
   AsyncBehaviorSubject,
 } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
@@ -162,14 +163,13 @@ export class TransactionServiceProvider {
   }
 
   async getUnconfirmedById(id: string) {
-    let data = await this.fetch.get<{ transactions: TYPE.TransactionModel[] }>(
-      this.UNCONFIRMED,
-      {
-        search: {
-          id: id,
-        },
+    let data = await this.fetch.get<{
+      transactions: TYPE.TransactionModel[];
+    }>(this.UNCONFIRMED, {
+      search: {
+        id: id,
       },
-    );
+    });
 
     return data.transactions[0];
   }
@@ -321,7 +321,33 @@ export class TransactionServiceProvider {
     secondKeypair.privateKey = this.Buff.from(secondKeypair.signSk);
     return secondKeypair;
   }
-
+  async getUserTransactions(
+    address: string,
+    page = 1,
+    pageSize = 10,
+    in_or_out: "in" | "out",
+    type?: TransactionTypes,
+  ) {
+    const offset = (page - 1) * pageSize;
+    const limit = pageSize;
+    if (
+      address === this.user.address &&
+      in_or_out === "in" &&
+      offset + limit <= this.default_user_in_transactions_pageSize
+    ) {
+      const list = await this.myInTransactions.getPromise();
+      return list.slice(offset, offset + limit);
+    }
+    if (
+      address === this.user.address &&
+      in_or_out === "out" &&
+      offset + limit <= this.default_user_out_transactions_pageSize
+    ) {
+      const list = await this.myOutTransactions.getPromise();
+      return list.slice(offset, offset + limit);
+    }
+    return this._getUserTransactions(address, offset, limit, in_or_out, type);
+  }
   /**
    * 根据地址获得交易，分页，send:true为转出
    * @param {string} address
@@ -330,25 +356,142 @@ export class TransactionServiceProvider {
    * @param {number} limit
    * @returns {Promise<any>}
    */
-  async getUserTransactions(
+  private async _getUserTransactions(
     address: string,
-    page = 1,
-    limit = 10,
-    in_or_out?: "in" | "out",
+    offset: number,
+    limit: number,
+    in_or_out: "in" | "out",
     type?: TransactionTypes,
+    extend_query: any = {},
   ) {
     var query = {
       senderId: in_or_out !== "in" ? address : undefined,
       recipientId: in_or_out !== "out" ? address : undefined,
-      offset: (page - 1) * limit,
-      limit: limit,
+      offset,
+      limit,
       orderBy: "t_timestamp:desc",
       type,
+      ...extend_query,
     };
 
     let data = await this.getTransactions(query);
 
     return data.transactions;
+  }
+  // 默认缓存10条
+  default_user_in_transactions_pageSize = 10;
+  myInTransactions!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
+  @HEIGHT_AB_Generator("myInTransactions", true)
+  myInTransactions_Executor(promise_pro) {
+    return promise_pro.follow(
+      this._getUserTransactions(
+        this.user.address,
+        0,
+        this.default_user_in_transactions_pageSize,
+        "in",
+        TransactionTypes.SEND,
+      ),
+    );
+  }
+  default_user_out_transactions_pageSize = 10;
+  myOutTransactions!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
+  @HEIGHT_AB_Generator("myOutTransactions", true)
+  myOutTransactions_Executor(promise_pro) {
+    return promise_pro.follow(
+      this._getUserTransactions(
+        this.user.address,
+        0,
+        this.default_user_out_transactions_pageSize,
+        "out",
+        TransactionTypes.SEND,
+      ),
+    );
+  }
+
+  /// 上一轮的交易
+  async getUserTransactionsPreRound(
+    address: string,
+    page = 1,
+    pageSize = 10,
+    in_or_out: "in" | "out",
+    type?: TransactionTypes,
+  ) {
+    const offset = (page - 1) * pageSize;
+    const limit = pageSize;
+    if (
+      address === this.user.address &&
+      in_or_out === "in" &&
+      offset + limit <= this.default_user_in_transactions_pageSize
+    ) {
+      const list = await this.myInTransactionsPreRound.getPromise();
+      return list.slice(offset, offset + limit);
+    }
+    if (
+      address === this.user.address &&
+      in_or_out === "out" &&
+      offset + limit <= this.default_user_out_transactions_pageSize
+    ) {
+      const list = await this.myOutTransactionsPreRound.getPromise();
+      return list.slice(offset, offset + limit);
+    }
+    return this._getUserTransactions(address, offset, limit, in_or_out, type);
+  }
+  /**
+   * 根据地址获得交易，分页，send:true为转出
+   * @param {string} address
+   * @param {boolean} send    true为转出，false为转入
+   * @param {number} page
+   * @param {number} limit
+   * @returns {Promise<any>}
+   */
+  private async _getUserTransactionsPreRound(
+    address: string,
+    offset: number,
+    limit: number,
+    in_or_out: "in" | "out",
+    type?: TransactionTypes,
+  ) {
+    const cur_round = this.appSetting.getRound();
+    const startHeight = this.appSetting.getRoundStartHeight(cur_round - 1);
+    const endHeight = this.appSetting.getRoundStartHeight(cur_round) - 1;
+    const transactions = await this._getUserTransactions(
+      address,
+      offset,
+      limit,
+      in_or_out,
+      type,
+      {
+        startHeight,
+      },
+    );
+
+    return transactions.filter(tran => tran.height <= endHeight);
+  }
+  myInTransactionsPreRound!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
+  @HEIGHT_AB_Generator("myInTransactionsPreRound", true)
+  myInTransactionsPreRound_Executor(promise_pro) {
+    return promise_pro.follow(
+      this._getUserTransactions(
+        this.user.address,
+        0,
+        this.default_user_in_transactions_pageSize,
+        "in",
+        TransactionTypes.SEND,
+      ),
+    );
+  }
+  myOutTransactionsPreRound!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
+  @HEIGHT_AB_Generator("myOutTransactionsPreRound", true)
+  myOutTransactionsPreRound_Executor(promise_pro) {
+    return promise_pro.follow(
+      this._getUserTransactions(
+        this.user.address,
+        0,
+        this.default_user_out_transactions_pageSize,
+        "out",
+        TransactionTypes.SEND,
+      ),
+    );
   }
 
   /**

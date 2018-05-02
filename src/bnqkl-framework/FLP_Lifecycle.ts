@@ -5,7 +5,7 @@ import {
   ChangeDetectorRef,
 } from "@angular/core";
 import { PAGE_STATUS } from "./const";
-import { EventEmitter } from "eventemitter3";
+import * as EventEmitter from "eventemitter3";
 import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
 // import { MyApp } from "../app/app.component";
 var uuid = 0;

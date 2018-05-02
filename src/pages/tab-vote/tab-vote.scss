@@ -392,7 +392,6 @@ page-tab-vote {
     width: 100vw;
     height: 100%;
     overflow: hidden;
-    left
     opacity: 0;
     pointer-events: none;
     transition-duration: 0.5s;
@@ -466,7 +465,6 @@ page-tab-vote {
         box-sizing: content-box;
         top: -#{$out_r/2}rem;
         left: -#{$out_r/2}rem;
-        heig
         display: none;
         opacity: 0;
         transition-duration: 0.25s;
@@ -520,7 +518,6 @@ page-tab-vote {
         left: 3%;
         border-radius: 50%;
         overflow: hidden;
-        top:
         display: none;
         opacity: 0;
         transition-duration: 0.25s;

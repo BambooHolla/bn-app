@@ -1,5 +1,5 @@
 import { Executor } from "./RxExtends";
-import { EventEmitter } from "eventemitter3";
+import * as EventEmitter from "eventemitter3";
 /**
  * 将resolve和reject暴露出来
  *

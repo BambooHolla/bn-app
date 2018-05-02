@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Storage } from "@ionic/storage";
-import { EventEmitter } from "eventemitter3";
+import * as EventEmitter from "eventemitter3";
 
 @Injectable()
 // 用户缓存用户的基本信息，相比getUserToken，速度更快

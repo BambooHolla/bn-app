@@ -142,6 +142,8 @@
   "#NUM#_TIMES": "{{num}}倍",
   "INVESTMENT": "投入",
   "RETURN_ON_INVESTMENT": "产出",
+  "EXPENDITURE": "支出",
+  "INCOME": "收入",
 
   "//": "tab-chain",
   "LOADING_BLOCK_LIST": "加载区块链中",

@@ -8,7 +8,7 @@ import {
 } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
 import * as IFM from "ifmchain-ibt";
-import { EventEmitter } from "eventemitter3";
+import * as EventEmitter from "eventemitter3";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";

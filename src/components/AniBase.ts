@@ -1,4 +1,4 @@
-import { EventEmitter } from "eventemitter3";
+import * as EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
 import { tryRegisterGlobal, FLP_Tool } from "../bnqkl-framework/FLP_Tool";
 function _tick(time) {

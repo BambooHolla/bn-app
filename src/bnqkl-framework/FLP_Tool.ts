@@ -1,6 +1,6 @@
 import { Clipboard } from "@ionic-native/clipboard";
 import { TranslateService } from "@ngx-translate/core";
-import { EventEmitter } from "eventemitter3";
+import * as EventEmitter from "eventemitter3";
 import {
   ActionSheetController,
   AlertController,

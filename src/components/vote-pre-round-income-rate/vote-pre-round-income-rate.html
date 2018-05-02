@@ -8,7 +8,7 @@
   </div>
 </div>
 <div class="detail">
-  <div class="rate-of-return">
+  <div class="rate-of-return" [class.leave]="show_detail">
     <text-gradient class="value" [text]="('#NUM#_TIMES'|translate:{num:(pre_round_income_rate?.rateOfReturn.toFixed(0))||0})" from="#f78464" to="#fdcf48" fontSize="3.5rem" fontWeight="600"></text-gradient>
   </div>
   <div class="extends-info">
@@ -17,6 +17,62 @@
     </div>
     <div class="right">
       {{'RETURN_ON_INVESTMENT'|translate}} {{pre_round_income_rate?.totalBenefit|amountEuler|number:'1.8-8'}}
+    </div>
+  </div>
+  <div class="detail-info" [class.enter]="show_detail">
+    <div class="pay list-wrapper">
+      <div class="title">
+        <ali-icon name="ifm-chashouyi"></ali-icon>
+        {{'EXPENDITURE'|translate}}
+      </div>
+      <div class="list">
+        <virtual-scroll class="list-container" [items]="pay_list" (update)="viewPortItems = $event" (change)="onPayListChange($event)">
+          {{viewPortItems?.length||"ccc"}}
+          <div class="item" *ngFor="let tran of viewPortItems">
+            <div class="left">
+              <div class="tran-type">
+                {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+              </div>
+              <div class="create-time">
+                {{(tran.timestamp)|timestamp|amLocale:localName|amTimeAgo}}
+              </div><!-- +timeago_clock -->
+            </div>
+            <div class="right">
+              <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+                {{tran?.amount|amountEuler|number:"1.8-8"}}
+              </div>
+              <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
+                {{tran?.fee|amountEuler|number:"1.8-8"}}
+              </div>
+            </div>
+          </div>
+        </virtual-scroll>
+      </div>
+    </div>
+    <div class="income list-wrapper">
+      <div class="title">
+        <ali-icon name="ifm-tubiaoxiajiangqushi"></ali-icon>
+        {{'INCOME'|translate}}
+      </div>
+      <div class="list">
+        <virtual-scroll class="list-container" [items]="income_list" (update)="viewPortItems = $event" (change)="onIncomeListChange($event)">
+          <div class="item" *ngFor="let tran of viewPortItems">
+            <div class="left">
+              <div class="create-time">
+                {{(tran.timestamp)|timestamp|amLocale:localName|amTimeAgo}}
+              </div><!-- +timeago_clock -->
+            </div>
+            <div class="right">
+              <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+                {{tran?.amount|amountEuler|number:"1.8-8"}}
+              </div>
+              <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
+                {{tran?.fee|amountEuler|number:"1.8-8"}}
+              </div>
+            </div>
+          </div>
+        </virtual-scroll>
+      </div>
     </div>
   </div>
 </div>
