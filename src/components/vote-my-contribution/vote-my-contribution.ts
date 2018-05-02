@@ -31,10 +31,6 @@ export class VoteMyContributionComponent extends VoteExtendsPanelComponent {
 
   my_contribution = {};
 
-  async refreshBaseData() {
-    
-  }
-  async refreshDetailData() {
-    
-  }
+  async refreshBaseData() {}
+  async refreshDetailData() {}
 }

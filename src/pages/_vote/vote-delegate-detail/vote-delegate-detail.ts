@@ -36,12 +36,12 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
-  _wait_delegate_info?:PromisePro<DelegateModel>
-  get wait_delegate_info(){
-    if(!this._wait_delegate_info){
+  _wait_delegate_info?: PromisePro<DelegateModel>;
+  get wait_delegate_info() {
+    if (!this._wait_delegate_info) {
       this._wait_delegate_info = new PromisePro();
     }
-    return this._wait_delegate_info
+    return this._wait_delegate_info;
   }
   delegate_info?: DelegateModel;
   current_info_height: number = 0;

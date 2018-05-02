@@ -35,6 +35,6 @@ export type putTransactionReturn = {
 
 export type QueryTransactionsResModel = {
   success: boolean;
-  transactions:TransactionModel[],
-  count:number
-}
+  transactions: TransactionModel[];
+  count: number;
+};

@@ -237,8 +237,7 @@ page-tab-vote {
     /* justify-content: center; */
     .auto-start-button-wrapper {
       position: relative;
-      top: 26vh;
-      /* width: 76vw; */
+      top: 26vh; /* width: 76vw; */
       width: 42.7286vh;
       /* height: 76vw; */
       height: 42.7286vh;
@@ -280,7 +279,7 @@ page-tab-vote {
           position: absolute;
           background-image: url("../assets/imgs/tab-vote/start-button-no-shadow.png");
           transform-origin: 49.8% 50%;
-          /*   background-size: 122%;
+          /* background-size: 122%;
           background-position: 50% 44%; */
           background-size: 100%;
           background-repeat: no-repeat;
@@ -318,7 +317,6 @@ page-tab-vote {
             opacity: 0.5;
             animation-duration: 7s;
           }
-
           @keyframes rotate-to-open {
             0% {
               transform: rotate(0deg);
@@ -394,12 +392,12 @@ page-tab-vote {
     width: 100vw;
     height: 100%;
     overflow: hidden;
-    /**/
+    left
     opacity: 0;
     pointer-events: none;
     transition-duration: 0.5s;
     transform: scale(0);
-    /*    display: flex;
+    /* display: flex;
     flex-direction: column;
     align-items: center; */
     /* justify-content: center; */
@@ -431,10 +429,10 @@ page-tab-vote {
       left: calc(50vw - 100.6vw / 2);
       height: 100.6vw;
       width: 100.6vw;
-      transform: scale(0.8); // translateY(8.6363636363vh)
+      transform: scale(0.8);
+      // translateY(8.6363636363vh)
       transform-origin: top;
       will-change: opacity, transform;
-
       opacity: 1;
       &.show-big-fall-icon {
         transition-duration: 0.7s;
@@ -442,7 +440,6 @@ page-tab-vote {
         opacity: 0;
         transform: scale(1.2) !important;
       }
-
       &::before {
         content: " ";
         z-index: 1;
@@ -458,7 +455,6 @@ page-tab-vote {
         opacity: 0.5;
         pointer-events: none;
       }
-
       /* transform-origin: 50% 0%; */
       border-radius: 50%;
       .ani-progress {
@@ -470,7 +466,7 @@ page-tab-vote {
         box-sizing: content-box;
         top: -#{$out_r/2}rem;
         left: -#{$out_r/2}rem;
-        /**/
+        heig
         display: none;
         opacity: 0;
         transition-duration: 0.25s;
@@ -479,14 +475,14 @@ page-tab-vote {
           opacity: 1;
         }
         // &.satellite-css{
-        //   background-image: url("../assets/imgs/tab-vote/轨道.png");
-        //   background-size: 88%;
-        //   background-position: center;
-        //   background-repeat: no-repeat;
-        //   &::after{
-        //     content:" ";
-        //     background-image: url("../assets/imgs/tab-vote/彗星☄.png");
-        //   }
+        // background-image: url("../assets/imgs/tab-vote/轨道.png");
+        // background-size: 88%;
+        // background-position: center;
+        // background-repeat: no-repeat;
+        // &::after{
+        // content:" ";
+        // background-image: url("../assets/imgs/tab-vote/彗星☄.png");
+        // }
         // }
       }
       .ani-glow {
@@ -524,7 +520,7 @@ page-tab-vote {
         left: 3%;
         border-radius: 50%;
         overflow: hidden;
-        /**/
+        top:
         display: none;
         opacity: 0;
         transition-duration: 0.25s;
@@ -623,7 +619,6 @@ page-tab-vote {
       }
     }
   }
-
   .fall-icon-into-panel {
     flex-shrink: 0;
     flex-grow: 0;
@@ -740,20 +735,17 @@ page-tab-vote {
   }
   .extends-panel-page {
     /* position: relative; */
-    /*  align-self: flex-start;
+    /* align-self: flex-start;
       justify-self: flex-end; */
-
     position: absolute;
     bottom: 0;
     margin-top: auto;
     padding: 1.5rem 0 0.6rem 0;
     width: 100%;
-
     opacity: 0;
     pointer-events: none;
     transition-duration: 0.5s;
     transform: scale(0);
-
     &.vote-detail {
       opacity: 1;
       transform: scale(1);
@@ -863,11 +855,9 @@ page-tab-vote {
         mask-repeat: repeat-x;
         z-index: -1;
         /* filter: drop-shadow(0rem 0.1rem 0rem currentcolor); */
-
         /* transform-origin: 50% 0%; */
         /* transform: scaleY(0.7); */
-
-        /*      &::after {
+        /* &::after {
           content: " ";
           height: 110%;
           width: 100%;
@@ -892,8 +882,7 @@ page-tab-vote {
     .wave-2 {
       @extend .wave;
       color: rgb(253, 208, 68);
-      opacity: 0.8;
-      /* filter: sepia(100%) hue-rotate(559deg) saturate(1830%); */
+      opacity: 0.8; /* filter: sepia(100%) hue-rotate(559deg) saturate(1830%); */
       transition-delay: 0.3s;
       transition-duration: 1s;
       z-index: 1;
@@ -902,10 +891,8 @@ page-tab-vote {
         mask-position: -8vw 0;
       }
     }
-
     .wave-3 {
       @extend .wave;
-
       transition-delay: 0.5s;
       transition-duration: 1.2s;
       color: rgb(250, 141, 68);

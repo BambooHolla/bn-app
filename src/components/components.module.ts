@@ -12,8 +12,8 @@ import { TextGradientComponent } from "./text-gradient/text-gradient";
 import { KjuaQrcodeComponent } from "./kjua-qrcode/kjua-qrcode";
 import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/income-trend-simple-chart";
 import { MiningPersonComponent } from "./mining-person/mining-person";
-import { CountdownComponent } from './countdown/countdown';
-import { EffectCountdownComponent } from './effect-countdown/effect-countdown';
+import { CountdownComponent } from "./countdown/countdown";
+import { EffectCountdownComponent } from "./effect-countdown/effect-countdown";
 
 @NgModule({
   declarations: [

@@ -106,7 +106,7 @@ export class TabChainPage extends FirstLevelPage {
     if (this._into_block && this.vscroll) {
       const view_index = this.block_list.indexOf(this._into_block) - 1;
       const view_item = this.block_list[view_index];
-      if(view_item){
+      if (view_item) {
         const scrollAnimationTime = this.vscroll.scrollAnimationTime;
         this.vscroll.scrollAnimationTime = 0;
         this.vscroll.scrollInto(view_item);

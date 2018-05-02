@@ -1,13 +1,32 @@
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>清理缓存</ion-title>
+  <ion-navbar color="white">
+    <ion-title>{{'SETTINGS-CACHE-MANAGE'|translate}}</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%98.jpg" alt="">
-<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%982.jpg" alt="">
+<ion-content>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%98.jpg" alt="">
+<img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%982.jpg" alt=""> -->
+  <div class="clear-panel">
+    <div class="dashboard-wrapper">
+      <div class="dashboard"></div>
+      <div class="detail-info">
+        <ng-container *ngIf="calcing;else inCalc">
+          <div class="total-size">{{66666666|bytes}}</div>
+          <div class="occupy-info">
+            {{'OCCUPY_#PERCENTAGE#%_OF_MOBILE_PHONE_STORAGE'|translate:({percentage:66})}}
+          </div>
+        </ng-container>
+        <ng-template #inCalc>
+          <div class="in-calc">
+            {{'IN_CALCULATION'|translate}}
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <div class="button-bar">
+      <button class="clear">
+        {{'TAP_TO_CLEAR'|translate}}
+      </button>
+    </div>
+  </div>
 </ion-content>

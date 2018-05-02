@@ -14,7 +14,8 @@
   "TESTNET_FLAG": "测试网络",
   "MORE": "更多",
   "MINING_INCOME_#AMOUNT#IBT": "参与贡献获得收益：{{amount}}个IBT",
-  "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT": "参与贡献获得{{times}}次收益共：{{amount}}个IBT",
+  "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT":
+    "参与贡献获得{{times}}次收益共：{{amount}}个IBT",
 
   "//": "fingerprint-optional",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN": "账户登录校验",
@@ -103,6 +104,13 @@
   "NET_VERSION_OF_TESTNET": "测试网络",
   "NET_VERSION_OF_TESTNET128": "测试网络（128s）",
   "APP_WILL_RESTART": "应用将会重启",
+
+  "//": "settings-cache-manage",
+  "SETTINGS-CACHE-MANAGE": "清空手机缓存",
+  "IN_CALCULATION": "计算中",
+  "TAP_TO_CLEAR": "开始清理",
+  "OCCUPY_#PERCENTAGE#%_OF_MOBILE_PHONE_STORAGE": "占据手机{{percentage}}%存储",
+  "CLEANING": "清理中……",
 
   "//": "tab-vote",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",

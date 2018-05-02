@@ -1,23 +1,22 @@
 countdown {
-	.time-clock {
-		display: flex;
-		flex-direction: row;
-		// font-weight: lighter;
-		font-size: 10vh;
-		text-align: center;
-		justify-content: center;
-		>.item{
-			width: 1.5em;
-			text-align: center;
-		}
-		>.seg{
-			font-size: 0.85em;
-			&.m-and-s{
-				animation-name: m-and-s;
-			}
-			@keyframes m-and-s {
-				
-			}
-		}
-	}
+  .time-clock {
+    display: flex;
+    flex-direction: row;
+    // font-weight: lighter;
+    font-size: 10vh;
+    text-align: center;
+    justify-content: center;
+    > .item {
+      width: 1.5em;
+      text-align: center;
+    }
+    > .seg {
+      font-size: 0.85em;
+      &.m-and-s {
+        animation-name: m-and-s;
+      }
+      @keyframes m-and-s {
+      }
+    }
+  }
 }
