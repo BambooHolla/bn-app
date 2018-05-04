@@ -7,6 +7,7 @@ import { Storage } from "@ionic/storage";
 import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
 import { FingerprintAIO } from "./native/fingerprint-aio";
+import { checkUpdate } from "../pages/tab-account/checkUpdate";
 
 import {
   Config,
@@ -241,7 +242,22 @@ export class MyApp implements OnInit {
 
   @ViewChild(Nav) nav?: Nav;
   private _onNavInitedPromise = new PromiseOut();
-  ngOnInit() {
+  async ngOnInit() {
+    try {
+      // 更新in-ios-check
+      const app_version_info = await checkUpdate(this.minService.fetch, {
+        isAndroid: this.isAndroid,
+        isIOS: this.isIOS,
+        lang: this.translate.currentLang,
+      });
+      if (app_version_info.in_ios_check) {
+        localStorage.setItem("#in-ios-check", "qaq");
+      } else {
+        localStorage.removeItem("#in-ios-check");
+      }
+    } catch (err) {
+      console.error("获取版本配置信息出错", err);
+    }
     this._onNavInitedPromise.resolve(this.nav);
   }
 

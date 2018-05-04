@@ -19,5 +19,7 @@ export type LATEST_VERSION_INFO = {
   ios_app_store_link: string;
   disable_android?: boolean;
   disable_ios?: boolean;
+  /** 是否处于IOS审核期间 */
+  in_ios_check?: boolean;
   "//": string;
 };

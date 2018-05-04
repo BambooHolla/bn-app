@@ -24,10 +24,10 @@ export async function checkUpdate(
 		},
 	);
 	if (app_version_info.disable_android && opts.isAndroid) {
-		return;
+		return app_version_info;
 	}
 	if (app_version_info.disable_ios && opts.isIOS) {
-		return;
+		return app_version_info;
 	}
 	var version = app_version_info.version;
 	if (opts.isAndroid && app_version_info.android_version) {

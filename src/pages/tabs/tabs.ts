@@ -10,6 +10,7 @@ import { IonicPage, NavController, Tabs } from "ionic-angular";
 import { MyApp } from "../../app/app.component";
 import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 
 import { Tab1Root } from "../pages";
 import { Tab2Root } from "../pages";
@@ -37,6 +38,7 @@ export class TabsPage extends FLP_Lifecycle {
     public translateService: TranslateService,
     public myapp: MyApp,
     public appSetting: AppSettingProvider,
+    public fetch: AppFetchProvider,
   ) {
     super();
     translateService
@@ -95,14 +97,18 @@ export class TabsPage extends FLP_Lifecycle {
   getBgTransparent() {
     return this._transparent_tabs.size > 0;
   }
+  private _default_select_index: 0 | 1 | undefined;
   get default_select_index() {
-    if (this.isIOS) {
-      const in_ios_check = localStorage.getItem("#in-ios-check");
-      if (in_ios_check) {
-        return 1;
+    if (this._default_select_index === undefined) {
+      this._default_select_index = 0;
+      if (this.isIOS) {
+        const in_ios_check = localStorage.getItem("#in-ios-check");
+        if (in_ios_check) {
+          this._default_select_index = 1;
+        }
       }
     }
-    return 0;
+    return this._default_select_index;
   }
 
   @TabsPage.willEnter
