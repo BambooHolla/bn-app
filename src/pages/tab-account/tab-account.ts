@@ -11,7 +11,7 @@ import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
-import { versionToNumber } from "../version-update-dialog/version-update-dialog";
+import { checkUpdate } from "./checkUpdate";
 
 @Component({
   selector: "page-tab-account",
@@ -68,40 +68,11 @@ export class TabAccountPage extends FirstLevelPage {
   @TabAccountPage.onInit
   @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
   async checkAndroidUpdate() {
-    const app_version_info = (this.app_version_info = await this.fetch.get<
-      LATEST_VERSION_INFO
-    >(AppSettingProvider.LATEST_APP_VERSION_URL, {
-      search: {
-        lang: this.translate.currentLang,
-        ua: navigator.userAgent,
-      },
-    }));
-    if (app_version_info.disable_android && this.isAndroid) {
-      return;
-    }
-    if (app_version_info.disable_ios && this.isIOS) {
-      return;
-    }
-    var version = app_version_info.version;
-    if (this.isAndroid && app_version_info.android_version) {
-      version = app_version_info.android_version;
-    }
-    if (this.isIOS && app_version_info.ios_version) {
-      version = app_version_info.ios_version;
-    }
-    if (
-      versionToNumber(version) > versionToNumber(AppSettingProvider.APP_VERSION)
-    ) {
-      return this.modalCtrl
-        .create(
-          "version-update-dialog",
-          { version_info: app_version_info },
-          {
-            enterAnimation: "custom-dialog-pop-in",
-            leaveAnimation: "custom-dialog-pop-out",
-          },
-        )
-        .present();
-    }
+    this.app_version_info = await checkUpdate(this.fetch, {
+      isAndroid: this.isAndroid,
+      isIOS: this.isIOS,
+      lang: this.translate.currentLang,
+      modalCtrl: this.modalCtrl,
+    });
   }
 }

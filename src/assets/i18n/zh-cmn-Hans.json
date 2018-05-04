@@ -416,6 +416,7 @@
   "SIGNING_OUT": "安全退出",
   "SIGNING_OUT_ERROR": "退出登录出错",
   "SWITCH_PAGE_ERROR": "页面切换异常",
+  "APP_IS_NEWEST_VERSION": "应用版本已经是最新",
 
   "SUCCESS": "成功",
   "ERROR": "错误",

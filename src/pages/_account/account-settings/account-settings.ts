@@ -8,6 +8,7 @@ import { LoginServiceProvider } from "../../../providers/login-service/login-ser
 import { AppFetchProvider } from "../../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../../version-update-dialog/version.types";
 import { TabAccountPage } from "../../tab-account/tab-account";
+import { checkUpdate } from "../../tab-account/checkUpdate";
 import { FingerprintAIO } from "../../../app/native/fingerprint-aio";
 
 @IonicPage({ name: "account-settings" })
@@ -47,6 +48,17 @@ export class AccountSettingsPage extends SecondLevelPage {
   }
 
   checkUpdate() {
-    return TabAccountPage.prototype.checkAndroidUpdate.call(this);
+    return checkUpdate(this.fetch, {
+      isAndroid: this.isAndroid,
+      isIOS: this.isIOS,
+      lang: this.translate.currentLang,
+      modalCtrl: this.modalCtrl,
+      onNoNeedUpdate: () => {
+        this.showSuccessDialog(
+          this.getTranslateSync("APP_IS_NEWEST_VERSION"),
+          "v" + AppSettingProvider.APP_VERSION,
+        );
+      },
+    });
   }
 }

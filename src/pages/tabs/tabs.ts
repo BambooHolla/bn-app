@@ -95,4 +95,20 @@ export class TabsPage extends FLP_Lifecycle {
   getBgTransparent() {
     return this._transparent_tabs.size > 0;
   }
+  get default_select_index() {
+    if (this.isIOS) {
+      const in_ios_check = localStorage.getItem("#in-ios-check");
+      if (in_ios_check) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
+  @TabsPage.willEnter
+  iosCheckShim() {
+    if (this.default_select_index === 1) {
+      this.hideTabs(true, "ios-check");
+    }
+  }
 }
