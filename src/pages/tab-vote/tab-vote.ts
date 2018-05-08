@@ -341,6 +341,9 @@ export class TabVotePage extends FirstLevelPage {
     to_page_status: VotePage,
   ) {
     /*初始化新的动画控制权*/
+    if (this._chain_mesh_ctrl) {
+      this._chain_mesh_ctrl.reject();
+    }
     const chain_mesh_ctrl = (this._chain_mesh_ctrl = new PromiseOut());
     const _ani_id =
       "stopVoteAnimate_" + (Math.random() + Date.now()).toString(36);
@@ -361,12 +364,13 @@ export class TabVotePage extends FirstLevelPage {
       .catch(err => {
         console.info("stopAnimation chain_mesh 被中断");
       })
+      // finally
       .then(() => {
         // 检测控制权是否还在自身
         if (check_ani_power()) {
           this._chain_mesh_ctrl = undefined;
-          this.chain_mesh && this.chain_mesh.downForceUpdate(_ani_id); // 关闭强制更新
         }
+        this.chain_mesh && this.chain_mesh.downForceUpdate(_ani_id); // 关闭强制更新
       });
     let _ani_acc = 0;
     this.chain_mesh && this.chain_mesh.upForceUpdate(_ani_id); // 启用强制更新
@@ -393,6 +397,12 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
   }
+  private _stopChainMeshPropAni() {
+    if (this._chain_mesh_ctrl) {
+      this._chain_mesh_ctrl.reject();
+    }
+    this.chain_mesh && this.chain_mesh.stopAnimation();
+  }
 
   private _stopVoteAnimate(
     opts: {
@@ -400,9 +410,6 @@ export class TabVotePage extends FirstLevelPage {
       is_keep_mining_person_sound?: boolean;
     } = {},
   ) {
-    if (this._chain_mesh_ctrl) {
-      this._chain_mesh_ctrl.reject();
-    }
     this.countdown && this.countdown.stopAnimation();
     this.fall_coin &&
       this.fall_coin.is_inited &&
@@ -417,7 +424,7 @@ export class TabVotePage extends FirstLevelPage {
       this.buddha_glow.is_inited &&
       this.buddha_glow.stopAnimation();
     if (opts.is_force_stop_chain_mesh) {
-      this.chain_mesh && this.chain_mesh.stopAnimation();
+      this._stopChainMeshPropAni();
     } else {
       const { _earth_disabled_config, earth_config } = this;
       this._doChainMeshPropAni(

@@ -111,6 +111,7 @@
   "TAP_TO_CLEAR": "开始清理",
   "OCCUPY_#PERCENTAGE#%_OF_MOBILE_PHONE_STORAGE": "占据手机{{percentage}}%存储",
   "CLEANING": "清理中……",
+  "YOUR_DEVICE_IS_HEALTHY": "设备状态良好",
 
   "//": "tab-vote",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",

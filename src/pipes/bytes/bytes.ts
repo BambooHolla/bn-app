@@ -14,7 +14,7 @@ export class BytesPipe implements PipeTransform {
     TB: { max: Number.MAX_SAFE_INTEGER, prev: "GB" },
   };
 
-  transform(
+  static transform(
     input: any,
     decimal: number = 0,
     from: ByteUnit = "B",
@@ -60,6 +60,14 @@ export class BytesPipe implements PipeTransform {
         return BytesPipe.formatResult(result, key);
       }
     }
+  }
+  transform(
+    input: any,
+    decimal: number = 0,
+    from: ByteUnit = "B",
+    to?: ByteUnit,
+  ) {
+    return BytesPipe.transform(input, decimal, from, to);
   }
 
   static formatResult(result: number, unit: string): string {

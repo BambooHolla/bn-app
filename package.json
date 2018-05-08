@@ -99,7 +99,7 @@
   "devDependencies": {
     "@ionic/app-scripts": "^3.1.8",
     "@types/events": "^1.2.0",
-    "@types/node": "^10.0.2",
+    "@types/node": "^10.0.4",
     "@types/pixi.js": "^4.7.2",
     "@types/three": "^0.84.36",
     "@types/ws": "^4.0.2",

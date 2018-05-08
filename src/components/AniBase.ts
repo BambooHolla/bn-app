@@ -229,7 +229,10 @@ export class AniBase extends EventEmitter {
     };
   }
   static numberToColor(color_number: number) {
-    return AniBase.stringToColor(color_number.toString(16));
+    const v0 = color_number >> 16;
+    const v1 = (color_number - (v0 << 16)) >> 8;
+    const v2 = color_number - (v0 << 16) - (v1 << 8);
+    return [v0, v1, v2];
   }
   static stringToColor(color_string: string) {
     return color_string

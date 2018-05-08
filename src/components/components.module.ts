@@ -14,6 +14,7 @@ import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/inc
 import { MiningPersonComponent } from "./mining-person/mining-person";
 import { CountdownComponent } from "./countdown/countdown";
 import { EffectCountdownComponent } from "./effect-countdown/effect-countdown";
+import { WaterProgressComponent } from './water-progress/water-progress';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { EffectCountdownComponent } from "./effect-countdown/effect-countdown";
     MiningPersonComponent,
     CountdownComponent,
     EffectCountdownComponent,
+    WaterProgressComponent,
   ],
   imports: [],
   exports: [
@@ -50,6 +52,7 @@ import { EffectCountdownComponent } from "./effect-countdown/effect-countdown";
     MiningPersonComponent,
     CountdownComponent,
     EffectCountdownComponent,
+    WaterProgressComponent,
   ],
 })
 export class ComponentsModule {}

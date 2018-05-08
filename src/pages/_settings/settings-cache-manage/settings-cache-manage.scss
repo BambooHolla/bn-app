@@ -8,14 +8,29 @@ page-settings-cache-manage {
     height: 25rem;
     background-color: #fff;
     .dashboard-wrapper {
+      margin: 0 auto;
       padding-top: 3rem;
-      .dashboard {
-        margin: 0 auto;
-        width: 12rem;
-        height: 12rem;
+      width: 12rem;
+      height: 12rem;
+      box-sizing: content-box;
+      position: relative;
+      > .dashboard {
+        width: 100%;
+        height: 100%;
         border-radius: 50%;
         box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.3),
           0 0rem 1rem rgba(0, 0, 0, 0.2);
+        z-index: 1;
+      }
+      > .detail-info {
+        position: absolute;
+        top: 7rem;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        z-index: 2;
+        font-size: 3rem;
+        font-weight: 500;
       }
     }
     .button-bar {
