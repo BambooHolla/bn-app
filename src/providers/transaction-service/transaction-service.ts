@@ -471,7 +471,7 @@ export class TransactionServiceProvider {
   @HEIGHT_AB_Generator("myInTransactionsPreRound", true)
   myInTransactionsPreRound_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactions(
+      this._getUserTransactionsPreRound(
         this.user.address,
         0,
         this.default_user_in_transactions_pageSize,
@@ -484,13 +484,26 @@ export class TransactionServiceProvider {
   @HEIGHT_AB_Generator("myOutTransactionsPreRound", true)
   myOutTransactionsPreRound_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactions(
-        this.user.address,
-        0,
-        this.default_user_out_transactions_pageSize,
-        "out",
-        TransactionTypes.SEND,
-      ),
+      Promise.all([
+        // 接收的转账
+        this._getUserTransactionsPreRound(
+          this.user.address,
+          0,
+          this.default_user_out_transactions_pageSize,
+          "out",
+          TransactionTypes.SEND,
+        ),
+        // 投票
+        this._getUserTransactionsPreRound(
+          this.user.address,
+          0,
+          this.default_user_out_transactions_pageSize,
+          "in",
+          TransactionTypes.VOTE,
+        ),
+      ]).then(([get_trans, vote_trans]) => {
+        return get_trans.concat(vote_trans);
+      }),
     );
   }
 

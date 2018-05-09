@@ -26,27 +26,25 @@
         {{'EXPENDITURE'|translate}}
       </div>
       <div class="list">
-        <virtual-scroll class="list-container" [items]="pay_list" (update)="viewPortItems = $event" (change)="onPayListChange($event)">
-          {{viewPortItems?.length||"ccc"}}
-          <div class="item" *ngFor="let tran of viewPortItems">
+        <!-- <virtual-scroll class="list-container" [items]="pay_list" (update)="viewPortItems = $event" (change)="onPayListChange($event)">
+          {{viewPortItems?.length||"ccc"}} -->
+        <div class="list-container">
+          <div class="item" *ngFor="let tran of pay_list">
             <div class="left">
               <div class="tran-type">
                 {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
               </div>
               <div class="create-time">
-                {{(tran.timestamp)|timestamp|amLocale:localName|amTimeAgo}}
-              </div><!-- +timeago_clock -->
+                {{tran.timestamp|timestamp|amLocale:localName|amTimeAgo}}
+              </div>
+              <!-- +timeago_clock -->
             </div>
             <div class="right">
-              <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
-                {{tran?.amount|amountEuler|number:"1.8-8"}}
-              </div>
-              <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
-                {{tran?.fee|amountEuler|number:"1.8-8"}}
-              </div>
+              {{(tran.amount||tran.fee)|amountEuler|number:"1.8-8"}}
             </div>
           </div>
-        </virtual-scroll>
+        </div>
+        <!-- </virtual-scroll> -->
       </div>
     </div>
     <div class="income list-wrapper">
@@ -55,23 +53,22 @@
         {{'INCOME'|translate}}
       </div>
       <div class="list">
-        <virtual-scroll class="list-container" [items]="income_list" (update)="viewPortItems = $event" (change)="onIncomeListChange($event)">
-          <div class="item" *ngFor="let tran of viewPortItems">
+        <!-- <virtual-scroll class="list-container" [items]="income_list" (update)="viewPortItems = $event" (change)="onIncomeListChange($event)">
+          QAQQQ:{{viewPortItems?.length}} -->
+        <div class="list-container">
+          <div class="item" *ngFor="let tran of income_list">
             <div class="left">
               <div class="create-time">
-                {{(tran.timestamp)|timestamp|amLocale:localName|amTimeAgo}}
-              </div><!-- +timeago_clock -->
+                {{tran.timestamp|timestamp|amDateFormat:"MM-DD hh:mm"}}
+              </div>
+              <!-- +timeago_clock -->
             </div>
             <div class="right">
-              <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
-                {{tran?.amount|amountEuler|number:"1.8-8"}}
-              </div>
-              <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
-                {{tran?.fee|amountEuler|number:"1.8-8"}}
-              </div>
+              {{tran?.amount|amountEuler|number:"1.8-8"}}
             </div>
           </div>
-        </virtual-scroll>
+        </div>
+        <!-- </virtual-scroll> -->
       </div>
     </div>
   </div>

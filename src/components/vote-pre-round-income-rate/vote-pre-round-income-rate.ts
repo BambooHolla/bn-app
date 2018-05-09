@@ -11,6 +11,7 @@ import {
 import {
   TransactionServiceProvider,
   TransactionModel,
+  TransactionTypes,
 } from "../../providers/transaction-service/transaction-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 
@@ -19,7 +20,9 @@ import {
   DATA_REFRESH_FREQUENCY,
 } from "../VoteExtendsPanelComponent";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "vote-pre-round-income-rate",
@@ -27,6 +30,11 @@ import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
+  TransactionTypes = TransactionTypes;
+  @FLP_Tool.FromGlobal translate!: TranslateService;
+  get localName() {
+    return FLP_Tool.formatLocalName(this.translate.currentLang);
+  }
   @Input("show-detail")
   set show_detail(v) {
     if (v) {

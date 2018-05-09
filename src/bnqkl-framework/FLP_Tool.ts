@@ -216,7 +216,9 @@ export class FLP_Tool {
     readText: () => this.clipboard.paste(),
   };
   get localName() {
-    const { currentLang } = this.translate;
+    return FLP_Tool.formatLocalName(this.translate.currentLang);
+  }
+  static formatLocalName(currentLang: string) {
     if (currentLang === "zh-cmn-Hans") {
       return "zh-cn"; // 使用国际化标准
     }
