@@ -19,7 +19,7 @@ file:///C:/Users/gaube/Documents/ifm/_design/todo-4-23/IFMCHAIN%E9%92%B1%E5%8C%8
         ></water-progress>
     </div>
     <div class="button-bar">
-      <button class="clear" [disabled]="calcing||cache_size==0" (click)="clearCache()">
+      <button class="clear" [disabled]="calcing||cleaing||cache_size==0" (click)="clearCache()">
         <ng-container *ngIf="!cleaing">
           {{'TAP_TO_CLEAR'|translate}}
         </ng-container>

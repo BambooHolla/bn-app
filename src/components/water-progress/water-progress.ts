@@ -141,11 +141,11 @@ export class WaterProgressComponent extends AniBase {
 			stage.addChild(text);
 			return text;
 		};
-		const bg_text_cover = new PIXI.Graphics();
-		bg_text_cover.beginFill(0xffffff, 1);
-		bg_text_cover.drawRect(0, 0, W, H);
-		bg_text_cover.endFill();
-		stage.addChild(bg_text_cover);
+		// const bg_text_cover = new PIXI.Graphics();
+		// bg_text_cover.beginFill(0xffffff, 0);
+		// bg_text_cover.drawRect(0, 0, W, H);
+		// bg_text_cover.endFill();
+		// stage.addChild(bg_text_cover);
 
 		const bg_text = (this._bg_text = text_gen(0x51d0f0));
 
@@ -204,7 +204,7 @@ export class WaterProgressComponent extends AniBase {
 				ctx.beginFill(line_style.color, line_style.alpha);
 				let next_x, next_y;
 				let len = reversed_list.length - 1;
-					
+
 				for (let i = -1; i < len; i += 1) {
 					const x = next_x;
 					const y = next_y;
@@ -234,7 +234,7 @@ export class WaterProgressComponent extends AniBase {
 				ctx.endFill();
 			}
 			const ctx_text_mask1 = ctx.clone();
-			bg_text_cover.mask = text_fontend.mask = ctx_text_mask1;
+			/*bg_text_cover.mask = */ text_fontend.mask = ctx_text_mask1;
 
 			///
 			this._renderText();

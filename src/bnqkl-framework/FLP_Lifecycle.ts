@@ -269,7 +269,8 @@ export class FLP_Lifecycle extends FLP_Tool
     return descriptor;
   }
 
-  @FLP_Lifecycle.cacheFromProtoArray("onEvent")
+  // 因为增加了addEventAfterDidEnter这类延迟注册的操作，所以需要实时计算onEvent
+  @FLP_Lifecycle.fromProtoArray("onEvent")
   private _on_evnet_funs!: Set<{ handle_name: string; event_name: string }>;
   static addEvent(event_name: string) {
     return function(
@@ -278,6 +279,26 @@ export class FLP_Lifecycle extends FLP_Tool
       descriptor?: PropertyDescriptor,
     ) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
+      return descriptor;
+    };
+  }
+  static addEventAfterDidEnter(event_name: string) {
+    const after_did_enter = Symbol.for("addEventAfterDidEnter:" + event_name);
+    return function(
+      target: any,
+      handle_name: string,
+      descriptor?: PropertyDescriptor,
+    ) {
+      if (!target[after_did_enter]) {
+        // 只执行一次
+        target[after_did_enter] = () => {
+          FLP_Tool.addProtoArray(target, "onEvent", {
+            handle_name,
+            event_name,
+          });
+        };
+        FLP_Tool.addProtoArray(target, "didEnter", after_did_enter);
+      }
       return descriptor;
     };
   }
@@ -309,6 +330,15 @@ export class FLP_Lifecycle extends FLP_Tool
             this[cache_key] ||
             (this[cache_key] = FLP_Tool.getProtoArray(this, key))
           );
+        },
+      });
+    };
+  }
+  static fromProtoArray(key) {
+    return (target: any, name: string, descriptor?: PropertyDescriptor) => {
+      Object.defineProperty(target, name, {
+        get() {
+          return FLP_Tool.getProtoArray(this, key);
         },
       });
     };

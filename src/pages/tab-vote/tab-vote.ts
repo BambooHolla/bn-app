@@ -40,6 +40,12 @@ import { VoteIncomeTrendComponent } from "../../components/vote-income-trend/vot
 import { VoteMyContributionComponent } from "../../components/vote-my-contribution/vote-my-contribution";
 import { VotePreRoundIncomeRateComponent } from "../../components/vote-pre-round-income-rate/vote-pre-round-income-rate";
 
+type EarthConfig = {
+  body_color: number;
+  body_opacity: number;
+  line_color: number;
+  line_opacity: number;
+};
 export enum VotePage {
   None = "",
   Bootstrap = "bootstrap",
@@ -100,8 +106,10 @@ export class TabVotePage extends FirstLevelPage {
     });
   }
   @TabVotePage.autoUnsubscribe({ ignore_did_leve: true })
-  private _vote_status_sub = this.minService.vote_status.subscribe(
-    is_voting => {
+  private _vote_status_sub!: Subscription;
+  @TabVotePage.didEnter
+  _init_vote_status_sub() {
+    this._vote_status_sub = this.minService.vote_status.subscribe(is_voting => {
       if (is_voting) {
         if (this._user_agree_auto_mining_in_background) {
           this._user_agree_auto_mining_in_background = false;
@@ -122,8 +130,8 @@ export class TabVotePage extends FirstLevelPage {
       } else {
         this.routeToBootstrap();
       }
-    },
-  );
+    });
+  }
 
   toggleSoundEffect() {
     this.appSetting.settings.sound_effect = !this.appSetting.settings
@@ -199,7 +207,7 @@ export class TabVotePage extends FirstLevelPage {
     const id = ++this._set_satellite_pixi_progress_process_id;
     const can_run = () => id === this._set_satellite_pixi_progress_process_id;
     clearInterval(this._waiting_ani);
-    if (can_run() && this.satellite_pixi) {
+    if (can_run()) {
       if (this.satellite_pixi.is_inited) {
         if (this.satellite_pixi instanceof SatelliteCssComponent) {
           const satellite_css = this.satellite_pixi;
@@ -208,7 +216,7 @@ export class TabVotePage extends FirstLevelPage {
             const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
             diff_time %= BLOCK_UNIT_TIME;
             // if (diff_time < BLOCK_UNIT_TIME) {
-            if (can_run() && satellite_css) {
+            if (can_run()) {
               if (immediate) {
                 // 立即更新现在的进度
                 satellite_css.setProgress(
@@ -231,7 +239,7 @@ export class TabVotePage extends FirstLevelPage {
             const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
             diff_time %= BLOCK_UNIT_TIME;
             // if (diff_time < BLOCK_UNIT_TIME) {
-            if (can_run() && satellite_pixi) {
+            if (can_run()) {
               if (immediate) {
                 // 立即更新现在的进度
                 satellite_pixi.setProgress(diff_time / BLOCK_UNIT_TIME, 0);
@@ -264,12 +272,10 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
     this._set_satellite_pixi_progress(true);
-    this.mining_person &&
-      this.mining_person.is_inited &&
-      this.mining_person.startAnimation();
-    this.buddha_glow &&
-      this.buddha_glow.is_inited &&
-      this.buddha_glow.startAnimation();
+
+    this.mining_person.is_inited && this.mining_person.startAnimation();
+
+    this.buddha_glow.is_inited && this.buddha_glow.startAnimation();
     if (!this.is_show._inited) {
       this.is_show._inited = true;
       setTimeout(() => {
@@ -288,7 +294,7 @@ export class TabVotePage extends FirstLevelPage {
         }, 250);
       }, 100);
     }
-    this.chain_mesh && this.chain_mesh.startAnimation();
+    this.chain_mesh.startAnimation();
   }
   page_status = VotePage.None;
 
@@ -355,7 +361,7 @@ export class TabVotePage extends FirstLevelPage {
         this.raf(() => {
           // 等pixi渲染完成
           this.raf(() => {
-            if (this.chain_mesh && check_ani_power()) {
+            if (check_ani_power()) {
               this.chain_mesh.stopAnimation();
             }
           });
@@ -370,10 +376,10 @@ export class TabVotePage extends FirstLevelPage {
         if (check_ani_power()) {
           this._chain_mesh_ctrl = undefined;
         }
-        this.chain_mesh && this.chain_mesh.downForceUpdate(_ani_id); // 关闭强制更新
+        this.chain_mesh.downForceUpdate(_ani_id); // 关闭强制更新
       });
     let _ani_acc = 0;
-    this.chain_mesh && this.chain_mesh.upForceUpdate(_ani_id); // 启用强制更新
+    this.chain_mesh.upForceUpdate(_ani_id); // 启用强制更新
     for (const key in to_config) {
       _ani_acc += 1;
       const from = from_config[key];
@@ -401,7 +407,7 @@ export class TabVotePage extends FirstLevelPage {
     if (this._chain_mesh_ctrl) {
       this._chain_mesh_ctrl.reject();
     }
-    this.chain_mesh && this.chain_mesh.stopAnimation();
+    this.chain_mesh.stopAnimation();
   }
 
   private _stopVoteAnimate(
@@ -410,19 +416,16 @@ export class TabVotePage extends FirstLevelPage {
       is_keep_mining_person_sound?: boolean;
     } = {},
   ) {
-    this.countdown && this.countdown.stopAnimation();
-    this.fall_coin &&
-      this.fall_coin.is_inited &&
-      this.fall_coin.stopAnimation();
-    this.satellite_pixi &&
-      this.satellite_pixi.is_inited &&
-      this.satellite_pixi.stopAnimation();
-    this.mining_person &&
-      this.mining_person.is_inited &&
+    this.countdown.stopAnimation();
+
+    this.fall_coin.is_inited && this.fall_coin.stopAnimation();
+
+    this.satellite_pixi.is_inited && this.satellite_pixi.stopAnimation();
+
+    this.mining_person.is_inited &&
       this.mining_person.stopAnimation(opts.is_keep_mining_person_sound);
-    this.buddha_glow &&
-      this.buddha_glow.is_inited &&
-      this.buddha_glow.stopAnimation();
+
+    this.buddha_glow.is_inited && this.buddha_glow.stopAnimation();
     if (opts.is_force_stop_chain_mesh) {
       this._stopChainMeshPropAni();
     } else {
@@ -441,28 +444,28 @@ export class TabVotePage extends FirstLevelPage {
     this.page_status = VotePage.Bootstrap;
     this._stopVoteAnimate();
   }
-  @ViewChild(CountdownComponent) countdown?: CountdownComponent;
-  @ViewChild(FallCoinsComponent) fall_coin?: FallCoinsComponent;
+  @ViewChild(CountdownComponent) countdown!: CountdownComponent;
+  @ViewChild(FallCoinsComponent) fall_coin!: FallCoinsComponent;
   @ViewChild(SatelliteCssComponent)
-  satellite_pixi?: SatellitePixiComponent | SatelliteCssComponent;
-  @ViewChild(BuddhaGlowComponent) buddha_glow?: BuddhaGlowComponent;
-  @ViewChild(ChainMeshComponent) chain_mesh?: ChainMeshComponent;
-  @ViewChild(MiningPersonComponent) mining_person?: MiningPersonComponent;
+  satellite_pixi!: SatellitePixiComponent | SatelliteCssComponent;
+  @ViewChild(BuddhaGlowComponent) buddha_glow!: BuddhaGlowComponent;
+  @ViewChild(ChainMeshComponent) chain_mesh!: ChainMeshComponent;
+  @ViewChild(MiningPersonComponent) mining_person!: MiningPersonComponent;
 
-  _earth_disabled_config = {
+  _earth_disabled_config: EarthConfig = {
     body_color: 0xececec,
     // body_color: 0x333333,
     body_opacity: 0.8,
     line_color: 0x666666,
     line_opacity: 0.6,
   };
-  _earth_enabled_config = {
+  _earth_enabled_config: EarthConfig = {
     body_color: 0xfbc62b,
     body_opacity: 1,
     line_color: 0xffd246,
     line_opacity: 1,
   };
-  earth_config = (() => {
+  earth_config: EarthConfig = (() => {
     const self = this;
     return {
       get body_color() {
@@ -477,21 +480,23 @@ export class TabVotePage extends FirstLevelPage {
   })();
   @TabVotePage.didEnter
   initEarchNetMesh() {
+    // this.earth_config ,this._earth_disabled_config;
+    // this._doChainMeshPropAni(this.earth_config,this._earth_disabled_config)
+
     // 执行一帧，并停止
-    if (this.chain_mesh) {
-      const _loop = () => {
-        this.raf(() => {
-          this.chain_mesh &&
-            this.chain_mesh.app &&
-            this.chain_mesh.app.ticker.update();
-        });
-      };
-      if (this.chain_mesh.is_app_ready) {
-        _loop();
-      } else {
-        this.chain_mesh.once("app-ready", _loop);
-      }
-    }
+    // if (this.chain_mesh) {
+    //   const _loop = () => {
+    //     this.raf(() => {
+    //       this.chain_mesh.app && this.chain_mesh.app.ticker.update();
+    //     });
+    //   };
+    //   if (this.chain_mesh.is_app_ready) {
+    //     _loop();
+    //   } else {
+    //     this.chain_mesh.once("app-ready", _loop);
+    //   }
+    // }
+    this.chain_mesh.forceRenderOneFrame();
   }
 
   is_show = {
@@ -588,11 +593,12 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   /**动画的进度监控*/
-  @TabVotePage.addEvent("HEIGHT:CHANGED")
+  @TabVotePage.addEventAfterDidEnter("HEIGHT:CHANGED")
   watchHeightChanged(height, is_init) {
     if (this.page_status === VotePage.VoteDetail) {
       this._set_fall_coin_progress();
       this._set_satellite_pixi_progress(is_init);
+      // this.chain_mesh && this.chain_mesh.forceRenderOneFrame();
       this.notifyExtendPanel("HEIGHT:CHANGED");
     }
   }
@@ -627,7 +633,7 @@ export class TabVotePage extends FirstLevelPage {
    *  运作变成大金币并落入底部层
    *  然后更新相关的数据
    */
-  @TabVotePage.addEvent("ROUND:CHANGED")
+  @TabVotePage.addEventAfterDidEnter("ROUND:CHANGED")
   async watchRoundChanged(cur_round) {
     if (this.page_status === VotePage.VoteDetail) {
       if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
