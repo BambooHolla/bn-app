@@ -351,4 +351,8 @@ export class TabChainPage extends FirstLevelPage {
     await Promise.all(tasks);
     this.cdRef.markForCheck();
   }
+
+  pullToTop() {
+    this.vscroll && this.vscroll.scrollInto(this.block_list[0]);
+  }
 }
