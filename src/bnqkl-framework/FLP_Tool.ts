@@ -373,7 +373,7 @@ export class FLP_Tool {
 // 存储在原型链上的数据（字符串）集合
 const CLASS_PROTO_ARRAYDATA_POOL = (window[
   "CLASS_PROTO_ARRAYDATA_POOL"
-] = new Map<string, classProtoArraydata>());
+] = new Map<string | Symbol, classProtoArraydata>());
 const PA_ID_KEY =
   "@PAID:" +
   Math.random()
@@ -433,6 +433,6 @@ export function removeProtoArray(target: any, key: string, value: any) {
   }
   const index = arr_data.indexOf(value);
   if (index !== -1) {
-    arr_data.splice(index, -1);
+    arr_data.splice(index, 1);
   }
 }

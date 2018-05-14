@@ -250,7 +250,7 @@ export class FLP_Lifecycle extends FLP_Tool
     FLP_Tool.addProtoArray(target, "willEnter", name);
     return descriptor;
   }
-  @FLP_Lifecycle.cacheFromProtoArray("didEnter")
+  @FLP_Lifecycle.fromProtoArray("didEnter")
   private _did_enter_funs!: Set<string>;
   static didEnter(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "didEnter", name);
@@ -298,6 +298,7 @@ export class FLP_Lifecycle extends FLP_Tool
             handle_name,
             event_name,
           });
+          delete target[after_did_enter];
         };
         FLP_Tool.addProtoArray(target, "didEnter", after_did_enter);
       }
@@ -322,7 +323,10 @@ export class FLP_Lifecycle extends FLP_Tool
       }
     };
   }
-
+  static deleteFromProtoArrayCache(target, name: string) {
+    const cache_key = `-PA-${name}-`;
+    delete target[cache_key];
+  }
   static cacheFromProtoArray(key) {
     return (target: any, name: string, descriptor?: PropertyDescriptor) => {
       const cache_key = `-PA-${name}-`;
