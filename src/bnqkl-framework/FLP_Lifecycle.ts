@@ -291,7 +291,9 @@ export class FLP_Lifecycle extends FLP_Tool
     ) {
       if (!target[after_did_enter]) {
         // 只执行一次
+        let added = false;
         target[after_did_enter] = () => {
+          FLP_Tool.removeProtoArray(target, "didEnter", after_did_enter);
           FLP_Tool.addProtoArray(target, "onEvent", {
             handle_name,
             event_name,

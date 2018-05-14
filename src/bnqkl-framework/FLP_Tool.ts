@@ -314,6 +314,7 @@ export class FLP_Tool {
   }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
+  static removeProtoArray = removeProtoArray;
   static _raf_id_acc = 0;
   static _raf_map = new Map<number, Function>();
   private static _raf_register(callback) {
@@ -415,5 +416,23 @@ export function addProtoArray(target: any, key: string, value: any) {
     CLASS_PROTO_ARRAYDATA.set(pa_id, arr_data);
   } else {
     arr_data.push(value);
+  }
+}
+export function removeProtoArray(target: any, key: string, value: any) {
+  var CLASS_PROTO_ARRAYDATA = CLASS_PROTO_ARRAYDATA_POOL.get(key);
+  if (!CLASS_PROTO_ARRAYDATA) {
+    return;
+  }
+
+  const pa_id = target.hasOwnProperty(PA_ID_KEY)
+    ? target[PA_ID_KEY]
+    : (target[PA_ID_KEY] = "#" + PA_ID_VALUE++);
+  var arr_data = CLASS_PROTO_ARRAYDATA.get(pa_id);
+  if (!arr_data) {
+    return;
+  }
+  const index = arr_data.indexOf(value);
+  if (index !== -1) {
+    arr_data.splice(index, -1);
   }
 }
