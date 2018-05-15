@@ -6,12 +6,12 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { ComponentsModule } from "../../../components/components.module";
 
 @NgModule({
-	declarations: [SettingsCacheManagePage],
-	imports: [
-		IonicPageModule.forChild(SettingsCacheManagePage),
-		TranslateModule,
-		PipesModule,
-		ComponentsModule,
-	],
+  declarations: [SettingsCacheManagePage],
+  imports: [
+    IonicPageModule.forChild(SettingsCacheManagePage),
+    TranslateModule,
+    PipesModule,
+    ComponentsModule,
+  ],
 })
 export class SettingsCacheManagePageModule {}

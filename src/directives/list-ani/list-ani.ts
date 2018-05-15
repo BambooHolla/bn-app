@@ -18,7 +18,9 @@ import {
 const ani_end_name =
   "onanimationend" in document.body
     ? "onanimationend"
-    : "onwebkitanimationend" in document.body ? "onwebkitanimationend" : "";
+    : "onwebkitanimationend" in document.body
+      ? "onwebkitanimationend"
+      : "";
 
 const MB: typeof MutationObserver =
   window["MutationObserver"] || window["WebKitMutationObserver"];
@@ -86,9 +88,9 @@ export class ListAniDirective
     this.observer && this.observer.disconnect();
   }
   static aniKey = "[list-ani]KEY:" +
-    Math.random()
-      .toString(36)
-      .substr(2);
+  Math.random()
+    .toString(36)
+    .substr(2);
   /**
    * 最后一个元素开始动画的时间点
    */

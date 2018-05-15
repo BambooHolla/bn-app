@@ -284,7 +284,7 @@ export class MyApp implements OnInit {
         "font-size:1.2rem;color:yellow;",
       );
       if (page === MainPage) {
-        if (!await this.showFAIO(FAIO_CHECK.Login)) {
+        if (!(await this.showFAIO(FAIO_CHECK.Login))) {
           return;
         }
         if (loading_content === undefined) {

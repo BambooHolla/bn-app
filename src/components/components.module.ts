@@ -14,7 +14,7 @@ import { IncomeTrendSimpleChartComponent } from "./income-trend-simple-chart/inc
 import { MiningPersonComponent } from "./mining-person/mining-person";
 import { CountdownComponent } from "./countdown/countdown";
 import { EffectCountdownComponent } from "./effect-countdown/effect-countdown";
-import { WaterProgressComponent } from './water-progress/water-progress';
+import { WaterProgressComponent } from "./water-progress/water-progress";
 
 @NgModule({
   declarations: [

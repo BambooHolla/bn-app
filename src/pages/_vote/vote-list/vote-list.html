@@ -1,16 +1,16 @@
 <ion-header>
   <div class="bg-img"></div>
   <ion-navbar color="transparent">
-    <ion-title>投票</ion-title>
+    <ion-title>{{'VOTE-LIST'|translate}}</ion-title>
   </ion-navbar>
   <div class="header-nav">
     <div class="in-vote-list" [class.focus]="InOutSubPage.IN_VOTE===current_page" (click)="gotoSubPage(InOutSubPage.IN_VOTE)">
       <ali-icon name="ifm-kaipiaoshenqing"></ali-icon>
-      <div class="title">我的得票</div>
+      <div class="title">{{'MY_VOTE_IN'|translate}}</div>
     </div>
     <div class="out-vote-list" [class.focus]="InOutSubPage.OUT_VOTE===current_page" (click)="gotoSubPage(InOutSubPage.OUT_VOTE)">
       <ali-icon name="ifm-kaipiao"></ali-icon>
-      <div class="title">我投的票</div>
+      <div class="title">{{'MY_VOTE_OUT'|translate}}</div>
     </div>
   </div>
 </ion-header>
@@ -22,11 +22,13 @@
     </ion-refresher>
     <div class="common-list">
       <div class="no-mills" *ngIf="!in_vote_mill_list.length;else showInVoteList">
-        <div class="tip">
+        <div class="tip" *ngIf="!my_mining_machine.length">
           <ali-icon name="ifm-tip"></ali-icon>
-          没有矿机
+          {{'NO_MINING_MACHINE'|translate}}
         </div>
-        <button class="submit-button">添加矿机</button>
+        <button class="submit-button" (click)="routeTo('vote-add-mining-machine')">
+          {{'ADD_MINING_MACHINE'|translate}}
+        </button>
       </div>
       <ng-template #showInVoteList>
         <div class="common-item" *ngFor="let vote of in_vote_list">

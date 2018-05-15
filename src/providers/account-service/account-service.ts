@@ -60,7 +60,10 @@ export class AccountServiceProvider {
     const data = await this.transactionService.getTransactions({
       type: TransactionTypes.VOTE,
       senderId: address,
-      startHeight: this.appSetting.getRoundStartHeight(cur_round - 1),
+      startHeight: Math.max(
+        this.appSetting.getRoundStartHeight(cur_round - 1),
+        1,
+      ),
       limit: 1,
     });
 

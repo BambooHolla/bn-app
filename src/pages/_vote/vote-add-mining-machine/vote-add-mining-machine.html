@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'VOTE-ADD-MINING-MACHINE'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="progress-dot">
+    <div class="progress-item-wrapper">
+      <div class="progress-item" [class.active]="doing_progress.search_peer_list">
+        <ali-icon name="ifm-scan-node"></ali-icon>
+      </div>
+    </div>
+    <div class="progress-item-wrapper">
+      <div class="progress-item" [class.active]="doing_progress.fill_form">
+        <ali-icon name="ifm-fill-form"></ali-icon>
+      </div>
+    </div>
+  </div>
+  <div class="page-wrapper">
+    <div class="page-container">
+      <div class="page-item select-peer" [class.show]="doing_progress.search_peer_list">
+        <div class="status-info">
+          <ng-container *ngIf="peer_list_info.loading">
+            {{'AUTO_SEARCHING'|translate}}
+            <ali-icon name="ifm-loading-search" class="ani-rotate-30deg"></ali-icon>
+          </ng-container>
+        </div>
+        <div class="peer-list center-view">
+          <div class="scroll-panel">
+            <div class="peer-item" *ngFor="let peer of peer_list">
+              <input type="radio" name="peer" [value]="peer" [(ngModel)]="selectPeer" />
+              <div class="left">{{peer.ip|mask:'ip'}}</div>
+              <div class="right">
+                <div class="check-radio">
+                  <ali-icon name="ifm-dagou"></ali-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-bar">
+          <button class="progress-button" [disabled]="!selectPeer" (click)="goToFillFormPage()">
+            {{'NET_STEP'|translate}}
+          </button>
+        </div>
+      </div>
+      <div class="page-item mining-machine-form" [class.show]="doing_progress.fill_form">
+        <div class="status-info">
+          <ali-icon name="ifm-fill-form"></ali-icon>
+          {{'FILL_FORM'|translate}}
+        </div>
+        <div class="center-view">
+          <div class="scroll-panel">
+            <div class="item plaform">
+              <div class="left">
+                <ali-icon [name]="plaform_icon"></ali-icon>
+              </div>
+              <div class="center">
+                {{formData.hostname}}
+              </div>
+            </div>
+            <div class="item hardware-information">
+              <span class="cpus">{{cpu_simple_info}}</span>
+              <span class="memory">{{formData.totalmen|bytes}}</span>
+            </div>
+            <div class="item machine-ip">
+              <span class="left">IP</span>
+              <div class="center">
+                {{formData.ip}}
+              </div>
+            </div>
+            <div class="item application-port">
+              <span class="left">{{'PORT'|translate}}</span>
+              <div class="center">
+                {{formData.port}}
+              </div>
+            </div>
+            <div class="item delegate-pwd">
+              <textarea name="delegate-pwd" [placeholder]="'PLEACE_INPUT_DELEGATE_PWD'|translate" [(ngModel)]="formData.delegate_pwd"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-bar">
+          <button class="progress-button" [disabled]="!canSubmit" (click)="confirmAddMachine()">
+            {{'START_UP_MINING_MACHINE'|translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

@@ -243,6 +243,9 @@
     "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
 
   "//": "vote-list",
+  "VOTE-LIST":"投票",
+  "MY_VOTE_IN":"我的得票",
+  "MY_VOTE_OUT":"我投的票",
   "LOADING_OUT_VOTE_LIST": "加载已投票列表中……",
   "LOAD_OUT_VOTE_LIST_ERROR": "获取已投票列表失败",
   "LOADING_MORE_OUT_VOTE_LIST": "加载更多已投票列表中……",
@@ -255,6 +258,17 @@
   "LOAD_IN_VOTE_LIST_ERROR": "获取得票列表失败",
   "LOADING_MORE_IN_VOTE_LIST": "加载更多得票列表中……",
   "LOAD_MORE_IN_VOTE_LIST_ERROR": "加载更多得票列表失败",
+  "NO_MINING_MACHINE": "没有矿机",
+  "ADD_MINING_MACHINE": "添加矿机",
+
+  "//": "vote-add-mining-machine",
+  "VOTE-ADD-MINING-MACHINE": "添加矿机",
+  "AUTO_SEARCHING": "自动搜索",
+  "NET_STEP": "下一步",
+  "FILL_FORM": "填写",
+  "PORT": "端口号",
+  "START_UP_MINING_MACHINE": "启动矿机",
+  "PLEACE_INPUT_DELEGATE_PWD": "请输入委托人密钥",
 
   "//": "vote-income-logs",
   "LOAD_VOTE_INCOME_LIST_ERROR": "加载挖矿收益列表出错",

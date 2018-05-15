@@ -84,7 +84,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
         this.userInfo.address,
         confirmed_transaction_config.page,
         confirmed_transaction_config.pageSize,
-        "in"
+        "in",
       );
       confirmed_transaction_config.has_more =
         list.length >= confirmed_transaction_config.pageSize;

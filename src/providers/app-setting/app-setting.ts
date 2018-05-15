@@ -61,8 +61,8 @@ export class AppSettingProvider extends EventEmitter {
   }
 
   static LATEST_APP_VERSION_URL = getQueryVariable("LATEST_APP_VERSION_URL") ||
-    localStorage.getItem("LATEST_APP_VERSION_URL") ||
-    "https://www.ifmchain.com/api/app/version/latest";
+  localStorage.getItem("LATEST_APP_VERSION_URL") ||
+  "https://www.ifmchain.com/api/app/version/latest";
   static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,
@@ -316,6 +316,8 @@ export class AppSettingProvider extends EventEmitter {
     sound_effect: true,
     /**是否有过挖矿收益*/
     _has_mining_income: false,
+    /**我的矿机*/
+    my_mining_machine: [] as any[],
   };
 }
 if (AppSettingProvider.NET_VERSION === "testnet") {

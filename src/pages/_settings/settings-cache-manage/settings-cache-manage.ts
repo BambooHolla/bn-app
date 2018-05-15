@@ -154,9 +154,11 @@ export class SettingsCacheManagePage extends SecondLevelPage {
     }
   }
   get cache_size_bytes() {
-    return this.cache_size === 0 ? this.getTranslateSync("YOUR_DEVICE_IS_HEALTHY") : BytesPipe.transform(this.cache_size);
+    return this.cache_size === 0
+      ? this.getTranslateSync("YOUR_DEVICE_IS_HEALTHY")
+      : BytesPipe.transform(this.cache_size);
   }
-cleaing = false;
+  cleaing = false;
   async clearCache() {
     clearTimeout(this._can_calc_ti);
     const calc_promise_out = (this._calc_promise_out = new PromiseOut());

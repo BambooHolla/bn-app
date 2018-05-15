@@ -19,7 +19,7 @@ ali-icon {
     height: 100%;
   }
   &.ani-rotate-45deg {
-    animation-name: ani-rotate-45deg;
+    animation-name: ani-rotate-circle;
     animation-duration: 0.6s;
     animation-iteration-count: infinite;
     animation-timing-function: steps(8);
@@ -27,7 +27,16 @@ ali-icon {
       transform-origin: 51.4% 56.2%;
     }
   }
-  @keyframes ani-rotate-45deg {
+  &.ani-rotate-30deg {
+    animation-name: ani-rotate-circle;
+    animation-duration: 0.8s;
+    animation-iteration-count: infinite;
+    animation-timing-function: steps(12);
+    &[name="ifm-loading-search"] {
+      transform-origin: 50% 50%;
+    }
+  }
+  @keyframes ani-rotate-circle {
     0% {
       transform: rotate(0deg);
     }

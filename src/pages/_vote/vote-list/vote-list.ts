@@ -67,13 +67,14 @@ export class VoteListPage extends SecondLevelPage {
     has_more: true,
     need_refresh: true,
   };
+  my_mining_machine: any[] = [];
   @VoteListPage.willEnter
   async loadDataWhenEnter() {
     const page = this.navParams.get("page");
     if (page) {
       this.gotoSubPage(page);
     }
-    // TODO: 我的矿机
+    this.my_mining_machine = this.appSetting.settings.my_mining_machine;
   }
 
   @VoteListPage.addEvent("HEIGHT:CHANGED")
