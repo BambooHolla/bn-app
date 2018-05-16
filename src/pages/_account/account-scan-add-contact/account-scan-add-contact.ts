@@ -13,8 +13,9 @@ import {
   ViewController,
   AlertOptions,
 } from "ionic-angular";
-
+import { playSound, addSound } from "../../../components/sound";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
+addSound("scan-success", "assets/sounds/wx-scanner.wav");
 
 @IonicPage({ name: "account-scan-add-contact" })
 @Component({
@@ -105,11 +106,11 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     AccountScanAddContactPage.getTranslate("SCAN_ERROR"),
   )
   async openCameraMedia() {
-    this.is_inited = false;
     const image_url = this.navParams.get("image_url");
     if (image_url) {
       return;
     }
+    this.is_inited = false;
     // 媒体流实时解析模式
     var filter_fun = this.navParams.get("filter");
     if (!(filter_fun instanceof Function)) {
@@ -170,6 +171,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     () => AccountScanAddContactPage.getTranslate("SCAN_ERROR"),
     async function(self: AccountScanAddContactPage) {
       return {
+        closeButton: false,
         buttons: [
           {
             text: await self.getTranslate("OK"),
@@ -186,6 +188,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     if (!image_url) {
       return;
     }
+    this.is_inited = true;
     // 单张图片解析模式
     var filter_fun = this.navParams.get("filter");
     if (!(filter_fun instanceof Function)) {
@@ -214,6 +217,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   /**是否看到完整的canvas*/
   full_view_canvas = false;
   private _handleScanRes(res: string) {
+    playSound("scan-success");
     const mode = this.navParams.get("mode");
     if (mode === "try-to-add-contact") {
       const m = this.modalCtrl.create("account-add-contact", {
@@ -314,6 +318,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       }
       return res;
     } catch (err) {
+      console.error(err)
       // this.result_str = err.toString();
     }
   }

@@ -316,32 +316,43 @@ FLP_Route.registerRouteToBeforeCheck(
     }
     if (res === QRCODE_GET_WAY.FromPicture) {
       const image_url = await new Promise<string | null>((resolve, reject) => {
+        let runed = false;
+        const cbWrap = (err?, res?) => {
+          if (runed) {
+            return;
+          }
+          runed = true;
+
+          window.removeEventListener("focus", onCancel);
+          err ? reject(err) : resolve(res);
+        };
         inputEle.onchange = e => {
           if (inputEle.files && inputEle.files[0]) {
-            resolve(URL.createObjectURL(inputEle.files[0]));
+            cbWrap(null, URL.createObjectURL(inputEle.files[0]));
           } else {
             console.log("没有选择文件，代码不应该运行到这里");
-            resolve();
+            cbWrap(null);
           }
         };
         const onCancel = () => {
           setTimeout(() => {
-            if (inputEle.files && inputEle.files.length) {
+            if (inputEle.files && !inputEle.files.length) {
               // cancel select;
               console.log("取消了文件选择");
-              resolve();
+              cbWrap(null);
             }
-            document.body.removeEventListener("focus", onCancel);
           }, 250);
         };
-        document.body.addEventListener("focus", onCancel);
-        inputEle.onerror = reject;
+        window.addEventListener("focus", onCancel);
+        inputEle.onerror = cbWrap;
       });
-      self._navCtrlPush(path, {
-        title: await self.getTranslate("PARSE_PICTURE_QRCODE"),
-        image_url,
-        auto_return: true,
-      });
+      if(image_url){
+        self._navCtrlPush(path, {
+          title: await self.getTranslate("PARSE_PICTURE_QRCODE"),
+          image_url,
+          auto_return: true,
+        });
+      }
     }
     return true;
   },

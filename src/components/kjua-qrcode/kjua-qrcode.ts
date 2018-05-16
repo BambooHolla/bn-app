@@ -22,7 +22,7 @@ const default_config: KjuaConfig = {
   minVersion: 1,
 
   // error correction level: 'L', 'M', 'Q' or 'H'
-  ecLevel: "L",
+  ecLevel: "M",
 
   // size in pixel
   size: 200,

@@ -30,14 +30,12 @@ import {
   PromisePro,
   sleep,
 } from "../../bnqkl-framework/PromiseExtends";
-import * as PIXI from "pixi.js";
+import { addSound, playSound } from "../../components/sound";
 import { LocalNotifications } from "@ionic-native/local-notifications";
-import * as PIXI_SOUND from "pixi-sound";
-console.log("--PIXI_SOUND", PIXI_SOUND);
-PIXI.sound.add("coinSingle", "assets/sounds/coinSingle.wav");
-// PIXI.sound.add("coinSoundFew", "assets/sounds/coinFew.wav");
-// PIXI.sound.add("coinSoundMore", "assets/sounds/coinMore.wav");
-// PIXI.sound.add("coinSoundMuch", "assets/sounds/coinMuch.wav");
+addSound("coinSingle", "assets/sounds/coinSingle.wav");
+// addSound("coinSoundFew", "assets/sounds/coinFew.wav");
+// addSound("coinSoundMore", "assets/sounds/coinMore.wav");
+// addSound("coinSoundMuch", "assets/sounds/coinMuch.wav");
 
 @Injectable()
 export class BenefitServiceProvider {
@@ -231,9 +229,9 @@ export class BenefitServiceProvider {
         // } else if (Math.min(...equal_range, pre_benefit) === cur_benefit) {
         //   let sound_type = "coinSoundFew";
         // }
-        // PIXI.sound.play(sound_type);
+        // playSound(sound_type);
         setTimeout(() => {
-          PIXI.sound.play("coinSingle");
+          playSound("coinSingle");
         }, 500);
         // 系统通知
         if (FLP_Tool.isInCordova) {

@@ -1,4 +1,4 @@
-import { Component, Optional } from "@angular/core";
+import { Component, Optional, ViewChild } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import {
@@ -7,6 +7,7 @@ import {
   NavParams,
   ViewController,
 } from "ionic-angular";
+// import { KjuaQrcodeComponent } from "../../../components/kjua-qrcode/kjua-qrcode";
 
 @IonicPage({ name: "account-info" })
 @Component({
@@ -22,4 +23,5 @@ export class AccountInfoPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
+  // @ViewChild(KjuaQrcodeComponent) qrcode!: KjuaQrcodeComponent;
 }

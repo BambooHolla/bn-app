@@ -267,8 +267,13 @@
   "NET_STEP": "下一步",
   "FILL_FORM": "填写",
   "PORT": "端口号",
-  "START_UP_MINING_MACHINE": "启动矿机",
+  "START_UP_MINING": "启动挖矿",
   "PLEACE_INPUT_DELEGATE_PWD": "请输入委托人密钥",
+
+  "//": "vote-my-mining-machine",
+  "VOTE-MY-MINING-MACHINE":"我的矿机",
+  "MEMORY":"内存",
+  "MINING_QUANTITY":"已挖矿数量",
 
   "//": "vote-income-logs",
   "LOAD_VOTE_INCOME_LIST_ERROR": "加载挖矿收益列表出错",

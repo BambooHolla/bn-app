@@ -31,7 +31,7 @@
         </button>
       </div>
       <ng-template #showInVoteList>
-        <div class="common-item" *ngFor="let vote of in_vote_list">
+        <div class="common-item" *ngFor="let mac of my_mining_machine">
           <div class="left" [innerHTML]="vote.address|mask:'@address'" [click-to-copy]="vote.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}"></div>
           <div class="right">
             123
