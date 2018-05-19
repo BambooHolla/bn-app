@@ -21,7 +21,7 @@ page-tab-vote {
   }
 
   &.in-countdown::before {
-    background-image: url("../assets/imgs/tab-vote/bg.png");
+    // background-image: url("../assets/imgs/tab-vote/bg.png");
   }
 
   &::before {
@@ -31,7 +31,7 @@ page-tab-vote {
     top: calc(50vh - 64vh);
     left: calc(50vw - 64vh);
     content: " ";
-    background-image: url("../assets/imgs/net-circle-gray.png");
+    // background-image: url("../assets/imgs/net-circle-gray.png");
     background-size: 100% 100%;
     background-position: center;
     animation-name: rotate-bg3;
@@ -124,7 +124,7 @@ page-tab-vote {
       content: " ";
       width: 100%;
       height: 100%;
-      background-image: url("../assets/imgs/tab-vote/bg.png");
+      // background-image: url("../assets/imgs/tab-vote/bg.png");
       background-repeat: no-repeat;
       background-size: 100%;
       background-position: center;
@@ -152,6 +152,10 @@ page-tab-vote {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
   }
   .bootstrap-page {
     position: absolute;
@@ -160,14 +164,15 @@ page-tab-vote {
     overflow: hidden;
     height: 100%;
     width: 100%;
-    display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
     transition-duration: 0.5s;
-    transform: scale(3);
+    visibility: hidden;
+    display: none;
     &.bootstrap {
+      display: flex;
       opacity: 1;
       transform: scale(1);
       pointer-events: all;
@@ -184,7 +189,9 @@ page-tab-vote {
     pointer-events: none;
     transition-duration: 0.5s;
     transform: scale(3);
+    display: none;
     &.countdown {
+      display: block;
       opacity: 1;
       transform: scale(1);
       pointer-events: all;

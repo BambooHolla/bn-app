@@ -90,7 +90,7 @@ export class BuddhaGlowComponent extends AniBase {
         [1, "rgba(255,255,255,0)"],
       ],
     );
-    document.body.appendChild(circle_mesh_canvas);
+    // document.body.appendChild(circle_mesh_canvas);
     const circle_mesh_texture = PIXI.Texture.fromCanvas(circle_mesh_canvas);
     const circle_mesh_mask = new PIXI.Sprite(circle_mesh_texture);
     stage.addChild(circle_mesh_mask);
