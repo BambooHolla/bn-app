@@ -384,6 +384,7 @@
   "CAPTURE_GENERATE_ERROR": "凭证图生成失败",
   "SUBMITTED_TIME": "已提交",
   "EXPECTED_CONFIRMATION_TIME": "预计确认",
+  "CONFIRMED_TIME": "已确认",
   "SHARE_ERROR": "分享失败",
 
   "//": "account-my-transaction-list",

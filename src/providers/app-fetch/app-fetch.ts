@@ -98,7 +98,7 @@ export class AppFetchProvider {
     const data = res.json();
     const error = data.error;
     if (error) {
-      debugger;
+      // debugger;
       const err_message = data.error && data.error.message;
       if (err_message) {
         throw ServerResError.translateAndParseErrorMessage(

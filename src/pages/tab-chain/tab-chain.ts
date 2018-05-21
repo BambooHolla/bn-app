@@ -186,7 +186,7 @@ export class TabChainPage extends FirstLevelPage {
       });
       let ti;
       let pre_scrollTop = -1;
-      let zzele = document.createElement("span");
+      // let zzele = document.createElement("span");
 
       let from: number;
       let to: number;

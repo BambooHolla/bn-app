@@ -1,3 +1,9 @@
+body{
+  position: static!important;
+  .app-root, ion-nav {
+    position: static!important;
+  }
+}
 // http://ionicframework.com/docs/v2/theming/
 .testnet-flag {
   position: fixed;

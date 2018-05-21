@@ -202,6 +202,7 @@ export class MinServiceProvider extends FLP_Tool {
 
     //成功完成交易
     await this.transactionService.putTransaction(txData);
+    console.log("%c我挖矿了", "color:purple");
     this.appSetting.settings.digRound = this.appSetting.getRound();
   }
 

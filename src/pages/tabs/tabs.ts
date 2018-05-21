@@ -12,10 +12,7 @@ import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 
-import { Tab1Root } from "../pages";
-import { Tab2Root } from "../pages";
-import { Tab3Root } from "../pages";
-import { Tab4Root } from "../pages";
+import { Tab1Root, Tab2Root, Tab3Root, Tab4Root } from "../pages";
 
 // @IonicPage({ name: "tabs" })
 @Component({

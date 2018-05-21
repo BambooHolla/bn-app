@@ -3,7 +3,7 @@
     <ion-title>{{"SETTINGS-NET-VERSION"|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content (tap)="trySuperImportLS()">
   <div class="common-list">
     <div class="common-item" (click)="changeNetVersion('mainnet')" [class.selected]="net_version=='mainnet'">
       <div class="left">{{'NET_VERSION_OF_MAINNET'|translate}}</div>

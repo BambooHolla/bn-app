@@ -31,7 +31,7 @@ page-tab-vote {
     top: calc(50vh - 64vh);
     left: calc(50vw - 64vh);
     content: " ";
-    background-image: url("../assets/imgs/net-circle-gray.png");
+    // background-image: url("../assets/imgs/net-circle-gray.png");
     background-size: 100% 100%;
     background-position: center;
     animation-name: rotate-bg3;
@@ -152,6 +152,10 @@ page-tab-vote {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
   }
   .bootstrap-page {
     position: absolute;
@@ -160,13 +164,14 @@ page-tab-vote {
     overflow: hidden;
     height: 100%;
     width: 100%;
-    display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
     transition-duration: 0.5s;
-    transform: scale(3);
+    // visibility: hidden;
+    // display: none;
+    display: flex;
     &.bootstrap {
       opacity: 1;
       transform: scale(1);
@@ -184,7 +189,9 @@ page-tab-vote {
     pointer-events: none;
     transition-duration: 0.5s;
     transform: scale(3);
+    // display: none;
     &.countdown {
+      // display: block;
       opacity: 1;
       transform: scale(1);
       pointer-events: all;
@@ -427,7 +434,7 @@ page-tab-vote {
       left: calc(50vw - 100.6vw / 2);
       height: 100.6vw;
       width: 100.6vw;
-      transform: scale(0.8);
+      transform: scale(0.8) translateZ(0);
       // translateY(8.6363636363vh)
       transform-origin: top;
       will-change: opacity, transform;
@@ -452,6 +459,7 @@ page-tab-vote {
         background-position: center;
         opacity: 0.5;
         pointer-events: none;
+        transform: translateZ(0);
       }
       /* transform-origin: 50% 0%; */
       border-radius: 50%;
@@ -459,6 +467,7 @@ page-tab-vote {
         pointer-events: none;
         $out_r: 8;
         position: absolute;
+        transform: translateZ(0);
         width: calc(100% + #{$out_r}rem);
         height: calc(100% + #{$out_r}rem);
         box-sizing: content-box;
@@ -485,6 +494,7 @@ page-tab-vote {
       .ani-glow {
         /* contain: strict; */
         position: absolute;
+        transform: translateZ(0);
         width: 94%;
         height: 94%;
         top: 3%;
@@ -494,6 +504,7 @@ page-tab-vote {
         }
         &::after {
           position: absolute;
+          transform: translateZ(0);
           content: " ";
           width: 100%;
           height: 100%;
@@ -511,6 +522,7 @@ page-tab-vote {
       .ani-fall-coins {
         contain: strict;
         position: absolute;
+        transform: translateZ(0);
         width: 94%;
         height: 94%;
         top: 3%;
@@ -528,6 +540,7 @@ page-tab-vote {
       .ani-countdown {
         contain: strict;
         position: absolute;
+        transform: translateZ(0);
         width: 94%;
         height: 24%;
         top: 15%;
@@ -546,6 +559,7 @@ page-tab-vote {
       .ani-mining-person {
         contain: strict;
         position: absolute;
+        transform: translateZ(0);
         pointer-events: none;
         width: 90%;
         height: 35%;
@@ -563,6 +577,7 @@ page-tab-vote {
       .wakuang-person {
         contain: strict;
         position: absolute;
+        transform: translateZ(0);
         pointer-events: none;
         width: 94%;
         height: 94%;
@@ -583,6 +598,7 @@ page-tab-vote {
       .ani-container {
         contain: strict;
         position: absolute;
+        transform: translateZ(0);
         width: 94%;
         height: 94%;
         top: 3%;
@@ -904,17 +920,17 @@ page-tab-vote {
       /* transform: translateY(150%); */
       .wave-1 {
         transition-delay: 0s;
-        transform: translateY(5vh);
+        transform: translateY(5vh) translateZ(0);
         opacity: 0;
       }
       .wave-2 {
         transition-delay: 0s;
-        transform: translateY(5vh);
+        transform: translateY(5vh) translateZ(0);
         opacity: 0;
       }
       .wave-3 {
         transition-delay: 0s;
-        transform: translateY(5vh);
+        transform: translateY(5vh) translateZ(0);
         opacity: 0;
       }
     }
@@ -922,13 +938,13 @@ page-tab-vote {
     &.extends-panel {
       /* transform: translateY(0%); */
       .wave-1 {
-        transform: translateY(-100%);
+        transform: translateY(-100%) translateZ(0);;
       }
       .wave-2 {
-        transform: translateY(-100%);
+        transform: translateY(-100%) translateZ(0);;
       }
       .wave-3 {
-        transform: translateY(-100%);
+        transform: translateY(-100%) translateZ(0);;
       }
     }
   }
