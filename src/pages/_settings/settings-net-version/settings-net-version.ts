@@ -91,6 +91,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       // 两次点击的间隔不能多余半秒，否则重置计数
       this.tap_times = 0;
     }
+    this.per_tap_time = cur_tap_time;
     this.tap_times += 1;
     if (this.tap_times === 5) {
       const ls_json = prompt("请输入配置");
