@@ -1,6 +1,7 @@
 page-tab-chain {
   @extend .header-no-border;
   $block-distance: 1.6;
+  transform: translateZ(0);
   > .header {
     /* 启用头部动画 */
     animation-fill-mode: forwards;
@@ -61,7 +62,7 @@ page-tab-chain {
   }
   @keyframes tabchain-header-unconfirm-block-padding-wrapper {
     0% {
-      transform: scale(1);
+      transform: scale(1) translateZ(0);
       backdrop-filter: blur(0px);
       background-color: transparent;
     }
@@ -70,7 +71,7 @@ page-tab-chain {
     100% {
       backdrop-filter: blur(10px);
       background-color: rgba(255, 255, 255, 0.6);
-      transform: scale(1, 0.5);
+      transform: scale(1, 0.5) translateZ(0);
     }
   }
   .unconfirm-block-wrapper {
@@ -93,14 +94,14 @@ page-tab-chain {
     @extend .follow-parent-ani;
     @keyframes tabchain-header-unconfirm-block {
       0% {
-        transform: scale(1);
+        transform: scale(1) translateZ(0);
         /* height: 16.6rem; */
       }
       50% {
-        transform: scale(1, 1/0.75);
+        transform: scale(1, 1/0.75) translateZ(0);
       }
       100% {
-        transform: scale(1, 2) translateY(2.6rem);
+        transform: scale(1, 2) translateY(2.6rem) translateZ(0);
         /* height: 6rem; */
       }
     }
@@ -163,10 +164,11 @@ page-tab-chain {
       @keyframes tabchain-header-bg-image {
         0% {
           opacity: 1;
+          transform: translateY(0rem) translateZ(0);
         }
         100% {
           opacity: 0.4;
-          transform: translateY(-6rem);
+          transform: translateY(-6rem) translateZ(0);
         }
       }
 
@@ -281,7 +283,7 @@ page-tab-chain {
             0% {
             }
             100% {
-              transform: translate(55vw, -5rem);
+              transform: translate(55vw, -5rem) translateZ(0);
             }
           }
           > .value {
@@ -303,7 +305,7 @@ page-tab-chain {
           0% {
           }
           100% {
-            transform: translateY(-3.8rem);
+            transform: translateY(-3.8rem) translateZ(0);
           }
         }
         > .height {
