@@ -92,25 +92,25 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.error()
   async submit() {
     const { password, pay_pwd } = await this.getUserPassword();
-    const { transactionId } = await this._submit(
+    const { transfer } = await this._submit(
       password,
       pay_pwd,
       this.formData.transfer_fee,
     );
     this.resetFormData();
-    this.showTransferReceipt(transactionId);
+    this.showTransferReceipt(transfer);
   }
   @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
   @asyncCtrlGenerator.retry()
-  async showTransferReceipt(transactionId: string) {
-    const transfer = await Promise.all([
-      this.transactionService.getUnconfirmedById(transactionId),
-      this.transactionService
-        .getTransactionById(transactionId)
-        .catch(err => null),
-    ]).then(ts => {
-      return ts.filter(t => t)[0];
-    });
+  async showTransferReceipt(transfer: TransactionModel) {
+    // const transfer = await Promise.all([
+    //   this.transactionService.getUnconfirmedById(transactionId),
+    //   this.transactionService
+    //     .getTransactionById(transactionId)
+    //     .catch(err => null),
+    // ]).then(ts => {
+    //   return ts.filter(t => t)[0];
+    // });
     if (!transfer) {
       throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
     }

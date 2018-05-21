@@ -15,6 +15,7 @@ import {
   TransactionTypes,
   TransactionModel,
 } from "../../../providers/transaction-service/transaction-service";
+import { BlockServiceProvider } from "../../../providers/block-service/block-service";
 import { CommonWaveBgComponent } from "../../../components/common-wave-bg/common-wave-bg";
 
 import { Screenshot } from "@ionic-native/screenshot";
@@ -35,6 +36,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
     public screenshot: Screenshot,
     public socialSharing: SocialSharing,
     public viewCtrl: ViewController,
+    public blockService: BlockServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -44,13 +46,27 @@ export class PayTransferReceiptPage extends SecondLevelPage {
   /* 回执 */
   current_transfer?: TransactionModel;
   @PayTransferReceiptPage.willEnter
-  initData() {
-    const transfer = this.navParams.get("transfer");
+  async initData() {
+    const transfer = this.navParams.get("transfer") as TransactionModel;
     if (!transfer) {
       return this.navCtrl.goToRoot({});
     }
     this.current_transfer = transfer;
+    if (transfer.blockId) {
+      this.confirmed_timestamp = (await this.blockService.getBlockById(
+        transfer.blockId,
+      )).timestamp;
+    } else {
+      const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
+      let diff_time = await this.blockService.getLastBlockRefreshInterval();
+      diff_time %= BLOCK_UNIT_TIME;
+
+      this.expected_confirmation_time =
+        Date.now() + BLOCK_UNIT_TIME - diff_time;
+    }
   }
+  confirmed_timestamp = 0;
+  expected_confirmation_time = 0;
 
   @asyncCtrlGenerator.loading(() =>
     PayTransferReceiptPage.getTranslate("GENERATING_CAPTURE"),

@@ -586,7 +586,19 @@ export class TransactionServiceProvider {
       txData.secondSecret = secondSecret;
     }
 
-    return this.putTransaction(txData);
+    const responseData = await this.putTransaction(txData);
+    return {
+      transfer: {
+        senderId: this.user.address,
+        senderUsername: this.user.username,
+        dateCreated: Date.now(),
+        id: responseData.transactionId,
+        ...txData,
+        fee: fee * 1e8,
+        amount: amount * 1e8,
+      } as TYPE.TransactionModel,
+      responseData,
+    };
   }
 
   /**

@@ -4,13 +4,14 @@ import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-// import { PromisePro } from "../../bnqkl-framework/RxExtends";
 import {
   FLP_Tool,
   tryRegisterGlobal,
 } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
+import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
+
 import {
   AppSettingProvider,
   TB_AB_Generator,
@@ -31,7 +32,6 @@ export * from "./block.types";
 export class BlockServiceProvider extends FLP_Tool {
   ifmJs: any;
   block: any;
-  blockArray?: TYPE.BlockModel[] = [];
   private _io?: SocketIOClient.Socket;
   get io() {
     return (
@@ -73,18 +73,12 @@ export class BlockServiceProvider extends FLP_Tool {
     "/api/blocks/getForgingBlocks",
   );
   /**第二个块的timestamp*/
-  private _timestamp_from?: number;
+  // private _timestamp_from?: number;
   async getLastBlockRefreshInterval() {
-    if (this._timestamp_from == undefined) {
-      /*这个代码只能是*/
-      this._timestamp_from = await this.fetch
-        .get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY, {
-          search: {
-            height: 2,
-          },
-        })
-        .then(res => res.blocks.length && res.blocks[0].timestamp);
-    }
+    // if (this._timestamp_from == undefined) {
+    //   const second_block = await this.secondBlock.getPromise();
+    //   this._timestamp_from = second_block.timestamp;
+    // }
     const last_block = await this.lastBlock.getPromise();
     this.appSetting.setHeight(last_block.height);
 
@@ -92,6 +86,21 @@ export class BlockServiceProvider extends FLP_Tool {
     const currentTime = Date.now();
     const diff_time = currentTime - lastTime;
     return diff_time;
+  }
+
+  secondBlock!: AsyncBehaviorSubject<TYPE.BlockModel>;
+  @HEIGHT_AB_Generator("secondBlock")
+  secondBlock_Executor(promise_pro) {
+    // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
+    return promise_pro.follow(
+      this.fetch
+        .get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY, {
+          search: {
+            height: 2,
+          },
+        })
+        .then(res => res.blocks[0]),
+    );
   }
 
   private _refresh_interval = 0;
@@ -234,7 +243,12 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId: string): Promise<TYPE.SingleBlockModel> {
-    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_ID, {
+    const cacheBlocks = await this.cacheBlocks.getPromise();
+    const cacheBlock = cacheBlocks.find(block => block.id === blockId);
+    if (cacheBlock) {
+      return cacheBlock;
+    }
+    const data = await this.fetch.get<any>(this.GET_BLOCK_BY_ID, {
       search: {
         id: blockId,
       },
@@ -327,76 +341,56 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {boolean} increment  是否增量更新
    * @returns {Promise<void>}
    */
-  async getTopBlocks(
-    increment: boolean,
-    amount = 10,
-  ): Promise<TYPE.BlockModel[]> {
+  async getTopBlocks(amount = 10): Promise<TYPE.BlockModel[]> {
     //增量查询
-    if (increment) {
-      let currentHeight = this.appSetting.getHeight();
-
-      //有缓存时
-      if (
-        this.blockArray &&
-        this.blockArray.length > 0 &&
-        this.blockArray.length >= amount
-      ) {
-        //如果缓存高度和当前高度一致返回缓存
-        if (currentHeight === this.blockArray[0].height) {
-          return this.blockArray.slice(0, amount - 1);
-        } else {
-          //如果缓存高度不一致
-          let heightBetween = currentHeight - this.blockArray[0].height;
-          //缓存高度和当前高度相差太大则重新获取，否则只获取相差的块
-          if (heightBetween > amount) {
-            return await this.getTopBlocks(false, amount);
-          } else {
-            //增量的加入缓存
-            const data = await this.getBlocks({
-              limit: heightBetween,
-              orderBy: "height:desc",
-            });
-            //把数组插入原数组前面
-            //Array.prototype.splice然后把指针指向
-
-            // data.blocks.unshift(data.length, 0);
-            // Array.prototype.splice.apply(this.blockArray, data);
-            // this.blockArray = data;
-            // return this.blockArray.slice(0, amount - 1);
-
-            // TODO:这里采用严格的数据类型检测后发现有BUG，暂时没有解决。外部不在采用这个部分的方法，可以直接取消
-            return [];
-          }
-        }
-      } else {
-        return await this.getTopBlocks(false, amount);
-      }
-    } else {
-      // 服务器限制最大的查询数是100;
-      const tasks: Array<Promise<TYPE.BlockResModel>> = [];
-      let max_offset = amount;
-      const res: TYPE.BlockModel[] = [];
-      for (let offset = 0; offset < max_offset; offset += 100) {
-        tasks[tasks.length] = this.getBlocks({
-          offset,
-          limit: Math.min(max_offset - offset, 100),
-          orderBy: "height:desc",
-        });
-      }
-      return (await Promise.all(tasks)).reduce(
-        (res, data) => res.concat(data.blocks),
-        [] as TYPE.BlockModel[],
-      );
+    const topBlocks = await this.cacheBlocks.getPromise();
+    if (topBlocks.length > amount) {
+      return topBlocks.slice(0, amount);
     }
+    const more = await this._getTopBlocks(amount, topBlocks.length);
+    return topBlocks.concat(more);
+  }
+  async _getTopBlocks(amount: number, offset = 0) {
+    // 服务器限制最大的查询数是100;
+    const tasks: Array<Promise<TYPE.BlockResModel>> = [];
+    let max_offset = amount;
+    const res: TYPE.BlockModel[] = [];
+    for (; offset < max_offset; offset += 100) {
+      tasks[tasks.length] = this.getBlocks({
+        offset,
+        limit: Math.min(max_offset - offset, 100),
+        orderBy: "height:desc",
+      });
+    }
+    return (await Promise.all(tasks)).reduce(
+      (res, data) => res.concat(data.blocks),
+      [] as TYPE.BlockModel[],
+    );
   }
 
-  /**
-   * 按照高度刷新块
-   */
-  refreshBlock!: AsyncBehaviorSubject<TYPE.BlockModel[]>;
-  @HEIGHT_AB_Generator("refreshBlock")
-  refreshBlock_Executor(promise_pro) {
-    this.getTopBlocks(true);
+  private _cache_blocks?: TYPE.BlockModel[];
+  cache_blocks_height = 100;
+  // private _cacheBlockMap = new Map<string | number, TYPE.BlockModel>();
+  cacheBlocks!: AsyncBehaviorSubject<TYPE.BlockModel[]>;
+  @HEIGHT_AB_Generator("cacheBlocks")
+  cacheBlocks_Executor(promise_pro: PromisePro<TYPE.BlockModel[]>) {
+    return promise_pro.follow(
+      (async () => {
+        if (this._cache_blocks)
+          if (this._cache_blocks) {
+            // 初始化缓存100条，后面每个块更新增量缓存1条
+            const last_block = (await this._getTopBlocks(1))[0];
+            if (last_block.height === this._cache_blocks[0].height + 1) {
+              this._cache_blocks.unshift(last_block);
+              this._cache_blocks.length = this.cache_blocks_height;
+              return this._cache_blocks;
+            }
+          }
+        return (this._cache_blocks = await this._getTopBlocks(
+          this.cache_blocks_height,
+        ));
+      })(),
+    );
   }
 
   /**
@@ -424,28 +418,23 @@ export class BlockServiceProvider extends FLP_Tool {
    */
   async getBlocksByPage(
     page: number,
-    limit = 10,
-    sort = true,
+    pageSize = 10,
+    sort: 1 | -1 = 1, // 默认增序
   ): Promise<TYPE.BlockModel[]> {
-    if (page === 1 && this.blockArray && this.blockArray.length > limit) {
-      return await this.getTopBlocks(true, limit);
+    const from = pageSize * page;
+    const to = from + pageSize;
+    if (!sort && from < this.cache_blocks_height) {
+      // 如果在缓存的范围内，尽量使用缓存
+      const blocks = await this.getTopBlocks(pageSize);
+      return blocks.slice(from);
     } else {
-      let query = {
-        offset: (page - 1) * limit,
-        limit: limit,
-        orderBy: sort ? "height:asc" : "height:desc",
-      };
+      const res = await this.getBlocks({
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
+        orderBy: sort === 1 ? "height:asc" : "height:desc",
+      });
 
-      let data = await this.getBlocks(query);
-      // for(let i in data) {
-      //   if(sort) {
-      //     data[i+1].lastBlockId = data[i].id;
-      //   }else {
-      //     data[i].lastBlockId = data[i+1].id;
-      //   }
-      // }
-
-      return data.blocks;
+      return res.blocks;
     }
   }
 
@@ -457,19 +446,19 @@ export class BlockServiceProvider extends FLP_Tool {
   async getPreBlockId(height: number): Promise<string> {
     if (height > 1) {
       const pre_height = height - 1;
-      if (this.blockArray) {
-        const lists = this.blockArray.slice();
-        for (let i = 0; i < lists.length; i += 1) {
-          if (i % 1000 === 0) {
-            await Promise.resolve(); // 快速异步
-          }
-          const block = lists[i];
-          if (block.height === pre_height) {
-            return block.id;
-          }
-        }
+      const cacheBlocks = await this.cacheBlocks.getPromise();
+      const max_height_cache = cacheBlocks[0];
+      const min_height_cache = cacheBlocks[cacheBlocks.length - 1];
+      if (
+        max_height_cache.height > pre_height &&
+        min_height_cache.height <= pre_height
+      ) {
+        const per_block = cacheBlocks.find(
+          block => block.height === pre_height,
+        ) as TYPE.BlockModel;
+        return per_block.id;
       }
-      let data = await this.fetch.get<TYPE.BlockResModel>(
+      const data = await this.fetch.get<TYPE.BlockResModel>(
         this.GET_BLOCK_BY_QUERY,
         {
           search: {
@@ -511,10 +500,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param amount
    */
   async getAvgInfo(amount: number = 5) {
-    var blockArray = this.blockArray;
-    if (!blockArray || blockArray.length < amount) {
-      blockArray = await this.getTopBlocks(true, amount);
-    }
+    const blockArray = await this.getTopBlocks(amount);
     amount = Math.min(blockArray.length, amount);
     let reward = 0,
       fee = 0;
