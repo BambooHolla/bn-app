@@ -58,9 +58,16 @@
           </svg>
         </div>
         <div class="time-point expected-confirmation-time">
-          <div class="dot"></div>
-          <div class="time">{{current_transfer?.timestamp|timestamp|amDateFormat:"hh:mm"}}</div>
-          <div class="status">{{'EXPECTED_CONFIRMATION_TIME'|translate}}</div>
+          <ng-container *ngIf="current_transfer?.blockId">
+            <div class="dot light"></div>
+            <div class="time">{{current_transfer?.timestamp|timestamp|amDateFormat:"hh:mm"}}</div>
+            <div class="status">{{'CONFIRMED_TIME'|translate}}</div>
+          </ng-container>
+          <ng-container *ngIf="!current_transfer?.blockId">
+            <div class="dot"></div>
+            <div class="time">{{current_transfer?.timestamp|timestamp|amDateFormat:"hh:mm"}}</div>
+            <div class="status">{{'EXPECTED_CONFIRMATION_TIME'|translate}}</div>
+          </ng-container>
         </div>
       </div>
     </div>

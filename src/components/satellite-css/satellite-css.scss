@@ -22,7 +22,7 @@ satellite-css {
         position: relative;
         left: -3vw;
         top: -3vw;
-        transform: translateY(calc((100.6vw + 8rem) * 0.9 * -0.5));
+        transform: translateY(calc((100.6vw + 8rem) * 0.9 * -0.5)) translateZ(0);
         > .statellite-header {
           position: absolute;
           width: 100%;

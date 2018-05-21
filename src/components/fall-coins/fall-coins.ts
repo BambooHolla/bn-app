@@ -54,10 +54,11 @@ export class FallCoinsComponent extends AniBase {
     this.on("start-animation", this.startPixiApp.bind(this));
     this.on("stop-animation", this.stopPixiApp.bind(this));
   }
+  // loop_skip = 1;// 30fps
   // 72pt = 1英寸 = 2.54 厘米
   // 1m = 2834.645669291339 pt
   // gravity = 0.9 * this.pt(2834.645669291339); //重力加速度: px/s
-  gravity = 500; //重力加速度: px/s
+  gravity = 2000; //重力加速度: px/s
   async initPixiApp() {
     if (this.app) {
       this.app.stage.children.slice().forEach(child => {
@@ -174,7 +175,7 @@ export class FallCoinsComponent extends AniBase {
       /*根据加速度与距离算出时间 a*t*t=y*2 */
       const total_time = Math.pow(diff_y * 2 / gravity, 0.5);
       /*假设每帧的时间固定*/
-      const u_frame_ms = 20;
+      const u_frame_ms = 16;
       /*可以推算出帧数，要超出终点才停止，所以多出来的一帧*/
       const ani_frame_num = Math.ceil(total_time * 1000 / u_frame_ms);
       /*总帧数 36, 目标帧为24,可以算出起始的帧*/

@@ -70,7 +70,7 @@ export class SatelliteCssComponent extends CssAniBase {
       if (satelliteCtrlNode) {
         const rotate = (this._cur_progress_deg =
           360 * this._progress + this._base_progress_deg);
-        satelliteCtrlNode.style.cssText = `transform:rotate(${rotate}deg);transition-duration:${
+        satelliteCtrlNode.style.cssText = `transform:rotate(${rotate}deg) translateZ(0);transition-duration:${
           this._ani_ms
         }ms;transition-timing-function:${this.easing}`;
       }
