@@ -1,3 +1,4 @@
+import { isDevMode } from "@angular/core";
 import { Clipboard } from "@ionic-native/clipboard";
 import { TranslateService } from "@ngx-translate/core";
 import * as EventEmitter from "eventemitter3";
@@ -12,8 +13,9 @@ import {
   ModalController,
 } from "ionic-angular";
 const is_dev = (() => {
-  const test_fun = function DEV_WITH_FULL_NAME() {};
-  return test_fun.name === "DEV_WITH_FULL_NAME";
+  // const test_fun = function DEV_WITH_FULL_NAME() {};
+  // return test_fun.name === "DEV_WITH_FULL_NAME";
+  return isDevMode();
 })();
 export function tryRegisterGlobal(name, obj) {
   if (is_dev) {
