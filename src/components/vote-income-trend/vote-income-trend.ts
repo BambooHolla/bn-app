@@ -48,8 +48,24 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
   income_trend_list?: BenefitModel[];
 
   async refreshBaseData() {
-    const income_trend_list =
-      (await this.benefitService.topBenefits.getPromise()) || [];
+    const topBenefits = await this.benefitService.topBenefits.getPromise();
+    // 将高度一样的，进行合并
+    const income_trend_list: BenefitModel[] = [];
+    if (topBenefits.length) {
+      let _per_item = topBenefits[0];
+      income_trend_list.push(_per_item);
+      for (let i = 1; i < topBenefits.length; i += 1) {
+        const _cur_item = topBenefits[i];
+        if (_cur_item.height === _per_item.height) {
+          _per_item.amount =
+            parseFloat(_per_item.amount) + parseFloat(_cur_item.amount) + "";
+          _per_item.type += "," + _cur_item.type;
+        } else {
+          income_trend_list.push(_cur_item);
+        }
+        _per_item = _cur_item;
+      }
+    }
     const income_trend_height_map = new Map<number, BenefitModel>();
     income_trend_list.forEach(i => {
       income_trend_height_map.set(i.height, i);
@@ -71,6 +87,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
           timestamp: 0,
           type: "",
           username: this.userInfo.username,
+          uniqueId: Math.random().toString(36),
         });
       }
     }

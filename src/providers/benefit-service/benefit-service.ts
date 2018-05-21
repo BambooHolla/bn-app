@@ -108,12 +108,11 @@ export class BenefitServiceProvider {
           });
           const filter_res = [this._topBenefits[0]];
           for (let i = 1; i < this._topBenefits.length; i += 1) {
-            if (
-              filter_res[filter_res.length - 1].height !=
-              this._topBenefits[i].height
-            ) {
+            const list_item = filter_res[filter_res.length - 1];
+            const next_item = this._topBenefits[i];
+            if (list_item.uniqueId != next_item.uniqueId) {
               // 过滤掉一样的
-              filter_res.push(this._topBenefits[i]);
+              filter_res.push(next_item);
             }
             if (filter_res.length >= this.top_benefit_size) {
               break;
