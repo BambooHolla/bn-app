@@ -3,6 +3,7 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular";
+import { PAGE_STATUS } from "../../../bnqkl-framework/const";
 import {
   MinServiceProvider,
   DelegateModel,
@@ -74,7 +75,27 @@ export class VoteListPage extends SecondLevelPage {
     if (page) {
       this.gotoSubPage(page);
     }
-    this.my_mining_machine = this.appSetting.settings.my_mining_machine;
+    this.my_mining_machine = this.appSetting.settings.my_mining_machine.map(
+      mac => {
+        const res = {
+          ...mac,
+          publickKey: "QAQQQAQQQAQAQ",
+          cpu_usage: 0,
+        };
+        // TODO: 远程监听设备的CPU
+        const get_cpu_usage = () => {
+          if (
+            this.PAGE_STATUS === PAGE_STATUS.DID_ENTER ||
+            this.PAGE_STATUS === PAGE_STATUS.WILL_ENTER
+          ) {
+            res.cpu_usage = Math.random();
+            setTimeout(get_cpu_usage, 1000);
+          }
+        };
+        get_cpu_usage();
+        return res;
+      },
+    );
   }
 
   @VoteListPage.addEvent("HEIGHT:CHANGED")

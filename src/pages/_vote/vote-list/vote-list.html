@@ -20,28 +20,57 @@
     <ion-refresher (ionRefresh)="loadInVoteList($event)" [enabled]="in_vote_mill_list.length">
       <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_IN_VOTE_LIST'|translate"></ion-refresher-content>
     </ion-refresher>
-    <div class="common-list">
-      <div class="no-mills" *ngIf="!in_vote_mill_list.length;else showInVoteList">
-        <div class="tip" *ngIf="!my_mining_machine.length">
+    <div class="common-list" [class.empty]="!my_mining_machine.length">
+      <div class="no-mills">
+        <div class="tip">
           <ali-icon name="ifm-tip"></ali-icon>
           {{'NO_MINING_MACHINE'|translate}}
         </div>
-        <button class="submit-button" (click)="routeTo('vote-add-mining-machine')">
-          {{'ADD_MINING_MACHINE'|translate}}
-        </button>
       </div>
-      <ng-template #showInVoteList>
-        <div class="common-item" *ngFor="let mac of my_mining_machine">
-          <div class="left" [innerHTML]="vote.address|mask:'@address'" [click-to-copy]="vote.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}"></div>
+      <div class="common-item" *ngFor="let mac of my_mining_machine;index as i">
+        <div class="item-header">
+          <div class="left">
+            <ali-icon name="ifm-mac-address"></ali-icon>
+            <span class="address" [innerHTML]="mac.publickKey|mask:'@address'"></span>
+          </div>
+          <div class="right">IFMChain ARK Ⅰ</div>
+        </div>
+        <div class="item-content">
+          <div class="left">
+            <ng-container *ngIf="i==1;else useArk2">
+              <mac-ark-1 class="mac-icon" [progress]="mac.cpu_usage"></mac-ark-1>
+            </ng-container>
+            <ng-template #useArk2>
+              <mac-ark-2 class="mac-icon" [progress]="mac.cpu_usage"></mac-ark-2>
+            </ng-template>
+          </div>
+          <div class="center">
+            <div class="ip">
+              <div class="label">IP</div>
+              <div class="value" [innerHTML]="mac.ip|mask:'@ip'"></div>
+            </div>
+            <div class="income">
+              <div class="dot"></div>
+              <div class="label">{{'PROFIT'|translate}}</div>
+              <div class="amount">{{mac.income|amountEuler|number:'1.8-8'}}</div>
+            </div>
+          </div>
           <div class="right">
-            123
+            <div class="vote-num">
+              {{mac.vote_num||0}}
+            </div>
+            <div class="label">{{'VOTES'|translate}}</div>
           </div>
         </div>
-      </ng-template>
+      </div>
+      <div class="bottom-fixed" [class.has-list-item]="my_mining_machine.length">
+        <button class="submit-button" (click)="routeTo('vote-add-mining-machine')">
+          <div class="inner-text">
+            {{'ADD_MINING_MACHINE'|translate}}
+          </div>
+        </button>
+      </div>
     </div>
-    <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreInVoteList())" [enabled]="out_vote_list_config.has_more">
-      <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_IN_VOTE_LIST'|translate"></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
   </ion-content>
   <ion-content class="out-vote-content" [class.show]="InOutSubPage.OUT_VOTE===current_page">
     <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8A%95%E7%A5%A8-%E6%88%91%E7%A5%A8%E7%9A%84%E6%8A%95.jpg" alt=""> -->

@@ -15,6 +15,8 @@ import { MiningPersonComponent } from "./mining-person/mining-person";
 import { CountdownComponent } from "./countdown/countdown";
 import { EffectCountdownComponent } from "./effect-countdown/effect-countdown";
 import { WaterProgressComponent } from "./water-progress/water-progress";
+import { MacArk_1Component } from './mac-ark-1/mac-ark-1';
+import { MacArk_2Component } from './mac-ark-2/mac-ark-2';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { WaterProgressComponent } from "./water-progress/water-progress";
     CountdownComponent,
     EffectCountdownComponent,
     WaterProgressComponent,
+    MacArk_1Component,
+    MacArk_2Component,
   ],
   imports: [],
   exports: [
@@ -53,6 +57,8 @@ import { WaterProgressComponent } from "./water-progress/water-progress";
     CountdownComponent,
     EffectCountdownComponent,
     WaterProgressComponent,
+    MacArk_1Component,
+    MacArk_2Component,
   ],
 })
 export class ComponentsModule {}
