@@ -286,7 +286,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		this.doing_progress.fill_form = false; // 回到search_peer_list界面
 	}
 	customPeer = {
-		port: "",
+		port: "19003",
 		ip: "",
 	};
 	is_custom_input_peer = false;
