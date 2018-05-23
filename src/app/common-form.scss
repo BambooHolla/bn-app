@@ -67,6 +67,32 @@
     }
   }
 }
+.buttons {
+  display: flex;
+  flex-direction: row;
+  padding-top: 1rem;
+  > button {
+    flex: 1;
+    margin-right: 1rem;
+    border-radius: 0.6rem;
+    height: 3rem;
+    &:last-child {
+      margin-right: 0;
+    }
+    &.cancel-button {
+      background-color: #eee;
+    }
+    &.confirm-button {
+      background: linear-gradient(
+        to bottom,
+        #ff5a5a 0%,
+        #fd6e5f 50%,
+        #ff9171 100%
+      );
+      color: #fff;
+    }
+  }
+}
 
 .submit-button {
   margin-top: 1.8rem;

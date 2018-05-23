@@ -232,7 +232,7 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
 export function asyncLoadingWrapGenerator(
   loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
-  opts?: LoadingOptions,
+  opts?: LoadingOptions&{dismiss_hanlder_name?:string},
   id?: string,
 ) {
   if (id) {
@@ -343,6 +343,9 @@ export function asyncLoadingWrapGenerator(
           loading["_my_dismiss"]();
         }
       };
+      if(loadingOpts.dismiss_hanlder_name){
+        this[loadingOpts.dismiss_hanlder_name] = loading_dismiss;
+      }
       if ("PAGE_STATUS" in this) {
         // 还没进入页面
         const run_loading_present = with_dealy => {

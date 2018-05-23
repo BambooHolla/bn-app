@@ -6,7 +6,7 @@
 <ion-content>
   <div class="progress-dot">
     <div class="progress-item-wrapper">
-      <div class="progress-item" [class.active]="doing_progress.search_peer_list">
+      <div class="progress-item" [class.active]="doing_progress.search_peer_list" (click)="goToSearchPeerListPage()">
         <ali-icon name="ifm-scan-node"></ali-icon>
       </div>
     </div>
@@ -23,10 +23,29 @@
           <ng-container *ngIf="peer_list_info.loading">
             {{'AUTO_SEARCHING'|translate}}
             <ali-icon name="ifm-loading-search" class="ani-rotate-30deg"></ali-icon>
+            {{search_progress*100|number:'1.2-2'}}%
           </ng-container>
         </div>
         <div class="peer-list center-view">
           <div class="scroll-panel">
+            <div class="custom-peer-panel common-form" [class.ani-hidden]="!is_custom_input_peer">
+              <div class="input-container machine-ip">
+                <span class="left">IP</span>
+                  <input [(ngModel)]="customPeer.ip" (ngChange)="onPeerChange()"/>
+              </div>
+              <div class="input-container application-port">
+                <span class="left">{{'PORT'|translate}}</span>
+                  <input [(ngModel)]="customPeer.port" (ngChange)="onPeerChange()"/>
+              </div>
+              <div class="buttons">
+                <button class="cancel-button" (click)="customInputPeer()">
+                  {{'CANCEL'|translate}}
+                </button>
+                <button class="confirm-button" (click)="confirmCustomPeer()">
+                  {{'CONFIRM_THEN_ADD'|translate}}
+                </button>
+              </div>
+            </div>
             <div class="peer-item" *ngFor="let peer of peer_list">
               <input type="radio" name="peer" [value]="peer" [(ngModel)]="selectPeer" />
               <div class="left">{{peer.ip|mask:'ip'}}</div>
@@ -41,6 +60,9 @@
         <div class="bottom-bar">
           <button class="progress-button" [disabled]="!selectPeer" (click)="goToFillFormPage()">
             {{'NET_STEP'|translate}}
+          </button>
+          <button class="custom-input-peer" [class.ani-hidden]="is_custom_input_peer" (click)="customInputPeer()">
+            {{'CUSTOM_INPUT_PEER'|translate}}
           </button>
         </div>
       </div>
@@ -65,18 +87,14 @@
             </div>
             <div class="item machine-ip">
               <span class="left">IP</span>
-              <div class="center">
-                {{formData.ip}}
-              </div>
+              <div class="center">{{formData.ip}}</div>
             </div>
             <div class="item application-port">
               <span class="left">{{'PORT'|translate}}</span>
-              <div class="center">
-                {{formData.port}}
-              </div>
+              <div class="center">{{formData.port}}</div>
             </div>
             <div class="item delegate-pwd">
-              <textarea name="delegate-pwd" [placeholder]="'PLEACE_INPUT_DELEGATE_PWD'|translate" [(ngModel)]="formData.delegate_pwd"></textarea>
+              <textarea [disabled]="loading_peer_info" name="delegate-pwd" [placeholder]="'PLEACE_INPUT_DELEGATE_PWD'|translate" [(ngModel)]="formData.delegate_pwd"></textarea>
             </div>
           </div>
         </div>
