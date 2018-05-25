@@ -65,6 +65,7 @@ export class AccountServiceProvider {
         1,
       ),
       limit: 1,
+      orderBy: "height:esc", // 取height最小的
     });
 
     const tran = data.transactions[0];
