@@ -13,8 +13,8 @@ import {
 })
 export class MacArk_1Component {
 	static __uid = 0;
-	private _base_progress = 0.2;
-	private _end_progress = 0.2;
+	private _base_progress = 0.15;
+	private _end_progress = 0.32;
 	show_progress = 0;
 
 	@Input("progress")

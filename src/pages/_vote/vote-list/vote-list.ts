@@ -9,6 +9,7 @@ import {
   DelegateModel,
   RankModel,
 } from "../../../providers/min-service/min-service";
+import SocketIO from "socket.io-client";
 
 enum InOutSubPage {
   IN_VOTE = "in-vote",
@@ -68,6 +69,7 @@ export class VoteListPage extends SecondLevelPage {
     has_more: true,
     need_refresh: true,
   };
+  mac_socketio_list: SocketIOClient.Socket[] = [];
   my_mining_machine: any[] = [];
   @VoteListPage.willEnter
   async loadDataWhenEnter() {
@@ -81,21 +83,29 @@ export class VoteListPage extends SecondLevelPage {
           ...mac,
           publickKey: "QAQQQAQQQAQAQ",
           cpu_usage: 0,
+          connected:false,
         };
-        // TODO: 远程监听设备的CPU
-        const get_cpu_usage = () => {
-          if (
-            this.PAGE_STATUS === PAGE_STATUS.DID_ENTER ||
-            this.PAGE_STATUS === PAGE_STATUS.WILL_ENTER
-          ) {
-            res.cpu_usage = Math.random();
-            setTimeout(get_cpu_usage, 1000);
-          }
-        };
-        get_cpu_usage();
+
+        // 远程监听设备的CPU
+        const socket = listenCpuUsage(mac, usage => {
+          res.cpu_usage = usage;
+        });
+        socket.on("connect",()=>{
+          res.connected = true
+        });
+        socket.on("disconnect",()=>{
+          res.connected = false
+        });
         return res;
       },
     );
+  }
+  @VoteListPage.didLeave
+  destorySockets() {
+    this.mac_socketio_list.forEach(socket => {
+      socket.close();
+    });
+    this.mac_socketio_list = [];
   }
 
   @VoteListPage.addEvent("HEIGHT:CHANGED")
@@ -244,4 +254,55 @@ export class VoteListPage extends SecondLevelPage {
     in_vote_list_config.has_more = list.length >= in_vote_list_config.pageSize;
     return list;
   }
+}
+import { cpusStatus, MiningMachine, systemStatus } from "../types";
+function cpuAverage(cpus: cpusStatus) {
+  //Initialise sum of idle and time of cores and fetch CPU info
+  var totalIdle = 0,
+    totalTick = 0;
+
+  //Loop through CPU cores
+  for (let i = 0, len = cpus.length; i < len; i++) {
+    //Select CPU core
+    let cpu = cpus[i];
+
+    //Total up the time in the cores tick
+    for (let type in cpu.times) {
+      totalTick += cpu.times[type];
+    }
+
+    //Total up the idle time of the core
+    totalIdle += cpu.times.idle;
+  }
+
+  //Return the average Idle and Tick times
+  return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
+}
+
+function listenCpuUsage(mac: MiningMachine, cb: (usage: number) => void) {
+  const socket = SocketIO(`http://${mac.ip}:${mac.port}/systemInfo`, {
+    transports: ["websocket"],
+    reconnection: false,
+  });
+  let startMeasure;
+  socket.on(
+    "systemStatus",
+    ({ systemStatus: data }: { systemStatus: systemStatus }) => {
+      if (!startMeasure) {
+        startMeasure = cpuAverage(data.cpusStatus);
+      } else {
+        const endMeasure = cpuAverage(data.cpusStatus);
+        //Calculate the difference in idle and total time between the measures
+        const idleDifference = endMeasure.idle - startMeasure.idle;
+        const totalDifference = endMeasure.total - startMeasure.total;
+
+        //Calculate the average percentage CPU usage
+        const usage = 1 - idleDifference / totalDifference;
+        cb(usage);
+        startMeasure = endMeasure;
+      }
+    },
+  );
+  socket.emit("systemStatus", {});
+  return socket;
 }

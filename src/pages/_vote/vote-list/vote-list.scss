@@ -137,10 +137,10 @@ page-vote-list {
           justify-content: space-between;
           > .left {
             padding-left: 0.6rem;
-            >ali-icon{
+            > ali-icon {
               font-size: 1.2rem;
             }
-            >.address{
+            > .address {
               font-size: 1.2rem;
             }
           }
@@ -165,6 +165,9 @@ page-vote-list {
               height: 100%;
               /* position: absolute; */
               object-fit: contain;
+              &.disbaled {
+                filter: grayscale(1);
+              }
             }
           }
           > .center {

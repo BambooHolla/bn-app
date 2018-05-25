@@ -38,10 +38,10 @@
         <div class="item-content">
           <div class="left">
             <ng-container *ngIf="i==1;else useArk2">
-              <mac-ark-1 class="mac-icon" [progress]="mac.cpu_usage"></mac-ark-1>
+              <mac-ark-1 class="mac-icon" [class.disbaled]="!mac.connected" [progress]="mac.cpu_usage"></mac-ark-1>
             </ng-container>
             <ng-template #useArk2>
-              <mac-ark-2 class="mac-icon" [progress]="mac.cpu_usage"></mac-ark-2>
+              <mac-ark-2 class="mac-icon" [class.disbaled]="!mac.connected" [progress]="mac.cpu_usage"></mac-ark-2>
             </ng-template>
           </div>
           <div class="center">
