@@ -274,6 +274,13 @@
   "PLEACE_INPUT_DELEGATE_PWD": "请输入委托人密钥",
   "PEER_UNABLE": "节点不可用",
   "FETCHING_PEER_INFO": "获取节点信息中……",
+  "THE_DELEGATE'S_PASSPHRASE_DOES_NOT_MATCH_THE_EXISTING_PUBLICKEY":
+    "委托人的主密码与已存在的公钥不匹配",
+  "DELEGATE_NAME": "委托人账户名",
+  "DELEGATE_ADDRESS": "委托人账户地址",
+  "ADD_MINING_MACHINE_FAIL": "添加矿机失败",
+  "ADD_CUSTOM_PEER_FAIL": "自定义节点添加失败",
+  "CUSTOM_PEER_IS_UNAVAILABLE": "自定义节点不可用",
 
   "//": "vote-my-mining-machine",
   "VOTE-MY-MINING-MACHINE": "我的矿机",

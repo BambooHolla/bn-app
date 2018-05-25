@@ -4,7 +4,7 @@ import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-import { AppSettingProvider } from "../app-setting/app-setting";
+import { AppSettingProvider, AppUrl } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import * as IFM from "ifmchain-ibt";
 import * as EventEmitter from "eventemitter3";
@@ -38,6 +38,7 @@ export class PeerServiceProvider extends EventEmitter {
   readonly PING_URL = this.appSetting.APP_URL("/api/blocks/getHeight");
   readonly PEERS_URL = this.appSetting.APP_URL("/api/peers/");
   readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
+  readonly FORGING_ENABLE = this.appSetting.APP_URL("/forging/enable");
 
   /**
    * 获取节点高度最高的可用节点排序
@@ -233,5 +234,44 @@ export class PeerServiceProvider extends EventEmitter {
    */
   setPeer(peer) {
     AppSettingProvider.SERVER_URL = peer;
+  }
+  /**
+   * 设置委托人
+   */
+  setDelegateToMiningMachine(secret: string, publicKey?: string) {
+    return this.fetch.post<{ address: string }>(this.FORGING_ENABLE, {
+      secret,
+      publicKey,
+    });
+  }
+  oneTimeUrl(app_url: AppUrl, server_url: string) {
+    app_url.disposableServerUrl(server_url);
+    return this;
+  }
+
+  static fetchPeerPortInfo(ip: string, port: number, timeout_ms = 600) {
+    return new Promise<{ success: boolean; webPort: number }>(
+      (resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", `http://${ip}:${port}/api/system/portInfo`);
+        xhr.send();
+        setTimeout(() => {
+          xhr.abort();
+        }, timeout_ms);
+        xhr.onreadystatechange = _ => {
+          if (xhr.readyState === 4) {
+            if (xhr.responseText) {
+              try {
+                resolve(JSON.parse(xhr.responseText));
+              } catch (err) {
+                reject(err);
+              }
+            } else {
+              reject(new Error("time out"));
+            }
+          }
+        };
+      },
+    );
   }
 }

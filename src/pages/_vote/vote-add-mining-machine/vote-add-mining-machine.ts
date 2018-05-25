@@ -3,57 +3,14 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { PromiseOut } from "../../../bnqkl-framework/PromiseExtends";
 import { AppFetchProvider } from "../../../providers/app-fetch/app-fetch";
+import { PeerServiceProvider } from "../../../providers/peer-service/peer-service";
+import { TransactionServiceProvider } from "../../../providers/transaction-service/transaction-service";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { NetworkInterface } from "@ionic-native/network-interface";
 import SocketIO from "socket.io-client";
 window["SocketIO"] = SocketIO;
-
-interface SystemRuntime {
-	Transactions: {
-		count: number;
-		u_count: number;
-	};
-	System: {
-		memory: {
-			rss: number;
-			heapTotal: number;
-			heapUsed: number;
-			external: number;
-		};
-		platform: string;
-		cpuCount: number;
-		freemem: number;
-		cpuUsage: number;
-	};
-}
-
-type cpuStatus = {
-	model: string;
-	speed: number;
-	times: {
-		user: number;
-		nice: number;
-		sys: number;
-		idle: number;
-		irq: number;
-	};
-};
-type cpusStatus = cpuStatus[];
-type memStatus = {
-	freeMem: number;
-	totalmem: number;
-};
-type systemStatus = {
-	cpusStatus: cpusStatus;
-	memStatus: memStatus;
-};
-
-interface ExtendsSystemRuntime /* extends SystemRuntime*/ {
-	ip: string;
-	ping: number;
-	port: number;
-}
+import { SystemRuntime, cpusStatus, ExtendsSystemRuntime } from "../types";
 
 @IonicPage({ name: "vote-add-mining-machine" })
 @Component({
@@ -67,6 +24,8 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		@Optional() public tabs: TabsPage,
 		public networkInterface: NetworkInterface,
 		public appFetch: AppFetchProvider,
+		public peerService: PeerServiceProvider,
+		public transactionService: TransactionServiceProvider,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
@@ -98,41 +57,22 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		peer_list_info.loading = true;
 		const tryIp = async (ip: string) => {
 			const host = `http://${ip}`;
-			const fetchApi = (port: number) =>
-				new Promise<{ success: boolean }>((resolve, reject) => {
-					const xhr = new XMLHttpRequest();
-					xhr.open("GET", `${host}:${port}/api/system/pool`);
-					xhr.send();
-					setTimeout(() => {
-						xhr.abort();
-					}, 600);
-					xhr.onreadystatechange = _ => {
-						console.log(`${host}:${port}`, xhr.readyState);
-						if (xhr.readyState === 4) {
-							if (xhr.responseText) {
-								try {
-									resolve(JSON.parse(xhr.responseText));
-								} catch (err) {
-									reject(err);
-								}
-							} else {
-								reject(new Error("time out"));
-							}
-						}
-					};
-				});
 
-			const node = await fetchApi(19003).catch(() => null);
+			const node = await PeerServiceProvider.fetchPeerPortInfo(
+				ip,
+				19003,
+			).catch(() => null);
 			if (!node) {
 				return;
 			}
 
 			const peer_info = {
+				webPort: node.webPort,
 				port: 19003,
 				ping: -1,
 				ip,
-			} as ExtendsSystemRuntime;
-			this.peer_list.push(peer_info);
+			};
+			this.addPeerList(peer_info);
 		};
 		try {
 			this.peer_list = [];
@@ -146,7 +86,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 					() => (this.search_progress += unit_progress_step),
 				);
 			};
-			for (let i = 1; i <= 255; i += 5) {
+			for (let i = 1; i <= 255; i += 10) {
 				if (this.is_stop_seach) {
 					return;
 				}
@@ -159,6 +99,11 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 					loopTryIp(i + 2, 2 * 100),
 					loopTryIp(i + 3, 3 * 100),
 					loopTryIp(i + 4, 4 * 100),
+					loopTryIp(i + 5, 5 * 100),
+					loopTryIp(i + 6, 6 * 100),
+					loopTryIp(i + 7, 7 * 100),
+					loopTryIp(i + 8, 8 * 100),
+					loopTryIp(i + 9, 9 * 100),
 				]);
 			}
 		} finally {
@@ -179,6 +124,24 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 	loading_peer_info = false;
 	private _dismiss_getPeerInfo_loading: any;
 
+	private _getDelegateInfo(origin: string) {
+		return this.appFetch
+			.get<any>(`${origin}/api/system/SystemInfo`)
+			.then(info => {
+				return info.data.delegateInfo;
+			});
+	}
+	private _getDelegateInfoAndFillForm(ip: string, port: number) {
+		return this._getDelegateInfo(`http://${ip}:${port - 1}`).then(
+			delegate => {
+				if (delegate) {
+					this.formData.publicKey = delegate.publicKey;
+					this.formData.userName = delegate.userName;
+				}
+			},
+		);
+	}
+
 	private _getPeerInfo_process: any;
 	@asyncCtrlGenerator.loading("@@FETCHING_PEER_INFO", undefined, {
 		showBackdrop: false,
@@ -191,16 +154,18 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		const ip = peer.ip;
 		this.formData.ip = peer.ip;
 		this.formData.port = peer.port;
+		this.formData.webPort = peer.webPort;
+		const port = this.formData.port;
 		const host = `http://${ip}`;
 		// 使用websocket获取设备实时的硬件信息
 		const wait_io = new PromiseOut<ExtendsSystemRuntime>();
-		const socket = SocketIO(`${host}:19003/systemInfo`, {
+		const socket = SocketIO(`${host}:${port}/systemInfo`, {
 			transports: ["websocket"],
 			reconnection: false,
 		});
 		// const ws = socket["ws"] as WebSocket;
 		// ws.onerror = wait_io.reject;
-		window[`socket${ip}`] = socket;
+		// window[`socket${ip}`] = socket;
 		const start_time = Date.now();
 		socket.on("error", err => {
 			console.log("error", err);
@@ -231,14 +196,14 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 			await Promise.all([
 				wait_io.promise,
 				this.appFetch
-					.get<any>(`${host}:19003/api/system/runtime`)
-					.then(info => {
+					.get<any>(`${host}:${port}/api/system/runtime`)
+					.then(runtime => {
 						this.formData.hostname =
 							Math.random() > 0.5
 								? "ARK IFMChain Ⅰ"
 								: "ARK IFMChain Ⅱ";
 						const platfrom = (this.formData.platform =
-							info.data.System.platform);
+							runtime.data.System.platform);
 						if (platfrom === "linux") {
 							this.plaform_icon = "ifm-linux";
 						} else if (platfrom === "darwin") {
@@ -249,6 +214,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 							this.plaform_icon = "ifm-unknown-system";
 						}
 					}),
+				this._getDelegateInfoAndFillForm(ip, port),
 			]);
 		} catch (err) {
 			this.goToSearchPeerListPage();
@@ -293,7 +259,10 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 	customInputPeer() {
 		this.is_custom_input_peer = !this.is_custom_input_peer;
 	}
-	confirmCustomPeer() {
+	/*添加自定义节点*/
+	@asyncCtrlGenerator.loading()
+	@asyncCtrlGenerator.error("@@ADD_CUSTOM_PEER_FAIL")
+	async confirmCustomPeer() {
 		const { ip, port } = this.customPeer;
 		const formated_port = parseInt(port);
 		if (
@@ -322,12 +291,25 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 			return;
 		}
 
+		const web_port_info = await PeerServiceProvider.fetchPeerPortInfo(
+			ip,
+			formated_port,
+		).catch(err =>
+			Promise.reject(
+				new Error(this.getTranslateSync("CUSTOM_PEER_IS_UNAVAILABLE")),
+			),
+		);
+
 		const new_peer = {
 			ping: -1,
 			port: formated_port,
 			ip,
+			webPort: web_port_info.webPort,
 		};
 
+		this.addPeerList(new_peer, true);
+	}
+	addPeerList(new_peer: ExtendsSystemRuntime, insert_to_begin?: boolean) {
 		if (
 			this.peer_list.some(
 				peer => peer.port === new_peer.port && peer.ip === new_peer.ip,
@@ -335,8 +317,11 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		) {
 			return;
 		}
-
-		this.peer_list.unshift(new_peer);
+		if (insert_to_begin) {
+			this.peer_list.unshift(new_peer);
+		} else {
+			this.peer_list.push(new_peer);
+		}
 	}
 
 	plaform_icon = "";
@@ -348,12 +333,51 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		totalmen: 0,
 		ip: "",
 		port: 0,
+		webPort: 0,
+		publicKey: "",
+		userName: "",
 		delegate_pwd: "",
 	};
 	getPeerDetail() {}
+	@asyncCtrlGenerator.error("@@ADD_MINING_MACHINE_FAIL")
+	/*确定添加委托人*/
 	async confirmAddMachine() {
-		const { my_mining_machine } = this.appSetting.settings;
-		my_mining_machine.push(this.formData);
+		const { formData } = this;
+		/// 校验
+		if (formData.publicKey) {
+			const keypair = this.transactionService.keypairService.create(
+				formData.delegate_pwd,
+			);
+			if (formData.publicKey !== keypair.publicKey.toString("hex")) {
+				// 这台设备已经存在了，校验公钥是否匹配
+				throw new Error(
+					this.getTranslateSync(
+						"THE_DELEGATE'S_PASSPHRASE_DOES_NOT_MATCH_THE_EXISTING_PUBLICKEY",
+					),
+				);
+			}
+		} else {
+			this.peerService
+				.oneTimeUrl(
+					this.peerService.FORGING_ENABLE,
+					`http://${formData.ip}:${formData.webPort}`,
+				)
+				// 设置委托人
+				.setDelegateToMiningMachine(formData.delegate_pwd);
+			await this._getDelegateInfoAndFillForm(formData.ip, formData.port);
+
+			// // 回头重新校验
+			// return this.confirmAddMachine();
+		}
+
+		/// 校验通过
+		let { my_mining_machine } = this.appSetting.settings;
+		const new_mac = this.formData;
+		// 去重使用当前配置作为最新
+		my_mining_machine = my_mining_machine.filter(
+			mac => !(mac.ip === new_mac.ip && mac.port === new_mac.port),
+		);
+		my_mining_machine.unshift(new_mac);
 		this.appSetting.settings.my_mining_machine = my_mining_machine;
 		this.finishJob(true);
 	}

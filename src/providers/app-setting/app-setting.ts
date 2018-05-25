@@ -20,7 +20,18 @@ import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 export class AppUrl {
   constructor(public path) {}
   toString() {
-    return AppSettingProvider.SERVER_URL + this.path;
+    return (
+      (this.disposable_server_url || AppSettingProvider.SERVER_URL) + this.path
+    );
+  }
+  _disposable_server_url?: string;
+  get disposable_server_url() {
+    const res = this._disposable_server_url;
+    this._disposable_server_url = undefined;
+    return res;
+  }
+  disposableServerUrl(server_url: string) {
+    this._disposable_server_url = server_url;
   }
 }
 const net_version =

@@ -1,7 +1,8 @@
-body{
-  position: static!important;
-  .app-root, ion-nav {
-    position: static!important;
+body {
+  position: static !important;
+  .app-root,
+  ion-nav {
+    position: static !important;
   }
 }
 // http://ionicframework.com/docs/v2/theming/
@@ -82,6 +83,11 @@ ion-loading {
   &.can-tap {
     pointer-events: none;
     background-color: transparent;
+    > .loading-wrapper {
+      box-shadow: 0 0rem 0.2rem rgba(255, 255, 255, 0.3),
+        0 0.2rem 2rem rgba(0, 0, 0, 0.2),
+        0 0 5rem rgba(0, 0, 0, 0.1);
+    }
   }
 }
 // ion-navbar,

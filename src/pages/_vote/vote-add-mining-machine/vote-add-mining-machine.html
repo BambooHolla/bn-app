@@ -26,26 +26,26 @@
             {{search_progress*100|number:'1.2-2'}}%
           </ng-container>
         </div>
+        <div class="custom-peer-panel common-form" [class.ani-hidden]="!is_custom_input_peer">
+          <div class="input-container machine-ip">
+            <span class="left">IP</span>
+              <input [(ngModel)]="customPeer.ip" (ngChange)="onPeerChange()"/>
+          </div>
+          <div class="input-container application-port">
+            <span class="left">{{'PORT'|translate}}</span>
+              <input [(ngModel)]="customPeer.port" (ngChange)="onPeerChange()"/>
+          </div>
+          <div class="buttons">
+            <button class="cancel-button" (click)="customInputPeer()">
+              {{'CANCEL'|translate}}
+            </button>
+            <button class="confirm-button" (click)="confirmCustomPeer()">
+              {{'CONFIRM_THEN_ADD'|translate}}
+            </button>
+          </div>
+        </div>
         <div class="peer-list center-view">
           <div class="scroll-panel">
-            <div class="custom-peer-panel common-form" [class.ani-hidden]="!is_custom_input_peer">
-              <div class="input-container machine-ip">
-                <span class="left">IP</span>
-                  <input [(ngModel)]="customPeer.ip" (ngChange)="onPeerChange()"/>
-              </div>
-              <div class="input-container application-port">
-                <span class="left">{{'PORT'|translate}}</span>
-                  <input [(ngModel)]="customPeer.port" (ngChange)="onPeerChange()"/>
-              </div>
-              <div class="buttons">
-                <button class="cancel-button" (click)="customInputPeer()">
-                  {{'CANCEL'|translate}}
-                </button>
-                <button class="confirm-button" (click)="confirmCustomPeer()">
-                  {{'CONFIRM_THEN_ADD'|translate}}
-                </button>
-              </div>
-            </div>
             <div class="peer-item" *ngFor="let peer of peer_list">
               <input type="radio" name="peer" [value]="peer" [(ngModel)]="selectPeer" />
               <div class="left">{{peer.ip|mask:'ip'}}</div>
@@ -92,6 +92,10 @@
             <div class="item application-port">
               <span class="left">{{'PORT'|translate}}</span>
               <div class="center">{{formData.port}}</div>
+            </div>
+            <div class="item delegate-username" *ngIf="formData.userName">
+              <span class="left">{{'DELEGATE_NAME'|translate}}</span>
+              <div class="center">{{formData.userName}}</div>
             </div>
             <div class="item delegate-pwd">
               <textarea [disabled]="loading_peer_info" name="delegate-pwd" [placeholder]="'PLEACE_INPUT_DELEGATE_PWD'|translate" [(ngModel)]="formData.delegate_pwd"></textarea>

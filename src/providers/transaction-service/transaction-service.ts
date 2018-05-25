@@ -607,7 +607,7 @@ export class TransactionServiceProvider {
    */
   async verifyPassphrase(passphrase) {
     let keypair = this.keypairService.create(passphrase);
-    if (this.user.publicKey === keypair) {
+    if (this.user.publicKey === keypair.publicKey.toString('hex')) {
       return true;
     } else {
       return false;
