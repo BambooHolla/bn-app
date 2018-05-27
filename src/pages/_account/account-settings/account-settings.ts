@@ -6,7 +6,6 @@ import { TabsPage } from "../../tabs/tabs";
 import { AppSettingProvider } from "../../../providers/app-setting/app-setting";
 import { LoginServiceProvider } from "../../../providers/login-service/login-service";
 import { AppFetchProvider } from "../../../providers/app-fetch/app-fetch";
-import { LATEST_VERSION_INFO } from "../../version-update-dialog/version.types";
 import { TabAccountPage } from "../../tab-account/tab-account";
 import { checkUpdate } from "../../tab-account/checkUpdate";
 import { FingerprintAIO } from "../../../app/native/fingerprint-aio";

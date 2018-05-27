@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{'VOTE-MINING-MACHINE-DETAIL'|translate}}</ion-title>
+    <ion-buttons right>
+      <button ion-button (click)="deleteMac()"><ion-icon name="trash"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content >
+	<div class="common-list">
+		<div class="common-item">
+			<div class="left"> {{'CPU_USAGE'|translate}} </div>
+			<div class="right"> {{(mac?.cpu_usage*100)|number:'1.2-2'}}% </div>
+		</div>
+	</div>
+</ion-content>

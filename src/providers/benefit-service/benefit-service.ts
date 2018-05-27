@@ -76,11 +76,13 @@ export class BenefitServiceProvider {
   );
 
   async getBenefitsByRound(
+    offset = 0,
     limit = this.top_benefit_size,
     rounds = this.appSetting.getRound(),
     address = this.user.userInfo.address,
   ) {
     let query = {
+      offset,
       limit,
       orderBy: "md_timestamp:desc",
       address,
@@ -90,40 +92,46 @@ export class BenefitServiceProvider {
     return benefitData;
   }
 
-  getMyLatestRoundBenefits(limit = this.top_benefit_size) {
-    return this.getBenefitsByRound(limit, this.appSetting.getRound());
+  getMyLatestRoundBenefits(offset = 0, limit = this.top_benefit_size) {
+    return this.getBenefitsByRound(offset, limit, this.appSetting.getRound());
   }
 
   top_benefit_size = 57;
+  max_top_benefit_size = 57 * 2;
   private _topBenefits?: TYPE.BenefitModel[];
   topBenefits!: AsyncBehaviorSubject<TYPE.BenefitModel[]>;
   @HEIGHT_AB_Generator("topBenefits", true)
   topBenefits_Executor(promise_pro) {
     return promise_pro.follow(
-      this.getMyLatestRoundBenefits().then(list => {
-        if (this._topBenefits && list.length) {
-          this._topBenefits.unshift(...list);
-          this._topBenefits.sort((a, b) => {
-            return b.height - a.height;
-          });
-          const filter_res = [this._topBenefits[0]];
-          for (let i = 1; i < this._topBenefits.length; i += 1) {
-            const list_item = filter_res[filter_res.length - 1];
-            const next_item = this._topBenefits[i];
-            if (list_item.uniqueId != next_item.uniqueId) {
-              // 过滤掉一样的
-              filter_res.push(next_item);
+      Promise.all([
+        this.getMyLatestRoundBenefits(),
+        this.getMyLatestRoundBenefits(this.top_benefit_size),
+      ])
+        .then(lists => lists[0].concat(lists[1]))
+        .then(list => {
+          if (this._topBenefits && list.length) {
+            this._topBenefits.unshift(...list);
+            this._topBenefits.sort((a, b) => {
+              return b.height - a.height;
+            });
+            const filter_res = [this._topBenefits[0]];
+            for (let i = 1; i < this._topBenefits.length; i += 1) {
+              const list_item = filter_res[filter_res.length - 1];
+              const next_item = this._topBenefits[i];
+              if (list_item._id != next_item._id) {
+                // 过滤掉一样的
+                filter_res.push(next_item);
+              }
+              if (filter_res.length >= this.max_top_benefit_size) {
+                break;
+              }
             }
-            if (filter_res.length >= this.top_benefit_size) {
-              break;
-            }
+            this._topBenefits = filter_res;
+          } else {
+            this._topBenefits = list.slice();
           }
-          this._topBenefits = filter_res;
-        } else {
-          this._topBenefits = list.slice();
-        }
-        return this._topBenefits;
-      }),
+          return this._topBenefits;
+        }),
     );
   }
 

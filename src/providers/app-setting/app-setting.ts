@@ -16,6 +16,7 @@ import { TranslateService } from "@ngx-translate/core";
 import * as PIXI_SOUND from "pixi-sound";
 console.log(PIXI_SOUND);
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import {MiningMachine} from '../../pages/_vote/types';
 
 export class AppUrl {
   constructor(public path) {}
@@ -328,7 +329,7 @@ export class AppSettingProvider extends EventEmitter {
     /**是否有过挖矿收益*/
     _has_mining_income: false,
     /**我的矿机*/
-    my_mining_machine: [] as any[],
+    my_mining_machine: [] as MiningMachine[],
   };
 }
 if (AppSettingProvider.NET_VERSION === "testnet") {

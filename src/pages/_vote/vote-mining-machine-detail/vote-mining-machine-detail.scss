@@ -1,0 +1,9 @@
+page-vote-mining-machine-detail {
+	@extend .header-no-border;
+	> .content {
+		> .scroll-content {
+			padding-top: 1rem;
+			background-color: #eee;
+		}
+	}
+}

@@ -10,7 +10,12 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { NetworkInterface } from "@ionic-native/network-interface";
 import SocketIO from "socket.io-client";
 window["SocketIO"] = SocketIO;
-import { SystemRuntime, cpusStatus, ExtendsSystemRuntime } from "../types";
+import {
+	SystemRuntime,
+	cpusStatus,
+	ExtendsSystemRuntime,
+	MiningMachine,
+} from "../types";
 
 @IonicPage({ name: "vote-add-mining-machine" })
 @Component({
@@ -326,7 +331,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 
 	plaform_icon = "";
 	cpu_simple_info = "";
-	formData = {
+	formData: MiningMachine = {
 		platform: "",
 		hostname: "",
 		cpus: [] as cpusStatus,

@@ -51,6 +51,8 @@ export type MiningMachine = {
 	totalmen: number;
 	ip: string;
 	port: number;
+	webPort: number;
+	publicKey: string;
+	userName: string;
 	delegate_pwd: string;
-	
 };

@@ -52,10 +52,10 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
     // 将高度一样的，进行合并
     const income_trend_list: BenefitModel[] = [];
     if (topBenefits.length) {
-      let _per_item = topBenefits[0];
-      income_trend_list.push(_per_item);
+      let _per_item = { ...topBenefits[0] };
+      income_trend_list.push({ ..._per_item });
       for (let i = 1; i < topBenefits.length; i += 1) {
-        const _cur_item = topBenefits[i];
+        const _cur_item = { ...topBenefits[i] };
         if (_cur_item.height === _per_item.height) {
           _per_item.amount =
             parseFloat(_per_item.amount) + parseFloat(_cur_item.amount) + "";

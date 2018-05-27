@@ -7,4 +7,5 @@ export type BenefitModel = {
 	type: string;
 	username: string;
 	uniqueId: string;
+	_id: string;
 };

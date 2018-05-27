@@ -81,7 +81,6 @@ export class VoteListPage extends SecondLevelPage {
       mac => {
         const res = {
           ...mac,
-          publickKey: "QAQQQAQQQAQAQ",
           cpu_usage: 0,
           connected:false,
         };
@@ -279,7 +278,7 @@ function cpuAverage(cpus: cpusStatus) {
   return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
 }
 
-function listenCpuUsage(mac: MiningMachine, cb: (usage: number) => void) {
+export function listenCpuUsage(mac: MiningMachine, cb: (usage: number) => void) {
   const socket = SocketIO(`http://${mac.ip}:${mac.port}/systemInfo`, {
     transports: ["websocket"],
     reconnection: false,

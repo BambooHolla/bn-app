@@ -27,13 +27,13 @@
           {{'NO_MINING_MACHINE'|translate}}
         </div>
       </div>
-      <div class="common-item" *ngFor="let mac of my_mining_machine;index as i">
+      <div class="common-item" *ngFor="let mac of my_mining_machine;index as i" (click)="routeTo('vote-mining-machine-detail',{mac:mac})">
         <div class="item-header">
           <div class="left">
             <ali-icon name="ifm-mac-address"></ali-icon>
-            <span class="address" [innerHTML]="mac.publickKey|mask:'@address'"></span>
+            <span class="address" [innerHTML]="mac.publicKey|mask:'@address'"></span>
           </div>
-          <div class="right">IFMChain ARK Ⅰ</div>
+          <div class="right">{{mac.hostname}}</div>
         </div>
         <div class="item-content">
           <div class="left">

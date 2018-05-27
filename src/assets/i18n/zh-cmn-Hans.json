@@ -263,6 +263,11 @@
   "VOTES": "得票",
   "PROFIT": "收益",
 
+  "//": "vote-mining-machine-detail",
+  "VOTE-MINING-MACHINE-DETAIL": "矿机运行状态",
+  "CPU_USAGE": "CPU使用率",
+  "CONFIRM_TO_DELETE_THIS_MACHINE": "确定移除这台矿机",
+
   "//": "vote-add-mining-machine",
   "VOTE-ADD-MINING-MACHINE": "添加矿机",
   "AUTO_SEARCHING": "自动搜索",
