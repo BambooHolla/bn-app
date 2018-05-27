@@ -105,7 +105,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
     const average_amount =
       amount_list.reduce((o, v) => o + v, 0) / amount_list.length;
     const max_amount = Math.max(...amount_list, average_amount * 1.1) || 1; // 如果是0，则默认为1
-    const min_amount = Math.min(...amount_list, average_amount * 0.9);
+    const min_amount = 0;//Math.min(...amount_list, average_amount * 0.9);
     const pad_amount =
       (max_amount - min_amount) * (text_style.fontSize / 2 / yAxis_height);
     {

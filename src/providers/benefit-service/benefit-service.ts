@@ -92,12 +92,38 @@ export class BenefitServiceProvider {
     return benefitData;
   }
 
-  getMyLatestRoundBenefits(offset = 0, limit = this.top_benefit_size) {
-    return this.getBenefitsByRound(offset, limit, this.appSetting.getRound());
+  async getMyLatestRoundBenefits() {
+    const round = this.appSetting.getRound();
+    const list = await this.getBenefitsByRound(0, this.top_benefit_size, round);
+    if (list.length === this.top_benefit_size) {
+      return list.concat(
+        await this.getBenefitsByRound(
+          this.top_benefit_size,
+          this.top_benefit_size,
+          round,
+        ),
+      );
+    }
+    return list;
+  }
+
+  async getMySecondLastRoundBenefits() {
+    const round = this.appSetting.getRound() - 1;
+    const list = await this.getBenefitsByRound(0, this.top_benefit_size, round);
+    if (list.length === this.top_benefit_size) {
+      return list.concat(
+        await this.getBenefitsByRound(
+          this.top_benefit_size,
+          this.top_benefit_size,
+          round,
+        ),
+      );
+    }
+    return list;
   }
 
   top_benefit_size = 57;
-  max_top_benefit_size = 57 * 2;
+  max_top_benefit_size = 57 * 4;
   private _topBenefits?: TYPE.BenefitModel[];
   topBenefits!: AsyncBehaviorSubject<TYPE.BenefitModel[]>;
   @HEIGHT_AB_Generator("topBenefits", true)
@@ -105,7 +131,7 @@ export class BenefitServiceProvider {
     return promise_pro.follow(
       Promise.all([
         this.getMyLatestRoundBenefits(),
-        this.getMyLatestRoundBenefits(this.top_benefit_size),
+        this.getMySecondLastRoundBenefits(),
       ])
         .then(lists => lists[0].concat(lists[1]))
         .then(list => {
