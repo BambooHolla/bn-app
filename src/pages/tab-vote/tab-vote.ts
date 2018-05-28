@@ -193,13 +193,14 @@ export class TabVotePage extends FirstLevelPage {
   //     console.log("开始监听收入变动，并播放音效")
   //   }).catch(console.error)
   // }
-  private _set_fall_coin_progress() {
+  private _set_fall_coin_progress(is_no_ani?: boolean) {
     if (this.fall_coin) {
       if (this.fall_coin.is_inited) {
+        this.fall_coin.no_animate = is_no_ani;
         this.fall_coin.progress = (this.appSetting.getHeight() / 57) % 1;
       } else {
         this.fall_coin.once("init-start", () => {
-          this.platform.raf(this._set_fall_coin_progress.bind(this));
+          this.platform.raf(this._set_fall_coin_progress.bind(this, true));
         });
       }
     }
@@ -503,20 +504,25 @@ export class TabVotePage extends FirstLevelPage {
   }
   @TabVotePage.afterContentInit
   soundControlInit() {
-    const sound_play_count = new Set();
-    this.fall_coin.on("end-fall-down", () => {
-      const size = sound_play_count.size;
-      if (size) {
+    const fall_down_height_symbol = Symbol("h");
+    let H = 0;
+    let cur_t;
+    this.fall_coin.on("end-fall-down", (ani, t, no_ani) => {
+      if (ani[fall_down_height_symbol] !== H || no_ani) {
+        return;
+      }
+      if (cur_t !== t) {
         // 同一帧的使用同一个声音
-        this.raf(() => {
-          playSound("coinSingle");
-          sound_play_count.delete(size);
-        });
+        playSound("coinSingle");
+        cur_t = t;
       }
     });
     this.benefitService.on("get-benefit", () => {
-      sound_play_count.add(sound_play_count.size + 1);
+      H = this.appSetting.getHeight();
     });
+    this.fall_coin.beforeFallDown = ani => {
+      ani[fall_down_height_symbol] = this.appSetting.getHeight();
+    };
   }
 
   is_show = {

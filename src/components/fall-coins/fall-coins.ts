@@ -54,6 +54,7 @@ export class FallCoinsComponent extends AniBase {
     this.on("start-animation", this.startPixiApp.bind(this));
     this.on("stop-animation", this.stopPixiApp.bind(this));
   }
+  no_animate?: boolean;
   // loop_skip = 1;// 30fps
   // 72pt = 1英寸 = 2.54 厘米
   // 1m = 2834.645669291339 pt
@@ -153,6 +154,7 @@ export class FallCoinsComponent extends AniBase {
       var speed = 0;
       const frames = frames_list[(Math.random() * frames_list.length) | 0];
       const ani = new PIXI.extras.AnimatedSprite(frames);
+      this.beforeFallDown(ani);
       const ani_uuid = String(ani_uuid_adder++);
       ani.width = u_size;
       ani.height = u_size;
@@ -179,8 +181,9 @@ export class FallCoinsComponent extends AniBase {
       const u_frame_ms = 16;
       /*可以推算出帧数，要超出终点才停止，所以多出来的一帧*/
       const ani_frame_num = Math.ceil(total_time * 1000 / u_frame_ms);
+      const end_frame = 26;
       /*总帧数 36, 目标帧为24,可以算出起始的帧*/
-      const start_frame = 36 - (ani_frame_num - 26) % 36;
+      const start_frame = 36 - (ani_frame_num - end_frame) % 36;
 
       ani.gotoAndStop(start_frame);
 
@@ -188,7 +191,11 @@ export class FallCoinsComponent extends AniBase {
       var _s = null;
       // 增加下落的动画
       const coin_ani = (t, diff_time) => {
-        ani.gotoAndStop(ani.currentFrame + 1);
+        if (this.no_animate) {
+          ani.gotoAndStop(end_frame);
+        } else {
+          ani.gotoAndStop(ani.currentFrame + 1);
+        }
         // const add_speed = diff_time / 1000;
         const diff_second = u_frame_ms / 1000; //使用固定的时间，使得下落点可预测
         const add_speed = gravity * diff_second;
@@ -197,11 +204,11 @@ export class FallCoinsComponent extends AniBase {
         ani.y += (pre_speed + speed) / 2 * diff_second;
 
         // 到达终点，停止动画，并固定这一帧的结果
-        if (ani.y >= end_y) {
+        if (ani.y >= end_y || this.no_animate) {
           ani.y = end_y;
           this.removeLoop(coin_ani);
           this.raf(() => this.downForceUpdate(ani_uuid));
-          this.emit("end-fall-down", ani, t);
+          this.emit("end-fall-down", ani, t, this.no_animate);
           target_line.in_ani -= 1;
         }
         if (target_line.in_ani === 0) {
@@ -212,8 +219,12 @@ export class FallCoinsComponent extends AniBase {
         parent.cacheAsBitmap = false;
       }
       target_line.in_ani += 1;
-      // 开始动画
-      this.addLoop(coin_ani);
+      if (this.no_animate) {
+        coin_ani(0, 0);
+      } else {
+        // 开始动画
+        this.addLoop(coin_ani);
+      }
       this.upForceUpdate(ani_uuid);
 
       target_line.cur += 1;
@@ -247,6 +258,7 @@ export class FallCoinsComponent extends AniBase {
   startPixiApp() {
     this.app && this.app.start();
   }
+  beforeFallDown(ani: PIXI.extras.AnimatedSprite) {}
   private _fall_down_when_progress_added: any;
   private _progress = 0;
   set progress(v: number) {
