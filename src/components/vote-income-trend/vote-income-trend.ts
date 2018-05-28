@@ -88,6 +88,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
           type: "",
           username: this.userInfo.username,
           uniqueId: Math.random().toString(36),
+          _id: Math.random().toString(36),
         });
       }
     }

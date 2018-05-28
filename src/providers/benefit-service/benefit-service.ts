@@ -140,12 +140,13 @@ export class BenefitServiceProvider {
             this._topBenefits.sort((a, b) => {
               return b.height - a.height;
             });
+            const ids_set = new Set();
             const filter_res = [this._topBenefits[0]];
             for (let i = 1; i < this._topBenefits.length; i += 1) {
-              const list_item = filter_res[filter_res.length - 1];
               const next_item = this._topBenefits[i];
-              if (list_item._id != next_item._id) {
+              if (!ids_set.has(next_item._id)) {
                 // 过滤掉一样的
+                ids_set.add(next_item._id);
                 filter_res.push(next_item);
               }
               if (filter_res.length >= this.max_top_benefit_size) {
@@ -267,7 +268,10 @@ export class BenefitServiceProvider {
           playSound("coinSingle");
         }, 500);
         // 系统通知
-        if (FLP_Tool.isInCordova) {
+        if (
+          FLP_Tool.isInCordova &&
+          this.appSetting.settings.mining_income_notice
+        ) {
           let mode = "single";
           if (this._notify_id !== null) {
             if (await this.localNotifications.isPresent(this._notify_id)) {

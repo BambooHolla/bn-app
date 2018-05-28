@@ -7,6 +7,10 @@
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AE%BE%E7%BD%AE%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="settings-list">
     <div class="divider"></div>
+    <div class="item">
+      <span class="title">{{'MINING_ONLY_IN_WIFI'|translate}}</span>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_only_in_wifi"></ion-toggle>
+    </div>
     <div class="item" (click)="routeTo('settings-set-default-fee',{auto_return:true})">
       <span class="title">{{'SETTINGS_SET_DEFAULT_FEE'|translate}}</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
@@ -15,29 +19,8 @@
       <span class="title">{{'SETTINGS_SET_PAY_PWD'|translate}}</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
-    <div class="item">
-      <span class="title">{{'MINING_INCOME_NOTICE'|translate}}</span>
-      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
-      <!-- <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_income_notice"></ion-toggle> -->
-    </div>
-    <div class="item" (click)="checkUpdate()">
-      <span class="title">{{'CHECK_UPDATE'|translate}}</span>
-      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
-    </div>
-    <div class="item" (click)="routeTo('settings-lang')">
-      <span class="title">{{'SETTINGS_LANG'|translate}}</span>
-      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
-    </div>
-    <div class="item" (click)="routeTo('settings-net-version')">
-      <span class="title">{{'SETTINGS_NET_VERSION'|translate}}</span>
-      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
-    </div>
     <div class="divider"></div>
-    <div class="item">
-      <span class="title">{{'MINING_ONLY_IN_WIFI'|translate}}</span>
-      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_only_in_wifi"></ion-toggle>
-    </div>
-    <div class="item" [class.disabled]="!(is_support_fingerprint|async)">
+    <div class="item" *ngIf="is_support_fingerprint|async">
       <span class="title">{{'FINGERPRINT_PROTECTION'|translate}}</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.open_fingerprint_protection"></ion-toggle>
     </div>
@@ -46,8 +29,9 @@
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.background_mining"></ion-toggle>
     </div>
     <div class="item">
-      <span class="title">{{'AUTO_UPDATE'|translate}}</span>
-      <ion-toggle class="left" [(ngModel)]="appSetting.settings.auto_update_app"></ion-toggle>
+      <span class="title">{{'MINING_INCOME_NOTICE'|translate}}</span>
+      <!-- <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon> -->
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.mining_income_notice"></ion-toggle>
     </div>
     <div class="item">
       <span class="title">{{'SETTING_SOUND_EFFECT'|translate}}</span>
@@ -57,6 +41,23 @@
     <div class="item">
       <span class="title">{{'POWER_SAVING_MODE'|translate}}</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.power_saving_mode"></ion-toggle>
+    </div>
+    <div class="divider"></div>
+    <div class="item" (click)="checkUpdate()" *ngIf="isAndroid">
+      <span class="title">{{'CHECK_UPDATE'|translate}}</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+    </div>
+    <div class="item" *ngIf="isAndroid">
+      <span class="title">{{'AUTO_UPDATE'|translate}}</span>
+      <ion-toggle class="left" [(ngModel)]="appSetting.settings.auto_update_app"></ion-toggle>
+    </div>
+    <div class="item" (click)="routeTo('settings-net-version')">
+      <span class="title">{{'SETTINGS_NET_VERSION'|translate}}</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+    </div>
+    <div class="item" (click)="routeTo('settings-lang')">
+      <span class="title">{{'SETTINGS_LANG'|translate}}</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
     <div class="divider"></div>
     <div class="item" (click)="routeTo('settings-cache-manage')">

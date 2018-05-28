@@ -38,7 +38,7 @@ mac-ark-1 {
 			overflow: hidden;
 			will-change: width;
 			transition-property: width;
-			transition-duration: 0.5s;
+			transition-duration: 1s;
 			> .cpu-useage {
 				width: $width;
 				height: 100%;

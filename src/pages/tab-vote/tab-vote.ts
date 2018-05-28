@@ -227,8 +227,8 @@ export class TabVotePage extends FirstLevelPage {
               }
               satellite_css.setProgress(
                 1,
-                BLOCK_UNIT_TIME - diff_time,
-                "ease-in-out",
+                BLOCK_UNIT_TIME - diff_time + 2000/*动画预留时间*/,
+                "linear",
               );
             }
           });

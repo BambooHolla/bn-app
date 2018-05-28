@@ -82,18 +82,18 @@ export class VoteListPage extends SecondLevelPage {
         const res = {
           ...mac,
           cpu_usage: 0,
-          connected:false,
+          connected: false,
         };
 
         // 远程监听设备的CPU
-        const socket = listenCpuUsage(mac, usage => {
+        const socket = listenMacStatus(mac, usage => {
           res.cpu_usage = usage;
         });
-        socket.on("connect",()=>{
-          res.connected = true
+        socket.on("connect", () => {
+          res.connected = true;
         });
-        socket.on("disconnect",()=>{
-          res.connected = false
+        socket.on("disconnect", () => {
+          res.connected = false;
         });
         return res;
       },
@@ -278,7 +278,11 @@ function cpuAverage(cpus: cpusStatus) {
   return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
 }
 
-export function listenCpuUsage(mac: MiningMachine, cb: (usage: number) => void) {
+export function listenMacStatus(
+  mac: MiningMachine,
+  cpu_cb?: (cpu_usage: number) => void,
+  memory_cb?: (memory_usage: number, total: number, freeMem: number) => void,
+) {
   const socket = SocketIO(`http://${mac.ip}:${mac.port}/systemInfo`, {
     transports: ["websocket"],
     reconnection: false,
@@ -287,18 +291,27 @@ export function listenCpuUsage(mac: MiningMachine, cb: (usage: number) => void) 
   socket.on(
     "systemStatus",
     ({ systemStatus: data }: { systemStatus: systemStatus }) => {
-      if (!startMeasure) {
-        startMeasure = cpuAverage(data.cpusStatus);
-      } else {
-        const endMeasure = cpuAverage(data.cpusStatus);
-        //Calculate the difference in idle and total time between the measures
-        const idleDifference = endMeasure.idle - startMeasure.idle;
-        const totalDifference = endMeasure.total - startMeasure.total;
+      if (cpu_cb) {
+        if (!startMeasure) {
+          startMeasure = cpuAverage(data.cpusStatus);
+        } else {
+          const endMeasure = cpuAverage(data.cpusStatus);
+          //Calculate the difference in idle and total time between the measures
+          const idleDifference = endMeasure.idle - startMeasure.idle;
+          const totalDifference = endMeasure.total - startMeasure.total;
 
-        //Calculate the average percentage CPU usage
-        const usage = 1 - idleDifference / totalDifference;
-        cb(usage);
-        startMeasure = endMeasure;
+          //Calculate the average percentage CPU usage
+          const usage = 1 - idleDifference / totalDifference;
+          cpu_cb(usage);
+          startMeasure = endMeasure;
+        }
+      }
+      if (memory_cb) {
+        memory_cb(
+          1 - data.memStatus.freeMem / data.memStatus.totalmem,
+          data.memStatus.totalmem,
+          data.memStatus.freeMem,
+        );
       }
     },
   );

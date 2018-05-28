@@ -29,6 +29,7 @@ import {
 } from "../../../src/bnqkl-framework/PromiseExtends";
 import * as TYPE from "./min.types";
 export * from "./min.types";
+import { AppUrl } from "../commonService";
 
 @Injectable()
 export class MinServiceProvider extends FLP_Tool {
@@ -38,7 +39,10 @@ export class MinServiceProvider extends FLP_Tool {
     list: TYPE.DelegateModel[];
     round: number;
   };
-
+  oneTimeUrl(app_url: AppUrl, server_url: string) {
+    app_url.disposableServerUrl(server_url);
+    return this;
+  }
   constructor(
     public http: HttpClient,
     public fetch: AppFetchProvider,
@@ -96,6 +100,12 @@ export class MinServiceProvider extends FLP_Tool {
   );
   readonly FORGE_STATUS = this.appSetting.APP_URL(
     "/api/delegates/forging/status",
+  );
+  readonly FORGE_ENABLE = this.appSetting.APP_URL(
+    "/api/delegates/forging/enable",
+  );
+  readonly FORGE_DISABLE = this.appSetting.APP_URL(
+    "/api/delegates/forging/disable",
   );
   readonly MINERS = this.appSetting.APP_URL("/api/delegates");
   readonly MY_VOTES = this.appSetting.APP_URL("/api/accounts/delegates");
@@ -404,12 +414,30 @@ export class MinServiceProvider extends FLP_Tool {
    * 返回是否在挖矿(打块)
    * @returns {Promise<void>}
    */
-  async getForgeStaus() {
-    let query = {
-      publicKey: this.userInfo.userInfo.publicKey,
-    };
-    let data = await this.fetch.get<any>(this.FORGE_STATUS, { search: query });
+  async getForgeStaus(
+    publicKey = this.userInfo.userInfo.publicKey,
+  ): Promise<boolean> {
+    const data = await this.fetch.get<any>(this.FORGE_STATUS, {
+      search: {
+        publicKey,
+      },
+    });
     return data.enabled;
+  }
+
+  async enableForge(secret: string, publicKey?: string) {
+    const data = await this.fetch.post<{ address: string }>(this.FORGE_ENABLE, {
+      secret,
+      publicKey,
+    });
+    return data;
+  }
+  async disableForge(secret: string, publicKey?: string) {
+    const data = await this.fetch.post<{ address: string }>(this.FORGE_DISABLE, {
+      secret,
+      publicKey,
+    });
+    return data;
   }
 
   /**

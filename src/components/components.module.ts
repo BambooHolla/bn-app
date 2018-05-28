@@ -17,6 +17,7 @@ import { EffectCountdownComponent } from "./effect-countdown/effect-countdown";
 import { WaterProgressComponent } from "./water-progress/water-progress";
 import { MacArk_1Component } from './mac-ark-1/mac-ark-1';
 import { MacArk_2Component } from './mac-ark-2/mac-ark-2';
+import { UsageProgressComponent } from './usage-progress/usage-progress';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { MacArk_2Component } from './mac-ark-2/mac-ark-2';
     WaterProgressComponent,
     MacArk_1Component,
     MacArk_2Component,
+    UsageProgressComponent,
   ],
   imports: [],
   exports: [
@@ -59,6 +61,7 @@ import { MacArk_2Component } from './mac-ark-2/mac-ark-2';
     WaterProgressComponent,
     MacArk_1Component,
     MacArk_2Component,
+    UsageProgressComponent,
   ],
 })
 export class ComponentsModule {}

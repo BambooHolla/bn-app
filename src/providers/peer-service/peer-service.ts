@@ -7,13 +7,13 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider, AppUrl } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import * as IFM from "ifmchain-ibt";
-import * as EventEmitter from "eventemitter3";
+import { CommonService } from "../commonService";
 import * as TYPE from "./peer.types";
 export * from "./peer.types";
 const PEERS = ["http://mainnet.ifmchain.org"];
 
 @Injectable()
-export class PeerServiceProvider extends EventEmitter {
+export class PeerServiceProvider extends CommonService {
   static DEFAULT_TIMEOUT = 2000;
   ifmJs: any;
   peer: any;

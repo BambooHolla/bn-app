@@ -27,7 +27,7 @@
           {{'NO_MINING_MACHINE'|translate}}
         </div>
       </div>
-      <div class="common-item" *ngFor="let mac of my_mining_machine;index as i" (click)="routeTo('vote-mining-machine-detail',{mac:mac})">
+      <div class="common-item" *ngFor="let mac of my_mining_machine;index as i" (click)="routeTo('vote-mining-machine-detail',{mac:mac})" [class.disbaled]="!mac.connected">
         <div class="item-header">
           <div class="left">
             <ali-icon name="ifm-mac-address"></ali-icon>
@@ -81,8 +81,8 @@
             <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_OUT_VOTE_LIST'|translate"></ion-refresher-content>
           </ion-refresher>
           <div class="common-list">
-            <div class="common-item" *ngFor="let vote of out_vote_list">
-              <div class="left">{{vote.username||vote.address}}</div>
+            <div class="common-item" *ngFor="let vote of out_vote_list" (click)="routeTo('vote-delegate-detail',{delegate_info:vote})">
+              <div class="left">{{vote.username||(vote.address|mask:"address")}}</div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>
@@ -100,7 +100,7 @@
           </ion-refresher>
           <div class="common-list">
             <div class="common-item" *ngFor="let delegatePubKey of can_vote_list">
-              <div class="left">{{delegatePubKey}}</div>
+              <div class="left">{{delegatePubKey|mask:"address"}}</div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>

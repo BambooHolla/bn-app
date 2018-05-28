@@ -87,9 +87,12 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 			this.is_stop_seach = false;
 			const loopTryIp = async (i, delay) => {
 				delay && (await new Promise(cb => setTimeout(cb, delay)));
-				return tryIp(`${base_ip}.${i}`).then(
-					() => (this.search_progress += unit_progress_step),
-				);
+				return tryIp(`${base_ip}.${i}`).then(() => {
+					this.search_progress += unit_progress_step;
+					if (this.search_progress > 1) {
+						this.search_progress = 1;
+					}
+				});
 			};
 			for (let i = 1; i <= 255; i += 10) {
 				if (this.is_stop_seach) {
@@ -190,6 +193,11 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 				this.formData.cpus = data.cpusStatus;
 				this.cpu_simple_info = this.formData.cpus[0].model;
 				this.formData.totalmen = data.memStatus.totalmem;
+				if (data.cpusStatus.length > 12) {
+					this.formData.hostname = "ARK Ⅱ";
+				} else {
+					this.formData.hostname = "ARK Ⅰ";
+				}
 				socket.close();
 			},
 		);
@@ -203,10 +211,10 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 				this.appFetch
 					.get<any>(`${host}:${port}/api/system/runtime`)
 					.then(runtime => {
-						this.formData.hostname =
-							Math.random() > 0.5
-								? "ARK IFMChain Ⅰ"
-								: "ARK IFMChain Ⅱ";
+						// this.formData.hostname =
+						// 	Math.random() > 0.5
+						// 		? "ARK IFMChain Ⅰ"
+						// 		: "ARK IFMChain Ⅱ";
 						const platfrom = (this.formData.platform =
 							runtime.data.System.platform);
 						if (platfrom === "linux") {

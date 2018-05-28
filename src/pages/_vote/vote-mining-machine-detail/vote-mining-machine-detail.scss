@@ -1,9 +1,59 @@
 page-vote-mining-machine-detail {
-	@extend .header-no-border;
-	> .content {
-		> .scroll-content {
-			padding-top: 1rem;
-			background-color: #eee;
-		}
-	}
+  @extend .header-no-border;
+  > .content {
+    > .scroll-content {
+      padding-top: 1.2rem;
+      background-color: #eee;
+    }
+  }
+  .common-list {
+    .common-item {
+      usage-progress {
+        height: 1rem;
+      }
+    }
+  }
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    padding-bottom: 0;
+    >.unable-info{
+      display: none;
+    }
+    &.disabled {
+      filter: grayscale(1);
+      pointer-events: none;
+      >.unable-info{
+        display: block;
+      }
+    }
+    > button {
+      width: 100%;
+      border-radius: 1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      height: 4rem;
+      font-size: 1.8rem;
+      &.with-bg {
+        color: #fff;
+        background: linear-gradient(to bottom, #fe5959 0%, #fd8e6f 100%);
+      }
+      &.no-bg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: #fff;
+        > .inner {
+          display: inline-block;
+          width: 100%;
+          text-align: center;
+          background: linear-gradient(to bottom, #fe5a4f 0%, #fd8e6f 100%);
+          @extend .clip-text;
+        }
+      }
+    }
+  }
 }

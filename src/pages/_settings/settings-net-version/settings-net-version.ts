@@ -1,5 +1,6 @@
 import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { AppSettingProvider } from "../../../providers/app-setting/app-setting";
@@ -71,10 +72,15 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       return;
     }
     this._clearDigRound();
+    this._reloadApp();
+  }
+  @asyncCtrlGenerator.loading()
+  private async _reloadApp() {
     this.navCtrl.goToRoot({});
     location.hash = "";
     location.reload();
   }
+
   private _clearDigRound() {
     for (let key in localStorage) {
       if (key.startsWith("SETTING@digRound:")) {
@@ -99,9 +105,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
         try {
           const ls = JSON.parse(ls_json);
           window["importLS"](ls);
-          this.navCtrl.goToRoot({});
-          location.hash = "";
-          location.reload();
+          this._reloadApp();
         } catch (err) {
           alert("配置失败：" + err.message);
         }

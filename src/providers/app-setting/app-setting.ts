@@ -8,7 +8,6 @@ import {
 } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
 import * as IFM from "ifmchain-ibt";
-import * as EventEmitter from "eventemitter3";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
@@ -16,25 +15,10 @@ import { TranslateService } from "@ngx-translate/core";
 import * as PIXI_SOUND from "pixi-sound";
 console.log(PIXI_SOUND);
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import {MiningMachine} from '../../pages/_vote/types';
+import { MiningMachine } from "../../pages/_vote/types";
+import { AppUrl, CommonService } from "../commonService";
+export { AppUrl };
 
-export class AppUrl {
-  constructor(public path) {}
-  toString() {
-    return (
-      (this.disposable_server_url || AppSettingProvider.SERVER_URL) + this.path
-    );
-  }
-  _disposable_server_url?: string;
-  get disposable_server_url() {
-    const res = this._disposable_server_url;
-    this._disposable_server_url = undefined;
-    return res;
-  }
-  disposableServerUrl(server_url: string) {
-    this._disposable_server_url = server_url;
-  }
-}
 const net_version =
   getQueryVariable("NET_VERSION") || localStorage.getItem("NET_VERSION") || "";
 
@@ -51,9 +35,16 @@ testnet_flag.id = "testnetFlag";
 testnet_flag.innerHTML = `TESTNET`;
 
 @Injectable()
-export class AppSettingProvider extends EventEmitter {
+export class AppSettingProvider extends CommonService {
   static APP_VERSION = window["APP_VERSION"];
-  static SERVER_URL = "http://mainnet.ifmchain.org";
+  private static _SERVER_URL = "";
+  static get SERVER_URL() {
+    return this._SERVER_URL;
+  }
+  static set SERVER_URL(v: string) {
+    AppUrl.SERVER_URL = v;
+    this._SERVER_URL = v;
+  }
   // static SERVER_URL = "http://47.104.142.234:6062";
   static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
@@ -364,6 +355,8 @@ if (location.hostname === "dev-bnlc.bnqkl.cn") {
   AppSettingProvider.SERVER_URL = "http://192.168.16.216:40001/api/v1/bngj/";
 } else if (server_host.startsWith("FULL:")) {
   AppSettingProvider.SERVER_URL = server_host.replace("FULL:", "").trim();
+} else {
+  AppSettingProvider.SERVER_URL = "http://mainnet.ifmchain.org";
 }
 
 console.log(

@@ -2,16 +2,62 @@
   <ion-navbar color="white">
     <ion-title>{{'VOTE-MINING-MACHINE-DETAIL'|translate}}</ion-title>
     <ion-buttons right>
-      <button ion-button (click)="deleteMac()"><ion-icon name="trash"></ion-icon></button>
+      <button ion-button (click)="deleteMac()">
+        <ion-icon name="trash"></ion-icon>
+      </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-
-<ion-content >
-	<div class="common-list">
-		<div class="common-item">
-			<div class="left"> {{'CPU_USAGE'|translate}} </div>
-			<div class="right"> {{(mac?.cpu_usage*100)|number:'1.2-2'}}% </div>
-		</div>
-	</div>
+<ion-content>
+  <div class="common-list">
+    <div class="common-item">
+      <div class="left"> {{'CPU_USAGE'|translate}} </div>
+      <div class="right"> {{(mac?.cpu_usage*100)|number:'1.2-2'}}% </div>
+    </div>
+    <div class="common-item">
+      <div class="left"> {{'MEMORY_USAGE'|translate}} </div>
+      <div class="right">
+        <usage-progress [usage]="mac?.memory_usage"></usage-progress>
+        <div class="info">
+          {{'TOTAL_#TOTAL_SIZE#_USED_#USED_SIZE#'|translate:({ total_size:((mac?.total_memory||0)|bytes), used_size:((mac?.used_memory||0)|bytes) })}}
+        </div>
+      </div>
+    </div>
+    <!-- <div class="common-item">
+      <div class="left"> {{'MINING_QUANTITY'|translate}} </div>
+      <div class="right"> {{delegate_info?.total_reward|amountEuler|number:'1.8-8'}}% </div>
+    </div> -->
+    <div class="common-item">
+      <div class="left"> {{'MINING_COUNT'|translate}} </div>
+      <div class="right">
+        <ng-container *ngIf="current_info_height!=-1;else loadingDelegateInfo">
+          {{(delegate_info?.producedblocks||0)}}
+        </ng-container>
+        <ng-template #loadingDelegateInfo>
+          <ali-icon name="ifm-loading-search" class="ani-rotate-30deg"></ali-icon>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar" [class.disabled]="!mac?.connected">
+    <div class="unable-info">{{'MINE_MACHINE_IS_NOT_AVAILABLE'|translate}}</div>
+    <ng-container *ngIf="mac?.loading_is_enabled;else loadingIsEnabledTpl">
+      <button class="with-bg">
+        <ali-icon name="ifm-loading-search" class="ani-rotate-30deg"></ali-icon>
+      </button>
+    </ng-container>
+    <ng-template #loadingIsEnabledTpl>
+      <ng-container *ngIf="mac?.is_enabled;else startMiningTpl">
+        <button class="stop-mining with-bg" (click)="stopMining()">{{'STOP_MINGING'|translate}}</button>
+      </ng-container>
+      <ng-template #startMiningTpl>
+        <button class="start-mining with-bg" (click)="startMining()">{{'START_MINGING'|translate}}</button>
+      </ng-template>
+    </ng-template>
+    <button class="power-off no-bg" (click)="turnPowerOff()">
+      <div class="inner">
+        {{'POWER_OFF'|translate}}
+      </div>
+    </button>
+  </div>
 </ion-content>

@@ -270,7 +270,15 @@ FLP_Route.registerRouteToBeforeCheck(
       title: await self.getTranslate("SELECT_THE_WAY_TO_GET_QRCODE"),
       buttons: [
         {
-          icon: "image",
+          icon: "qr-scanner",
+          text: await self.getTranslate(QRCODE_GET_WAY.FromCamera),
+          handler() {
+            actionSheet.dismiss(QRCODE_GET_WAY.FromCamera);
+            return false;
+          },
+        },
+        {
+          icon: "ios-image-outline",
           text: await self.getTranslate(QRCODE_GET_WAY.FromPicture),
           handler() {
             // 必须把触发函数写在click里头，不然安全角度来说，是无法正常触发的
@@ -284,14 +292,6 @@ FLP_Route.registerRouteToBeforeCheck(
             });
             inputEle.dispatchEvent(clickEvent);
             actionSheet.dismiss(QRCODE_GET_WAY.FromPicture);
-            return false;
-          },
-        },
-        {
-          icon: "qr-scanner",
-          text: await self.getTranslate(QRCODE_GET_WAY.FromCamera),
-          handler() {
-            actionSheet.dismiss(QRCODE_GET_WAY.FromCamera);
             return false;
           },
         },
@@ -346,7 +346,7 @@ FLP_Route.registerRouteToBeforeCheck(
         window.addEventListener("focus", onCancel);
         inputEle.onerror = cbWrap;
       });
-      if(image_url){
+      if (image_url) {
         self._navCtrlPush(path, {
           title: await self.getTranslate("PARSE_PICTURE_QRCODE"),
           image_url,

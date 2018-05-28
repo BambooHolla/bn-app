@@ -115,7 +115,7 @@ page-vote-list {
       > .common-item {
         margin: 0 2% 0.8rem 2%;
         width: 96%;
-        height: 8.4rem;
+        height: 10.4rem;
         border-radius: 0.6rem;
         background-color: #fff;
         box-shadow: 0 0.2rem 0.6rem rgba(99, 99, 99, 0.2);
@@ -157,6 +157,7 @@ page-vote-list {
           padding-right: 2.4rem;
           display: flex;
           flex-direction: row;
+          align-items: center;
           > .left {
             flex: 2;
             position: relative;
@@ -176,7 +177,7 @@ page-vote-list {
             flex-direction: column;
             justify-content: space-around;
             font-size: 1.3rem;
-            padding-bottom: 1.5rem;
+            height: 7rem;
             > .ip {
               display: flex;
               flex-direction: row;
@@ -220,6 +221,9 @@ page-vote-list {
               padding-top: 0.4rem;
               font-size: 1.3rem;
             }
+          }
+          &.disabled{
+            pointer-events: none;
           }
         }
       }
