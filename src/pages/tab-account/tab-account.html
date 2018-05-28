@@ -30,12 +30,12 @@
       <div class="title">{{'MY_CONTACTS' | translate}}</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div>
-    <!-- <div class="nav-item">
+    <div class="nav-item" (click)="routeTo('account-peer-list')">
       <ali-icon class="left" name="ifm--target-"></ali-icon>
       <div class="title">网络节点</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div>
-    <div class="nav-item">
+    <!-- <div class="nav-item">
       <ali-icon class="left" name="ifm-apps"></ali-icon>
       <div class="title">应用市场</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
@@ -46,7 +46,6 @@
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div>
     <!-- <div class="nav-item"></div> -->
-    <div class="nav-item"></div>
     <div class="nav-item" (click)="routeTo('account-miner-list')">
       <ali-icon class="left" name="ifm-auction"></ali-icon>
       <div class="title">{{'MINER_LIST'|translate}}</div>

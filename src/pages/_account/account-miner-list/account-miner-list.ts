@@ -12,10 +12,6 @@ import {
   MinServiceProvider,
   DelegateModel,
 } from "../../../providers/min-service/min-service";
-import {
-  PeerServiceProvider,
-  PeerModel,
-} from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-list" })
 @Component({
@@ -29,7 +25,6 @@ export class AccountMinerListPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public minService: MinServiceProvider,
-    public peerService: PeerServiceProvider,
     public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
@@ -48,7 +43,6 @@ export class AccountMinerListPage extends SecondLevelPage {
       : [];
   }
 
-  cur_peer_list?: PeerModel[];
 
   // @AccountMinerListPage.willEnter
   async initMinterList() {
@@ -71,16 +65,6 @@ export class AccountMinerListPage extends SecondLevelPage {
     // 更新页面
     this.cdRef.markForCheck();
   }
-  @AccountMinerListPage.willEnter
-  async initPeerList() {
-    await this.peerService.sortPeers(peer_list => {
-      this.cur_peer_list = peer_list.map(peer => ({
-        ...peer,
-        linked_number: (Math.random() * 50) | 0,
-      }));
-    });
-  }
-
   @AccountMinerListPage.addEvent("ROUND:CHANGED")
   @asyncCtrlGenerator.error(() =>
     AccountMinerListPage.getTranslate("LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR"),
