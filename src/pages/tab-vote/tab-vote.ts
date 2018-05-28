@@ -39,6 +39,7 @@ import { VoteCurrentBlockIncomeComponent } from "../../components/vote-current-b
 import { VoteIncomeTrendComponent } from "../../components/vote-income-trend/vote-income-trend";
 import { VoteMyContributionComponent } from "../../components/vote-my-contribution/vote-my-contribution";
 import { VotePreRoundIncomeRateComponent } from "../../components/vote-pre-round-income-rate/vote-pre-round-income-rate";
+import { addSound, playSound } from "../../components/sound";
 
 type EarthConfig = {
   body_color: number;
@@ -334,6 +335,9 @@ export class TabVotePage extends FirstLevelPage {
     this.dispatchEvent("page on:vote-detail");
     this._startVoteAnimate();
 
+    // 动画中有金币掉落的音效，关闭默认音效
+    this.benefitService.togglePlaySound(false);
+
     const { _earth_enabled_config, earth_config } = this;
     this._doChainMeshPropAni(
       earth_config,
@@ -483,23 +487,36 @@ export class TabVotePage extends FirstLevelPage {
   })();
   @TabVotePage.didEnter
   initEarchNetMesh() {
-    // this.earth_config ,this._earth_disabled_config;
-    // this._doChainMeshPropAni(this.earth_config,this._earth_disabled_config)
-
-    // 执行一帧，并停止
-    // if (this.chain_mesh) {
-    //   const _loop = () => {
-    //     this.raf(() => {
-    //       this.chain_mesh.app && this.chain_mesh.app.ticker.update();
-    //     });
-    //   };
-    //   if (this.chain_mesh.is_app_ready) {
-    //     _loop();
-    //   } else {
-    //     this.chain_mesh.once("app-ready", _loop);
-    //   }
-    // }
     this.chain_mesh.forceRenderOneFrame();
+  }
+  @TabVotePage.didEnter
+  soundControlOnEnter() {
+    // 如果不是挖矿详情页面，音效就要打开
+    this.benefitService.togglePlaySound(
+      this.page_status !== VotePage.VoteDetail,
+    );
+  }
+  @TabVotePage.didLeave
+  soundControlOnLevel() {
+    // 离开页面一定要打开音控
+    this.benefitService.togglePlaySound(true);
+  }
+  @TabVotePage.afterContentInit
+  soundControlInit() {
+    const sound_play_count = new Set();
+    this.fall_coin.on("end-fall-down", () => {
+      const size = sound_play_count.size;
+      if (size) {
+        // 同一帧的使用同一个声音
+        this.raf(() => {
+          playSound("coinSingle");
+          sound_play_count.delete(size);
+        });
+      }
+    });
+    this.benefitService.on("get-benefit", () => {
+      sound_play_count.add(sound_play_count.size + 1);
+    });
   }
 
   is_show = {
@@ -603,6 +620,10 @@ export class TabVotePage extends FirstLevelPage {
       this._set_satellite_pixi_progress(is_init);
       // this.chain_mesh && this.chain_mesh.forceRenderOneFrame();
       this.notifyExtendPanel("HEIGHT:CHANGED");
+
+      setTimeout(() => {
+        this.chain_mesh.forceRenderOneFrame();
+      }, 1000);
     }
   }
 

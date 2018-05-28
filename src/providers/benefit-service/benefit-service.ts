@@ -32,13 +32,10 @@ import {
 } from "../../bnqkl-framework/PromiseExtends";
 import { addSound, playSound } from "../../components/sound";
 import { LocalNotifications } from "@ionic-native/local-notifications";
-addSound("coinSingle", "assets/sounds/coinSingle.wav");
-// addSound("coinSoundFew", "assets/sounds/coinFew.wav");
-// addSound("coinSoundMore", "assets/sounds/coinMore.wav");
-// addSound("coinSoundMuch", "assets/sounds/coinMuch.wav");
+import { CommonService } from "../commonService";
 
 @Injectable()
-export class BenefitServiceProvider {
+export class BenefitServiceProvider extends CommonService {
   ifmJs: any;
   // benefitList: TYPE.BenefitModel[] = [];
   // benefitBlockHeight?: number;
@@ -55,6 +52,7 @@ export class BenefitServiceProvider {
     public localNotifications: LocalNotifications,
     public platform: Platform,
   ) {
+    super();
     this.ifmJs = AppSettingProvider.IFMJS;
     this.loginService.loginStatus
       .distinctUntilChanged()
@@ -230,91 +228,91 @@ export class BenefitServiceProvider {
   private _pre_mining_block?: TYPE.BenefitModel;
   private _notify_id: number | null = null;
   private _acc_notify_blocks: TYPE.BenefitModel[] = [];
+  private _is_play_sound = true;
+  togglePlaySound(play: boolean) {
+    this._is_play_sound = play;
+  }
   private _play_mining_sound_register_Executor() {
     if (this._play_mining_sound_sub) {
       this._play_mining_sound_sub.unsubscribe();
       this._pre_mining_block = undefined;
     }
-    this._play_mining_sound_sub = this.appSetting.height.subscribe(async r => {
-      if (!this.appSetting.settings.sound_effect) {
-        return;
-      }
-      await sleep(100);
-      const benefitList = await this.topBenefits.getPromise();
-      // 初始化 _pre_mining_block
-      if (this._pre_mining_block === undefined) {
-        this._pre_mining_block = benefitList[0];
-        return;
-      }
+    this._play_mining_sound_sub = this.appSetting.after_height.subscribe(
+      async r => {
+        if (!this.appSetting.settings.sound_effect) {
+          return;
+        }
+        const benefitList = await this.topBenefits.getPromise();
+        // 初始化 _pre_mining_block
+        if (this._pre_mining_block === undefined) {
+          this._pre_mining_block = benefitList[0];
+          return;
+        }
 
-      const cur_block_benefit = benefitList[0];
-      if (
-        !this._pre_mining_block ||
-        (cur_block_benefit &&
-          cur_block_benefit.height > this._pre_mining_block.height)
-      ) {
-        const cur_benefit = parseFloat(cur_block_benefit.amount);
-        const pre_benefit = parseFloat(this._pre_mining_block.amount);
-
-        const equal_range = [pre_benefit * 0.9, cur_benefit * 1.1];
-        // let sound_type = "coinSoundMore";
-        // if (Math.max(...equal_range, pre_benefit) === pre_benefit) {
-        //   let sound_type = "coinSoundMuch";
-        // } else if (Math.min(...equal_range, pre_benefit) === cur_benefit) {
-        //   let sound_type = "coinSoundFew";
-        // }
-        // playSound(sound_type);
-        setTimeout(() => {
-          playSound("coinSingle");
-        }, 500);
-        // 系统通知
+        const cur_block_benefit = benefitList[0];
         if (
-          FLP_Tool.isInCordova &&
-          this.appSetting.settings.mining_income_notice
+          !this._pre_mining_block ||
+          (cur_block_benefit &&
+            cur_block_benefit.height > this._pre_mining_block.height)
         ) {
-          let mode = "single";
-          if (this._notify_id !== null) {
-            if (await this.localNotifications.isPresent(this._notify_id)) {
-              mode = "multi";
-            } else {
-              this._notify_id = null;
-              this._acc_notify_blocks.length = 0; // 清空缓存
+          this.emit("get-benefit");
+          setTimeout(() => {
+            if (this._is_play_sound) {
+              playSound("coinSingle");
+            }
+          }, 500);
+          // 系统通知
+          if (
+            FLP_Tool.isInCordova &&
+            this.appSetting.settings.mining_income_notice
+          ) {
+            let mode = "single";
+            if (this._notify_id !== null) {
+              if (await this.localNotifications.isPresent(this._notify_id)) {
+                mode = "multi";
+              } else {
+                this._notify_id = null;
+                this._acc_notify_blocks.length = 0; // 清空缓存
+              }
+            }
+
+            this._acc_notify_blocks.push(cur_block_benefit);
+
+            if (mode === "single") {
+              this.localNotifications.schedule({
+                id: (this._notify_id = this.appSetting.getHeight()),
+                text: this.translate.instant("MINING_INCOME_#AMOUNT#IBT", {
+                  amount: (parseFloat(cur_block_benefit.amount) / 1e8).toFixed(
+                    8,
+                  ),
+                }),
+                sound: this.platform.is("android")
+                  ? "file://sound.mp3"
+                  : "file://beep.caf",
+                // data: { secret: key },
+              });
+            } else if (mode === "multi") {
+              const total_amount = this._acc_notify_blocks.reduce(
+                (acc_amount, benefit) =>
+                  acc_amount + parseFloat(benefit.amount),
+                0,
+              );
+              this.localNotifications.update({
+                id: this._notify_id as number,
+                text: this.translate.instant(
+                  "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT",
+                  {
+                    times: this._acc_notify_blocks.length,
+                    amount: (total_amount / 1e8).toFixed(8),
+                  },
+                ),
+              });
             }
           }
-
-          this._acc_notify_blocks.push(cur_block_benefit);
-
-          if (mode === "single") {
-            this.localNotifications.schedule({
-              id: (this._notify_id = this.appSetting.getHeight()),
-              text: this.translate.instant("MINING_INCOME_#AMOUNT#IBT", {
-                amount: (parseFloat(cur_block_benefit.amount) / 1e8).toFixed(8),
-              }),
-              sound: this.platform.is("android")
-                ? "file://sound.mp3"
-                : "file://beep.caf",
-              // data: { secret: key },
-            });
-          } else if (mode === "multi") {
-            const total_amount = this._acc_notify_blocks.reduce(
-              (acc_amount, benefit) => acc_amount + parseFloat(benefit.amount),
-              0,
-            );
-            this.localNotifications.update({
-              id: this._notify_id as number,
-              text: this.translate.instant(
-                "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT",
-                {
-                  times: this._acc_notify_blocks.length,
-                  amount: (total_amount / 1e8).toFixed(8),
-                },
-              ),
-            });
-          }
+          this._pre_mining_block = cur_block_benefit;
         }
-        this._pre_mining_block = cur_block_benefit;
-      }
-    });
+      },
+    );
   }
 
   /**

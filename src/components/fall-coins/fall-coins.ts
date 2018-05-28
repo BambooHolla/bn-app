@@ -138,12 +138,13 @@ export class FallCoinsComponent extends AniBase {
 
     var ani_uuid_adder = 0;
 
-    const auto_fall_down = () => {
+    const auto_fall_down = (
+      target_line_index = (Math.random() * useable_lines.length) | 0,
+    ) => {
       // if (t / 200 <= progress_coins.length) {
       //   return;
       // }
-      const target_line =
-        useable_lines[(Math.random() * useable_lines.length) | 0];
+      const target_line = useable_lines[target_line_index];
       if (!target_line) {
         this.removeLoop(auto_fall_down);
         return;
@@ -184,6 +185,7 @@ export class FallCoinsComponent extends AniBase {
       ani.gotoAndStop(start_frame);
 
       var _f = 0;
+      var _s = null;
       // 增加下落的动画
       const coin_ani = (t, diff_time) => {
         ani.gotoAndStop(ani.currentFrame + 1);
@@ -199,6 +201,7 @@ export class FallCoinsComponent extends AniBase {
           ani.y = end_y;
           this.removeLoop(coin_ani);
           this.raf(() => this.downForceUpdate(ani_uuid));
+          this.emit("end-fall-down", ani, t);
           target_line.in_ani -= 1;
         }
         if (target_line.in_ani === 0) {
