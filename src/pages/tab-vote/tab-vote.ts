@@ -119,6 +119,9 @@ export class TabVotePage extends FirstLevelPage {
           this.accountService.is_pre_round_has_vote
             .getPromise()
             .then(is_pre_round_has_vote => {
+              if (!this.appSetting.settings.background_mining) {
+                return;
+              }
               if (is_pre_round_has_vote) {
                 this.routeToVoteDetail();
               } else {
@@ -227,7 +230,7 @@ export class TabVotePage extends FirstLevelPage {
               }
               satellite_css.setProgress(
                 1,
-                BLOCK_UNIT_TIME - diff_time + 2000/*动画预留时间*/,
+                BLOCK_UNIT_TIME - diff_time + 2000 /*动画预留时间*/,
                 "linear",
               );
             }
