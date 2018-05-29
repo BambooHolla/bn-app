@@ -25,8 +25,8 @@ const net_version =
 const block_unit_time =
   parseFloat(
     getQueryVariable("BLOCK_UNIT_TIME") ||
-      localStorage.getItem("BLOCK_UNIT_TIME") ||
-      "",
+    localStorage.getItem("BLOCK_UNIT_TIME") ||
+    "",
   ) ||
   (net_version === "testnet" && 10e3);
 
@@ -64,8 +64,8 @@ export class AppSettingProvider extends CommonService {
   }
 
   static LATEST_APP_VERSION_URL = getQueryVariable("LATEST_APP_VERSION_URL") ||
-  localStorage.getItem("LATEST_APP_VERSION_URL") ||
-  "https://www.ifmchain.com/api/app/version/latest";
+    localStorage.getItem("LATEST_APP_VERSION_URL") ||
+    "https://www.ifmchain.com/api/app/version/latest";
   static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,
@@ -90,43 +90,6 @@ export class AppSettingProvider extends CommonService {
         return "";
       })
       .distinctUntilChanged<string>();
-
-    const default_settings = { ...this.settings };
-    // 将setting与本地存储进行关联
-    for (let key in this.settings) {
-      const get_s_key = () =>
-        this.user.address &&
-        AppSettingProvider.SETTING_KEY_PERFIX + key + ":" + this.user.address;
-      const default_value = default_settings[key];
-      Object.defineProperty(this.settings, key, {
-        get: () => {
-          let value = default_value;
-          const s_key = get_s_key();
-          if (s_key) {
-            const current_json_value = localStorage.getItem(s_key);
-            let should_write_in = true;
-            if (typeof current_json_value === "string") {
-              try {
-                value = JSON.parse(current_json_value); //JSON可用
-                should_write_in = false; // 不需要初始化写入
-              } catch (e) {}
-            }
-            if (should_write_in) {
-              localStorage.setItem(s_key, JSON.stringify(default_value));
-            }
-          }
-          return value;
-        },
-        set: value => {
-          const s_key = get_s_key();
-          if (s_key) {
-            localStorage.setItem(s_key, JSON.stringify(value));
-            this.emit(`changed@setting.${key}`, value);
-            this.emit(`changed@setting`, { key, value });
-          }
-        },
-      });
-    }
 
     // 省电模式
     this.on(
@@ -179,6 +142,43 @@ export class AppSettingProvider extends CommonService {
       };
       toggle_play(this.settings.sound_effect);
       this.on("changed@setting.sound_effect", toggle_play);
+    }
+
+    const default_settings = { ...this.settings };
+    // 将setting与本地存储进行关联
+    for (let key in this.settings) {
+      const get_s_key = () =>
+        this.user.address &&
+        AppSettingProvider.SETTING_KEY_PERFIX + key + ":" + this.user.address;
+      const default_value = default_settings[key];
+      Object.defineProperty(this.settings, key, {
+        get: () => {
+          let value = default_value;
+          const s_key = get_s_key();
+          if (s_key) {
+            const current_json_value = localStorage.getItem(s_key);
+            let should_write_in = true;
+            if (typeof current_json_value === "string") {
+              try {
+                value = JSON.parse(current_json_value); //JSON可用
+                should_write_in = false; // 不需要初始化写入
+              } catch (e) { }
+            }
+            if (should_write_in) {
+              localStorage.setItem(s_key, JSON.stringify(default_value));
+            }
+          }
+          return value;
+        },
+        set: value => {
+          const s_key = get_s_key();
+          if (s_key) {
+            localStorage.setItem(s_key, JSON.stringify(value));
+            this.emit(`changed@setting.${key}`, value);
+            this.emit(`changed@setting`, { key, value });
+          }
+        },
+      });
     }
 
     // 测试网络角标内容
@@ -403,7 +403,7 @@ export function TB_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -418,7 +418,7 @@ export function TB_AB_Generator(
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -481,7 +481,7 @@ export function HEIGHT_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -497,7 +497,7 @@ export function HEIGHT_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -561,7 +561,7 @@ export function ROUND_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -577,7 +577,7 @@ export function ROUND_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-                this.constructor.name
+              this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }

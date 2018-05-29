@@ -62,7 +62,7 @@
   "PLEASE_INPUT_EMAIL_ADDRESS": "请输入常用邮箱",
   "PLEASE_INPUT_PHONE": "请输入常用手机",
   "YOUR_UNIQUE_SIGN": "我的个性签名",
-  "PLEASE_INPUT_CODE": "请输入代码",
+  "PLEASE_INPUT_CODE": "请输入常用密码",
   "INFORMATION_NOT_SAVE_IN_BLOCKCHAIN": "仅用于生成密码数据不会保存在区块链上",
   "ALREADY_HAS_PASSPHRASE": "我已有密码 立即开始",
 
