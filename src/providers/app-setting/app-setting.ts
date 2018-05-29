@@ -91,59 +91,6 @@ export class AppSettingProvider extends CommonService {
       })
       .distinctUntilChanged<string>();
 
-    // 省电模式
-    this.on(
-      "changed@setting.power_saving_mode",
-      is_save => (this.settings.animation_switch = !is_save),
-    );
-
-    // 动画开关对动画的控制
-
-    // 框架内置的AniBase
-    {
-      const _update = AniBase.prototype._update;
-      const noop = function(t, diff_t) {
-        if (this.force_update) {
-          _update.call(this, t, diff_t);
-        }
-      };
-      const toggle_update = is_ani => {
-        AniBase.power_saving_mode = is_ani;
-        AniBase.prototype._update = is_ani ? _update : noop;
-      };
-      toggle_update(this.settings.animation_switch);
-      this.on("changed@setting.animation_switch", toggle_update);
-    }
-    // PIXI框架的循环
-    {
-      const noop = function(t) {
-        if (this.force_update) {
-          _update.call(this, t);
-        }
-      };
-      const _update = PIXI.ticker.Ticker.prototype.update;
-      const toggle_update = is_ani => {
-        PIXI.ticker.Ticker.prototype.update = is_ani ? _update : noop;
-      };
-      toggle_update(this.settings.animation_switch);
-      this.on("changed@setting.animation_switch", toggle_update);
-    }
-
-    // 声音开关
-    {
-      const _play = PIXI.sound.play;
-      const noop = function(...args) {
-        if (this.force_play_sound) {
-          _play.apply(this, args);
-        }
-      } as typeof PIXI_SOUND.play;
-      const toggle_play = is_play_sound => {
-        PIXI.sound.play = is_play_sound ? _play : noop;
-      };
-      toggle_play(this.settings.sound_effect);
-      this.on("changed@setting.sound_effect", toggle_play);
-    }
-
     const default_settings = { ...this.settings };
     // 将setting与本地存储进行关联
     for (let key in this.settings) {
@@ -179,6 +126,64 @@ export class AppSettingProvider extends CommonService {
           }
         },
       });
+    }
+    // 省电模式
+    {
+      this.on(
+        "changed@setting.power_saving_mode",
+        is_save => (this.settings.animation_switch = !is_save),
+      );
+    }
+
+    // 动画开关对动画的控制
+
+    // 框架内置的AniBase
+    {
+      const _update = AniBase.prototype._update;
+      const noop = function(t, diff_t) {
+        if (this.force_update) {
+          _update.call(this, t, diff_t);
+        }
+      };
+      const toggle_update = is_ani => {
+        AniBase.power_saving_mode = is_ani;
+        AniBase.prototype._update = is_ani ? _update : noop;
+      };
+      this.on("changed@setting.animation_switch", toggle_update);
+    }
+    // PIXI框架的循环
+    {
+      const noop = function(t) {
+        if (this.force_update) {
+          _update.call(this, t);
+        }
+      };
+      const _update = PIXI.ticker.Ticker.prototype.update;
+      const toggle_update = is_ani => {
+        PIXI.ticker.Ticker.prototype.update = is_ani ? _update : noop;
+      };
+      this.on("changed@setting.animation_switch", toggle_update);
+    }
+
+    // 声音开关
+    {
+      const _play = PIXI.sound.play;
+      const noop = function(...args) {
+        if (this.force_play_sound) {
+          _play.apply(this, args);
+        }
+      } as typeof PIXI_SOUND.play;
+      const toggle_play = is_play_sound => {
+        PIXI.sound.play = is_play_sound ? _play : noop;
+      };
+      this.on("changed@setting.sound_effect", toggle_play);
+    }
+    // 触发配置
+    {
+      const cur_setting = { ...this.settings };
+      for (let k in cur_setting) {
+        this.settings[k] = cur_setting[k];
+      }
     }
 
     // 测试网络角标内容
