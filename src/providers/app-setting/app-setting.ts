@@ -25,8 +25,8 @@ const net_version =
 const block_unit_time =
   parseFloat(
     getQueryVariable("BLOCK_UNIT_TIME") ||
-    localStorage.getItem("BLOCK_UNIT_TIME") ||
-    "",
+      localStorage.getItem("BLOCK_UNIT_TIME") ||
+      "",
   ) ||
   (net_version === "testnet" && 10e3);
 
@@ -64,8 +64,8 @@ export class AppSettingProvider extends CommonService {
   }
 
   static LATEST_APP_VERSION_URL = getQueryVariable("LATEST_APP_VERSION_URL") ||
-    localStorage.getItem("LATEST_APP_VERSION_URL") ||
-    "https://www.ifmchain.com/api/app/version/latest";
+  localStorage.getItem("LATEST_APP_VERSION_URL") ||
+  "https://www.ifmchain.com/api/app/version/latest";
   static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,
@@ -109,7 +109,7 @@ export class AppSettingProvider extends CommonService {
               try {
                 value = JSON.parse(current_json_value); //JSON可用
                 should_write_in = false; // 不需要初始化写入
-              } catch (e) { }
+              } catch (e) {}
             }
             if (should_write_in) {
               localStorage.setItem(s_key, JSON.stringify(default_value));
@@ -328,7 +328,10 @@ export class AppSettingProvider extends CommonService {
     my_mining_machine: [] as MiningMachine[],
   };
 }
-if (AppSettingProvider.NET_VERSION === "testnet") {
+if (
+  AppSettingProvider.NET_VERSION === "testnet" &&
+  localStorage.getItem("HIDE_FLAG") === "true"
+) {
   const testnet_flag_wrapper = document.createElement("div");
   testnet_flag_wrapper.appendChild(testnet_flag);
   testnet_flag_wrapper.className = "testnet-flag";
@@ -408,7 +411,7 @@ export function TB_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -423,7 +426,7 @@ export function TB_AB_Generator(
           if (!(this.appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-              this.constructor.name
+                this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -486,7 +489,7 @@ export function HEIGHT_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -502,7 +505,7 @@ export function HEIGHT_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-              this.constructor.name
+                this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
@@ -566,7 +569,7 @@ export function ROUND_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-          ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
         );
         do_refresh();
       } else {
@@ -582,7 +585,7 @@ export function ROUND_AB_Generator(
           if (!(appSetting instanceof AppSettingProvider)) {
             throw new Error(
               `${
-              this.constructor.name
+                this.constructor.name
               } 需要注入依赖： (appSetting)AppSettingProvider`,
             );
           }
