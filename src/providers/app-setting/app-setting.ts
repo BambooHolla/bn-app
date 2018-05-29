@@ -330,7 +330,7 @@ export class AppSettingProvider extends CommonService {
 }
 if (
   AppSettingProvider.NET_VERSION === "testnet" &&
-  localStorage.getItem("HIDE_FLAG") === "true"
+  localStorage.getItem("HIDE_FLAG") !== "1"
 ) {
   const testnet_flag_wrapper = document.createElement("div");
   testnet_flag_wrapper.appendChild(testnet_flag);

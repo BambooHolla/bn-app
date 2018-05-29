@@ -1,17 +1,7 @@
 page-account-about-ibt {
   > .header.custom-ani-header {
-    animation-name: ani-header;
-    animation-iteration-count: infinite;
-    animation-fill-mode: forwards;
-    animation-play-state: paused;
-    animation-duration: 2s;
-    animation-timing-function: linear;
-    /* animation-delay: -2s; */
-    color: #7b7b7b;
+    color: #FFF;
     transition-duration: 100ms;
-    * {
-      @extend .follow-parent-ani;
-    }
     > .bg-img {
       position: absolute;
       z-index: 0;
@@ -21,7 +11,7 @@ page-account-about-ibt {
       background-image: url(../assets/imgs/about-ibt/header-bg.jpg);
       background-size: cover;
       background-blend-mode: lighten;
-      animation-name: ani-header;
+      color: #fff;
     }
     .back-button {
       color: inherit;
@@ -33,14 +23,13 @@ page-account-about-ibt {
       }
     }
     > .info-wrapper {
-      animation-name: ani-header-info-wrapper;
+      height: 16rem;
       text-align: center;
       > .info {
-        transform-origin: 50% -10%;
-        animation-name: ani-header-info;
+        transform: scale(1);
         > .logo {
           width: 5.6rem;
-          margin-top: 2.5rem;
+          margin-top: 1.5rem;
         }
         > div {
           color: #fff;
@@ -54,32 +43,6 @@ page-account-about-ibt {
     }
     .toolbar-title-ios {
       color: inherit;
-    }
-    @keyframes ani-header {
-      0% {
-        color: #fff;
-        background-color: rgba(#000, 0);
-      }
-      100% {
-        color: #7b7b7b;
-        background-color: #fff;
-      }
-    }
-    @keyframes ani-header-info-wrapper {
-      0% {
-        height: 17rem;
-      }
-      100% {
-        height: 0rem;
-      }
-    }
-    @keyframes ani-header-info {
-      0% {
-        transform: scale(1);
-      }
-      100% {
-        transform: scale(0);
-      }
     }
   }
   > .content {
