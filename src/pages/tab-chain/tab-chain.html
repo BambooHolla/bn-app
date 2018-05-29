@@ -1,16 +1,44 @@
-<ion-header header-ani-height="266" (click)="pullToTop()">
+<!-- <ion-header header-ani-height="266" (click)="pullToTop()">
   <ion-navbar color="transparent" navbar-ani-height="0">
     <ion-title>{{'BLOCKCHAIN' | translate}}</ion-title>
-    <!-- <ion-buttons right>
-      <button (click)="openSeach(SearchType.BLOCK)">
-        <ali-icon name="ifm-sousuo"></ali-icon>
-      </button>
-    </ion-buttons> -->
   </ion-navbar>
   <div class="unconfirm-block-padding-wrapper" add-navbar-height-to-padding-top>
     <div class="unconfirm-block-wrapper">
       <div class="unconfirm-block">
         <div class="blur-bg"></div>
+        <div class="bg-image">
+          <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
+        </div>
+        <div class="content">
+          <div class="left">
+          </div>
+          <div class="center">
+            <div class="trans_num">
+              <div class="value">{{unconfirm_block?.uncommited}}</div>
+              <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'EXPECED_TRANSACTIONS_AMOUNT' | translate}}</span>
+            </div>
+            <div class="reward">
+              <div class="value">{{unconfirm_block?.reward|amountEuler|number:'1.8-8'}}</div>
+              <span class="title"><ali-icon name="ifm-reward"></ali-icon>{{'EXPECED_INCOME' | translate}}</span>
+            </div>
+          </div>
+          <div class="right">
+            <div class="height">
+              <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block?.height}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-header> -->
+<ion-header (click)="pullToTop()">
+  <ion-navbar color="transparent" navbar-ani-height="0">
+    <ion-title>{{'BLOCKCHAIN' | translate}}</ion-title>
+  </ion-navbar>
+  <div class="unconfirm-block-padding-wrapper">
+    <div class="unconfirm-block-wrapper">
+      <div class="unconfirm-block">
         <div class="bg-image">
           <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
         </div>
