@@ -20,7 +20,6 @@ import { MiningPersonComponent } from "../../components/mining-person/mining-per
 import { CountdownComponent } from "../../components/countdown/countdown";
 import { EffectCountdownComponent } from "../../components/effect-countdown/effect-countdown";
 import { AniBase, Easing } from "../../components/AniBase";
-import { TabsPage } from "../tabs/tabs";
 import {
   MinServiceProvider,
   RankModel,
@@ -81,7 +80,6 @@ export class TabVotePage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public sanitizer: DomSanitizer,
-    public tabs: TabsPage,
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
@@ -157,7 +155,8 @@ export class TabVotePage extends FirstLevelPage {
         this.startMin();
       }
     }
-    this.tabs.setBgTransparent(
+   
+    this.setBgTransparent(
       this.page_status === VotePage.Bootstrap ||
         this.page_status === VotePage.Countdown,
       this.cname,
@@ -165,7 +164,13 @@ export class TabVotePage extends FirstLevelPage {
   }
   @TabVotePage.didLeave
   recoverTabBg() {
-    this.tabs.setBgTransparent(false, this.cname);
+    this.setBgTransparent(false, this.cname);
+  }
+  setBgTransparent(is_tran: boolean, key: string){
+      this.event.emit("tabs:setBgTransparent",
+      this.page_status === VotePage.Bootstrap ||
+        this.page_status === VotePage.Countdown,
+      this.cname,)
   }
 
   @ViewChild("aniWrapper") aniWrapper?: ElementRef;
@@ -320,7 +325,7 @@ export class TabVotePage extends FirstLevelPage {
   }
   routeToCountdown() {
     this.min_starting = false;
-    this.tabs.setBgTransparent(true, this.cname);
+    this.setBgTransparent(true, this.cname);
     this.page_status = VotePage.Countdown; // countdown_round_end_time的赋值开关
   }
   onCountdownEnd() {
@@ -330,7 +335,7 @@ export class TabVotePage extends FirstLevelPage {
 
   routeToVoteDetail() {
     this.min_starting = false;
-    this.tabs.setBgTransparent(false, this.cname);
+    this.setBgTransparent(false, this.cname);
     this.page_status = VotePage.VoteDetail;
     // page_status更新后，触发数据获取函数
     this.dispatchEvent("page on:vote-detail");
@@ -448,7 +453,7 @@ export class TabVotePage extends FirstLevelPage {
   routeToBootstrap() {
     this.try_min_starting = false;
     this.min_starting = false;
-    this.tabs.setBgTransparent(true, this.cname);
+    this.setBgTransparent(true, this.cname);
     this.page_status = VotePage.Bootstrap;
     this._stopVoteAnimate();
   }
