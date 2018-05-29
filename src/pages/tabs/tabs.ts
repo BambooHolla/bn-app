@@ -81,7 +81,7 @@ export class TabsPage extends FLP_Lifecycle {
     if (perTabPage) {
       perTabPage.ionViewWillLeave();
       this.raf(() => {
-        perTabPage.ionViewWillLeave();
+        perTabPage.ionViewDidLeave();
       });
     }
 
@@ -102,6 +102,16 @@ export class TabsPage extends FLP_Lifecycle {
   }
   @TabsPage.afterContentInit
   initTabView() {
+    // 初始化组件的监听
+    [this.voteTab, this.chainTab, this.payTab, this.accountTab].forEach(
+      tabPage => {
+        tabPage.event.on(
+          "tabs:setBgTransparent",
+          this.setBgTransparent.bind(this),
+        );
+      },
+    );
+    // 初始化QueryList对象
     this.pageItemQueryList = (this.elRef
       .nativeElement as HTMLElement).querySelectorAll(".page-item-container");
     for (let i = 0; i < this.pageItemQueryList.length; i += 1) {
@@ -134,14 +144,11 @@ export class TabsPage extends FLP_Lifecycle {
   }
 
   private _transparent_tabs = new Set();
-  transparent_tab_bg = false;
   setBgTransparent(is_tran: boolean, key: string) {
-    if (this.tabs) {
-      if (is_tran) {
-        this._transparent_tabs.add(key);
-      } else {
-        this._transparent_tabs.delete(key);
-      }
+    if (is_tran) {
+      this._transparent_tabs.add(key);
+    } else {
+      this._transparent_tabs.delete(key);
     }
   }
   getBgTransparent() {

@@ -155,22 +155,18 @@ export class TabVotePage extends FirstLevelPage {
         this.startMin();
       }
     }
-   
+
     this.setBgTransparent(
       this.page_status === VotePage.Bootstrap ||
         this.page_status === VotePage.Countdown,
-      this.cname,
     );
   }
   @TabVotePage.didLeave
   recoverTabBg() {
-    this.setBgTransparent(false, this.cname);
+    this.setBgTransparent(false);
   }
-  setBgTransparent(is_tran: boolean, key: string){
-      this.event.emit("tabs:setBgTransparent",
-      this.page_status === VotePage.Bootstrap ||
-        this.page_status === VotePage.Countdown,
-      this.cname,)
+  setBgTransparent(is_tran: boolean) {
+    this.event.emit("tabs:setBgTransparent", is_tran, this.cname);
   }
 
   @ViewChild("aniWrapper") aniWrapper?: ElementRef;
@@ -325,7 +321,7 @@ export class TabVotePage extends FirstLevelPage {
   }
   routeToCountdown() {
     this.min_starting = false;
-    this.setBgTransparent(true, this.cname);
+    this.setBgTransparent(true);
     this.page_status = VotePage.Countdown; // countdown_round_end_time的赋值开关
   }
   onCountdownEnd() {
@@ -335,7 +331,7 @@ export class TabVotePage extends FirstLevelPage {
 
   routeToVoteDetail() {
     this.min_starting = false;
-    this.setBgTransparent(false, this.cname);
+    this.setBgTransparent(false);
     this.page_status = VotePage.VoteDetail;
     // page_status更新后，触发数据获取函数
     this.dispatchEvent("page on:vote-detail");
@@ -453,7 +449,7 @@ export class TabVotePage extends FirstLevelPage {
   routeToBootstrap() {
     this.try_min_starting = false;
     this.min_starting = false;
-    this.setBgTransparent(true, this.cname);
+    this.setBgTransparent(true);
     this.page_status = VotePage.Bootstrap;
     this._stopVoteAnimate();
   }
