@@ -28,7 +28,7 @@ export class AccountAboutIbtPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
-    this.auto_header_progress_when_scrol_down = true;
+    // this.auto_header_progress_when_scrol_down = true;
   }
 
   news_list: any[] = [];
