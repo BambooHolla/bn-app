@@ -69,12 +69,15 @@ export class TabChainPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
     // this.auto_header_shadow_when_scroll_down = true;
-    this.auto_header_progress_when_scrol_down = true;
+    // this.auto_header_progress_when_scrol_down = true;
   }
   @TabChainPage.didEnter
   fixIOSanimationBug() {
     if (this.isIOS) {
       const header_ele = this.header && this.header.getNativeElement();
+      if(!header_ele){
+        return;
+      }
       const loop = () => {
         this.fixIOSCacheBug(header_ele);
       };

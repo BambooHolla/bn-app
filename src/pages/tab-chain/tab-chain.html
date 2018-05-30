@@ -1,71 +1,30 @@
-<!-- <ion-header header-ani-height="266" (click)="pullToTop()">
-  <ion-navbar color="transparent" navbar-ani-height="0">
-    <ion-title>{{'BLOCKCHAIN' | translate}}</ion-title>
-  </ion-navbar>
-  <div class="unconfirm-block-padding-wrapper" add-navbar-height-to-padding-top>
-    <div class="unconfirm-block-wrapper">
-      <div class="unconfirm-block">
-        <div class="blur-bg"></div>
-        <div class="bg-image">
-          <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
-        </div>
-        <div class="content">
-          <div class="left">
-          </div>
-          <div class="center">
-            <div class="trans_num">
-              <div class="value">{{unconfirm_block?.uncommited}}</div>
-              <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'EXPECED_TRANSACTIONS_AMOUNT' | translate}}</span>
-            </div>
-            <div class="reward">
-              <div class="value">{{unconfirm_block?.reward|amountEuler|number:'1.8-8'}}</div>
-              <span class="title"><ali-icon name="ifm-reward"></ali-icon>{{'EXPECED_INCOME' | translate}}</span>
-            </div>
-          </div>
-          <div class="right">
-            <div class="height">
-              <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block?.height}}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</ion-header> -->
-<ion-header (click)="pullToTop()">
-  <ion-navbar color="transparent" navbar-ani-height="0">
-    <ion-title>{{'BLOCKCHAIN' | translate}}</ion-title>
-  </ion-navbar>
-  <div class="unconfirm-block-padding-wrapper">
-    <div class="unconfirm-block-wrapper">
-      <div class="unconfirm-block">
-        <div class="bg-image">
-          <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
-        </div>
-        <div class="content">
-          <div class="left">
-          </div>
-          <div class="center">
-            <div class="trans_num">
-              <div class="value">{{unconfirm_block?.uncommited}}</div>
-              <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'EXPECED_TRANSACTIONS_AMOUNT' | translate}}</span>
-            </div>
-            <div class="reward">
-              <div class="value">{{unconfirm_block?.reward|amountEuler|number:'1.8-8'}}</div>
-              <span class="title"><ali-icon name="ifm-reward"></ali-icon>{{'EXPECED_INCOME' | translate}}</span>
-            </div>
-          </div>
-          <div class="right">
-            <div class="height">
-              <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block?.height}}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</ion-header>
 <ion-content>
+  <div class="fixed-header" (click)="pullToTop()">
+    <div class="title">
+      <div class="left"></div>
+      <div class="center">
+        {{'BLOCKCHAIN' | translate}}
+      </div>
+      <div class="right">
+        <div class="height">
+          <ali-icon name="ifm-resize-height"></ali-icon>{{unconfirm_block?.height}}
+        </div>
+      </div>
+    </div>
+    <div class="unconfirm-block">
+      <div class="left trans_num">
+        <div class="value">{{unconfirm_block?.uncommited}}</div>
+        <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'EXPECED_TRANSACTIONS_AMOUNT' | translate}}</span>
+      </div>
+      <div class="right reward">
+        <div class="value">{{unconfirm_block?.reward|amountEuler|number:'1.8-8'}}</div>
+        <span class="title"><ali-icon name="ifm-reward"></ali-icon>{{'EXPECED_INCOME' | translate}}</span>
+      </div>
+    </div>
+    <div class="bg-image">
+      <chain-mesh [tint]="unconfirm_block_mesh_thit" [auto-start]="true"></chain-mesh>
+    </div>
+  </div>
   <div class="list-wrapper">
     <virtual-scroll #vscroll class="block-list" [list-ani]="_is_into_second_page?'linkChain':''" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
       <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeToChainBlockDetail(block)" [attr.data-height]="block.height" [class.fake]="block.fake" [class.latest-block]="block.height==1">
