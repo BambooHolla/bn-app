@@ -39,6 +39,11 @@ page-tabs {
         }
       }
     }
+    &.in-2,
+    &.in-3 {
+      background: #fff;
+      backdrop-filter: none;
+    }
   }
 
   .tab-item {

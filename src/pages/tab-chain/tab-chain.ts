@@ -200,6 +200,9 @@ export class TabChainPage extends FirstLevelPage {
   )
   async loadMoreBlockList() {
     const { block_list_config } = this;
+    if (block_list_config.page <= 1) {
+      return;
+    }
     block_list_config.page -= 1;
     const block_list = await this.blockService.getBlocksByPage(
       block_list_config.page,
