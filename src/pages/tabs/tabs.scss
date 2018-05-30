@@ -1,10 +1,10 @@
 page-tabs {
   width: 100%;
   height: 100%;
-  >.pages {
+  > .pages {
     width: 100%;
     height: 100%;
-    >.page-item-container {
+    > .page-item-container {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -17,30 +17,20 @@ page-tabs {
     position: absolute;
     bottom: 0;
     height: 4.2rem;
+    height: calc(4.2rem + #{constant(safe-area-inset-bottom)});
+    height: calc(4.2rem + #{env(safe-area-inset-bottom)});
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     z-index: 3;
-    background: rgba(#FFF, 0.6);
+    background: rgba(#fff, 0.6);
     backdrop-filter: blur(10px);
     border-top: 0.55px solid #eee;
     &.transparent-bg {
       border-top-color: transparent;
       background: transparent;
       backdrop-filter: none;
-    }
-  }
-  @supports (#{constant(safe-area-inset-bottom)}) {
-    .tabs {
-      /* Status bar height on iOS 11+ */
-      height: calc(#{constant(safe-area-inset-bottom)} + 4.2rem);
-    }
-  }
-  @supports (#{env(safe-area-inset-bottom)}) {
-    .tabs {
-      /* Status bar height on iOS 11+ */
-      height: calc(#{env(safe-area-inset-bottom)} + 4.2rem);
     }
   }
 }
