@@ -1,207 +1,10 @@
 page-tabs {
-  // position: static !important;
-  // > .tabs {
-  //   .tabbar {
-  //     border-top-color: #d2d2d2;
-  //     background: #fff;
-  //   }
-  //   &.transparent-bg {
-  //     .tabbar {
-  //       transition-duration: 250ms;
-  //       border-top-color: transparent;
-  //       background: transparent;
-  //     }
-  //   }
-  //   &.force-hidden {
-  //     .ion-page.show-page {
-  //       > .content {
-  //         > .fixed-content,
-  //         > .scroll-content {
-  //           margin-bottom: 0 !important;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   &:not(.force-hidden) {
-  //     .ion-page.show-page {
-  //       > .content {
-  //         > .fixed-content,
-  //         > .scroll-content {
-  //           margin-bottom: 49px !important;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   &.power-saving {
-  //     .tab-button[aria-selected="true"] {
-  //       &::after {
-  //         animation: none !important;
-  //       }
-  //     }
-  //   }
-  //   .tab-button {
-  //     color: #7b7b7b !important;
-  //     .tab-button-text {
-  //       color: inherit !important;
-  //       position: relative;
-  //       top: -0.6rem;
-  //     }
-
-  //     .tab-button-icon {
-  //       color: inherit !important;
-  //       display: flex;
-  //       align-items: center;
-  //       justify-content: center;
-  //       &:after {
-  //         font-family: "ifmicon";
-  //         font-size: 1.9rem;
-  //       }
-  //       &.ion-ios-tab-vote,
-  //       &.ion-ios-tab-vote-outline {
-  //         &:after {
-  //           content: "\e60d";
-  //         }
-  //       }
-
-  //       &.ion-ios-tab-chain,
-  //       &.ion-ios-tab-chain-outline {
-  //         &:after {
-  //           content: "\e61c";
-  //         }
-  //       }
-  //       &.ion-ios-tab-pay,
-  //       &.ion-ios-tab-pay-outline {
-  //         &:after {
-  //           content: "\e649";
-  //         }
-  //       }
-  //       &.ion-ios-tab-account,
-  //       &.ion-ios-tab-account-outline {
-  //         &:after {
-  //           content: "\e612";
-  //         }
-  //       }
-  //     }
-  //   }
-  //   .tab-button[aria-selected="true"] {
-  //     color: #fff !important;
-  //     &::before {
-  //       content: " ";
-  //       width: 40%;
-  //       height: 0%;
-  //       padding-bottom: 40%;
-  //       font-size: 0;
-  //       position: absolute;
-  //       transform: rotate(45deg);
-  //       border-radius: 38%;
-  //       z-index: -1;
-  //       top: 10%;
-  //       left: 30%;
-  //     }
-  //     &::after {
-  //       content: " ";
-  //       width: 41%;
-  //       height: 0%;
-  //       padding-bottom: 41%;
-  //       font-size: 0;
-  //       position: absolute;
-  //       top: 9%;
-  //       left: 29.5%;
-  //       // top: 13%;
-  //       // left: 30%;
-  //       transform: rotate(0deg);
-  //       border-radius: 38%;
-  //       z-index: -2;
-  //       animation-duration: 8s;
-  //       animation-name: rotate-tab-bg;
-  //       animation-timing-function: linear;
-  //       animation-iteration-count: infinite;
-  //       animation-fill-mode: forwards;
-  //       animation-direction: normal;
-  //     }
-  //     @keyframes rotate-tab-bg {
-  //       0% {
-  //         transform: rotate(0deg);
-  //       }
-  //       50% {
-  //         opacity: 0.8;
-  //         transform: scale(1.1) rotate(180deg);
-  //       }
-  //       100% {
-  //         transform: rotate(360deg);
-  //       }
-  //     }
-  //   }
-
-  //   .tab-button[aria-selected="true"] {
-  //     &:nth-child(1) {
-  //       &::before {
-  //         background: linear-gradient(
-  //           to right bottom,
-  //           #fec849 0%,
-  //           #f78566 100%
-  //         );
-  //       }
-  //       &::after {
-  //         background: rgba(#ffdb55, 0.6);
-  //       }
-  //     }
-  //   }
-
-  //   .tab-button[aria-selected="true"] {
-  //     &:nth-child(2) {
-  //       &::before {
-  //         background: linear-gradient(
-  //           to right bottom,
-  //           #67f4e0 0%,
-  //           #67e2ef 50%,
-  //           #66d2fc 100%
-  //         );
-  //       }
-  //       &::after {
-  //         background: rgba(#54e9ef, 0.6);
-  //       }
-  //     }
-  //   }
-
-  //   .tab-button[aria-selected="true"] {
-  //     &:nth-child(3) {
-  //       &::before {
-  //         background: linear-gradient(
-  //           to right bottom,
-  //           #3cdfdc 0%,
-  //           #7cddad 50%,
-  //           #eeda64 100%
-  //         );
-  //       }
-  //       &::after {
-  //         background: rgba(#73e2cc, 0.6);
-  //       }
-  //     }
-  //   }
-
-  //   .tab-button[aria-selected="true"] {
-  //     &:nth-child(4) {
-  //       &::before {
-  //         background: linear-gradient(
-  //           to right bottom,
-  //           #ff5b5a 0%,
-  //           #ff7b67 50%,
-  //           #ff9f77 100%
-  //         );
-  //       }
-  //       &::after {
-  //         background: rgba(#ff5b5a, 0.6);
-  //       }
-  //     }
-  //   }
-  // }
   width: 100%;
   height: 100%;
-  > .pages {
+  >.pages {
     width: 100%;
     height: 100%;
-    > .page-item-container {
+    >.page-item-container {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -213,15 +16,31 @@ page-tabs {
   .tabs {
     position: absolute;
     bottom: 0;
-    height: 49px;
+    height: 4.2rem;
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     z-index: 3;
-    background-color: rgba(#fff, 0.8);
+    background: rgba(#FFF, 0.6);
+    backdrop-filter: blur(10px);
+    border-top: 0.55px solid #eee;
     &.transparent-bg {
-      background-color: transparent;
+      border-top-color: transparent;
+      background: transparent;
+      backdrop-filter: none;
+    }
+  }
+  @supports (#{constant(safe-area-inset-bottom)}) {
+    .tabs {
+      /* Status bar height on iOS 11+ */
+      height: calc(#{constant(safe-area-inset-bottom)} + 4.2rem);
+    }
+  }
+  @supports (#{env(safe-area-inset-bottom)}) {
+    .tabs {
+      /* Status bar height on iOS 11+ */
+      height: calc(#{env(safe-area-inset-bottom)} + 4.2rem);
     }
   }
 }

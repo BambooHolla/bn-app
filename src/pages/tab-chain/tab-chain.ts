@@ -27,10 +27,31 @@ import { Subscription } from "rxjs/Subscription";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 
-// type BlockWithPosModel = BlockModel & {
-//   y: number;
-// };
+interface FakeBlock extends BlockModel {
+  fake: true;
+}
+const fakeBlock: FakeBlock = {
+  fake: true,
 
+  height: 0,
+  id: '',
+  timestamp: 0,
+
+  version: 0,
+  previousBlock: "",
+  numberOfTransactions: 0,
+  totalAmount: "0",
+  totalFee: "0",
+  reward: "0",
+  payloadLength: 0,
+  payloadHash: "",
+  generatorPublicKey: "",
+  generatorId: "",
+  blockSignature: "",
+  blockSize: "0",
+  confirmations: "",
+  totalForged: "0",
+};
 // @IonicPage({ name: "tab-chain" })
 @Component({
   selector: "page-tab-chain",
@@ -67,7 +88,7 @@ export class TabChainPage extends FirstLevelPage {
   }
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
-  block_list: Array<BlockModel> = [];
+  block_list: Array<BlockModel | FakeBlock> = [];
   block_list_config = {
     loading: false,
     page: 1,
@@ -142,10 +163,13 @@ export class TabChainPage extends FirstLevelPage {
       }
 
       const list = this.blockService.blockListHandle(
-        await this.blockService.getTopBlocks( size_length),
+        await this.blockService.getTopBlocks(size_length),
       );
       if (increment) {
         // 增量更新
+        if (this.block_list[0] === fakeBlock) {
+          this.block_list = this.block_list.slice(1);
+        }
         this.block_list = list.concat(this.block_list);
         this.dispatchEvent("when-block-list-changed");
       } else {
@@ -163,6 +187,7 @@ export class TabChainPage extends FirstLevelPage {
           block_list_config.page = 1;
         }
       }
+      this.block_list.unshift(fakeBlock);
     } finally {
       block_list_config.loading = false;
     }
