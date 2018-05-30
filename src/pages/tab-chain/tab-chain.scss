@@ -20,6 +20,7 @@ page-tab-chain {
         height: 10rem;
         box-sizing: content-box;
         transform: translateZ(0);
+        padding-top: 10px;
         padding-top: #{constant(safe-area-inset-top)};
         padding-top: #{env(safe-area-inset-top)};
         > .title {
@@ -142,9 +143,9 @@ page-tab-chain {
     flex-direction: column;
     align-items: center;
     transform: translateZ(0);
-    margin-top: -7.5rem !important;
-    margin-top:calc(-7.5rem + #{constant(safe-area-inset-top)})!important;
-    margin-top:calc(-7.5rem + #{env(safe-area-inset-top)})!important;
+    margin-top: -9rem !important;
+    margin-top:calc(-9rem + #{constant(safe-area-inset-top)})!important;
+    margin-top:calc(-9rem + #{env(safe-area-inset-top)})!important;
     /* -webkit-overflow-scrolling: auto; */
     .block-item {
       margin-right: auto;
