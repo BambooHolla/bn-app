@@ -21,6 +21,12 @@ PIXI.ticker.Ticker.prototype["_requestIfNeeded"] = function _requestIfNeeded() {
     this._requestId = FLP_Tool.raf(() => this._tick());
   }
 };
+PIXI.ticker.Ticker.prototype["_cancelIfNeeded"] = function _cancelIfNeeded() {
+  if (this._requestId !== null) {
+    FLP_Tool.caf(this._requestId);
+    this._requestId = null;
+  }
+};
 // PIXI.settings.TARGET_FPMS = 0.03;
 
 export class AniBase extends EventEmitter {

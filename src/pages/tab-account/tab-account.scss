@@ -1,8 +1,11 @@
 page-tab-account {
-  .scroll-content {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  > .content {
+    background-color: #f6f6f6;
+    > .scroll-content {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
   }
   .account-header {
     flex-grow: 0;
@@ -104,8 +107,8 @@ page-tab-account {
     flex: 1;
     position: relative;
     z-index: 2;
+    margin-bottom: 4.812rem;
     /* padding-top: 1rem; */
-    background-color: #f6f6f6;
     > .bg {
       position: absolute;
       top: 5vw;

@@ -1,9 +1,10 @@
-<ion-header>
+<!-- <ion-header>
   <ion-navbar color="transparent">
     <ion-title>{{'PAYMENT' | translate}}</ion-title>
   </ion-navbar>
-</ion-header>
+</ion-header> -->
 <ion-content>
+  <div class="title">{{'PAYMENT' | translate}}</div>
   <div class="toolbar">
     <button class="tool-item qr-scan" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
       <ali-icon name="ifm-scan"></ali-icon>

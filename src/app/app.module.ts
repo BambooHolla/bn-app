@@ -127,10 +127,6 @@ const pages = [
   TutorialPage,
   SignInAndSignUpPage,
   TabsPage,
-  TabVotePage,
-  TabChainPage,
-  TabPayPage,
-  TabAccountPage,
   CoverTabsCtrlModelPage,
 ];
 const heightLevelModules = [
@@ -139,6 +135,10 @@ const heightLevelModules = [
   VoteMyContributionComponent,
   VotePreRoundIncomeRateComponent,
   VotePreRoundIncomeRankingComponent,
+  TabVotePage,
+  TabChainPage,
+  TabPayPage,
+  TabAccountPage,
 ];
 
 @NgModule({

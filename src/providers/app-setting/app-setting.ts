@@ -13,7 +13,6 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
 import * as PIXI_SOUND from "pixi-sound";
-console.log(PIXI_SOUND);
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
@@ -172,7 +171,7 @@ export class AppSettingProvider extends CommonService {
         if (this.force_play_sound) {
           _play.apply(this, args);
         }
-      } as typeof PIXI_SOUND.play;
+      } as any
       const toggle_play = is_play_sound => {
         PIXI.sound.play = is_play_sound ? _play : noop;
       };

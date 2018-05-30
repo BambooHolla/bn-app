@@ -65,8 +65,20 @@ export class DbCacheProvider {
 			};
 		}
 		if (!opts.afterService) {
-			opts.afterService = (request_opts: RequestOptions) => {
-				return [request_opts];
+			opts.afterService = (req_res_list: RequestOptionsWithResult[]) => {
+				const res: any = {};
+				for (const req_res of req_res_list) {
+					for (const k in req_res.result) {
+						if (res[k] instanceof Array) {
+							res[k].push(...req_res.result[k]);
+						} else if (res[k] instanceof Object) {
+							Object.assign(res[k], req_res.result[k]);
+						} else {
+							res[k] = req_res.result[k];
+						}
+					}
+				}
+				return res;
 			};
 		}
 		this.cache_api_map.set(`${opts.method}:${opts.url.path}`, {

@@ -31,7 +31,7 @@ page-tab-vote {
     top: calc(50vh - 64vh);
     left: calc(50vw - 64vh);
     content: " ";
-    // background-image: url("../assets/imgs/net-circle-gray.png");
+    background-image: url("../assets/imgs/net-circle-gray.png");
     background-size: 100% 100%;
     background-position: center;
     animation-name: rotate-bg3;
@@ -337,7 +337,7 @@ page-tab-vote {
   }
   .assets-info {
     position: absolute;
-    bottom: 0;
+    bottom: 4.812rem;
     left: 0;
     height: 28%;
     width: 100%;
@@ -368,7 +368,7 @@ page-tab-vote {
   }
   .start-tip {
     position: absolute;
-    bottom: 0;
+    bottom: 4.812rem;
     left: 0;
     height: 20%;
     width: 100%;
@@ -750,7 +750,7 @@ page-tab-vote {
     /* align-self: flex-start;
       justify-self: flex-end; */
     position: absolute;
-    bottom: 0;
+    bottom: 4.812rem;
     margin-top: auto;
     padding: 1.5rem 0 0.6rem 0;
     width: 100%;
