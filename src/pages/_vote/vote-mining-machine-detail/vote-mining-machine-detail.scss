@@ -9,8 +9,11 @@ page-vote-mining-machine-detail {
   .common-list {
     .common-item {
       usage-progress {
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.2rem;
         width: 50vw;
+      }
+      .info{
+        font-size: 1.2rem;
       }
     }
   }

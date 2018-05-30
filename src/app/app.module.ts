@@ -95,6 +95,7 @@ import { VotePreRoundIncomeRateComponent } from "../components/vote-pre-round-in
 import { VotePreRoundIncomeRankingComponent } from "../components/vote-pre-round-income-ranking/vote-pre-round-income-ranking";
 
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
+import { DbCacheProvider } from '../providers/db-cache/db-cache';
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
@@ -219,6 +220,7 @@ const heightLevelModules = [
       useFactory: setupUrlSerializer,
       deps: [App, MyDeepLinkConfigToken],
     },
+    DbCacheProvider,
   ],
 })
 export class AppModule {}

@@ -190,13 +190,6 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getLastBlock(): Promise<TYPE.SingleBlockModel> {
-    // let blocks_res = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY,{
-    //   search:{
-    //     limit:1,
-    //     orderBy:"height:desc",
-    //   }
-    // });
-
     // return blocks_res.blocks[0];
     let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
     return data.block;

@@ -7,6 +7,10 @@ export const playSound: typeof PIXI.sound.play = (...args) =>
 	(PIXI.sound.play as any)(...args);
 
 addSound("coinSingle", "assets/sounds/coinSingle.wav");
+playSound("coinSingle", {
+	muted:true,
+	volume: 0,
+});
 // addSound("coinSoundFew", "assets/sounds/coinFew.wav");
 // addSound("coinSoundMore", "assets/sounds/coinMore.wav");
 // addSound("coinSoundMuch", "assets/sounds/coinMuch.wav");

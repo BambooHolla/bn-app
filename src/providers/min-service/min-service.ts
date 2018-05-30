@@ -107,6 +107,7 @@ export class MinServiceProvider extends FLP_Tool {
   readonly FORGE_DISABLE = this.appSetting.APP_URL(
     "/api/delegates/forging/disable",
   );
+  readonly SYSTEM_SHUTDOWN = this.appSetting.APP_URL("/api/system/shutdown");
   readonly MINERS = this.appSetting.APP_URL("/api/delegates");
   readonly MY_VOTES = this.appSetting.APP_URL("/api/accounts/delegates");
   readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/myProfitRanking");
@@ -433,10 +434,18 @@ export class MinServiceProvider extends FLP_Tool {
     return data;
   }
   async disableForge(secret: string, publicKey?: string) {
-    const data = await this.fetch.post<{ address: string }>(this.FORGE_DISABLE, {
-      secret,
-      publicKey,
-    });
+    const data = await this.fetch.post<{ address: string }>(
+      this.FORGE_DISABLE,
+      {
+        secret,
+        publicKey,
+      },
+    );
+    return data;
+  }
+
+  async shutdownSystem() {
+    const data = await this.fetch.get(this.SYSTEM_SHUTDOWN);
     return data;
   }
 
