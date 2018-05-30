@@ -46,7 +46,8 @@ export class TabsPage extends FLP_Lifecycle {
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public r2: Renderer2,
-    private elRef: ElementRef,
+    public elRef: ElementRef,
+    public cdRef: ChangeDetectorRef,
   ) {
     super();
     translateService
@@ -69,26 +70,27 @@ export class TabsPage extends FLP_Lifecycle {
   pageItemQueryList!: NodeListOf<HTMLDivElement>;
   selectedTabPageContainer?: HTMLDivElement;
   selectedTabPage?: FirstLevelPage;
+  selectedIndex = -1;
   selectTab(index: number) {
-    const tabPageContainer = this.pageItemQueryList[index];
-    if (tabPageContainer === this.selectedTabPageContainer) {
+    if (this.selectedIndex === index) {
       return;
     }
+    const tabPageContainer = this.pageItemQueryList[index];
     const tabPage = [this.voteTab, this.chainTab, this.payTab, this.accountTab][
       index
     ];
     const perTabPage = this.selectedTabPage;
     if (perTabPage) {
       perTabPage.ionViewWillLeave();
-      this.raf(() => {
+      // this.raf(() => {
         perTabPage.ionViewDidLeave();
-      });
+      // });
     }
 
     tabPage.ionViewWillEnter();
-    this.raf(() => {
+    // this.raf(() => {
       tabPage.ionViewDidEnter();
-    });
+    // });
     // 页面切换动画
     const perTabPageContainer = this.selectedTabPageContainer;
     if (perTabPageContainer) {
@@ -99,6 +101,7 @@ export class TabsPage extends FLP_Lifecycle {
     // 更新缓存
     this.selectedTabPageContainer = tabPageContainer;
     this.selectedTabPage = tabPage;
+    this.selectedIndex = index;
   }
   @TabsPage.afterContentInit
   initTabView() {
@@ -109,6 +112,7 @@ export class TabsPage extends FLP_Lifecycle {
           "tabs:setBgTransparent",
           this.setBgTransparent.bind(this),
         );
+        tabPage.event.on("tabs:hideTabs", this.hideTabs.bind(this));
       },
     );
     // 初始化QueryList对象
@@ -129,15 +133,12 @@ export class TabsPage extends FLP_Lifecycle {
   private _hidden_tabs = new Set();
   @ViewChild(Tabs) tabs!: Tabs;
   hideTabs(hidden: boolean, key: string) {
-    if (this.tabs) {
-      if (hidden) {
-        this._hidden_tabs.add(key);
-      } else {
-        this._hidden_tabs.delete(key);
-      }
-      // console.log(this._hidden_tabs.size);
-      this.tabs.setTabbarHidden(this._hidden_tabs.size > 0);
+    if (hidden) {
+      this._hidden_tabs.add(key);
+    } else {
+      this._hidden_tabs.delete(key);
     }
+    this.cdRef.markForCheck();
   }
   getTabsHidden() {
     return this._hidden_tabs.size > 0;
@@ -150,6 +151,7 @@ export class TabsPage extends FLP_Lifecycle {
     } else {
       this._transparent_tabs.delete(key);
     }
+    this.cdRef.markForCheck();
   }
   getBgTransparent() {
     return this._transparent_tabs.size > 0;

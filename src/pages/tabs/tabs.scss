@@ -16,9 +16,9 @@ page-tabs {
   .tabs {
     position: absolute;
     bottom: 0;
-    height: 4.2rem;
-    height: calc(4.2rem + #{constant(safe-area-inset-bottom)});
-    height: calc(4.2rem + #{env(safe-area-inset-bottom)});
+    height: 4.812rem;
+    height: calc(4.812rem + #{constant(safe-area-inset-bottom)});
+    height: calc(4.812rem + #{env(safe-area-inset-bottom)});
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -31,6 +31,140 @@ page-tabs {
       border-top-color: transparent;
       background: transparent;
       backdrop-filter: none;
+    }
+    &.power-saving {
+      .tab-item.selected {
+        &::after {
+          animation: none !important;
+        }
+      }
+    }
+  }
+
+  .tab-item {
+    flex: 1;
+    color: #7b7b7b !important;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    .tab-title {
+      color: inherit !important;
+      font-size: 1.2rem;
+      transform: scale(0.8);
+    }
+
+    .tab-icon {
+      color: inherit !important;
+      font-size: 1.9rem;
+    }
+  }
+  .tab-item.selected {
+    color: #fff !important;
+    &::before {
+      content: " ";
+      width: 12vw;
+      height: 0%;
+      padding-bottom: 12vw;
+      font-size: 0;
+      position: absolute;
+      transform: rotate(45deg);
+      border-radius: 38%;
+      z-index: -1;
+      top: calc(50% - 6vw);
+      left: calc(50% - 6vw);
+    }
+    &::after {
+      content: " ";
+      width: 12.4vw;
+      height: 0%;
+      padding-bottom: 12.4vw;
+      font-size: 0;
+      position: absolute;
+      top: calc(50% - 6.2vw);
+      left: calc(50% - 6.2vw);
+      transform: rotate(0deg);
+      border-radius: 38%;
+      z-index: -2;
+      animation-duration: 8s;
+      animation-name: rotate-tab-bg;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-fill-mode: forwards;
+      animation-direction: normal;
+    }
+    @keyframes rotate-tab-bg {
+      0% {
+        transform: rotate(0deg);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(1.1) rotate(180deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  .tab-item.selected {
+    &:nth-child(1) {
+      &::before {
+        background: linear-gradient(to right bottom, #fec849 0%, #f78566 100%);
+      }
+      &::after {
+        background: rgba(#ffdb55, 0.6);
+      }
+    }
+  }
+
+  .tab-item.selected {
+    &:nth-child(2) {
+      &::before {
+        background: linear-gradient(
+          to right bottom,
+          #67f4e0 0%,
+          #67e2ef 50%,
+          #66d2fc 100%
+        );
+      }
+      &::after {
+        background: rgba(#54e9ef, 0.6);
+      }
+    }
+  }
+
+  .tab-item.selected {
+    &:nth-child(3) {
+      &::before {
+        background: linear-gradient(
+          to right bottom,
+          #3cdfdc 0%,
+          #7cddad 50%,
+          #eeda64 100%
+        );
+      }
+      &::after {
+        background: rgba(#73e2cc, 0.6);
+      }
+    }
+  }
+
+  .tab-item.selected {
+    &:nth-child(4) {
+      &::before {
+        background: linear-gradient(
+          to right bottom,
+          #ff5b5a 0%,
+          #ff7b67 50%,
+          #ff9f77 100%
+        );
+      }
+      &::after {
+        background: rgba(#ff5b5a, 0.6);
+      }
     }
   }
 }
