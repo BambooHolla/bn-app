@@ -180,6 +180,7 @@ export class BenefitServiceProvider extends CommonService {
   async getBenefitsByPage(
     page: number,
     pageSize: number,
+    address = this.user.address,
   ): Promise<TYPE.BenefitModel[]> {
     if (this._topBenefits && this._topBenefits.length) {
       const from = (page - 1) * pageSize;
@@ -192,6 +193,7 @@ export class BenefitServiceProvider extends CommonService {
     return this.getBenefits({
       page,
       pageSize,
+      address,
     });
   }
 
