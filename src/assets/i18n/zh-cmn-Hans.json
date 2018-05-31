@@ -556,6 +556,7 @@
   "account already has username": "您已经设置了用户名",
   "change username error": "用户名设置出错",
   "this username has already exist": "用户名已存在",
+  "Second passphrase verified error": "支付密码验证出错",
 
   "//": "OVER"
 }

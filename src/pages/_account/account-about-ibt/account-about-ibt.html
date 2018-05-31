@@ -1,16 +1,25 @@
-<ion-header class="custom-ani-header">
+<ion-header></ion-header>
+<ion-content>
+  <div class="sticky-title">
+    <div class="left">
+      <button class="back-button" (tap)="navCtrl.pop()">
+        <ion-icon name="ios-arrow-back"></ion-icon>
+      </button>
+    </div>
+    <div class="center">{{'ACCOUNT-ABOUT-IBT'|translate}}</div>
+    <div class="right"></div>
+  </div>
   <div class="bg-img"></div>
-  <ion-navbar color="transparent">
-    <ion-title>{{'ACCOUNT-ABOUT-IBT'|translate}}</ion-title>
-  </ion-navbar>
-  <div class="info-wrapper" (press)="showVersionInfo()">
-    <div class="info">
-      <img class="logo" src="assets/imgs/about-ibt/ifmchain-logo-and-title.png" alt="IFMCHAIN"/>
-      <div>{{'ABOUT_IBT_INFO'|translate}}</div>
+  <div class="bg-color"></div>
+  <div class="static-header">
+    <div class="info-wrapper" (press)="showVersionInfo()">
+      <div class="info">
+        <img class="logo" src="assets/imgs/about-ibt/ifmchain-logo-and-title.png" alt="IFMCHAIN" />
+        <div class="version-info">v{{version}}</div>
+        <div>{{'ABOUT_IBT_INFO'|translate}}</div>
+      </div>
     </div>
   </div>
-</ion-header>
-<ion-content>
   <div class="news-list">
     <div class="flag">IFMCHAIN新闻</div>
     <div class="news-item" *ngFor="let news of news_list" (click)="routeTo('account-news-detail',{news:news})">

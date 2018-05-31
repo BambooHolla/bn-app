@@ -12,7 +12,7 @@
     <page-tab-account #accountTab class="page-item"></page-tab-account>
   </div>
 </div>
-<div class="tabs" [class.transparent-bg]="getBgTransparent()" [class.force-hidden]="getTabsHidden()" [class.power-saving]="is_power_saving_mode">
+<div class="tabs" [class.transparent-bg]="getBgTransparent()" [class.force-hidden]="getTabsHidden()" [class.power-saving]="is_power_saving_mode" [ngClass]="'in-'+selectedIndex">
   <div class="tab-item" [class.selected]="selectedIndex==0" (tap)="selectTab(0)">
     <ali-icon class="tab-icon" name="ifm-wakuang"></ali-icon>
     <div class="tab-title">{{tab1Title}}</div>

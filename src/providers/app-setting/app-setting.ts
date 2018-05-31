@@ -94,8 +94,12 @@ export class AppSettingProvider extends CommonService {
     // 将setting与本地存储进行关联
     for (let key in this.settings) {
       const get_s_key = () =>
-        this.user.address &&
-        AppSettingProvider.SETTING_KEY_PERFIX + key + ":" + this.user.address;
+        this.user.address
+          ? AppSettingProvider.SETTING_KEY_PERFIX +
+            key +
+            ":" +
+            this.user.address
+          : undefined;
       const default_value = default_settings[key];
       Object.defineProperty(this.settings, key, {
         get: () => {
@@ -171,19 +175,24 @@ export class AppSettingProvider extends CommonService {
         if (this.force_play_sound) {
           _play.apply(this, args);
         }
-      } as any
+      } as any;
       const toggle_play = is_play_sound => {
         PIXI.sound.play = is_play_sound ? _play : noop;
       };
       this.on("changed@setting.sound_effect", toggle_play);
     }
     // 触发配置
-    {
+    this.account_address.distinctUntilChanged().subscribe(() => {
       const cur_setting = { ...this.settings };
+      console.log(
+        "%c新用户登录，配置重新生效",
+        "color:purple;font-size:1.6em;",
+        cur_setting,
+      );
       for (let k in cur_setting) {
         this.settings[k] = cur_setting[k];
       }
-    }
+    });
 
     // 测试网络角标内容
     let ani_flag_frame_id;
