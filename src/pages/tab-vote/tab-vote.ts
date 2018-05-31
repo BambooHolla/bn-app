@@ -104,6 +104,13 @@ export class TabVotePage extends FirstLevelPage {
       this.autoStartButtonPressOut(); // 取消按钮动画，必要的话
     });
   }
+  get miningReward() {
+    return (
+      parseInt(this.userInfo.userInfo.votingReward) +
+      parseInt(this.userInfo.userInfo.forgingReward)
+    );
+  }
+
   @TabVotePage.autoUnsubscribe({ ignore_did_leve: true })
   private _vote_status_sub!: Subscription;
   @TabVotePage.didEnter
