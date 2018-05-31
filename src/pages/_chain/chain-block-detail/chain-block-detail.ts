@@ -27,7 +27,6 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public blockService: BlockServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
-    this.auto_header_shadow_when_scroll_down = true;
     this.enable_timeago_clock = true;
   }
   isShowFullDate(timestamp: number) {

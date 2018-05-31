@@ -15,7 +15,7 @@
           </div>
           <div class="create-time">
             <ng-container *ngIf="isShowFullDate(block_info?.timestamp);else showTimeAgo">
-              {{block_info?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm"}}  
+              {{block_info?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm"}}
             </ng-container>
             <ng-template #showTimeAgo>
               {{block_info?.timestamp|timestamp|amLocale:localName|amTimeAgo}}
@@ -97,15 +97,13 @@
       </div>
     </div>
   </div>
-  
   <div class="trans-logs">
     <div class="header">
       <ali-icon name="ifm-tran-history"></ali-icon>
       {{'BLOCK_transactions'|translate}}
     </div>
     <!-- TODO: 对于自己的交易，优化显示效果 -->
-    <ion-content class="list" ion-content-scroll-shadow [scroll-parent-ion-content-first]="parentContent">
-
+    <div class="list">
       <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
         <div class="left">
           <div class="tran-type">
@@ -132,12 +130,12 @@
         </div>
       </div>
       <div class="empty-list" *ngIf="tran_list.length==0&&tran_list_config.loading==false">
-        <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST'|translate"/>
+        <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST'|translate" />
         <div class="message">{{'BLOCK_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreTranLogs())" [enabled]="tran_list_config.has_more">
         <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
-    </ion-content>
+    </div>
   </div>
 </ion-content>
