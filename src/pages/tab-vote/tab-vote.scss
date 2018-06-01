@@ -778,10 +778,11 @@ page-tab-vote {
       position: fixed;
       top: 0;
       left: 0;
+      right: 0;
+      bottom: 0;
       padding: 0;
       padding-bottom: 2rem;
       backdrop-filter: blur(2px);
-      bottom: 0;
       .panel-list {
         .panel-item {
           border-radius: 1.2rem;
@@ -793,9 +794,6 @@ page-tab-vote {
         left: 0;
         width: 100%;
         z-index: 10;
-        /* transition-duration: 0.5s;
-    transition-delay: 0.5s; */
-        backdrop-filter: blur(2px);
         display: flex;
         justify-content: center;
         pointer-events: all;
