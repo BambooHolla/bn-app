@@ -38,6 +38,12 @@ page-tab-vote {
     animation-timing-function: linear;
     animation-duration: 280s * 2;
     animation-iteration-count: infinite;
+    background-color: #fff;
+  }
+  &.hide-tab {
+    &::before {
+      visibility: hidden;
+    }
   }
   > .content-ios {
     background: none;
@@ -756,7 +762,7 @@ page-tab-vote {
     width: 100%;
     opacity: 0;
     pointer-events: none;
-    transition-duration: 0.5s;
+    // transition-duration: 0.5s;
     transform: scale(0);
     &.vote-detail {
       opacity: 1;
@@ -775,11 +781,47 @@ page-tab-vote {
       padding: 0;
       padding-bottom: 2rem;
       backdrop-filter: blur(2px);
+      bottom: 0;
       .panel-list {
         .panel-item {
           border-radius: 1.2rem;
         }
       }
+      > .bottom-toolbar {
+        position: absolute;
+        bottom: 0.6rem;
+        left: 0;
+        width: 100%;
+        z-index: 10;
+        /* transition-duration: 0.5s;
+    transition-delay: 0.5s; */
+        backdrop-filter: blur(2px);
+        display: flex;
+        justify-content: center;
+        pointer-events: all;
+        > .model-close {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 5.3rem;
+          /* margin-bottom: 1rem; */
+          color: #b9b9b9;
+          background-color: transparent;
+          padding: 0;
+          border: 0;
+          &:active {
+            > ali-icon {
+              /* transform: rotate(360deg); */
+              transition-duration: 0.25s;
+              color: #999999;
+              transform: scale(1.05);
+            }
+          }
+        }
+      }
+    }
+    > .bottom-toolbar {
+      display: none;
     }
     .panel-list {
       .panel-item {
@@ -834,15 +876,22 @@ page-tab-vote {
   }
   .wave-container {
     position: absolute;
-    top: 100vh;
+    // top: 100vh;
+    // overflow: hidden;
     margin-top: auto;
-    padding: 1.5rem 0 0.6rem 0;
+    // padding: 1.5rem 0 0.6rem 0;
+    box-sizing: content-box;
+    padding-top: calc(11.1vw + 4vh);
+
     width: 100%;
     z-index: -1;
     // min-height: calc(#{$panel-min-height} + 5rem);
-    max-height: calc(#{$panel-max-height} + 5rem);
-    height: calc(#{$panel-height} + 4rem);
-    /* transition-duration: 0.2s; */
+    height: calc(#{$panel-height} + 4rem - 15.2121vw);
+    overflow: hidden;
+
+    bottom: 15.2121vw;
+    bottom: calc(15.2121vw + #{constant(safe-area-inset-top)});
+    bottom: calc(15.2121vw + #{env(safe-area-inset-top)});
     .wave {
       transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: absolute;
@@ -853,6 +902,7 @@ page-tab-vote {
       width: 100vw;
       z-index: -1;
       color: #fff;
+      margin-top: calc(11.1vw + 4vh + 1rem);
       background-color: currentColor;
       .font-end {
         position: absolute;
@@ -866,18 +916,6 @@ page-tab-vote {
         mask-position: -50vw 0;
         mask-repeat: repeat-x;
         z-index: -1;
-        /* filter: drop-shadow(0rem 0.1rem 0rem currentcolor); */
-        /* transform-origin: 50% 0%; */
-        /* transform: scaleY(0.7); */
-        /* &::after {
-          content: " ";
-          height: 110%;
-          width: 100%;
-          position: absolute;
-          bottom: -100%;
-          left: 0;
-          background-color: currentColor;
-        } */
       }
     }
     .wave-1 {
@@ -938,13 +976,13 @@ page-tab-vote {
     &.extends-panel {
       /* transform: translateY(0%); */
       .wave-1 {
-        transform: translateY(-100%) translateZ(0);;
+        transform: translateY(0%) translateZ(0);
       }
       .wave-2 {
-        transform: translateY(-100%) translateZ(0);;
+        transform: translateY(0%) translateZ(0);
       }
       .wave-3 {
-        transform: translateY(-100%) translateZ(0);;
+        transform: translateY(0%) translateZ(0);
       }
     }
   }

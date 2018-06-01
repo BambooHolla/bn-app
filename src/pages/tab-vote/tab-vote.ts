@@ -175,6 +175,17 @@ export class TabVotePage extends FirstLevelPage {
   setBgTransparent(is_tran: boolean) {
     this.event.emit("tabs:setBgTransparent", is_tran, this.cname);
   }
+  @TabVotePage.didEnter
+  hiddenTab() {
+    this.setTabHidden(this.page_status === VotePage.ExtendsPanel);
+  }
+  @TabVotePage.didEnter
+  recoverTab() {
+    this.setTabHidden(false);
+  }
+  setTabHidden(is_hide: boolean) {
+    this.event.emit("tabs:hideTabs", is_hide, this.cname);
+  }
 
   @ViewChild("aniWrapper") aniWrapper?: ElementRef;
   @TabVotePage.onInit
@@ -651,6 +662,12 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   ExtendsPanel = ExtendsPanel;
+
+  @HostBinding("class.hide-tab")
+  get in_exntend_panel() {
+    return this.page_status == VotePage.ExtendsPanel;
+  }
+
   openExtendsPanel(panel: ExtendsPanel) {
     if (this.page_status == VotePage.ExtendsPanel) {
       return;
@@ -660,11 +677,12 @@ export class TabVotePage extends FirstLevelPage {
       is_force_stop_chain_mesh: true,
       is_keep_mining_person_sound: true,
     });
-    CoverTabsCtrlModelPage.open(this, {
-      onclose: () => {
-        this.routeToVoteDetail();
-      },
-    });
+    this.hiddenTab();
+  }
+
+  closeExtendsPanel() {
+    this.routeToVoteDetail();
+    this.recoverTab();
   }
   /** 监听轮次变动
    *  停止相关的动画
