@@ -390,16 +390,42 @@ export class BlockServiceProvider extends FLP_Tool {
    * 判断当前的块是否延迟，返回块数组
    * @param list
    */
-  blockListHandle(list: TYPE.BlockModel[]): TYPE.BlockModel[] {
+  blockListHandle(
+    list: TYPE.BlockModel[],
+    per_item?: TYPE.BlockModel,
+    end_item?: TYPE.BlockModel,
+  ): TYPE.BlockModel[] {
     const { BLOCK_UNIT_TIME } = this.appSetting;
     const BLOCK_UNIT_SECONED = BLOCK_UNIT_TIME / 1000;
-    for (let i = 0; i < list.length - 1; i++) {
-      if (list[i].timestamp > list[i + 1].timestamp + BLOCK_UNIT_SECONED) {
-        list[i].delay = true;
-      } else {
-        list[i].delay = false;
-      }
+    let i = -1;
+    if (!per_item) {
+      i += 1;
+      per_item = list[i];
     }
+    while (true) {
+      i += 1;
+      const cur_item = list[i] || end_item;
+      if (!cur_item) {
+        break;
+      }
+      if (per_item.timestamp > cur_item.timestamp + BLOCK_UNIT_SECONED) {
+        per_item.delay = true;
+      } else {
+        per_item.delay = false;
+      }
+
+      if (cur_item === end_item) {
+        break;
+      }
+      per_item = cur_item;
+    }
+    // for (let i = 0; i < list.length - 1; i++) {
+    //   if (list[i].timestamp > list[i + 1].timestamp + BLOCK_UNIT_SECONED) {
+    //     list[i].delay = true;
+    //   } else {
+    //     list[i].delay = false;
+    //   }
+    // }
     return list;
   }
 

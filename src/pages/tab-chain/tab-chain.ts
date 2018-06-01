@@ -148,9 +148,20 @@ export class TabChainPage extends FirstLevelPage {
         throw new RangeError("the length of get block list is outof range");
       }
 
-      const list = this.blockService.blockListHandle(
-        await this.blockService.getTopBlocks(size_length),
-      );
+      const top_blocks_list = await this.blockService.getTopBlocks(size_length);
+      let list: BlockModel[];
+      if (increment) {
+        // 添加到头部
+        list = this.blockService.blockListHandle(
+          top_blocks_list,
+          undefined,
+          this.top_block,
+        );
+      } else {
+        // 整体替换
+        list = this.blockService.blockListHandle(top_blocks_list);
+      }
+
       if (increment) {
         // 增量更新
         if (this.block_list[0] === fakeBlock) {
@@ -248,10 +259,12 @@ export class TabChainPage extends FirstLevelPage {
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {
     const tasks: Promise<any>[] = [];
-    if (this.block_list.length === 0) {
+
+    const top_block = this.top_block;
+    if (!top_block) {
       tasks[tasks.length] = this.loadBlockList();
     } else {
-      const current_length = this.block_list[1].height;
+      const current_length = top_block.height;
       // TODO：暂停预期块的动画=>实现块进入的动画=>再次开启预期块的动画
       if (current_length < height) {
         // 增量更新
@@ -268,6 +281,14 @@ export class TabChainPage extends FirstLevelPage {
     tasks[tasks.length] = this.loadUnconfirmBlock();
     await Promise.all(tasks);
     this.cdRef.markForCheck();
+  }
+  get top_block() {
+    for (let i = 0; i < this.block_list.length; i += 1) {
+      const block = this.block_list[i];
+      if (!block.fake) {
+        return block;
+      }
+    }
   }
 
   pullToTop() {

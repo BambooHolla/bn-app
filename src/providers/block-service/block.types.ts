@@ -14,6 +14,7 @@ export interface BlockModel extends SingleBlockModel {
   confirmations: string;
   totalForged: string;
   delay?: boolean;
+  fake?: boolean;
 }
 
 export interface SingleBlockModel {
