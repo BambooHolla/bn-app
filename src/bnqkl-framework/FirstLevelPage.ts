@@ -453,6 +453,30 @@ export class FirstLevelPage extends FLP_Data {
   _fuck_ios_bug_placeholder_ele = document.createComment(
     this.cname + " header placeholder",
   );
+
+  private _android_sticky_placeholder_wm = new WeakMap();
+  @FirstLevelPage.onInit
+  _fixAndroidPositionSticky() {
+    if (!this.content || !this.isAndroid) {
+      return;
+    }
+    const root = this.content.getScrollElement().parentElement as HTMLElement;
+    const stickyElementList = root.querySelectorAll(".fix-sticky");
+    const { _android_sticky_placeholder_wm } = this;
+    for (let i = 0; i < stickyElementList.length; i += 1) {
+      const sticky_ele = stickyElementList[i];
+      let placeholder_ele = _android_sticky_placeholder_wm.get(sticky_ele);
+      if (!placeholder_ele) {
+        placeholder_ele = document.createComment("sticky-pl");
+        _android_sticky_placeholder_wm.set(sticky_ele, placeholder_ele);
+        root.addEventListener("scroll", () => {
+          const parentEle = sticky_ele.parentElement as HTMLElement;
+          parentEle.replaceChild(placeholder_ele, sticky_ele);
+          parentEle.replaceChild(sticky_ele, placeholder_ele);
+        });
+      }
+    }
+  }
   setElementAnimateDelay(ele: HTMLElement, second?: number | null) {
     if (typeof second === "number") {
       ele.style.animationDelay = second + "s";

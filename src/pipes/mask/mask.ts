@@ -1,21 +1,22 @@
 import { Pipe, PipeTransform } from "@angular/core";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { UserInfoProvider } from "../../providers/user-info/user-info";
+import { TranslateService } from "@ngx-translate/core";
 
-/**
- * Generated class for the MaskPipe pipe.
- *
- * See https://angular.io/api/core/Pipe for more info on Angular Pipes.
- */
 @Pipe({
   name: "mask",
 })
 export class MaskPipe implements PipeTransform {
-  /**
-   * Takes a value and makes it lowercase.
-   */
+  @FLP_Tool.FromGlobal translate!: TranslateService;
+  @FLP_Tool.FromGlobal userInfo!: UserInfoProvider;
+
   transform(value: string, ...args) {
     if (typeof value === "string" && args[0].indexOf("@") === 0) {
       const type = args[0].substr(1);
       if (type === "address") {
+        if (value === this.userInfo.address) {
+          return `<span class="address-is-me">${FLP_Tool.getTranslateSync("ME")}</span>`;
+        }
         return (
           value.substr(0, 4) +
           "<span class='hide-content'>**</span>" +

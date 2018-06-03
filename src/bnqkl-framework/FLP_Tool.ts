@@ -314,6 +314,12 @@ export class FLP_Tool {
   getTranslateSync(key: string | string[], interpolateParams?: Object) {
     return this.translate.instant(key, interpolateParams);
   }
+  static getTranslateSync(key: string | string[], interpolateParams?: Object) {
+    return (window["translate"] as TranslateService).instant(
+      key,
+      interpolateParams,
+    );
+  }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
   static removeProtoArray = removeProtoArray;
