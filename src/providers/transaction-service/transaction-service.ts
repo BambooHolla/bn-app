@@ -97,6 +97,9 @@ export class TransactionServiceProvider {
     "/api/transactions/getslottime",
   );
   readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions");
+  readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL(
+    "/api/transactions/query",
+  );
 
   getTransactionLink(type) {
     switch (type) {
@@ -325,7 +328,7 @@ export class TransactionServiceProvider {
     address: string,
     page = 1,
     pageSize = 10,
-    in_or_out: "in" | "out",
+    in_or_out?: "in" | "out" | "or",
     type?: TransactionTypes,
   ) {
     const offset = (page - 1) * pageSize;
@@ -360,23 +363,34 @@ export class TransactionServiceProvider {
     address: string,
     offset: number,
     limit: number,
-    in_or_out: "in" | "out",
+    in_or_out?: "in" | "out" | "or",
     type?: TransactionTypes,
     extend_query: any = {},
   ) {
-    var query = {
-      senderId: in_or_out !== "in" ? address : undefined,
-      recipientId: in_or_out !== "out" ? address : undefined,
-      offset,
-      limit,
-      orderBy: "t_timestamp:desc",
-      type,
-      ...extend_query,
-    };
-
-    let data = await this.getTransactions(query);
-
-    return data.transactions;
+    if (in_or_out !== "or") {
+      const data = await this.getTransactions({
+        senderId: in_or_out !== "in" ? address : undefined,
+        recipientId: in_or_out !== "out" ? address : undefined,
+        offset,
+        limit,
+        orderBy: "t_timestamp:desc",
+        type,
+        ...extend_query,
+      });
+      return data.transactions;
+    } else {
+      const data = await this.queryTransaction(
+        {
+          $or: [{ senderId: address }, { recipientId: address }],
+        },
+        {
+          timestamp: -1,
+        },
+        offset,
+        limit,
+      );
+      return data.transactions;
+    }
   }
   // 默认缓存10条
   default_user_in_transactions_pageSize = 10;
@@ -522,6 +536,19 @@ export class TransactionServiceProvider {
 
     return data;
   }
+  async queryTransaction(query, order, offset?: number, limit?: number) {
+    return this.fetch.get<TYPE.QueryTransactionsResModel>(
+      this.QUERY_TRANSACTIONS,
+      {
+        search: {
+          query,
+          order,
+          limit,
+          offset,
+        },
+      },
+    );
+  }
 
   /**
    * 根据时间逆序获得交易
@@ -607,7 +634,7 @@ export class TransactionServiceProvider {
    */
   async verifyPassphrase(passphrase) {
     let keypair = this.keypairService.create(passphrase);
-    if (this.user.publicKey === keypair.publicKey.toString('hex')) {
+    if (this.user.publicKey === keypair.publicKey.toString("hex")) {
       return true;
     } else {
       return false;
