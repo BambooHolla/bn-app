@@ -30,7 +30,7 @@
         {{transaction?.blockId}}
       </div>
     </div>
-    <div class="common-item amount">
+    <div class="common-item amount" *ngIf="transaction?.amount!='0'">
       <div class="left">
         {{'TRANSACTION_amount'|translate}}
       </div>
@@ -39,7 +39,7 @@
         <div class="unit">IBT</div>
       </div>
     </div>
-    <div class="common-item fee">
+    <div class="common-item fee" *ngIf="transaction?.amount!='0'">
       <div class="left">
         {{'TRANSACTION_fee'|translate}}
       </div>
@@ -82,7 +82,7 @@
         <div class="content">{{transaction?.senderId}}</div>
       </div>
     </div>
-    <div class="common-item receiver" [click-to-copy]="transaction?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}">
+    <div class="common-item receiver" *ngIf="transaction?.recipientId" [click-to-copy]="transaction?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}">
       <div class="left">
         <div class="title">{{'TRANSCATION_RECIPIENT'|translate}}</div>
         <div class="content">{{transaction?.recipientId}}</div>
