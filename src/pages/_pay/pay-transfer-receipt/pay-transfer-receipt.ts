@@ -81,8 +81,8 @@ export class PayTransferReceiptPage extends SecondLevelPage {
       const t = tr.style.transform;
       tr.style.transform = "scale(1)";
       const toimage_promise = this.domtoimage.toJpeg(tr, {
-        width: tr.clientWidth,
-        height: tr.clientHeight,
+        width: tr.clientWidth * window.devicePixelRatio,
+        height: tr.clientHeight * window.devicePixelRatio,
       });
       this.raf(() => {
         tr.style.transform = t;
