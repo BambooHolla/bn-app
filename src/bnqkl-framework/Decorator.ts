@@ -56,12 +56,19 @@ export function translateMessage(self: FLP_Tool, message: any, arg: any) {
   });
 }
 
+export interface ErrorAlertOptions extends AlertOptions {
+  independent?: boolean;
+}
+export type ErrorOptions =
+  | ErrorAlertOptions
+  | ((self: FLP_Tool) => ErrorAlertOptions)
+  | ((self: FLP_Tool) => Promise<ErrorAlertOptions>);
+/** 默认情况下，同样的错误信息只显示一个，除非指定 independent 为true*/
+const ERROR_LAYER_MAP = new Map<string, Alert | Modal>();
+
 export function asyncErrorWrapGenerator(
   error_title: any = () => FLP_Tool.getTranslate("ERROR"),
-  opts?:
-    | AlertOptions
-    | ((self: FLP_Tool) => AlertOptions)
-    | ((self: FLP_Tool) => Promise<AlertOptions>),
+  opts?: ErrorOptions,
   hidden_when_page_leaved = true,
   keep_throw = false,
   dialogGenerator?: (
@@ -125,6 +132,11 @@ export function asyncErrorWrapGenerator(
                 return {
                   present() {
                     alert(params.title);
+                    this.__did_dismiss_cb_list.forEach(cb => cb());
+                  },
+                  __did_dismiss_cb_list: [],
+                  onDidDismiss(cb) {
+                    this.__did_dismiss_cb_list.push(cb);
                   },
                 } as any;
               };
@@ -142,20 +154,42 @@ export function asyncErrorWrapGenerator(
             error_title,
             err_msg,
             opts instanceof Function ? opts(this) : opts,
-          ]).then(([error_title, err_msg, opts]) => {
-            const present_able = _dialogGenerator(
-              Object.assign(
+          ]).then(
+            ([error_title, err_msg, opts]: [
+              string,
+              string,
+              ErrorAlertOptions | undefined
+            ]) => {
+              const dialog_opts = Object.assign(
                 {
                   title: String(error_title),
                   subTitle: String(err_msg),
                   buttons: [getTranslateSync("OK")],
                 },
                 opts,
-              ),
-              this,
-            );
-            Promise.resolve<Modal | Alert>(present_able).then(p => p.present());
-          });
+              );
+              const present_able = _dialogGenerator(dialog_opts, this);
+              Promise.resolve<Modal | Alert>(present_able).then(p => {
+                if (opts && opts.independent) {
+                  p.present();
+                } else {
+                  const p_key = JSON.stringify(opts);
+                  if (!ERROR_LAYER_MAP.has(p_key)) {
+                    // 如果已经有了，那么就不用在弹出了
+                    ERROR_LAYER_MAP.set(p_key, p);
+                    p.present();
+                    p.onDidDismiss(() => {
+                      FLP_Tool.raf(() => {
+                        ERROR_LAYER_MAP.delete(p_key);
+                      });
+                    });
+                  } else {
+                    console.warn("弹出层已经存在，不重复弹出", dialog_opts);
+                  }
+                }
+              });
+            },
+          );
           return getErrorFromAsyncerror(keep_throw);
         });
     };
@@ -232,7 +266,7 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
 export function asyncLoadingWrapGenerator(
   loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
-  opts?: LoadingOptions&{dismiss_hanlder_name?:string},
+  opts?: LoadingOptions & { dismiss_hanlder_name?: string },
   id?: string,
 ) {
   if (id) {
@@ -343,7 +377,7 @@ export function asyncLoadingWrapGenerator(
           loading["_my_dismiss"]();
         }
       };
-      if(loadingOpts.dismiss_hanlder_name){
+      if (loadingOpts.dismiss_hanlder_name) {
         this[loadingOpts.dismiss_hanlder_name] = loading_dismiss;
       }
       if ("PAGE_STATUS" in this) {
@@ -492,10 +526,7 @@ export const asyncCtrlGenerator = {
   retry: autoRetryWrapGenerator,
   error(
     error_title?: any,
-    opts?:
-      | AlertOptions
-      | ((self: FLP_Tool) => AlertOptions)
-      | ((self: FLP_Tool) => Promise<AlertOptions>),
+    opts?: ErrorOptions,
     hidden_when_page_leaved?: boolean,
     keep_throw?: boolean,
   ) {

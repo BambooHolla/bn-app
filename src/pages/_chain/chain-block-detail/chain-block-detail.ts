@@ -121,14 +121,17 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     }
   }
 
-  @asyncCtrlGenerator.error(() =>
-    ChainBlockDetailPage.getTranslate("LOAD_MORE_TRANSACTION_LIST_ERROR"),
-  )
+  @asyncCtrlGenerator.error("@@LOAD_MORE_TRANSACTION_LIST_ERROR")
   async loadMoreTranLogs() {
     const { block_info, tran_list_config, tran_list } = this;
 
     tran_list_config.page += 1;
     const transaction_list = await this._loadTranLogs();
     tran_list.push(...transaction_list);
+  }
+
+  @asyncCtrlGenerator.error("QAQ")
+  async testOneDialog() {
+    throw "hehha";
   }
 }
