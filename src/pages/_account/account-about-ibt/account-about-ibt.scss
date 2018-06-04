@@ -44,7 +44,7 @@ page-account-about-ibt {
       text-align: center;
     }
     > .left {
-      transform: translateX(4vw);
+      transform: translateX(1.6vw);
       .back-button {
         width: 100%;
         height: 100%;
@@ -62,7 +62,7 @@ page-account-about-ibt {
     left: 0;
     z-index: 3;
     width: 100vw;
-    height: 77.6vw;// 已知的图片比例
+    height: 77.6vw; // 已知的图片比例
     background-position: center top;
     background-image: url(../assets/imgs/about-ibt/header-bg.jpg);
     background-size: contain;
