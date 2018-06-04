@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="list-wrapper">
-    <virtual-scroll #vscroll class="block-list" [list-ani]="_is_into_second_page?'linkChain':''" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
+    <virtual-scroll #vscroll class="block-list" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
       <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeToChainBlockDetail(block)" [attr.data-height]="block.height" [class.fake]="block.fake" [class.latest-block]="block.height==1">
         <div class="header">
           <div class="height">
