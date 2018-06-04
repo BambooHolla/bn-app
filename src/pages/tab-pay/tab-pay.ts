@@ -14,6 +14,7 @@ import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { Subscription } from "rxjs/Subscription";
+// import { Network } from '@ionic-native/network';
 
 import {
   TransactionServiceProvider,
@@ -38,7 +39,7 @@ export class TabPayPage extends FirstLevelPage {
     public navParams: NavParams,
     // public transfer: TransferProvider,
     public transactionService: TransactionServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef, // public network: Network
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
@@ -92,25 +93,29 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.error()
   async submit() {
     const { password, pay_pwd } = await this.getUserPassword();
-    const { transfer } = await this._submit(
-      password,
-      pay_pwd,
-      this.formData.transfer_fee,
-    );
-    this.resetFormData();
-    this.showTransferReceipt(transfer);
+    let online = navigator.onLine;
+    if (online) {
+      try {
+        const { transfer } = await this._submit(
+          password,
+          pay_pwd,
+          this.formData.transfer_fee,
+        );
+        this.resetFormData();
+        this.showTransferReceipt(transfer);
+      } catch (err) {
+        console.error("online but peer no work", err);
+        online = false;
+      }
+    }
+
+    if (!online) {
+      // 离线凭证
+    }
   }
   @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
   @asyncCtrlGenerator.retry()
   async showTransferReceipt(transfer: TransactionModel) {
-    // const transfer = await Promise.all([
-    //   this.transactionService.getUnconfirmedById(transactionId),
-    //   this.transactionService
-    //     .getTransactionById(transactionId)
-    //     .catch(err => null),
-    // ]).then(ts => {
-    //   return ts.filter(t => t)[0];
-    // });
     if (!transfer) {
       throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
     }

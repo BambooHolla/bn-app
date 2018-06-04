@@ -40,7 +40,7 @@
               <!-- +timeago_clock -->
             </div>
             <div class="right">
-              {{(tran.amount||tran.fee)|amountEuler|number:"1.8-8"}}
+              {{(tran.amount!='0'?tran.amount:tran.fee)|amountEuler|number:"1.8-8"}}
             </div>
           </div>
         </div>

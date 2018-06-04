@@ -36,6 +36,7 @@
     "@ionic-native/keyboard": "^4.5.2",
     "@ionic-native/local-notifications": "^4.7.0",
     "@ionic-native/native-page-transitions": "^4.5.2",
+    "@ionic-native/network": "^4.7.0",
     "@ionic-native/network-interface": "^4.7.0",
     "@ionic-native/qr-scanner": "^4.5.3",
     "@ionic-native/screenshot": "^4.5.3",
@@ -65,6 +66,7 @@
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-media-capture": "^3.0.1",
+    "cordova-plugin-network-information": "^2.0.1",
     "cordova-plugin-networkinterface": "^2.0.0",
     "cordova-plugin-splashscreen": "^4.0.3",
     "cordova-plugin-statusbar": "^2.4.1",
@@ -149,7 +151,8 @@
       "cordova-plugin-file-opener2": {},
       "cordova-plugin-fingerprint-aio-gaubee": {},
       "cordova-plugin-local-notification": {},
-      "cordova-plugin-networkinterface": {}
+      "cordova-plugin-networkinterface": {},
+      "cordova-plugin-network-information": {}
     },
     "platforms": [
       "ios",

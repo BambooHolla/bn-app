@@ -54,7 +54,10 @@ export class FallCoinsComponent extends AniBase {
     this.on("start-animation", this.startPixiApp.bind(this));
     this.on("stop-animation", this.stopPixiApp.bind(this));
   }
+  /*是否关闭动画（声音不播放了）*/
   no_animate?: boolean;
+  /*是否跳过动画（依然播放声音）*/
+  auto_skip_animate?: boolean;
   // loop_skip = 1;// 30fps
   // 72pt = 1英寸 = 2.54 厘米
   // 1m = 2834.645669291339 pt
@@ -191,7 +194,7 @@ export class FallCoinsComponent extends AniBase {
       var _s = null;
       // 增加下落的动画
       const coin_ani = (t, diff_time) => {
-        if (this.no_animate) {
+        if (this.no_animate || this.auto_skip_animate) {
           ani.gotoAndStop(end_frame);
         } else {
           ani.gotoAndStop(ani.currentFrame + 1);
@@ -204,7 +207,7 @@ export class FallCoinsComponent extends AniBase {
         ani.y += (pre_speed + speed) / 2 * diff_second;
 
         // 到达终点，停止动画，并固定这一帧的结果
-        if (ani.y >= end_y || this.no_animate) {
+        if (ani.y >= end_y || this.no_animate || this.auto_skip_animate) {
           ani.y = end_y;
           this.removeLoop(coin_ani);
           this.raf(() => this.downForceUpdate(ani_uuid));

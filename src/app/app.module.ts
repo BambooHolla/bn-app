@@ -24,6 +24,7 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { Screenshot } from "@ionic-native/screenshot";
 import { SocialSharing } from "@ionic-native/social-sharing";
 import { FileTransfer } from "@ionic-native/file-transfer";
+import { Network } from '@ionic-native/network';
 import { NetworkInterface } from '@ionic-native/network-interface';
 import { File } from "@ionic-native/file";
 import { FileOpener } from "@ionic-native/file-opener";
@@ -190,6 +191,7 @@ const heightLevelModules = [
     Screenshot,
     SocialSharing,
     FileTransfer,
+    Network,
     NetworkInterface,
     File,
     FileOpener,
