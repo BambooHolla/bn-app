@@ -15,7 +15,11 @@ import {
 } from "ionic-angular";
 import { playSound, addSound } from "../../../components/sound";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
-addSound("scan-success", "assets/sounds/wx-scanner.wav");
+import {
+  TransactionServiceProvider,
+  TransactionTypes,
+  TransactionModel,
+} from "../../../providers/transaction-service/transaction-service";
 
 @IonicPage({ name: "account-scan-add-contact" })
 @Component({
@@ -31,6 +35,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     public viewCtrl: ViewController,
     public androidPermissions: AndroidPermissions,
     public barcodeScanner: BarcodeScanner,
+    public transactionService: TransactionServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -218,6 +223,17 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   full_view_canvas = false;
   private _handleScanRes(res: string) {
     playSound("scan-success");
+
+    const protocol_index = res.indexOf("://");
+    if (protocol_index !== -1) {
+      const protocol = res.substr(0, protocol_index);
+      const handler_key = "protocol:" + protocol;
+      if (handler_key in this) {
+        this[handler_key](res.substr(protocol_index + 3));
+        return;
+      }
+    }
+
     const mode = this.navParams.get("mode");
     if (mode === "try-to-add-contact") {
       const m = this.modalCtrl.create("account-add-contact", {
@@ -318,7 +334,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       }
       return res;
     } catch (err) {
-      console.error(err)
+      console.error(err);
       // this.result_str = err.toString();
     }
   }
@@ -363,6 +379,24 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       address,
       pay_pwd,
     );
+    this.finishJob();
+  }
+  /// 自定义协议处理
+  @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.success()
+  async ["protocol:ifmchain-transaction"](content: string) {
+    var tran: TransactionModel | undefined;
+    try {
+      tran = JSON.parse(content).T;
+    } catch (err) {}
+    if (!tran) {
+      throw new Error("PROTOCOL_PARSE_ERROR");
+    }
+    await this.transactionService.putThirdTransaction(tran);
+    this.jobRes({
+      protocol: "ifmchain-transaction",
+      transaction: tran,
+    });
     this.finishJob();
   }
 }

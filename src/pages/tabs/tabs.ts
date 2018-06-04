@@ -58,7 +58,30 @@ export class TabsPage extends FLP_Lifecycle {
         this.tab3Title = values["TAB3_TITLE"];
         this.tab4Title = values["TAB4_TITLE"];
       });
+
+    // 由于里头的tabPage不是真实的page，所以这些东西需要模拟传递
+    this.event.on("job-finished", msg => {
+      this.selectedTabPage && this.selectedTabPage.tryEmit("job-finished", msg);
+    });
   }
+  // 与当前页面共享Ionic生命周期
+  @TabsPage.willEnter
+  selectedTabPage_willEnter() {
+    this.selectedTabPage && this.selectedTabPage.ionViewWillEnter();
+  }
+  @TabsPage.didEnter
+  selectedTabPage_didEnter() {
+    this.selectedTabPage && this.selectedTabPage.ionViewDidEnter();
+  }
+  @TabsPage.willLeave
+  selectedTabPage_willLeave() {
+    this.selectedTabPage && this.selectedTabPage.ionViewWillLeave();
+  }
+  @TabsPage.didLeave
+  selectedTabPage_didLeave() {
+    this.selectedTabPage && this.selectedTabPage.ionViewDidLeave();
+  }
+
   get is_power_saving_mode() {
     return this.appSetting.settings.power_saving_mode;
   }
@@ -83,13 +106,13 @@ export class TabsPage extends FLP_Lifecycle {
     if (perTabPage) {
       perTabPage.ionViewWillLeave();
       // this.raf(() => {
-        perTabPage.ionViewDidLeave();
+      perTabPage.ionViewDidLeave();
       // });
     }
 
     tabPage.ionViewWillEnter();
     // this.raf(() => {
-      tabPage.ionViewDidEnter();
+    tabPage.ionViewDidEnter();
     // });
     // 页面切换动画
     const perTabPageContainer = this.selectedTabPageContainer;

@@ -182,17 +182,32 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTimestamp() {
-    let data = await this.fetch.get<any>(this.GET_TIMESTAMP);
+    if (navigator.onLine) {
+      return await this.fetch.get<any>(this.GET_TIMESTAMP);
+    } else {// 离线状态下，从本地生成时间戳
+      //种子的UTC时间
+      const d = new Date(
+        Date.UTC(
+          AppSettingProvider.SEED_DATE[0],
+          AppSettingProvider.SEED_DATE[1],
+          AppSettingProvider.SEED_DATE[2],
+          AppSettingProvider.SEED_DATE[3],
+          AppSettingProvider.SEED_DATE[4],
+          AppSettingProvider.SEED_DATE[5],
+          AppSettingProvider.SEED_DATE[6],
+        ),
+      );
+      //生成当前时间戳
+      const t = parseInt((d.getTime() / 1000).toString());
 
-    return data;
+      const now = parseInt((new Date().getTime() / 1000).toString());
+      return {
+        timestamp: now - t,
+      };
+    }
   }
 
-  /**
-   * 交易请求，发送
-   * @param txData
-   * @returns {Promise<boolean>}
-   */
-  async putTransaction(txData) {
+  async createTransaction(txData) {
     if (this.user.userInfo.balance <= 0) {
       throw this.fetch.ServerResError.getI18nError("not enough balance");
     }
@@ -216,20 +231,41 @@ export class TransactionServiceProvider {
       throw this.fetch.ServerResError.getI18nError("validate error");
     }
     //获取url，获取类型
-    let transactionUrl = this.appSetting
-      .APP_URL("/api/" + this.getTransactionLink(txData.type))
-      .toString();
-    console.log(transactionUrl);
+    let transactionUrl = this.appSetting.APP_URL(
+      "/api/" + this.getTransactionLink(txData.type),
+    );
+
     // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
     //获取时间戳
     let timestampRes = await this.getTimestamp();
     //时间戳加入转账对象
     txData.timestamp = timestampRes.timestamp;
     //生成转账        await上层包裹的函数需要async
-    const transaction = await promisify(
+    const transaction: TYPE.TransactionModel = await promisify(
       this.ifmJs.transaction.createTransaction,
     )(txData);
 
+    return { transactionUrl, transaction };
+  }
+
+  /**
+   * 交易请求，发送
+   * @param txData
+   * @returns {Promise<boolean>}
+   */
+  async putTransaction(txData) {
+    const { transactionUrl, transaction } = await this.createTransaction(
+      txData,
+    );
+    return this.fetch.put<TYPE.putTransactionReturn>(
+      transactionUrl,
+      transaction,
+    );
+  }
+  async putThirdTransaction(transaction: TYPE.TransactionModel) {
+    let transactionUrl = this.appSetting.APP_URL(
+      "/api/" + this.getTransactionLink(transaction.type),
+    );
     return this.fetch.put<TYPE.putTransactionReturn>(
       transactionUrl,
       transaction,
@@ -578,6 +614,34 @@ export class TransactionServiceProvider {
     let data = await this.fetch.get<any>(this.UNCONFIRMED, { search: query });
     return data.transactions;
   }
+  createTxData(
+    recipientId: string,
+    amount: any,
+    fee = parseFloat(this.appSetting.settings.default_fee),
+    password: string,
+    secondSecret?: string,
+  ) {
+    amount = parseFloat(amount);
+    if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
+      throw this.fetch.ServerResError.getI18nError("Amount error");
+    }
+    if (amount + fee > parseFloat(this.user.balance)) {
+      throw this.fetch.ServerResError.getI18nError("Amount error");
+    }
+
+    const txData: any = {
+      type: this.TransactionTypes.SEND,
+      secret: password,
+      amount: amount.toString(),
+      recipientId: recipientId,
+      publicKey: this.user.publicKey,
+      fee: fee.toString(),
+    };
+    if (secondSecret) {
+      txData.secondSecret = secondSecret;
+    }
+    return txData;
+  }
 
   /**
    * 转账交易
@@ -591,27 +655,13 @@ export class TransactionServiceProvider {
     password,
     secondSecret,
   ) {
-    amount = parseFloat(amount);
-    if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
-      throw this.fetch.ServerResError.getI18nError("Amount error");
-    }
-    if (amount + fee > parseFloat(this.user.balance)) {
-      throw this.fetch.ServerResError.getI18nError("Amount error");
-    }
-
-    let txData: any = {
-      type: this.TransactionTypes.SEND,
-      secret: password,
-      amount: amount.toString(),
-      recipientId: recipientId,
-      publicKey: this.user.publicKey,
-      fee: fee.toString(),
-      // secondSecret,
-    };
-
-    if (secondSecret) {
-      txData.secondSecret = secondSecret;
-    }
+    const txData = this.createTxData(
+      recipientId,
+      amount,
+      fee,
+      password,
+      secondSecret,
+    );
 
     const responseData = await this.putTransaction(txData);
     return {

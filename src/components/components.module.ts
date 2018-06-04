@@ -18,6 +18,7 @@ import { WaterProgressComponent } from "./water-progress/water-progress";
 import { MacArk_1Component } from './mac-ark-1/mac-ark-1';
 import { MacArk_2Component } from './mac-ark-2/mac-ark-2';
 import { UsageProgressComponent } from './usage-progress/usage-progress';
+import { OfflineTransactionTicketComponent } from './offline-transaction-ticket/offline-transaction-ticket';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { UsageProgressComponent } from './usage-progress/usage-progress';
     MacArk_1Component,
     MacArk_2Component,
     UsageProgressComponent,
+    OfflineTransactionTicketComponent,
   ],
   imports: [],
   exports: [
@@ -62,6 +64,7 @@ import { UsageProgressComponent } from './usage-progress/usage-progress';
     MacArk_1Component,
     MacArk_2Component,
     UsageProgressComponent,
+    OfflineTransactionTicketComponent,
   ],
 })
 export class ComponentsModule {}

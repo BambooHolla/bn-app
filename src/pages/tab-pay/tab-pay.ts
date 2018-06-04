@@ -49,7 +49,11 @@ export class TabPayPage extends FirstLevelPage {
         this.formData.transfer_address = data.address;
       }
       if (id === "account-scan-add-contact") {
-        this.formData.transfer_address = data;
+        if (typeof data === "string") {
+          this.formData.transfer_address = data;
+        } else if (data && data.protocol === "ifmchain-transaction") {
+          this.showTransferReceipt(data.transaction);
+        }
       }
     });
   }
@@ -111,6 +115,22 @@ export class TabPayPage extends FirstLevelPage {
 
     if (!online) {
       // 离线凭证
+      const {
+        transfer_address,
+        transfer_amount,
+        transfer_mark,
+      } = this.formData;
+      const txData = this.transactionService.createTxData(
+        transfer_address,
+        transfer_amount,
+        this.formData.transfer_fee,
+        password,
+        pay_pwd,
+      );
+      const { transaction } = await this.transactionService.createTransaction(
+        txData,
+      );
+      this.routeTo("pay-offline-receipt", { transaction });
     }
   }
   @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")

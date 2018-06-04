@@ -244,6 +244,14 @@
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
 
+  "//": "pay-offline-receipt",
+  "PAY-OFFLINE-RECEIPT": "离线支付",
+  "SCAN_TO_RECEIVE": "扫一扫接收",
+  "QR_CODE_PAYMENT": "二维码支付",
+  "SCAN_CODE_RECEPTION": "扫码接收",
+  "POSTSCRIPT":"附言",
+  "EMPTY_REMARK":"没有附言",
+
   "//": "vote-list",
   "VOTE-LIST": "投票",
   "MY_VOTE_IN": "我的得票",

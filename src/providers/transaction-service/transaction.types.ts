@@ -21,6 +21,7 @@ export type TransactionModel = {
   signatures: any;
   confirmations: string;
   asset: any;
+  remark?:string
 };
 
 export type timeStampModel = {

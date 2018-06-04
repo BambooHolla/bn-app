@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-navbar color="transparent">
+    <ion-title>{{'PAY-OFFLINE-RECEIPT'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="info-container">
+    <div class="recipient-info">
+      <div class="label"> {{'TRANSCATION_RECIPIENT'|translate}}</div>
+      <div class="address">{{tran?.recipientId}}</div>
+    </div>
+    <div class="amount-info">
+      <div class="value">{{tran?.amount|amountEuler|number:"1.8-8"}}</div>
+      <div class="unit">IBT</div>
+    </div>
+    <div class="qrcode-wrapper">
+      <kjua-qrcode [text]="transaction_binary" fill="#000"></kjua-qrcode>
+      <div class="scan-tip">{{'SCAN_TO_RECEIVE'|translate}}</div>
+    </div>
+    <div class="ticket-wrapper">
+      <div class="left">
+        {{'QR_CODE_PAYMENT'|translate}}
+      </div>
+      <div class="center">
+        <offline-transaction-ticket [transaction]="tran"></offline-transaction-ticket>
+      </div>
+      <div class="right">
+        {{'SCAN_CODE_RECEPTION'|translate}}
+      </div>
+    </div>
+    <div class="footer-info">
+      <div class="postscript">
+        <div class="label">{{'POSTSCRIPT'|translate}}</div>
+        <ng-container *ngIf="tran?.remark;else emptyRemark">
+          <div class="text">{{tran?.remark}}</div>
+        </ng-container>
+        <ng-template #emptyRemark>
+          <div class="text empty">{{'EMPTY_REMARK'|translate}}</div>
+        </ng-template>
+      </div>
+      <div class="transaction-id">
+        <div class="label">{{'TRANSACTION_ID'|translate}}</div>
+        <div class="text">{{tran?.id}}</div>
+      </div>
+    </div>
+  </div>
+</ion-content>
