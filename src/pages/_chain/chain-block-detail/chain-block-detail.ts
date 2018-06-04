@@ -37,21 +37,22 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     return false;
   }
   block_info!: BlockModel /* = {
-		create_time: new Date(
-			Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000,
-		),
-		address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
-		reward: 200 * Math.random(),
-		height: (1000 * Math.random()) | 0,
-		is_delay: Math.random() > 0.5,
-		trans_num: (Math.random() * 5000) | 0,
-		trans_assets: Math.random() * 10000,
-		fee: 5000 * Math.random() * 0.00000001,
-		tran_list: [],
-	}*/;
+    create_time: new Date(
+      Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000,
+    ),
+    address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
+    reward: 200 * Math.random(),
+    height: (1000 * Math.random()) | 0,
+    is_delay: Math.random() > 0.5,
+    trans_num: (Math.random() * 5000) | 0,
+    trans_assets: Math.random() * 10000,
+    fee: 5000 * Math.random() * 0.00000001,
+    tran_list: [],
+  }*/;
   pre_block_id?: string;
   tran_list: TransactionModel[] = [];
   tran_list_config = {
+    loading: false,
     page: 1,
     pageSize: 20,
     has_more: true,
@@ -69,6 +70,15 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     this.getPreBlockId();
     this.loadTranLogs();
   }
+
+  @ChainBlockDetailPage.addEvent("HEIGHT:CHANGED")
+  watchHeightChanged() {
+    this.blockService.lastBlock.getPromise().then(lastBlock => {
+      this.block_info.confirmations = `${lastBlock.height -
+        this.block_info.height}`;
+    });
+  }
+
   @asyncCtrlGenerator.error(() =>
     ChainBlockDetailPage.getTranslate("GET_PRE_BLOCK_ID_ERROR"),
   )
@@ -90,15 +100,25 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     const { block_info, tran_list_config } = this;
     // 重置page
     tran_list_config.page = 1;
-    const transaction_list = await this.blockService.getTransactionsInBlock(
-      block_info.id,
-      tran_list_config.page,
-      tran_list_config.pageSize,
-    );
-    tran_list_config.has_more =
-      transaction_list.length === tran_list_config.pageSize;
-
-    this.tran_list.push(...transaction_list);
+    const transaction_list = await this._loadTranLogs();
+    this.tran_list = transaction_list;
+  }
+  async _loadTranLogs() {
+    const { block_info, tran_list_config } = this;
+    tran_list_config.loading = true;
+    try {
+      // 重置page
+      const transaction_list = await this.blockService.getTransactionsInBlock(
+        block_info.id,
+        tran_list_config.page,
+        tran_list_config.pageSize,
+      );
+      tran_list_config.has_more =
+        transaction_list.length === tran_list_config.pageSize;
+      return transaction_list;
+    } finally {
+      tran_list_config.loading = false;
+    }
   }
 
   @asyncCtrlGenerator.error(() =>
@@ -108,13 +128,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     const { block_info, tran_list_config, tran_list } = this;
 
     tran_list_config.page += 1;
-    const transaction_list = await this.blockService.getTransactionsInBlock(
-      block_info.id,
-      tran_list_config.page,
-      tran_list_config.pageSize,
-    );
-    tran_list_config.has_more =
-      transaction_list.length === tran_list_config.pageSize;
-    this.tran_list.push(...transaction_list);
+    const transaction_list = await this._loadTranLogs();
+    tran_list.push(...transaction_list);
   }
 }
