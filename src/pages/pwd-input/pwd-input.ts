@@ -65,9 +65,12 @@ export class PwdInputPage extends FirstLevelPage {
   }
 
   @PwdInputPage.setErrorTo("errors", "custom_fee", ["ErrorRange"])
-  check_custom_fee() {
+  check_custom_fee(need_custom_fee = this.formData.need_custom_fee) {
     const custom_fee = parseFloat(this.formData.custom_fee);
-    if (custom_fee <= 0 || custom_fee > parseFloat(this.userInfo.balance)) {
+    if (
+      (this.formData.need_custom_fee && custom_fee <= 0) ||
+      custom_fee > parseFloat(this.userInfo.balance)
+    ) {
       return {
         ErrorRange: true,
       };
