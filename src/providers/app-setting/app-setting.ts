@@ -91,39 +91,56 @@ export class AppSettingProvider extends CommonService {
       .distinctUntilChanged<string>();
 
     const default_settings = { ...this.settings };
+    const get_settings_key = () =>
+      this.user.address &&
+      `${AppSettingProvider.SETTING_KEY_PERFIX}:${this.user.address}`;
+    const getUserSettings = () => {
+      let settings: typeof default_settings | undefined;
+      const settings_key = get_settings_key();
+      if (settings_key) {
+        const settings_json = localStorage.getItem(settings_key);
+        let should_write_in = true; // 是否需要初始化写入
+        if (typeof settings_json === "string") {
+          try {
+            settings = JSON.parse(settings_json); //JSON可用
+            should_write_in = false;
+          } catch (e) {}
+        }
+        // 进行初始化写入
+        if (should_write_in) {
+          localStorage.setItem(
+            settings_key,
+            JSON.stringify((settings = { ...default_settings })),
+          );
+        }
+      }
+      return settings;
+    };
     // 将setting与本地存储进行关联
     for (let key in this.settings) {
-      const get_s_key = () =>
-        this.user.address
-          ? AppSettingProvider.SETTING_KEY_PERFIX +
-            key +
-            ":" +
-            this.user.address
-          : undefined;
       const default_value = default_settings[key];
       Object.defineProperty(this.settings, key, {
         get: () => {
           let value = default_value;
-          const s_key = get_s_key();
-          if (s_key) {
-            const current_json_value = localStorage.getItem(s_key);
-            let should_write_in = true;
-            if (typeof current_json_value === "string") {
-              try {
-                value = JSON.parse(current_json_value); //JSON可用
-                should_write_in = false; // 不需要初始化写入
-              } catch (e) {}
-            }
-            if (should_write_in) {
-              localStorage.setItem(s_key, JSON.stringify(default_value));
+          const settings = getUserSettings();
+          if (settings) {
+            if (key in settings) {
+              value = settings[key];
+            } else {
+              settings[key] = value;
+
+              const settings_key = get_settings_key();
+              localStorage.setItem(settings_key, JSON.stringify(settings));
             }
           }
           return value;
         },
         set: value => {
-          const s_key = get_s_key();
-          if (s_key) {
-            localStorage.setItem(s_key, JSON.stringify(value));
+          const settings_key = get_settings_key();
+          const settings = getUserSettings();
+          if (settings) {
+            settings[key] = value;
+            localStorage.setItem(settings_key, JSON.stringify(settings));
             this.emit(`changed@setting.${key}`, value);
             this.emit(`changed@setting`, { key, value });
           }
