@@ -69,7 +69,7 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
     income_page: 1,
     income_pageSize: this.transactionService
       .default_user_in_transactions_pageSize,
-    income_hasMore: true,
+    income_hasMore: false,
     pay_page: 1,
     pay_pageSize: this.transactionService
       .default_user_out_transactions_pageSize,
@@ -106,28 +106,7 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
     page_info.cache_round = cur_round;
   }
   private async _loadMyIncomeTransactionsPreRound() {
-    const { page_info } = this;
-    const cur_round = this.appSetting.getRound();
-    const income_list = await this.transactionService.getUserTransactionsPreRound(
-      this.userInfo.address,
-      page_info.income_page,
-      page_info.income_pageSize,
-      "in",
-    );
-    page_info.income_hasMore = income_list.length === page_info.income_pageSize;
-    const pre_round_income_rate = await this.refreshBaseData();
-    return [
-      // 投票收入
-      {
-        amount: pre_round_income_rate.totalBenefit,
-        timestamp: await this.blockService
-          .getBlocks({
-            height: this.appSetting.getRoundStartHeight(cur_round) - 1,
-          })
-          .then(res => res.blocks[0].timestamp),
-      },
-      ...income_list,
-    ];
+    return await this.benefitService.getMySecondLastRoundBenefits();
   }
   private async _loadMyPayTransactionsPreRound() {
     const { page_info } = this;
