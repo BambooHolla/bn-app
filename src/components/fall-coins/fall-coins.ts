@@ -222,7 +222,7 @@ export class FallCoinsComponent extends AniBase {
         parent.cacheAsBitmap = false;
       }
       target_line.in_ani += 1;
-      if (this.no_animate) {
+      if (this.no_animate || this.auto_skip_animate) {
         coin_ani(0, 0);
       } else {
         // 开始动画

@@ -216,6 +216,8 @@ export class TabVotePage extends FirstLevelPage {
     if (this.fall_coin) {
       if (this.fall_coin.is_inited) {
         this.fall_coin.no_animate = is_no_ani;
+        this.fall_coin.auto_skip_animate =
+          this.page_status === VotePage.ExtendsPanel;
         this.fall_coin.progress = (this.appSetting.getHeight() / 57) % 1;
       } else {
         this.fall_coin.once("init-start", () => {
@@ -526,11 +528,17 @@ export class TabVotePage extends FirstLevelPage {
     const fall_down_height_symbol = Symbol("h");
     let H = 0;
     let cur_t;
+    const sound_when_play_cache: number[] = [];
     this.fall_coin.on("end-fall-down", (ani, t, no_ani) => {
-      if (ani[fall_down_height_symbol] !== H || no_ani) {
+      const ani_H = ani[fall_down_height_symbol];
+      if (ani_H < H || no_ani) {
         return;
       }
-      if (cur_t !== t) {
+      if (ani_H > H) {
+        // 动画先完成，想播放声音，放入预播放队列
+        sound_when_play_cache.indexOf(ani_H) === -1 &&
+          sound_when_play_cache.push(ani_H);
+      } else if (cur_t !== t) {
         // 同一帧的使用同一个声音
         playSound("coinSingle");
         cur_t = t;
@@ -538,6 +546,13 @@ export class TabVotePage extends FirstLevelPage {
     });
     this.benefitService.on("get-benefit", () => {
       H = this.appSetting.getHeight();
+      // 取出预播放队列，根据现在的height进行播放需要播放的。
+      while (sound_when_play_cache.length && sound_when_play_cache[0] <= H) {
+        const sound_when_play_H = sound_when_play_cache.shift();
+        if (sound_when_play_H === H) {
+          playSound("coinSingle");
+        }
+      }
     });
     this.fall_coin.beforeFallDown = ani => {
       ani[fall_down_height_symbol] = this.appSetting.getHeight();
@@ -640,7 +655,10 @@ export class TabVotePage extends FirstLevelPage {
   /**动画的进度监控*/
   @TabVotePage.addEventAfterDidEnter("HEIGHT:CHANGED")
   watchHeightChanged(height, is_init) {
-    if (this.page_status === VotePage.VoteDetail) {
+    if (
+      this.page_status === VotePage.VoteDetail ||
+      this.page_status === VotePage.ExtendsPanel
+    ) {
       this._set_fall_coin_progress();
       this._set_satellite_pixi_progress(is_init);
       // this.chain_mesh && this.chain_mesh.forceRenderOneFrame();
@@ -673,10 +691,6 @@ export class TabVotePage extends FirstLevelPage {
       return;
     }
     this.page_status = VotePage.ExtendsPanel;
-    this._stopVoteAnimate({
-      is_force_stop_chain_mesh: true,
-      is_keep_mining_person_sound: true,
-    });
     this.hiddenTab();
   }
 
@@ -691,7 +705,10 @@ export class TabVotePage extends FirstLevelPage {
    */
   @TabVotePage.addEventAfterDidEnter("ROUND:CHANGED")
   async watchRoundChanged(cur_round) {
-    if (this.page_status === VotePage.VoteDetail) {
+    if (
+      this.page_status === VotePage.VoteDetail ||
+      this.page_status === VotePage.ExtendsPanel
+    ) {
       if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
         this._whenRoundChangeAni(); // 执行动画
       }
