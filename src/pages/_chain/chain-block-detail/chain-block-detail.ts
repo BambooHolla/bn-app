@@ -12,6 +12,10 @@ import {
   TransactionTypes,
 } from "../../../providers/transaction-service/transaction-service";
 import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
+import {
+  MinServiceProvider,
+  DelegateModel,
+} from "../../../providers/min-service/min-service";
 
 @IonicPage({ name: "chain-block-detail" })
 @Component({
@@ -25,6 +29,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
+    public minService: MinServiceProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -67,8 +72,8 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       return;
     }
     this.block_info = block;
-    this.getPreBlockId();
     this.loadTranLogs();
+    this.loadDelegateInfo();
   }
 
   @ChainBlockDetailPage.addEvent("HEIGHT:CHANGED")
@@ -78,13 +83,11 @@ export class ChainBlockDetailPage extends SecondLevelPage {
         this.block_info.height}`;
     });
   }
-
-  @asyncCtrlGenerator.error(() =>
-    ChainBlockDetailPage.getTranslate("GET_PRE_BLOCK_ID_ERROR"),
-  )
-  async getPreBlockId() {
-    this.pre_block_id = await this.blockService.getPreBlockId(
-      this.block_info.height,
+  delegate_info?: DelegateModel;
+  @asyncCtrlGenerator.error()
+  async loadDelegateInfo() {
+    this.delegate_info = await this.minService.getDelegateInfo(
+      this.block_info.generatorPublicKey,
     );
   }
 
