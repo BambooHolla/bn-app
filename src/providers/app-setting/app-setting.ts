@@ -445,7 +445,7 @@ export function TB_AB_Generator(
       }
       console.log("time_out", time_out);
     };
-    console.log(target_prop_name);
+    // console.log(target_prop_name);
     Object.defineProperty(target, target_prop_name, {
       get() {
         if (!_v) {
@@ -523,7 +523,7 @@ export function HEIGHT_AB_Generator(
       }
       console.log("time_out", time_out);
     };
-    console.log(target_prop_name);
+    // console.log(target_prop_name);
     Object.defineProperty(target, target_prop_name, {
       get() {
         if (!_v) {
@@ -603,7 +603,7 @@ export function ROUND_AB_Generator(
       }
       console.log("time_out", time_out);
     };
-    console.log(target_prop_name);
+    // console.log(target_prop_name);
     Object.defineProperty(target, target_prop_name, {
       get() {
         if (!_v) {

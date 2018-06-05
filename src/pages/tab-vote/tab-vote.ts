@@ -409,7 +409,8 @@ export class TabVotePage extends FirstLevelPage {
       });
     let _ani_acc = 0;
     this.chain_mesh.upForceUpdate(_ani_id); // 启用强制更新
-    for (var key in to_config) {
+    for (var _key in to_config) {
+      const key = _key;
       _ani_acc += 1;
       const from = from_config[key];
       const to = to_config[key];

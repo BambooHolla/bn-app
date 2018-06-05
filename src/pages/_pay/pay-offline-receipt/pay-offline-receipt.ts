@@ -21,6 +21,7 @@ import {
 	templateUrl: "pay-offline-receipt.html",
 })
 export class PayOfflineReceiptPage extends SecondLevelPage {
+	qrcode_size = document.body.clientWidth * 0.75;
 	constructor(
 		public navCtrl: NavController,
 		public navParams: NavParams,

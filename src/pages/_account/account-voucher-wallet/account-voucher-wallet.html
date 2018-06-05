@@ -1,8 +1,19 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="white">
     <ion-title>{{'ACCOUNT-VOUCHER-WALLET'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
-
+  <ion-list class="voucher-list">
+    <ion-item-sliding class="list-item" *ngFor="let tran of voucher_list">
+      <ion-item>
+        <offline-transaction-ticket (click)="submitVoucher(tran)" [transaction]="tran"></offline-transaction-ticket>
+      </ion-item>
+      <ion-item-options side="right">
+        <button class="list-delete" (click)="confirmToDelete(tran)">
+        	<span class="inner"></span>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 </ion-content>

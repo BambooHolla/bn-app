@@ -1,3 +1,64 @@
 page-account-voucher-wallet {
+	@extend .header-no-border;
+	> .content {
+		background-color: #eeeeee;
+	}
+	.voucher-list {
+		position: absolute;
+		width: 100vw;
+		z-index: 2;
+		padding-top: 1.5rem;
+		> .list-item {
+			border: none !important;
+			position: relative;
+			background: transparent;
+			&.confirmed::after {
+				position: absolute;
+				right: 0;
+				top: 0;
+				content: " ";
+				display: inline-block;
+				width: 10%;
+				height: 100%;
+				background-image: url("../assets/imgs/tab-pay/offline/gray-right-flag.png");
+				background-repeat: no-repeat;
+				background-position: right top;
+			}
+			> .item {
+				padding: 0 !important;
+				border: none !important;
+				background: transparent !important;
+				.item-inner {
+					padding: 0 !important;
+					border: none !important;
+				}
+				.label {
+					margin: 0;
+				}
+			}
+			offline-transaction-ticket {
+				margin: 0 auto;
+				width: 96vw;
+				height: 50vw;
+			}
 
+			.list-delete {
+				width: 5rem;
+				background: transparent;
+				> .inner {
+					margin: 0 auto;
+					display: block;
+					background-image: url("../assets/imgs/list-delete.png");
+					width: 2rem;
+					height: 2rem;
+					background-size: contain;
+					background-repeat: no-repeat;
+					background-position: center;
+				}
+			}
+			ion-item-options {
+				border: none !important;
+			}
+		}
+	}
 }
