@@ -91,9 +91,10 @@ export class AppSettingProvider extends CommonService {
       .distinctUntilChanged<string>();
 
     const default_settings = { ...this.settings };
-    const get_settings_key = () =>
-      this.user.address &&
-      `${AppSettingProvider.SETTING_KEY_PERFIX}:${this.user.address}`;
+    const get_settings_key = () => {
+      return this.user.address &&
+        `${AppSettingProvider.SETTING_KEY_PERFIX}:${this.user.address}`;
+    };
     const getUserSettings = () => {
       let settings: typeof default_settings | undefined;
       const settings_key = get_settings_key();
@@ -117,7 +118,8 @@ export class AppSettingProvider extends CommonService {
       return settings;
     };
     // 将setting与本地存储进行关联
-    for (var key in this.settings) {
+    for (var _key in this.settings) {
+      const key = _key;
       const default_value = default_settings[key];
       Object.defineProperty(this.settings, key, {
         get: () => {
