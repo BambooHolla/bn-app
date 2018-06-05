@@ -257,7 +257,7 @@ enum QRCODE_GET_WAY {
   FromCamera = "TAKE_PICTURE_FROM_MEDIA_STREAM",
 }
 const QRCODE_GET_WAY_value_set = new Set<QRCODE_GET_WAY>();
-for (let key in QRCODE_GET_WAY) {
+for (var key in QRCODE_GET_WAY) {
   QRCODE_GET_WAY_value_set.add(QRCODE_GET_WAY[key] as QRCODE_GET_WAY);
 }
 

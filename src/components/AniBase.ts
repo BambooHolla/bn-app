@@ -165,7 +165,7 @@ export class AniBase extends EventEmitter {
       }
       this._cur_loop_skip = 0;
     }
-    for (let fun of this._loop_runs) {
+    for (var fun of this._loop_runs) {
       fun(t, diff_t);
     }
   }

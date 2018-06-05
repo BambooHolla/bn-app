@@ -332,7 +332,7 @@ export class FLP_Tool {
         const cbs = [...this._raf_map.values()];
         this._raf_map.clear();
         this._cur_raf_id = null;
-        for (let cb of cbs) {
+        for (var cb of cbs) {
           try {
             cb(t);
           } catch (err) {
@@ -396,7 +396,7 @@ export function getProtoArray(target: any, key: string) {
       if (target.hasOwnProperty(PA_ID_KEY)) {
         const arr_data = CLASS_PROTO_ARRAYDATA.get(target[PA_ID_KEY]);
         if (arr_data) {
-          for (let item of arr_data) {
+          for (var item of arr_data) {
             res.add(item);
           }
         }

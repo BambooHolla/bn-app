@@ -181,9 +181,9 @@ export class BuddhaGlowComponent extends AniBase {
     var ctx = canvas.getContext("2d");
     if (ctx) {
       var gradient = ctx.createLinearGradient(0, 0, x1, y1);
-      for (let stop of stops) {
+      stops.forEach(stop => {
         gradient.addColorStop(stop[0] as number, stop[1] as string);
-      }
+      });
       ctx.fillStyle = gradient;
 
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -201,9 +201,9 @@ export class BuddhaGlowComponent extends AniBase {
     var ctx = canvas.getContext("2d");
     if (ctx) {
       var gradient = ctx.createRadialGradient(half_r, 0, half_r, half_r, 0, 0);
-      for (let stop of stops) {
+      stops.forEach(stop => {
         gradient.addColorStop(stop[0] as number, stop[1] as string);
-      }
+      });
       ctx.fillStyle = gradient;
 
       ctx.fillRect(0, 0, canvas.width, canvas.height);

@@ -27,9 +27,9 @@ export const _coin_assets = [
   url,
   info: { width: 96, height: 3456, frame_num: 36 },
 }));
-for (let asset of _coin_assets) {
+_coin_assets.forEach(asset => {
   loader.add(asset.name, asset.url);
-}
+});
 loader.onLoad.add(() => {
   _load_resource_promiseout.resolve(loader.resources);
 });
@@ -97,7 +97,7 @@ export class FallCoinsComponent extends AniBase {
     console.log("resources", resources);
     // 处理resource成动画帧
     const frames_list: Array<PIXI.Texture[]> = [];
-    for (let asset of _coin_assets) {
+    _coin_assets.forEach(asset => {
       const resource = resources[asset.name];
       const baseTexture = new PIXI.BaseTexture(resource.data);
       const frames: PIXI.Texture[] = [];
@@ -114,7 +114,7 @@ export class FallCoinsComponent extends AniBase {
       frames_list.push(frames);
       // const ani = new PIXI.extras.AnimatedSprite(frames);
       // ani.animationSpeed = 1;
-    }
+    });
 
     const { useable_lines, full_lines } = _progress_coins_config;
 

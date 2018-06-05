@@ -96,7 +96,7 @@ export class FLP_Lifecycle extends FLP_Tool
   ngOnInit() {
     // console.log("ngOnInit",this.content,this.header)
     // this.content.fullscreen = true;
-    for (let fun_name of this._oninit_funs) {
+    for (var fun_name of this._oninit_funs) {
       try {
         this[fun_name]();
       } catch (err) {
@@ -106,7 +106,7 @@ export class FLP_Lifecycle extends FLP_Tool
     this.tryEmit("onInit");
   }
   ngAfterContentInit() {
-    for (let fun_name of this._aftercontentinit_funs) {
+    for (var fun_name of this._aftercontentinit_funs) {
       try {
         this[fun_name]();
       } catch (err) {
@@ -116,7 +116,7 @@ export class FLP_Lifecycle extends FLP_Tool
     this.tryEmit("afterContentInit");
   }
   ngOnDestroy() {
-    for (let fun_name of this._ondestory_funs) {
+    for (var fun_name of this._ondestory_funs) {
       try {
         this[fun_name]();
       } catch (err) {
@@ -130,7 +130,7 @@ export class FLP_Lifecycle extends FLP_Tool
     this.PAGE_STATUS = PAGE_STATUS.WILL_ENTER;
     console.log("ionViewWillEnter", this.cname);
 
-    for (let fun_name of this._will_enter_funs) {
+    for (var fun_name of this._will_enter_funs) {
       try {
         this[fun_name]();
       } catch (err) {
@@ -152,7 +152,7 @@ export class FLP_Lifecycle extends FLP_Tool
     this.myapp.hideSplashScreen();
     this.myapp.tryOverlaysWebView(3);
 
-    for (let fun_name of this._did_enter_funs) {
+    for (var fun_name of this._did_enter_funs) {
       try {
         this[fun_name]();
       } catch (err) {
@@ -165,7 +165,7 @@ export class FLP_Lifecycle extends FLP_Tool
     this.PAGE_STATUS = PAGE_STATUS.WILL_LEAVE;
     console.log("ionViewWillLeave", this.cname);
 
-    for (let fun_name of this._will_leave_funs) {
+    for (var fun_name of this._will_leave_funs) {
       try {
         this[fun_name]();
       } catch (err) {
@@ -181,7 +181,7 @@ export class FLP_Lifecycle extends FLP_Tool
     }
     console.log("ionViewDidLeave", this.cname);
 
-    for (let fun_name of this._did_leave_funs) {
+    for (var fun_name of this._did_leave_funs) {
       try {
         this[fun_name]();
       } catch (err) {

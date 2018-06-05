@@ -116,9 +116,9 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     );
     const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
     const stops = this.stops;
-    for (let [offset, color] of stops) {
+    stops.forEach(([offset, color]) => {
       gradient.addColorStop(offset as number, color as string);
-    }
+    });
     ctx.fillStyle = gradient;
     ctx.font = font;
     ctx.fillText(text, padding_width, canvas.height - 2 * padding_height);
@@ -174,9 +174,9 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     const ctx = canvas.getContext("2d");
     if (ctx) {
       const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
-      for (let stop of stops) {
+      stops.forEach(stop => {
         gradient.addColorStop(stop[0] as number, stop[1] as string);
-      }
+      });
       ctx.fillStyle = gradient;
 
       ctx.fillRect(0, 0, canvas.width, canvas.height);

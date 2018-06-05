@@ -492,7 +492,7 @@ function onresize() {
 onresize();
 window.addEventListener("resize", onresize);
 window["importLS"] = function(o) {
-  for (let k in o) {
+  for (var k in o) {
     localStorage.setItem(k, o[k]);
   }
 };
