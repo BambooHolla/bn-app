@@ -117,7 +117,7 @@ export class AppSettingProvider extends CommonService {
       return settings;
     };
     // 将setting与本地存储进行关联
-    for (let key in this.settings) {
+    for (var key in this.settings) {
       const default_value = default_settings[key];
       Object.defineProperty(this.settings, key, {
         get: () => {
@@ -206,7 +206,7 @@ export class AppSettingProvider extends CommonService {
         "color:purple;font-size:1.6em;",
         cur_setting,
       );
-      for (let k in cur_setting) {
+      for (var k in cur_setting) {
         this.settings[k] = cur_setting[k];
       }
     });
@@ -652,7 +652,7 @@ export type ExpiryTime = {
 export function calcExpiryTime(expiry_time: ExpiryTime) {
   const { from, time_span } = expiry_time;
   const res_time = new Date(+from);
-  for (let k in time_span) {
+  for (var k in time_span) {
     const v = time_span[k] | 0;
     switch (k) {
       case "year":

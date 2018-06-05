@@ -54,7 +54,7 @@ export class DbCacheProvider {
 	}) {
 		if (!opts.dbHandle) {
 			opts.dbHandle = (store: IDBObjectStore, arr: T[]) => {
-				for (let item of arr) {
+				for (var item of arr) {
 					store.add(item);
 				}
 			};
@@ -67,8 +67,8 @@ export class DbCacheProvider {
 		if (!opts.afterService) {
 			opts.afterService = (req_res_list: RequestOptionsWithResult[]) => {
 				const res: any = {};
-				for (let req_res of req_res_list) {
-					for (let k in req_res.result) {
+				for (var req_res of req_res_list) {
+					for (var k in req_res.result) {
 						if (res[k] instanceof Array) {
 							res[k].push(...req_res.result[k]);
 						} else if (res[k] instanceof Object) {

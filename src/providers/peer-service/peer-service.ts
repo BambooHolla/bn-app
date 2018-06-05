@@ -152,7 +152,7 @@ export class PeerServiceProvider extends CommonService {
             )
             .then(res => {
               if (res.peers) {
-                for (let i of res.peers) {
+                for (var i of res.peers) {
                   if (i.state == 2) {
                     peers.unshift(i.ip + ":" + i.port);
                   } else if (i.state == 1) {
@@ -168,7 +168,7 @@ export class PeerServiceProvider extends CommonService {
             .get<{ peers: any[] }>(peer + this.PEERS_URL.path)
             .then(res => {
               if (res.peers) {
-                for (let i of res.peers) {
+                for (var i of res.peers) {
                   if (i.state == 2) {
                     peers.unshift(i.ip + ":" + i.port);
                   } else if (i.state == 1) {

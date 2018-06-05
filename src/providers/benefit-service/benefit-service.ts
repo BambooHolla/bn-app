@@ -205,7 +205,7 @@ export class BenefitServiceProvider extends CommonService {
     let currentRound = this.appSetting.getRound();
     let benefitThisRound = 0;
     const benefitList = await this.topBenefits.getPromise();
-    for (let i of benefitList) {
+    for (var i of benefitList) {
       if (currentRound == this.appSetting.calcRoundByHeight(i.height)) {
         benefitThisRound += parseFloat(i.amount);
       } else {

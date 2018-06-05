@@ -96,7 +96,7 @@ export class ContactServiceProvider {
       ignoreList.push(iAddress);
     }
 
-    for (let i of ignoreList) {
+    for (var i of ignoreList) {
       if (this.followerList && this.followerList.length > 0) {
         let isIgnore = this.followerList.indexOf(ignoreList[i]);
         if (isIgnore >= 0) {

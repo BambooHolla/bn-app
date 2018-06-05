@@ -555,7 +555,7 @@ export class MinServiceProvider extends FLP_Tool {
     let totalBenefit = parseInt(myBenefit.profit);
     let totalFee = 0;
     const pre_round = this.appSetting.getRound() - 1;
-    for (let i of transactions) {
+    for (var i of transactions) {
       if (this.appSetting.calcRoundByHeight(i.height) == pre_round) {
         totalFee += parseFloat(i.fee);
       }

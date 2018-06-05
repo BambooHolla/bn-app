@@ -49,7 +49,7 @@ export class BytesPipe implements PipeTransform {
       return BytesPipe.formatResult(result, to);
     }
 
-    for (let key in BytesPipe.formats) {
+    for (var key in BytesPipe.formats) {
       const format = BytesPipe.formats[key];
       if (bytes < format.max) {
         const result = toDecimal(
