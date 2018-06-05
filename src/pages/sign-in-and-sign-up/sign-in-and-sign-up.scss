@@ -63,6 +63,8 @@ page-sign-in-and-sign-up {
     position: fixed;
     left: 2rem;
     top: 3rem;
+    margin-top: calc(3rem + #{constant(safe-area-inset-top)});
+    margin-top: calc(3rem + #{env(safe-area-inset-top)});
     display: flex;
     flex-direction: row;
     align-items: center;
