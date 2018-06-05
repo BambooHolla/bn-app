@@ -27,7 +27,7 @@ export const _coin_assets = [
   url,
   info: { width: 96, height: 3456, frame_num: 36 },
 }));
-for (const asset of _coin_assets) {
+for (let asset of _coin_assets) {
   loader.add(asset.name, asset.url);
 }
 loader.onLoad.add(() => {
