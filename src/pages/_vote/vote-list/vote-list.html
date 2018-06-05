@@ -82,7 +82,7 @@
           </ion-refresher>
           <div class="common-list">
             <div class="common-item" *ngFor="let vote of out_vote_list" (click)="routeTo('vote-delegate-detail',{delegate_info:vote})">
-              <div class="left">{{vote.username||(vote.address|mask:"@address")}}</div>
+              <div class="left" [innerHTML]="vote.username||(vote.address|mask:'@address')"></div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>
@@ -100,7 +100,7 @@
           </ion-refresher>
           <div class="common-list">
             <div class="common-item" *ngFor="let delegatePubKey of can_vote_list">
-              <div class="left">{{delegatePubKey|mask:"@address"}}</div>
+              <div class="left" [innerHTML]="delegatePubKey|mask:'@address'"></div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>

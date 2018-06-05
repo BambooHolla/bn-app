@@ -94,9 +94,14 @@ page-account-about-ibt {
     color: #fff;
     overflow: hidden;
     position: relative;
-    margin-top: 4rem;
-    margin-top: calc(4rem + #{constant(safe-area-inset-top)});
-    margin-top: calc(4rem + #{env(safe-area-inset-top)});
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    // margin-top: 4rem;
+    // margin-top: calc(4rem + #{constant(safe-area-inset-top)});
+    // margin-top: calc(4rem + #{env(safe-area-inset-top)});
+    height: 77.6vw; // 已知的图片比例
     z-index: 3;
     background: linear-gradient(
       to bottom,
