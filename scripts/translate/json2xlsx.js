@@ -6,7 +6,16 @@ const { geti18nFileData } = require("./helper");
 const { simpleToTradition } = require("./chinese");
 
 const zh_CN_json_obj = JSON.parse(geti18nFileData("zh-cmn-Hans"));
-const langs = ["zh-cmn-Hans", "zh-cmn-Hant", "en", "ja"];
+const langs = [
+	"zh-cmn-Hans",
+	"zh-cmn-Hant",
+	"en",
+	"ja",
+	"es",
+	"fr",
+	"de",
+	"it",
+];
 const tableData = [
 	[
 		"编码",
