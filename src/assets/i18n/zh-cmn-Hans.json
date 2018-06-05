@@ -53,6 +53,9 @@
   "ABOUT_IBT_INFO":
     "IFMChain是全球首款可接入移动终端的区块链3.0产品IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
 
+  "//": "account-voucher-wallet",
+  "ACCOUNT-VOUCHER-WALLET": "凭证钱包",
+
   "//": "sign-in-and-sign-up",
   "LOGINNG": "网络同步中",
   "LOGIN_ERROR": "同步失败",
@@ -249,8 +252,8 @@
   "SCAN_TO_RECEIVE": "扫一扫接收",
   "QR_CODE_PAYMENT": "二维码支付",
   "SCAN_CODE_RECEPTION": "扫码接收",
-  "POSTSCRIPT":"附言",
-  "EMPTY_REMARK":"没有附言",
+  "POSTSCRIPT": "附言",
+  "EMPTY_REMARK": "没有附言",
 
   "//": "vote-list",
   "VOTE-LIST": "投票",

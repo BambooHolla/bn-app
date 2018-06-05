@@ -117,7 +117,8 @@ export class AppSettingProvider extends CommonService {
       return settings;
     };
     // 将setting与本地存储进行关联
-    for (var key in this.settings) {
+    for (var _key in this.settings) {
+      const key = _key;
       const default_value = default_settings[key];
       Object.defineProperty(this.settings, key, {
         get: () => {
