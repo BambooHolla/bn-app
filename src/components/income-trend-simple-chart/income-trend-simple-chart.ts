@@ -151,7 +151,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
         list.length,
       );
 
-      for (let len = maybe_num - 1, i = len; i >= 0; i--) {
+      for (var len = maybe_num - 1, i = len; i >= 0; i--) {
         const item = list[((list.length - 1) * (i / len)) | 0];
         const x_item = new PIXI.Text(item.height + "", text_style);
         // if (i === 0) {

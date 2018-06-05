@@ -78,7 +78,7 @@ export class SearchPage extends SecondLevelPage {
       this._$search_ASSETS(search_text),
     ]).then(search_result_list => {
       var res: any[] = [];
-      for (let list of search_result_list) {
+      for (var list of search_result_list) {
         if (list instanceof Array) {
           res = res.concat(list);
         }

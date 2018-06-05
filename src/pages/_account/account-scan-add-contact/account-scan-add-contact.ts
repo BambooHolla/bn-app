@@ -319,7 +319,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
 
       const points = window["qrcode"].result_points;
       if (points instanceof Array) {
-        for (let point of points) {
+        for (var point of points) {
           ctx.fillStyle = "rgba(0, 188, 212, 1)";
           ctx.beginPath();
           ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);

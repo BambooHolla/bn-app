@@ -182,7 +182,7 @@ export class PeerServiceProvider extends CommonService {
 
         // debugger
         // if(data.peers) {
-        //   for (let i of data.peers) {
+        //   for (var i of data.peers) {
         //     if(i.state == 2) {
         //       peers.unshift(i.ip + ':' + i.port);
         //     }else if(i.state == 1) {

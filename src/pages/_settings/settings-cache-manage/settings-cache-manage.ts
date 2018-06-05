@@ -30,7 +30,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
   // ];
   getUTF8ByteSize(str: string) {
     var total = 0;
-    for (let i = 0; i < str.length; i += 1) {
+    for (var i = 0; i < str.length; i += 1) {
       const charCode = str.charCodeAt(i);
       if (charCode <= 0x007f) {
         total += 1;
@@ -90,7 +90,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
     try {
       let cache_size = 0;
       const keys = await this.storage.keys();
-      for (let key of keys) {
+      for (var key of keys) {
         const data = await this.storage.get(key);
         cache_size += this.getUTF8ByteSize(JSON.stringify(data) || "");
         this.calc_progress += 1 / keys.length;
@@ -167,7 +167,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
     try {
       const total_calc_progress = this.calc_progress;
       const keys = await this.storage.keys();
-      for (let key of keys) {
+      for (var key of keys) {
         await this.storage.remove(key);
         this.calc_progress -= total_calc_progress / keys.length;
       }

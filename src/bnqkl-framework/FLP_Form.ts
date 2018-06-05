@@ -60,7 +60,7 @@ export class FLP_Form extends FLP_Route {
     return !!Object.keys(errors).length;
   }
   protected allHaveValues(obj) {
-    for (let k in obj) {
+    for (var k in obj) {
       if (!obj[k]) {
         return false;
       }

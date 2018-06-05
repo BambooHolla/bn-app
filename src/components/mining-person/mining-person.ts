@@ -69,7 +69,7 @@ export class MiningPersonComponent extends CssAniBase {
       this._loop_runs.length = 0;
       frames_list.length = 0;
     }
-    for (let i = 0; i < FRAMES_NUM; i += 1) {
+    for (var i = 0; i < FRAMES_NUM; i += 1) {
       const i_str = ("0000" + i).substr(-4);
       const img = new Image();
       img.src = `assets/imgs/tab-vote/human-work3/_${i_str}_图层-${FRAMES_NUM -

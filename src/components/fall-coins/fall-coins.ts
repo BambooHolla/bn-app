@@ -103,7 +103,7 @@ export class FallCoinsComponent extends AniBase {
       const frames: PIXI.Texture[] = [];
       const u_width = asset.info.width;
       const u_height = asset.info.height / asset.info.frame_num;
-      for (let i = 0; i < asset.info.frame_num; i += 1) {
+      for (var i = 0; i < asset.info.frame_num; i += 1) {
         frames.push(
           new PIXI.Texture(
             baseTexture,

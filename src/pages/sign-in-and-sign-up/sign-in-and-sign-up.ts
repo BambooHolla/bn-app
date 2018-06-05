@@ -134,7 +134,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     const { pwd_font_char_map } = this;
     const pwd_str = this.formData.pwd;
     const new_char_list: any[] = [];
-    for (let i = 0; i < pwd_str.length; i += 1) {
+    for (var i = 0; i < pwd_str.length; i += 1) {
       const char = pwd_str[i];
       if (pwd_font_char_map.has(char)) {
         continue;
@@ -237,7 +237,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       mark: this.formData.remark,
       pwd: this.formData.gpwd,
     };
-    for (let key in params) {
+    for (var key in params) {
       if (!params[key]) {
         delete params[key];
       }

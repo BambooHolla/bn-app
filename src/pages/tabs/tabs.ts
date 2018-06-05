@@ -141,7 +141,7 @@ export class TabsPage extends FLP_Lifecycle {
     // 初始化QueryList对象
     this.pageItemQueryList = (this.elRef
       .nativeElement as HTMLElement).querySelectorAll(".page-item-container");
-    for (let i = 0; i < this.pageItemQueryList.length; i += 1) {
+    for (var i = 0; i < this.pageItemQueryList.length; i += 1) {
       const pageContainerNode = this.pageItemQueryList[i];
       pageContainerNode.style.display = "none";
     }

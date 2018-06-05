@@ -75,7 +75,7 @@ export class WaterProgressComponent extends AniBase {
   private _renderText() {
     const { text } = this;
     const { W, H } = this._textRenderParams;
-    for (let pixi_text of [this._bg_text, this._text_fontend]) {
+    for (var pixi_text of [this._bg_text, this._text_fontend]) {
       if (pixi_text && pixi_text.text !== text) {
         pixi_text.text = text;
         pixi_text.x = W / 2 - pixi_text.width / 2;
@@ -200,7 +200,7 @@ export class WaterProgressComponent extends AniBase {
         let next_x, next_y;
         let len = reversed_list.length - 1;
 
-        for (let i = -1; i < len; i += 1) {
+        for (var i = -1; i < len; i += 1) {
           const x = next_x;
           const y = next_y;
           const xv = (i + 1) / len;

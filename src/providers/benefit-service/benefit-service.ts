@@ -140,7 +140,7 @@ export class BenefitServiceProvider extends CommonService {
             });
             const ids_set = new Set();
             const filter_res = [this._topBenefits[0]];
-            for (let i = 1; i < this._topBenefits.length; i += 1) {
+            for (var i = 1; i < this._topBenefits.length; i += 1) {
               const next_item = this._topBenefits[i];
               if (!ids_set.has(next_item._id)) {
                 // 过滤掉一样的

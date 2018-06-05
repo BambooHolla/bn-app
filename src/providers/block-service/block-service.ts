@@ -419,7 +419,7 @@ export class BlockServiceProvider extends FLP_Tool {
       }
       per_item = cur_item;
     }
-    // for (let i = 0; i < list.length - 1; i++) {
+    // for (var i = 0; i < list.length - 1; i++) {
     //   if (list[i].timestamp > list[i + 1].timestamp + BLOCK_UNIT_SECONED) {
     //     list[i].delay = true;
     //   } else {
@@ -523,7 +523,7 @@ export class BlockServiceProvider extends FLP_Tool {
     amount = Math.min(blockArray.length, amount);
     let reward = 0,
       fee = 0;
-    for (let i = 0; i < amount; i++) {
+    for (var i = 0; i < amount; i++) {
       reward += parseFloat(blockArray[i].reward);
       fee += parseFloat(blockArray[i].totalFee);
     }

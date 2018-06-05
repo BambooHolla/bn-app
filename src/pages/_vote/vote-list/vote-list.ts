@@ -261,12 +261,12 @@ function cpuAverage(cpus: cpusStatus) {
     totalTick = 0;
 
   //Loop through CPU cores
-  for (let i = 0, len = cpus.length; i < len; i++) {
+  for (var i = 0, len = cpus.length; i < len; i++) {
     //Select CPU core
     let cpu = cpus[i];
 
     //Total up the time in the cores tick
-    for (let type in cpu.times) {
+    for (var type in cpu.times) {
       totalTick += cpu.times[type];
     }
 

@@ -463,7 +463,7 @@ export class FirstLevelPage extends FLP_Data {
     const root = this.content.getScrollElement().parentElement as HTMLElement;
     const stickyElementList = root.querySelectorAll(".fix-sticky");
     const { _android_sticky_placeholder_wm } = this;
-    for (let i = 0; i < stickyElementList.length; i += 1) {
+    for (var i = 0; i < stickyElementList.length; i += 1) {
       const sticky_ele = stickyElementList[i];
       let placeholder_ele = _android_sticky_placeholder_wm.get(sticky_ele);
       if (!placeholder_ele) {

@@ -21,7 +21,7 @@ export const _load_resource_promiseout = new PromiseOut<
 >();
 export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
-for (let i = 0; i < FRAMES_NUM; i += 1) {
+for (var i = 0; i < FRAMES_NUM; i += 1) {
   const i_str = ("00000" + i).substr(-5);
   loader.add("img" + i_str, "assets/imgs/400-60/earth-" + i_str + ".png");
 }
@@ -29,7 +29,7 @@ loader.onError.add(err => {
   _load_resource_promiseout.reject(err);
 });
 loader.load((loader, resources) => {
-  for (let i = 0; i < FRAMES_NUM; i += 1) {
+  for (var i = 0; i < FRAMES_NUM; i += 1) {
     const i_str = ("00000" + i).substr(-5);
     const resource = resources["img" + i_str] as PIXI.loaders.Resource;
     frames_list.push(resource.texture);
@@ -223,7 +223,7 @@ export class ChainMeshComponent extends AniBase {
         half_r,
         half_r,
       );
-      for (let stop of stops) {
+      for (var stop of stops) {
         gradient.addColorStop(stop[0] as number, stop[1] as string);
       }
       ctx.fillStyle = gradient;

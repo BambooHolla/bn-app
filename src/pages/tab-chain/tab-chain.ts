@@ -283,7 +283,7 @@ export class TabChainPage extends FirstLevelPage {
     this.cdRef.markForCheck();
   }
   get top_block() {
-    for (let i = 0; i < this.block_list.length; i += 1) {
+    for (var i = 0; i < this.block_list.length; i += 1) {
       const block = this.block_list[i];
       if (!block.fake) {
         return block;

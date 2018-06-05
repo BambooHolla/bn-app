@@ -82,7 +82,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
   }
 
   private _clearDigRound() {
-    for (let key in localStorage) {
+    for (var key in localStorage) {
       if (key.startsWith("SETTING@digRound:")) {
         localStorage.removeItem("key");
       }

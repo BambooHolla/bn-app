@@ -54,7 +54,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
     if (topBenefits.length) {
       let _per_item = { ...topBenefits[0] };
       income_trend_list.push({ ..._per_item });
-      for (let i = 1; i < topBenefits.length; i += 1) {
+      for (var i = 1; i < topBenefits.length; i += 1) {
         const _cur_item = { ...topBenefits[i] };
         if (_cur_item.height === _per_item.height) {
           _per_item.amount =
@@ -72,7 +72,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
     });
     const from_height = this.appSetting.getHeight();
     const filled_income_trend_list: BenefitModel[] = [];
-    for (let i = 0; i < this.benefitService.top_benefit_size; i += 1) {
+    for (var i = 0; i < this.benefitService.top_benefit_size; i += 1) {
       // 填充收益为0的height
       const height = from_height - i;
       const benefit = income_trend_height_map.get(height);

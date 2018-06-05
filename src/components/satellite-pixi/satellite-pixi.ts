@@ -77,7 +77,7 @@ export class SatellitePixiComponent extends AniBase {
     const point_num = 180;
     const u_deg = Math.PI * 2 / point_num;
     root_circle.beginFill(0xf7d13f, 1);
-    for (let i = 0; i < point_num; i += 1) {
+    for (var i = 0; i < point_num; i += 1) {
       const deg = u_deg * i;
       const x = Math.sin(deg) * circle_width;
       const y = Math.cos(deg) * circle_width;
@@ -108,7 +108,7 @@ export class SatellitePixiComponent extends AniBase {
     const to_deg = Math.PI;
     const base_diff_x = pt(1);
 
-    for (let i = 0; i < tails_num; i += 1) {
+    for (var i = 0; i < tails_num; i += 1) {
       const tail = (tails[i] = new PIXI.Graphics());
       tail.lineStyle(pt(1), 0xfed001);
       const tail_len =
@@ -130,7 +130,7 @@ export class SatellitePixiComponent extends AniBase {
 
     // // 推进器火焰动画
     // this._loop_runs.push(() => {
-    //   for (let tail of tails) {
+    //   for (var tail of tails) {
     //     if (tail.scale.x > 1) {
     //       tail.scale.x -= 0.05;
     //     } else {

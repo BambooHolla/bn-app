@@ -102,7 +102,7 @@ export class BuddhaGlowComponent extends AniBase {
     const num1 = 200;
     const baseLightContainer = new PIXI.Container();
     lightsContainer.addChild(baseLightContainer);
-    for (let i = 0; i < num1; i++) {
+    for (var i = 0; i < num1; i++) {
       const sp = new PIXI.Sprite(
         gradientTexture_list[i % gradientTexture_list.length],
       );
@@ -122,7 +122,7 @@ export class BuddhaGlowComponent extends AniBase {
     const num2 = 100;
     const dynLightContainer = new PIXI.Container();
     lightsContainer.addChild(dynLightContainer);
-    for (let i = 0; i < num2; i++) {
+    for (var i = 0; i < num2; i++) {
       const sp = new PIXI.Sprite(
         gradientTexture_list[i % gradientTexture_list.length],
       );

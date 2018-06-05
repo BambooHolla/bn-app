@@ -94,7 +94,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 					}
 				});
 			};
-			for (let i = 1; i <= 255; i += 10) {
+			for (var i = 1; i <= 255; i += 10) {
 				if (this.is_stop_seach) {
 					return;
 				}

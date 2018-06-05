@@ -207,7 +207,7 @@ export class FLP_Lifecycle extends FLP_Tool
       "color:blue;background-color:#FFF",
       fire_event_name,
     );
-    for (let { handle_name, event_name } of this._on_evnet_funs) {
+    for (var { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
         try {
           console.log(handle_name);

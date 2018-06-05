@@ -124,7 +124,7 @@ export class ContactServiceProvider {
 
     //如果包含忽略的且有未添加的人员
     if (ignoreList && ignoreList.length > 0 && followerList.length > 0) {
-      for (let i = followerList.length - 1; i >= 0; i--) {
+      for (var i = followerList.length - 1; i >= 0; i--) {
         if (ignoreList.findIndex(followerList[i]) >= 0) {
           followerList.splice(i, 1);
         }

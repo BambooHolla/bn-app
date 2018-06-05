@@ -207,7 +207,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
 
     // 从上往下扫描
     const data = pixels.data;
-    for (let i = 3; i < l; i += 4) {
+    for (var i = 3; i < l; i += 4) {
       if (data[i] !== 0) {
         bound.top = (i / 4 / c.width) | 0;
         break;
@@ -218,7 +218,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
       return null;
     }
     // 从下往上扫描
-    for (let i = l - 1; i >= 0; i -= 4) {
+    for (var i = l - 1; i >= 0; i -= 4) {
       if (data[i] !== 0) {
         bound.bottom = ((i / 4 / c.width) | 0) + 1;
         break;
@@ -226,9 +226,9 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     }
     // 从左往右扫描
     const pre_line_i = c.width * 4;
-    for (let x = 0; x < c.width; x += 1) {
+    for (var x = 0; x < c.width; x += 1) {
       const x_alpha = x * 4 + 3;
-      for (let y = bound.top; y < bound.bottom; y += 1) {
+      for (var y = bound.top; y < bound.bottom; y += 1) {
         const i = y * pre_line_i + x_alpha;
         if (data[i] !== 0) {
           bound.left = x;
@@ -240,9 +240,9 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     // 从右往左扫描
-    for (let x = c.width - 1; x >= 0; x -= 1) {
+    for (var x = c.width - 1; x >= 0; x -= 1) {
       const x_alpha = x * 4 + 3;
-      for (let y = bound.top; y < bound.bottom; y += 1) {
+      for (var y = bound.top; y < bound.bottom; y += 1) {
         const i = y * pre_line_i + x_alpha;
         if (data[i] !== 0) {
           bound.right = x + 1;

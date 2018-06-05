@@ -20,7 +20,7 @@ export class InputContainerDirective implements OnDestroy {
       } else {
         this.ele.classList.remove("disabled");
       }
-      for (let i = 0; i < this.ele.childNodes.length; i += 1) {
+      for (var i = 0; i < this.ele.childNodes.length; i += 1) {
         const node = this.ele.childNodes[i];
         if (
           node.nodeType === 1 &&
