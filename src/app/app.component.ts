@@ -250,7 +250,7 @@ export class MyApp implements OnInit {
         isIOS: this.isIOS,
         lang: this.translate.currentLang,
       });
-      if (app_version_info.in_ios_check) {
+      if (app_version_info && app_version_info.in_ios_check) {
         localStorage.setItem("#in-ios-check", "qaq");
       } else {
         localStorage.removeItem("#in-ios-check");
