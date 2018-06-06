@@ -7,9 +7,9 @@ export type VocherModel = TransactionModel & {
 	exchange_status: ExchangeStatus;
 };
 export enum ExchangeStatus {
-	UNSUBMIT,
-	SUBMITED,
-	COMFIRMED,
+	UNSUBMIT = "unsubmit",
+	SUBMITED = "submited",
+	CONFIRMED = "confirmed",
 }
 
 type DBConfig = {
@@ -118,6 +118,19 @@ export class VoucherServiceProvider {
 		await this.storage.set(config_key, config);
 		return true;
 	}
+	async updateVoucher(tran: VocherModel) {
+		const config = await this.getVoucherConfig();
+		const up_index = this._uniqueIdMap.get(tran.id);
+		if (typeof up_index !== "number") {
+			return false;
+		}
+		const up_page = Math.floor(up_index / config.pageSize);
+		const up_page_key = `${this._dbname}:page:${up_page}`;
+		const up_list: VocherModel[] = await this.storage.get(up_page_key);
+		up_list[up_index % config.pageSize] = tran;
+		await this.storage.set(up_page_key, up_list);
+		return true;
+	}
 	async removeVoucher(id: string) {
 		const config = await this.getVoucherConfig();
 		const remover_index = this._uniqueIdMap.get(id);
@@ -161,6 +174,10 @@ export class VoucherServiceProvider {
 					i * config.pageSize,
 					(i + 1) * config.pageSize,
 				);
+				const from_index = in_index + i * config.pageSize;
+				cur_list.forEach((item, i) => {
+					this._uniqueIdMap.set(item.id, from_index + i);
+				});
 				if (cur_list.length) {
 					await this.storage.set(cur_page_key, cur_list);
 				} else {

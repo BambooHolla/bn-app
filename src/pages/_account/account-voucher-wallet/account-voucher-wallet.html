@@ -4,10 +4,16 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
+  <div class="empty-list" *ngIf="voucher_list.length==0&&page_info.loading==false">
+    <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST
+'|translate">
+    <div class="message">{{'VOUCHER_WALLET_IS_EMPTY'|translate}}</div>
+  </div>
   <ion-list class="voucher-list">
-    <ion-item-sliding class="list-item" *ngFor="let tran of voucher_list">
+    <ion-item-sliding class="list-item" *ngFor="let tran of voucher_list" (tap)="submitVoucher(tran)" [ngClass]="'status-'+tran.exchange_status">
       <ion-item>
-        <offline-transaction-ticket (click)="submitVoucher(tran)" [transaction]="tran"></offline-transaction-ticket>
+        <div class="flag">{{'VOUCHER_CONFIRMED'|translate}}</div>
+        <offline-transaction-ticket [transaction]="tran"></offline-transaction-ticket>
       </ion-item>
       <ion-item-options side="right">
         <button class="list-delete" (click)="confirmToDelete(tran)">

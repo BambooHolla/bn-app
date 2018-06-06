@@ -96,6 +96,25 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 			tran as TransactionModel,
 		);
 		vocher.exchange_status = ExchangeStatus.SUBMITED;
+		this.voucherService.updateVoucher(vocher);
+	}
+	// 检测交易是否被打进块了
+	@AccountVoucherWalletPage.addEvent("HEIGHT:CHANGED")
+	updateListExchangeStatus() {
+		for (var _tran of this.voucher_list) {
+			const tran = _tran;
+			if(tran.exchange_status === ExchangeStatus.CONFIRMED){
+				return;
+			}
+			if (
+				this.transactionService
+					.getTransactionById(_tran.id)
+					.catch(() => null)
+			) {
+				tran.exchange_status = ExchangeStatus.CONFIRMED;
+				this.voucherService.updateVoucher(tran);
+			}
+		}
 	}
 
 	submitVoucher(tran: VocherModel) {
@@ -107,8 +126,8 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 				title: this.getTranslateSync("CONFIRM_TO_SUBMIT_THIS_VOUCHER"),
 				buttons: [
 					{
-						cssClass: "clip-text submit-tran",
-						text: this.getTranslateSync("CONFIRM_SUBMIT"),
+						// cssClass: "clip-text common-gradient",
+						text: this.getTranslateSync("CONFIRM_SUBMIT_VOUCHER"),
 						handler: () => {
 							this.submitTransaction(tran);
 						},
