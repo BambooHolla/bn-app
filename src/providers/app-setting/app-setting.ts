@@ -393,6 +393,11 @@ if (location.hostname === "dev-bnlc.bnqkl.cn") {
   AppSettingProvider.SERVER_URL = "http://mainnet.ifmchain.org";
 }
 
+const server_url = localStorage.getItem("SERVER_URL");
+if(server_url){
+  AppSettingProvider.SERVER_URL = server_url;
+}
+
 console.log(
   "%cSERVER_URL:",
   "font-size:2em;color:green;background-color:#DDD",
