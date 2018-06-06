@@ -10,16 +10,21 @@
     <div class="message">{{'VOUCHER_WALLET_IS_EMPTY'|translate}}</div>
   </div>
   <ion-list class="voucher-list">
-    <ion-item-sliding class="list-item" *ngFor="let tran of voucher_list" (tap)="submitVoucher(tran)" [ngClass]="'status-'+tran.exchange_status">
-      <ion-item>
+    <ion-item-sliding class="list-item" *ngFor="let tran of voucher_list" [ngClass]="'status-'+tran.exchange_status">
+      <ion-item (tap)="submitVoucher(tran)">
         <div class="flag">{{'VOUCHER_CONFIRMED'|translate}}</div>
-        <offline-transaction-ticket [transaction]="tran"></offline-transaction-ticket>
+        <div class="ticket-wrapper">
+          <offline-transaction-ticket [transaction]="tran"></offline-transaction-ticket>
+        </div>
       </ion-item>
       <ion-item-options side="right">
         <button class="list-delete" (click)="confirmToDelete(tran)">
-        	<span class="inner"></span>
+          <span class="inner"></span>
         </button>
       </ion-item-options>
     </ion-item-sliding>
+    <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreData())" [enabled]="page_info.has_more">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-list>
 </ion-content>

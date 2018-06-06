@@ -9,9 +9,10 @@ import {
 	Output,
 	ChangeDetectionStrategy,
 } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { AniBase } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
-import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { FLP_Tool, tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import { TransactionModel } from "../../providers/transaction-service/transaction-service";
 import { TimestampPipe } from "../../pipes/timestamp/timestamp";
 
@@ -35,24 +36,57 @@ const TICKET_H = 330;
 	selector: "offline-transaction-ticket",
 	templateUrl: "offline-transaction-ticket.html",
 })
-export class OfflineTransactionTicketComponent extends AniBase {
+export class OfflineTransactionTicketComponent {
+	constructor(public domSanitizer: DomSanitizer) {}
+	image_url?: SafeUrl;
+	// @E imageRef ;
 	private _transaction?: TransactionModel;
 	@Input("transaction")
 	set transaction(v: TransactionModel | undefined) {
 		this._transaction = v;
-		this.drawTicket();
+		if (v) {
+			console.log("draw tick", v);
+			tickerDrawer.drawTransaction(v).then(blob => {
+				this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
+					URL.createObjectURL(blob),
+				);
+			});
+		}
+		// return this.canvasNode.toDataURL();
 	}
 	get transaction() {
 		return this._transaction;
 	}
-	@ViewChild("canvas") canvasRef!: ElementRef;
+}
 
+class OfflineTransactionTicketDrawer extends AniBase {
+	private _transaction?: TransactionModel;
+	private _render_task_lock;
+	drawTransaction(v: TransactionModel): Promise<Blob> {
+		// 将任务进行排队
+		this._render_task_lock = Promise.resolve(this._render_task_lock).then(
+			() => this._drawTransaction(v),
+		);
+		return this._render_task_lock;
+	}
+	private _drawTransaction(v: TransactionModel) {
+		this._transaction = v;
+		this.drawTicket();
+		return new Promise<Blob | null>(resolve => {
+			this.raf(() => {
+				this.canvasNode.toBlob(resolve);
+			});
+			// this.app&&this.app.renderer.extract.image()
+		});
+	}
+
+	canvasNode = document.createElement("canvas");
 	_init() {
-		this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
 		return super._init();
 	}
 	constructor() {
 		super();
+		tryRegisterGlobal("tickerDrawer", this);
 		this.on("init-start", this.initPixiApp.bind(this));
 	}
 	async initPixiApp() {
@@ -97,7 +131,7 @@ export class OfflineTransactionTicketComponent extends AniBase {
 	}
 
 	drawTicket(resources = loader.resources) {
-		const { app, transaction } = this;
+		const { app, _transaction: transaction } = this;
 		if (!app || !transaction) {
 			return;
 		}
@@ -333,3 +367,7 @@ export class OfflineTransactionTicketComponent extends AniBase {
 		return res;
 	}
 }
+
+const tickerDrawer = new OfflineTransactionTicketDrawer();
+document.body.appendChild(tickerDrawer.canvasNode);
+tickerDrawer.emit("init-start");

@@ -52,7 +52,7 @@
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "关于IBT",
   "ABOUT_IBT_INFO":
-    "IFMChain是全球首款可接入移动终端的区块链3.0产品IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
+    "IFMChain是全球首款可接入移动终端的区块链3.0产品，IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
 
   "//": "account-voucher-wallet",
   "ACCOUNT-VOUCHER-WALLET": "凭证钱包",
@@ -302,7 +302,7 @@
 
   "//": "vote-add-mining-machine",
   "VOTE-ADD-MINING-MACHINE": "添加矿机",
-  "AUTO_SEARCHING": "自动搜索",
+  "AUTO_SEARCHING": "自动搜索附近矿机",
   "CUSTOM_INPUT_PEER": "手动配置矿机",
   "NET_STEP": "下一步",
   "FILL_FORM": "填写",

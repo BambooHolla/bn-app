@@ -247,7 +247,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		}
 	}
 
-	goToFillFormPage() {
+	async goToFillFormPage() {
 		this.is_pause_search = new PromiseOut(); // 暂停搜索
 		const { formData, doing_progress, selectPeer } = this;
 		if (!selectPeer) {

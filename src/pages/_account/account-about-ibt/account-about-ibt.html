@@ -22,7 +22,7 @@
   </div>
   <div class="news-list">
     <div class="flag">IFMCHAIN新闻</div>
-    <div class="news-item" *ngFor="let news of news_list" (click)="routeTo('account-news-detail',{news:news})">
+    <div class="news-item" *ngFor="let news of news_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
       <div class="base-info">
         <!-- <div class="public-time">

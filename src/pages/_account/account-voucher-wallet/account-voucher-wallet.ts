@@ -15,7 +15,7 @@ import {
 } from "ionic-angular";
 import {
 	VoucherServiceProvider,
-	VocherModel,
+	VoucherModel,
 	ExchangeStatus,
 } from "../../../providers/voucher-service/voucher-service";
 import {
@@ -41,13 +41,13 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 	}
 	page_info = {
 		offset: 0,
-		limit: 20,
-		hasMore: false,
-		loading: false,
+		limit: 6,
+		has_more: false,
+		loading: true,
 	};
-	voucher_list: VocherModel[] = [];
+	voucher_list: VoucherModel[] = [];
 
-	@AccountVoucherWalletPage.willEnter
+	@AccountVoucherWalletPage.didEnter
 	@asyncCtrlGenerator.error()
 	async loadData() {
 		// this.voucherService.
@@ -72,7 +72,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 				page_info.limit,
 				true,
 			);
-			page_info.hasMore = list.length === page_info.offset;
+			page_info.has_more = list.length === page_info.limit;
 			page_info.offset += list.length;
 			return list;
 		} finally {
@@ -80,7 +80,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 		}
 	}
 	@asyncCtrlGenerator.error()
-	private async removeVoucherItem(tran: VocherModel) {
+	private async removeVoucherItem(tran: VoucherModel) {
 		if (await this.voucherService.removeVoucher(tran.id)) {
 			const index = this.voucher_list.indexOf(tran);
 			if (index !== -1) {
@@ -90,7 +90,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 	}
 
 	@asyncCtrlGenerator.error()
-	async submitTransaction(vocher: VocherModel) {
+	async submitTransaction(vocher: VoucherModel) {
 		const { exchange_status, ...tran } = vocher;
 		await this.transactionService.putThirdTransaction(
 			tran as TransactionModel,
@@ -116,7 +116,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 		}
 	}
 
-	submitVoucher(tran: VocherModel) {
+	submitVoucher(tran: VoucherModel) {
 		if (tran.exchange_status !== ExchangeStatus.UNSUBMIT) {
 			return;
 		}
@@ -140,7 +140,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 			.present();
 	}
 
-	confirmToDelete(tran: VocherModel) {
+	confirmToDelete(tran: VoucherModel) {
 		this.actionSheetCtrl
 			.create({
 				title: this.getTranslateSync("CONFIRM_TO_DELETE_THIS_VOUCHER"),

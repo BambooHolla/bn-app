@@ -75,6 +75,7 @@ export class TabAccountPage extends FirstLevelPage {
   @TabAccountPage.willEnter
   async initVoucherData() {
     this.voucher_total_amount = await this.voucherService.getTotalAmount();
+    this.cdRef.markForCheck();
   }
 
   @TabAccountPage.onInit

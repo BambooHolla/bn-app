@@ -586,6 +586,15 @@ export class MinServiceProvider extends FLP_Tool {
       })
       .then(data => data.delegate);
   }
+  getDelegateInfoByAddress(address: string) {
+    return this.fetch
+      .get<TYPE.DelegateInfoResModel>(this.DELEGATE_INFO, {
+        search: {
+          address,
+        },
+      })
+      .then(data => data.delegate);
+  }
   myDelegateInfo!: AsyncBehaviorSubject<TYPE.DelegateModel | null>;
   @HEIGHT_AB_Generator("myDelegateInfo", true)
   myDelegateInfo_Executor(promise_pro) {

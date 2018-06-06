@@ -755,6 +755,25 @@ export class TabVotePage extends FirstLevelPage {
       this.notifyViewEvent(this.extendsPanel5, eventname);
     }
   }
+  @TabVotePage.afterContentInit
+  bindExtendsPanel() {
+    if (this.extendsPanel1) {
+      this.extendsPanel1.on("routeTo", this.routeTo.bind(this));
+    }
+    if (this.extendsPanel2) {
+      this.extendsPanel2.on("routeTo", this.routeTo.bind(this));
+    }
+    if (this.extendsPanel3) {
+      this.extendsPanel3.on("routeTo", this.routeTo.bind(this));
+    }
+    if (this.extendsPanel4) {
+      this.extendsPanel4.on("routeTo", this.routeTo.bind(this));
+    }
+    if (this.extendsPanel5) {
+      this.extendsPanel5.on("routeTo", this.routeTo.bind(this));
+    }
+  }
+
   private _whenRoundChangeAni() {
     this._stopVoteAnimate({ is_force_stop_chain_mesh: true });
     // 隐藏挖矿动画层，显示大金币

@@ -100,4 +100,11 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
       this.cdRef.markForCheck();
     }
   }
+
+  async routeToDelegate(rank_item: RankModel) {
+    const vote = await this.minService.getDelegateInfoByAddress(
+      rank_item.address,
+    );
+    this.emit("routeTo", "vote-delegate-detail", { delegate_info: vote });
+  }
 }

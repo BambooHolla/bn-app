@@ -6,7 +6,10 @@
 <ion-content padding>
   <div class="news-wrapper">
     <h2 class="title">{{news_detail?.title}}</h2>
-    <div class="public-time">{{news_detail?.public_time}}</div>
+    <div class="author">
+      {{news_detail?.author}}
+    </div>
+    <!-- <div class="public-time">{{news_detail?.public_time}}</div> -->
     <div class="embed" *ngIf="news_detail?.type=='embed'" [innerHTML]="news_detail?.html">
     </div>
     <div class="news-content">

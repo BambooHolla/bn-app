@@ -17,7 +17,7 @@ import {
 import {
 	VoucherServiceProvider,
 	ExchangeStatus,
-	VocherModel,
+	VoucherModel,
 } from "../../../providers/voucher-service/voucher-service";
 
 @IonicPage({ name: "pay-receipt-to-voucher" })
@@ -50,7 +50,7 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
 	}
 	@asyncCtrlGenerator.error()
 	async putIntoVoucherWallet() {
-		const voucher: VocherModel = {
+		const voucher: VoucherModel = {
 			...this.transaction,
 			exchange_status: ExchangeStatus.UNSUBMIT,
 		};
