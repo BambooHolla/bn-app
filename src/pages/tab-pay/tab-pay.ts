@@ -43,7 +43,7 @@ export class TabPayPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
-    this.event.on("job-finished", ({ id, data }) => {
+    this.event.on("job-finished", async ({ id, data }) => {
       console.log("job-finished", id, data);
       if (id === "account-my-contacts") {
         this.formData.transfer_address = data.address;
@@ -53,7 +53,7 @@ export class TabPayPage extends FirstLevelPage {
           this.formData.transfer_address = data;
         } else if (data && data.protocol === "ifmchain-transaction") {
           if (navigator.onLine) {
-            this.showTransferReceipt(data.transaction);
+            this.putThirdTransaction(data.transaction);
           } else {
             this.showReceiptToVoucher(data.transaction);
           }
@@ -67,6 +67,12 @@ export class TabPayPage extends FirstLevelPage {
     transfer_mark: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+
+  @asyncCtrlGenerator.error("")
+  async putThirdTransaction(tran: TransactionModel) {
+    await this.transactionService.putThirdTransaction(tran);
+    this.showTransferReceipt(tran);
+  }
 
   @asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
   async setTransferFee() {

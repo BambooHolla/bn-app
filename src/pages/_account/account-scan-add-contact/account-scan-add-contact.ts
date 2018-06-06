@@ -392,7 +392,6 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     if (!tran) {
       throw new Error("PROTOCOL_PARSE_ERROR");
     }
-    await this.transactionService.putThirdTransaction(tran);
     this.jobRes({
       protocol: "ifmchain-transaction",
       transaction: tran,

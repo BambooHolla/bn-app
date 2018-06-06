@@ -467,6 +467,8 @@ export function autoRetryWrapGenerator(
     descriptor.value = async function loop(...args) {
       var keep_retry = true;
       do {
+        //断网的状态下停止运行，直到联网
+        await waitNetwork();
         try {
           // 不论同步还是异步，都进行await
           // 如果成功，直接返回，中断重试循环
@@ -497,6 +499,19 @@ export function autoRetryWrapGenerator(
     return descriptor;
   };
 }
+export function waitNetwork() {
+  if (navigator.onLine) {
+    return;
+  }
+  return new Promise(cb => {
+    const once = () => {
+      cb();
+      window.removeEventListener("ononline", once);
+    };
+    window.addEventListener("ononline", once);
+  });
+}
+
 export function singleRunWrap() {
   return function(target, name, descriptor) {
     const source_fun = descriptor.value;

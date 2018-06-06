@@ -29,7 +29,9 @@ bec74be9c8eebc4a3c42f5bf0f535b49742ce6cb5c14c5dadcb63c55d03c00a7
 
 {
   "HIDE_WELCOME": "1",
-  "LATEST_APP_VERSION_URL": "http://192.168.16.119:8180/api/app/version/latest",
+  "LATEST_APP_VERSION_URL": "http://192.168.16.197:8180/api/app/version/latest",
   "NET_VERSION": "testnet",
-  "SERVER_HOST": "FULL:http://192.168.16.119:19000"
+  "BLOCK_UNIT_TIME": "3000",
+  "HIDE_FLAG": "0",
+  "SERVER_URL": "http://192.168.16.197:19002"
 }
