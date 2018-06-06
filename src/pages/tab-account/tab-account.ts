@@ -29,6 +29,9 @@ export class TabAccountPage extends FirstLevelPage {
     this.registerViewEvent(this.userInfo, "changed", () => {
       this.cdRef.markForCheck();
     });
+    window.addEventListener("ononline", () => {
+      this.checkAndroidUpdate();
+    });
   }
 
   get ibt() {

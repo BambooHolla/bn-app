@@ -14,6 +14,9 @@ export async function checkUpdate(
   },
   open_update_dialog = true,
 ) {
+  if(!navigator.onLine){
+    return;
+  }
   const app_version_info = await fetch.get<LATEST_VERSION_INFO>(
     AppSettingProvider.LATEST_APP_VERSION_URL,
     {
