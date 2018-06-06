@@ -14,7 +14,7 @@
       <div class="unit">IBT</div>
     </div>
     <div class="qrcode-wrapper">
-      <kjua-qrcode [text]="transaction_binary" fill="#000"></kjua-qrcode>
+      <kjua-qrcode [text]="transaction_binary" [size]="qrcode_size" ecLevel="H" fill="#000"></kjua-qrcode>
       <div class="scan-tip">{{'SCAN_TO_RECEIVE'|translate}}</div>
     </div>
     <div class="ticket-wrapper">

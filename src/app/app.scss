@@ -85,8 +85,7 @@ ion-loading {
     background-color: transparent;
     > .loading-wrapper {
       box-shadow: 0 0rem 0.2rem rgba(255, 255, 255, 0.3),
-        0 0.2rem 2rem rgba(0, 0, 0, 0.2),
-        0 0 5rem rgba(0, 0, 0, 0.1);
+        0 0.2rem 2rem rgba(0, 0, 0, 0.2), 0 0 5rem rgba(0, 0, 0, 0.1);
     }
   }
 }
@@ -184,4 +183,11 @@ ion-content {
   animation-fill-mode: inherit;
   animation-play-state: inherit;
   animation-direction: inherit;
+}
+
+.common-gradient {
+  >.button-inner{
+    background: linear-gradient(bottom, #61ebde 0%, #44cfeb 100%)!important;
+    @extend .clip-text;
+  }
 }

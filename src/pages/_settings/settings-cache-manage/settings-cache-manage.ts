@@ -90,11 +90,13 @@ export class SettingsCacheManagePage extends SecondLevelPage {
     try {
       let cache_size = 0;
       const keys = await this.storage.keys();
-      for (var key of keys) {
-        const data = await this.storage.get(key);
-        cache_size += this.getUTF8ByteSize(JSON.stringify(data) || "");
-        this.calc_progress += 1 / keys.length;
-      }
+      await Promise.all(
+        keys.map(async key => {
+          const data = await this.storage.get(key);
+          cache_size += this.getUTF8ByteSize(JSON.stringify(data) || "");
+          this.calc_progress += 1 / keys.length;
+        }),
+      );
       this.calc_progress = 1;
       calc_promise_out.resolve();
       this.cache_size = cache_size;
@@ -167,10 +169,12 @@ export class SettingsCacheManagePage extends SecondLevelPage {
     try {
       const total_calc_progress = this.calc_progress;
       const keys = await this.storage.keys();
-      for (var key of keys) {
-        await this.storage.remove(key);
-        this.calc_progress -= total_calc_progress / keys.length;
-      }
+      await Promise.all(
+        keys.map(async key => {
+          await this.storage.remove(key);
+          this.calc_progress -= total_calc_progress / keys.length;
+        }),
+      );
       this.calc_progress = 0;
       // 等待动画执行完成
       await new Promise(cb => setTimeout(cb, 300));

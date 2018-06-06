@@ -62,7 +62,8 @@ export class OfflineTransactionTicketComponent extends AniBase {
 		}
 		if (!this.app) {
 			// todo:use parentElement width and height
-			let { clientWidth, clientHeight } = canvasNode;
+			let { clientWidth, clientHeight } =
+				canvasNode.parentElement || canvasNode;
 
 			// contain模式
 			if (clientWidth / clientHeight > TICKET_W / TICKET_H) {

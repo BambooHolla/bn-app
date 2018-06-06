@@ -1,0 +1,107 @@
+page-pay-receipt-to-voucher {
+	> .content {
+		> .scroll-content {
+			animation-name: aplha-dark-bg-in;
+			animation-duration: 1000ms;
+			animation-delay: 250ms;
+			animation-fill-mode: forwards;
+		}
+	}
+	@keyframes aplha-dark-bg-in {
+		0% {
+			background-color: transparent;
+		}
+		100% {
+			background-color: rgba(0, 0, 0, 0.6);
+		}
+	}
+
+	.content-wrapper {
+		height: 100%;
+		pointer-events: all;
+		/* overflow: hidden; */
+		position: absolute;
+		width: 100vw;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		> .printer {
+			overflow: hidden;
+			width: 100%;
+			> .print-outlet {
+				width: 100vw;
+				height: 167/750 * 100vw;
+				background-image: url("../assets/imgs/tab-pay/offline/print-outlet.jpg");
+				background-repeat: no-repeat;
+				background-size: 100%;
+				position: relative;
+				&::before {
+					position: absolute;
+					content: " ";
+					width: 100vw;
+					height: 82%;
+					top: 0;
+					left: 0;
+					z-index: 3;
+					background-image: url("../assets/imgs/tab-pay/offline/print-outlet.jpg");
+					background-repeat: no-repeat;
+					background-size: 100%;
+				}
+			}
+			.ticket-paper {
+				animation-delay: 800ms;
+				position: relative;
+				z-index: 2;
+				top: 17.3vw;
+				margin: 0 auto;
+				width: 730/750 * 100vw;
+				height: 505/730 * 730/750 * 100vw;
+				background-image: url("../assets/imgs/tab-pay/offline/ticket-paper.png");
+				background-repeat: no-repeat;
+				background-size: 100%;
+				> .ticket {
+					position: relative;
+					top: 13.4vw;
+					border-style: dashed;
+					border-left: 0;
+					border-right: 0;
+					border-top-width: 1px;
+					border-bottom-width: 1px;
+					box-sizing: content-box;
+					border-color: #afafaf;
+					height: 65.5%;
+					width: 97.4%;
+					margin: 0 auto;
+				}
+			}
+		}
+
+		.button-container {
+			margin: 0 auto;
+			margin-top: 80vw;
+			width: 78%;
+			> .close-button {
+				width: 100%;
+				border-radius: 1rem;
+				background-color: #fff;
+				height: 4rem;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				> .inner {
+					/* margin-top: 0.4rem; */
+					font-size: 1.9rem;
+					width: 100%;
+					font-weight: bold;
+					text-align: center;
+					background: linear-gradient(
+						bottom,
+						#61ebde 0%,
+						#44cfeb 100%
+					);
+				}
+			}
+		}
+	}
+}

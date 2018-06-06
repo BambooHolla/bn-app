@@ -29,6 +29,9 @@ export class TabAccountPage extends FirstLevelPage {
     this.registerViewEvent(this.userInfo, "changed", () => {
       this.cdRef.markForCheck();
     });
+    window.addEventListener("ononline", () => {
+      this.checkAndroidUpdate();
+    });
   }
 
   get ibt() {
@@ -68,6 +71,9 @@ export class TabAccountPage extends FirstLevelPage {
   @TabAccountPage.onInit
   @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
   async checkAndroidUpdate() {
+    if (!this.appSetting.settings.auto_update_app) {
+      return;
+    }
     this.app_version_info = await checkUpdate(this.fetch, {
       isAndroid: this.isAndroid,
       isIOS: this.isIOS,

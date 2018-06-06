@@ -52,7 +52,11 @@ export class TabPayPage extends FirstLevelPage {
         if (typeof data === "string") {
           this.formData.transfer_address = data;
         } else if (data && data.protocol === "ifmchain-transaction") {
-          this.showTransferReceipt(data.transaction);
+          if (navigator.onLine) {
+            this.showTransferReceipt(data.transaction);
+          } else {
+            this.showReceiptToVoucher(data.transaction);
+          }
         }
       }
     });
@@ -144,6 +148,26 @@ export class TabPayPage extends FirstLevelPage {
         "pay-transfer-receipt",
         {
           transfer,
+        },
+        {
+          cssClass: "transfer-receipt-modal",
+          showBackdrop: true,
+          enableBackdropDismiss: false,
+        },
+      )
+      .present();
+  }
+
+  @asyncCtrlGenerator.error()
+  async showReceiptToVoucher(transaction: TransactionModel) {
+    if (!transaction) {
+      throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
+    }
+    return this.modalCtrl
+      .create(
+        "pay-receipt-to-voucher",
+        {
+          transaction,
         },
         {
           cssClass: "transfer-receipt-modal",

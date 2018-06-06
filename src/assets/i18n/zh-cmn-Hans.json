@@ -1,5 +1,6 @@
 {
   "OK": "确定",
+  "CONFIRM_DELETE": "确认删除",
   "YES": "是",
   "NO": "否",
   "CANCEL": "取消",
@@ -53,6 +54,14 @@
   "ABOUT_IBT_INFO":
     "IFMChain是全球首款可接入移动终端的区块链3.0产品IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
 
+  "//": "account-voucher-wallet",
+  "ACCOUNT-VOUCHER-WALLET": "凭证钱包",
+  "VOUCHER_CONFIRMED": "已 兑",
+  "CONFIRM_SUBMIT_VOUCHER":"确认兑换",
+  "CONFIRM_TO_SUBMIT_THIS_VOUCHER": "确定将凭证进行兑换",
+  "CONFIRM_TO_DELETE_THIS_VOUCHER": "确定删除凭证",
+  "VOUCHER_WALLET_IS_EMPTY":"凭证钱包是空的",
+
   "//": "sign-in-and-sign-up",
   "LOGINNG": "网络同步中",
   "LOGIN_ERROR": "同步失败",
@@ -74,6 +83,7 @@
   "MY_CONTACTS": "我的联系人",
   "PEER_LIST": "网络节点",
   "MY_TRANSACTION": "我的交易",
+  "VOUCHER_WALLET": "凭证钱包",
   "MINER_LIST": "矿工列表",
   "SHARE_APP": "我要分享",
   "ABOUT_IBT": "关于IBT",
@@ -249,8 +259,11 @@
   "SCAN_TO_RECEIVE": "扫一扫接收",
   "QR_CODE_PAYMENT": "二维码支付",
   "SCAN_CODE_RECEPTION": "扫码接收",
-  "POSTSCRIPT":"附言",
-  "EMPTY_REMARK":"没有附言",
+  "POSTSCRIPT": "附言",
+  "EMPTY_REMARK": "没有附言",
+
+  "//": "tab-receipt-to-voucher",
+  "PUT_INTO_VOUCHER_WALLET": "放入凭证钱包",
 
   "//": "vote-list",
   "VOTE-LIST": "投票",

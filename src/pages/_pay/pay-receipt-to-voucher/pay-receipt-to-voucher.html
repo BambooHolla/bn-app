@@ -1,0 +1,23 @@
+<ion-header>
+</ion-header>
+<ion-content>
+  <div class="content-wrapper">
+    <div class="printer">
+      <div class="print-outlet">
+        <div class="ticker-wrapper">
+          <div *ngIf="transaction" class="ticket-paper animated slideInDown">
+            <offline-transaction-ticket class="ticket" [transaction]="transaction">
+            </offline-transaction-ticket>
+          </div>
+        </div>
+      </div>
+      <div class="button-container">
+        <button class="close-button" (click)="putIntoVoucherWallet()">
+          <div class="inner clip-text">
+            {{'PUT_INTO_VOUCHER_WALLET'|translate}}
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</ion-content>

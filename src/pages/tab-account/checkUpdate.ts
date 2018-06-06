@@ -3,6 +3,23 @@ import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
 import { versionToNumber } from "../version-update-dialog/version-update-dialog";
 import { ModalController } from "ionic-angular";
+export async function getLatestVersionInfo(
+  fetch: AppFetchProvider,
+  lang: string,
+) {
+  if (!navigator.onLine) {
+    return;
+  }
+  return await fetch.get<LATEST_VERSION_INFO>(
+    AppSettingProvider.LATEST_APP_VERSION_URL,
+    {
+      search: {
+        lang,
+        ua: navigator.userAgent,
+      },
+    },
+  );
+}
 export async function checkUpdate(
   fetch: AppFetchProvider,
   opts: {
@@ -14,15 +31,10 @@ export async function checkUpdate(
   },
   open_update_dialog = true,
 ) {
-  const app_version_info = await fetch.get<LATEST_VERSION_INFO>(
-    AppSettingProvider.LATEST_APP_VERSION_URL,
-    {
-      search: {
-        lang: opts.lang,
-        ua: navigator.userAgent,
-      },
-    },
-  );
+  const app_version_info = await getLatestVersionInfo(fetch, opts.lang);
+  if (!app_version_info) {
+    return;
+  }
   if (app_version_info.disable_android && opts.isAndroid) {
     return app_version_info;
   }
