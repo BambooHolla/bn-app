@@ -100,17 +100,16 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 	}
 	// 检测交易是否被打进块了
 	@AccountVoucherWalletPage.addEvent("HEIGHT:CHANGED")
-	updateListExchangeStatus() {
+	async updateListExchangeStatus() {
 		for (var _tran of this.voucher_list) {
 			const tran = _tran;
-			if(tran.exchange_status === ExchangeStatus.CONFIRMED){
+			if (tran.exchange_status === ExchangeStatus.CONFIRMED) {
 				return;
 			}
-			if (
-				this.transactionService
-					.getTransactionById(_tran.id)
-					.catch(() => null)
-			) {
+			const block_tran = await this.transactionService
+				.getTransactionById(_tran.id)
+				.catch(() => null);
+			if (block_tran) {
 				tran.exchange_status = ExchangeStatus.CONFIRMED;
 				this.voucherService.updateVoucher(tran);
 			}
