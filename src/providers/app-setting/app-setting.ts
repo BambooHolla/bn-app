@@ -92,8 +92,10 @@ export class AppSettingProvider extends CommonService {
 
     const default_settings = { ...this.settings };
     const get_settings_key = () => {
-      return this.user.address &&
-        `${AppSettingProvider.SETTING_KEY_PERFIX}:${this.user.address}`;
+      return (
+        this.user.address &&
+        `${AppSettingProvider.SETTING_KEY_PERFIX}:${this.user.address}`
+      );
     };
     const getUserSettings = () => {
       let settings: typeof default_settings | undefined;
@@ -356,8 +358,9 @@ export class AppSettingProvider extends CommonService {
   };
 }
 if (
-  AppSettingProvider.NET_VERSION === "testnet" &&
-  localStorage.getItem("HIDE_FLAG") !== "1"
+  (AppSettingProvider.NET_VERSION === "testnet" &&
+    localStorage.getItem("HIDE_FLAG") !== "1") ||
+  localStorage.getItem("HIDE_FLAG") !== "-1"// 强制显示flag
 ) {
   const testnet_flag_wrapper = document.createElement("div");
   testnet_flag_wrapper.appendChild(testnet_flag);
@@ -395,7 +398,7 @@ if (location.hostname === "dev-bnlc.bnqkl.cn") {
 }
 
 const server_url = localStorage.getItem("SERVER_URL");
-if(server_url){
+if (server_url) {
   AppSettingProvider.SERVER_URL = server_url;
 }
 
