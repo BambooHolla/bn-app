@@ -6,7 +6,7 @@
 <ion-content (tap)="trySuperImportLS()">
   <div class="common-list">
     <div class="common-item" *ngFor="let peer of peer_list" (click)="changeNetVersion(peer)" [class.selected]="net_version==peer.net_version">
-      <div class="left">{{peer.title|translate}}</div>
+      <div class="left">{{peer.title}}</div>
       <div class="right">
         <ali-icon name="ifm-dagou"></ali-icon>
       </div>
