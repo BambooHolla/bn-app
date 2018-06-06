@@ -21,6 +21,10 @@ import {
   TransactionTypes,
   TransactionModel,
 } from "../../providers/transaction-service/transaction-service";
+import {
+  VoucherServiceProvider,
+  ExchangeStatus,
+} from "../../providers/voucher-service/voucher-service";
 
 function generateRollOutLog(len = 20, from = Date.now()) {
   return Array.from(Array(len)).map(_ => {
@@ -39,6 +43,7 @@ export class TabPayPage extends FirstLevelPage {
     public navParams: NavParams,
     // public transfer: TransferProvider,
     public transactionService: TransactionServiceProvider,
+    public voucherService: VoucherServiceProvider,
     public cdRef: ChangeDetectorRef, // public network: Network
   ) {
     super(navCtrl, navParams);
@@ -52,11 +57,7 @@ export class TabPayPage extends FirstLevelPage {
         if (typeof data === "string") {
           this.formData.transfer_address = data;
         } else if (data && data.protocol === "ifmchain-transaction") {
-          if (navigator.onLine) {
-            this.putThirdTransaction(data.transaction);
-          } else {
-            this.showReceiptToVoucher(data.transaction);
-          }
+          this.receiptOfflineTransaction(data.transaction);
         }
       }
     });
@@ -68,10 +69,52 @@ export class TabPayPage extends FirstLevelPage {
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
 
-  @asyncCtrlGenerator.error("")
+  @asyncCtrlGenerator.error()
+  receiptOfflineTransaction(tran: TransactionModel) {
+    if (tran.recipientId !== this.userInfo.address) {
+      throw new Error(
+        this.getTranslateSync(
+          "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT",
+        ),
+      );
+    }
+    // todo: check voucher is my
+    if (navigator.onLine) {
+      this.putThirdTransaction(tran);
+    } else {
+      this.showReceiptToVoucher(tran);
+    }
+  }
+
+  @asyncCtrlGenerator.error()
   async putThirdTransaction(tran: TransactionModel) {
+    const add_res = await this.voucherService.addVoucher({
+      exchange_status: ExchangeStatus.UNSUBMIT,
+      ...tran,
+    });
+
     await this.transactionService.putThirdTransaction(tran);
     this.showTransferReceipt(tran);
+  }
+
+  @asyncCtrlGenerator.error()
+  async showReceiptToVoucher(transaction: TransactionModel) {
+    if (!transaction) {
+      throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
+    }
+    return this.modalCtrl
+      .create(
+        "pay-receipt-to-voucher",
+        {
+          transaction,
+        },
+        {
+          cssClass: "transfer-receipt-modal",
+          showBackdrop: true,
+          enableBackdropDismiss: false,
+        },
+      )
+      .present();
   }
 
   @asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
@@ -154,26 +197,6 @@ export class TabPayPage extends FirstLevelPage {
         "pay-transfer-receipt",
         {
           transfer,
-        },
-        {
-          cssClass: "transfer-receipt-modal",
-          showBackdrop: true,
-          enableBackdropDismiss: false,
-        },
-      )
-      .present();
-  }
-
-  @asyncCtrlGenerator.error()
-  async showReceiptToVoucher(transaction: TransactionModel) {
-    if (!transaction) {
-      throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
-    }
-    return this.modalCtrl
-      .create(
-        "pay-receipt-to-voucher",
-        {
-          transaction,
         },
         {
           cssClass: "transfer-receipt-modal",

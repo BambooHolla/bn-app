@@ -52,6 +52,19 @@ export class PayTransferReceiptPage extends SecondLevelPage {
       return this.navCtrl.goToRoot({});
     }
     this.current_transfer = transfer;
+    await this._updateTransferTimeInfo();
+
+    // 从网络上获取这笔交易的最新信息
+    const net_transaction = await this.transactionService
+      .getTransactionById(transfer.id)
+      .catch(() => null);
+    if (net_transaction) {
+      this.current_transfer = net_transaction;
+      await this._updateTransferTimeInfo();
+    }
+  }
+  private async _updateTransferTimeInfo() {
+    const transfer = this.current_transfer as TransactionModel;
     if (transfer.blockId) {
       this.confirmed_timestamp = (await this.blockService.getBlockById(
         transfer.blockId,
@@ -65,6 +78,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
         Date.now() + BLOCK_UNIT_TIME - diff_time;
     }
   }
+
   confirmed_timestamp = 0;
   expected_confirmation_time = 0;
 
