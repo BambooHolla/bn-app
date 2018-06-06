@@ -70,7 +70,7 @@ export class TabPayPage extends FirstLevelPage {
   };
 
   @asyncCtrlGenerator.error()
-  receiptOfflineTransaction(tran: TransactionModel) {
+  async receiptOfflineTransaction(tran: TransactionModel) {
     if (tran.recipientId !== this.userInfo.address) {
       throw new Error(
         this.getTranslateSync(
@@ -80,9 +80,9 @@ export class TabPayPage extends FirstLevelPage {
     }
     // todo: check voucher is my
     if (navigator.onLine) {
-      this.putThirdTransaction(tran);
+      await this.putThirdTransaction(tran);
     } else {
-      this.showReceiptToVoucher(tran);
+      await this.showReceiptToVoucher(tran);
     }
   }
 
