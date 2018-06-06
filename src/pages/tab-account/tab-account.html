@@ -48,7 +48,12 @@
     <div class="nav-item" (click)="routeTo('account-voucher-wallet')">
       <ali-icon class="left" name="ifm-zhinengpingzheng"></ali-icon>
       <div class="title">{{'VOUCHER_WALLET' | translate}}</div>
-      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      <div class="right">
+        <ng-container *ngIf="voucher_total_amount">
+          {{voucher_total_amount|amountEuler|number:'1.8-8'}}
+        </ng-container>
+        <ali-icon name="ifm-arrow-to-right"></ali-icon>
+      </div>
     </div>
     <!-- <div class="nav-item"></div> -->
     <div class="nav-item" (click)="routeTo('account-miner-list')">

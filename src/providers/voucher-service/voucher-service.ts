@@ -16,6 +16,7 @@ type DBConfig = {
 	version: number;
 	count: number;
 	pageSize: number;
+	totalAmount: number;
 };
 
 @Injectable()
@@ -26,6 +27,7 @@ export class VoucherServiceProvider {
 		version: 1,
 		count: 0, // 总数
 		pageSize: 10, // 每页大小
+		totalAmount: 0,
 	};
 	private _config?: DBConfig;
 	private _uniqueIdMap = new Map<string, number>();
@@ -39,6 +41,7 @@ export class VoucherServiceProvider {
 			// 生成索引
 			let cur_page = 0;
 			let index = 0;
+			let totalAmount = 0;
 			do {
 				const store_key = `${this._dbname}:page:${cur_page++}`;
 				const cur_list: any[] = await this.storage.get(store_key);
@@ -47,9 +50,11 @@ export class VoucherServiceProvider {
 				}
 				cur_list.forEach((item: VocherModel) => {
 					this._uniqueIdMap.set(item.id, index++);
+					totalAmount += parseFloat(item.amount);
 				});
 			} while (true);
 			config.count = this._uniqueIdMap.size;
+			config.totalAmount = totalAmount;
 			this._config = config;
 			await this.storage.set(config_key, config);
 		}
@@ -114,6 +119,7 @@ export class VoucherServiceProvider {
 		await this.storage.set(stroge_key, cur_list);
 		this._uniqueIdMap.set(tran.id, config.count);
 		config.count += 1;
+		config.totalAmount += parseFloat(tran.amount);
 		const config_key = `${this._dbname}:config`;
 		await this.storage.set(config_key, config);
 		return true;
@@ -146,7 +152,7 @@ export class VoucherServiceProvider {
 		const in_index = remover_index % config.pageSize;
 
 		// 更新列表
-		in_list.splice(in_index, 1);
+		const [in_tran] = in_list.splice(in_index, 1);
 		// 取出后面的pages
 		const max_page = Math.floor(config.count / config.pageSize);
 		var full_list = in_list.slice();
@@ -185,7 +191,15 @@ export class VoucherServiceProvider {
 				}
 			}),
 		);
+		config.totalAmount -= parseFloat(in_tran.amount);
+		config.count -= parseFloat(in_tran.amount);
 
+		const config_key = `${this._dbname}:config`;
+		await this.storage.set(config_key, config);
 		return true;
+	}
+	async getTotalAmount() {
+		const config = await this.getVoucherConfig();
+		return config.totalAmount;
 	}
 }

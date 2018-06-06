@@ -12,6 +12,7 @@ import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
 import { checkUpdate } from "./checkUpdate";
+import { VoucherServiceProvider } from "../../providers/voucher-service/voucher-service";
 
 @Component({
   selector: "page-tab-account",
@@ -24,6 +25,7 @@ export class TabAccountPage extends FirstLevelPage {
     public navParams: NavParams,
     public fetch: AppFetchProvider,
     public cdRef: ChangeDetectorRef,
+    public voucherService: VoucherServiceProvider,
   ) {
     super(navCtrl, navParams);
     this.registerViewEvent(this.userInfo, "changed", () => {
@@ -68,6 +70,13 @@ export class TabAccountPage extends FirstLevelPage {
       )
       .present();
   }
+
+  voucher_total_amount = 0;
+  @TabAccountPage.willEnter
+  async initVoucherData() {
+    this.voucher_total_amount = await this.voucherService.getTotalAmount();
+  }
+
   @TabAccountPage.onInit
   @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
   async checkAndroidUpdate() {
