@@ -57,7 +57,7 @@
           {{'BLOCK_blockSize'|translate}}
         </div>
         <div class="right">
-          {{block_info?.blockSize|bytes}}
+          {{block_info?.payloadLength+block_info?.blockSize|bytes}}
         </div>
       </div>
       <div class="line confirm-num">

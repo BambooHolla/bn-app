@@ -24,7 +24,9 @@ import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
+import { DbCacheProvider, HTTP_Method } from "../db-cache/db-cache";
 import io from "socket.io-client";
+import { Mdb } from "../mdb";
 
 export * from "./block.types";
 
@@ -51,6 +53,7 @@ export class BlockServiceProvider extends FLP_Tool {
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
     public minService: MinServiceProvider,
+    public dbCache: DbCacheProvider,
   ) {
     super();
     tryRegisterGlobal("blockService", this);
@@ -62,11 +65,36 @@ export class BlockServiceProvider extends FLP_Tool {
 
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
+
+    // 安装数据库
+    dbCache.installDatabase("blocks", [
+      {
+        fieldName: "height",
+        unique: true,
+      },
+      {
+        fieldName: "id",
+        unique: true,
+      },
+    ]);
+    dbCache.installApiCache<TYPE.BlockModel>({
+      dbname: "blocks",
+      method: "get",
+      url: this.GET_BLOCK_BY_QUERY,
+      async beforeService(db: Mdb<TYPE.BlockModel>, request_opts) {
+        var res: any;
+        return res;
+      },
+      // async afterService(req_res_list){
+
+      // },
+      async dbHandle(db: Mdb<TYPE.BlockModel>, mix_res, cache) {},
+    });
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
   );
-  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
+  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks");
   readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
   readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
   readonly GET_FORGING_BLOCK = this.appSetting.APP_URL(

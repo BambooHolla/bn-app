@@ -6,6 +6,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { AppUrl } from "../app-setting/app-setting";
 
 import { AppSettingProvider } from "../app-setting/app-setting";
+import {
+  DbCacheProvider,
+  installApiCache,
+  HTTP_Method,
+} from "../db-cache/db-cache";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
@@ -79,6 +84,7 @@ export class AppFetchProvider {
     public appSetting: AppSettingProvider,
     public storage: Storage,
     public translateService: TranslateService,
+    public dbCache: DbCacheProvider,
   ) {
     console.log("Hello AppFetchProvider Provider");
     tryRegisterGlobal("FETCH", this);
@@ -191,7 +197,62 @@ export class AppFetchProvider {
     }
     return { url, options };
   }
-  private _request(
+  private async _requestWithApiService<T>(
+    method: HTTP_Method,
+    url: string,
+    body: any,
+    options: RequestOptionsArgs = {},
+    without_token?: boolean,
+    auto_cache = this.auto_cache,
+    timeout_ms = this.timeout_ms,
+  ) {
+    // 先查找自定义API接口
+    const custom_api_config:
+      | installApiCache<T>
+      | undefined = this.dbCache.cache_api_map.get(
+      `${method}:${new URL(url).pathname}`,
+    );
+    if (custom_api_config) {
+      const api_service = custom_api_config;
+      const db = this.dbCache.dbMap.get(api_service.dbname);
+      if (db) {
+        const { reqs, cache } = await api_service.beforeService(db, {
+          method,
+          url,
+          reqOptions: options,
+          body,
+        });
+        if (reqs.length) {
+          const mix_data = await Promise.all(
+            reqs.map(({ method, url, reqOptions, body }) =>
+              this._request(
+                method,
+                url.toString(),
+                body,
+                reqOptions,
+                without_token,
+                auto_cache,
+                timeout_ms,
+              ),
+            ),
+          ).then(res_list => api_service.afterService(res_list));
+          return api_service.dbHandle(db, mix_data, cache);
+        } else {
+          return cache;
+        }
+      }
+    }
+    return this._request<T>(
+      method,
+      url,
+      body,
+      options,
+      without_token,
+      auto_cache,
+      timeout_ms,
+    );
+  }
+  private _request<T>(
     method: string,
     url: string,
     body: any,
@@ -252,7 +313,7 @@ export class AppFetchProvider {
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request(
+    return this._requestWithApiService(
       "get",
       url.toString(),
       void 0,
@@ -268,7 +329,7 @@ export class AppFetchProvider {
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request(
+    return this._requestWithApiService(
       "post",
       url.toString(),
       body,
@@ -284,7 +345,7 @@ export class AppFetchProvider {
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request(
+    return this._requestWithApiService(
       "put",
       url.toString(),
       body,
@@ -299,7 +360,7 @@ export class AppFetchProvider {
     no_token?: boolean,
     auto_cache?: boolean,
   ): Promise<T> {
-    return this._request(
+    return this._requestWithApiService(
       "delete",
       url.toString(),
       void 0,

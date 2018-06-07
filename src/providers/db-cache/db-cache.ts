@@ -1,69 +1,82 @@
 import { Injectable } from "@angular/core";
 import { AppUrl } from "../commonService";
 import { RequestOptionsArgs } from "@angular/http";
+import { Mdb } from "../mdb";
+export type HTTP_Method = "get" | "post" | "put" | "delete";
 interface RequestOptions {
-	url: AppUrl;
-	req: RequestOptionsArgs;
+	method: HTTP_Method;
+	url: AppUrl | string;
+	reqOptions: RequestOptionsArgs;
+	body?: any;
 }
 interface RequestOptionsWithResult<T = any> extends RequestOptions {
 	result: T;
 }
 
+export interface installApiCache<T> {
+	dbname: string;
+	url: AppUrl;
+	method: HTTP_Method;
+	// 一个请求可以被拆分成多个请求，并返回数据库中查出来的数据
+	beforeService: (
+		db: Mdb<T>,
+		request_opts: RequestOptions,
+	) => Promise<{ reqs: RequestOptions[]; cache: any }>;
+	// 多个请求返回后合并成一个请求
+	afterService: (req_res_list: RequestOptionsWithResult[]) => any;
+	// 将合并后的数据再放入数据库中，并返回最终结果
+	dbHandle: (
+		store: Mdb<T>,
+		min_data: any,
+		beforeService_cache: any,
+	) => Promise<any>;
+}
+export interface installApiCacheOptions<T> {
+	dbname: installApiCache<T>["dbname"];
+	url: installApiCache<T>["url"];
+	method: installApiCache<T>["method"];
+	// 一个请求可以被拆分成多个请求
+	beforeService: installApiCache<T>["beforeService"];
+	// 多个请求返回后合并成一个请求
+	afterService?: installApiCache<T>["afterService"];
+	// 将数据存储到数据库中
+	dbHandle: installApiCache<T>["dbHandle"];
+}
+
 @Injectable()
 export class DbCacheProvider {
-	databaseName = "ifmchain";
-	databaseVersion = 1;
-	cacheDb = (() => {
-		const openRequest = indexedDB.open(
-			this.databaseName,
-			this.databaseVersion,
-		);
-		return new Promise<IDBDatabase>((resolve, reject) => {
-			openRequest.onupgradeneeded = event => {
-				const db: IDBDatabase =
-					(event.target && event.target["result"]) ||
-					openRequest.result;
-				db.onerror = function(err) {
-					console.error("indexedDB error", err);
-				};
-				// Model 定义
-				const store = db.createObjectStore("blocks", {
-					keyPath: "height",
+	async installDatabase(dbname: string, indexs: Nedb.EnsureIndexOptions[]) {
+		if (this.dbMap.has(dbname)) {
+			return this.dbMap.get(dbname);
+		}
+		const mdb = new Mdb(dbname);
+		await Promise.all(
+			indexs.map(indexOpts => {
+				return new Promise((resolve, reject) => {
+					mdb.db.ensureIndex(
+						indexOpts,
+						err => (err ? reject(err) : resolve),
+					);
 				});
-				store.createIndex("block-id", "id", { unique: true });
-
-				// resolve(db);
-			};
-			openRequest.onsuccess = event => {
-				// Database is open and initialized - we're good to proceed.
-				resolve(openRequest.result);
-			};
-			openRequest.onerror = reject;
-		});
-	})();
-	cache_api_map = new Map<string, any>();
-	installApiCache<T = any>(opts: {
-		url: AppUrl;
-		method: "get" | "post" | "put" | "delete";
-		dataToArray: (data: any) => T[];
-		dbHandle?: (store: IDBObjectStore, arr: T[]) => void;
-		// 一个请求可以被拆分成多个请求
-		beforeService?: (request_opts: RequestOptions) => RequestOptions[];
-		// 多个请求返回后合并成一个请求
-		afterService?: (req_res_list: RequestOptionsWithResult[]) => any;
-	}) {
-		if (!opts.dbHandle) {
-			opts.dbHandle = (store: IDBObjectStore, arr: T[]) => {
-				for (var item of arr) {
-					store.add(item);
-				}
-			};
-		}
-		if (!opts.beforeService) {
-			opts.beforeService = (request_opts: RequestOptions) => {
-				return [request_opts];
-			};
-		}
+			}),
+		);
+		this.dbMap.set(dbname, mdb);
+		return mdb;
+	}
+	dbMap = new Map<string, Mdb<any>>();
+	cache_api_map = new Map<string, installApiCache<any>>();
+	installApiCache<T = any>(opts: installApiCacheOptions<T>) {
+		// if (!opts.dbHandle) {
+		// 	opts.dbHandle = (db: Mdb<T>, arr: T[]) => {
+		// 		return db.insertMany(arr);
+		// 	};
+		// }
+		// if (!opts.beforeService) {
+		// 	opts.beforeService = async (db: Mdb<T>, request_opts: RequestOptions) => {
+		// 		const  cache = db.;
+		// 		return { reqs: [request_opts], cache };
+		// 	};
+		// }
 		if (!opts.afterService) {
 			opts.afterService = (req_res_list: RequestOptionsWithResult[]) => {
 				const res: any = {};
@@ -81,12 +94,11 @@ export class DbCacheProvider {
 				return res;
 			};
 		}
-		this.cache_api_map.set(`${opts.method}:${opts.url.path}`, {
-			save: data => {
-				const arr = opts.dataToArray(data);
-			},
-			beforeService: opts.beforeService,
-			afterService: opts.afterService,
-		});
+		this.cache_api_map.set(
+			`${opts.method.toLowerCase()}:${opts.url.path}`,
+			{
+				...opts,
+			} as any,
+		);
 	}
 }
