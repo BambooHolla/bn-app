@@ -478,7 +478,7 @@
   "MINING_INCOME_NOTICE": "入账通知",
   "SETTINGS_LANG": "语言设置",
   "SETTINGS_NET_VERSION": "切换网络",
-  "MINING_ONLY_IN_WIFI": "只在wifi时挖矿",
+  "MINING_ONLY_IN_WIFI": "仅在wifi时挖矿",
   "FINGERPRINT_PROTECTION": "指纹保护",
   "BACKGROUND_MINING": "后台挖矿",
   "AUTO_UPDATE": "自动升级",
@@ -581,6 +581,7 @@
   "change username error": "用户名设置出错",
   "this username has already exist": "用户名已存在",
   "Second passphrase verified error": "支付密码验证出错",
+  "NOT_MORE_VOTE_ABLE_DELEGATE":"没有可投的委托人",
 
   "//": "OVER"
 }

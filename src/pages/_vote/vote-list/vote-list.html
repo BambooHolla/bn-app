@@ -17,9 +17,6 @@
 <ion-content>
   <ion-content class="in-vote-content" [class.show]="InOutSubPage.IN_VOTE===current_page">
     <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8A%95%E7%A5%A8-%E6%88%91%E5%BE%97%E7%9A%84%E7%A5%A8.jpg" alt=""> -->
-    <ion-refresher (ionRefresh)="loadInVoteList($event)" [enabled]="in_vote_mill_list.length">
-      <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_IN_VOTE_LIST'|translate"></ion-refresher-content>
-    </ion-refresher>
     <div class="common-list" [class.empty]="!my_mining_machine.length">
       <div class="no-mills">
         <div class="tip">
@@ -99,8 +96,8 @@
             <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
           </ion-refresher>
           <div class="common-list">
-            <div class="common-item" *ngFor="let delegatePubKey of can_vote_list">
-              <div class="left" [innerHTML]="delegatePubKey|mask:'@address'"></div>
+            <div class="common-item" *ngFor="let vote of can_vote_list" (click)="routeTo('vote-delegate-detail',{delegate_info:vote,page:'vote'})">
+              <div class="left" [innerHTML]="vote.username||(vote.address|mask:'@address')"></div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>

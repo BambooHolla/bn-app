@@ -30,6 +30,7 @@ import {
 import * as TYPE from "./min.types";
 export * from "./min.types";
 import { AppUrl } from "../commonService";
+import { Mdb } from "../mdb";
 
 @Injectable()
 export class MinServiceProvider extends FLP_Tool {
@@ -60,7 +61,11 @@ export class MinServiceProvider extends FLP_Tool {
     this.loginService.loginStatus.distinctUntilChanged().subscribe(is_login => {
       this._auto_vote_sub && this._auto_vote_sub.unsubscribe();
       if (is_login) {
+        // 用户刚刚登陆的时候，清空一下缓存
+        this.voted_delegates_db.clear();
         this._auto_vote_sub = this.appSetting.round.subscribe(r => {
+          // 轮次变动的时候，清空已经投票的缓存
+          this.voted_delegates_db.clear();
           if (this.appSetting.getUserToken()) {
             // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，这里属于重复调用，但是autoVote会自动处理重复情况
             this.autoVote(r, "from-round-change").catch(err => {
@@ -70,26 +75,14 @@ export class MinServiceProvider extends FLP_Tool {
         });
       }
     });
-    // this.appSetting.login
   }
+  /*已经投票的委托人*/
+  private voted_delegates_db = new Mdb<TYPE.DelegateModel>(
+    "voted_delegate",
+    true,
+  );
 
-  // private _auto_vote_register!: AsyncBehaviorSubject<void>;
   private _auto_vote_sub?: Subscription;
-  // @TB_AB_Generator("_auto_vote_register")
-  // private _auto_vote_register_Executor(promise_pro: PromisePro<void>) {
-  //   if (this._auto_vote_sub) {
-  //     this._auto_vote_sub.unsubscribe();
-  //   }
-  //   this._auto_vote_sub = this.appSetting.round.subscribe(r => {
-  //     if (this.appSetting.getUserToken()) {
-  //       // 新的用户进来的话，界面的上的开启挖矿会自动触发vote函数，这里属于重复调用，但是autoVote会自动处理重复情况
-  //       this.autoVote(r, "from-round-change").catch(err => {
-  //         console.error("AUTO VOTE ERROR", err);
-  //       });
-  //     }
-  //   });
-  //   return promise_pro.resolve();
-  // }
 
   readonly ROUND_TIME = this.appSetting.APP_URL("/api/delegates/roundTime");
   readonly VOTE_URL = this.appSetting.APP_URL(
@@ -107,9 +100,15 @@ export class MinServiceProvider extends FLP_Tool {
   readonly FORGE_DISABLE = this.appSetting.APP_URL(
     "/api/delegates/forging/disable",
   );
+  readonly UN_VOTE_DELEGATES = this.appSetting.APP_URL(
+    "/api/delegates/allowVotingDelegates",
+  );
+  readonly VOTED_DELEGATES = this.appSetting.APP_URL(
+    "/api/delegates/alreadyVotingDelegates",
+  );
   readonly SYSTEM_SHUTDOWN = this.appSetting.APP_URL("/api/system/shutdown");
   readonly MINERS = this.appSetting.APP_URL("/api/delegates");
-  readonly MY_VOTES = this.appSetting.APP_URL("/api/accounts/delegates");
+  readonly DELEGATES = this.appSetting.APP_URL("/api/accounts/delegates");
   readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/myProfitRanking");
   readonly ALL_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
   readonly TOTAL_VOTE = this.appSetting.APP_URL("/api/delegates/getTotalVote");
@@ -135,41 +134,62 @@ export class MinServiceProvider extends FLP_Tool {
     let roundTimeReq = {
       publicKey: this.userInfo.publicKey,
     };
-    let roundProgress: any;
 
     let data = await this.fetch.get<{
       success: boolean;
       nextRoundTime: number;
       error?: any;
     }>(roundTimeUrl);
-    let roundTime = data.nextRoundTime;
-    let blockTimeRes = await this.transactionService.getTimestamp();
-    if (blockTimeRes.success) {
-      let blockTime = blockTimeRes.timestamp;
-      roundProgress = ((1 - roundTime / (57 * blockTime / 1000)) * 100).toFixed(
-        2,
-      );
-      return roundProgress;
-    }
-
+    const roundTime = data.nextRoundTime;
+    const { timestamp } = await this.transactionService.getTimestamp();
+    const roundProgress = (
+      (1 - roundTime / (57 * timestamp / 1000)) *
+      100
+    ).toFixed(2);
     return roundProgress;
   }
 
-  getVoteAbleDelegate(address = this.userInfo.address) {
-    return this.fetch.get<{ delegate: string[]; timestamp: string }>(
-      this.VOTE_URL,
-      {
-        search: { address },
+  /**
+   * 获取可投的委托人
+   */
+  async getVoteAbleDelegates(
+    skip: number,
+    limit: number,
+    address = this.userInfo.address,
+  ) {
+    const data = await this.fetch.get<{
+      delegates: TYPE.DelegateModel[];
+      skip: number;
+      done?: boolean;
+    }>(this.UN_VOTE_DELEGATES, {
+      search: {
+        skip,
+        limit,
+        address,
       },
-    );
+    });
+    return data;
   }
-  voteAbleDelegate!: AsyncBehaviorSubject<{
-    delegate: string[];
-    timestamp: string;
-  }>;
-  @ROUND_AB_Generator("voteAbleDelegate", true)
-  voteAbleDelegate_Executor(promise_pro) {
-    return promise_pro.follow(this.getVoteAbleDelegate());
+  /**
+   * 获取已投的委托人
+   */
+  async getVotedDelegates(
+    skip: number,
+    limit: number,
+    address = this.userInfo.address,
+  ) {
+    const data = await this.fetch.get<{
+      delegates: TYPE.DelegateModel[];
+      skip: number;
+      done?: boolean;
+    }>(this.VOTED_DELEGATES, {
+      search: {
+        skip,
+        limit,
+        address,
+      },
+    });
+    return data;
   }
 
   /**
@@ -177,33 +197,30 @@ export class MinServiceProvider extends FLP_Tool {
    * @param secret 主密码
    * @param secondSecret 支付密码
    */
-  private async vote(secret: string, secondSecret?: string) {
-    //首先获取时间戳
-
-    //获取投票的人
-    const resp = await this.voteAbleDelegate.getPromise();
-    //如果没有可投票的人，一般都是已经投了57票
-    if (resp.delegate.length === 0) {
-      console.warn("已经投过票了");
-      throw new Error("you have already voted");
-      // return;
-      // throw this.fetch.ServerResError.getI18nError(
-      //   "you have already voted",
-      // );
+  private async _vote(
+    voteable_delegates: TYPE.DelegateModel[],
+    secret: string,
+    secondSecret?: string,
+  ) {
+    if (voteable_delegates.length === 0) {
+      return;
     }
+    const voted_delegate_list = await this.voted_delegates_db.find({
+      publicKey: { $in: voteable_delegates.map(del => del.publicKey) },
+    });
 
-    //票投给所有获取回来的人
-    const voteList = resp.delegate.map(delegate => "+" + delegate);
+    const votes = voteable_delegates.map(delegate => "+" + delegate.publicKey);
 
     //设置投票的参数
+    const { timestamp } = await this.transactionService.getTimestamp();
     let txData: any = {
       type: this.TransactionTypes.VOTE,
       secret: secret,
       publicKey: this.userInfo.publicKey,
       fee: this.appSetting.settings.default_fee.toString(),
-      timestamp: resp.timestamp,
+      timestamp,
       asset: {
-        votes: voteList,
+        votes,
       },
     };
 
@@ -211,8 +228,12 @@ export class MinServiceProvider extends FLP_Tool {
       txData.secondSecret = secondSecret;
     }
 
+    // TODO：如果投票因为手续费过低而失败，应该根据提示的最低手续费进行投票，并将这个最低手续费进行缓存(到setting.min_auto_vote_fee中)
     //成功完成交易
     await this.transactionService.putTransaction(txData);
+    // 存入投票记录
+    await this.voted_delegates_db.insertMany(voteable_delegates);
+
     console.log("%c我挖矿了", "color:purple");
     this.appSetting.settings.digRound = this.appSetting.getRound();
   }
@@ -224,45 +245,61 @@ export class MinServiceProvider extends FLP_Tool {
   @asyncCtrlGenerator.single()
   @asyncCtrlGenerator.error(() => FLP_Form.getTranslate("AUTO_VOTE_ERROR"))
   async autoVote(round, from?: any) {
-    if (this.appSetting.settings.background_mining) {
-      if ("from-round-change" === from) {
-        const cache_key =
-          this.userInfo.publicKey + "|" + this.userInfo.secondPublicKey;
-        if (
-          this._pre_round_pwd_info &&
-          this._pre_round_pwd_info.cache_key != cache_key
-        ) {
-          // 二次密码发生了变动，或者帐号发生了变动
-          this._pre_round_pwd_info = undefined;
-        }
-        if (!this.userInfo.address) {
-          // 如果已经没有用户处于在线状态，终止挖矿
-          return;
-        }
-        if (!this._pre_round_pwd_info) {
-          this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword.call(
-            this,
-          );
-        }
-      }
-      await this.tryVote(round, this._pre_round_pwd_info);
+    if (!this.appSetting.settings.background_mining) {
+      return;
     }
+    // 自动投票，自进行自动投57人，超过了就不投了
+    const voted_delegate_list = await this.voted_delegates_db.find(
+      {},
+      { limit: 57 },
+    );
+    if (voted_delegate_list.length === 57) {
+      return;
+    }
+    if ("from-round-change" === from) {
+      const cache_key =
+        this.userInfo.publicKey + "|" + this.userInfo.secondPublicKey;
+      if (
+        this._pre_round_pwd_info &&
+        this._pre_round_pwd_info.cache_key != cache_key
+      ) {
+        // 二次密码发生了变动，或者帐号发生了变动
+        this._pre_round_pwd_info = undefined;
+      }
+      if (!this.userInfo.address) {
+        // 如果已经没有用户处于在线状态，终止挖矿
+        return;
+      }
+      if (!this._pre_round_pwd_info) {
+        this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword.call(
+          this,
+        );
+      }
+    }
+    // 获取可投的账户
+    const { delegates: voteable_delegates } = await this.getVoteAbleDelegates(
+      0,
+      57,
+      this.userInfo.address,
+    );
+    await this.tryVote(voteable_delegates, round, this._pre_round_pwd_info);
   }
   private _pre_round_pwd_info?: any;
   /*是否处于挖矿状态*/
   vote_status = new BehaviorSubject(false);
 
+  // 尝试自动投票
   @asyncCtrlGenerator.single()
   async tryVote(
+    voteable_delegates: TYPE.DelegateModel[],
     round = this.appSetting.getRound(),
     userPWD?: { password: string; pay_pwd?: string },
-    from?: any,
+    from_page?: FLP_Form,
   ) {
-    // if (this.appSetting.settings.digRound < round) {
     if (!userPWD) {
-      userPWD = await FLP_Form.prototype.getUserPassword();
+      userPWD = await (from_page || FLP_Form.prototype).getUserPassword();
     }
-    await this.vote(userPWD.password, userPWD.pay_pwd)
+    await this._vote(voteable_delegates, userPWD.password, userPWD.pay_pwd)
       .then(() => {
         this.tryEmit("vote-success");
         this.vote_status_detail = null;
@@ -276,7 +313,6 @@ export class MinServiceProvider extends FLP_Tool {
           throw err;
         }
       });
-    // }
   }
 
   vote_status_detail: Error | string | null = null;
@@ -326,23 +362,6 @@ export class MinServiceProvider extends FLP_Tool {
         data => data.voters,
       ),
     );
-  }
-
-  /**
-   * 获取我投的票
-   * @param page
-   * @param limit
-   */
-  async getMyVotes(page = 1, limit = 10) {
-    let query = {
-      address: this.userInfo.userInfo.address,
-      offset: (page - 1) * limit,
-      limit: limit,
-    };
-
-    let data: any = await this.fetch.get<any>(this.MY_VOTES, { search: query });
-
-    return data.delegates;
   }
 
   /**

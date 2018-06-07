@@ -5,6 +5,7 @@ export type Executor<T> = (
   // resolve: (value?: T | PromiseLike<T>) => void,
   // reject: (reason?: any) => void,
   promise_pro: PromisePro<T>,
+  current_value?: Promise<T>,
 ) => Promise<T>;
 
 const CONSTRUCTOR_HELPER = Promise.resolve() as Promise<any>;
@@ -84,9 +85,13 @@ export class AsyncBehaviorSubject<T> extends BehaviorSubject<
     this._checkPrepare();
     return super.subscribe(next, error, complete);
   }
-  runExcutor() {
+  runExcutor(force?: boolean) {
     if (!this.promise) {
-      this.promise = this._executor(this._asyncer);
+      this.promise = this._executor(this._asyncer, this._promise);
+    } else if (force) {
+      const new_asyncer = new PromisePro<T>();
+      this._asyncer = new_asyncer;
+      this.promise = this._executor(this._asyncer, this._promise);
     }
   }
   // 中断请求

@@ -635,7 +635,15 @@ export class TabVotePage extends FirstLevelPage {
       const pwdData = await this.getUserPassword({
         title: "@@START_VOTE_VERIFY",
       });
-      await this.minService.tryVote(undefined, pwdData);
+      // 获取可投的账户
+      const {
+        delegates: voteable_delegates,
+      } = await this.minService.getVoteAbleDelegates(
+        0,
+        57,
+        this.userInfo.address,
+      );
+      await this.minService.tryVote(voteable_delegates, undefined, pwdData);
       // this.routeToVoteDetail();
     } catch (err) {
       this.min_starting = false;

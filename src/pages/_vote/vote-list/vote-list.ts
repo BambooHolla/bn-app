@@ -38,9 +38,8 @@ export class VoteListPage extends SecondLevelPage {
       return;
     }
     this.current_page = page;
-    if (this.current_page === InOutSubPage.IN_VOTE) {
-      this.in_vote_list_config.need_refresh && this.initInVoteList();
-    } else {
+    if (this.current_page === InOutSubPage.OUT_VOTE) {
+      // TODO： need_refresh 参数已经应该直接删除，使用数据库进行缓存接口
       this.out_vote_list_config.need_refresh && this.initOutVoteList();
       this.can_vote_list_config.need_refresh && this.initCanVoteList();
     }
@@ -48,27 +47,21 @@ export class VoteListPage extends SecondLevelPage {
   /**投出去的票*/
   out_vote_list: DelegateModel[] = [];
   out_vote_list_config = {
-    page: 1,
+    skip: 0,
     pageSize: 20,
     has_more: true,
     need_refresh: true,
+    loading: new Set(),
   };
-  can_vote_list: string[] = [];
+  can_vote_list: DelegateModel[] = [];
   can_vote_list_config = {
-    page: 1,
+    skip: 0,
     pageSize: 20,
     has_more: true,
     need_refresh: true,
+    loading: new Set(),
   };
-  /**被投的票*/
-  in_vote_mill_list: any[] = [];
-  in_vote_list: RankModel[] = [];
-  in_vote_list_config = {
-    page: 1,
-    pageSize: this.minService.default_vote_for_me_pageSize,
-    has_more: true,
-    need_refresh: true,
-  };
+
   mac_socketio_list: SocketIOClient.Socket[] = [];
   my_mining_machine: any[] = [];
   @VoteListPage.willEnter
@@ -111,28 +104,13 @@ export class VoteListPage extends SecondLevelPage {
   watchHeightChanged(height, is_init) {
     this.out_vote_list_config.need_refresh = true;
     this.can_vote_list_config.need_refresh = true;
-    this.in_vote_list_config.need_refresh = true;
-    if (this.current_page === InOutSubPage.IN_VOTE) {
-      this.initInVoteList();
-    } else {
+    if (this.current_page === InOutSubPage.OUT_VOTE) {
       this.initOutVoteList();
       this.initCanVoteList();
     }
-
-    // 如果当前账户是委托人，就加入到矿机列表中
-    this.minService.myDelegateInfo.getPromise().then(myDelegateInfo => {
-      if (myDelegateInfo) {
-        if (
-          this.in_vote_mill_list.find(
-            item => item && item.address === myDelegateInfo.address,
-          )
-        ) {
-          this.in_vote_mill_list.push(myDelegateInfo);
-        }
-      }
-    });
   }
 
+  //// 已经投的
   // @asyncCtrlGenerator.loading(() =>
   //   VoteListPage.getTranslate("LOADING_OUT_VOTE_LIST"),
   // )
@@ -145,14 +123,8 @@ export class VoteListPage extends SecondLevelPage {
   async loadOutVoteList(refresher?: Refresher) {
     const { out_vote_list_config } = this;
     out_vote_list_config.need_refresh = false;
-    // 重置分页
-    out_vote_list_config.page = 1;
-
-    const list = await this.minService.getMyVotes(
-      out_vote_list_config.page,
-      out_vote_list_config.pageSize,
-    );
-    this.out_vote_list = list;
+    out_vote_list_config.skip = 0;
+    this.out_vote_list = await this._loadOutVoteList();
     if (refresher) {
       refresher.complete();
     }
@@ -161,19 +133,28 @@ export class VoteListPage extends SecondLevelPage {
     VoteListPage.getTranslate("LOAD_MORE_OUT_VOTE_LIST_ERROR"),
   )
   async loadMoreOutVoteList() {
-    const { out_vote_list_config } = this;
-    // 重置分页
-    out_vote_list_config.page += 1;
-
-    const list = await this.minService.getMyVotes(
-      out_vote_list_config.page,
-      out_vote_list_config.pageSize,
-    );
-    this.out_vote_list.push(...list);
-
-    out_vote_list_config.has_more =
-      list.length >= out_vote_list_config.pageSize;
+    this.out_vote_list.push(...(await this._loadOutVoteList()));
   }
+
+  private async _loadOutVoteList() {
+    const { out_vote_list_config } = this;
+    const load_id = { t: performance.now() };
+    try {
+      out_vote_list_config.loading.add(load_id);
+
+      const { delegates, skip, done } = await this.minService.getVotedDelegates(
+        out_vote_list_config.skip,
+        out_vote_list_config.pageSize,
+      );
+      out_vote_list_config.skip = skip;
+      out_vote_list_config.has_more = !done;
+      return delegates;
+    } finally {
+      out_vote_list_config.loading.delete(load_id);
+    }
+  }
+
+  ///// 可投的
   // @asyncCtrlGenerator.loading(() =>
   //   VoteListPage.getTranslate("LOADING_CAN_VOTE_LIST"),
   // )
@@ -187,7 +168,7 @@ export class VoteListPage extends SecondLevelPage {
     const { can_vote_list_config } = this;
     can_vote_list_config.need_refresh = false;
     // 重置分页
-    can_vote_list_config.page = 1;
+    can_vote_list_config.skip = 0;
 
     this.can_vote_list = await this._getCanVoteList();
     if (refresher) {
@@ -198,60 +179,29 @@ export class VoteListPage extends SecondLevelPage {
     VoteListPage.getTranslate("LOAD_MORE_CAN_VOTE_LIST_ERROR"),
   )
   async loadMoreCanVoteList() {
-    const { can_vote_list_config } = this;
-    // 重置分页
-    can_vote_list_config.page += 1;
-
     this.can_vote_list.push(...(await this._getCanVoteList()));
   }
   private async _getCanVoteList() {
     const { can_vote_list_config } = this;
-    const { page, pageSize } = can_vote_list_config;
 
-    const all = (await this.minService.voteAbleDelegate.getPromise()).delegate;
-    const list = all.slice((page - 1) * pageSize, page * pageSize);
+    const load_id = { t: performance.now() };
+    try {
+      can_vote_list_config.loading.add(load_id);
+      const {
+        skip,
+        done,
+        delegates,
+      } = await this.minService.getVoteAbleDelegates(
+        can_vote_list_config.skip,
+        can_vote_list_config.pageSize,
+      );
 
-    can_vote_list_config.has_more =
-      list.length >= can_vote_list_config.pageSize;
-    return list;
-  }
-  // @asyncCtrlGenerator.loading(() =>
-  //   VoteListPage.getTranslate("LOADING_IN_VOTE_LIST"),
-  // )
-  async initInVoteList() {
-    return this.loadInVoteList();
-  }
-  @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_IN_VOTE_LIST_ERROR"),
-  )
-  async loadInVoteList(refresher?: Refresher) {
-    const { in_vote_list_config } = this;
-    in_vote_list_config.need_refresh = false;
-    // 重置分页
-    in_vote_list_config.page = 1;
-
-    this.in_vote_list = await this._getInVoteList();
-    if (refresher) {
-      refresher.complete();
+      can_vote_list_config.skip = skip;
+      can_vote_list_config.has_more = !done;
+      return delegates;
+    } finally {
+      can_vote_list_config.loading.delete(load_id);
     }
-  }
-  @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_MORE_IN_VOTE_LIST_ERROR"),
-  )
-  async loadMoreInVoteList() {
-    const { in_vote_list_config } = this;
-    // 重置分页
-    in_vote_list_config.page += 1;
-    this.in_vote_list.push(...Array.from(Array(in_vote_list_config.pageSize)));
-  }
-  async _getInVoteList() {
-    const { in_vote_list_config } = this;
-    const { page, pageSize } = in_vote_list_config;
-
-    const list = await this.minService.getVotersForMe(page, pageSize);
-
-    in_vote_list_config.has_more = list.length >= in_vote_list_config.pageSize;
-    return list;
   }
 }
 import { cpusStatus, MiningMachine, systemStatus } from "../types";

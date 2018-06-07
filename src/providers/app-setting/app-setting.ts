@@ -94,7 +94,11 @@ export class AppSettingProvider extends CommonService {
     const get_settings_key = () => {
       return (
         this.user.address &&
-        `${AppSettingProvider.SETTING_KEY_PERFIX}:${this.user.address}`
+        `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
+          AppSettingProvider.NET_VERSION
+        }|${AppSettingProvider.SERVER_URL}|${
+          AppSettingProvider.BLOCK_UNIT_TIME
+        }`
       );
     };
     const getUserSettings = () => {
@@ -360,7 +364,7 @@ export class AppSettingProvider extends CommonService {
 if (
   (AppSettingProvider.NET_VERSION === "testnet" &&
     localStorage.getItem("HIDE_FLAG") !== "1") ||
-  localStorage.getItem("HIDE_FLAG") === "-1"// 强制显示flag
+  localStorage.getItem("HIDE_FLAG") === "-1" // 强制显示flag
 ) {
   const testnet_flag_wrapper = document.createElement("div");
   testnet_flag_wrapper.appendChild(testnet_flag);

@@ -179,11 +179,10 @@ export class TransactionServiceProvider {
 
   /**
    * 获取交易时间，交易所需
-   * @returns {Promise<any>}
    */
   async getTimestamp() {
     if (navigator.onLine) {
-      return await this.fetch.get<any>(this.GET_TIMESTAMP);
+      return await this.fetch.get<{timestamp:number}>(this.GET_TIMESTAMP);
     } else {// 离线状态下，从本地生成时间戳
       //种子的UTC时间
       const d = new Date(

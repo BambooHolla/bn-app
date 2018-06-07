@@ -1,11 +1,10 @@
+/// <reference path="../../../typings/globals.d.ts" />
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TransactionModel } from "../transaction-service/transaction.types";
-import * as Datastore from "nedb";
-import * as __Nedb from "nedb/browser-version/out/nedb.min.js";
-const Nedb: typeof Datastore = __Nedb;
-window["__Nedb"] = __Nedb;
+import * as _Nedb from "nedb/browser-version/out/nedb.min.js";
+const Nedb: typeof __Nedb = _Nedb;
 
 export type VoucherModel = TransactionModel & {
 	exchange_status: ExchangeStatus;
@@ -43,7 +42,7 @@ export class VoucherServiceProvider {
 		return new Promise<VoucherModel[]>((resolve, reject) => {
 			this.db
 				.find<VoucherModel>({})
-				.sort({ _id: desc ? -1 : 1 })
+				.sort({ timestamp: desc ? -1 : 1 })
 				.skip(offset)
 				.limit(limit)
 				.exec((err, res) => {
