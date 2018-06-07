@@ -16,6 +16,7 @@ export async function getLatestVersionInfo(
       search: {
         lang,
         ua: navigator.userAgent,
+        t: Date.now(),
       },
     },
   );

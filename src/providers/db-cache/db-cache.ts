@@ -9,11 +9,11 @@ interface RequestOptions {
 	reqOptions: RequestOptionsArgs;
 	body?: any;
 }
-interface RequestOptionsWithResult<T = any> extends RequestOptions {
+export interface RequestOptionsWithResult<T = any> extends RequestOptions {
 	result: T;
 }
 
-export interface installApiCache<T> {
+export interface installApiCache<T, R = any> {
 	dbname: string;
 	url: AppUrl;
 	method: HTTP_Method;
@@ -21,51 +21,53 @@ export interface installApiCache<T> {
 	beforeService: (
 		db: Mdb<T>,
 		request_opts: RequestOptions,
-	) => Promise<{ reqs: RequestOptions[]; cache: any }>;
+	) => Promise<{ reqs: RequestOptions[]; cache: R }>;
 	// 多个请求返回后合并成一个请求
-	afterService: (req_res_list: RequestOptionsWithResult[]) => any;
+	afterService(
+		req_res_list: RequestOptionsWithResult<R>[],
+	): Promise<R | undefined | null> | R | undefined | null;
 	// 将合并后的数据再放入数据库中，并返回最终结果
 	dbHandle: (
 		store: Mdb<T>,
-		min_data: any,
-		beforeService_cache: any,
-	) => Promise<any>;
+		min_data: R | undefined | null,
+		beforeService_cache: R,
+	) => Promise<R>;
 }
-export interface installApiCacheOptions<T> {
-	dbname: installApiCache<T>["dbname"];
-	url: installApiCache<T>["url"];
-	method: installApiCache<T>["method"];
+export interface installApiCacheOptions<T, R> {
+	dbname: installApiCache<T, R>["dbname"];
+	url: installApiCache<T, R>["url"];
+	method: installApiCache<T, R>["method"];
 	// 一个请求可以被拆分成多个请求
-	beforeService: installApiCache<T>["beforeService"];
+	beforeService: installApiCache<T, R>["beforeService"];
 	// 多个请求返回后合并成一个请求
-	afterService?: installApiCache<T>["afterService"];
+	afterService?: installApiCache<T, R>["afterService"];
 	// 将数据存储到数据库中
-	dbHandle: installApiCache<T>["dbHandle"];
+	dbHandle: installApiCache<T, R>["dbHandle"];
 }
 
 @Injectable()
 export class DbCacheProvider {
 	async installDatabase(dbname: string, indexs: Nedb.EnsureIndexOptions[]) {
-		if (this.dbMap.has(dbname)) {
-			return this.dbMap.get(dbname);
+		var res = this.dbMap.get(dbname);
+		if (!res) {
+			const mdb = new Mdb(dbname);
+			await Promise.all(
+				indexs.map(indexOpts => {
+					return new Promise((resolve, reject) => {
+						mdb.db.ensureIndex(
+							indexOpts,
+							err => (err ? reject(err) : resolve()),
+						);
+					});
+				}),
+			);
+			this.dbMap.set(dbname, (res = mdb));
 		}
-		const mdb = new Mdb(dbname);
-		await Promise.all(
-			indexs.map(indexOpts => {
-				return new Promise((resolve, reject) => {
-					mdb.db.ensureIndex(
-						indexOpts,
-						err => (err ? reject(err) : resolve),
-					);
-				});
-			}),
-		);
-		this.dbMap.set(dbname, mdb);
-		return mdb;
+		return res;
 	}
 	dbMap = new Map<string, Mdb<any>>();
 	cache_api_map = new Map<string, installApiCache<any>>();
-	installApiCache<T = any>(opts: installApiCacheOptions<T>) {
+	installApiCache<T = any, R = any>(opts: installApiCacheOptions<T, R>) {
 		// if (!opts.dbHandle) {
 		// 	opts.dbHandle = (db: Mdb<T>, arr: T[]) => {
 		// 		return db.insertMany(arr);

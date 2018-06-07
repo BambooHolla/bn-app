@@ -24,7 +24,11 @@ import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
-import { DbCacheProvider, HTTP_Method } from "../db-cache/db-cache";
+import {
+  DbCacheProvider,
+  HTTP_Method,
+  RequestOptionsWithResult,
+} from "../db-cache/db-cache";
 import io from "socket.io-client";
 import { Mdb } from "../mdb";
 
@@ -77,18 +81,62 @@ export class BlockServiceProvider extends FLP_Tool {
         unique: true,
       },
     ]);
-    dbCache.installApiCache<TYPE.BlockModel>({
+
+    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>({
       dbname: "blocks",
       method: "get",
       url: this.GET_BLOCK_BY_QUERY,
-      async beforeService(db: Mdb<TYPE.BlockModel>, request_opts) {
-        var res: any;
-        return res;
+      async beforeService(db, request_opts) {
+        const search = request_opts.reqOptions.search as any;
+        if (!search) {
+          throw new Error("Parameter verification failed.");
+        }
+        const { limit, orderBy, offset, ...query } = search;
+        {
+          const sort_params = orderBy.split(":");
+          var sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
+        }
+        const blocks = await db.find(query, {
+          sort,
+          limit,
+          skip: offset,
+        });
+        const cache = { blocks, success: true } as TYPE.BlockResModel;
+        if (Number.isFinite(query.height) && blocks.length === 1) {
+          return { reqs: [], cache };
+        }
+        if (
+          Number.isFinite(limit) &&
+          Number.isFinite(offset) &&
+          blocks.length == limit
+        ) {
+          return { reqs: [], cache };
+        }
+        return { reqs: [request_opts], cache };
       },
-      // async afterService(req_res_list){
-
-      // },
-      async dbHandle(db: Mdb<TYPE.BlockModel>, mix_res, cache) {},
+      async afterService(req_res_list) {
+        if (req_res_list.length > 0) {
+          return req_res_list[0].result;
+        }
+      },
+      async dbHandle(db, mix_res, cache) {
+        const cache_blocks = cache.blocks;
+        if (mix_res) {
+          const res_blocks = mix_res.blocks;
+          const old_blocks = await db.find({
+            height: { $in: res_blocks.map(b => b.height) },
+          });
+          const unique_height_set = new Set<number>(
+            old_blocks.map(b => b.height),
+          );
+          const new_blocks = res_blocks.filter(block => {
+            return !unique_height_set.has(block.height);
+          });
+          await db.insertMany(new_blocks);
+          return mix_res;
+        }
+        return cache;
+      },
     });
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(

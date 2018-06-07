@@ -224,17 +224,21 @@ export class AppFetchProvider {
         });
         if (reqs.length) {
           const mix_data = await Promise.all(
-            reqs.map(({ method, url, reqOptions, body }) =>
-              this._request(
-                method,
-                url.toString(),
-                body,
-                reqOptions,
-                without_token,
-                auto_cache,
-                timeout_ms,
-              ),
-            ),
+            reqs.map(async req => {
+              const { method, url, reqOptions, body } = req;
+              return {
+                ...req,
+                result: await this._request(
+                  method,
+                  url.toString(),
+                  body,
+                  reqOptions,
+                  without_token,
+                  auto_cache,
+                  timeout_ms,
+                ),
+              };
+            }),
           ).then(res_list => api_service.afterService(res_list));
           return api_service.dbHandle(db, mix_data, cache);
         } else {
