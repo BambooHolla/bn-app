@@ -88,12 +88,24 @@ export class TabPayPage extends FirstLevelPage {
 
   @asyncCtrlGenerator.error()
   async putThirdTransaction(tran: TransactionModel) {
-    const add_res = await this.voucherService.addVoucher({
+    const voucher = {
       exchange_status: ExchangeStatus.UNSUBMIT,
       ...tran,
-    });
+    };
+    if (!(await this.voucherService.addVoucher(voucher))) {
+      // 已经存在了，不重复操作
+      throw new Error(
+        this.getTranslateSync(
+          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET",
+        ),
+      );
+    } else {
+      await this.transactionService.putThirdTransaction(tran);
+      // 将凭证的状态改成已经提交
+      voucher.exchange_status = ExchangeStatus.SUBMITED;
+      await this.voucherService.updateVoucher(voucher);
+    }
 
-    await this.transactionService.putThirdTransaction(tran);
     this.showTransferReceipt(tran);
   }
 

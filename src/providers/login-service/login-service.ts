@@ -8,7 +8,7 @@ import {
 import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Observable, BehaviorSubject, Subscription } from "rxjs";
 import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 import {
@@ -52,15 +52,52 @@ export class LoginServiceProvider extends FLP_Tool {
     //用于生成随机语句
     this.Mnemonic = this.ifmJs.Mnemonic;
 
-    // // 执行一下登录，来更新账户信息（余额等）
-    // if (this.user.password) {
-    //   this.refreshUserInfo()
-    // }
-
-    // 高度发生变动的时候，更新用户信息
-    this.appSetting.height.subscribe(this.refreshUserInfo.bind(this));
+    // 当登录的用户发生变化的时候，安装用户数据更新
+    this.appSetting.user_token.distinctUntilChanged().subscribe(v => {
+      if (v) {
+        this.installUserInfoRefresher();
+      } else {
+        this.unInstallUserInfoRefresher();
+      }
+    });
 
     console.groupEnd();
+  }
+  private _user_info_refresher?: Subscription;
+  installUserInfoRefresher() {
+    if (this._user_info_refresher) {
+      return;
+    }
+    // 高度发生变动的时候，更新用户信息
+    this._user_info_refresher = this.appSetting.height.subscribe(
+      this.refreshUserInfo.bind(this),
+    );
+  }
+  unInstallUserInfoRefresher() {
+    if (this._user_info_refresher) {
+      this._user_info_refresher.unsubscribe();
+      this._user_info_refresher = undefined;
+    }
+  }
+
+  /** 更新用户信息
+   */
+  @asyncCtrlGenerator.retry(undefined, err =>
+    console.error("获取用户信息一直失败，需要检查网络", err),
+  )
+  async refreshUserInfo() {
+    await this.netWorkConnection();
+    const userinfo = this.appSetting.getUserToken();
+    if (!userinfo) {
+      return;
+    }
+    const res = await this.fetch.forceNetwork(navigator.onLine).get<any>(this.SEARCH_ACCOUNT_URL, {
+      search: {
+        address: userinfo.address,
+      },
+    });
+    Object.assign(userinfo, res.account);
+    this.appSetting.setUserToken(userinfo);
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
   readonly SEARCH_ACCOUNT_URL = this.appSetting.APP_URL("/api/accounts/");
@@ -84,28 +121,50 @@ export class LoginServiceProvider extends FLP_Tool {
    * @memberof LoginServiceProvider
    */
   async doLogin(password: string, savePwd = true) {
+    // 这里的登录不再请求服务器，而是直接返回空的账户数据，等进入到页面后再去同步账户数据
     if (this.checkAccountLoginAble(password)) {
-      let keypair = this.ifmJs.keypairHelper.create(password);
-      let req = {
-        publicKey: keypair.publicKey.toString("hex"),
-      };
+      const keypair = this.ifmJs.keypairHelper.create(password);
+      const publicKey = keypair.publicKey.toString("hex");
+      const address = this.ifmJs.addressCheck.generateBase58CheckAddress(
+        publicKey,
+      );
 
-      let data = await this.fetch.put<any>(this.LOGIN_URL, req);
-      let loginObj = {
+      const oldData = this.appSetting.getUserToken();
+
+      let loginObj: any = {
         password: savePwd ? password : "",
-        ...data.account,
-        // publicKey: data.account.publicKey,
-        // address: data.account.address,
-        username: data.account.username || "",
-        // balance: data.account.balance,
         remember: savePwd,
-        secondPublickey: data.account.secondPublicKey
-          ? data.account.secondPublicKey
-          : "",
+        address,
+        publicKey,
       };
-      // 以Token的形式保存用户登录信息，用于自动登录
-      this.appSetting.setUserToken(loginObj);
-      return data;
+      if (oldData && oldData.address == address) {
+        loginObj = {
+          ...oldData,
+          ...loginObj,
+        };
+      } else {
+        loginObj = {
+          ...loginObj,
+          unconfirmedBalance: "0",
+          balance: "0",
+          unconfirmedSignature: 0,
+          secondSignature: 0,
+          multisignatures: [],
+          u_multisignatures: [],
+          isOnwer: false,
+          paidFee: "0",
+          votingReward: "0",
+          forgingReward: "0",
+          isDelegate: 0,
+        };
+      }
+
+      {
+        // 以Token的形式保存用户登录信息，用于自动登录
+        const { password, savePwd, ...safe_data } = loginObj;
+        this.appSetting.setUserToken(loginObj);
+        return safe_data;
+      }
     } else {
       let alert = this.alertController.create({
         title: "error",
@@ -115,25 +174,6 @@ export class LoginServiceProvider extends FLP_Tool {
       alert.present();
       return false;
     }
-  }
-
-  /** 更新用户信息
-   */
-  @asyncCtrlGenerator.retry(undefined, err =>
-    console.error("获取用户信息一直失败，需要检查网络", err),
-  )
-  async refreshUserInfo() {
-    const userinfo = this.appSetting.getUserToken();
-    if (!userinfo) {
-      return;
-    }
-    const res = await this.fetch.get<any>(this.SEARCH_ACCOUNT_URL, {
-      search: {
-        address: userinfo.address,
-      },
-    });
-    Object.assign(userinfo, res.account);
-    this.appSetting.setUserToken(userinfo);
   }
 
   /**

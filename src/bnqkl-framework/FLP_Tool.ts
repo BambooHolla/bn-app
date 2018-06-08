@@ -12,6 +12,7 @@ import {
   ToastController,
   ModalController,
 } from "ionic-angular";
+
 const is_dev = (() => {
   const test_fun = function DEV_WITH_FULL_NAME() {};
   return test_fun.name === "DEV_WITH_FULL_NAME";
@@ -46,6 +47,19 @@ export class FLP_Tool {
   static get isInCordova() {
     return window["cordova"] && !(window["cordova"] instanceof HTMLElement);
   }
+  static netWorkConnection() {
+    if (navigator.onLine) {
+      return;
+    }
+    return new Promise(cb => {
+      const once = () => {
+        cb();
+        window.removeEventListener("ononline", once);
+      };
+      window.addEventListener("ononline", once);
+    });
+  }
+  netWorkConnection = FLP_Tool.netWorkConnection;
 
   async showConfirmDialog(
     message: string,

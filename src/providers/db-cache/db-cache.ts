@@ -34,15 +34,9 @@ export interface installApiCache<T, R = any> {
 	) => Promise<R>;
 }
 export interface installApiCacheOptions<T, R> {
-	dbname: installApiCache<T, R>["dbname"];
-	url: installApiCache<T, R>["url"];
-	method: installApiCache<T, R>["method"];
 	// 一个请求可以被拆分成多个请求
-	beforeService: installApiCache<T, R>["beforeService"];
 	// 多个请求返回后合并成一个请求
-	afterService?: installApiCache<T, R>["afterService"];
 	// 将数据存储到数据库中
-	dbHandle: installApiCache<T, R>["dbHandle"];
 }
 
 @Injectable()
@@ -74,40 +68,21 @@ export class DbCacheProvider {
 	}
 	dbMap = new Map<string, Mdb<any>>();
 	cache_api_map = new Map<string, installApiCache<any>>();
-	installApiCache<T = any, R = any>(opts: installApiCacheOptions<T, R>) {
-		// if (!opts.dbHandle) {
-		// 	opts.dbHandle = (db: Mdb<T>, arr: T[]) => {
-		// 		return db.insertMany(arr);
-		// 	};
-		// }
-		// if (!opts.beforeService) {
-		// 	opts.beforeService = async (db: Mdb<T>, request_opts: RequestOptions) => {
-		// 		const  cache = db.;
-		// 		return { reqs: [request_opts], cache };
-		// 	};
-		// }
-		if (!opts.afterService) {
-			opts.afterService = (req_res_list: RequestOptionsWithResult[]) => {
-				const res: any = {};
-				for (var req_res of req_res_list) {
-					for (var k in req_res.result) {
-						if (res[k] instanceof Array) {
-							res[k].push(...req_res.result[k]);
-						} else if (res[k] instanceof Object) {
-							Object.assign(res[k], req_res.result[k]);
-						} else {
-							res[k] = req_res.result[k];
-						}
-					}
-				}
-				return res;
-			};
-		}
-		this.cache_api_map.set(
-			`${opts.method.toLowerCase()}:${opts.url.path}`,
-			{
-				...opts,
-			} as any,
-		);
+	installApiCache<T = any, R = any>(
+		dbname: installApiCache<T, R>["dbname"],
+		method: installApiCache<T, R>["method"],
+		url: installApiCache<T, R>["url"],
+		beforeService: installApiCache<T, R>["beforeService"],
+		afterService: installApiCache<T, R>["afterService"],
+		dbHandle: installApiCache<T, R>["dbHandle"],
+	) {
+		this.cache_api_map.set(`${method.toLowerCase()}:${url.path}`, {
+			dbname,
+			url,
+			method,
+			beforeService,
+			afterService,
+			dbHandle,
+		});
 	}
 }

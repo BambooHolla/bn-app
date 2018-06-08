@@ -1,4 +1,4 @@
-export type userModel = {
+export type AccountModel = {
   address: string;
   balance: string;
   publicKey: string;
@@ -8,7 +8,10 @@ export type userModel = {
   unconfirmedSignature: boolean;
   username: string;
 };
-
+export type AccountResModel = {
+  account: AccountModel;
+  success: boolean;
+};
 export type AccountRoundProfitModel = {
   address: string;
   dateCreated: string;

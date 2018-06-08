@@ -211,43 +211,53 @@ export class AppFetchProvider {
     auto_cache = this.auto_cache,
     timeout_ms = this.timeout_ms,
   ) {
-    // 先查找自定义API接口
-    const custom_api_config:
-      | installApiCache<T>
-      | undefined = this.dbCache.cache_api_map.get(
-      `${method}:${new URL(url).pathname}`,
-    );
-    if (custom_api_config) {
-      const api_service = custom_api_config;
-      const db = this.dbCache.dbMap.get(api_service.dbname);
-      if (db) {
-        const { reqs, cache } = await api_service.beforeService(db, {
-          method,
-          url,
-          reqOptions: options,
-          body,
-        });
-        if (reqs.length) {
-          const mix_data = await Promise.all(
-            reqs.map(async req => {
-              const { method, url, reqOptions, body } = req;
-              return {
-                ...req,
-                result: await this._request(
-                  method,
-                  url.toString(),
-                  body,
-                  reqOptions,
-                  without_token,
-                  auto_cache,
-                  timeout_ms,
-                ),
-              };
-            }),
-          ).then(res_list => api_service.afterService(res_list));
-          return api_service.dbHandle(db, mix_data, cache);
-        } else {
-          return cache;
+    if (!this.force_network) {
+      // 先查找自定义API接口
+      const custom_api_config:
+        | installApiCache<T>
+        | undefined = this.dbCache.cache_api_map.get(
+        `${method}:${new URL(url).pathname}`,
+      );
+      if (custom_api_config) {
+        const api_service = custom_api_config;
+        const db = this.dbCache.dbMap.get(api_service.dbname);
+        if (db) {
+          const { reqs, cache } = await api_service.beforeService(db, {
+            method,
+            url,
+            reqOptions: options,
+            body,
+          });
+          if (reqs.length) {
+            const mix_data = await Promise.all(
+              reqs.map(async req => {
+                const { method, url, reqOptions, body } = req;
+                return {
+                  ...req,
+                  result: await this._request(
+                    method,
+                    url.toString(),
+                    body,
+                    reqOptions,
+                    without_token,
+                    auto_cache,
+                    timeout_ms,
+                  ),
+                };
+              }),
+            ).then(res_list => api_service.afterService(res_list));
+            return api_service.dbHandle(db, mix_data, cache);
+          } else {
+            console.log(
+              "%cOFFLINE-SERVICE",
+              "color:#009688;",
+              api_service.dbname,
+              api_service.url.path,
+              options,
+              cache,
+            );
+            return cache;
+          }
         }
       }
     }
@@ -385,7 +395,7 @@ export class AppFetchProvider {
     this._auto_cache = undefined;
     return res;
   }
-  autoCache(auto_cache?: boolean): AppFetchProvider {
+  autoCache(auto_cache?: boolean): this {
     this._auto_cache = auto_cache;
     return this;
   }
@@ -396,8 +406,20 @@ export class AppFetchProvider {
     this._timeout_ms = undefined;
     return res;
   }
-  timeout(timeout_ms?: number): AppFetchProvider {
+  timeout(timeout_ms?: number): this {
     this._timeout_ms = timeout_ms;
+    return this;
+  }
+
+  private _force_network?: boolean;
+  private get force_network() {
+    const res = this._force_network;
+    // 一次性取值，取完就不用了
+    this._force_network = undefined;
+    return res;
+  }
+  forceNetwork(force_network?: boolean): this {
+    this._force_network = force_network;
     return this;
   }
 

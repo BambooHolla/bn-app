@@ -237,9 +237,17 @@ export class MinServiceProvider extends FLP_Tool {
     try {
       await this.transactionService.putTransaction(txData);
     } catch (err) {
-      if (err && err.details.minFee && parseFloat(err.details.minFee) > parseFloat(fee)) {
-        console.warn("手续费过低，继续重试", err.details.minFee, fee);
-        return this._vote(voteable_delegates, secret, secondSecret, err.details.minFee);
+      if (err && err.details.minFee) {
+        const minFee = parseFloat(err.details.minFee) / 1e8;
+        if (isFinite(minFee) && minFee > parseFloat(fee)) {
+          console.warn("手续费过低，继续重试", minFee, fee);
+          return this._vote(
+            voteable_delegates,
+            secret,
+            secondSecret,
+            (Math.ceil(minFee * 1e8) / 1e8).toFixed(8),
+          );
+        }
       }
       // 不是手续费的问题，继续抛出错误
       throw err;
@@ -261,6 +269,8 @@ export class MinServiceProvider extends FLP_Tool {
     if (!this.appSetting.settings.background_mining) {
       return;
     }
+    // 确保网络连接成功才发出投票
+    await this.netWorkConnection();
     // 自动投票，自进行自动投57人，超过了就不投了
     const voted_delegate_list = await this.voted_delegates_db.find(
       {},

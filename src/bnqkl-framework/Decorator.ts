@@ -468,7 +468,7 @@ export function autoRetryWrapGenerator(
       var keep_retry = true;
       do {
         //断网的状态下停止运行，直到联网
-        await waitNetwork();
+        await FLP_Tool.netWorkConnection();
         try {
           // 不论同步还是异步，都进行await
           // 如果成功，直接返回，中断重试循环
@@ -498,18 +498,6 @@ export function autoRetryWrapGenerator(
     descriptor.value.source_fun = source_fun;
     return descriptor;
   };
-}
-export function waitNetwork() {
-  if (navigator.onLine) {
-    return;
-  }
-  return new Promise(cb => {
-    const once = () => {
-      cb();
-      window.removeEventListener("ononline", once);
-    };
-    window.addEventListener("ononline", once);
-  });
 }
 
 export function singleRunWrap() {

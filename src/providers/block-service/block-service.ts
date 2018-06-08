@@ -84,11 +84,11 @@ export class BlockServiceProvider extends FLP_Tool {
       },
     ]);
 
-    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>({
-      dbname: "blocks",
-      method: "get",
-      url: this.GET_BLOCK_BY_QUERY,
-      async beforeService(db, request_opts) {
+    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>(
+      "blocks",
+      "get",
+      this.GET_BLOCK_BY_QUERY,
+      async (db, request_opts) => {
         const search = request_opts.reqOptions.search as any;
         if (!search) {
           throw new Error("Parameter verification failed.");
@@ -105,7 +105,6 @@ export class BlockServiceProvider extends FLP_Tool {
         });
         const cache = { blocks, success: true } as TYPE.BlockResModel;
         if (Number.isFinite(query.height) && blocks.length === 1) {
-          console.log("offline-service", "blocks", request_opts);
           return { reqs: [], cache };
         }
         if (
@@ -113,18 +112,16 @@ export class BlockServiceProvider extends FLP_Tool {
           Number.isFinite(offset) &&
           blocks.length == limit
         ) {
-          console.log("offline-service", "blocks", request_opts);
           return { reqs: [], cache };
         }
         return { reqs: [request_opts], cache };
       },
-      async afterService(req_res_list) {
+      async req_res_list => {
         if (req_res_list.length > 0) {
           return req_res_list[0].result;
         }
       },
-      async dbHandle(db, mix_res, cache) {
-        const cache_blocks = cache.blocks;
+      async (db, mix_res, cache) => {
         if (mix_res) {
           const res_blocks = mix_res.blocks;
           const old_blocks = await db.find({
@@ -141,7 +138,7 @@ export class BlockServiceProvider extends FLP_Tool {
         }
         return cache;
       },
-    });
+    );
   }
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",

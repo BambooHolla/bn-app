@@ -17,6 +17,8 @@ import * as TYPE from "./account.types";
 export * from "./account.types";
 import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from "ifmchain-ibt";
+import { Mdb } from "../mdb";
+import { DbCacheProvider } from "../db-cache/db-cache";
 
 // TODO：接入Token管理，将用户相关的数据使用内存进行缓存。改进用户相关的数据请求。@Gaubee
 @Injectable()
@@ -33,6 +35,9 @@ export class AccountServiceProvider {
   md5: any;
   sha: any;
   nacl: any;
+
+  accountDb: Mdb<TYPE.AccountModel>;
+
   constructor(
     public http: HttpClient,
     public translateService: TranslateService,
@@ -41,9 +46,55 @@ export class AccountServiceProvider {
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
+    public dbCache: DbCacheProvider,
   ) {
     // this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     // this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
+    this.accountDb = this.dbCache.installDatabase("account", [
+      {
+        fieldName: "address",
+        unique: true,
+      },
+      {
+        fieldName: "publicKey",
+        unique: true,
+      },
+    ]);
+
+    [this.GET_USER, this.GET_USER_BY_USERNAME].forEach(api_url => {
+      this.dbCache.installApiCache<TYPE.AccountModel, TYPE.AccountResModel>(
+        "account",
+        "get",
+        api_url,
+        async (db, request_opts) => {
+          const query = request_opts.reqOptions.search;
+          const cache_account = await db.findOne(query);
+          const cache = {
+            account: cache_account,
+            success: true,
+          } as TYPE.AccountResModel;
+          if (cache_account) {
+            return { reqs: [], cache };
+          }
+          return { reqs: [request_opts], cache };
+        },
+        async req_res_list => {
+          if (req_res_list.length > 0) {
+            return req_res_list[0].result;
+          }
+        },
+        async (db, mix_res, cache) => {
+          if (mix_res) {
+            const new_account = mix_res.account;
+            if (await db.has({ address: new_account.address })) {
+            }
+            await db.insert(new_account);
+            cache.account = new_account;
+          }
+          return cache;
+        },
+      );
+    });
   }
 
   readonly GET_USER = this.appSetting.APP_URL("/api/accounts/");
@@ -85,7 +136,7 @@ export class AccountServiceProvider {
    * @param {string} address
    * @returns {Promise<any>}
    */
-  async getAccountByAddress(address: string): Promise<TYPE.userModel> {
+  async getAccountByAddress(address: string): Promise<TYPE.AccountModel> {
     let data = await this.fetch.get<any>(this.GET_USER, {
       search: {
         address: address,
@@ -99,7 +150,7 @@ export class AccountServiceProvider {
    * @param {string} username
    * @returns {Promise<any>}
    */
-  async getAccountByUsername(username: string): Promise<TYPE.userModel> {
+  async getAccountByUsername(username: string): Promise<TYPE.AccountModel> {
     let data = await this.fetch.get<any>(this.GET_USER_BY_USERNAME, {
       search: {
         username: username,
