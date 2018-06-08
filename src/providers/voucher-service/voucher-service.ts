@@ -3,8 +3,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TransactionModel } from "../transaction-service/transaction.types";
-import * as _Nedb from "nedb/browser-version/out/nedb.min.js";
-const Nedb: typeof __Nedb = _Nedb;
+
+import { Mdb } from "../mdb";
 
 export type VoucherModel = TransactionModel & {
 	exchange_status: ExchangeStatus;
@@ -25,86 +25,40 @@ type DBConfig = {
 @Injectable()
 export class VoucherServiceProvider {
 	private _dbname = "voucher";
-	db = new Nedb({ filename: this._dbname, autoload: true });
+	mdb = new Mdb<VoucherModel>(this._dbname);
 	constructor(public storage: Storage) {
-		this.db.ensureIndex({ fieldName: "id", unique: true });
+		this.mdb.db.ensureIndex({ fieldName: "id", unique: true });
 	}
 
 	getVoucherListByPage(page: number, pageSize: number, desc?: boolean) {
 		const from = (page - 1) * pageSize;
 		return this.getVoucherListByOffset(from, pageSize, desc);
 	}
-	async getVoucherListByOffset(
-		offset: number,
-		limit: number,
-		desc?: boolean,
-	) {
-		return new Promise<VoucherModel[]>((resolve, reject) => {
-			this.db
-				.find<VoucherModel>({})
-				.sort({ timestamp: desc ? -1 : 1 })
-				.skip(offset)
-				.limit(limit)
-				.exec((err, res) => {
-					if (err) {
-						return reject(err);
-					}
-					resolve(res);
-				});
-		});
+	getVoucherListByOffset(offset: number, limit: number, desc?: boolean) {
+		return this.mdb.find(
+			{},
+			{
+				sort: { timestamp: desc ? -1 : 1 },
+				skip: offset,
+				limit,
+			},
+		);
 	}
-	async addVoucher(tran: VoucherModel) {
-		return new Promise((resolve, reject) => {
-			this.db.insert(tran, (err, res) => {
-				if (err) {
-					return reject(err);
-				}
-				resolve(res);
-			});
-		});
+	addVoucher(tran: VoucherModel) {
+		return this.mdb.insert(tran);
 	}
-	async updateVoucher(tran: VoucherModel) {
-		return new Promise<boolean>((resolve, reject) => {
-			this.db.update(
-				{ id: tran.id },
-				tran,
-				{ upsert: false },
-				(err, res) => {
-					if (err) {
-						return reject(err);
-					}
-					resolve(res > 0);
-				},
-			);
-		});
+	updateVoucher(tran: VoucherModel) {
+		return this.mdb
+			.update({ id: tran.id }, tran, { upsert: false })
+			.then(n => n > 0);
 	}
-	async removeVoucher(id: string) {
-		return new Promise((resolve, reject) => {
-			this.db.remove({ id }, (err, res) => {
-				if (err) {
-					return reject(err);
-				}
-				resolve(res > 0);
-			});
-		});
+	removeVoucher(id: string) {
+		return this.mdb.remove({ id }).then(n => n > 0);
 	}
 	// _total_amount?:number = 0;
-	async getTotalAmount() {
-		// if(this._total_amount)
-		// const config = await this.getVoucherConfig();
-		// return config.totalAmount;
-		return new Promise<number>((resolve, reject) => {
-			this.db.find<VoucherModel>({}).exec((err, list) => {
-				if (err) {
-					return reject(err);
-				}
-				resolve(
-					list.reduce(
-						(acc, item) => acc + parseFloat(item.amount),
-						0,
-					),
-				);
-			});
+	getTotalAmount() {
+		return this.mdb.find({}).then(list => {
+			return list.reduce((acc, item) => acc + parseFloat(item.amount), 0);
 		});
 	}
 }

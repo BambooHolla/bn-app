@@ -47,11 +47,16 @@ export interface installApiCacheOptions<T, R> {
 
 @Injectable()
 export class DbCacheProvider {
-	async installDatabase(dbname: string, indexs: Nedb.EnsureIndexOptions[]) {
+	installDatabase<T>(
+		dbname: string,
+		indexs: Nedb.EnsureIndexOptions[],
+		cb = (err, db: Mdb<T>) => {},
+	) {
 		var res = this.dbMap.get(dbname);
 		if (!res) {
-			const mdb = new Mdb(dbname);
-			await Promise.all(
+			const mdb = new Mdb<T>(dbname);
+			this.dbMap.set(dbname, mdb);
+			Promise.all(
 				indexs.map(indexOpts => {
 					return new Promise((resolve, reject) => {
 						mdb.db.ensureIndex(
@@ -60,10 +65,12 @@ export class DbCacheProvider {
 						);
 					});
 				}),
-			);
-			this.dbMap.set(dbname, (res = mdb));
+			).then(() => cb(null, mdb), err => cb(err, mdb));
+			return mdb;
+		} else {
+			cb(null, res);
+			return res;
 		}
-		return res;
 	}
 	dbMap = new Map<string, Mdb<any>>();
 	cache_api_map = new Map<string, installApiCache<any>>();

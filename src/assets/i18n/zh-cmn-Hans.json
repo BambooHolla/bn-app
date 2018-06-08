@@ -581,7 +581,8 @@
   "change username error": "用户名设置出错",
   "this username has already exist": "用户名已存在",
   "Second passphrase verified error": "支付密码验证出错",
-  "NOT_MORE_VOTE_ABLE_DELEGATE":"没有可投的委托人",
+  "NOT_MORE_VOTE_ABLE_DELEGATE": "没有可投的委托人",
+  "NOT_ENOUGH_BALANCE_TO_VOTE": "挖矿手续费不足",
 
   "//": "OVER"
 }

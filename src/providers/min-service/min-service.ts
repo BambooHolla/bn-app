@@ -201,9 +201,13 @@ export class MinServiceProvider extends FLP_Tool {
     voteable_delegates: TYPE.DelegateModel[],
     secret: string,
     secondSecret?: string,
+    fee = this.appSetting.settings.default_fee.toString(),
   ) {
     if (voteable_delegates.length === 0) {
       return;
+    }
+    if (parseFloat(fee) > parseFloat(this.userInfo.balance)) {
+      throw new Error("NOT_ENOUGH_BALANCE_TO_VOTE");
     }
     const voted_delegate_list = await this.voted_delegates_db.find({
       publicKey: { $in: voteable_delegates.map(del => del.publicKey) },
@@ -217,7 +221,7 @@ export class MinServiceProvider extends FLP_Tool {
       type: this.TransactionTypes.VOTE,
       secret: secret,
       publicKey: this.userInfo.publicKey,
-      fee: this.appSetting.settings.default_fee.toString(),
+      fee,
       timestamp,
       asset: {
         votes,
@@ -230,7 +234,16 @@ export class MinServiceProvider extends FLP_Tool {
 
     // TODO：如果投票因为手续费过低而失败，应该根据提示的最低手续费进行投票，并将这个最低手续费进行缓存(到setting.min_auto_vote_fee中)
     //成功完成交易
-    await this.transactionService.putTransaction(txData);
+    try {
+      await this.transactionService.putTransaction(txData);
+    } catch (err) {
+      if (err && err.details.minFee && parseFloat(err.details.minFee) > parseFloat(fee)) {
+        console.warn("手续费过低，继续重试", err.details.minFee, fee);
+        return this._vote(voteable_delegates, secret, secondSecret, err.details.minFee);
+      }
+      // 不是手续费的问题，继续抛出错误
+      throw err;
+    }
     // 存入投票记录
     await this.voted_delegates_db.insertMany(voteable_delegates);
 

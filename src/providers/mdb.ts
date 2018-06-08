@@ -23,22 +23,22 @@ export class Mdb<T> {
 		});
 	}
 	update(query: any, updateQuery: any, options?: Nedb.UpdateOptions) {
-		return new Promise<boolean>((resolve, reject) => {
+		return new Promise<number>((resolve, reject) => {
 			this.db.update(query, updateQuery, options, (err, res) => {
 				if (err) {
 					return reject(err);
 				}
-				resolve(res > 0);
+				resolve(res);
 			});
 		});
 	}
 	remove(query) {
-		return new Promise((resolve, reject) => {
+		return new Promise<number>((resolve, reject) => {
 			this.db.remove(query, (err, res) => {
 				if (err) {
 					return reject(err);
 				}
-				resolve(res > 0);
+				resolve(res );
 			});
 		});
 	}

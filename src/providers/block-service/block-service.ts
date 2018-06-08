@@ -48,6 +48,8 @@ export class BlockServiceProvider extends FLP_Tool {
     );
   }
 
+  blockDb: Mdb<TYPE.BlockModel>;
+
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -71,7 +73,7 @@ export class BlockServiceProvider extends FLP_Tool {
     this._listenGetAndSetHeight();
 
     // 安装数据库
-    dbCache.installDatabase("blocks", [
+    this.blockDb = dbCache.installDatabase("blocks", [
       {
         fieldName: "height",
         unique: true,
@@ -238,9 +240,11 @@ export class BlockServiceProvider extends FLP_Tool {
   }
   round_end_time = new Date();
   @asyncCtrlGenerator.retry()
-  private async _updateHeight() {
+  private async _updateHeight(last_block?: TYPE.SingleBlockModel) {
     this.lastBlock.refresh("update Height");
-    const last_block = await this.lastBlock.getPromise();
+    if (!last_block) {
+      last_block = await this.lastBlock.getPromise();
+    }
     this.round_end_time = new Date(
       Date.now() +
         this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
@@ -249,12 +253,15 @@ export class BlockServiceProvider extends FLP_Tool {
     this.appSetting.setHeight(last_block.height);
   }
   private async _listenGetAndSetHeight() {
-    this.io.on("blocks/change", e => {
+    this.io.on("blocks/change", data => {
       console.log(
         "%c区块更新",
         "color:green;background-color:#eee;font-size:1.2rem",
       );
-      this._updateHeight();
+      if (data.lastBlock) {
+        this.blockDb.insert(data.lastBlock);
+      }
+      this._updateHeight(data.lastBlock);
     });
     this.io.on("connect", () => {
       this._updateHeight();

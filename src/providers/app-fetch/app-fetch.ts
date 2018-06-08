@@ -16,29 +16,29 @@ import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
-  static translateAndParseErrorMessage(message, code?) {
+  static translateAndParseErrorMessage(message, code?, details?) {
     const err_translated_msg = (window[
       "translate"
     ] as TranslateService).instant(message);
-    return code
-      ? ServerResError.parseErrorMessage(code, message)
-      : new Error(err_translated_msg);
+    return ServerResError.parseErrorMessage(code, message, details);
   }
-  static getI18nError(message, code?) {
+  static getI18nError(message, code?, details?) {
     const err_translated_msg = (window[
       "translate"
     ] as TranslateService).instant(message);
-    const err = code
-      ? ServerResError.parseErrorMessage(code, message)
-      : new Error(err_translated_msg);
+    const err = ServerResError.parseErrorMessage(code, message, details);
     return this.removeErrorCurrentStackLine(err);
   }
   static removeErrorCurrentStackLine(err: Error) {
     err.stack = (err.stack || "").replace(/\n[\w\W]+?\n/, "\n");
     return err;
   }
-  static parseErrorMessage(code, message) {
-    const CODE_LIST = [code + ""];
+  static parseErrorMessage(
+    code: string | undefined,
+    message: string,
+    details?,
+  ) {
+    const CODE_LIST = code ? [code + ""] : [];
     var MESSAGE = message;
     while (MESSAGE.indexOf("500 - ") === 0) {
       const rest_msg = MESSAGE.substr(6);
@@ -52,10 +52,10 @@ export class ServerResError extends Error {
         }
       } catch (err) {}
     }
-    const err = new ServerResError(CODE_LIST, MESSAGE);
+    const err = new ServerResError(CODE_LIST, MESSAGE, details);
     return this.removeErrorCurrentStackLine(err);
   }
-  constructor(code_list: string[], message: string) {
+  constructor(code_list: string[], message: string, public details?: any) {
     super(code_list.map(c => `<small>${c}</small>`).join("") + message);
     this.MESSAGE = String(message);
     this.CODE_LIST = code_list;
@@ -105,11 +105,16 @@ export class AppFetchProvider {
     const error = data.error;
     if (error) {
       // debugger;
-      const err_message = data.error && data.error.message;
-      if (err_message) {
+      if (data.error) {
+        const {
+          message: err_message,
+          code: error_code,
+          ...details
+        } = data.error;
         throw ServerResError.translateAndParseErrorMessage(
           err_message,
-          error.code,
+          error_code,
+          details,
         );
       } else {
         throw new Error(data.error);
