@@ -253,7 +253,9 @@ export class MinServiceProvider extends FLP_Tool {
       throw err;
     }
     // 存入投票记录
-    await this.voted_delegates_db.insertMany(voteable_delegates);
+    await this.voted_delegates_db.insertMany(voteable_delegates).catch(err => {
+      console.warn("可能存在重复投票zzz", err);
+    });
 
     console.log("%c我挖矿了", "color:purple");
     this.appSetting.settings.digRound = this.appSetting.getRound();

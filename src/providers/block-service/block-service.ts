@@ -84,7 +84,7 @@ export class BlockServiceProvider extends FLP_Tool {
       },
     ]);
 
-    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>(
+    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
       "blocks",
       "get",
       this.GET_BLOCK_BY_QUERY,
@@ -103,7 +103,7 @@ export class BlockServiceProvider extends FLP_Tool {
           limit,
           skip: offset,
         });
-        const cache = { blocks, success: true } as TYPE.BlockResModel;
+        const cache = { blocks, success: true } as TYPE.BlockListResModel;
         if (Number.isFinite(query.height) && blocks.length === 1) {
           return { reqs: [], cache };
         }
@@ -139,7 +139,40 @@ export class BlockServiceProvider extends FLP_Tool {
         return cache;
       },
     );
+    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>(
+      "blocks",
+      "get",
+      this.GET_BLOCK_BY_ID,
+      async (db, request_opts) => {
+        const query = request_opts.reqOptions.search;
+        const cache_block = await db.findOne(query);
+        const cache = {
+          block: cache_block,
+          success: true,
+        } as TYPE.BlockResModel;
+        if (cache_block) {
+          return { reqs: [], cache };
+        }
+        return { reqs: [request_opts], cache };
+      },
+      async req_res_list => {
+        if (req_res_list.length > 0) {
+          return req_res_list[0].result;
+        }
+      },
+      async (db, mix_res, cache) => {
+        if (mix_res) {
+          const new_block = mix_res.block;
+          if (await db.has({ id: new_block.id })) {
+          }
+          await db.insert(new_block);
+          cache.block = new_block;
+        }
+        return cache;
+      },
+    );
   }
+  /// TODO: 弃用
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
   );
@@ -171,7 +204,7 @@ export class BlockServiceProvider extends FLP_Tool {
     // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
     return promise_pro.follow(
       this.fetch
-        .get<TYPE.BlockResModel>(this.GET_BLOCK_BY_QUERY, {
+        .get<TYPE.BlockListResModel>(this.GET_BLOCK_BY_QUERY, {
           search: {
             height: 2,
           },
@@ -399,8 +432,8 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {{}} query  查询的条件，对象存在
    * @returns {Promise<{}>}
    */
-  async getBlocks(query): Promise<TYPE.BlockResModel> {
-    let data = await this.fetch.get<TYPE.BlockResModel>(
+  async getBlocks(query): Promise<TYPE.BlockListResModel> {
+    let data = await this.fetch.get<TYPE.BlockListResModel>(
       this.GET_BLOCK_BY_QUERY,
       {
         search: query,
@@ -427,7 +460,7 @@ export class BlockServiceProvider extends FLP_Tool {
   }
   async _getTopBlocks(amount: number, offset = 0) {
     // 服务器限制最大的查询数是100;
-    const tasks: Array<Promise<TYPE.BlockResModel>> = [];
+    const tasks: Array<Promise<TYPE.BlockListResModel>> = [];
     let max_offset = amount;
     const res: TYPE.BlockModel[] = [];
     for (; offset < max_offset; offset += 100) {
@@ -559,7 +592,7 @@ export class BlockServiceProvider extends FLP_Tool {
         ) as TYPE.BlockModel;
         return per_block.id;
       }
-      const data = await this.fetch.get<TYPE.BlockResModel>(
+      const data = await this.fetch.get<TYPE.BlockListResModel>(
         this.GET_BLOCK_BY_QUERY,
         {
           search: {

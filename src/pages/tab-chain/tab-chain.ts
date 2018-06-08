@@ -82,8 +82,6 @@ export class TabChainPage extends FirstLevelPage {
     has_more: false,
   };
 
-  @ViewChild(InfiniteScroll) infiniteScroll?: InfiniteScroll;
-
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
   unconfirm_block?: UnconfirmBlockModel;
   async loadUnconfirmBlock() {
