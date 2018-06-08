@@ -262,8 +262,9 @@
   "POSTSCRIPT": "附言",
   "EMPTY_REMARK": "没有附言",
 
-  "//": "tab-receipt-to-voucher",
+  "//": "pay-receipt-to-voucher",
   "PUT_INTO_VOUCHER_WALLET": "放入凭证钱包",
+  "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET": "该凭证已放入钱包",
 
   "//": "vote-list",
   "VOTE-LIST": "投票",

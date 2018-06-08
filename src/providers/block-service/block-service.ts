@@ -105,6 +105,7 @@ export class BlockServiceProvider extends FLP_Tool {
         });
         const cache = { blocks, success: true } as TYPE.BlockResModel;
         if (Number.isFinite(query.height) && blocks.length === 1) {
+          console.log("offline-service", "blocks", request_opts);
           return { reqs: [], cache };
         }
         if (
@@ -112,6 +113,7 @@ export class BlockServiceProvider extends FLP_Tool {
           Number.isFinite(offset) &&
           blocks.length == limit
         ) {
+          console.log("offline-service", "blocks", request_opts);
           return { reqs: [], cache };
         }
         return { reqs: [request_opts], cache };

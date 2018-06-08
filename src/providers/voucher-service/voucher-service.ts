@@ -44,8 +44,12 @@ export class VoucherServiceProvider {
 			},
 		);
 	}
-	addVoucher(tran: VoucherModel) {
-		return this.mdb.insert(tran);
+	async addVoucher(tran: VoucherModel) {
+		if (await this.mdb.has(tran)) {
+			return false;
+		}
+		await this.mdb.insert(tran);
+		return true;
 	}
 	updateVoucher(tran: VoucherModel) {
 		return this.mdb

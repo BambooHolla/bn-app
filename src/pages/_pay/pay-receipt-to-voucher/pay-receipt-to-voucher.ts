@@ -48,13 +48,26 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
 		}
 		this.transaction = transaction;
 	}
+	/*是否已经在钱包中*/
+	already_in_wallet = false;
 	@asyncCtrlGenerator.error()
 	async putIntoVoucherWallet() {
+		if (this.already_in_wallet) {
+			this.closeModal();
+			return;
+		}
 		const voucher: VoucherModel = {
 			...this.transaction,
 			exchange_status: ExchangeStatus.UNSUBMIT,
 		};
-		await this.voucherService.addVoucher(voucher);
+		if (await this.voucherService.addVoucher(voucher)) {
+			this.already_in_wallet = true;
+			throw new Error(
+				this.getTranslateSync(
+					"THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET",
+				),
+			);
+		}
 		this.closeModal();
 	}
 	closeModal() {
