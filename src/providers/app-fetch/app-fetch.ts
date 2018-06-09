@@ -135,50 +135,8 @@ export class AppFetchProvider {
   }
   private _catchData() {}
   private _handlePromise(
-    promise: Promise<any>,
-    // auto_cache: boolean,
-    catch_key?: string,
+    promise: Promise<any>
   ) {
-    if (catch_key) {
-      promise = promise
-        .then(response => {
-          try {
-            this.storage.set(catch_key, JSON.stringify(response.json()));
-          } catch (err) {
-            console.warn("缓冲区缓存数据出错", err);
-          }
-          return response;
-        })
-        .catch(async response => {
-          const cache_data_json = await this.storage.get(catch_key);
-          var cache_data;
-          if (cache_data_json) {
-            try {
-              cache_data = JSON.parse(cache_data_json);
-              if (!cache_data) {
-                throw null;
-              }
-              try {
-                this._handleResCatch(response);
-              } catch (err) {
-                cache_data.__source_err__ = err;
-              }
-              response.json = () => cache_data;
-              return response;
-            } catch (err) {
-              console.error(
-                "缓冲区数据异常：\n",
-                catch_key,
-                "\n",
-                cache_data_json,
-                "\n",
-                err,
-              );
-            }
-          }
-          return Promise.reject(response);
-        });
-    }
     return promise
       .catch(this._handleResCatch.bind(this))
       .then(this._handleResThen.bind(this));
@@ -208,7 +166,6 @@ export class AppFetchProvider {
     body: any,
     options: RequestOptionsArgs = {},
     without_token?: boolean,
-    auto_cache = this.auto_cache,
     timeout_ms = this.timeout_ms,
   ) {
     if (!this.force_network) {
@@ -240,7 +197,6 @@ export class AppFetchProvider {
                     body,
                     reqOptions,
                     without_token,
-                    auto_cache,
                     timeout_ms,
                   ),
                 };
@@ -267,7 +223,6 @@ export class AppFetchProvider {
       body,
       options,
       without_token,
-      auto_cache,
       timeout_ms,
     );
   }
@@ -277,26 +232,8 @@ export class AppFetchProvider {
     body: any,
     options: RequestOptionsArgs = {},
     without_token?: boolean,
-    auto_cache = this.auto_cache,
     timeout_ms = this.timeout_ms,
   ) {
-    // // 获取外部的默认值并自动重置，一定要触发getter
-    // const default_auto_cache = this.auto_cache;
-    // if (auto_cache === undefined) {
-    //   auto_cache = default_auto_cache;
-    // }
-    // const default_timeout_ms = this.timeout_ms;
-    // if (timeout_ms === undefined) {
-    //   timeout_ms = default_timeout_ms;
-    // }
-    let catch_key: string = "";
-    if (auto_cache) {
-      const url_info = new URL(url);
-      catch_key =
-        `[${method}]${url_info.pathname}` +
-        `【PARAMS：${JSON.stringify(options.params)}】` +
-        `【SEARCH：${JSON.stringify(options.search)}】`;
-    }
     const reqInfo = this._handleUrlAndOptions(url, options, without_token);
     var req;
     switch (method) {
@@ -324,13 +261,12 @@ export class AppFetchProvider {
         ),
       ]);
     }
-    return this._handlePromise(req_promise, catch_key);
+    return this._handlePromise(req_promise);
   }
   get<T>(
     url: string | AppUrl,
     options: RequestOptionsArgs = {},
     no_token?: boolean,
-    auto_cache?: boolean,
   ): Promise<T> {
     return this._requestWithApiService(
       "get",
@@ -338,7 +274,6 @@ export class AppFetchProvider {
       void 0,
       options,
       no_token,
-      auto_cache,
     );
   }
   post<T>(
@@ -346,7 +281,6 @@ export class AppFetchProvider {
     body: any = {},
     options: RequestOptionsArgs = {},
     no_token?: boolean,
-    auto_cache?: boolean,
   ): Promise<T> {
     return this._requestWithApiService(
       "post",
@@ -354,7 +288,6 @@ export class AppFetchProvider {
       body,
       options,
       no_token,
-      auto_cache,
     );
   }
   put<T>(
@@ -362,7 +295,6 @@ export class AppFetchProvider {
     body: any = {},
     options: RequestOptionsArgs = {},
     no_token?: boolean,
-    auto_cache?: boolean,
   ): Promise<T> {
     return this._requestWithApiService(
       "put",
@@ -370,14 +302,12 @@ export class AppFetchProvider {
       body,
       options,
       no_token,
-      auto_cache,
     );
   }
   delete<T>(
     url: string | AppUrl,
     options: RequestOptionsArgs = {},
     no_token?: boolean,
-    auto_cache?: boolean,
   ): Promise<T> {
     return this._requestWithApiService(
       "delete",
@@ -385,20 +315,9 @@ export class AppFetchProvider {
       void 0,
       options,
       no_token,
-      auto_cache,
     );
   }
-  private _auto_cache;
-  private get auto_cache() {
-    const res = this._auto_cache;
-    // 一次性取值，取完就不用了
-    this._auto_cache = undefined;
-    return res;
-  }
-  autoCache(auto_cache?: boolean): this {
-    this._auto_cache = auto_cache;
-    return this;
-  }
+
   private _timeout_ms;
   private get timeout_ms() {
     const res = this._timeout_ms;

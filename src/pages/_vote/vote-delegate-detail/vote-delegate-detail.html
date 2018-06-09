@@ -63,7 +63,7 @@
             {{block.height}}
           </div>
           <div class="item">
-            {{block.blockSize|bytes}}
+            {{block.payloadLength+block.blockSize|bytes}}
           </div>
           <div class="item">
             {{block.numberOfTransactions}}

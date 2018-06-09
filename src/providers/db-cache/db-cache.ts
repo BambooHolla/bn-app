@@ -43,7 +43,7 @@ export interface installApiCacheOptions<T, R> {
 export class DbCacheProvider {
 	installDatabase<T>(
 		dbname: string,
-		indexs: Nedb.EnsureIndexOptions[],
+		indexs: any[],
 		cb = (err, db: Mdb<T>) => {},
 	) {
 		var res = this.dbMap.get(dbname);
@@ -52,12 +52,7 @@ export class DbCacheProvider {
 			this.dbMap.set(dbname, mdb);
 			Promise.all(
 				indexs.map(indexOpts => {
-					return new Promise((resolve, reject) => {
-						mdb.db.ensureIndex(
-							indexOpts,
-							err => (err ? reject(err) : resolve()),
-						);
-					});
+					return mdb.createIndex(indexOpts);
 				}),
 			).then(() => cb(null, mdb), err => cb(err, mdb));
 			return mdb;

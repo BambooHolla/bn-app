@@ -1,4 +1,4 @@
-declare class __Nedb {
+declare class Nedb {
 	constructor(pathOrOptions?: string | Nedb.DataStoreOptions);
 
 	persistence: Nedb.Persistence;

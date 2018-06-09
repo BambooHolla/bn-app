@@ -1,8 +1,8 @@
-/// <reference path="../../../typings/globals.d.ts" />
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TransactionModel } from "../transaction-service/transaction.types";
+// import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { UserInfoProvider } from "../user-info/user-info";
 
 import { Mdb } from "../mdb";
 
@@ -26,8 +26,8 @@ type DBConfig = {
 export class VoucherServiceProvider {
 	private _dbname = "voucher";
 	mdb = new Mdb<VoucherModel>(this._dbname);
-	constructor(public storage: Storage) {
-		this.mdb.db.ensureIndex({ fieldName: "id", unique: true });
+	constructor(public userInfo: UserInfoProvider) {
+		this.mdb.createIndex({ fieldName: "id", unique: true });
 	}
 
 	getVoucherListByPage(page: number, pageSize: number, desc?: boolean) {
@@ -36,7 +36,7 @@ export class VoucherServiceProvider {
 	}
 	getVoucherListByOffset(offset: number, limit: number, desc?: boolean) {
 		return this.mdb.find(
-			{},
+			{ recipientId: this.userInfo.address },
 			{
 				sort: { timestamp: desc ? -1 : 1 },
 				skip: offset,
@@ -52,17 +52,24 @@ export class VoucherServiceProvider {
 		return true;
 	}
 	updateVoucher(tran: VoucherModel) {
-		return this.mdb
-			.update({ id: tran.id }, tran, { upsert: false })
-			.then(n => n > 0);
+		return this.mdb.update({ id: tran.id }, tran).then(n => n > 0);
 	}
 	removeVoucher(id: string) {
 		return this.mdb.remove({ id }).then(n => n > 0);
 	}
 	// _total_amount?:number = 0;
 	getTotalAmount() {
-		return this.mdb.find({}).then(list => {
-			return list.reduce((acc, item) => acc + parseFloat(item.amount), 0);
-		});
+		return this.mdb
+			.find({ recipientId: this.userInfo.address })
+			.then(list => {
+				return list.reduce(
+					(acc, item) =>
+						acc +
+						(item.exchange_status === ExchangeStatus.CONFIRMED
+							? 0
+							: parseFloat(item.amount)),
+					0,
+				);
+			});
 	}
 }

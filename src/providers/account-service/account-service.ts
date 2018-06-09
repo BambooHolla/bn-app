@@ -11,7 +11,6 @@ import {
   TransactionServiceProvider,
   TransactionTypes,
 } from "../transaction-service/transaction-service";
-import { Storage } from "@ionic/storage";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./account.types";
 export * from "./account.types";
@@ -41,7 +40,6 @@ export class AccountServiceProvider {
   constructor(
     public http: HttpClient,
     public translateService: TranslateService,
-    public storage: Storage,
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,

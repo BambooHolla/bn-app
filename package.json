@@ -80,6 +80,7 @@
     "es6-promise-plugin": "^4.2.2",
     "es6-promisify": "5.0.0",
     "eventemitter3": "^3.1.0",
+    "gangodb": "^2.0.1",
     "ifmchain-ibt": "0.0.9",
     "ionic-angular": "3.9.2",
     "ionic-plugin-keyboard": "^2.2.1",

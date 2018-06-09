@@ -45,10 +45,14 @@ export type ForgingBlockResModel = {
   blocks: ForgingBlockModel[];
 };
 
-export type BlockResModel = {
+export type BlockListResModel = {
   success: boolean;
   count: number;
   blocks: BlockModel[];
+};
+export type BlockResModel = {
+  success: boolean;
+  block: BlockModel;
 };
 
 export type UnconfirmBlockModel = {

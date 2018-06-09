@@ -351,11 +351,6 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId: string): Promise<TYPE.SingleBlockModel> {
-    const cacheBlocks = await this.cacheBlocks.getPromise();
-    const cacheBlock = cacheBlocks.find(block => block.id === blockId);
-    if (cacheBlock) {
-      return cacheBlock;
-    }
     const data = await this.fetch.get<any>(this.GET_BLOCK_BY_ID, {
       search: {
         id: blockId,
@@ -444,64 +439,6 @@ export class BlockServiceProvider extends FLP_Tool {
   }
 
   /**
-   * 增量更新块信息
-   * @param {number} amount  更新数量，空时默认10个
-   * @param {boolean} increment  是否增量更新
-   * @returns {Promise<void>}
-   */
-  async getTopBlocks(amount = 10): Promise<TYPE.BlockModel[]> {
-    //增量查询
-    const topBlocks = await this.cacheBlocks.getPromise();
-    if (topBlocks.length > amount) {
-      return topBlocks.slice(0, amount);
-    }
-    const more = await this._getTopBlocks(amount, topBlocks.length);
-    return topBlocks.concat(more);
-  }
-  async _getTopBlocks(amount: number, offset = 0) {
-    // 服务器限制最大的查询数是100;
-    const tasks: Array<Promise<TYPE.BlockListResModel>> = [];
-    let max_offset = amount;
-    const res: TYPE.BlockModel[] = [];
-    for (; offset < max_offset; offset += 100) {
-      tasks[tasks.length] = this.getBlocks({
-        offset,
-        limit: Math.min(max_offset - offset, 100),
-        orderBy: "height:desc",
-      });
-    }
-    return (await Promise.all(tasks)).reduce(
-      (res, data) => res.concat(data.blocks),
-      [] as TYPE.BlockModel[],
-    );
-  }
-
-  private _cache_blocks?: TYPE.BlockModel[];
-  cache_blocks_height = 100;
-  // private _cacheBlockMap = new Map<string | number, TYPE.BlockModel>();
-  cacheBlocks!: AsyncBehaviorSubject<TYPE.BlockModel[]>;
-  @HEIGHT_AB_Generator("cacheBlocks")
-  cacheBlocks_Executor(promise_pro: PromisePro<TYPE.BlockModel[]>) {
-    return promise_pro.follow(
-      (async () => {
-        if (this._cache_blocks)
-          if (this._cache_blocks) {
-            // 初始化缓存100条，后面每个块更新增量缓存1条
-            const last_block = (await this._getTopBlocks(1))[0];
-            if (last_block.height === this._cache_blocks[0].height + 1) {
-              this._cache_blocks.unshift(last_block);
-              this._cache_blocks.length = this.cache_blocks_height;
-              return this._cache_blocks;
-            }
-          }
-        return (this._cache_blocks = await this._getTopBlocks(
-          this.cache_blocks_height,
-        ));
-      })(),
-    );
-  }
-
-  /**
    * 判断当前的块是否延迟，返回块数组
    * @param list
    */
@@ -555,66 +492,39 @@ export class BlockServiceProvider extends FLP_Tool {
     pageSize = 10,
     sort: 1 | -1 = 1, // 默认增序
   ): Promise<TYPE.BlockModel[]> {
-    const from = pageSize * page;
-    const to = from + pageSize;
-    if (!sort && from < this.cache_blocks_height) {
-      // 如果在缓存的范围内，尽量使用缓存
-      const blocks = await this.getTopBlocks(pageSize);
-      return blocks.slice(from);
-    } else {
-      const res = await this.getBlocks({
-        offset: (page - 1) * pageSize,
-        limit: pageSize,
-        orderBy: sort === 1 ? "height:asc" : "height:desc",
-      });
+    const res = await this.getBlocks({
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+      orderBy: sort === 1 ? "height:asc" : "height:desc",
+    });
 
-      return res.blocks;
-    }
+    return res.blocks;
   }
+  async getBlocksByRange(
+    startHeight: number,
+    endHeight: number,
+    sort: 1 | -1 = 1, // 默认增序
+  ) {
+    const res = await this.getBlocks({
+      startHeight,
+      endHeight,
+      orderBy: sort === 1 ? "height:asc" : "height:desc",
+    });
 
+    return res.blocks;
+  }
   /**
-   * 获取上一个块的ID
-   * TODO：实现区块链数据库，使用数据库索引查询
-   * @param height
+   * 获取最新的几个区块，（默认顺序是倒序）
    */
-  async getPreBlockId(height: number): Promise<string> {
-    if (height > 1) {
-      const pre_height = height - 1;
-      const cacheBlocks = await this.cacheBlocks.getPromise();
-      const max_height_cache = cacheBlocks[0];
-      const min_height_cache = cacheBlocks[cacheBlocks.length - 1];
-      if (
-        max_height_cache.height > pre_height &&
-        min_height_cache.height <= pre_height
-      ) {
-        const per_block = cacheBlocks.find(
-          block => block.height === pre_height,
-        ) as TYPE.BlockModel;
-        return per_block.id;
-      }
-      const data = await this.fetch.get<TYPE.BlockListResModel>(
-        this.GET_BLOCK_BY_QUERY,
-        {
-          search: {
-            height: pre_height,
-          },
-        },
-      );
-      return data.blocks[0].id;
-    } else {
-      return "";
-    }
+  async getTopBlocks(amount = 10) {
+    return this.getBlocksByPage(1, amount, -1);
   }
 
   /**
    * 获取块中的交易，分页
-   * @param blockId
-   * @param page
-   * @param limit
-   * TODO:前端判断如果没有交易量则不要调用该接口
    */
   async getTransactionsInBlock(
-    blockId,
+    blockId: string,
     page = 1,
     limit = 10,
   ): Promise<TransactionModel[]> {
@@ -664,14 +574,24 @@ export class BlockServiceProvider extends FLP_Tool {
    * 返回平均收益、平均手续费、未确认交易数
    */
   async getExpectBlockInfo(amount: number = 5) {
-    amount = amount < 57 ? amount : 57;
-    let uncommited = await this.getPoolUnconfirmed();
-    let blockInfo = await this.getAvgInfo(amount);
-    let data: TYPE.UnconfirmBlockModel = {
-      ...blockInfo,
-      uncommited,
-      height: this.appSetting.getHeight() + 1,
-    };
+    var data: TYPE.UnconfirmBlockModel;
+    if (!navigator.onLine) {
+      data = {
+        reward: 0,
+        fee: 0,
+        uncommited: 0,
+        height: this.appSetting.getHeight() + 1,
+      };
+    } else {
+      amount = amount < 57 ? amount : 57;
+      let uncommited = await this.getPoolUnconfirmed();
+      let blockInfo = await this.getAvgInfo(amount);
+      data = {
+        ...blockInfo,
+        uncommited,
+        height: this.appSetting.getHeight() + 1,
+      };
+    }
 
     return data;
   }

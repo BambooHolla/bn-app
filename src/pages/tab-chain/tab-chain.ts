@@ -186,6 +186,8 @@ export class TabChainPage extends FirstLevelPage {
     } finally {
       block_list_config.loading = false;
     }
+    // 列表加载完后进行刷新
+    this.cdRef.markForCheck();
   }
   @ViewChild("vscroll") vscroll?: VirtualScrollComponent;
   _vscroll_container_ele?: HTMLElement;

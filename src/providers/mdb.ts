@@ -1,10 +1,20 @@
-import * as _Nedb from "nedb/browser-version/out/nedb.min.js";
-const Nedb: typeof __Nedb = _Nedb;
+import Db from "./gangodb/src/db";
+import Collection from "./gangodb/src/collection";
+const mdb = new Db("ibt", 2, {
+	blocks: ["height", "id"],
+	account: ["address", "publicKey"],
+	voted_delegate: true,
+	voucher: true,
+});
 
 export class Mdb<T> {
-	db: __Nedb;
-	constructor(public name: string, inMemoryOnly?:boolean) {
-		this.db = new Nedb({ filename: name, autoload: true, inMemoryOnly });
+	private db: Collection;
+	constructor(public name: string, inMemoryOnly?: boolean) {
+		this.db = mdb.collection(name);
+	}
+	createIndex(fieldOrSpec: string | Object, options?: Object) {
+		// TODO
+		return Promise.resolve(true);
 	}
 	insert(item: T) {
 		return this._insert<T>(item);
@@ -22,9 +32,9 @@ export class Mdb<T> {
 			});
 		});
 	}
-	update(query: any, updateQuery: any, options?: Nedb.UpdateOptions) {
+	update(query: any, updateQuery: any) {
 		return new Promise<number>((resolve, reject) => {
-			this.db.update(query, updateQuery, options, (err, res) => {
+			this.db.update(query, updateQuery, (err, res) => {
 				if (err) {
 					return reject(err);
 				}
@@ -38,13 +48,13 @@ export class Mdb<T> {
 				if (err) {
 					return reject(err);
 				}
-				resolve(res );
+				resolve(res);
 			});
 		});
 	}
 	findOne(query: any, projection?: T) {
 		return new Promise<T | undefined>((resolve, reject) => {
-			this.db.findOne<T>(query, projection as any, (err, res) => {
+			this.db.findOne(query, projection as any, (err, res) => {
 				if (err) {
 					return reject(err);
 				}
@@ -62,7 +72,7 @@ export class Mdb<T> {
 		},
 	) {
 		return new Promise<T[]>((resolve, reject) => {
-			const cursor = this.db.find<T>(query);
+			const cursor = this.db.find(query);
 			if (cursor_operators) {
 				if (cursor_operators.sort) {
 					cursor.sort(cursor_operators.sort);
@@ -74,10 +84,10 @@ export class Mdb<T> {
 					cursor.limit(cursor_operators.limit);
 				}
 				if (cursor_operators.projection) {
-					cursor.projection(cursor_operators.projection);
+					cursor.project(cursor_operators.projection);
 				}
 			}
-			cursor.exec((err, res) => {
+			cursor.toArray((err, res) => {
 				if (err) {
 					return reject(err);
 				}
@@ -89,6 +99,13 @@ export class Mdb<T> {
 		return this.find(query).then(res => res.length > 0);
 	}
 	clear() {
-		return this.db.remove({});
+		return new Promise<T[]>((resolve, reject) => {
+			this.db.remove({}, (err, res) => {
+				if (err) {
+					return reject(err);
+				}
+				resolve(res);
+			});
+		});
 	}
 }
