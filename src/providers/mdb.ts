@@ -1,5 +1,5 @@
-import Db from "./gangodb/src/db";
-import Collection from "./gangodb/src/collection";
+import Db from "./gangodb_core/db";
+import Collection from "./gangodb_core/collection";
 const mdb = new Db("ibt", 2, {
 	blocks: ["height", "id"],
 	account: ["address", "publicKey"],
