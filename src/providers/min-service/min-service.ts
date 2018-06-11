@@ -207,7 +207,7 @@ export class MinServiceProvider extends FLP_Tool {
       return;
     }
     if (parseFloat(fee) > parseFloat(this.userInfo.balance)) {
-      throw new Error("NOT_ENOUGH_BALANCE_TO_VOTE");
+      throw new Error(FLP_Tool.getTranslateSync("NOT_ENOUGH_BALANCE_TO_VOTE"));
     }
     const voted_delegate_list = await this.voted_delegates_db.find({
       publicKey: { $in: voteable_delegates.map(del => del.publicKey) },

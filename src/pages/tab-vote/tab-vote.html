@@ -39,6 +39,11 @@
       </div>
     </div>
     <div class="countdown-page" [ngClass]="page_status">
+      <div class="toolbar">
+        <button (click)="routeTo('vote-list')">
+          <ali-icon name="ifm-caikuang"></ali-icon>
+        </button>
+      </div>
       <effect-countdown [end-data]="countdown_round_end_time" (end)="onCountdownEnd()"></effect-countdown>
       <div class="countdown-tip">
         <ali-icon name="ifm-tip"></ali-icon>

@@ -202,6 +202,24 @@ page-tab-vote {
       transform: scale(1);
       pointer-events: all;
     }
+
+    > .toolbar {
+      position: absolute;
+      top: 1.5rem;
+      display: flex;
+      align-items: center;
+      /* justify-content: space-between; */
+      justify-content: flex-end;
+      > button {
+        background: transparent;
+        font-size: 2.6rem;
+        color: #f9935f;
+        padding: 0.5rem 1.2rem;
+        /* &:last-child{
+          justify-self: end;
+        } */
+      }
+    }
     effect-countdown {
       color: #fec64a;
       position: absolute;
