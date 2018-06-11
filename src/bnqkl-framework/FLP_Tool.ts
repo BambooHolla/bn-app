@@ -60,7 +60,18 @@ export class FLP_Tool {
     });
   }
   netWorkConnection = FLP_Tool.netWorkConnection;
-
+  isArrayDiff<T>(
+    source_list: T[],
+    target_list: T[],
+    item_parser: (item: T) => string | number,
+  ) {
+    if (source_list.length !== target_list.length) {
+      return true;
+    }
+    return source_list.some((source_item, i) => {
+      return item_parser(source_item) !== item_parser(target_list[i]);
+    });
+  }
   async showConfirmDialog(
     message: string,
     ok_handle?: Function,
@@ -73,20 +84,20 @@ export class FLP_Tool {
         message,
         buttons: [
           {
-            text: await this.getTranslate("CANCEL"),
-            cssClass: "cancel",
-            handler: () => {
-              if (cancel_handle instanceof Function) {
-                return cancel_handle();
-              }
-            },
-          },
-          {
             text: await this.getTranslate("OK"),
             cssClass: "ok",
             handler: () => {
               if (ok_handle instanceof Function) {
                 return ok_handle();
+              }
+            },
+          },
+          {
+            text: await this.getTranslate("CANCEL"),
+            cssClass: "cancel",
+            handler: () => {
+              if (cancel_handle instanceof Function) {
+                return cancel_handle();
               }
             },
           },

@@ -111,8 +111,8 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		}
 		if (!this.app) {
 			// todo:use parentElement width and height
-			let { clientWidth, clientHeight } =
-				canvasNode.parentElement || canvasNode;
+			let { clientWidth, clientHeight } = document.body;
+			// canvasNode.parentElement || canvasNode;
 
 			// contain模式
 			if (clientWidth / clientHeight > TICKET_W / TICKET_H) {
@@ -332,7 +332,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		return `${d.getFullYear()}-${monthStr}-${dayStr} ${hStr}:${mStr}:${sStr}`;
 	}
 	usernameToString(username: string) {
-		if (username.length > 8) {
+		if (username && username.length > 8) {
 			username = username.substr(0, 4) + "***" + username.substr(-4);
 		}
 		return username;
@@ -388,10 +388,11 @@ class OfflineTransactionTicketDrawer extends AniBase {
 }
 
 const tickerDrawer = new OfflineTransactionTicketDrawer();
-tickerDrawer.canvasNode.style.position = "absolute";
-tickerDrawer.canvasNode.style.top = "100vh";
-tickerDrawer.canvasNode.style.left = "100vw";
-tickerDrawer.canvasNode.style.visibility = "hidden";
+// tickerDrawer.canvasNode.style.position = "absolute";
+// tickerDrawer.canvasNode.style.top = "100vh";
+// tickerDrawer.canvasNode.style.left = "100vw";
+// tickerDrawer.canvasNode.style.visibility = "hidden";
+// tickerDrawer.canvasNode.style.display = "none";
 
-document.body.appendChild(tickerDrawer.canvasNode);
+// document.body.appendChild(tickerDrawer.canvasNode);
 tickerDrawer.emit("init-start");

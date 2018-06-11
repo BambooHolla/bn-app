@@ -112,11 +112,10 @@ page-custom-dialog {
         > button {
           flex: 1;
           height: 100%;
+          line-height: 4rem;
+          text-align: center;
           background-color: transparent;
 
-          display: flex;
-          justify-content: center;
-          align-items: center;
           font-size: 1.4rem;
           &.ok {
             background-color: #ff6769;

@@ -31,7 +31,7 @@ export function getErrorFromAsyncerror(keep_throw: boolean) {
     code: _ERROR_FROM_ASYNCERROR_CODE,
   };
   if (keep_throw) {
-    return Promise.reject(res);
+    return Promise.reject<{ code: string }>(res);
   }
   return res;
 }

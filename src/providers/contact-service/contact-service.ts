@@ -20,6 +20,10 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as IFM from "ifmchain-ibt";
 import { ContactModel } from "./contact.types";
 export * from "./contact.types";
+import * as pinyin from "tiny-pinyin";
+
+export type ContactGroupItem = { letter: string; list: ContactModel[] };
+export type ContactGroupList = ContactGroupItem[];
 
 @Injectable()
 export class ContactServiceProvider {
@@ -41,6 +45,9 @@ export class ContactServiceProvider {
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.addressCheck = this.ifmJs.addressCheck;
+  }
+  contactModelDiffParser(contact: ContactModel) {
+    return contact.username + contact.address;
   }
 
   readonly GET_CONTACT = this.appSetting.APP_URL("/api/contacts");
@@ -82,6 +89,7 @@ export class ContactServiceProvider {
 
   /**
    * 忽略联系人操作
+   * TODO： 使用mdb，而不是storage
    * @param 忽略的地址
    */
   async ignoreContact(iAddress) {
@@ -158,6 +166,7 @@ export class ContactServiceProvider {
     address_or_username: string,
     secondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee),
+    type: "+" | "-" = "+",
   ) {
     if (!address_or_username) {
       throw new Error("Parameters cannot find address or username");
@@ -209,5 +218,46 @@ export class ContactServiceProvider {
     } else {
       return null;
     }
+  }
+  /**
+   * 将联系人进行分组
+   */
+  contactGroup(contact_list: ContactModel[]): ContactGroupList {
+    const unkown_letter: ContactGroupItem = {
+      letter: "*",
+      list: [],
+    };
+    const letter_list_map = new Map<string, typeof unkown_letter>();
+
+    contact_list.forEach(my_contact => {
+      if (!my_contact.username) {
+        unkown_letter.list.push(my_contact);
+        return;
+      }
+      try {
+        const word = pinyin.convertToPinyin(my_contact.username[0]);
+        if (!word) {
+          unkown_letter.list.push(my_contact);
+          return;
+        }
+        let letter = letter_list_map.get(word[0]);
+        if (!letter) {
+          letter = {
+            letter: word[0],
+            list: [],
+          };
+          letter_list_map.set(word[0], letter);
+        }
+        letter.list.push(my_contact);
+      } catch {
+        unkown_letter.list.push(my_contact);
+      }
+    });
+    if (unkown_letter.list.length) {
+      letter_list_map.set(unkown_letter.letter, unkown_letter);
+    }
+    return [...letter_list_map.values()].sort((a, b) => {
+      return a.letter.localeCompare(b.letter);
+    });
   }
 }

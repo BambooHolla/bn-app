@@ -1,5 +1,6 @@
 import { FLP_Route } from "./FLP_Route";
 import { FLP_Tool } from "./FLP_Tool";
+import { getErrorFromAsyncerror } from "./Decorator";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { asyncCtrlGenerator } from "./Decorator";
@@ -206,7 +207,10 @@ export class FLP_Form extends FLP_Route {
             if (current_fee && isFinite(current_fee)) {
               resolve({ custom_fee: current_fee }); //返回默认值
             } else {
-              this.getTranslate("FEE_INPUT_CANCEL").then(reject);
+              console.warn(
+                new Error(this.getTranslateSync("FEE_INPUT_CANCEL")),
+              );
+              reject(getErrorFromAsyncerror(false));
             }
           }
         });

@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div class="fee-info">
+  <div class="fee-info" (click)="setTransferFee()">
     <ali-icon name="ifm-info"></ali-icon>
     {{'TRANSACTION_FEES'|translate}}
     <span class="fee">{{formData.transfer_fee|number:"1.8-8"}}</span>

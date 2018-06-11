@@ -3,26 +3,49 @@ page-account-my-contacts {
   .list {
     width: 100%;
     background-color: #eeeeee;
-    color: #7a7a7a;
-    > .item {
-      height: 5rem;
-      padding: 0 1.4rem;
-      background-color: #fff;
-      display: flex;
-      align-items: center;
-      margin-bottom: 1px;
-      > .left {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
+    // > .item {
+    //   height: 5rem;
+    //   padding: 0 1.4rem;
+    //   background-color: #fff;
+    //   display: flex;
+    //   align-items: center;
+    //   margin-bottom: 1px;
+    //   > .left {
+    //     display: flex;
+    //     flex-direction: column;
+    //     align-items: flex-start;
+    //     justify-content: center;
+    //   }
+    //   > .right {
+    //     margin-left: auto;
+    //     justify-self: flex-end;
+    //     display: flex;
+    //     align-items: center;
+    //   }
+    // }
+
+    .username {
+      color: #7a7a7a;
+      font-size: 1.4rem;
+    }
+    .address {
+      color: #7a7a7a;
+      font-size: 1.3rem;
+    }
+    .list-delete {
+      width: 6rem;
+      background-color: #ff5c5b;
+      color: #fff;
+      font-size: 1.5rem;
+    }
+    ion-item {
+      border-bottom: 0.55px solid #eeeeee !important;
+      .item-inner {
+        border-bottom: none !important;
       }
-      > .right {
-        margin-left: auto;
-        justify-self: flex-end;
-        display: flex;
-        align-items: center;
-      }
+    }
+    ion-item-options {
+      border-bottom: none !important;
     }
   }
   .unconfim-list {

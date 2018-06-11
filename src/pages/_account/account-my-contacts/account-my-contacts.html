@@ -19,7 +19,8 @@
       {{'UNCONFIM_CONTACT_LIST'|translate}}
     </div>
     <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list;trackBy:listTrackBy" (click)="tapContact(unconfirm_contact)">
-      <div class="left"><div class="username" *ngIf="unconfirm_contact.username">
+      <div class="left">
+        <div class="username" *ngIf="unconfirm_contact.username">
           {{unconfirm_contact.username}}</div>
         <div class="address" [innerHTML]="unconfirm_contact.address|mask:'@address'"></div>
       </div>
@@ -33,20 +34,27 @@
       </div>
     </div>
   </div>
-  <div class="contact-list list">
+  <ion-list class="contact-list list">
     <ng-container *ngFor="let letter_contacts of my_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
-      <div class="item" *ngFor="let contact of letter_contacts.list" (click)="tapContact(contact)">
-        <div class="left">
-          <div class="username" *ngIf="contact.username">{{contact.username}}</div>
-          <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
-        </div>
-      </div>
+      <ion-item-sliding *ngFor="let contact of letter_contacts.list">
+        <ion-item>
+          <div class="left">
+            <div class="username" *ngIf="contact.username">{{contact.username}}</div>
+            <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
+          </div>
+        </ion-item>
+        <ion-item-options side="right">
+          <button class="list-delete" (click)="confirmToDelete(contact)">
+            <span class="inner">{{'REMOVE'|translate}}</span>
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
     </ng-container>
     <div class="divider" *ngIf="!loading_my_contact_list&&my_contact_list.length==0">
       <i>{{'NO_CONTACT'|translate}}</i>
     </div>
-  </div>
+  </ion-list>
   <div class="fast-nav">
     <ali-icon name="ifm-sousuo"></ali-icon>
     <div class="item" *ngFor="let letter_contacts of my_contact_list">

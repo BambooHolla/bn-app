@@ -1,6 +1,7 @@
 {
   "OK": "确定",
   "CONFIRM_DELETE": "确认删除",
+  "REMOVE": "删除",
   "YES": "是",
   "NO": "否",
   "CANCEL": "取消",
@@ -201,6 +202,10 @@
   "ADD_CONTACT_SUBMIT_ERROR": "同意添加联系人提交失败",
   "ADD_CONTACT_SUBMITING": "同意添加联系人提交中",
   "ADD_CONTACT_SUBMIT_SUCCESS": "同意添加联系人提交成功",
+  "REMOVE_CONTACT_SUBMIT_ERROR": "删除联系人提交失败",
+  "REMOVE_CONTACT_SUBMITING": "删除联系人提交中",
+  "REMOVE_CONTACT_SUBMIT_SUCCESS": "删除联系人提交成功",
+  "CONFIRM_TO_REMOVE_CONTACT": "确定要删除联系人吗？",
 
   "//": "account-news-detail",
   "ACCOUNT-NEWS-DETAIL": "动态详情",
@@ -253,6 +258,9 @@
   "LOADING_MORE_RECIVE_LIST": "加载更多转入记录中……",
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
+
+  "//":"pay-select-my-contacts",
+  "PAY-SELECT-MY-CONTACTS":"选择联系人",
 
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "离线支付",
