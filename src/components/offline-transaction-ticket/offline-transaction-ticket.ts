@@ -31,6 +31,7 @@ loader.load((loader, resources) => {
 
 const TICKET_W = 712;
 const TICKET_H = 330;
+type RenderMode = "canvas" | "html";
 
 @Component({
 	selector: "offline-transaction-ticket",
@@ -39,12 +40,13 @@ const TICKET_H = 330;
 export class OfflineTransactionTicketComponent {
 	constructor(public domSanitizer: DomSanitizer) {}
 	image_url?: SafeUrl;
+	@Input("mode") mode: RenderMode = "canvas";
 	// @E imageRef ;
 	private _transaction?: TransactionModel;
 	@Input("transaction")
 	set transaction(v: TransactionModel | undefined) {
 		this._transaction = v;
-		if (v) {
+		if (v && this.mode === "canvas") {
 			console.log("draw tick", v);
 			tickerDrawer.drawTransaction(v).then(blob => {
 				this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
@@ -57,6 +59,18 @@ export class OfflineTransactionTicketComponent {
 	get transaction() {
 		return this._transaction;
 	}
+
+	getTranslate(key: string) {
+		return FLP_Tool.getTranslateSync(key);
+	}
+
+	timestampToString = OfflineTransactionTicketDrawer.prototype
+		.timestampToString;
+	usernameToString = OfflineTransactionTicketDrawer.prototype
+		.usernameToString;
+	amountToString = OfflineTransactionTicketDrawer.prototype.amountToString;
+	tidToString = OfflineTransactionTicketDrawer.prototype.tidToString;
+	remarkToString = OfflineTransactionTicketDrawer.prototype.remarkToString;
 }
 
 class OfflineTransactionTicketDrawer extends AniBase {
@@ -69,7 +83,8 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		);
 		return this._render_task_lock;
 	}
-	private _drawTransaction(v: TransactionModel) {
+	private async _drawTransaction(v: TransactionModel) {
+		await _load_resource_promiseout.promise;
 		this._transaction = v;
 		this.drawTicket();
 		return new Promise<Blob | null>(resolve => {
@@ -116,18 +131,6 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		}
 		const resources = await _load_resource_promiseout.promise;
 		this.drawTicket(resources);
-	}
-	timestampToString(timestamp: number) {
-		const d = TimestampPipe.transform(timestamp);
-		const monthStr = ("0" + (d.getMonth() + 1)).substr(-2);
-		const dayStr = ("0" + d.getDate()).substr(-2);
-
-		const hStr = ("0" + d.getHours()).substr(-2);
-		const mStr = ("0" + d.getMinutes()).substr(-2);
-		const sStr = ("0" + d.getSeconds()).substr(-2);
-
-		//返回时间格式   yyyy/mm/dd hh:mm:ss
-		return `${d.getFullYear()}-${monthStr}-${dayStr} ${hStr}:${mStr}:${sStr}`;
 	}
 
 	drawTicket(resources = loader.resources) {
@@ -316,6 +319,18 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		// 渲染
 		this.forceRenderOneFrame();
 	}
+	timestampToString(timestamp: number) {
+		const d = TimestampPipe.transform(timestamp);
+		const monthStr = ("0" + (d.getMonth() + 1)).substr(-2);
+		const dayStr = ("0" + d.getDate()).substr(-2);
+
+		const hStr = ("0" + d.getHours()).substr(-2);
+		const mStr = ("0" + d.getMinutes()).substr(-2);
+		const sStr = ("0" + d.getSeconds()).substr(-2);
+
+		//返回时间格式   yyyy/mm/dd hh:mm:ss
+		return `${d.getFullYear()}-${monthStr}-${dayStr} ${hStr}:${mStr}:${sStr}`;
+	}
 	usernameToString(username: string) {
 		if (username.length > 8) {
 			username = username.substr(0, 4) + "***" + username.substr(-4);
@@ -342,9 +357,13 @@ class OfflineTransactionTicketDrawer extends AniBase {
 			.join("");
 		return formated_int_str + "." + float_str;
 	}
-	tidToString(id: string) {
+	tidToString(id: string, mode: RenderMode = "canvas") {
 		const center_index = (id.length / 2) | 0;
-		return id.substr(0, center_index) + "\n" + id.substr(center_index);
+		return (
+			id.substr(0, center_index) +
+			(mode === "html" ? "<br>" : "\n") +
+			id.substr(center_index)
+		);
 	}
 	remarkToString(
 		remark: string | undefined,
@@ -369,5 +388,10 @@ class OfflineTransactionTicketDrawer extends AniBase {
 }
 
 const tickerDrawer = new OfflineTransactionTicketDrawer();
+tickerDrawer.canvasNode.style.position = "absolute";
+tickerDrawer.canvasNode.style.top = "100vh";
+tickerDrawer.canvasNode.style.left = "100vw";
+tickerDrawer.canvasNode.style.visibility = "hidden";
+
 document.body.appendChild(tickerDrawer.canvasNode);
 tickerDrawer.emit("init-start");

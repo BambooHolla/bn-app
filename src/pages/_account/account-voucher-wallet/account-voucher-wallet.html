@@ -14,7 +14,7 @@
       <ion-item (tap)="submitVoucher(tran)">
         <div class="flag">{{'VOUCHER_CONFIRMED'|translate}}</div>
         <div class="ticket-wrapper">
-          <offline-transaction-ticket [transaction]="tran"></offline-transaction-ticket>
+          <offline-transaction-ticket mode="html" [transaction]="tran"></offline-transaction-ticket>
         </div>
       </ion-item>
       <ion-item-options side="right">

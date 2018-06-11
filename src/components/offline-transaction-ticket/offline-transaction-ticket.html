@@ -1,2 +1,31 @@
 <!-- <canvas #canvas></canvas> -->
-<img [class.hidden]="!image_url" [src]="image_url" />
+<img [class.hidden]="!image_url||mode!='canvas'" [src]="image_url" />
+<div class="html-ticket-wrapper">
+  <div class="html-ticket" [class.hidden]="mode!='html'">
+    <div class="header">
+      <div class="left">
+        <div class="label">{{getTranslate('PAYER')}}</div>
+        <div class="username">{{usernameToString(transaction?.senderUsername || transaction?.senderId)}}</div>
+      </div>
+      <div class="right">
+        <span class="time-clock"></span>
+        <div class="time">{{timestampToString(transaction?.timestamp)}}</div>
+      </div>
+    </div>
+    <div class="center">
+      <div class="banner">IFMCHAIN</div>
+      <div class="amount-line">
+        <div class="amount">{{amountToString(transaction?.amount)}}</div>
+        <div class="unit">IBT</div>
+      </div>
+      <div class="tran-line">
+        <div class="label">{{getTranslate('TRANSACTION_ID')}}</div>
+        <div class="tran-id" [innerHTML]="tidToString(transaction?.id,'html')"></div>
+      </div>
+    </div>
+    <div class="remark">
+      <div class="label">{{getTranslate('POSTSCRIPT')}}:</div>
+      <div class="text">{{transaction?.remark}}</div>
+    </div>
+  </div>
+</div>

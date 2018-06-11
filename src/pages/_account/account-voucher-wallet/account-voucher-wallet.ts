@@ -47,7 +47,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 	};
 	voucher_list: VoucherModel[] = [];
 
-	@AccountVoucherWalletPage.didEnter
+	@AccountVoucherWalletPage.willEnter
 	@asyncCtrlGenerator.error()
 	async loadData() {
 		// this.voucherService.
