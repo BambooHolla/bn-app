@@ -29,8 +29,8 @@ import {
   HTTP_Method,
   RequestOptionsWithResult,
 } from "../db-cache/db-cache";
-import io from "socket.io-client";
 import { Mdb } from "../mdb";
+import io from "socket.io-client";
 tryRegisterGlobal("socketio", io);
 
 export * from "./block.types";

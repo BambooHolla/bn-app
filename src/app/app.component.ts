@@ -188,13 +188,16 @@ export class MyApp implements OnInit {
       this.statusBar.styleDefault();
     }, 50);
   }
+  overlay_finished = false;
   tryOverlaysWebView(loop_times: number = 0) {
-    if (this.isIOS) {
+    if (this.isIOS || this.overlay_finished) {
       return;
     }
     if (window.innerHeight < MyApp.WINDOW_MAX_HEIGHT) {
       // 如果高度不对劲的话，尽可能重新搞一下
       this.overlaysWebView();
+    } else {
+      this.overlay_finished = true;
     }
     if (loop_times > 0) {
       // 等一下再看看是否修正正确了，不行就再来一次

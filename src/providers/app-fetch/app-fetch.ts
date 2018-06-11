@@ -12,6 +12,7 @@ import {
   HTTP_Method,
 } from "../db-cache/db-cache";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
+import io from "socket.io-client";
 
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
@@ -77,6 +78,15 @@ export type CommonResponseData<T> = {
 @Injectable()
 export class AppFetchProvider {
   ServerResError = ServerResError;
+  private _io?: SocketIOClient.Socket;
+  get io() {
+    return (
+      this._io ||
+      (this._io = io(AppSettingProvider.SERVER_URL + "/web", {
+        transports: ["websocket"],
+      }))
+    );
+  }
   // private _user_token!: string;
 
   constructor(
@@ -134,9 +144,7 @@ export class AppFetchProvider {
     }
   }
   private _catchData() {}
-  private _handlePromise(
-    promise: Promise<any>
-  ) {
+  private _handlePromise(promise: Promise<any>) {
     return promise
       .catch(this._handleResCatch.bind(this))
       .then(this._handleResThen.bind(this));
