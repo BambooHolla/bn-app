@@ -185,7 +185,7 @@ export class ContactServiceProvider {
       secret: secret,
       asset: {
         contact: {
-          address: "+" + address_or_username,
+          address: type + address_or_username,
         },
       },
       fee: fee.toString(),
