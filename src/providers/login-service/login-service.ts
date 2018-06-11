@@ -91,11 +91,13 @@ export class LoginServiceProvider extends FLP_Tool {
     if (!userinfo) {
       return;
     }
-    const res = await this.fetch.forceNetwork(navigator.onLine).get<any>(this.SEARCH_ACCOUNT_URL, {
-      search: {
-        address: userinfo.address,
-      },
-    });
+    const res = await this.fetch
+      .forceNetwork(navigator.onLine)
+      .get<any>(this.SEARCH_ACCOUNT_URL, {
+        search: {
+          address: userinfo.address,
+        },
+      });
     Object.assign(userinfo, res.account);
     this.appSetting.setUserToken(userinfo);
   }
@@ -128,6 +130,18 @@ export class LoginServiceProvider extends FLP_Tool {
       const address = this.ifmJs.addressCheck.generateBase58CheckAddress(
         publicKey,
       );
+      FLP_Tool.netWorkConnection().then(async () => {
+        var fail = true;
+        do {
+          try {
+            // 发送一个开账户的请求，确保这个账户在服务端是有的
+            await this.fetch.put(this.LOGIN_URL, { publicKey });
+            fail = false;
+          } catch (err) {
+            console.warn("账户开通失败", err);
+          }
+        } while (fail);
+      });
 
       const oldData = this.appSetting.getUserToken();
 

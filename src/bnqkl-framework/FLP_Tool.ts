@@ -49,9 +49,9 @@ export class FLP_Tool {
   }
   static netWorkConnection() {
     if (navigator.onLine) {
-      return;
+      return Promise.resolve();
     }
-    return new Promise(cb => {
+    return new Promise<void>(cb => {
       const once = () => {
         cb();
         window.removeEventListener("ononline", once);
