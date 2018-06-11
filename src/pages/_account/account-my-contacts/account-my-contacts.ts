@@ -85,13 +85,27 @@ export class AccountMyContactsPage extends SecondLevelPage {
   }
   @asyncCtrlGenerator.error()
   async addUnconfirmContact(contact: ContactModel) {
-    const { password, pay_pwd } = await this.getUserPassword();
-    return this._addUnconfirmContact(password, contact.address, pay_pwd);
+    const { password, pay_pwd, custom_fee } = await this.getUserPassword({
+      custom_fee: true,
+    });
+    return this._addUnconfirmContact(
+      password,
+      contact.address,
+      pay_pwd,
+      custom_fee,
+    );
   }
   @asyncCtrlGenerator.error()
   async removeConfirmedContact(contact: ContactModel) {
-    const { password, pay_pwd } = await this.getUserPassword();
-    return this._removeConfirmedContact(password, contact.address, pay_pwd);
+    const { password, pay_pwd, custom_fee } = await this.getUserPassword({
+      custom_fee: true,
+    });
+    return this._removeConfirmedContact(
+      password,
+      contact.address,
+      pay_pwd,
+      custom_fee,
+    );
   }
   @asyncCtrlGenerator.error(() =>
     AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_ERROR"),
@@ -106,8 +120,14 @@ export class AccountMyContactsPage extends SecondLevelPage {
     password: string,
     address: string,
     pay_pwd?: string,
+    custom_fee?: number,
   ) {
-    return this.contactService.addContact(password, address, pay_pwd);
+    return this.contactService.addContact(
+      password,
+      address,
+      pay_pwd,
+      custom_fee,
+    );
   }
   @asyncCtrlGenerator.error(() =>
     AccountMyContactsPage.getTranslate("REMOVE_CONTACT_SUBMIT_ERROR"),
@@ -122,12 +142,13 @@ export class AccountMyContactsPage extends SecondLevelPage {
     password: string,
     address: string,
     pay_pwd?: string,
+    custom_fee?: number,
   ) {
     return this.contactService.addContact(
       password,
       address,
       pay_pwd,
-      undefined,
+      custom_fee,
       "-",
     );
   }

@@ -178,7 +178,8 @@ export class FLP_Form extends FLP_Route {
           if (data) {
             resolve(data);
           } else {
-            this.getTranslate("PAY_INPUT_CANCEL").then(reject);
+            console.warn(new Error(this.getTranslateSync("PAY_INPUT_CANCEL")));
+            reject(getErrorFromAsyncerror(false));
           }
         });
       } catch (err) {
