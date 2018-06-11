@@ -77,7 +77,7 @@ export class TabChainPage extends FirstLevelPage {
   block_list: Array<BlockModel | FakeBlock> = [];
   block_list_config = {
     loading: false,
-    page: 1,
+    // page: 1,
     pageSize: 20,
     has_more: false,
   };
@@ -171,16 +171,6 @@ export class TabChainPage extends FirstLevelPage {
         this.block_list = list;
         this.dispatchEvent("when-block-list-changed");
         block_list_config.has_more = list.length == block_list_config.pageSize;
-
-        // 根据返回的高度，对page进行重置
-        const last_block = list[list.length - 1];
-        if (last_block) {
-          const height = last_block.height;
-          block_list_config.page =
-            Math.round(height / block_list_config.pageSize) + 1; // +1代表当前的页
-        } else {
-          block_list_config.page = 1;
-        }
       }
       this.block_list.unshift(fakeBlock);
     } finally {
@@ -205,45 +195,34 @@ export class TabChainPage extends FirstLevelPage {
     if (event.end !== this.block_list.length) return;
     await this.loadMoreBlockList();
     this.block_list = this.block_list.slice();
+    this.cdRef.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
     TabChainPage.getTranslate("LOAD_MORE_BLOCK_LIST_ERROR"),
   )
+  // 使用retry，实现对断网的控制
+  @asyncCtrlGenerator.retry()
   async loadMoreBlockList() {
-    const { block_list_config } = this;
-    if (block_list_config.page <= 1) {
+    const { block_list_config, block_list } = this;
+    const min_block = block_list[block_list.length - 1];
+    if (!min_block || min_block.height <= 1) {
       return;
     }
-    block_list_config.page -= 1;
-    const block_list = await this.blockService.getBlocksByPage(
-      block_list_config.page,
-      block_list_config.pageSize,
+    const endHeight = min_block.height - 1;
+    const startHeight = Math.max(
+      1,
+      min_block.height - block_list_config.pageSize,
     );
-    block_list_config.has_more =
-      block_list_config.pageSize == block_list.length;
-    const last_block = this.block_list[this.block_list.length - 1];
-    if (last_block) {
-      // 过滤掉不需要的block，并从高到低排序
-      var filtered_block_list = block_list
-        .filter(block => {
-          return block.height < last_block.height;
-        })
-        .sort((a, b) => {
-          return b.height - a.height;
-        });
-    } else {
-      console.error("已有的列表不可能为空！");
-      filtered_block_list = block_list;
-    }
-    this.block_list.push(...filtered_block_list);
+
+    const new_block_list = await this.blockService.getBlocksByRange(
+      startHeight,
+      endHeight,
+      -1,
+    );
+    block_list_config.has_more = startHeight > 1;
+
+    this.block_list.push(...new_block_list);
     this.dispatchEvent("when-block-list-changed");
-    if (
-      filtered_block_list.length !== block_list.length &&
-      filtered_block_list.length < block_list_config.pageSize / 2
-    ) {
-      // 执行了过滤，需要加载更多的数据
-      return this.loadMoreBlockList();
-    }
   }
   blockListTrackByFn(index, item: BlockModel) {
     return item.height;

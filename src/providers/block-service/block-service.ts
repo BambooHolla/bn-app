@@ -31,6 +31,7 @@ import {
 } from "../db-cache/db-cache";
 import io from "socket.io-client";
 import { Mdb } from "../mdb";
+tryRegisterGlobal("socketio", io);
 
 export * from "./block.types";
 
@@ -93,7 +94,23 @@ export class BlockServiceProvider extends FLP_Tool {
         if (!search) {
           throw new Error("Parameter verification failed.");
         }
-        const { limit, orderBy, offset, ...query } = search;
+        let {
+          limit,
+          orderBy,
+          offset,
+          startHeight,
+          endHeight,
+          ...query
+        } = search;
+        if (Number.isFinite(startHeight) && Number.isFinite(endHeight)) {
+          query.height = {
+            $gte: startHeight,
+            $lte: endHeight,
+          };
+          if (!limit) {
+            limit = Math.abs(endHeight - startHeight) + 1;
+          }
+        }
         {
           const sort_params = orderBy.split(":");
           var sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
@@ -107,11 +124,7 @@ export class BlockServiceProvider extends FLP_Tool {
         if (Number.isFinite(query.height) && blocks.length === 1) {
           return { reqs: [], cache };
         }
-        if (
-          Number.isFinite(limit) &&
-          Number.isFinite(offset) &&
-          blocks.length == limit
-        ) {
+        if (Number.isFinite(limit) && blocks.length == limit) {
           return { reqs: [], cache };
         }
         return { reqs: [request_opts], cache };
@@ -122,18 +135,23 @@ export class BlockServiceProvider extends FLP_Tool {
         }
       },
       async (db, mix_res, cache) => {
-        if (mix_res) {
+        if (mix_res && mix_res.success) {
           const res_blocks = mix_res.blocks;
-          const old_blocks = await db.find({
-            height: { $in: res_blocks.map(b => b.height) },
-          });
-          const unique_height_set = new Set<number>(
-            old_blocks.map(b => b.height),
-          );
-          const new_blocks = res_blocks.filter(block => {
-            return !unique_height_set.has(block.height);
-          });
-          await db.insertMany(new_blocks);
+          if (res_blocks instanceof Array) {
+            const old_blocks =
+              cache.blocks instanceof Array
+                ? cache.blocks
+                : await db.find({
+                    height: { $in: res_blocks.map(b => b.height) },
+                  });
+            const unique_height_set = new Set<number>(
+              old_blocks.map(b => b.height),
+            );
+            const new_blocks = res_blocks.filter(block => {
+              return !unique_height_set.has(block.height);
+            });
+            await db.insertMany(new_blocks);
+          }
           return mix_res;
         }
         return cache;
