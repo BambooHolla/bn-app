@@ -32,6 +32,7 @@ const block_unit_time =
 const testnet_flag = document.createElement("div");
 testnet_flag.id = "testnetFlag";
 testnet_flag.innerHTML = `TESTNET`;
+const SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
 
 @Injectable()
 export class AppSettingProvider extends CommonService {
@@ -45,7 +46,20 @@ export class AppSettingProvider extends CommonService {
     this._SERVER_URL = v;
   }
   // static SERVER_URL = "http://47.104.142.234:6062";
-  static SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
+  static SEED_DATE = SEED_DATE;
+  static seedDate: Date = new Date(
+    SEED_DATE[0],
+    SEED_DATE[1],
+    SEED_DATE[2],
+    SEED_DATE[3],
+    SEED_DATE[4],
+    SEED_DATE[5],
+    SEED_DATE[6],
+  );
+  static seedDateTimestamp = Math.floor(
+    AppSettingProvider.seedDate.getTime() / 1000,
+  );
+  static timezoneoffset = -AppSettingProvider.seedDate.getTimezoneOffset() * 60;
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = net_version || "mainnet";
