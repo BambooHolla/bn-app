@@ -23,6 +23,7 @@ page-tab-chain {
         padding-top: 20.012px;
         padding-top: #{constant(safe-area-inset-top)};
         padding-top: #{env(safe-area-inset-top)};
+        border-bottom: 0.55px solid #ddd;
         > .title {
           height: 4rem;
           line-height: 4rem;

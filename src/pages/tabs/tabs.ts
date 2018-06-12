@@ -27,6 +27,7 @@ import { TabAccountPage } from "../tab-account/tab-account";
 @Component({
   selector: "page-tabs",
   templateUrl: "tabs.html",
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class TabsPage extends FLP_Lifecycle {
   tab1Root: any = Tab1Root;
@@ -125,6 +126,7 @@ export class TabsPage extends FLP_Lifecycle {
     this.selectedTabPageContainer = tabPageContainer;
     this.selectedTabPage = tabPage;
     this.selectedIndex = index;
+    this.cdRef.markForCheck();
   }
   @TabsPage.afterContentInit
   initTabView() {
