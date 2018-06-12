@@ -319,7 +319,10 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		// 渲染
 		this.forceRenderOneFrame();
 	}
-	timestampToString(timestamp: number) {
+	timestampToString(timestamp: number | undefined) {
+		if (typeof timestamp !== "number") {
+			return;
+		}
 		const d = TimestampPipe.transform(timestamp);
 		const monthStr = ("0" + (d.getMonth() + 1)).substr(-2);
 		const dayStr = ("0" + d.getDate()).substr(-2);
@@ -331,13 +334,19 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		//返回时间格式   yyyy/mm/dd hh:mm:ss
 		return `${d.getFullYear()}-${monthStr}-${dayStr} ${hStr}:${mStr}:${sStr}`;
 	}
-	usernameToString(username: string) {
+	usernameToString(username: string | undefined) {
+		if (typeof username !== "string") {
+			return;
+		}
 		if (username && username.length > 8) {
 			username = username.substr(0, 4) + "***" + username.substr(-4);
 		}
 		return username;
 	}
-	amountToString(amount: string) {
+	amountToString(amount: string | undefined) {
+		if (typeof amount !== "string") {
+			return;
+		}
 		const amount_value = parseFloat(amount) / 1e8;
 		const amount_info = amount_value.toFixed(8).split(".");
 		const int_str = amount_info[0] || "";
@@ -358,6 +367,9 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		return formated_int_str + "." + float_str;
 	}
 	tidToString(id: string, mode: RenderMode = "canvas") {
+		if (typeof id !== "string") {
+			return;
+		}
 		const center_index = (id.length / 2) | 0;
 		return (
 			id.substr(0, center_index) +
