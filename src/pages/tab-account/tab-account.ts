@@ -91,4 +91,17 @@ export class TabAccountPage extends FirstLevelPage {
       modalCtrl: this.modalCtrl,
     });
   }
+
+  can_view_amount = false;
+  amountViewer(amount, hide_symbol_num = 8) {
+    if (this.can_view_amount) {
+      return amount;
+    } else {
+      return "*".repeat(hide_symbol_num);
+    }
+  }
+  /*切换金额是否可见*/
+  toggleAmountView() {
+    this.can_view_amount = !this.can_view_amount;
+  }
 }

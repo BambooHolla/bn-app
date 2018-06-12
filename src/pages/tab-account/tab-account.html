@@ -11,13 +11,13 @@
     <div class="assets-info">
       <div class="ibt-value">
         <ali-icon name="ifm-coins"></ali-icon>
-        <span class="value">{{ibt|amountEuler|number:"1.8-8"}}</span>
+        <span class="value" (click)="toggleAmountView()">{{amountViewer(ibt|amountEuler|number:"1.8-8")}}</span>
         <span class="unit">IBT</span>
       </div>
       <div class="dollar-value">
         <!-- <ali-icon name="ifm-ketoujineicon"></ali-icon> -->
         <span class="pre-unit">$</span>
-        <span class="value">{{dollar|amountEuler|number:"1.8-8"}}</span>
+        <span class="value">{{amountViewer(dollar|amountEuler|number:"1.8-8")}}</span>
         <span class="unit">USD</span>
       </div>
       <div class="address" (click)="routeTo('account-info')">{{address}}</div>
@@ -50,7 +50,7 @@
       <div class="title">{{'VOUCHER_WALLET' | translate}}</div>
       <div class="right">
         <ng-container *ngIf="voucher_total_amount">
-          {{voucher_total_amount|amountEuler|number:'1.8-8'}}
+          {{amountViewer(voucher_total_amount|amountEuler|number:'1.8-8')}}
         </ng-container>
         <ali-icon name="ifm-arrow-to-right"></ali-icon>
       </div>
