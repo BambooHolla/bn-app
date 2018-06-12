@@ -1,3 +1,4 @@
+import { tryRegisterGlobal } from "../bnqkl-framework/FLP_Tool";
 import Db from "./gangodb_core/db";
 import Collection from "./gangodb_core/collection";
 const mdb = new Db("ibt", 2, {
@@ -5,7 +6,12 @@ const mdb = new Db("ibt", 2, {
 	account: ["address", "publicKey"],
 	voted_delegate: true,
 	voucher: true,
+	contact: ["address", "owner_publicKey"],
+	unconfirm_transaction: ["id"],
+	contact_tags: ["owner_publicKey", "contact_ids:multiEntry"],
 });
+tryRegisterGlobal("mdb", mdb);
+
 const Promise_allNoArray = (async_arr: any) => {
 	let per_task = Promise.resolve([]);
 	for (let item of async_arr) {

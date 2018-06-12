@@ -187,12 +187,16 @@ export class AppFetchProvider {
         const api_service = custom_api_config;
         const db = this.dbCache.dbMap.get(api_service.dbname);
         if (db) {
-          const { reqs, cache } = await api_service.beforeService(db, {
+          const requestOptions = {
             method,
             url,
             reqOptions: options,
             body,
-          });
+          };
+          const { reqs, cache } = await api_service.beforeService(
+            db,
+            requestOptions,
+          );
           if (reqs.length) {
             const mix_data = await Promise.all(
               reqs.map(async req => {
@@ -210,7 +214,7 @@ export class AppFetchProvider {
                 };
               }),
             ).then(res_list => api_service.afterService(res_list));
-            return api_service.dbHandle(db, mix_data, cache);
+            return api_service.dbHandle(db, mix_data, cache, requestOptions);
           } else {
             console.log(
               "%cOFFLINE-SERVICE",

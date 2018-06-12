@@ -45,6 +45,9 @@
           </div>
         </ion-item>
         <ion-item-options side="right">
+          <button class="list-delete" (click)="routeTo('account-remark-contact')">
+            <span class="inner">{{'SET_REMARK'|translate}}</span>
+          </button>
           <button class="list-delete" (click)="confirmToDelete(contact)">
             <span class="inner">{{'REMOVE'|translate}}</span>
           </button>

@@ -17,12 +17,14 @@ import {
   TransactionTypes,
 } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
+import { DbCacheProvider } from "../db-cache/db-cache";
 import * as IFM from "ifmchain-ibt";
-import { ContactModel } from "./contact.types";
+import * as TYPE from "./contact.types";
 export * from "./contact.types";
 import * as pinyin from "tiny-pinyin";
+import { Mdb } from "../mdb";
 
-export type ContactGroupItem = { letter: string; list: ContactModel[] };
+export type ContactGroupItem = { letter: string; list: TYPE.ContactModel[] };
 export type ContactGroupList = ContactGroupItem[];
 
 @Injectable()
@@ -33,6 +35,7 @@ export class ContactServiceProvider {
   addressCheck: any;
   followingList?: any[] = [];
   followerList?: any[] = [];
+  contactDb = new Mdb<TYPE.ContactProModel>("contact");
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -42,11 +45,116 @@ export class ContactServiceProvider {
     public accountService: AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
+    public dbCache: DbCacheProvider,
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.addressCheck = this.ifmJs.addressCheck;
+    this.dbCache.installApiCache<
+      TYPE.ContactProModel,
+      TYPE.MyContactResModel<TYPE.ContactProModel>
+    >(
+      "contact",
+      "get",
+      this.GET_CONTACT,
+      async (db, request_opts) => {
+        const cache: TYPE.MyContactResModel<TYPE.ContactProModel> = {
+          followers: [],
+          following: [],
+          success: true,
+        };
+        if (navigator.onLine) {
+          // 默认联网获取
+          return { reqs: [request_opts], cache };
+        }
+        const search = request_opts.reqOptions.search as any;
+        if (!(search && search.publicKey)) {
+          throw new Error("Parameter verification failed.");
+        }
+        cache.followers = await this.contactDb.find({
+          owner_publicKey: search.publicKey,
+        });
+        return { reqs: [], cache };
+      },
+      async req_res_list => {
+        if (req_res_list.length > 0) {
+          return req_res_list[0].result;
+        }
+      },
+      async (db, mix_res, cache, request_opts) => {
+        if (mix_res && mix_res.success) {
+          const res_following = mix_res.following;
+          if (res_following instanceof Array) {
+            const owner_publicKey: string = (request_opts.reqOptions
+              .search as any).publicKey;
+            const old_following =
+              cache.following instanceof Array
+                ? cache.following
+                : await db.find({
+                    owner_publicKey,
+                  });
+            const old_address_map = new Map<string, TYPE.ContactProModel>(
+              old_following.map(
+                c => [c.address, c] as [string, TYPE.ContactProModel],
+              ),
+            );
+            const res_address_map = new Map<string, TYPE.ContactProModel>(
+              res_following.map(
+                c => [c.address, c] as [string, TYPE.ContactProModel],
+              ),
+            );
+            /// 需要更新的联系人
+            const update_following: TYPE.ContactProModel[] = [];
+            // 将服务器的信息与本地信息进行混合
+            mix_res.following = mix_res.following.map(c => {
+              const old_contact = old_address_map.get(c.address);
+              if (old_contact) {
+                let need_update = false;
+                for (var k in c) {
+                  if (old_contact[k] != c[k]) {
+                    need_update = true;
+                  }
+                }
+                if (need_update) {
+                  update_following.push(old_contact);
+                }
+                return old_contact;
+              }
+              return c;
+            });
+            // 更新变动的联系人
+            if (update_following.length) {
+              await Promise.all(
+                update_following.map(c =>
+                  db.update({ owner_publicKey, address: c.address }, c),
+                ),
+              );
+            }
+            /// 插入新的联系人
+            const new_following = res_following
+              .filter(contact => {
+                return !old_address_map.has(contact.address);
+              })
+              .map(contact => ({ ...contact, owner_publicKey }));
+            await db.insertMany(new_following);
+            /// 删除不在列表中的联系人
+            const del_following = old_following.filter(
+              c => !res_address_map.has(c.address),
+            );
+            if (del_following.length) {
+              await Promise.all(
+                del_following.map(c =>
+                  db.remove({ owner_publicKey, address: c.address }),
+                ),
+              );
+            }
+          }
+          return mix_res;
+        }
+        return cache;
+      },
+    );
   }
-  contactModelDiffParser(contact: ContactModel) {
+  contactModelDiffParser(contact: TYPE.ContactModel) {
     return contact.username + contact.address;
   }
 
@@ -63,10 +171,9 @@ export class ContactServiceProvider {
     let query = {
       publicKey: this.user.userInfo.publicKey,
     };
-    let data = await this.fetch.get<{
-      followers: ContactModel[];
-      following: ContactModel[];
-    }>(this.GET_CONTACT, { search: query });
+    let data = await this.fetch.get<
+      TYPE.MyContactResModel<TYPE.ContactProModel>
+    >(this.GET_CONTACT, { search: query });
 
     data.followers = await this.contactIgnored(data.followers);
     this.followingList = data.following;
@@ -79,8 +186,8 @@ export class ContactServiceProvider {
     }
   }
   myContact!: AsyncBehaviorSubject<{
-    follower: ContactModel[];
-    following: ContactModel[];
+    follower: TYPE.ContactModel[];
+    following: TYPE.ContactModel[];
   }>;
   @HEIGHT_AB_Generator("myContact", true)
   myContact_Executor(promise_pro) {
@@ -222,7 +329,7 @@ export class ContactServiceProvider {
   /**
    * 将联系人进行分组
    */
-  contactGroup(contact_list: ContactModel[]): ContactGroupList {
+  contactGroup(contact_list: TYPE.ContactModel[]): ContactGroupList {
     const unkown_letter: ContactGroupItem = {
       letter: "*",
       list: [],
@@ -260,4 +367,5 @@ export class ContactServiceProvider {
       return a.letter.localeCompare(b.letter);
     });
   }
+  setRemark(contact: TYPE.ContactModel, remark_info: TYPE.ContactProModel) {}
 }

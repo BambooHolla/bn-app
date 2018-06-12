@@ -17,6 +17,7 @@ import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import * as IFM from "ifmchain-ibt";
 import * as promisify from "es6-promisify";
+import { Mdb } from "../mdb";
 
 export enum TransactionTypes {
   /** 是最基本的转账交易*/
@@ -63,6 +64,7 @@ export class TransactionServiceProvider {
   nacl: any;
   keypairService: any;
   addresssCheck: any;
+  unTxDb = new Mdb<TYPE.TransactionModel>("unconfirm_transaction");
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -182,8 +184,9 @@ export class TransactionServiceProvider {
    */
   async getTimestamp() {
     if (navigator.onLine) {
-      return await this.fetch.get<{timestamp:number}>(this.GET_TIMESTAMP);
-    } else {// 离线状态下，从本地生成时间戳
+      return await this.fetch.get<{ timestamp: number }>(this.GET_TIMESTAMP);
+    } else {
+      // 离线状态下，从本地生成时间戳
       //种子的UTC时间
       const d = new Date(
         Date.UTC(

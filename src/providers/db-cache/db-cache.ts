@@ -31,6 +31,7 @@ export interface installApiCache<T, R = any> {
 		store: Mdb<T>,
 		min_data: R | undefined | null,
 		beforeService_cache: R,
+		request_opts: RequestOptions,
 	) => Promise<R>;
 }
 export interface installApiCacheOptions<T, R> {

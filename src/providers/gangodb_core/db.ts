@@ -129,19 +129,34 @@ export default class Db extends EventEmitter {
         }
     }
 
-    _addStore(idb, name) {
-        const store = idb.createObjectStore(name, {
+    _addStore(idb: IDBDatabase, store_name: string) {
+        const store = idb.createObjectStore(store_name, {
             keyPath: "_id",
             autoIncrement: true,
         });
 
-        const index_config = this._config[name];
+        const index_config = this._config[store_name];
 
-        for (var path in index_config) {
-            if (index_config[path]) {
-                store.createIndex(path, path, { unique: false });
+        for (var name in index_config) {
+            if (index_config[name]) {
+                const cur_index_config = name.split(":", 1);
+                const default_config = { unique: false };
+                const keyPath = cur_index_config[0];
+                const optionParams = cur_index_config[1] || "";
+                if (optionParams.startsWith("{")) {
+                    try {
+                        Object.assign(default_config, JSON.parse(optionParams));
+                    } catch (err) {
+                        console.warn(err);
+                    }
+                } else {
+                    optionParams
+                        .split(",")
+                        .forEach(k => (default_config[k] = true));
+                }
+                store.createIndex(name, keyPath, default_config);
             } else {
-                store.deleteIndex(path);
+                store.deleteIndex(name);
             }
         }
     }
