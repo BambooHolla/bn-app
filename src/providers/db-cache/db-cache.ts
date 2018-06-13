@@ -81,4 +81,73 @@ export class DbCacheProvider {
 			dbHandle,
 		});
 	}
+	/*通用的将数据同步到数据库的操作*/
+	async commonDbSync<T extends Object>(
+		newest_list: T[],
+		_old_list: T[] | undefined,
+		db: Mdb<T>,
+		db_query: any,
+		unique_key: string,
+	) {
+		const old_list =
+			_old_list instanceof Array ? _old_list : await db.find(db_query);
+		const old_unique_map = new Map<string, T>(
+			old_list.map(c => [c[unique_key], c] as [string, T]),
+		);
+		const res_unique_map = new Map<string, T>(
+			newest_list.map(c => [c[unique_key], c] as [string, T]),
+		);
+		/// 需要更新的ITEM
+		const update_following: T[] = [];
+		// 将服务器的信息与本地信息进行混合
+		const mixed_list = newest_list.map(c => {
+			const old_item = old_unique_map.get(c[unique_key]);
+			if (old_item) {
+				let need_update = false;
+				for (var k in c) {
+					if (old_item[k] != c[k]) {
+						old_item[k] = c[k];
+						need_update = true;
+					}
+				}
+				if (need_update) {
+					update_following.push(old_item);
+				}
+				return old_item;
+			}
+			return c;
+		});
+		// 更新变动的ITEM
+		if (update_following.length) {
+			await Promise.all(
+				update_following.map(c =>
+					db.update({ ...db_query, [unique_key]: c[unique_key] }, c),
+				),
+			);
+		}
+		/// 插入新的ITEM
+		const new_following = newest_list
+			.filter(item => {
+				return !old_unique_map.has(item[unique_key]);
+			})
+			.map(item => ({ ...(item as Object), ...db_query }));
+		await db.insertMany(new_following);
+		/// 删除不在列表中的ITEM
+		const del_following = old_list.filter(
+			c => !res_unique_map.has(c[unique_key]),
+		);
+		if (del_following.length) {
+			await Promise.all(
+				del_following.map(c =>
+					db.remove({ ...db_query, [unique_key]: c[unique_key] }),
+				),
+			);
+		}
+		return {
+			mixed_list,
+			new_following,
+			update_following,
+			del_following,
+		};
+	}
 }

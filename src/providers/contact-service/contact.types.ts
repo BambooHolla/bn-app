@@ -4,7 +4,7 @@ export interface ContactModel {
 }
 export interface ContactProModel extends ContactModel {
 	owner_publicKey: string;
-	nickname?: string;
+	remarkname?: string;
 	tags?: string[];
 	phones?: string[];
 	remark?: string;

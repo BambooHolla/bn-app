@@ -505,16 +505,20 @@ export function singleRunWrap() {
     const source_fun = descriptor.value;
     var run_lock: PromiseOut<any> | undefined;
     descriptor.value = async function lock(...args) {
-      if (!run_lock) {
-        run_lock = new PromiseOut();
+      if (run_lock) {
+        return run_lock.promise;
       }
+      run_lock = new PromiseOut();
+      const promise = run_lock.promise;
       try {
-        run_lock.resolve(source_fun.apply(this, args));
+        const res = await source_fun.apply(this, args);
+        run_lock.resolve(res);
       } catch (err) {
         run_lock.reject(err);
       } finally {
         run_lock = undefined;
       }
+      return promise;
     };
     descriptor.value.source_fun = source_fun;
     return descriptor;

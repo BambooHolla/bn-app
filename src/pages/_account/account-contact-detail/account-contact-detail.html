@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{'ACCOUNT-CONTACT-DETAIL'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="common-list">
+    <div class="base-info">
+      <div class="main-name" *ngIf="mainname">{{mainname}}</div>
+      <div class="address">
+        <ali-icon name="ifm-account-detail">{{contact?.address}}</ali-icon>
+      </div>
+      <div class="nick-name" *ngIf="nickname">{{nickname}}</div>
+    </div>
+    <div class="remark-info">
+      <div class="phones" *ngIf="contact?.phones?.length">
+        <ali-icon name="ifm-phone"></ali-icon>
+        <div class="phone-item" *ngFor="let phone of contact.phones">
+          <a [href]="'tel:'+phone">{{phone}}</a>
+          <span class="split">/</span>
+        </div>
+      </div>
+      <div class="tags" *ngIf="contact?.tags?.length">
+      	<div class="tag-item" *ngFor="let tag of contact.tags">{{tag}}</div>
+      </div>
+      <div class="remark-image" *ngIf="contact?.image">
+      	<img [src]="contact.image">
+      </div>
+      <div class="remark-text" *ngIf="contact?.remark">
+      	<div class="label">{{'REMARK_TEXT_LABEL'|translate}}</div>
+      	<div class="text">{{contact.remark}}</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="tran-logs">
+    	<div class="title"></div>
+    </div>
+  </div>
+</ion-content>

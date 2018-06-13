@@ -86,6 +86,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   @asyncCtrlGenerator.error()
   async addUnconfirmContact(contact: ContactModel) {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
+      title: "@@ADD_UNCONFIRM_CONTACT_TITLE",
       custom_fee: true,
     });
     return this._addUnconfirmContact(
@@ -98,6 +99,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   @asyncCtrlGenerator.error()
   async removeConfirmedContact(contact: ContactModel) {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
+      title: "@@REMOVE_CONFIRMED_CONTACT_TITLE",
       custom_fee: true,
     });
     return this._removeConfirmedContact(

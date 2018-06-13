@@ -312,10 +312,14 @@ export class TransactionServiceProvider {
    * @param: secondPassphrase 输入的二次密码
    */
   verifySecondPassphrase(secondPassphrase: string) {
-    let secondPublic = this.formatSecondPassphrase(
-      this.user.publicKey,
-      secondPassphrase,
-    );
+    try {
+      var secondPublic = this.formatSecondPassphrase(
+        this.user.publicKey,
+        secondPassphrase,
+      );
+    } catch (err) {
+      return false;
+    }
     console.log(secondPublic.publicKey.toString("hex"));
     if (secondPublic.publicKey.toString("hex") === this.user.secondPublicKey) {
       return true;

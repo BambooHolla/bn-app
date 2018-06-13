@@ -103,5 +103,6 @@ export class TabAccountPage extends FirstLevelPage {
   /*切换金额是否可见*/
   toggleAmountView() {
     this.can_view_amount = !this.can_view_amount;
+    this.cdRef.markForCheck();
   }
 }

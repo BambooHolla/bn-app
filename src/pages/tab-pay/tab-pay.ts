@@ -161,7 +161,9 @@ export class TabPayPage extends FirstLevelPage {
   }
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password, pay_pwd } = await this.getUserPassword();
+    const { password, pay_pwd } = await this.getUserPassword({
+      title: "@@SUBMIT_TRANSFER_TITLE",
+    });
     let online = navigator.onLine;
     if (online) {
       try {

@@ -237,7 +237,7 @@ export class MinServiceProvider extends FLP_Tool {
     try {
       await this.transactionService.putTransaction(txData);
     } catch (err) {
-      if (err && err.details.minFee) {
+      if (err && err.details && err.details.minFee) {
         const minFee = parseFloat(err.details.minFee) / 1e8;
         if (isFinite(minFee) && minFee > parseFloat(fee)) {
           console.warn("手续费过低，继续重试", minFee, fee);
@@ -266,7 +266,12 @@ export class MinServiceProvider extends FLP_Tool {
    */
   @FLP_Form.FromGlobal alertCtrl!: AlertController;
   @asyncCtrlGenerator.single()
-  @asyncCtrlGenerator.error(() => FLP_Form.getTranslate("AUTO_VOTE_ERROR"))
+  @asyncCtrlGenerator.error(
+    () => FLP_Form.getTranslate("AUTO_VOTE_ERROR"),
+    undefined,
+    undefined,
+    true,
+  )
   async autoVote(round, from?: any) {
     if (!this.appSetting.settings.background_mining) {
       return;
@@ -278,35 +283,53 @@ export class MinServiceProvider extends FLP_Tool {
       {},
       { limit: 57 },
     );
-    if (voted_delegate_list.length === 57) {
+    if (voted_delegate_list.length >= 57) {
       return;
     }
-    if ("from-round-change" === from) {
-      const cache_key =
-        this.userInfo.publicKey + "|" + this.userInfo.secondPublicKey;
-      if (
-        this._pre_round_pwd_info &&
-        this._pre_round_pwd_info.cache_key != cache_key
-      ) {
-        // 二次密码发生了变动，或者帐号发生了变动
-        this._pre_round_pwd_info = undefined;
-      }
-      if (!this.userInfo.address) {
-        // 如果已经没有用户处于在线状态，终止挖矿
-        return;
-      }
-      if (!this._pre_round_pwd_info) {
-        this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword.call(
-          this,
-        );
-      }
-    }
+
     // 获取可投的账户
     const { delegates: voteable_delegates } = await this.getVoteAbleDelegates(
       0,
       57,
       this.userInfo.address,
     );
+    if (voteable_delegates.length || true) {
+      // 有票可投时才需要输入要密码
+      var title: string | undefined;
+      if ("from-round-change" === from) {
+        title = "@@AUTO_MINING_NEED_INPUT_PAY_PWD";
+      } else if ("tab-vote-page" === from) {
+        title = "@@START_VOTE_VERIFY";
+      }
+      if (title) {
+        const cache_key =
+          this.userInfo.publicKey + "|" + this.userInfo.secondPublicKey;
+        if (
+          this._pre_round_pwd_info &&
+          this._pre_round_pwd_info.cache_key != cache_key
+        ) {
+          // 二次密码发生了变动，或者帐号发生了变动
+          this._pre_round_pwd_info = undefined;
+        }
+        if (!this.userInfo.address) {
+          // 如果已经没有用户处于在线状态，终止挖矿
+          return;
+        }
+        if (!this._pre_round_pwd_info) {
+          this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword.call(
+            this,
+            {
+              title,
+            },
+          );
+          this._pre_round_pwd_info.cache_key = cache_key;
+        }
+      }
+
+      if (!this._pre_round_pwd_info) {
+        throw new Error();
+      }
+    }
     await this.tryVote(voteable_delegates, round, this._pre_round_pwd_info);
   }
   private _pre_round_pwd_info?: any;
@@ -318,12 +341,9 @@ export class MinServiceProvider extends FLP_Tool {
   async tryVote(
     voteable_delegates: TYPE.DelegateModel[],
     round = this.appSetting.getRound(),
-    userPWD?: { password: string; pay_pwd?: string },
+    userPWD: { password: string; pay_pwd?: string },
     from_page?: FLP_Form,
   ) {
-    if (!userPWD) {
-      userPWD = await (from_page || FLP_Form.prototype).getUserPassword();
-    }
     await this._vote(voteable_delegates, userPWD.password, userPWD.pay_pwd)
       .then(() => {
         this.tryEmit("vote-success");

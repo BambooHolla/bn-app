@@ -27,7 +27,7 @@ import { TabAccountPage } from "../tab-account/tab-account";
 @Component({
   selector: "page-tabs",
   templateUrl: "tabs.html",
-  changeDetection:ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabsPage extends FLP_Lifecycle {
   tab1Root: any = Tab1Root;
@@ -104,17 +104,17 @@ export class TabsPage extends FLP_Lifecycle {
       index
     ];
     const perTabPage = this.selectedTabPage;
+    // 没有pertabpage，说明处于初始化状态，就不需要手动触发这些事件了
     if (perTabPage) {
       perTabPage.ionViewWillLeave();
       // this.raf(() => {
       perTabPage.ionViewDidLeave();
       // });
+      tabPage.ionViewWillEnter();
+      // this.raf(() => {
+      tabPage.ionViewDidEnter();
+      // });
     }
-
-    tabPage.ionViewWillEnter();
-    // this.raf(() => {
-    tabPage.ionViewDidEnter();
-    // });
     // 页面切换动画
     const perTabPageContainer = this.selectedTabPageContainer;
     if (perTabPageContainer) {

@@ -28,10 +28,6 @@ bec74be9c8eebc4a3c42f5bf0f535b49742ce6cb5c14c5dadcb63c55d03c00a7
 33e41f40c1aa9c5c8712ea4253644a7583387bf3d7037d2d4af1e82085ddf17a
 
 {
-  "HIDE_WELCOME": "1",
-  "LATEST_APP_VERSION_URL": "http://192.168.16.197:8180/api/app/version/latest",
-  "NET_VERSION": "testnet",
-  "BLOCK_UNIT_TIME": "3000",
-  "HIDE_FLAG": "0",
-  "SERVER_URL": "http://192.168.16.197:19002"
+  "LATEST_APP_VERSION_URL": "http://192.168.16.152:8180/api/app/version/latest",
+  "SERVER_URL": "http://192.168.16.152:19002"
 }

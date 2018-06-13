@@ -86,67 +86,13 @@ export class ContactServiceProvider {
           if (res_following instanceof Array) {
             const owner_publicKey: string = (request_opts.reqOptions
               .search as any).publicKey;
-            const old_following =
-              cache.following instanceof Array
-                ? cache.following
-                : await db.find({
-                    owner_publicKey,
-                  });
-            const old_address_map = new Map<string, TYPE.ContactProModel>(
-              old_following.map(
-                c => [c.address, c] as [string, TYPE.ContactProModel],
-              ),
+            await this.dbCache.commonDbSync(
+              res_following,
+              undefined,
+              db,
+              { owner_publicKey },
+              "address",
             );
-            const res_address_map = new Map<string, TYPE.ContactProModel>(
-              res_following.map(
-                c => [c.address, c] as [string, TYPE.ContactProModel],
-              ),
-            );
-            /// 需要更新的联系人
-            const update_following: TYPE.ContactProModel[] = [];
-            // 将服务器的信息与本地信息进行混合
-            mix_res.following = mix_res.following.map(c => {
-              const old_contact = old_address_map.get(c.address);
-              if (old_contact) {
-                let need_update = false;
-                for (var k in c) {
-                  if (old_contact[k] != c[k]) {
-                    need_update = true;
-                  }
-                }
-                if (need_update) {
-                  update_following.push(old_contact);
-                }
-                return old_contact;
-              }
-              return c;
-            });
-            // 更新变动的联系人
-            if (update_following.length) {
-              await Promise.all(
-                update_following.map(c =>
-                  db.update({ owner_publicKey, address: c.address }, c),
-                ),
-              );
-            }
-            /// 插入新的联系人
-            const new_following = res_following
-              .filter(contact => {
-                return !old_address_map.has(contact.address);
-              })
-              .map(contact => ({ ...contact, owner_publicKey }));
-            await db.insertMany(new_following);
-            /// 删除不在列表中的联系人
-            const del_following = old_following.filter(
-              c => !res_address_map.has(c.address),
-            );
-            if (del_following.length) {
-              await Promise.all(
-                del_following.map(c =>
-                  db.remove({ owner_publicKey, address: c.address }),
-                ),
-              );
-            }
           }
           return mix_res;
         }
@@ -168,12 +114,13 @@ export class ContactServiceProvider {
    * opt - 2 : 获取未添加
    */
   async getMyContacts(opt?: number) {
-    let query = {
-      publicKey: this.user.userInfo.publicKey,
-    };
-    let data = await this.fetch.get<
+    const data = await this.fetch.get<
       TYPE.MyContactResModel<TYPE.ContactProModel>
-    >(this.GET_CONTACT, { search: query });
+    >(this.GET_CONTACT, {
+      search: {
+        publicKey: this.user.userInfo.publicKey,
+      },
+    });
 
     data.followers = await this.contactIgnored(data.followers);
     this.followingList = data.following;

@@ -32,11 +32,17 @@ page-account-my-contacts {
       color: #7a7a7a;
       font-size: 1.3rem;
     }
-    .list-delete {
+    .options-item{
+      font-size: 1.5rem;
       width: 6rem;
+    }
+    .list-remark{
       background-color: #ff5c5b;
       color: #fff;
-      font-size: 1.5rem;
+    }
+    .list-delete {
+      background-color: #ff5c5b;
+      color: #fff;
     }
     ion-item {
       border-bottom: 0.55px solid #eeeeee !important;

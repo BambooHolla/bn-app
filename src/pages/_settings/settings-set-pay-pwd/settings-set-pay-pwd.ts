@@ -33,6 +33,7 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
   @asyncCtrlGenerator.error()
   async submit() {
     const { password } = await this.getUserPassword({
+      title: "@@SET_PAY_PWD_TITLE",
       force_require_password: true,
     });
     return this._submit(password, this.formData.transfer_fee);
