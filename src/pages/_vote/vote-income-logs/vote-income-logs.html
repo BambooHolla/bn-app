@@ -18,10 +18,10 @@
     <div class="common-item" *ngFor="let log of income_log_list">
       <div class="left">
         <div class="time-ago">
-          {{log.timestamp|timestamp|amLocale:localName|amTimeAgo}}
+          {{log.timestamp|timestamp:"timezone"|amLocale:localName|amTimeAgo}}
         </div>
         <div class="time-detail">
-          {{log.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm"}}
+          {{log.timestamp|timestamp:"timezone"|amDateFormat:"YYYY.MM.DD hh:mm"}}
         </div>
       </div>
       <div class="right">

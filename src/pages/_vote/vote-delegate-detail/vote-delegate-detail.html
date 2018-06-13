@@ -54,7 +54,7 @@
       <div class="common-list">
         <div class="common-item row" *ngFor="let block of forgin_block_list" (click)="routeTo('chain-block-detail', {block:block})">
           <div class="item">
-            {{block.timestamp|timestamp|amDateFormat:"YYYY.MM.DD"}}
+            {{block.timestamp|timestamp:"timezone"|amDateFormat:"YYYY.MM.DD"}}
           </div>
           <div class="item">
             {{block.reward|amountEuler|number:"1.2-2"}}

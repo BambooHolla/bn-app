@@ -284,6 +284,9 @@ export class MinServiceProvider extends FLP_Tool {
       { limit: 57 },
     );
     if (voted_delegate_list.length >= 57) {
+      if ("tab-vote-page" === from) {// 直接告诉主界面投票成了
+        await this.tryVote([], round, this._pre_round_pwd_info);
+      }
       return;
     }
 

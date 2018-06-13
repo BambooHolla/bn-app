@@ -16,10 +16,10 @@
           </div>
           <div class="create-time">
             <ng-container *ngIf="isShowFullDate(block_info?.timestamp);else showTimeAgo">
-              {{block_info?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm"}}
+              {{block_info?.timestamp|timestamp:"timezone"|amDateFormat:"YYYY.MM.DD hh:mm"}}
             </ng-container>
             <ng-template #showTimeAgo>
-              {{block_info?.timestamp|timestamp|amLocale:localName|amTimeAgo}}
+              {{block_info?.timestamp|timestamp:"timezone"|amLocale:localName|amTimeAgo}}
             </ng-template>
           </div>
         </div>
@@ -111,7 +111,7 @@
             {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
           </div>
           <div class="create-time">
-            {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+            {{(tran.timestamp+timeago_clock)|timestamp:"timezone"|amLocale:localName|amTimeAgo}}
           </div>
         </div>
         <div class="right">

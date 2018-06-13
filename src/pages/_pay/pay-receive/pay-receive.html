@@ -26,7 +26,7 @@
       <div class="log-item" *ngFor="let log of receive_logs;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail',{transaction:log})">
         <div class="left">
           <div class="title username">{{log.username}}</div>
-          <div class="sub-title create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
+          <div class="sub-title create-time">{{(log.timestamp+timeago_clock)|timestamp:"timezone"|amLocale:localName|amTimeAgo}}</div>
         </div>
         <div class="right">
           +{{log.amount|amountEuler|number:'1.8-8'}}

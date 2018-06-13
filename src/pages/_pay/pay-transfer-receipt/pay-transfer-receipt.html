@@ -60,7 +60,7 @@
         <div class="time-point expected-confirmation-time">
           <ng-container *ngIf="current_transfer?.blockId">
             <div class="dot light"></div>
-            <div class="time">{{confirmed_timestamp|timestamp|amDateFormat:"hh:mm"}}</div>
+            <div class="time">{{confirmed_timestamp|timestamp:"timezone"|amDateFormat:"hh:mm"}}</div>
             <div class="status">{{'CONFIRMED_TIME'|translate}}</div>
           </ng-container>
           <ng-container *ngIf="!current_transfer?.blockId">

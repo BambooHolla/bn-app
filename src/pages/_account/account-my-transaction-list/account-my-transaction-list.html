@@ -25,7 +25,7 @@
         </ng-container>
       </div>
       <div class="create-time">
-        {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+        {{(tran.timestamp+timeago_clock)|timestamp:"timezone"|amLocale:localName|amTimeAgo}}
       </div>
     </div>
     <div class="right">
@@ -63,7 +63,7 @@
         </ng-container>
       </div>
       <div class="create-time">
-        {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+        {{(tran.timestamp+timeago_clock)|timestamp:"timezone"|amLocale:localName|amTimeAgo}}
       </div>
     </div>
     <div class="right">
