@@ -85,8 +85,10 @@ export class TabChainPage extends FirstLevelPage {
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
   unconfirm_block?: UnconfirmBlockModel;
   async loadUnconfirmBlock() {
-    this.unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
+    const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
+    this.unconfirm_block = unconfirm_block;
     this.chainMesh && this.chainMesh.forceRenderOneFrame();
+    return unconfirm_block.height;
   }
 
   private _is_into_second_page = false;
@@ -145,8 +147,15 @@ export class TabChainPage extends FirstLevelPage {
       if (size_length <= 0) {
         throw new RangeError("the length of get block list is outof range");
       }
-
-      const top_blocks_list = await this.blockService.getTopBlocks(size_length);
+      let top_blocks_list: BlockModel[];
+      if (increment) {
+        top_blocks_list = await this.blockService.getTopBlocks(size_length);
+      } else {
+        const unconfirm_height = await this.loadUnconfirmBlock();
+        const startHeight = unconfirm_height - 1;
+        const endHeight = startHeight + size_length - 1;
+        top_blocks_list = await this.blockService.getBlocksByRange(startHeight, endHeight, -1);
+      }
       let list: BlockModel[];
       if (increment) {
         // 添加到头部
@@ -261,6 +270,7 @@ export class TabChainPage extends FirstLevelPage {
     await Promise.all(tasks);
     this.cdRef.markForCheck();
   }
+
   get top_block() {
     for (var i = 0; i < this.block_list.length; i += 1) {
       const block = this.block_list[i];

@@ -72,8 +72,9 @@ export class BlockServiceProvider extends FLP_Tool {
 
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
-
+    
     // 安装api服务
+    this.blockDb = dbCache.installDatabase("blocks", []);
     dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
       "blocks",
       "get",

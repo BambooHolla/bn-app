@@ -176,6 +176,16 @@ const initSort = config => {
 
         new_clauses.push(clause);
     }
+    if (new_clauses.length === 0) {
+        const literal = spec ? Object.keys(spec)[0] : null;
+        if (literal) {
+            new_clauses.push({
+                // idb_key_range
+                path: { literal },
+                idb_direction: toIDBDirection(spec[literal]),
+            });
+        }
+    }
 
     if (new_clauses.length) {
         config.clauses = new_clauses;
