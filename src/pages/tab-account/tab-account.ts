@@ -40,7 +40,7 @@ export class TabAccountPage extends FirstLevelPage {
     return this.userInfo.balance;
   }
   get dollar() {
-    return parseFloat(this.userInfo.balance) * 20;
+    return parseFloat(this.userInfo.balance) * 50;
   }
   get address() {
     return this.userInfo.address;

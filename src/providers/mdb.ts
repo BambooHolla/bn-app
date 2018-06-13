@@ -1,11 +1,11 @@
 import { tryRegisterGlobal } from "../bnqkl-framework/FLP_Tool";
 import Db from "./gangodb_core/db";
 import Collection from "./gangodb_core/collection";
-const mdb = new Db("ibt", 2, {
+const mdb = new Db("ibt", 8, {
 	blocks: ["height", "id"],
 	account: ["address", "publicKey"],
 	voted_delegate: true,
-	voucher: true,
+	voucher: ["timestamp"],
 	contact: ["address", "owner_publicKey"],
 	unconfirm_transaction: ["id"],
 	contact_tags: ["owner_publicKey", "contact_ids:multiEntry"],

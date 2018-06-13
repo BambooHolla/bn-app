@@ -17,7 +17,7 @@ const joinPredicates = preds => {
 };
 
 const removeClause = ({ parent, index }) => {
-    parent.args.splice(index, 1);
+    parent && parent.args && parent.args.splice(index, 1);
 };
 
 const openConn = ({ col, read_pref }, cb) => {

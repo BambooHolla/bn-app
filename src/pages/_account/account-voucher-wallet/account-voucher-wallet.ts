@@ -54,6 +54,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 		this.page_info.offset = 0;
 		const list = await this._getVoucherList();
 		this.voucher_list = list;
+		this.updateListExchangeStatus();
 	}
 	@asyncCtrlGenerator.error()
 	async loadMoreData() {
