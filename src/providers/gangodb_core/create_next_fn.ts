@@ -17,7 +17,7 @@ const joinPredicates = preds => {
 };
 
 const removeClause = ({ parent, index }) => {
-    parent.args.splice(index, 1);
+    parent && parent.args && parent.args.splice(index, 1);
 };
 
 const openConn = ({ col, read_pref }, cb) => {
@@ -175,6 +175,16 @@ const initSort = config => {
         clause.idb_direction = toIDBDirection(order);
 
         new_clauses.push(clause);
+    }
+    if (new_clauses.length === 0) {
+        const literal = spec ? Object.keys(spec)[0] : null;
+        if (literal) {
+            new_clauses.push({
+                // idb_key_range
+                path: { literal },
+                idb_direction: toIDBDirection(spec[literal]),
+            });
+        }
     }
 
     if (new_clauses.length) {

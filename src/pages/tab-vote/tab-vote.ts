@@ -632,21 +632,23 @@ export class TabVotePage extends FirstLevelPage {
         return;
       }
 
-      const pwdData = await this.getUserPassword({
-        title: "@@START_VOTE_VERIFY",
-      });
-      // 获取可投的账户
-      const {
-        delegates: voteable_delegates,
-      } = await this.minService.getVoteAbleDelegates(
-        0,
-        57,
-        this.userInfo.address,
+      // // 获取可投的账户
+      // const {
+      //   delegates: voteable_delegates,
+      // } = await this.minService.getVoteAbleDelegates(
+      //   0,
+      //   57,
+      //   this.userInfo.address,
+      // );
+      this.appSetting.settings.background_mining = true;
+      await this.minService.autoVote(
+        this.appSetting.getRound(),
+        "tab-vote-page",
       );
-      await this.minService.tryVote(voteable_delegates, undefined, pwdData);
       // this.routeToVoteDetail();
     } catch (err) {
       this.min_starting = false;
+      this.appSetting.settings.background_mining = false;
       throw err;
     } finally {
       // this.min_starting = false;

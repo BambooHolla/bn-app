@@ -127,6 +127,7 @@
   "YOUR_DEVICE_IS_HEALTHY": "设备状态良好",
 
   "//": "tab-vote",
+  "AUTO_MINING_NEED_INPUT_PAY_PWD": "启动自动挖矿需要确认支付密码",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",
   "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
   "AUTO_VOTE_ERROR": "自动挖矿失败",
@@ -197,6 +198,8 @@
   "TRANSCATION_RECIPIENT": "接收者",
 
   "//": "account-my-contacts",
+  "ADD_UNCONFIRM_CONTACT_TITLE": "同意添加联系人",
+  "REMOVE_CONFIRMED_CONTACT_TITLE": "移除联系人",
   "SCAN_QR_CODE_TO_ADD_CONTACT": "扫一扫添加联系人",
   "IGNORE_UNCONFIRM_CONTACT_ERROR": "拒绝通过联系人失败",
   "ADD_CONTACT_SUBMIT_ERROR": "同意添加联系人提交失败",
@@ -206,6 +209,23 @@
   "REMOVE_CONTACT_SUBMITING": "删除联系人提交中",
   "REMOVE_CONTACT_SUBMIT_SUCCESS": "删除联系人提交成功",
   "CONFIRM_TO_REMOVE_CONTACT": "确定要删除联系人吗？",
+  "SET_REMARK": "备注",
+
+  "//":"account-contact-detail",
+  "ACCOUNT-CONTACT-DETAIL":"详细信息",
+  "REMARK_TEXT_LABEL":"备注信息",
+
+  "//": "account-remark-contact",
+  "ACCOUNT-REMARK-CONTACT": "设置备注及标签",
+  "REMAKR_NICKNAME": "备注名",
+  "CLASSIFY_CONTACTS_BY_TAG": "通过标签给联系人进行分类",
+  "ADD_REMARK_PHONE": "添加电话号码",
+  "ADD_MORE_INFORMATION_REMARKS": "添加更多备注信息",
+  "ADD_REAMRK_PHOTO": "添加名片或相关图片",
+
+  "//": "account-remark-contact-tags",
+  "ACCOUNT-REMARK-CONTACT-TAGS": "添加标签",
+  "ALL_TAGS": "所有标签",
 
   "//": "account-news-detail",
   "ACCOUNT-NEWS-DETAIL": "动态详情",
@@ -259,8 +279,8 @@
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
 
-  "//":"pay-select-my-contacts",
-  "PAY-SELECT-MY-CONTACTS":"选择联系人",
+  "//": "pay-select-my-contacts",
+  "PAY-SELECT-MY-CONTACTS": "选择联系人",
 
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "离线支付",
@@ -291,7 +311,7 @@
   "LOADING_MORE_IN_VOTE_LIST": "加载更多得票列表中……",
   "LOAD_MORE_IN_VOTE_LIST_ERROR": "加载更多得票列表失败",
   "NO_MINING_MACHINE": "没有矿机",
-  "ADD_MINING_MACHINE": "添加矿机",
+  "ADD_MINING_MACHINE": "添加外置矿机",
   "VOTES": "得票",
   "PROFIT": "收益",
 
@@ -310,7 +330,7 @@
   "MINE_MACHINE_IS_NOT_AVAILABLE": "矿机不可用",
 
   "//": "vote-add-mining-machine",
-  "VOTE-ADD-MINING-MACHINE": "添加矿机",
+  "VOTE-ADD-MINING-MACHINE": "添加外置矿机",
   "AUTO_SEARCHING": "自动搜索附近矿机",
   "CUSTOM_INPUT_PEER": "手动配置矿机",
   "NET_STEP": "下一步",
@@ -409,6 +429,7 @@
 
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "设置用户名",
+  "ACCOUNT_SET_USERNAME_TITLE": "设置用户名",
   "USERNAME": "用户名",
   "SET_USERNAME_SUBMIT_ERROR": "设置用户名提交失败",
   "SET_USERNAME_SUBMITING": "设置用户名提交中",
@@ -417,6 +438,7 @@
 
   "//": "tab-pay",
   "TRANSFER_SUBMIT_ERROR": "转账提交失败",
+  "SUBMIT_TRANSFER_TITLE": "提交转账交易",
   "TRANSFER_SUBMITING": "转账提交中",
   "TRANSFER_SUBMIT_SUCCESS": "转账提交成功",
   "TRANSFER_UPDATE_ERROR":
@@ -483,6 +505,7 @@
   "//": "设置页面的跳转的label 与 目标页面title 是不完全一致的",
   "ACCOUNT-SETTINGS": "设置",
   "SETTINGS_SET_DEFAULT_FEE": "默认手续费设置",
+  "SET_PAY_PWD_TITLE": "设置支付密码",
   "SETTINGS_SET_PAY_PWD": "设置支付密码",
   "MINING_INCOME_NOTICE": "入账通知",
   "SETTINGS_LANG": "语言设置",

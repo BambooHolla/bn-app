@@ -11,7 +11,7 @@
       <div class="amount">{{current_transfer?.amount|amountEuler|number:'1.8-8'}}</div>
       <div class="recipient">
         <span class="label">{{'TRANSCATION_RECIPIENT'|translate}}</span>
-        <span [innerHTML]="current_transfer?.recipientUsername?current_transfer?.recipientUsername:(current_transfer?.recipientId|mask:'@address')" [click-to-copy]="current_transfer?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}"></span>
+        <span [click-to-copy]="current_transfer?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}">{{current_transfer?.recipientId}}</span>
       </div>
       <div class="create-time">
         <ali-icon name="ifm-clock"></ali-icon>
@@ -28,7 +28,7 @@
           <div class="left">
             {{'PAYER' | translate}}
           </div>
-          <div class="content" [innerHTML]="current_transfer?.senderUsername?current_transfer?.senderUsername:(current_transfer?.senderId|mask:'@address')" [click-to-copy]="current_transfer?.senderId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('PAYER'|translate)}"></div>
+          <div class="content" [click-to-copy]="current_transfer?.senderId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('PAYER'|translate)}">{{current_transfer?.senderId}}</div>
         </div>
         <div class="fee common-item">
           <div class="left">
@@ -60,7 +60,7 @@
         <div class="time-point expected-confirmation-time">
           <ng-container *ngIf="current_transfer?.blockId">
             <div class="dot light"></div>
-            <div class="time">{{confirmed_timestamp|timestamp|amDateFormat:"hh:mm"}}</div>
+            <div class="time">{{confirmed_timestamp|timestamp:"timezone"|amDateFormat:"hh:mm"}}</div>
             <div class="status">{{'CONFIRMED_TIME'|translate}}</div>
           </ng-container>
           <ng-container *ngIf="!current_transfer?.blockId">

@@ -1,12 +1,7 @@
-import {
-    toPathPieces,
-    set,
-    remove2,
-    copy
-} from './util';
+import { toPathPieces, set, remove2, copy } from "./util";
 
-import build from './lang/expression';
-import Fields from './lang/fields';
+import build from "./lang/expression";
+import Fields from "./lang/fields";
 
 const addition = (doc, new_doc, new_fields) => {
     for (var [path_pieces, add] of new_fields) {
@@ -16,14 +11,14 @@ const addition = (doc, new_doc, new_fields) => {
     return new_doc;
 };
 
-const _build = (value1) => {
+const _build = value1 => {
     const { ast, paths, has_refs } = build(value1);
 
     if (!has_refs) {
         const value2 = ast.run();
 
-        return (doc, obj: any, path_pieces: any) => set(obj,
-            path_pieces, value2);
+        return (doc, obj: any, path_pieces: any) =>
+            set(obj, path_pieces, value2);
     }
 
     return (doc, obj: any, path_pieces: any) => {
@@ -35,12 +30,12 @@ const _build = (value1) => {
     };
 };
 
-export default (_next, spec) => {
+export default function project(_next, spec) {
     const toBool = path => !!spec[path];
     let _id_bool = true;
 
-    if (spec.hasOwnProperty('_id')) {
-        _id_bool = toBool('_id');
+    if (spec.hasOwnProperty("_id")) {
+        _id_bool = toBool("_id");
 
         delete spec._id;
     }
@@ -49,13 +44,13 @@ export default (_next, spec) => {
     const new_fields: any[] = [];
     let is_inclusion = true;
 
-    const _mode = (path) => {
+    const _mode = path => {
         if (toBool(path) !== is_inclusion) {
-            throw Error('cannot mix inclusions and exclusions');
+            throw Error("cannot mix inclusions and exclusions");
         }
     };
 
-    let mode = (path) => {
+    let mode = path => {
         is_inclusion = toBool(path);
 
         mode = _mode;
@@ -65,9 +60,7 @@ export default (_next, spec) => {
         const value = spec[path];
         const path_pieces = toPathPieces(path);
 
-        if (typeof value === 'boolean' ||
-            value === 1 ||
-            value === 0) {
+        if (typeof value === "boolean" || value === 1 || value === 0) {
             mode(path);
             existing_fields.push(path_pieces);
         } else {
@@ -88,7 +81,7 @@ export default (_next, spec) => {
 
         if (_id_bool) {
             project = (doc, new_doc) => {
-                if (doc.hasOwnProperty('_id')) {
+                if (doc.hasOwnProperty("_id")) {
                     new_doc._id = doc._id;
                 }
             };
@@ -105,7 +98,7 @@ export default (_next, spec) => {
         });
     } else {
         if (is_inclusion === _id_bool) {
-            existing_fields.push(['_id']);
+            existing_fields.push(["_id"]);
         }
 
         const project = is_inclusion ? copy : remove2;
@@ -113,9 +106,11 @@ export default (_next, spec) => {
         steps.push(doc => project(doc, existing_fields));
     }
 
-    const next = (cb) => {
+    const next = cb => {
         _next((error, doc) => {
-            if (!doc) { return cb(error); }
+            if (!doc) {
+                return cb(error);
+            }
 
             let new_doc = doc;
 
@@ -128,5 +123,4 @@ export default (_next, spec) => {
     };
 
     return next;
-};
-
+}

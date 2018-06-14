@@ -99,7 +99,10 @@ export class SettingsCacheManagePage extends SecondLevelPage {
       );
       this.calc_progress = 1;
       calc_promise_out.resolve();
-      this.cache_size = cache_size;
+      // indexedDB
+      const mdbSize = await getDatabaseSize("ibt");
+
+      this.cache_size = cache_size + mdbSize;
       // 等待动画执行完成
       await new Promise(cb => setTimeout(cb, 300));
     } catch (err) {
@@ -175,6 +178,10 @@ export class SettingsCacheManagePage extends SecondLevelPage {
           this.calc_progress -= total_calc_progress / keys.length;
         }),
       );
+
+      // indexedDB
+      await clearDatabase("ibt");
+
       this.calc_progress = 0;
       // 等待动画执行完成
       await new Promise(cb => setTimeout(cb, 300));
@@ -191,3 +198,143 @@ export class SettingsCacheManagePage extends SecondLevelPage {
     }
   }
 }
+const clearTable = function(db, dbName) {
+  return new Promise<void>((resolve, reject) => {
+    if (db == null) {
+      return reject();
+    }
+    if (!event || !event.target || !event.target["result"]) {
+      return reject();
+    }
+    var size = 0;
+    db = event.target["result"];
+    var transaction = db
+      .transaction([dbName], "readwrite")
+      .objectStore(dbName)
+      .clear();
+
+    transaction.onsuccess = () => {
+      resolve();
+    };
+    transaction.onerror = err => {
+      reject("error in " + dbName + ": " + err);
+    };
+  });
+};
+var getTableSize = function(db, dbName) {
+  return new Promise<number>((resolve, reject) => {
+    if (db == null) {
+      return reject();
+    }
+    if (!event || !event.target || !event.target["result"]) {
+      return reject();
+    }
+    var size = 0;
+    db = event.target["result"];
+    var transaction = db
+      .transaction([dbName])
+      .objectStore(dbName)
+      .openCursor();
+
+    transaction.onsuccess = function(event) {
+      var cursor = event.target.result;
+      if (cursor) {
+        var storedObject = cursor.value;
+        var json = JSON.stringify(storedObject);
+        size += json.length;
+        cursor.continue();
+      } else {
+        resolve(size);
+      }
+    }.bind(this);
+    transaction.onerror = function(err) {
+      reject("error in " + dbName + ": " + err);
+    };
+  });
+};
+const clearDatabase = function(dbName) {
+  var request = indexedDB.open(dbName);
+  var db;
+  var dbSize = 0;
+  request.onerror = function(event) {
+    alert("Why didn't you allow my web app to use IndexedDB?!");
+  };
+  return new Promise<number>(async (resolve, reject) => {
+    request.onerror = reject;
+    request.onsuccess = function(event) {
+      if (!event.target || !event.target["result"]) {
+        return reject();
+      }
+      db = event.target["result"];
+      var tableNames = [...db.objectStoreNames];
+      (function(tableNames, db) {
+        var tableSizeGetters: Promise<void>[] = tableNames.reduce(
+          (acc, tableName) => {
+            acc.push(clearTable(db, tableName));
+            return acc;
+          },
+          [],
+        );
+
+        (Promise.all(tableSizeGetters) as any).then(resolve, reject);
+      })(tableNames, db);
+    };
+  });
+};
+
+var getDatabaseSize = function(dbName) {
+  var request = indexedDB.open(dbName);
+  var db;
+  var dbSize = 0;
+  request.onerror = function(event) {
+    alert("Why didn't you allow my web app to use IndexedDB?!");
+  };
+  return new Promise<number>((resolve, reject) => {
+    request.onerror = reject;
+    request.onsuccess = function(event) {
+      if (!event.target || !event.target["result"]) {
+        return reject();
+      }
+      db = event.target["result"];
+      var tableNames = [...db.objectStoreNames];
+      (function(tableNames, db) {
+        var tableSizeGetters: Promise<number>[] = tableNames.reduce(
+          (acc, tableName) => {
+            acc.push(getTableSize(db, tableName));
+            return acc;
+          },
+          [],
+        );
+
+        Promise.all(tableSizeGetters).then(sizes => {
+          // console.log("--------- " + db.name + " -------------");
+          // tableNames.forEach((tableName, i) => {
+          //   console.log(
+          //     " - " + tableName + "\t: " + humanReadableSize(sizes[i]),
+          //   );
+          // });
+          var total = sizes.reduce(function(acc, val) {
+            return acc + val;
+          }, 0);
+
+          resolve(total);
+          // console.log("TOTAL: " + humanReadableSize(total));
+        });
+      })(tableNames, db);
+    };
+  });
+};
+
+var humanReadableSize = function(bytes) {
+  var thresh = 1024;
+  if (Math.abs(bytes) < thresh) {
+    return bytes + " B";
+  }
+  var units = ["KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  var u = -1;
+  do {
+    bytes /= thresh;
+    ++u;
+  } while (Math.abs(bytes) >= thresh && u < units.length - 1);
+  return bytes.toFixed(1) + " " + units[u];
+};

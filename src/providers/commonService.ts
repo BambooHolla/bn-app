@@ -1,11 +1,13 @@
 import * as EventEmitter from "eventemitter3";
 
 export class AppUrl {
-	static  SERVER_URL = "http://127.0.0.1"
+  static SERVER_URL = "http://127.0.0.1";
+  static BACKEND_VERSION = ""; // "v3.3.3/";
   constructor(public path) {}
   toString() {
     return (
-      (this.disposable_server_url || AppUrl.SERVER_URL) + this.path
+      (this.disposable_server_url || AppUrl.SERVER_URL) +
+      this.path.replace(/^\/api\//, "/api/" + AppUrl.BACKEND_VERSION)
     );
   }
   _disposable_server_url?: string;
@@ -18,9 +20,9 @@ export class AppUrl {
     this._disposable_server_url = server_url;
   }
 }
-export class CommonService extends EventEmitter{
-	oneTimeUrl(app_url: AppUrl, server_url: string) {
-		app_url.disposableServerUrl(server_url);
-		return this;
-	}
+export class CommonService extends EventEmitter {
+  oneTimeUrl(app_url: AppUrl, server_url: string) {
+    app_url.disposableServerUrl(server_url);
+    return this;
+  }
 }

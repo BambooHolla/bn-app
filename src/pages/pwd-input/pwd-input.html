@@ -1,31 +1,34 @@
 <ion-header>
-<!--   <ion-navbar color="transparent">
+  <!--   <ion-navbar color="transparent">
   <ion-title>输入密码</ion-title>
 </ion-navbar> -->
 </ion-header>
 <ion-content>
-  <div class="title" *ngIf="title">
-    <div class="label">{{title | translate}}</div>
+  <div class="close-bg-layer" (click)="closeDialog()"></div>
+  <div class="content-wrapper">
+    <div class="title" *ngIf="custom_title">
+      <div class="label">{{custom_title}}</div>
+    </div>
+    <div class="common-form">
+      <div class="input-container" *ngIf="formData.need_pay_pwd">
+        <div class="left">
+          <div class="label">{{'PAY_PASSPHRASE' | translate}}</div>
+        </div>
+        <input type="password" placeholder="{{'PLEASE_INPUT_PAY_PASSPHRASE' | translate}}" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd">
+      </div>
+      <div class="input-container" *ngIf="!formData.have_password">
+        <div class="left">
+          <div class="label">{{'LOGIN_PASSPHRASE' | translate}}</div>
+        </div>
+        <input type="password" placeholder="{{'PLEASE_INPUT_LOGIN_PASSPHRASE' | translate}}" [(ngModel)]="formData.password" set-input-status="password">
+      </div>
+      <div class="input-container" *ngIf="formData.need_custom_fee">
+        <div class="left">
+          <div class="label">{{'TRANSACTION_FEES' | translate}}</div>
+        </div>
+        <input type="number" placeholder="{{'PLEASE_INPUT_TRANSACTION_FEES' | translate}}" min="0.00000001" [(ngModel)]="formData.custom_fee" set-input-status="custom_fee">
+      </div>
+    </div>
+    <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">{{'SUBMIT'|translate}}</button>
   </div>
-  <div class="common-form">
-    <div class="input-container" *ngIf="formData.need_pay_pwd">
-      <div class="left">
-        <div class="label">{{'PAY_PASSPHRASE' | translate}}</div>
-      </div>
-      <input type="password" placeholder="{{'PLEASE_INPUT_PAY_PASSPHRASE' | translate}}" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd">
-    </div>
-    <div class="input-container" *ngIf="!formData.have_password">
-      <div class="left">
-        <div class="label">{{'LOGIN_PASSPHRASE' | translate}}</div>
-      </div>
-      <input type="password" placeholder="{{'PLEASE_INPUT_LOGIN_PASSPHRASE' | translate}}" [(ngModel)]="formData.password" set-input-status="password">
-    </div>
-    <div class="input-container" *ngIf="formData.need_custom_fee">
-      <div class="left">
-        <div class="label">{{'TRANSACTION_FEES' | translate}}</div>
-      </div>
-      <input type="number" placeholder="{{'PLEASE_INPUT_TRANSACTION_FEES' | translate}}" min="0.00000001" [(ngModel)]="formData.custom_fee" set-input-status="custom_fee">
-    </div>
-  </div>
-  <button class="submit-button" [disabled]="!canSubmit" (click)="submitData()">{{'SUBMIT'|translate}}</button>
 </ion-content>

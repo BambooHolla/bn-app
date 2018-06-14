@@ -7,7 +7,7 @@ import {
 } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
-import { AccountServiceProvider } from "../../../providers/account-service/account-service";
+// import { AccountServiceProvider } from "../../../providers/account-service/account-service";
 import {
   ContactServiceProvider,
   ContactModel,
@@ -26,7 +26,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public accountService: AccountServiceProvider,
+    // public accountService: AccountServiceProvider,
     public contactService: ContactServiceProvider,
     public viewCtrl: ViewController,
   ) {
@@ -86,6 +86,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   @asyncCtrlGenerator.error()
   async addUnconfirmContact(contact: ContactModel) {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
+      title: "@@ADD_UNCONFIRM_CONTACT_TITLE",
       custom_fee: true,
     });
     return this._addUnconfirmContact(
@@ -98,6 +99,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   @asyncCtrlGenerator.error()
   async removeConfirmedContact(contact: ContactModel) {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
+      title: "@@REMOVE_CONFIRMED_CONTACT_TITLE",
       custom_fee: true,
     });
     return this._removeConfirmedContact(

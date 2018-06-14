@@ -35,7 +35,7 @@
                 {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
               </div>
               <div class="create-time">
-                {{tran.timestamp|timestamp|amLocale:localName|amTimeAgo}}
+                {{tran.timestamp|timestamp:"timezone"|amLocale:localName|amTimeAgo}}
               </div>
               <!-- +timeago_clock -->
             </div>
@@ -59,7 +59,7 @@
           <div class="item" *ngFor="let tran of income_list">
             <div class="left">
               <div class="create-time">
-                {{tran.timestamp|timestamp|amDateFormat:"MM-DD hh:mm"}}
+                {{tran.timestamp|timestamp:"timezone"|amDateFormat:"MM-DD hh:mm"}}
               </div>
               <!-- +timeago_clock -->
             </div>

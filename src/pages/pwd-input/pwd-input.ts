@@ -77,6 +77,7 @@ export class PwdInputPage extends FirstLevelPage {
     }
   }
 
+  custom_title?: string;
   @PwdInputPage.willEnter
   init() {
     // 重置表单
@@ -90,6 +91,16 @@ export class PwdInputPage extends FirstLevelPage {
     if (custom_fee) {
       this.formData.need_custom_fee = true;
     }
+    const custom_title = this.navParams.get("title");
+    if (typeof custom_title === "string") {
+      if (custom_title.startsWith("@@")) {
+        this.getTranslate(custom_title.substr(2)).then(
+          t => (this.custom_title = t),
+        );
+      } else {
+        this.custom_title = custom_title;
+      }
+    }
   }
   submitData() {
     const formData = {
@@ -97,5 +108,9 @@ export class PwdInputPage extends FirstLevelPage {
       custom_fee: parseFloat(this.formData.custom_fee),
     };
     this.viewCtrl.dismiss(formData);
+  }
+
+  closeDialog() {
+    this.viewCtrl.dismiss();
   }
 }

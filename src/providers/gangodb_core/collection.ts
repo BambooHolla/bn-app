@@ -133,7 +133,7 @@ export default class Collection {
 
         const deferred = Q.defer();
 
-        this._db.conn.then(idb => {
+        this._db.conn.then(async idb => {
             let trans;
 
             const name = this._name;
@@ -149,29 +149,14 @@ export default class Collection {
 
             const store = trans.objectStore(name);
 
-            let i = 0;
-
-            const iterate = () => {
-                const doc = docs[i];
-
-                try {
+            for (var _doc of docs) {
+                const doc = _doc;
+                await new Promise((resolve, reject) => {
                     this._validate(doc);
-                } catch (error) {
-                    return deferred.reject(error);
-                }
-
-                const req = store.add(doc);
-
-                req.onsuccess = () => {
-                    i++;
-
-                    if (i < docs.length) {
-                        iterate();
-                    }
-                };
-            };
-
-            iterate();
+                    const req = store.add(doc);
+                    req.onsuccess = resolve;
+                }).catch(e => deferred.reject(getIDBError(e)));
+            }
         }, cb);
 
         deferred.promise.nodeify(cb);

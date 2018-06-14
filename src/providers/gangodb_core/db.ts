@@ -129,19 +129,68 @@ export default class Db extends EventEmitter {
         }
     }
 
-    _addStore(idb, name) {
-        const store = idb.createObjectStore(name, {
+    _addStore(idb: IDBDatabase, store_name: string) {
+        const store = idb.createObjectStore(store_name, {
             keyPath: "_id",
             autoIncrement: true,
         });
 
-        const index_config = this._config[name];
+        const index_config = this._config[store_name];
 
-        for (var path in index_config) {
-            if (index_config[path]) {
-                store.createIndex(path, path, { unique: false });
+        for (var name in index_config) {
+            if (index_config[name]) {
+                const cur_index_config = name.split(":", 1);
+                const default_config = { unique: false };
+                const keyPath = cur_index_config[0];
+                const optionParams = cur_index_config[1] || "";
+                if (optionParams.startsWith("{")) {
+                    try {
+                        Object.assign(default_config, JSON.parse(optionParams));
+                    } catch (err) {
+                        console.warn(err);
+                    }
+                } else {
+                    optionParams
+                        .split(",")
+                        .forEach(k => (default_config[k] = true));
+                }
+                store.createIndex(name, keyPath, default_config);
             } else {
-                store.deleteIndex(path);
+                store.deleteIndex(name);
+            }
+        }
+    }
+    _updateStore(trans: IDBTransaction, store_name: string) {
+        const store = trans.objectStore(store_name);
+        const index_set = new Set<string>();
+        for (var i = 0; i < store.indexNames.length; i += 1) {
+            index_set.add(store.indexNames[i]);
+        }
+        const index_config = this._config[store_name];
+
+        for (var name in index_config) {
+            if (index_set.has(name)) {
+                continue;
+            }
+            if (index_config[name]) {
+                const cur_index_config = name.split(":", 1);
+                const default_config = { unique: false };
+                const keyPath = cur_index_config[0];
+                const optionParams = cur_index_config[1] || "";
+                if (optionParams.startsWith("{")) {
+                    try {
+                        Object.assign(default_config, JSON.parse(optionParams));
+                    } catch (err) {
+                        console.warn(err);
+                    }
+                } else {
+                    optionParams
+                        .split(",")
+                        .forEach(k => (default_config[k] = true));
+                }
+                store.createIndex(name, keyPath, default_config);
+            } else {
+                store.deleteIndex(name);
             }
         }
     }
@@ -179,6 +228,7 @@ export default class Db extends EventEmitter {
 
         req.onupgradeneeded = e => {
             const idb = e.target.result;
+            const upgradeTransaction = e.target.transaction;
 
             for (var name in this._config) {
                 try {
@@ -186,6 +236,8 @@ export default class Db extends EventEmitter {
                         idb.deleteObjectStore(name);
                     } else if (!idb.objectStoreNames.contains(name)) {
                         this._addStore(idb, name);
+                    } else {
+                        this._updateStore(upgradeTransaction, name);
                     }
                 } catch (error) {
                     return cb(error);
