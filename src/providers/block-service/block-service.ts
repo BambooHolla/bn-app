@@ -312,7 +312,8 @@ export class BlockServiceProvider extends FLP_Tool {
     this._listenUnconfirmTransaction();
   }
   private _listenUnconfirmTransaction() {
-    this.io.on("transactions/unconfirm", (tran: TransactionModel) => {
+    this.io.on("transactions/unconfirm", data => {
+      const tran: TransactionModel = data.transaction;
       this._expectblock_uncommited += 1;
       this._expectblock_fee_reward += parseFloat(tran.fee);
     });

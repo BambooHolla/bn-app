@@ -160,7 +160,7 @@ export class TabChainPage extends FirstLevelPage {
   };
 
   download_lock?: PromiseOut<void>;
-  @asyncCtrlGenerator.success("DOWNLOAD_BLOCKCHAIN_COMPLETE")
+  @asyncCtrlGenerator.success("@@DOWNLOAD_BLOCKCHAIN_COMPLETE")
   async downloadBlock(
     startHeight: number,
     endHeight: number,
