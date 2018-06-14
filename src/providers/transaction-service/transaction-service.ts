@@ -179,7 +179,6 @@ export class TransactionServiceProvider {
     return data.transactions[0];
   }
 
-
   /**
    * 获取交易时间，交易所需
    */
@@ -260,6 +259,13 @@ export class TransactionServiceProvider {
     const { transactionUrl, transaction } = await this.createTransaction(
       txData,
     );
+    if (await this.unTxDb.findOne(transaction)) {
+      // 重复交易不发送
+      return { success: true, transactionId: transaction.id };
+    }
+    await this.unTxDb.insert(transaction).catch(err => {
+      console.warn;
+    });
     return this.fetch.put<TYPE.putTransactionReturn>(
       transactionUrl,
       transaction,
