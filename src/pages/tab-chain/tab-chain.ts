@@ -115,15 +115,16 @@ export class TabChainPage extends FirstLevelPage {
       {},
       { sort: { height: 1 } },
     );
+    const latest_block = await this.blockService.getLastBlock();
     if (!block_1) {
-      block_1 = await this.blockService.getLastBlock();
+      block_1 = latest_block;
     }
 
     if (block_1.height <= 1) {
       return true;
     }
     // 开始下载
-    this.downloadBlock(1, block_1.height - 1);
+    this.downloadBlock(1, block_1.height - 1, latest_block.height);
   }
 
   loading_dialog?: Loading;
@@ -160,7 +161,11 @@ export class TabChainPage extends FirstLevelPage {
 
   download_lock?: PromiseOut<void>;
   @asyncCtrlGenerator.success("DOWNLOAD_BLOCKCHAIN_COMPLETE")
-  async downloadBlock(startHeight: number, endHeight: number) {
+  async downloadBlock(
+    startHeight: number,
+    endHeight: number,
+    max_end_height: number,
+  ) {
     if (this.download_lock) {
       return;
     }
@@ -169,9 +174,9 @@ export class TabChainPage extends FirstLevelPage {
       this.showLoading();
       const loading_dialog = this.loading_dialog as Loading;
 
-      await this.setProgress(0);
+      const total = max_end_height - startHeight;
 
-      const total = endHeight - startHeight;
+      await this.setProgress((max_end_height - endHeight) / total);
 
       var acc_endHeight = endHeight;
       const pageSize = 100;
@@ -201,7 +206,7 @@ export class TabChainPage extends FirstLevelPage {
         await new Promise(cb => setTimeout(cb, 1000));
 
         // 更改进度
-        await this.setProgress((endHeight - acc_endHeight) / total);
+        await this.setProgress((max_end_height - acc_endHeight) / total);
 
         if (acc_endHeight > 1) {
           acc_endHeight -= pageSize;
