@@ -176,7 +176,7 @@ export class TabChainPage extends FirstLevelPage {
 
       const total = max_end_height - startHeight;
 
-      await this.setProgress((max_end_height - endHeight) / total);
+      await this.setProgress((max_end_height - endHeight) / total * 100);
 
       var acc_endHeight = endHeight;
       const pageSize = 100;
@@ -206,7 +206,7 @@ export class TabChainPage extends FirstLevelPage {
         await new Promise(cb => setTimeout(cb, 1000));
 
         // 更改进度
-        await this.setProgress((max_end_height - acc_endHeight) / total);
+        await this.setProgress((max_end_height - acc_endHeight) / total * 100);
 
         if (acc_endHeight > 1) {
           acc_endHeight -= pageSize;
@@ -215,7 +215,7 @@ export class TabChainPage extends FirstLevelPage {
           break;
         }
       } while (endHeight > 1);
-      this.setProgress(1);
+      this.setProgress(100);
     } finally {
       this.download_lock.resolve();
       this.download_lock = undefined;
