@@ -148,14 +148,25 @@ export class TabChainPage extends FirstLevelPage {
         throw new RangeError("the length of get block list is outof range");
       }
       let top_blocks_list: BlockModel[];
-      if (increment) {
-        top_blocks_list = await this.blockService.getTopBlocks(size_length);
-      } else {
-        const unconfirm_height = await this.loadUnconfirmBlock();
-        const startHeight = unconfirm_height - 1;
-        const endHeight = startHeight + size_length - 1;
-        top_blocks_list = await this.blockService.getBlocksByRange(startHeight, endHeight, -1);
+      // if (increment) {
+      //   top_blocks_list = await this.blockService.getTopBlocks(size_length);
+      // } else {
+      const unconfirm_height = await this.loadUnconfirmBlock();
+      const endHeight = unconfirm_height - 1;
+      const { top_block } = this;
+      const cur_top_height = top_block ? top_block.height : endHeight;
+      let startHeight = Math.min(cur_top_height, endHeight - size_length + 1);
+      if (endHeight - startHeight >= 100) {
+        // 超过一次性最大的加载数量，
+        startHeight = endHeight - 99;
       }
+
+      top_blocks_list = await this.blockService.getBlocksByRange(
+        startHeight,
+        endHeight,
+        -1,
+      );
+      // }
       let list: BlockModel[];
       if (increment) {
         // 添加到头部
@@ -174,7 +185,13 @@ export class TabChainPage extends FirstLevelPage {
         if (this.block_list[0] === fakeBlock) {
           this.block_list = this.block_list.slice(1);
         }
-        this.block_list = list.concat(this.block_list);
+
+        if (startHeight > cur_top_height) {
+          // 这里区块链断链了，斩断后面的链，用最新的
+          this.block_list = list;
+        } else {
+          this.block_list = list.concat(this.block_list);
+        }
         this.dispatchEvent("when-block-list-changed");
       } else {
         this.block_list = list;
@@ -200,7 +217,10 @@ export class TabChainPage extends FirstLevelPage {
     }
   }
 
+  current_element_index?: number = 0;
+
   async onListChange(event: ChangeEvent) {
+    this.current_element_index = event.end;
     if (event.end !== this.block_list.length) return;
     await this.loadMoreBlockList();
     this.block_list = this.block_list.slice();
