@@ -33,48 +33,8 @@ const TICKET_W = 712;
 const TICKET_H = 330;
 type RenderMode = "canvas" | "html";
 
-@Component({
-	selector: "offline-transaction-ticket",
-	templateUrl: "offline-transaction-ticket.html",
-})
-export class OfflineTransactionTicketComponent {
-	constructor(public domSanitizer: DomSanitizer) {}
-	image_url?: SafeUrl;
-	@Input("mode") mode: RenderMode = "canvas";
-	// @E imageRef ;
-	private _transaction?: TransactionModel;
-	@Input("transaction")
-	set transaction(v: TransactionModel | undefined) {
-		this._transaction = v;
-		if (v && this.mode === "canvas") {
-			console.log("draw tick", v);
-			tickerDrawer.drawTransaction(v).then(blob => {
-				this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
-					URL.createObjectURL(blob),
-				);
-			});
-		}
-		// return this.canvasNode.toDataURL();
-	}
-	get transaction() {
-		return this._transaction;
-	}
-
-	getTranslate(key: string) {
-		return FLP_Tool.getTranslateSync(key);
-	}
-
-	timestampToString = OfflineTransactionTicketDrawer.prototype
-		.timestampToString;
-	usernameToString = OfflineTransactionTicketDrawer.prototype
-		.usernameToString;
-	amountToString = OfflineTransactionTicketDrawer.prototype.amountToString;
-	tidToString = OfflineTransactionTicketDrawer.prototype.tidToString;
-	remarkToString = OfflineTransactionTicketDrawer.prototype.remarkToString;
-}
-
 class OfflineTransactionTicketDrawer extends AniBase {
-	private _transaction?: TransactionModel;
+	_transaction?: TransactionModel;
 	private _render_task_lock;
 	drawTransaction(v: TransactionModel): Promise<Blob> {
 		// 将任务进行排队
@@ -87,22 +47,20 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		await _load_resource_promiseout.promise;
 		this._transaction = v;
 		this.drawTicket();
-		return new Promise<Blob | null>(resolve => {
-			this.raf(() => {
-				this.canvasNode.toBlob(resolve);
-			});
-			// this.app&&this.app.renderer.extract.image()
-		});
+		// return new Promise<Blob | null>(resolve => {
+		// 	this.raf(() => {
+		// 		this.canvasNode.toBlob(resolve);
+		// 	});
+		// 	// this.app&&this.app.renderer.extract.image()
+		// });
 	}
 
-	canvasNode = document.createElement("canvas");
-	_init() {
-		return super._init();
-	}
+	canvasNode?: HTMLCanvasElement;
+
 	constructor() {
 		super();
 		tryRegisterGlobal("tickerDrawer", this);
-		this.on("init-start", this.initPixiApp.bind(this));
+		// this.on("init-start", this.initPixiApp.bind(this));
 	}
 	async initPixiApp() {
 		const { pt, px, canvasNode } = this;
@@ -399,12 +357,64 @@ class OfflineTransactionTicketDrawer extends AniBase {
 	}
 }
 
-const tickerDrawer = new OfflineTransactionTicketDrawer();
-// tickerDrawer.canvasNode.style.position = "absolute";
-// tickerDrawer.canvasNode.style.top = "100vh";
-// tickerDrawer.canvasNode.style.left = "100vw";
-// tickerDrawer.canvasNode.style.visibility = "hidden";
-// tickerDrawer.canvasNode.style.display = "none";
+@Component({
+	selector: "offline-transaction-ticket",
+	templateUrl: "offline-transaction-ticket.html",
+})
+export class OfflineTransactionTicketComponent extends OfflineTransactionTicketDrawer {
+	constructor(public domSanitizer: DomSanitizer) {
+		super();
+		this.on("init-start", this.initPixiApp.bind(this));
+	}
+	@ViewChild("canvas") canvasRef!: ElementRef;
 
-// document.body.appendChild(tickerDrawer.canvasNode);
-tickerDrawer.emit("init-start");
+	_init() {
+		this.canvasNode = this.canvasRef.nativeElement;
+		return super._init();
+	}
+
+	// image_url?: SafeUrl;
+	@Input("mode") mode: RenderMode = "canvas";
+	// @E imageRef ;
+	_transaction?: TransactionModel;
+	@Input("transaction")
+	set transaction(v: TransactionModel | undefined) {
+		this._transaction = v;
+		if (v && this.mode === "canvas") {
+			console.log("draw tick", v);
+			this.drawTransaction(
+				v,
+			); /*.then(blob => {
+				this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
+					URL.createObjectURL(blob),
+				);
+			});*/
+		}
+		// return this.canvasNode.toDataURL();
+	}
+	get transaction() {
+		return this._transaction;
+	}
+
+	getTranslate(key: string) {
+		return FLP_Tool.getTranslateSync(key);
+	}
+
+	// timestampToString = OfflineTransactionTicketDrawer.prototype
+	// 	.timestampToString;
+	// usernameToString = OfflineTransactionTicketDrawer.prototype
+	// 	.usernameToString;
+	// amountToString = OfflineTransactionTicketDrawer.prototype.amountToString;
+	// tidToString = OfflineTransactionTicketDrawer.prototype.tidToString;
+	// remarkToString = OfflineTransactionTicketDrawer.prototype.remarkToString;
+}
+
+// const tickerDrawer = new OfflineTransactionTicketDrawer();
+// // tickerDrawer.canvasNode.style.position = "absolute";
+// // tickerDrawer.canvasNode.style.top = "100vh";
+// // tickerDrawer.canvasNode.style.left = "100vw";
+// // tickerDrawer.canvasNode.style.visibility = "hidden";
+// // tickerDrawer.canvasNode.style.display = "none";
+
+// // document.body.appendChild(tickerDrawer.canvasNode);
+// tickerDrawer.emit("init-start");

@@ -52,7 +52,7 @@ export class FeeInputPage extends FirstLevelPage {
   submitData() {
     const formData = {
       ...this.formData,
-      custom_fee: parseFloat(this.formData.custom_fee),
+      custom_fee: this.formData.custom_fee,
     };
     this.viewCtrl.dismiss(formData);
   }

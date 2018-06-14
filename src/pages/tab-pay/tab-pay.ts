@@ -52,6 +52,7 @@ export class TabPayPage extends FirstLevelPage {
       console.log("job-finished", id, data);
       if (id === "pay-select-my-contacts") {
         this.formData.transfer_address = data.address;
+        this.cdRef.markForCheck();
       }
       if (id === "account-scan-add-contact") {
         if (typeof data === "string") {

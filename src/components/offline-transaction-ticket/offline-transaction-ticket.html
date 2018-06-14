@@ -1,5 +1,5 @@
-<!-- <canvas #canvas></canvas> -->
-<img [class.hidden]="!image_url||mode!='canvas'" [src]="image_url" />
+<canvas #canvas [class.hidden]="mode!='canvas'"></canvas>
+<!-- <img [class.hidden]="!image_url||mode!='canvas'" [src]="image_url" /> -->
 <div class="html-ticket-wrapper">
   <div class="html-ticket" [class.hidden]="mode!='html'">
     <div class="header">

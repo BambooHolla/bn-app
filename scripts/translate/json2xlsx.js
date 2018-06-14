@@ -44,12 +44,15 @@ for (let key in zh_CN_json_obj) {
 	if (key.startsWith("//")) {
 		continue;
 	}
+	let en = key
+		.replace(/[\-\_]/g, " ")
+		.replace(/\#([\w\W]+?)\#/, "{{$1}}")
+		.toLowerCase();
+	// 英文默认首字母大写
+	en = en[0].toUpperCase() + en.substr(1);
 	dataMap.set(key, {
 		// key本身就是英文，默认提供英文版本，在根据现有的json文件进行覆盖
-		en: key
-			.replace(/[\-\_]/g, " ")
-			.replace(/\#([\w\W]+?)\#/, "{{$1}}")
-			.toLowerCase(),
+		en,
 		"zh-cmn-Hant": simpleToTradition(zh_CN_json_obj[key]),
 	});
 }
