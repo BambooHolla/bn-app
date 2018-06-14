@@ -89,8 +89,10 @@ export class Mdb<T> {
 			projection?;
 		} = {},
 	) {
-		cursor_operators['limit'] = 1;
-		return this.find(query, cursor_operators).then(res => res[0]);
+		cursor_operators["limit"] = 1;
+		return this.find(query, cursor_operators).then(
+			res => res[0] as T | undefined,
+		);
 	}
 	find(
 		query,

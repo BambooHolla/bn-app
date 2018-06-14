@@ -8,6 +8,7 @@ import {
   ChangeDetectorRef,
 } from "@angular/core";
 import {
+  Loading,
   IonicPage,
   NavController,
   NavParams,
@@ -17,10 +18,12 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
 import {
   BlockServiceProvider,
   BlockModel,
+  SingleBlockModel,
   BlockListResModel,
   UnconfirmBlockModel,
 } from "../../providers/block-service/block-service";
@@ -102,68 +105,119 @@ export class TabChainPage extends FirstLevelPage {
     this.routeTo("chain-block-detail", { block });
   }
 
-  // @TabChainPage.onInit
-  // @asyncCtrlGenerator.loading("CHECK_BLOCKCHAIN_IS_COMPLETE")
-  // async checkBlockchainComplete() {
-  //   // 检测现有数据库中最低的块是否为1
-  //   const block_1 = await this.blockService.blockDb.findOne(
-  //     {},
-  //     { sort: { height: 1 } },
-  //   );
+  @TabChainPage.onInit
+  @asyncCtrlGenerator.loading("CHECK_BLOCKCHAIN_IS_COMPLETE")
+  async checkBlockchainComplete() {
+    // 检测现有数据库中最低的块是否为1
+    let block_1:
+      | SingleBlockModel
+      | undefined = await this.blockService.blockDb.findOne(
+      {},
+      { sort: { height: 1 } },
+    );
+    if (!block_1) {
+      block_1 = await this.blockService.getLastBlock();
+    }
 
-  //   if (block_1.height <= 1) {
-  //     return true;
-  //   }
-  //   // 开始下载
-  //   this.downloadBlock(1, block_1.height - 1);
-  // }
+    if (block_1.height <= 1) {
+      return true;
+    }
+    // 开始下载
+    this.downloadBlock(1, block_1.height - 1);
+  }
 
-  // @asyncCtrlGenerator.success("DOWNLOAD_BLOCKCHAIN_COMPLETE")
-  // async downloadBlock(startHeight: number, endHeight: number) {
-  //   const loading_dialog = this.loadingCtrl.create({
-  //     content: this.getTranslateSync("FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#", {
-  //       progress: 0,
-  //     }),
-  //     cssClass: "can-tap",
-  //   });
-  //   loading_dialog.present();
+  loading_dialog?: Loading;
+  cur_sync_progres = 0;
 
-  //   const total = endHeight - startHeight;
+  @TabChainPage.didEnter
+  showLoading() {
+    if (this.download_lock && !this.loading_dialog) {
+      this.loading_dialog = this.loadingCtrl.create({
+        cssClass: "can-tap",
+        showBackdrop: false,
+      });
+      this.loading_dialog.present();
+      this.setProgress(this.cur_sync_progres);
+    }
+  }
+  @TabChainPage.didLeave
+  closeLoading() {
+    if (this.loading_dialog) {
+      this.loading_dialog.dismiss();
+      this.loading_dialog = undefined;
+    }
+  }
+  setProgress = async (progress: number) => {
+    this.cur_sync_progres = progress;
+    if (this.loading_dialog) {
+      this.loading_dialog.setContent(
+        await this.getTranslate("FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#", {
+          progress: ("0" + progress.toFixed(2)).substr(-5),
+        }),
+      );
+    }
+  };
 
-  //   var acc_endHeight = endHeight;
-  //   const pageSize = 100;
-  //   do {
-  //     const cur_end_height = acc_endHeight;
-  //     const cur_start_height = Math.max(
-  //       cur_end_height - (pageSize - 1),
-  //       startHeight,
-  //     );
-  //     // await this.blockService.getBlocksByRange(startHeight, endHeight);
-  //     await new Promise((resolve, reject) => {
-  //       this.fetch.io.emit(
-  //         "get/api/blocks",
-  //         { startHeight: cur_start_height, endHeight: cur_end_height },
-  //         (res: BlockListResModel) => {
-  //           this.blockService.blockDb
-  //             .insertMany(res.blocks)
-  //             .then(resolve)
-  //             .catch(err => {
-  //               console.warn(cur_end_height, cur_start_height, err);
-  //               resolve();
-  //             });
-  //         },
-  //       );
-  //     });
-  //     if (acc_endHeight > 1) {
-  //       acc_endHeight -= pageSize;
-  //       acc_endHeight = Math.max(acc_endHeight, startHeight);
-  //     } else {
-  //       break;
-  //     }
-  //   } while (endHeight > 1);
+  download_lock?: PromiseOut<void>;
+  @asyncCtrlGenerator.success("DOWNLOAD_BLOCKCHAIN_COMPLETE")
+  async downloadBlock(startHeight: number, endHeight: number) {
+    if (this.download_lock) {
+      return;
+    }
+    this.download_lock = new PromiseOut();
+    try {
+      this.showLoading();
+      const loading_dialog = this.loading_dialog as Loading;
 
-  //   loading_dialog.dismiss();
-  // }
+      await this.setProgress(0);
+
+      const total = endHeight - startHeight;
+
+      var acc_endHeight = endHeight;
+      const pageSize = 100;
+      do {
+        const cur_end_height = acc_endHeight;
+        const cur_start_height = Math.max(
+          cur_end_height - (pageSize - 1),
+          startHeight,
+        );
+        // await this.blockService.getBlocksByRange(startHeight, endHeight);
+        await new Promise((resolve, reject) => {
+          this.fetch.io.emit(
+            "get/api/blocks/",
+            { startHeight: cur_start_height, endHeight: cur_end_height },
+            (res: BlockListResModel) => {
+              this.blockService.blockDb
+                .insertMany(res.blocks)
+                .then(resolve)
+                .catch(err => {
+                  console.warn(cur_end_height, cur_start_height, err);
+                  resolve();
+                });
+            },
+          );
+        });
+
+        await new Promise(cb => setTimeout(cb, 1000));
+
+        // 更改进度
+        await this.setProgress((endHeight - acc_endHeight) / total);
+
+        if (acc_endHeight > 1) {
+          acc_endHeight -= pageSize;
+          acc_endHeight = Math.max(acc_endHeight, startHeight);
+        } else {
+          break;
+        }
+      } while (endHeight > 1);
+      this.setProgress(1);
+    } finally {
+      this.download_lock.resolve();
+      this.download_lock = undefined;
+
+      this.closeLoading();
+    }
+  }
 
   @TabChainPage.willEnter
   @asyncCtrlGenerator.error(() =>

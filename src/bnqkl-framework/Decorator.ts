@@ -268,6 +268,7 @@ export function asyncLoadingWrapGenerator(
   check_prop_before_present?: string,
   opts?: LoadingOptions & { dismiss_hanlder_name?: string },
   id?: string,
+  export_to_proto_name?: string,
 ) {
   if (id) {
     var id_info = loadingIdLock.get(id);
@@ -291,17 +292,7 @@ export function asyncLoadingWrapGenerator(
           target.constructor.name + " 缺少 LoadingController 依赖",
         );
       }
-      const res = source_fun.apply(this, args);
-
-      if (check_prop_before_present && this[check_prop_before_present]) {
-        // 检测到不用弹出
-        return res;
-      }
-      if (id_info) {
-        // 加入到集合中
-        id_info.promises.add(res);
-      }
-
+      // 创建loading
       loading_msg = translateMessage(this, loading_msg, null);
 
       Promise.resolve(loading_msg).then(loading_msg => {
@@ -316,6 +307,21 @@ export function asyncLoadingWrapGenerator(
         opts,
       );
       const loading = loadingCtrl.create(loadingOpts);
+      if (export_to_proto_name !== undefined) {
+        this[export_to_proto_name] = loading;
+      }
+      // 执行promise
+      const res = source_fun.apply(this, args);
+
+      // 进行唯一检查
+      if (check_prop_before_present && this[check_prop_before_present]) {
+        // 检测到不用弹出
+        return res;
+      }
+      if (id_info) {
+        // 加入到集合中
+        id_info.promises.add(res);
+      }
 
       loading.onWillDismiss(() => {
         loading["_is_dissmissed"] = true;
@@ -387,14 +393,15 @@ export function asyncLoadingWrapGenerator(
           with_dealy ? setImmediate(loading_present) : loading_present();
           this.event.once("didLeave", loading_dismiss);
         };
-        if (this.PAGE_STATUS === PAGE_STATUS.WILL_ENTER) {
+        if (this.PAGE_STATUS <= PAGE_STATUS.WILL_ENTER) {
           // 等到进入页面后再开始调用
-          this.event.once("didEnter", run_loading_present);
-          before_dismiss = () => {
-            this.event.off("didEnter", run_loading_present);
-          };
+          this.event.on("didEnter", run_loading_present);
+          // before_dismiss = () => {
+          //   this.event.off("didEnter", run_loading_present);
+          // };
         } else if (this.PAGE_STATUS === PAGE_STATUS.DID_ENTER) {
           run_loading_present(true);
+          this.event.on("didEnter", run_loading_present);
         } else {
           debugger;
         }
