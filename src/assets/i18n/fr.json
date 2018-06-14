@@ -58,6 +58,7 @@
   "ACCOUNT-ABOUT-IBT": "À propos d'IBT",
   "ABOUT_IBT_INFO":
     "IFMChain est le premier produit Blockchain 3.0 au monde à avoir accès à des terminaux mobiles, IBT étant son logiciel nodal et l'abréviation d'Instinct Blockchain Technology.",
+  "//": "account-voucher-wallet",
   "//": "sign-in-and-sign-up",
   "LOGINNG": "Synchronisation réseau",
   "LOGIN_ERROR":
@@ -198,6 +199,9 @@
   "ADD_CONTACT_SUBMITING": "Accepter d'ajouter la soumission de contact",
   "ADD_CONTACT_SUBMIT_SUCCESS":
     "Accepter d'ajouter des contacts à soumettre avec succès",
+  "//": "account-contact-detail",
+  "//": "account-remark-contact",
+  "//": "account-remark-contact-tags",
   "//": "account-news-detail",
   "ACCOUNT-NEWS-DETAIL": "Détails dynamiques",
   "//": "account-add-contact",
@@ -244,6 +248,7 @@
     "Chargement d'autres enregistrements entrants ...",
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "Échec de la mise à jour de l'enregistrement entrant, trop de tentatives, arrêt de la nouvelle tentative, vérification du réseau",
+  "//": "pay-select-my-contacts",
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "Paiements hors ligne",
   "SCAN_TO_RECEIVE": "Numériser pour recevoir",
@@ -251,6 +256,7 @@
   "SCAN_CODE_RECEPTION": "Réception du code de balayage",
   "POSTSCRIPT": "Postscript",
   "EMPTY_REMARK": "Pas de postscript",
+  "//": "pay-receipt-to-voucher",
   "//": "vote-list",
   "VOTE-LIST": "Vote",
   "MY_VOTE_IN": "Mon vote",
@@ -390,6 +396,7 @@
     "Définir le mot de passe de paiement pour envoyer avec succès",
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "Définir le nom d'utilisateur",
+  "ACCOUNT_SET_USERNAME_TITLE": "Définir le nom d'utilisateur",
   "USERNAME": "Nom d'utilisateur",
   "SET_USERNAME_SUBMIT_ERROR":
     "Impossible de définir la soumission du nom d'utilisateur",
@@ -466,6 +473,7 @@
   "//": "设置页面的跳转的label 与 目标页面title 是不完全一致的",
   "ACCOUNT-SETTINGS": "Paramètres",
   "SETTINGS_SET_DEFAULT_FEE": "Paramétrage des frais par défaut",
+  "SET_PAY_PWD_TITLE": "Configurer le mot de passe de paiement",
   "SETTINGS_SET_PAY_PWD": "Configurer le mot de passe de paiement",
   "MINING_INCOME_NOTICE": "Notification de crédit",
   "SETTINGS_LANG": "Paramètres de langue",

@@ -56,6 +56,7 @@
   "ACCOUNT-ABOUT-IBT": "Acerca de IBT",
   "ABOUT_IBT_INFO":
     "IFMChain es el primer producto blockchain 3.0 del mundo con acceso a terminales móviles. IBT es su software de nodo y es la abreviatura de Instinct Blockchain Technology.",
+  "//": "account-voucher-wallet",
   "//": "sign-in-and-sign-up",
   "LOGINNG": "Sincronización de red",
   "LOGIN_ERROR":
@@ -193,6 +194,9 @@
   "ADD_CONTACT_SUBMITING": "Aceptar agregar el envío de contactos",
   "ADD_CONTACT_SUBMIT_SUCCESS":
     "Aceptar agregar contactos para enviar con éxito",
+  "//": "account-contact-detail",
+  "//": "account-remark-contact",
+  "//": "account-remark-contact-tags",
   "//": "account-news-detail",
   "ACCOUNT-NEWS-DETAIL": "Detalles dinámicos",
   "//": "account-add-contact",
@@ -237,6 +241,7 @@
   "LOADING_MORE_RECIVE_LIST": "Cargando más registros entrantes ...",
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "Error al actualizar el registro entrante, demasiados reintentos, detener el reintentar, verificar la red",
+  "//": "pay-select-my-contacts",
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "Pagos fuera de línea",
   "SCAN_TO_RECEIVE": "Escanear para recibir",
@@ -244,6 +249,7 @@
   "SCAN_CODE_RECEPTION": "Scan code reception",
   "POSTSCRIPT": "Posdata",
   "EMPTY_REMARK": "Sin postdata",
+  "//": "pay-receipt-to-voucher",
   "//": "vote-list",
   "VOTE-LIST": "Votando",
   "MY_VOTE_IN": "Mi voto",
@@ -375,6 +381,7 @@
     "Establecer contraseña de pago para enviar con éxito",
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "Establecer el nombre de usuario",
+  "ACCOUNT_SET_USERNAME_TITLE": "Establecer el nombre de usuario",
   "USERNAME": "Nombre de usuario",
   "SET_USERNAME_SUBMIT_ERROR":
     "Error al configurar el envío del nombre de usuario",
@@ -451,6 +458,7 @@
   "//": "设置页面的跳转的label 与 目标页面title 是不完全一致的",
   "ACCOUNT-SETTINGS": "Configuraciones",
   "SETTINGS_SET_DEFAULT_FEE": "Configuración de tarifa predeterminada",
+  "SET_PAY_PWD_TITLE": "Configurar la contraseña de pago",
   "SETTINGS_SET_PAY_PWD": "Configurar la contraseña de pago",
   "MINING_INCOME_NOTICE": "Notificación de crédito",
   "SETTINGS_LANG": "Configuraciones de idioma",

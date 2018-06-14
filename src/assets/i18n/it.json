@@ -57,6 +57,7 @@
   "ACCOUNT-ABOUT-IBT": "A proposito di IBT",
   "ABOUT_IBT_INFO":
     "IFMChain è il primo prodotto blockchain 3.0 al mondo con accesso ai terminali mobili.IBT è il suo software di nodo ed è l'abbreviazione di Instinct Blockchain Technology.",
+  "//": "account-voucher-wallet",
   "//": "sign-in-and-sign-up",
   "LOGINNG": "Sincronizzazione di rete",
   "LOGIN_ERROR":
@@ -198,6 +199,9 @@
   "ADD_CONTACT_SUBMITING": "Accetto di aggiungere l'invio dei contatti",
   "ADD_CONTACT_SUBMIT_SUCCESS":
     "Accetta di aggiungere contatti per inviare correttamente",
+  "//": "account-contact-detail",
+  "//": "account-remark-contact",
+  "//": "account-remark-contact-tags",
   "//": "account-news-detail",
   "ACCOUNT-NEWS-DETAIL": "Dettagli dinamici",
   "//": "account-add-contact",
@@ -244,6 +248,7 @@
   "LOADING_MORE_RECIVE_LIST": "Caricamento di più record in arrivo ...",
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "Impossibile aggiornare il record in arrivo, troppi tentativi, fermato riprovare, controllare la rete",
+  "//": "pay-select-my-contacts",
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "Pagamenti offline",
   "SCAN_TO_RECEIVE": "Scansione per ricevere",
@@ -251,6 +256,7 @@
   "SCAN_CODE_RECEPTION": "Ricezione del codice di scansione",
   "POSTSCRIPT": "poscritto",
   "EMPTY_REMARK": "Nessun poscritto",
+  "//": "pay-receipt-to-voucher",
   "//": "vote-list",
   "VOTE-LIST": "sondaggio",
   "MY_VOTE_IN": "Il mio voto",
@@ -389,6 +395,7 @@
     "Imposta la password di pagamento per inviare correttamente",
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "Imposta il nome utente",
+  "ACCOUNT_SET_USERNAME_TITLE": "Imposta il nome utente",
   "USERNAME": "nome utente",
   "SET_USERNAME_SUBMIT_ERROR": "Impossibile impostare l'invio del nome utente",
   "SET_USERNAME_SUBMITING": "Imposta l'invio del nome utente",
@@ -465,6 +472,7 @@
   "//": "设置页面的跳转的label 与 目标页面title 是不完全一致的",
   "ACCOUNT-SETTINGS": "impostare",
   "SETTINGS_SET_DEFAULT_FEE": "Impostazione della commissione di default",
+  "SET_PAY_PWD_TITLE": "Imposta la password di pagamento",
   "SETTINGS_SET_PAY_PWD": "Imposta la password di pagamento",
   "MINING_INCOME_NOTICE": "Notifica di credito",
   "SETTINGS_LANG": "Impostazioni della lingua",
