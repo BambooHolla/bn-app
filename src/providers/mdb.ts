@@ -81,15 +81,16 @@ export class Mdb<T> {
 			});
 		});
 	}
-	findOne(query: any, projection?: T) {
-		return new Promise<T | undefined>((resolve, reject) => {
-			this.db.findOne(query, projection as any, (err, res) => {
-				if (err) {
-					return reject(err);
-				}
-				resolve(res);
-			});
-		});
+	findOne(
+		query: any,
+		cursor_operators: {
+			sort?;
+			skip?: number;
+			projection?;
+		} = {},
+	) {
+		cursor_operators['limit'] = 1;
+		return this.find(query, cursor_operators).then(res => res[0]);
 	}
 	find(
 		query,
@@ -125,7 +126,7 @@ export class Mdb<T> {
 		});
 	}
 	has(query) {
-		return this.findOne(query).then(res =>!!res);
+		return this.findOne(query).then(res => !!res);
 	}
 	clear() {
 		return new Promise<T[]>((resolve, reject) => {

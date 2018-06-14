@@ -2,7 +2,7 @@ import * as EventEmitter from "eventemitter3";
 
 export class AppUrl {
   static SERVER_URL = "http://127.0.0.1";
-  static BACKEND_VERSION = ""; // "v3.3.3/";
+  static BACKEND_VERSION = localStorage.getItem("BACKEND_VERSION") || "v3.0.0/";
   constructor(public path) {}
   toString() {
     return (

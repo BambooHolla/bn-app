@@ -55,7 +55,7 @@ export default class Collection {
      * @example
      * col.findOne({ x: 4, g: { $lt: 10 } }, { k: 0 });
      */
-    findOne(expr, projection_spec, cb) {
+    findOne(expr, projection_spec?, cb?) {
         if (typeof projection_spec === "function") {
             cb = projection_spec;
             projection_spec = null;

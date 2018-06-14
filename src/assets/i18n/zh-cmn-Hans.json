@@ -174,6 +174,8 @@
   "HEIGHT": "高度",
   "FEE": "手续费",
   "CHECK_BLOCK": "查看区块",
+  "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#": "正在下载完整区块链:{{progress}}%",
+  "DOWNLOAD_BLOCKCHAIN_COMPLETE": "区块链下载完成",
 
   "//": "chain-block-detail",
   "CHAIN-BLOCK-DETAIL": "区块信息",
@@ -211,9 +213,9 @@
   "CONFIRM_TO_REMOVE_CONTACT": "确定要删除联系人吗？",
   "SET_REMARK": "备注",
 
-  "//":"account-contact-detail",
-  "ACCOUNT-CONTACT-DETAIL":"详细信息",
-  "REMARK_TEXT_LABEL":"备注信息",
+  "//": "account-contact-detail",
+  "ACCOUNT-CONTACT-DETAIL": "详细信息",
+  "REMARK_TEXT_LABEL": "备注信息",
 
   "//": "account-remark-contact",
   "ACCOUNT-REMARK-CONTACT": "设置备注及标签",
