@@ -293,6 +293,7 @@
   "//": "pay-receipt-to-voucher",
   "PUT_INTO_VOUCHER_WALLET": "放入离线权益",
   "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET": "该权益已收入",
+  "SUCCESSFULLY_PUT_THIS_TRANSACTION_IN_TO_VOUCHER_WALLET": "成功收入权益",
 
   "//": "vote-list",
   "VOTE-LIST": "投票",

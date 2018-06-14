@@ -125,7 +125,7 @@ export class Mdb<T> {
 		});
 	}
 	has(query) {
-		return this.find(query).then(res => res.length > 0);
+		return this.findOne(query).then(res =>!!res);
 	}
 	clear() {
 		return new Promise<T[]>((resolve, reject) => {
