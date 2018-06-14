@@ -36,12 +36,13 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 		public viewCtrl: ViewController,
 		public voucherService: VoucherServiceProvider,
 		public transactionService: TransactionServiceProvider,
+		public cdRef: ChangeDetectorRef,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
 	page_info = {
 		offset: 0,
-		limit: 6,
+		limit: 20,
 		has_more: false,
 		loading: true,
 	};
@@ -86,6 +87,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 			const index = this.voucher_list.indexOf(tran);
 			if (index !== -1) {
 				this.voucher_list.splice(index, 1);
+				this.cdRef.markForCheck();
 			}
 		}
 	}
@@ -112,7 +114,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
 				.catch(() => null);
 			if (block_tran) {
 				tran.exchange_status = ExchangeStatus.CONFIRMED;
-				this.voucherService.updateVoucher(tran);
+				await this.voucherService.updateVoucher(tran);
 			}
 		}
 	}

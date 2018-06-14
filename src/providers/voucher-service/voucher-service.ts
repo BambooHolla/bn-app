@@ -45,7 +45,7 @@ export class VoucherServiceProvider {
 		);
 	}
 	async addVoucher(tran: VoucherModel) {
-		if (await this.mdb.has(tran)) {
+		if (await this.mdb.has({ id: tran.id })) {
 			return false;
 		}
 		await this.mdb.insert(tran);

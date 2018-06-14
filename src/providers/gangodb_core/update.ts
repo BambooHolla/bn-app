@@ -7,65 +7,64 @@ import {
     rename,
     equal,
     unknownOp,
-    getIDBError
-} from './util';
+    getIDBError,
+} from "./util";
 
-
-const modifyOp = (path_pieces, update, init) => (doc) => {
+const modifyOp = (path_pieces, update, init) => doc => {
     modify(doc, path_pieces, update, init);
 };
 
-const arithOp = (fn) => (path_pieces, value1) => {
+const arithOp = fn => (path_pieces, value1) => {
     const update = (obj, field) => {
         const value2 = obj[field];
 
-        if (typeof value2 === 'number') {
+        if (typeof value2 === "number") {
             obj[field] = fn(value1, value2);
         }
     };
 
-    const init = (obj, field) => obj[field] = 0;
+    const init = (obj, field) => (obj[field] = 0);
 
     return modifyOp(path_pieces, update, init);
 };
 
-const compareOp = (fn) => (path_pieces, value) => {
+const compareOp = fn => (path_pieces, value) => {
     const update = (obj, field) => {
-        if (fn(value, obj[field])) { obj[field] = value; }
+        if (fn(value, obj[field])) {
+            obj[field] = value;
+        }
     };
 
-    const init = (obj, field) => obj[field] = value;
+    const init = (obj, field) => (obj[field] = value);
 
     return modifyOp(path_pieces, update, init);
 };
 
 const build = (steps, field, value) => {
-    if (field[0] !== '$') {
+    if (field[0] !== "$") {
         return steps.push(ops.$set(toPathPieces(field), value));
     }
 
     const op = ops[field];
-    if (!op) { unknownOp(field); }
+    if (!op) {
+        unknownOp(field);
+    }
 
     for (var path in value) {
         steps.push(op(toPathPieces(path), value[path]));
     }
 };
 
-
 const ops = {
-
-    $set: (path_pieces, value) => (doc) => {
+    $set: (path_pieces, value) => doc => {
         set(doc, path_pieces, value);
     },
 
     $unset: path_pieces => doc => remove1(doc, path_pieces),
 
-    $rename: (path_pieces, new_name) => (doc) => {
+    $rename: (path_pieces, new_name) => doc => {
         rename(doc, path_pieces, new_name);
-    }
-    ,
-
+    },
     $inc: arithOp((a, b) => a + b),
     $mul: arithOp((a, b) => a * b),
     $min: compareOp((a, b) => a < b),
@@ -79,7 +78,7 @@ const ops = {
             }
         };
 
-        const init = (obj, field) => obj[field] = [value];
+        const init = (obj, field) => (obj[field] = [value]);
 
         return modifyOp(path_pieces, update, init);
     },
@@ -93,25 +92,31 @@ const ops = {
             pop = e => e.pop();
         }
 
-        return (doc) => {
+        return doc => {
             get(doc, path_pieces, (obj, field) => {
                 const elements = obj[field];
 
-                if (Array.isArray(elements)) { pop(elements); }
+                if (Array.isArray(elements)) {
+                    pop(elements);
+                }
             });
         };
     },
 
-    $pullAll: (path_pieces, values) => (doc) => {
+    $pullAll: (path_pieces, values) => doc => {
         get(doc, path_pieces, (obj, field) => {
             const elements = obj[field];
-            if (!Array.isArray(elements)) { return; }
+            if (!Array.isArray(elements)) {
+                return;
+            }
 
             const new_elements: any[] = [];
 
-            const hasValue = (value1) => {
+            const hasValue = value1 => {
                 for (var value2 of values) {
-                    if (equal(value1, value2)) { return true; }
+                    if (equal(value1, value2)) {
+                        return true;
+                    }
                 }
             };
 
@@ -129,13 +134,17 @@ const ops = {
         return ops.$pullAll(path_pieces, [value]);
     },
 
-    $addToSet: (path_pieces, value) => (doc) => {
+    $addToSet: (path_pieces, value) => doc => {
         get(doc, path_pieces, (obj, field) => {
             const elements = obj[field];
-            if (!Array.isArray(elements)) { return; }
+            if (!Array.isArray(elements)) {
+                return;
+            }
 
             for (var element of elements) {
-                if (equal(element, value)) { return; }
+                if (equal(element, value)) {
+                    return;
+                }
             }
 
             elements.push(value);
@@ -143,20 +152,29 @@ const ops = {
     },
 };
 
-
 export default (cur, spec, cb) => {
-    const steps: any[]= [];
+    const steps: any[] = [];
 
-    for (var field in spec) { build(steps, field, spec[field]); }
+    for (var field in spec) {
+        build(steps, field, spec[field]);
+    }
 
-    if (!steps.length) { return cb(null); }
+    if (!steps.length) {
+        return cb(null);
+    }
 
+    var update_num = 0;
     (function iterate() {
         cur._next((error, doc, idb_cur) => {
-            if (!doc) { return cb(error); }
+            if (!doc) {
+                return cb(error, update_num);
+            }
 
-            for (var fn of steps) { fn(doc); }
+            for (var fn of steps) {
+                fn(doc);
+            }
 
+            update_num += 1;
             const idb_req = idb_cur.update(doc);
 
             idb_req.onsuccess = iterate;

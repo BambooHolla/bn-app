@@ -133,6 +133,7 @@ export class TabPayPage extends FirstLevelPage {
   async setTransferFee() {
     const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
     this.formData.transfer_fee = custom_fee;
+    this.cdRef.markForCheck();
   }
 
   @TabPayPage.setErrorTo("errors", "transfer_address", ["wrongAddress"])

@@ -359,13 +359,13 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId: string): Promise<TYPE.SingleBlockModel> {
-    const data = await this.fetch.get<any>(this.GET_BLOCK_BY_ID, {
+    const data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_ID, {
       search: {
         id: blockId,
       },
     });
 
-    return data.blocks;
+    return data.block;
   }
 
   /**

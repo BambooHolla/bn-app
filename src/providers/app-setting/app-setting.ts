@@ -76,9 +76,14 @@ export class AppSettingProvider extends CommonService {
     return new AppUrl(path);
   }
 
-  static LATEST_APP_VERSION_URL = getQueryVariable("LATEST_APP_VERSION_URL") ||
-  localStorage.getItem("LATEST_APP_VERSION_URL") ||
-  "https://www.ifmchain.com/api/app/version/latest";
+  // 动态获取
+  static get LATEST_APP_VERSION_URL() {
+    return (
+      getQueryVariable("LATEST_APP_VERSION_URL") ||
+      localStorage.getItem("LATEST_APP_VERSION_URL") ||
+      "https://www.ifmchain.com/api/app/version/latest"
+    );
+  }
   static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,

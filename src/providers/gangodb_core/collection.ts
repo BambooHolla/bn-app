@@ -170,11 +170,11 @@ export default class Collection {
 
         cur.filter(expr);
 
-        fn(cur, error => {
+        fn(cur, (error, res) => {
             if (error) {
                 deferred.reject(error);
             } else {
-                deferred.resolve();
+                deferred.resolve(res);
             }
         });
 
