@@ -160,6 +160,8 @@
   "HEIGHT": "高度",
   "FEE": "手續費",
   "CHECK_BLOCK": "查看區塊",
+  "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#": "正在下載完整區塊鏈:{{progress}}%",
+  "DOWNLOAD_BLOCKCHAIN_COMPLETE": "區塊鏈下載完成",
   "//": "chain-block-detail",
   "CHAIN-BLOCK-DETAIL": "區塊信息",
   "LOAD_TRANSACTION_LIST_ERROR": "加載交易列表失敗",
