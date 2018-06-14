@@ -116,11 +116,10 @@ export class AppFetchProvider {
     if (error) {
       // debugger;
       if (data.error) {
-        const {
-          message: err_message,
-          code: error_code,
-          ...details
-        } = data.error;
+        let { message: err_message, code: error_code, ...details } = data.error;
+        if (typeof data.error === "string") {
+          err_message = data.error;
+        }
         throw ServerResError.translateAndParseErrorMessage(
           err_message,
           error_code,
