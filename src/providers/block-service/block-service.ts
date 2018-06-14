@@ -72,7 +72,7 @@ export class BlockServiceProvider extends FLP_Tool {
 
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
-    
+
     // 安装api服务
     this.blockDb = dbCache.installDatabase("blocks", []);
     dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
@@ -294,6 +294,8 @@ export class BlockServiceProvider extends FLP_Tool {
   }
   private async _listenGetAndSetHeight() {
     this.io.on("blocks/change", data => {
+      this._expectblock_uncommited = 0;
+      this._expectblock_fee_reward = 0;
       console.log(
         "%c区块更新",
         "color:green;background-color:#eee;font-size:1.2rem",
@@ -305,6 +307,14 @@ export class BlockServiceProvider extends FLP_Tool {
     });
     this.io.on("connect", () => {
       this._updateHeight();
+    });
+    // 安装未处理交易的预估
+    this._listenUnconfirmTransaction();
+  }
+  private _listenUnconfirmTransaction() {
+    this.io.on("transactions/unconfirm", (tran: TransactionModel) => {
+      this._expectblock_uncommited += 1;
+      this._expectblock_fee_reward += parseFloat(tran.fee);
     });
   }
 
@@ -359,11 +369,14 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId: string): Promise<TYPE.SingleBlockModel> {
-    const data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_ID, {
-      search: {
-        id: blockId,
+    const data = await this.fetch.get<TYPE.BlockResModel>(
+      this.GET_BLOCK_BY_ID,
+      {
+        search: {
+          id: blockId,
+        },
       },
-    });
+    );
 
     return data.block;
   }
@@ -576,32 +589,42 @@ export class BlockServiceProvider extends FLP_Tool {
     return data.Transactions.u;
   }
 
+  private _expectblock_uncommited = 0;
+  private _expectblock_fee_reward = 0;
   /**
    * 获取未来一个块的预期信息
    * @param:amount 根据最近n个块来获取平均值
    * 返回平均收益、平均手续费、未确认交易数
    */
   async getExpectBlockInfo(amount: number = 5) {
-    var data: TYPE.UnconfirmBlockModel;
-    if (!navigator.onLine) {
-      data = {
-        reward: 0,
-        fee: 0,
-        uncommited: 0,
-        height: this.appSetting.getHeight() + 1,
-      };
-    } else {
-      amount = amount < 57 ? amount : 57;
-      let uncommited = 0; // await this.getPoolUnconfirmed();
-      let blockInfo = await this.getAvgInfo(amount);
-      data = {
-        ...blockInfo,
-        uncommited,
-        height: this.appSetting.getHeight() + 1,
-      };
-    }
+    // var data: TYPE.UnconfirmBlockModel;
+    // if (!navigator.onLine) {
+    //   data = {
+    //     reward: 3500000000 + this._expectblock_fee_reward,
+    //     fee: this._expectblock_fee_reward,
+    //     uncommited: this._expectblock_uncommited,
+    //     height: this.appSetting.getHeight() + 1,
+    //   };
+    // } else {
+    //   amount = amount < 57 ? amount : 57;
+    //   let uncommited = this._expectblock_uncommited; // await this.getPoolUnconfirmed();
+    //   let blockInfo = await this.getAvgInfo(amount);
+    //   blockInfo.reward =parseFloat(blockInfo.reward as any)+ this._expectblock_fee_reward
+    //   blockInfo.fee
+    //   data = {
+    //     ...blockInfo,
+    //     uncommited,
+    //     height: this.appSetting.getHeight() + 1,
+    //   };
+    // }
 
-    return data;
+    // return data;
+    return {
+      reward: 3500000000 + this._expectblock_fee_reward,
+      fee: this._expectblock_fee_reward,
+      uncommited: this._expectblock_uncommited,
+      height: this.appSetting.getHeight() + 1,
+    };
   }
   expectBlockInfo!: AsyncBehaviorSubject<TYPE.UnconfirmBlockModel>;
   @HEIGHT_AB_Generator("expectBlockInfo")
