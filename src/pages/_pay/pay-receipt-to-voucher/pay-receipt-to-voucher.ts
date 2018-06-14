@@ -50,6 +50,9 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
 	}
 	/*是否已经在钱包中*/
 	already_in_wallet = false;
+	@asyncCtrlGenerator.success(
+		"@@SUCCESSFULLY_PUT_THIS_TRANSACTION_IN_TO_VOUCHER_WALLET",
+	)
 	@asyncCtrlGenerator.error()
 	async putIntoVoucherWallet() {
 		if (this.already_in_wallet) {
@@ -60,7 +63,7 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
 			...this.transaction,
 			exchange_status: ExchangeStatus.UNSUBMIT,
 		};
-		if (await this.voucherService.addVoucher(voucher)) {
+		if (!(await this.voucherService.addVoucher(voucher))) {
 			this.already_in_wallet = true;
 			throw new Error(
 				this.getTranslateSync(
