@@ -76,6 +76,11 @@ export class TabChainPage extends FirstLevelPage {
     super(navCtrl, navParams);
     // this.auto_header_shadow_when_scroll_down = true;
     // this.auto_header_progress_when_scrol_down = true;
+
+    this.blockService.event.on("EXPECTBLOCK:CHANGED", expect_block => {
+      this.unconfirm_block = expect_block;
+      this.cdRef.markForCheck();
+    });
   }
 
   unconfirm_block_mesh_thit = 0xa4a2a3;

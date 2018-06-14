@@ -296,6 +296,9 @@ export class BlockServiceProvider extends FLP_Tool {
     this.io.on("blocks/change", data => {
       this._expectblock_uncommited = 0;
       this._expectblock_fee_reward = 0;
+      this.getExpectBlockInfo().then(expect_block => {
+        this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
+      });
       console.log(
         "%c区块更新",
         "color:green;background-color:#eee;font-size:1.2rem",
@@ -316,6 +319,9 @@ export class BlockServiceProvider extends FLP_Tool {
       const tran: TransactionModel = data.transaction;
       this._expectblock_uncommited += 1;
       this._expectblock_fee_reward += parseFloat(tran.fee);
+      this.getExpectBlockInfo().then(expect_block => {
+        this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
+      });
     });
   }
 
