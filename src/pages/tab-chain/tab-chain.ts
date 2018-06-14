@@ -285,7 +285,10 @@ export class TabChainPage extends FirstLevelPage {
       const endHeight = unconfirm_height - 1;
       const { top_block } = this;
       const cur_top_height = top_block ? top_block.height : endHeight;
-      let startHeight = Math.min(cur_top_height, endHeight - size_length + 1);
+      let startHeight = Math.min(
+        cur_top_height + 1,
+        endHeight - size_length + 1,
+      );
       if (endHeight - startHeight >= 100) {
         // 超过一次性最大的加载数量，
         startHeight = endHeight - 99;
