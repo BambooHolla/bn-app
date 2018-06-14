@@ -63,7 +63,7 @@ export class AppSettingProvider extends CommonService {
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;
   static NET_VERSION = net_version || "mainnet";
-  static BLOCK_UNIT_TIME = block_unit_time || 128e10;
+  static BLOCK_UNIT_TIME = block_unit_time || 128e3;
   get BLOCK_UNIT_TIME() {
     return AppSettingProvider.BLOCK_UNIT_TIME;
   }
