@@ -192,3 +192,9 @@ ion-content {
     @extend .clip-text;
   }
 }
+
+.disable-scroll .ion-page {
+  pointer-events: all !important;
+  -ms-touch-action: all !important;
+  touch-action: all !important;
+}
