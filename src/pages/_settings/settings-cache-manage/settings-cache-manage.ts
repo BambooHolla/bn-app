@@ -8,6 +8,9 @@ import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 
+import {getUTF8ByteSize} from './calcHelper';
+
+
 @IonicPage({ name: "settings-cache-manage" })
 @Component({
   selector: "page-settings-cache-manage",
@@ -22,28 +25,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
-  // private stringBytesRange = [
-  //   [parseInt("000000", 16), parseInt("00007F", 16)], //1
-  //   [parseInt("000080", 16), parseInt("0007FF", 16)], //2
-  //   [parseInt("000800", 16), parseInt("00D7FF", 16)], //3
-  //   [parseInt("010000", 16), parseInt("10FFFF", 16)], //4
-  // ];
-  getUTF8ByteSize(str: string) {
-    var total = 0;
-    for (var i = 0; i < str.length; i += 1) {
-      const charCode = str.charCodeAt(i);
-      if (charCode <= 0x007f) {
-        total += 1;
-      } else if (charCode <= 0x07ff) {
-        total += 2;
-      } else if (charCode <= 0xffff) {
-        total += 3;
-      } else {
-        total += 4;
-      }
-    }
-    return total;
-  }
+
   calcing = true;
   calc_progress = 0;
 
@@ -93,7 +75,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
       await Promise.all(
         keys.map(async key => {
           const data = await this.storage.get(key);
-          cache_size += this.getUTF8ByteSize(JSON.stringify(data) || "");
+          cache_size += getUTF8ByteSize(JSON.stringify(data) || "");
           this.calc_progress += 1 / keys.length;
         }),
       );

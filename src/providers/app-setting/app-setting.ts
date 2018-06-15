@@ -378,6 +378,10 @@ export class AppSettingProvider extends CommonService {
     _has_mining_income: false,
     /**我的矿机*/
     my_mining_machine: [] as MiningMachine[],
+    /**已经处理的交易*/
+    detal_tran_num: 0,
+    /**贡献的流量*/
+    contribution_traffic: 0,
   };
 }
 if (

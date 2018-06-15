@@ -29,6 +29,20 @@ vote-my-contribution {
       font-weight: lighter;
     }
   }
+  &.show-detail {
+    padding: 0;
+    flex-direction: column;
+    background: none;
+    > .detail {
+      height: 8.5rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    > .list {
+      display: block;
+      flex-grow: 1;
+    }
+  }
   > .detail {
     width: 100%;
     flex-grow: 1;
@@ -49,6 +63,9 @@ vote-my-contribution {
         color: #7a7a7a;
       }
     }
+  }
+  > .list {
+    display: none;
   }
   > .wave-bg {
     position: absolute;

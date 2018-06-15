@@ -9,13 +9,16 @@
 </div>
 <div class="detail">
   <div class="transaction-processed item">
-    <text-gradient class="value" [text]="'0'" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
+    <text-gradient class="value" [text]="my_contribution.detal_tran_num" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
     <div class="label">{{'PROCESSED_TRAN_NUM'|translate}}</div>
   </div>
   <div class="contributed-traffic item">
-    <text-gradient class="value" [text]="'0MB'" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
+    <text-gradient class="value" [text]="my_contribution.contribution_traffic|bytes:2" from="#f78464" to="#fecc49" fontSize="2.6rem" fontWeight="500"></text-gradient>
     <div class="label">{{'CONTRIBUTION_TRAFFIC'|translate}}</div>
   </div>
+</div>
+<div class="list">
+  
 </div>
 <div class="wave-bg">
   <div class="wave-1"></div>

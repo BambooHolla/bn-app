@@ -31,6 +31,7 @@ import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { Subscription } from "rxjs/Subscription";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
+import { getJsonObjectByteSize } from "../_settings/settings-cache-manage/calcHelper";
 
 interface FakeBlock extends BlockModel {
   fake: true;
@@ -203,6 +204,11 @@ export class TabChainPage extends FirstLevelPage {
             "get/api/blocks/",
             { startHeight: cur_start_height, endHeight: cur_end_height },
             (res: BlockListResModel) => {
+              // 计算流量大小
+              this.appSetting.settings.contribution_traffic +=
+                getJsonObjectByteSize(res) /*返回的JSON对象大小*/ +
+                21 /*基础消耗*/;
+
               this.blockService.blockDb
                 .insertMany(res.blocks)
                 .then(resolve)
