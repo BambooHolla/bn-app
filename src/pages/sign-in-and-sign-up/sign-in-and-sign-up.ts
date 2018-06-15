@@ -43,6 +43,10 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
+
+  get app_version(){
+    return AppSettingProvider.APP_VERSION;
+  }
   // @SignInAndSignUpPage.willEnter
   // fixStaturBug() {
   //   this.myapp.tryOverlaysWebView();

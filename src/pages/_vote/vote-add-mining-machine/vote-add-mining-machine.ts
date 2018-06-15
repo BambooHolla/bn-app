@@ -34,6 +34,15 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
+	readonly SYSTEM_INFO = this.appSetting.APP_URL(`/api/system/SystemInfo`);
+	readonly SYSTEM_RUNTIME = this.appSetting.APP_URL(`/api/system/runtime`);
+	readonly SYSTEM_CONFIG = this.appSetting.APP_URL(
+		`/api/system/systemConfig`,
+	);
+	readonly DELEGATE_SYSTEMKEY = this.appSetting.APP_URL(
+		`/api/delegates/systemKey`,
+	);
+
 	peer_list: ExtendsSystemRuntime[] = [];
 	selectPeer?: ExtendsSystemRuntime;
 	peer_list_info = {
@@ -44,6 +53,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		fill_form: false,
 	};
 	search_lock?: PromiseOut<void>;
+	/*节点扫描*/
 	@VoteAddMiningMachinePage.willEnter
 	async searchPeerList() {
 		console.log("this.search_lock", this.search_lock);
@@ -60,12 +70,15 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		const { peer_list_info, doing_progress } = this;
 		doing_progress.search_peer_list = true;
 		peer_list_info.loading = true;
+
+		const scan_port =
+			parseInt(localStorage.getItem("SCAN_MAC_PORT") || "") || 9003;
 		const tryIp = async (ip: string) => {
 			const host = `http://${ip}`;
 
 			const node = await PeerServiceProvider.fetchPeerPortInfo(
 				ip,
-				19003,
+				scan_port,
 			).catch(() => null);
 			if (!node) {
 				return;
@@ -73,7 +86,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 
 			const peer_info = {
 				webPort: node.webPort,
-				port: 19003,
+				port: scan_port,
 				ping: -1,
 				ip,
 			};
@@ -131,10 +144,10 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 
 	loading_peer_info = false;
 	private _dismiss_getPeerInfo_loading: any;
-
+	/*获取委托人信息*/
 	private _getDelegateInfo(origin: string) {
 		return this.appFetch
-			.get<any>(`${origin}/api/system/SystemInfo`)
+			.get<any>(this.SYSTEM_INFO.disposableServerUrl(origin))
 			.then(info => {
 				return info.data.delegateInfo;
 			});
@@ -209,7 +222,11 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 			await Promise.all([
 				wait_io.promise,
 				this.appFetch
-					.get<any>(`${host}:${port}/api/system/runtime`)
+					.get<any>(
+						this.SYSTEM_RUNTIME.disposableServerUrl(
+							`${host}:${port}`,
+						),
+					)
 					.then(runtime => {
 						// this.formData.hostname =
 						// 	Math.random() > 0.5
@@ -349,6 +366,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 		webPort: 0,
 		publicKey: "",
 		userName: "",
+		has_system_key: false,
 		delegate_pwd: "",
 	};
 	getPeerDetail() {}

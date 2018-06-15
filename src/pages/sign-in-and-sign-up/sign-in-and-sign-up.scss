@@ -473,4 +473,14 @@ page-sign-in-and-sign-up {
     z-index: -100000;
     white-space: pre;
   }
+
+  .version-info {
+    position: fixed;
+    bottom: 1rem;
+    left: 0;
+    width: 100%;
+    font-size: 1.3rem;
+    text-align: center;
+    color: rgba(#fff, 0.8);
+  }
 }

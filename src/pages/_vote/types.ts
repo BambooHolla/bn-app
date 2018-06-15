@@ -54,5 +54,6 @@ export type MiningMachine = {
 	webPort: number;
 	publicKey: string;
 	userName: string;
+	has_system_key: boolean;
 	delegate_pwd: string;
 };

@@ -148,7 +148,9 @@ export class PeerServiceProvider extends CommonService {
         if (peer.hasOwnProperty("ip")) {
           await this.fetch
             .get<{ peers: TYPE.PeerModel[] }>(
-              "http://" + peer.ip + ":" + peer.port + this.PEERS_URL.path,
+              this.PEERS_URL.disposableServerUrl(
+                "http://" + peer.ip + ":" + peer.port,
+              ),
             )
             .then(res => {
               if (res.peers) {
@@ -165,7 +167,7 @@ export class PeerServiceProvider extends CommonService {
         }
         if (typeof peer == "string") {
           await this.fetch
-            .get<{ peers: any[] }>(peer + this.PEERS_URL.path)
+            .get<{ peers: any[] }>(this.PEERS_URL.disposableServerUrl(peer))
             .then(res => {
               if (res.peers) {
                 for (var i of res.peers) {
@@ -203,11 +205,11 @@ export class PeerServiceProvider extends CommonService {
    * return -1 -- 同步错误
    */
   async getPeerSync(host?: string) {
-    let peerSyncUrl = host
-      ? host + this.PEER_SYNC
-      : AppSettingProvider.SERVER_URL + this.PEER_SYNC;
+    if (host) {
+      this.PEER_SYNC.disposableServerUrl(host);
+    }
 
-    let data = await this.fetch.get<any>(peerSyncUrl);
+    let data = await this.fetch.get<any>(this.PEER_SYNC);
     if (data.success) {
       if (data.sync == false) {
         return 1;
@@ -253,7 +255,10 @@ export class PeerServiceProvider extends CommonService {
     return new Promise<{ success: boolean; webPort: number }>(
       (resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open("GET", `http://${ip}:${port}/api/system/portInfo`);
+        xhr.open(
+          "GET",
+          `http://${ip}:${port}/api/${AppUrl.BACKEND_VERSION}system/portInfo`,
+        );
         xhr.send();
         setTimeout(() => {
           xhr.abort();

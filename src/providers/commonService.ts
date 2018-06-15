@@ -22,6 +22,7 @@ export class AppUrl {
   }
   disposableServerUrl(server_url: string) {
     this._disposable_server_url = server_url;
+    return this;
   }
 }
 export class CommonService extends EventEmitter {
