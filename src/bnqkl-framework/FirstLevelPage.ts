@@ -484,7 +484,7 @@ export class FirstLevelPage extends FLP_Data {
       ele.style.animationDelay = "";
     }
 
-    /// 关闭了 IOS Android 头部的垫片，体验不好
+    /// 关闭了 IOS Animation头部的垫片，体验不好
     // this.fixIOSCacheBug(ele);
   }
   fixIOSCacheBug(ele: HTMLElement) {

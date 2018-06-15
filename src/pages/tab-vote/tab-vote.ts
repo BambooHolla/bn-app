@@ -350,6 +350,8 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   routeToVoteDetail() {
+    this.notifyExtendPanel("HEIGHT:CHANGED");
+    this.notifyExtendPanel("ROUND:CHANGED");
     this.min_starting = false;
     this.setBgTransparent(false);
     this.page_status = VotePage.VoteDetail;
@@ -741,13 +743,20 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
 
+  pre_notify_height = 0;
+
   @ViewChild("extendsPanel1")
   extendsPanel1?: VotePreRoundIncomeRankingComponent;
   @ViewChild("extendsPanel2") extendsPanel2?: VoteCurrentBlockIncomeComponent;
   @ViewChild("extendsPanel3") extendsPanel3?: VoteIncomeTrendComponent;
   @ViewChild("extendsPanel4") extendsPanel4?: VoteMyContributionComponent;
   @ViewChild("extendsPanel5") extendsPanel5?: VotePreRoundIncomeRateComponent;
-  notifyExtendPanel(eventname) {
+  notifyExtendPanel(eventname, force?: boolean) {
+    const current_height = this.appSetting.getHeight();
+    if (this.pre_notify_height === current_height && !force) {
+      return;
+    }
+    this.pre_notify_height = current_height;
     // TODO: 根据激活的卡片进行优化通知
     if (this.extendsPanel1) {
       this.notifyViewEvent(this.extendsPanel1, eventname);
