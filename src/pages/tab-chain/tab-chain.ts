@@ -177,6 +177,9 @@ export class TabChainPage extends FirstLevelPage {
     if (this.download_lock) {
       return;
     }
+    if (localStorage.getItem("AUTO_DOWNLOAD_BLOCKCHAINE") === "disabled") {
+      return;
+    }
     this.download_lock = new PromiseOut();
     try {
       this.showLoading();

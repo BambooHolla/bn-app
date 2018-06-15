@@ -81,6 +81,9 @@ export class TabsPage extends FLP_Lifecycle {
   @TabsPage.didLeave
   selectedTabPage_didLeave() {
     this.selectedTabPage && this.selectedTabPage.ionViewDidLeave();
+
+    // Bad Design : 强行执行区块链列表页面的离开
+    this.chainTab.ionViewDidLeave();
   }
 
   get is_power_saving_mode() {
