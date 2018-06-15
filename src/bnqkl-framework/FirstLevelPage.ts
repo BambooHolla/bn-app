@@ -483,7 +483,9 @@ export class FirstLevelPage extends FLP_Data {
     } else {
       ele.style.animationDelay = "";
     }
-    this.fixIOSCacheBug(ele);
+
+    /// 关闭了 IOS Android 头部的垫片，体验不好
+    // this.fixIOSCacheBug(ele);
   }
   fixIOSCacheBug(ele: HTMLElement) {
     if (this.isIOS) {
