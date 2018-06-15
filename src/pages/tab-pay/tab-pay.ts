@@ -57,6 +57,7 @@ export class TabPayPage extends FirstLevelPage {
       if (id === "account-scan-add-contact") {
         if (typeof data === "string") {
           this.formData.transfer_address = data;
+          this.cdRef.markForCheck();
         } else if (data && data.protocol === "ifmchain-transaction") {
           this.receiptOfflineTransaction(data.transaction);
         }

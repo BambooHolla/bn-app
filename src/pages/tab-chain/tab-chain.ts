@@ -111,7 +111,7 @@ export class TabChainPage extends FirstLevelPage {
   }
 
   @TabChainPage.onInit
-  @asyncCtrlGenerator.loading("CHECK_BLOCKCHAIN_IS_COMPLETE")
+  @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE")
   async checkBlockchainComplete() {
     // 检测现有数据库中最低的块是否为1
     let block_1:

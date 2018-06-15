@@ -171,7 +171,7 @@
   "FEE": "Fee",
   "CHECK_BLOCK": "Check block",
   "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#":
-    "Full blockchain downloading {{progress}}",
+    "Full blockchain downloading {{progress}}%",
   "DOWNLOAD_BLOCKCHAIN_COMPLETE": "Download blockchain complete",
   "//": "chain-block-detail",
   "CHAIN-BLOCK-DETAIL": "Block info",
