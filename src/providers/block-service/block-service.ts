@@ -24,6 +24,7 @@ import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
+import { getJsonObjectByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
 import {
   DbCacheProvider,
   HTTP_Method,
@@ -294,6 +295,11 @@ export class BlockServiceProvider extends FLP_Tool {
   }
   private async _listenGetAndSetHeight() {
     this.io.on("blocks/change", data => {
+      // 计算流量大小
+      this.appSetting.settings.contribution_traffic +=
+        getJsonObjectByteSize(data) /*返回的JSON对象大小*/ +
+        19 /*基础消耗*/;
+
       this._expectblock_uncommited = 0;
       this._expectblock_fee_reward = 0;
       this.getExpectBlockInfo().then(expect_block => {

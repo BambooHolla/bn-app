@@ -191,6 +191,7 @@ export class BenefitServiceProvider extends CommonService {
     }
 
     return this.getBenefits({
+      orderBy: "timestamp:desc",
       page,
       pageSize,
       address,

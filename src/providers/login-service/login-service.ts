@@ -43,7 +43,7 @@ export class LoginServiceProvider extends FLP_Tool {
   ) {
     super();
     console.group("Hello LoginServiceProvider Provider");
-    tryRegisterGlobal("LoginServiceProviderInstance", this);
+    tryRegisterGlobal("loginService", this);
     this.loginStatus = this.appSetting.user_token.map(val => {
       // console.log("USER TOKEN:", val);
       return !!val;

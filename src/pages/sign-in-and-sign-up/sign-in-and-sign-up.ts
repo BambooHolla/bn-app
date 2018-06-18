@@ -13,6 +13,7 @@ import {
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { PeerServiceProvider } from "../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import { MyApp } from "../../app/app.component";
 // import {
 //   LoginFormInOut,
@@ -44,7 +45,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     super(navCtrl, navParams);
   }
 
-  get app_version(){
+  get app_version() {
     return AppSettingProvider.APP_VERSION;
   }
   // @SignInAndSignUpPage.willEnter

@@ -633,6 +633,7 @@ export class TransactionServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
     password: string,
     secondSecret?: string,
+    publicKey = this.user.publicKey
   ) {
     amount = parseFloat(amount);
     if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
@@ -647,7 +648,7 @@ export class TransactionServiceProvider {
       secret: password,
       amount: amount.toString(),
       recipientId: recipientId,
-      publicKey: this.user.publicKey,
+      publicKey,
       fee: fee.toString(),
     };
     if (secondSecret) {
