@@ -183,30 +183,12 @@ export class TransactionServiceProvider {
    * 获取交易时间，交易所需
    */
   async getTimestamp() {
-    if (navigator.onLine) {
-      return await this.fetch.get<{ timestamp: number }>(this.GET_TIMESTAMP);
-    } else {
-      // 离线状态下，从本地生成时间戳
-      //种子的UTC时间
-      const d = new Date(
-        Date.UTC(
-          AppSettingProvider.SEED_DATE[0],
-          AppSettingProvider.SEED_DATE[1],
-          AppSettingProvider.SEED_DATE[2],
-          AppSettingProvider.SEED_DATE[3],
-          AppSettingProvider.SEED_DATE[4],
-          AppSettingProvider.SEED_DATE[5],
-          AppSettingProvider.SEED_DATE[6],
-        ),
-      );
-      //生成当前时间戳
-      const t = parseInt((d.getTime() / 1000).toString());
+    const t = AppSettingProvider.seedDateTimestamp;
 
-      const now = parseInt((new Date().getTime() / 1000).toString());
-      return {
-        timestamp: now - t,
-      };
-    }
+    const now = Math.floor(Date.now() / 1000);
+    return {
+      timestamp: now - t,
+    };
   }
 
   async createTransaction(txData) {
@@ -633,7 +615,7 @@ export class TransactionServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
     password: string,
     secondSecret?: string,
-    publicKey = this.user.publicKey
+    publicKey = this.user.publicKey,
   ) {
     amount = parseFloat(amount);
     if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
