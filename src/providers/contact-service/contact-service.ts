@@ -234,7 +234,7 @@ export class ContactServiceProvider {
     }
 
     let txData: any = {
-      type: this.TransactionTypes.FOLLOW,
+      type: TransactionTypes.FOLLOW,
       amount: "0",
       secret: secret,
       asset: {

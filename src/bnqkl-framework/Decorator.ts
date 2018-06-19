@@ -507,13 +507,16 @@ export function autoRetryWrapGenerator(
   };
 }
 
-export function singleRunWrap() {
+export function singleRunWrap(opts: { update_key?: string } = {}) {
   return function(target, name, descriptor) {
     const source_fun = descriptor.value;
     var run_lock: PromiseOut<any> | undefined;
     descriptor.value = async function lock(...args) {
       if (run_lock) {
         return run_lock.promise;
+      }
+      if (opts.update_key) {
+        this[opts.update_key] = true;
       }
       run_lock = new PromiseOut();
       const promise = run_lock.promise;
@@ -524,6 +527,9 @@ export function singleRunWrap() {
         run_lock.reject(err);
       } finally {
         run_lock = undefined;
+        if (opts.update_key) {
+          this[opts.update_key] = false;
+        }
       }
       return promise;
     };

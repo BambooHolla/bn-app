@@ -43,41 +43,26 @@ export class AccountAddContactPage extends SecondLevelPage {
     if (address) {
       this.formData.search_text = address;
       if (this.navParams.get("auto_search")) {
-        this.searchContacts(0);
+        this.addContacts();
       }
     }
   }
 
-  private _ti;
-  searchContacts(t = 200) {
-    clearTimeout(this._ti);
-    this._ti = setTimeout(() => {
-      this.getUserPassword({
-        custom_fee: true,
-      })
-        .then(pwdData => {
-          const { password, pay_pwd, custom_fee } = pwdData;
-          this._searchContacts(password, pay_pwd, custom_fee);
-        })
-        .catch(() => {
-          /*密码设置异常不做处理*/
-        });
-    }, t);
-  }
+  adding_contact = false
 
-  // get canSubmit() {
-  //   const address = this.formData.search_text;
-  //   return super.canSubmit ;//&& address.length === 32;
-  // }
   @asyncCtrlGenerator.error(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_ERROR"),
   )
   @asyncCtrlGenerator.success(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
   )
-  private async _searchContacts(password, pay_pwd, custom_fee?: number) {
-    // 直接添加，暂时不支持搜索
+  @asyncCtrlGenerator.single({update_key:"adding_contact"})
+  async addContacts() {
+    const { password, pay_pwd, custom_fee } = await this.getUserPassword({
+      custom_fee: true,
+    });
     const address = this.formData.search_text;
+    // 直接添加，暂时不支持搜索
     const is_success = await this.contactService.addContact(
       password,
       address,
@@ -86,4 +71,5 @@ export class AccountAddContactPage extends SecondLevelPage {
     );
     this.finishJob();
   }
+
 }
