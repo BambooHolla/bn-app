@@ -69,7 +69,8 @@ export class PwdInputPage extends FirstLevelPage {
     const custom_fee = parseFloat(this.formData.custom_fee);
     if (
       (this.formData.need_custom_fee && custom_fee <= 0) ||
-      custom_fee > parseFloat(this.userInfo.balance)
+      custom_fee > parseFloat(this.userInfo.balance) ||
+      custom_fee < 1 / 1e8
     ) {
       return {
         ErrorRange: true,

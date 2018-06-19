@@ -39,6 +39,7 @@ import { VoteIncomeTrendComponent } from "../../components/vote-income-trend/vot
 import { VoteMyContributionComponent } from "../../components/vote-my-contribution/vote-my-contribution";
 import { VotePreRoundIncomeRateComponent } from "../../components/vote-pre-round-income-rate/vote-pre-round-income-rate";
 import { addSound, playSound } from "../../components/sound";
+import { isErrorFromAsyncerror } from "../../bnqkl-framework/Decorator";
 
 type EarthConfig = {
   body_color: number;
@@ -93,13 +94,18 @@ export class TabVotePage extends FirstLevelPage {
       if (!err) {
         return;
       }
-      const err_message = err instanceof Error ? err.message : err;
-      if (err_message === "you have already voted") {
-        // 启动倒计时界面
-        console.log("%c已经投票，倒计时等待结果", "font-size:3em;color:green;");
-        return err;
+      if (!isErrorFromAsyncerror(err)) {
+        const err_message = err instanceof Error ? err.message : err;
+        if (err_message === "you have already voted") {
+          // 启动倒计时界面
+          console.log(
+            "%c已经投票，倒计时等待结果",
+            "font-size:3em;color:green;",
+          );
+          return err;
+        }
+        this.showErrorDialog(err_message);
       }
-      this.showErrorDialog(err_message);
       this.stopMin();
       this.autoStartButtonPressOut(); // 取消按钮动画，必要的话
     });

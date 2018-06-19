@@ -26,6 +26,7 @@ import { asyncCtrlGenerator } from "../../../src/bnqkl-framework/Decorator";
 import {
   PromiseOut,
   PromisePro,
+  PromiseType,
 } from "../../../src/bnqkl-framework/PromiseExtends";
 import * as TYPE from "./min.types";
 export * from "./min.types";
@@ -73,6 +74,25 @@ export class MinServiceProvider extends FLP_Tool {
             });
           }
         });
+      }
+    });
+
+    // 监听二次密码的变动
+    this.appSetting.secondPublicKey.subscribe(async secondPublicKey => {
+      // 如果已经开启自动挖矿，并且有缓存数据，检测缓存数据是否需要更新
+      if (this.appSetting.settings.background_mining) {
+        try {
+          const perRoundPwdInfo = await this.getPerRoundPwdInfo();
+          if (perRoundPwdInfo) {
+            await this.refreshPerRoundPwdInfo(
+              "@@AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT",
+            );
+          }
+        } catch (err) {
+          // 直接在这里停止挖矿，确保tabVotePage逻辑正确
+          this.stopVote();
+          this._vote_error(err);
+        }
       }
     });
   }
@@ -208,7 +228,7 @@ export class MinServiceProvider extends FLP_Tool {
       return;
     }
     if (parseFloat(fee) > parseFloat(this.userInfo.balance)) {
-      throw new Error(FLP_Tool.getTranslateSync("NOT_ENOUGH_BALANCE_TO_VOTE"));
+      throw new Error("@@NOT_ENOUGH_BALANCE_TO_VOTE");
     }
     const voted_delegate_list = await this.voted_delegates_db.find({
       publicKey: { $in: voteable_delegates.map(del => del.publicKey) },
@@ -269,12 +289,8 @@ export class MinServiceProvider extends FLP_Tool {
    */
   @FLP_Form.FromGlobal alertCtrl!: AlertController;
   @asyncCtrlGenerator.single()
-  @asyncCtrlGenerator.error(
-    () => FLP_Form.getTranslate("AUTO_VOTE_ERROR"),
-    undefined,
-    undefined,
-    true,
-  )
+  @asyncCtrlGenerator.error("@@AUTO_VOTE_ERROR", undefined, undefined, true)
+  @FLP_Tool.translateError
   async autoVote(round, from?: any) {
     if (!this.appSetting.settings.background_mining) {
       return;
@@ -287,19 +303,19 @@ export class MinServiceProvider extends FLP_Tool {
       { limit: 57 },
     );
     if (voted_delegate_list.length >= 57) {
-      if ("tab-vote-page" === from) {
+      if ("tab-vote-page" !== from) {
         // 直接告诉主界面投票成了
-        await this.tryVote([], round, this._pre_round_pwd_info);
+        this._vote_success();
+        return;
       }
-      return;
     }
 
     // 获取可投的账户
-    const { delegates: voteable_delegates } = await this.getVoteAbleDelegates(
-      0,
-      57,
-      this.userInfo.address,
-    );
+    const { delegates: voteable_delegates } =
+      // 如果已经投过票了，自动投票模式下不会提供可投的57票
+      voted_delegate_list.length === 0
+        ? { delegates: [] }
+        : await this.getVoteAbleDelegates(0, 57, this.userInfo.address);
     if (voteable_delegates.length || true) {
       // 有票可投时才需要输入要密码
       var title: string | undefined;
@@ -309,37 +325,61 @@ export class MinServiceProvider extends FLP_Tool {
         title = "@@START_VOTE_VERIFY";
       }
       if (title) {
-        const cache_key =
-          this.userInfo.publicKey + "|" + this.userInfo.secondPublicKey;
-        if (
-          this._pre_round_pwd_info &&
-          this._pre_round_pwd_info.cache_key != cache_key
-        ) {
-          // 二次密码发生了变动，或者帐号发生了变动
-          this._pre_round_pwd_info = undefined;
-        }
-        if (!this.userInfo.address) {
-          // 如果已经没有用户处于在线状态，终止挖矿
-          return;
-        }
-        if (!this._pre_round_pwd_info) {
-          this._pre_round_pwd_info = await FLP_Form.prototype.getUserPassword.call(
-            this,
-            {
-              title,
-            },
-          );
-          this._pre_round_pwd_info.cache_key = cache_key;
-        }
-      }
-
-      if (!this._pre_round_pwd_info) {
-        throw new Error();
+        await this.getPerRoundPwdInfo();
+        await this.refreshPerRoundPwdInfo(title);
       }
     }
-    await this.tryVote(voteable_delegates, round, this._pre_round_pwd_info);
+    const pre_round_pwd_info = await this.getPerRoundPwdInfo();
+    if (!pre_round_pwd_info) {
+      throw new Error();
+    }
+    await this.tryVote(voteable_delegates, round, pre_round_pwd_info);
   }
-  private _pre_round_pwd_info?: any;
+  private _pre_round_pwd_info?: { cache_key: string } & PromiseType<
+    ReturnType<typeof FLP_Form.prototype.getUserPassword>
+  >;
+  private _pre_round_pwd_info_block?: PromiseOut<void>;
+  async refreshPerRoundPwdInfo(input_dialog_title: string) {
+    const lock = new PromiseOut<void>();
+    this._pre_round_pwd_info_block = lock;
+    try {
+      const cache_key =
+        this.userInfo.publicKey + "|" + this.userInfo.secondPublicKey;
+      if (
+        this._pre_round_pwd_info &&
+        this._pre_round_pwd_info.cache_key != cache_key
+      ) {
+        // 二次密码发生了变动，或者帐号发生了变动
+        this._pre_round_pwd_info = undefined;
+      }
+      if (!this.userInfo.address) {
+        // 如果已经没有用户处于在线状态，终止挖矿
+        return;
+      }
+      if (!this._pre_round_pwd_info) {
+        const pre_round_pwd_info = await FLP_Form.prototype.getUserPassword.call(
+          this,
+          {
+            title: input_dialog_title,
+          },
+        );
+        pre_round_pwd_info.cache_key = cache_key;
+        this._pre_round_pwd_info = pre_round_pwd_info;
+      }
+    } catch (err) {
+      lock.reject(err);
+    } finally {
+      lock.resolve();
+      this._pre_round_pwd_info_block = undefined;
+    }
+    return lock.promise;
+  }
+  async getPerRoundPwdInfo() {
+    if (this._pre_round_pwd_info_block) {
+      await this._pre_round_pwd_info_block.promise;
+    }
+    return this._pre_round_pwd_info;
+  }
   /*是否处于挖矿状态*/
   vote_status = new BehaviorSubject(false);
 
@@ -352,19 +392,21 @@ export class MinServiceProvider extends FLP_Tool {
     from_page?: FLP_Form,
   ) {
     await this._vote(voteable_delegates, userPWD.password, userPWD.pay_pwd)
-      .then(() => {
-        this.tryEmit("vote-success");
-        this.vote_status_detail = null;
-        this.vote_status.next(true);
-      })
-      .catch(err => {
-        this.vote_status_detail = err;
-        const has_handler = this.tryEmit("vote-error", err);
-        this.vote_status.next(false);
-        if (!has_handler) {
-          throw err;
-        }
-      });
+      .then(this._vote_success.bind(this))
+      .catch(this._vote_error.bind(this));
+  }
+  private _vote_success() {
+    this.tryEmit("vote-success");
+    this.vote_status_detail = null;
+    this.vote_status.next(true);
+  }
+  private _vote_error(err) {
+    this.vote_status_detail = err;
+    const has_handler = this.tryEmit("vote-error", err);
+    this.vote_status.next(false);
+    if (!has_handler) {
+      throw err;
+    }
   }
 
   vote_status_detail: Error | string | null = null;

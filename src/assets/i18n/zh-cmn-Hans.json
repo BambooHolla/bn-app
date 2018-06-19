@@ -128,6 +128,7 @@
 
   "//": "tab-vote",
   "AUTO_MINING_NEED_INPUT_PAY_PWD": "启动自动挖矿需要确认支付密码",
+  "AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT": "设置支付密码后自动挖矿需要重新输入支付密码",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",
   "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
   "AUTO_VOTE_ERROR": "自动挖矿失败",
@@ -618,6 +619,7 @@
   "Second passphrase verified error": "支付密码验证出错",
   "NOT_MORE_VOTE_ABLE_DELEGATE": "没有可投的委托人",
   "NOT_ENOUGH_BALANCE_TO_VOTE": "挖矿手续费不足",
+  "Invalid passphrase": "登录密码错误",
 
   "//": "OVER"
 }

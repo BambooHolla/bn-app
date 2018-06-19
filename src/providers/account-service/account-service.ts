@@ -18,6 +18,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import * as IFM from "ifmchain-ibt";
 import { Mdb } from "../mdb";
 import { DbCacheProvider } from "../db-cache/db-cache";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 
 // TODO：接入Token管理，将用户相关的数据使用内存进行缓存。改进用户相关的数据请求。@Gaubee
 @Injectable()
@@ -245,32 +246,29 @@ export class AccountServiceProvider {
    * 设置支付密码
    * @param {string} secondScret
    */
+  @FLP_Tool.translateError
   async setSecondPassphrase(
-    password: string,
-    secondSecret: string,
-    second?: string,
+    secret: string,
+    newSecondSecret: string,
+    oldSecondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee),
+    publicKey = this.user.publicKey,
   ) {
     let txData = {
       type: this.TransactionTypes.SIGNATURE,
       asset: {
         signature: {
-          publicKey: this.user.userInfo.publicKey,
+          publicKey,
         },
       },
-      amount: "0",
-      secret: password,
-      secondSecret: secondSecret,
-      publicKey: this.user.publicKey,
+      secret,
+      secondSecret: oldSecondSecret ? oldSecondSecret : newSecondSecret,
+      newSecondSecret: oldSecondSecret ? newSecondSecret : undefined,
+      publicKey,
       fee: fee.toString(),
     };
 
-    try {
-      await this.transactionService.putTransaction(txData);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw new Error("Set second passphrase error");
-    }
+    await this.transactionService.putTransaction(txData);
+    return true;
   }
 }

@@ -192,7 +192,7 @@ export class TransactionServiceProvider {
   }
 
   async createTransaction(txData) {
-    if (this.user.userInfo.balance <= 0) {
+    if (parseInt(this.user.userInfo.balance) <= 0) {
       throw this.fetch.ServerResError.getI18nError("not enough balance");
     }
     if (
@@ -281,8 +281,8 @@ export class TransactionServiceProvider {
       }
 
       if (
-        (txData.type === "SEND" && !txData.recipientId) ||
-        (txData.type === "SEND" && !txData.amount)
+        (txData.type === TransactionTypes.SEND && !txData.recipientId) ||
+        (txData.type === TransactionTypes.SEND && !txData.amount)
       ) {
         console.error("tx is send and recipient is null");
         return false;

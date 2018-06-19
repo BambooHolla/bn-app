@@ -108,6 +108,15 @@ export class AppSettingProvider extends CommonService {
         return "";
       })
       .distinctUntilChanged<string>();
+    this.secondPublicKey = this.user_token
+      .map(token => {
+        const token_info = this.getUserToken();
+        if (token_info) {
+          return token_info.secondPublicKey;
+        }
+        return "";
+      })
+      .distinctUntilChanged<string>();
 
     const default_settings = { ...this.settings };
     const get_settings_key = () => {
@@ -266,6 +275,7 @@ export class AppSettingProvider extends CommonService {
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
   user_token: BehaviorSubject<string>;
   account_address: Observable<string>;
+  secondPublicKey: Observable<string>;
   private _token_timeout_ti: any;
   getUserToken() {
     try {

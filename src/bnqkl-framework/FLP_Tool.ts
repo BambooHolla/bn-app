@@ -44,6 +44,41 @@ export class FLP_Tool {
     }
     return false;
   }
+
+  static translateError(
+    target: any,
+    name: string,
+    descriptor: PropertyDescriptor,
+  ) {
+    const hidden_prop_name = `-G-${name}-`;
+    const source_fun = descriptor.value;
+    const throwTranslateError = err => {
+      if (typeof err === "object" && err && err.message) {
+        err.message = FLP_Tool.getTranslateSync(err.message);
+        if (!(err instanceof Error)) {
+          err = new Error(err.message);
+        }
+        throw err;
+      }
+      if (typeof err === "string") {
+        throw FLP_Tool.getTranslateSync(err);
+      }
+      throw err;
+    };
+    descriptor.value = function translateErrorWrap(...args) {
+      try {
+        const res = source_fun.apply(this, args);
+        if (res instanceof Promise) {
+          return res.catch(throwTranslateError);
+        }
+        return res;
+      } catch (err) {
+        throwTranslateError(err);
+      }
+    };
+    descriptor.value.source_fun = source_fun;
+    return descriptor;
+  }
   static get isInCordova() {
     return window["cordova"] && !(window["cordova"] instanceof HTMLElement);
   }

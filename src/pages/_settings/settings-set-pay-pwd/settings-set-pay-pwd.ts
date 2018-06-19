@@ -32,11 +32,11 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password } = await this.getUserPassword({
+    const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SET_PAY_PWD_TITLE",
       force_require_password: true,
     });
-    return this._submit(password, this.formData.transfer_fee);
+    return this._submit(password, this.formData.transfer_fee, pay_pwd);
   }
   @asyncCtrlGenerator.loading(() =>
     SettingsSetPayPwdPage.getTranslate("SET_PAY_PWD_SUBMITING"),
@@ -47,12 +47,12 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
   @asyncCtrlGenerator.success(() =>
     SettingsSetPayPwdPage.getTranslate("SET_PAY_PWD_SUBMIT_SUCCESS"),
   )
-  async _submit(password: string, custom_fee?: number) {
+  async _submit(password: string, custom_fee?: number, old_pay_pwd?: string) {
     return this.accountService
       .setSecondPassphrase(
         password,
         this.formData.pay_pwd,
-        undefined,
+        old_pay_pwd,
         custom_fee,
       )
       .then(() => {
