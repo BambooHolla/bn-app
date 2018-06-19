@@ -48,7 +48,7 @@
       <div class="progress">
         <div class="time-point submitted-time">
           <div class="dot light"></div>
-          <div class="time">{{current_transfer?.dateCreated|amDateFormat:"hh:mm"}}</div>
+          <div class="time">{{current_transfer?.dateCreated|amDateFormat:"HH:mm"}}</div>
           <div class="status">{{'SUBMITTED_TIME'|translate}}</div>
           <svg class="progress-line" width="50vw" height="1" version="1.1" xmlns="http://www.w3.org/2000/svg">
               <line stroke-dasharray="1, 5" x1="0" y1="1" x2="50vw" y2="1" style="stroke: #4adae6; stroke-width: 1px;">
@@ -60,7 +60,7 @@
         <div class="time-point expected-confirmation-time">
           <ng-container *ngIf="current_transfer?.blockId">
             <div class="dot light"></div>
-            <div class="time">{{confirmed_timestamp|timestamp:"timezone"|amDateFormat:"hh:mm"}}</div>
+            <div class="time">{{confirmed_timestamp|timestamp|amDateFormat:"hh:mm"}}</div>
             <div class="status">{{'CONFIRMED_TIME'|translate}}</div>
           </ng-container>
           <ng-container *ngIf="!current_transfer?.blockId">

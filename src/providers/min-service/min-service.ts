@@ -236,7 +236,7 @@ export class MinServiceProvider extends FLP_Tool {
     // TODO：如果投票因为手续费过低而失败，应该根据提示的最低手续费进行投票，并将这个最低手续费进行缓存(到setting.min_auto_vote_fee中)
     //成功完成交易
     try {
-      await this.transactionService.putTransaction(txData);
+      var vote_res = await this.transactionService.putTransaction(txData);
     } catch (err) {
       if (err && err.details && err.details.minFee) {
         const minFee = parseFloat(err.details.minFee) / 1e8;
@@ -261,6 +261,7 @@ export class MinServiceProvider extends FLP_Tool {
 
     console.log("%c我挖矿了", "color:purple");
     this.appSetting.settings.digRound = this.appSetting.getRound();
+    return vote_res;
   }
 
   /**

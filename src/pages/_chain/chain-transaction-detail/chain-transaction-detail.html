@@ -53,7 +53,7 @@
         {{'TRANSACTION_timestamp'|translate}}
       </div>
       <div class="right">
-        {{transaction?.timestamp|timestamp:"timezone"|amDateFormat:"YYYY.MM.DD HH:mm:ss"}}
+        {{transaction?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD HH:mm:ss"}}
       </div>
     </div>
     <div class="common-item dapp" *ngIf="transaction?.dapp">

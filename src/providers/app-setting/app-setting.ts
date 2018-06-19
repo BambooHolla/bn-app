@@ -47,18 +47,18 @@ export class AppSettingProvider extends CommonService {
   }
   // static SERVER_URL = "http://47.104.142.234:6062";
   static SEED_DATE = SEED_DATE;
-  static seedDate: Date = new Date(
-    SEED_DATE[0],
-    SEED_DATE[1],
-    SEED_DATE[2],
-    SEED_DATE[3],
-    SEED_DATE[4],
-    SEED_DATE[5],
-    SEED_DATE[6],
-  );
   static seedDateTimestamp = Math.floor(
-    AppSettingProvider.seedDate.getTime() / 1000,
+    Date.UTC(
+      SEED_DATE[0],
+      SEED_DATE[1],
+      SEED_DATE[2],
+      SEED_DATE[3],
+      SEED_DATE[4],
+      SEED_DATE[5],
+      SEED_DATE[6],
+    ) / 1000,
   );
+  static seedDate: Date = new Date(AppSettingProvider.seedDateTimestamp * 1000);
   static timezoneoffset = -AppSettingProvider.seedDate.getTimezoneOffset() * 60;
   // static SERVER_URL = "http://test1.ifmchain.org:6062";
   static SERVER_TIMEOUT = 1000;

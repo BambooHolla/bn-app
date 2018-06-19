@@ -29,6 +29,7 @@ import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
+import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 
 import { CommonTransition } from "./common.transition";
 import {

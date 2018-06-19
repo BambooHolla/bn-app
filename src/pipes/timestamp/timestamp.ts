@@ -10,10 +10,7 @@ export class TimestampPipe implements PipeTransform {
      */
     transform = TimestampPipe.transform;
     static transform(value: number, type?) {
-        var data_stamp = value + AppSettingProvider.seedDateTimestamp;
-        if (type === "timezone") {
-            data_stamp += AppSettingProvider.timezoneoffset;
-        }
+        const data_stamp = value + AppSettingProvider.seedDateTimestamp;
         //获得传入时间戳的准确时间戳
         return new Date(data_stamp * 1000);
     }
