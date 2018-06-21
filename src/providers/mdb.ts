@@ -1,4 +1,4 @@
-import { tryRegisterGlobal } from "../bnqkl-framework/FLP_Tool";
+import { tryRegisterGlobal } from "../bnqkl-framework/helper";
 import Db from "./gangodb_core/db";
 import Collection from "./gangodb_core/collection";
 const mdb = new Db("ibt", 8, {

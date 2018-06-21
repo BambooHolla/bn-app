@@ -95,9 +95,7 @@ export class PwdInputPage extends FirstLevelPage {
     const custom_title = this.navParams.get("title");
     if (typeof custom_title === "string") {
       if (custom_title.startsWith("@@")) {
-        this.getTranslate(custom_title.substr(2)).then(
-          t => (this.custom_title = t),
-        );
+        this.custom_title = this.getTranslateSync(custom_title.substr(2));
       } else {
         this.custom_title = custom_title;
       }

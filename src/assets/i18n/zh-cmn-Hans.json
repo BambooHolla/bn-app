@@ -201,6 +201,7 @@
   "TRANSCATION_RECIPIENT": "接收者",
 
   "//": "account-my-contacts",
+  "CONFIRM_TO_IGNORE_THIS_CONTACT":"确定要将此联系人拉入黑名单？",
   "ADD_UNCONFIRM_CONTACT_TITLE": "同意添加联系人",
   "REMOVE_CONFIRMED_CONTACT_TITLE": "移除联系人",
   "SCAN_QR_CODE_TO_ADD_CONTACT": "扫一扫添加联系人",
@@ -273,6 +274,8 @@
   "INPUT_ADDRESS_TO_ADD_CONTACT": "输入地址添加联系人",
   "UNCONFIM_CONTACT_LIST": "等待确认列表",
   "NO_CONTACT": "暂无联系人",
+  "LOADING_CONTACT": "同步联系人中……",
+  "SEARCH_#NUM#_CONTACTS": "搜索{{num}}位联系人",
   "ADD_CONTACT": "添加联系人",
 
   "//": "pay-receive",

@@ -1,4 +1,3 @@
-import { Executor } from "./RxExtends";
 import * as EventEmitter from "eventemitter3";
 export type PromiseType<T extends Promise<any>> = T extends Promise<infer R>?R:any;
 

@@ -227,6 +227,7 @@ export class TabPayPage extends FirstLevelPage {
   resetFormData() {
     super.resetFormData();
     this.formData.transfer_amount = "";
+    this.cdRef && this.cdRef.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
     TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"),

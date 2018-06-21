@@ -12,17 +12,8 @@ import {
   ToastController,
   ModalController,
 } from "ionic-angular";
+export { is_dev, tryRegisterGlobal } from "./helper";
 
-const is_dev = (() => {
-  const test_fun = function DEV_WITH_FULL_NAME() {};
-  return test_fun.name === "DEV_WITH_FULL_NAME";
-  // return isDevMode();
-})();
-export function tryRegisterGlobal(name, obj) {
-  if (is_dev) {
-    return (window[name] = obj);
-  }
-}
 export class FLP_Tool {
   constructor() {}
   // 全局弹出层控制器
@@ -371,7 +362,7 @@ export class FLP_Tool {
       .take(1)
       .toPromise();
   }
-  getTranslateSync(key: string | string[], interpolateParams?: Object) {
+  getTranslateSync(key: string | string[], interpolateParams?: Object): string {
     return this.translate.instant(key, interpolateParams);
   }
   static getTranslateSync(key: string | string[], interpolateParams?: Object) {
