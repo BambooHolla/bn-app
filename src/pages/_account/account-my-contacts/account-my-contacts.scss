@@ -67,7 +67,11 @@ page-account-my-contacts {
       &.open {
         > .right {
           > ali-icon {
-            transform: rotate(0deg);
+            transform: rotate(0deg) scale(0.9);
+            opacity: 0.8;
+            > .ifmicon::before {
+              text-shadow: none;
+            }
           }
         }
       }
@@ -75,6 +79,9 @@ page-account-my-contacts {
         > ali-icon {
           transition-duration: 250ms;
           transform: rotate(-90deg);
+          > .ifmicon::before {
+            text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.3);
+          }
         }
       }
       > .left {
