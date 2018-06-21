@@ -31,7 +31,25 @@ export class AccountMyContactsPage extends SecondLevelPage {
     public viewCtrl: ViewController,
   ) {
     super(navCtrl, navParams, true, tabs);
-    this.auto_header_shadow_when_scroll_down = true;
+    // this.auto_header_shadow_when_scroll_down = true;
+  }
+  get search_placeholder() {
+    if (this.loading_my_contact_list) {
+      if (this.my_contact_list.length == 0) {
+        return this.getTranslateSync("NO_CONTACT");
+      } else {
+        return this.getTranslateSync("SEARCH_#NUM#_CONTACTS", {
+          num: this.my_contact_list.length,
+        });
+      }
+    } else {
+      return this.getTranslateSync("LOADING_CONTACT");
+    }
+  }
+
+  hide_unconfirm_contact_list = false;
+  toggleUnconfirmContactList() {
+    this.hide_unconfirm_contact_list = !this.hide_unconfirm_contact_list;
   }
   unconfirm_contact_list: ContactModel[] = [];
   confirmed_contact_list: ContactModel[] = [];
@@ -77,10 +95,20 @@ export class AccountMyContactsPage extends SecondLevelPage {
       this.loading_my_contact_list = false;
     }
   }
+  ignoreUnconfirmContact(contact: ContactModel) {
+    this.showConfirmDialog(
+      "@@CONFIRM_TO_IGNORE_THIS_CONTACT",
+      () => {
+        this._ignoreUnconfirmContact(contact);
+      },
+      undefined,
+      true,
+    );
+  }
   @asyncCtrlGenerator.error(() =>
     AccountMyContactsPage.getTranslate("IGNORE_UNCONFIRM_CONTACT_ERROR"),
   )
-  ignoreUnconfirmContact(contact: ContactModel) {
+  private _ignoreUnconfirmContact(contact: ContactModel) {
     return this.contactService.ignoreContact(contact.address);
   }
   @asyncCtrlGenerator.error()

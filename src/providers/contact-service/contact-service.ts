@@ -39,7 +39,7 @@ export class ContactServiceProvider {
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
-    public storage: Storage,
+    // public storage: Storage,
     public translateService: TranslateService,
     public fetch: AppFetchProvider,
     public accountService: AccountServiceProvider,
@@ -94,6 +94,19 @@ export class ContactServiceProvider {
               "address",
             );
           }
+          // const res_followers = mix_res.followers;
+          // if (res_followers instanceof Array) {
+          //   res_followers.forEach()
+          //   const owner_publicKey: string = (request_opts.reqOptions
+          //     .search as any).publicKey;
+          //   await this.dbCache.commonDbSync(
+          //     res_followers,
+          //     undefined,
+          //     db,
+          //     { owner_publicKey },
+          //     "address",
+          //   );
+          // }
           return mix_res;
         }
         return cache;
@@ -150,13 +163,13 @@ export class ContactServiceProvider {
     let address = this.user.address;
     let ignoreList: any[] = [];
 
-    let ignoreBefore = JSON.parse(await this.storage.get("c_" + address));
-    if (ignoreBefore) {
-      ignoreList = ignoreBefore;
-      ignoreList.push(iAddress);
-    } else {
-      ignoreList.push(iAddress);
-    }
+    // let ignoreBefore = JSON.parse(await this.storage.get("c_" + address));
+    // if (ignoreBefore) {
+    //   ignoreList = ignoreBefore;
+    //   ignoreList.push(iAddress);
+    // } else {
+    //   ignoreList.push(iAddress);
+    // }
 
     for (var i of ignoreList) {
       if (this.followerList && this.followerList.length > 0) {
@@ -169,7 +182,7 @@ export class ContactServiceProvider {
         break;
       }
     }
-    await this.storage.set("c_" + address, JSON.stringify(ignoreList));
+    // await this.storage.set("c_" + address, JSON.stringify(ignoreList));
     return this.followerList;
   }
 
@@ -178,34 +191,36 @@ export class ContactServiceProvider {
    * @param followerList
    */
   async contactIgnored(followerList) {
-    if (!followerList || followerList.length === 0) {
-      return followerList || [];
-    }
-    let address = this.user.address;
-    let ignoreList = JSON.parse(await this.storage.get("c_" + address));
+    return followerList;
+    // if (!followerList || followerList.length === 0) {
+    //   return followerList || [];
+    // }
+    // let address = this.user.address;
+    // let ignoreList = JSON.parse(await this.storage.get("c_" + address));
 
-    //如果包含忽略的且有未添加的人员
-    if (ignoreList && ignoreList.length > 0 && followerList.length > 0) {
-      for (var i = followerList.length - 1; i >= 0; i--) {
-        if (ignoreList.findIndex(followerList[i]) >= 0) {
-          followerList.splice(i, 1);
-        }
-      }
-      return followerList;
-    } else {
-      return followerList;
-    }
+    // //如果包含忽略的且有未添加的人员
+    // if (ignoreList && ignoreList.length > 0 && followerList.length > 0) {
+    //   for (var i = followerList.length - 1; i >= 0; i--) {
+    //     if (ignoreList.findIndex(followerList[i]) >= 0) {
+    //       followerList.splice(i, 1);
+    //     }
+    //   }
+    //   return followerList;
+    // } else {
+    //   return followerList;
+    // }
   }
 
   /**
    * 获取已被忽略的列表
    */
   async getIgnoreList() {
-    let ignoreList = JSON.parse(
-      await this.storage.get("c_" + this.user.address),
-    );
+    return [];
+    // let ignoreList = JSON.parse(
+    //   await this.storage.get("c_" + this.user.address),
+    // );
 
-    return ignoreList;
+    // return ignoreList;
   }
 
   /**
@@ -284,12 +299,10 @@ export class ContactServiceProvider {
     const letter_list_map = new Map<string, typeof unkown_letter>();
 
     contact_list.forEach(my_contact => {
-      if (!my_contact.username) {
-        unkown_letter.list.push(my_contact);
-        return;
-      }
       try {
-        const word = pinyin.convertToPinyin(my_contact.username[0]);
+        const word = pinyin.convertToPinyin(
+          (my_contact.username || my_contact.address)[0],
+        );
         if (!word) {
           unkown_letter.list.push(my_contact);
           return;

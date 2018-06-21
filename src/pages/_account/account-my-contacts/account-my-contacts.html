@@ -13,32 +13,44 @@
 </ion-header>
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E6%88%91%E7%9A%84%E8%81%94%E7%B3%BB%E4%BA%BA%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
-  <div class="unconfim-list list" *ngIf="unconfirm_contact_list.length">
-    <div class="header-divider">
-      <ali-icon name="ifm-dengdai"></ali-icon>
-      {{'UNCONFIM_CONTACT_LIST'|translate}}
+  <div class="search-bar common-form">
+    <div class="input-container search-contact">
+      <input type="text" [placeholder]="search_placeholder">
     </div>
-    <div class="item" *ngFor="let unconfirm_contact of unconfirm_contact_list;trackBy:listTrackBy" (click)="tapContact(unconfirm_contact)">
+  </div>
+  <div class="unconfim-list common-list" *ngIf="unconfirm_contact_list.length">
+    <div class="header-divider common-item" [class.open]="!hide_unconfirm_contact_list" (click)="toggleUnconfirmContactList()">
       <div class="left">
-        <div class="username" *ngIf="unconfirm_contact.username">
-          {{unconfirm_contact.username}}</div>
-        <div class="address" [innerHTML]="unconfirm_contact.address|mask:'@address'"></div>
+        <ali-icon name="ifm-dengdai"></ali-icon>
+        {{'UNCONFIM_CONTACT_LIST'|translate}}
       </div>
       <div class="right">
-        <button class="button cancel" (click)="ignoreUnconfirmContact(unconfirm_contact)">
-          <ali-icon name="ifm-cancel"></ali-icon>
-        </button>
-        <button class="button confirm" (click)="addUnconfirmContact(unconfirm_contact)">
-          <ali-icon name="ifm-confirm"></ali-icon>
-        </button>
+        <ali-icon name="ifm-triangle-bottom"></ali-icon>
       </div>
     </div>
+    <ng-container *ngIf="!hide_unconfirm_contact_list">
+      <div class="common-item" *ngFor="let unconfirm_contact of unconfirm_contact_list;trackBy:listTrackBy">
+        <div class="left">
+          <div class="username" *ngIf="unconfirm_contact.username">
+            {{unconfirm_contact.username}}</div>
+          <div class="address" [innerHTML]="unconfirm_contact.address|mask:'@address'"></div>
+        </div>
+        <div class="right">
+          <button class="button cancel" (click)="ignoreUnconfirmContact(unconfirm_contact)">
+            <ali-icon name="ifm-cancel"></ali-icon>
+          </button>
+          <button class="button confirm" (click)="addUnconfirmContact(unconfirm_contact)">
+            <ali-icon name="ifm-confirm"></ali-icon>
+          </button>
+        </div>
+      </div>
+    </ng-container>
   </div>
   <ion-list class="contact-list list">
     <ng-container *ngFor="let letter_contacts of my_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
       <ion-item-sliding *ngFor="let contact of letter_contacts.list">
-        <ion-item>
+        <ion-item (click)="routeTo('account-contact-detail', {contact:contact})">
           <div class="left">
             <div class="username" *ngIf="contact.username">{{contact.username}}</div>
             <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
@@ -54,9 +66,6 @@
         </ion-item-options>
       </ion-item-sliding>
     </ng-container>
-    <div class="divider" *ngIf="!loading_my_contact_list&&my_contact_list.length==0">
-      <i>{{'NO_CONTACT'|translate}}</i>
-    </div>
   </ion-list>
   <div class="fast-nav">
     <ali-icon name="ifm-sousuo"></ali-icon>

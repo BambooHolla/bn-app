@@ -49,7 +49,12 @@ export class CustomDialogPage extends FirstLevelPage {
     }
     this.content_title = this.navParams.get("title");
     this.content_subTitle = this.navParams.get("subTitle");
-    this.content_message = this.navParams.get("message");
+    const message = this.navParams.get("message");
+    if (typeof message === "string" && message.startsWith("@@")) {
+      this.content_message = this.getTranslateSync(message.substr(2));
+    } else {
+      this.content_message = message;
+    }
     this.iconType = this.navParams.get("iconType");
     this.cssClass = this.navParams.get("cssClass");
   }
