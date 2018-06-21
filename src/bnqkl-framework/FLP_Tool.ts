@@ -12,7 +12,8 @@ import {
   ToastController,
   ModalController,
 } from "ionic-angular";
-export { is_dev, tryRegisterGlobal, global } from "./helper";
+import { is_dev, tryRegisterGlobal, global } from "./helper";
+export { is_dev, tryRegisterGlobal, global };
 
 export class FLP_Tool {
   constructor() {}

@@ -123,7 +123,7 @@
     "json-ast": "^2.1.7",
     "node-xlsx": "^0.11.2",
     "pre-commit": "^1.2.2",
-    "prettier": "*",
+    "prettier": "^1.13.5",
     "tsickle": "^0.29.0",
     "typescript": "^2.8.3",
     "xlsx": "^0.12.3"

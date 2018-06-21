@@ -120,9 +120,9 @@ export class TabChainPage extends FirstLevelPage {
     let block_1:
       | SingleBlockModel
       | undefined = await this.blockService.blockDb.findOne(
-      {},
-      { sort: { height: 1 } },
-    );
+        {},
+        { sort: { height: 1 } },
+      );
     const latest_block = await this.blockService.getLastBlock();
     if (!block_1) {
       block_1 = latest_block;
@@ -140,12 +140,13 @@ export class TabChainPage extends FirstLevelPage {
 
   @TabChainPage.didEnter
   showLoading() {
-    if (this.download_lock && !this.loading_dialog) {
+    if (this._download_task && !this.loading_dialog) {
       this.loading_dialog = this.loadingCtrl.create({
         cssClass: "can-tap",
         showBackdrop: false,
       });
       this.loading_dialog.present();
+      this.cdRef.markForCheck();
       this.setProgress(this.cur_sync_progres);
     }
   }
@@ -153,6 +154,7 @@ export class TabChainPage extends FirstLevelPage {
   closeLoading() {
     if (this.loading_dialog) {
       this.loading_dialog.dismiss();
+      this.cdRef.markForCheck();
       this.loading_dialog = undefined;
     }
   }
@@ -164,77 +166,63 @@ export class TabChainPage extends FirstLevelPage {
           progress: ("0" + progress.toFixed(2)).substr(-5),
         }),
       );
+      this.cdRef.markForCheck();
     }
   };
 
-  download_lock?: PromiseOut<void>;
+  // private _download_worker?: Worker;
+  private _download_task?: PromiseOut<void>;
   @asyncCtrlGenerator.success("@@DOWNLOAD_BLOCKCHAIN_COMPLETE")
   async downloadBlock(
     startHeight: number,
     endHeight: number,
     max_end_height: number,
   ) {
-    if (this.download_lock) {
-      return;
+    if (this._download_task) {
+      return this._download_task.promise;
     }
-    if (localStorage.getItem("AUTO_DOWNLOAD_BLOCKCHAINE") === "disabled") {
-      return;
-    }
-    this.download_lock = new PromiseOut();
+    const task = new PromiseOut<void>();
+    this._download_task = task;
+    let cg;
     try {
-      this.showLoading();
-      const loading_dialog = this.loading_dialog as Loading;
-
-      const total = max_end_height - startHeight;
-
-      await this.setProgress((max_end_height - endHeight) / total * 100);
-
-      var acc_endHeight = endHeight;
-      const pageSize = 100;
-      do {
-        const cur_end_height = acc_endHeight;
-        const cur_start_height = Math.max(
-          cur_end_height - (pageSize - 1),
-          startHeight,
-        );
-        // await this.blockService.getBlocksByRange(startHeight, endHeight);
-        await new Promise((resolve, reject) => {
-          this.fetch.io.emit(
-            "get/api/blocks/",
-            { startHeight: cur_start_height, endHeight: cur_end_height },
-            (res: BlockListResModel) => {
-              this.blockService.blockDb
-                .insertMany(res.blocks)
-                .then(resolve)
-                .catch(err => {
-                  console.warn(cur_end_height, cur_start_height, err);
-                  resolve();
-                });
-            },
-          );
-        });
-
-        await new Promise(cb => setTimeout(cb, 1000));
-
-        // 更改进度
-        await this.setProgress((max_end_height - acc_endHeight) / total * 100);
-
-        if (acc_endHeight > 1) {
-          acc_endHeight -= pageSize;
-          acc_endHeight = Math.max(acc_endHeight, startHeight);
-        } else {
-          break;
+      const { worker, req_id } = this.blockService.downloadBlockInWorker(startHeight, endHeight, max_end_height);
+      // this._download_worker = worker;
+      const onmessage = (e) => {
+        const msg = e.data;
+        if (msg && msg.req_id === req_id) {
+          console.log(msg);
+          switch (msg.type) {
+            case "start-download":
+              this.showLoading();
+              break;
+            case "end-download":
+              this.closeLoading();
+              // this._download_worker = undefined;
+              task.resolve();
+              break;
+            case "progress":
+              this.setProgress(msg.data);
+              break;
+            case "error":
+              task.reject(msg.data);
+              break;
+            default:
+              console.warn("unhandle message:", msg);
+              break;
+          }
         }
-      } while (endHeight > 1);
-      this.setProgress(100);
-    } finally {
-      this.download_lock.resolve();
-      this.download_lock = undefined;
+      };
+      worker.addEventListener("message", onmessage);
+      cg = () => worker.removeEventListener("message", onmessage);
 
-      this.closeLoading();
+      await task.promise;
+    } finally {
+      this._download_task = undefined;
+      cg && cg();
     }
   }
 
+  // @TabChainPage
   @TabChainPage.willEnter
   @asyncCtrlGenerator.error(() =>
     TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
@@ -396,14 +384,15 @@ export class TabChainPage extends FirstLevelPage {
     return item.height;
   }
 
+  // TOOD: 不在监听Height change，而是监听区块链change，并刷新页面上的数据
   /** TODO：切换可用节点，或者寻找新的可用节点，然后开始重新执行这个函数
    *  这点应该做成一个peerService中提供的通用catchErrorAndReLinkPeerThenRetryTask修饰器
    */
-  @TabChainPage.addEvent("HEIGHT:CHANGED")
-  @asyncCtrlGenerator.error(
-    "更新区块链失败，重试次数过多，已停止重试，请检测网络",
-  )
-  @asyncCtrlGenerator.retry()
+  // @TabChainPage.addEvent("HEIGHT:CHANGED")
+  // @asyncCtrlGenerator.error(
+  //   "更新区块链失败，重试次数过多，已停止重试，请检测网络",
+  // )
+  // @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {
     const tasks: Promise<any>[] = [];
 

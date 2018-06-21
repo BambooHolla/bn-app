@@ -10,7 +10,7 @@ import {
 } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
+import { PromisePro, PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 
 import {
   AppSettingProvider,
@@ -133,8 +133,8 @@ export class BlockServiceProvider extends FLP_Tool {
               cache.blocks instanceof Array
                 ? cache.blocks
                 : await db.find({
-                    height: { $in: res_blocks.map(b => b.height) },
-                  });
+                  height: { $in: res_blocks.map(b => b.height) },
+                });
             const unique_height_set = new Set<number>(
               old_blocks.map(b => b.height),
             );
@@ -288,8 +288,8 @@ export class BlockServiceProvider extends FLP_Tool {
     }
     this.round_end_time = new Date(
       Date.now() +
-        this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
-          this.appSetting.BLOCK_UNIT_TIME,
+      this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
+      this.appSetting.BLOCK_UNIT_TIME,
     );
     this.appSetting.setHeight(last_block.height);
   }
@@ -297,8 +297,7 @@ export class BlockServiceProvider extends FLP_Tool {
     this.io.on("blocks/change", data => {
       // 计算流量大小
       this.appSetting.settings.contribution_traffic +=
-        getJsonObjectByteSize(data) /*返回的JSON对象大小*/ +
-        19 /*基础消耗*/;
+        getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
 
       this._expectblock_uncommited = 0;
       this._expectblock_fee_reward = 0;
@@ -309,10 +308,11 @@ export class BlockServiceProvider extends FLP_Tool {
         "%c区块更新",
         "color:green;background-color:#eee;font-size:1.2rem",
       );
-      if (data.lastBlock) {
-        this.blockDb.insert(data.lastBlock);
+      const { lastBlock } = data;
+      if (lastBlock) {
+        this.updateLastBlockAndTryDownloadDestoryBlocks(lastBlock);
       }
-      this._updateHeight(data.lastBlock);
+      this._updateHeight(lastBlock);
     });
     this.io.on("connect", () => {
       this._updateHeight();
@@ -320,6 +320,121 @@ export class BlockServiceProvider extends FLP_Tool {
     // 安装未处理交易的预估
     this._listenUnconfirmTransaction();
   }
+  private _download_worker?: Worker
+  getDownloadWorker() {
+    if (!this._download_worker) {
+      this._download_worker = new Worker("./assets/workers/download-block-chain.worker.js");
+    }
+    return this._download_worker;
+  }
+  private _download_req_id_acc = 0;
+  downloadBlockInWorker(
+    startHeight: number,
+    endHeight: number,
+    max_end_height: number,
+  ) {
+    // 缺少最新区块，下载补全
+    const download_worker = this.getDownloadWorker();
+    const req_id = this._download_req_id_acc++;
+    download_worker.postMessage({
+      cmd: "download",
+      webio_path: this.fetch.io_url_path,
+      startHeight,
+      endHeight,
+      max_end_height,
+      req_id,
+    });
+    return {
+      worker: download_worker,
+      req_id,
+    }
+  }
+  /**更新最新的区块，并尝试下载破损的区块链数据*/
+  async updateLastBlockAndTryDownloadDestoryBlocks(lastBlock: TYPE.BlockModel) {
+    const block: any = {};
+    [
+      "version",
+      "timestamp",
+      "totalAmount",
+      "totalFee",
+      "reward",
+      "numberOfTransactions",
+      "payloadLength",
+      "payloadHash",
+      "generatorPublicKey",
+      "blockSignature",
+      "previousBlock",
+      "id",
+      "height",
+      "blockSize",
+      "remark",
+    ].forEach(key => {
+      // 过滤字段，只用需要的
+      block[key] = lastBlock[key];
+    });
+
+    // 获取目前高度最高的区块
+    const cur_lastBlock = await this.blockDb.findOne(
+      {},
+      { sort: { height: -1 } },
+    );
+    if (cur_lastBlock) {
+      if (cur_lastBlock.height >= lastBlock.height) {
+        // TOOD：拜占庭询问区块是否正确，然后进行更新或者拉黑名单的操作
+        console.error("区块数移除，存在比当前最新区块更高的区块");
+        return
+      }
+    }
+    this.tryEmit("BLOCKCHAIN:CHANGED");
+
+    await this.blockDb
+      .insert(block)
+      .catch(err => console.warn(`[${lastBlock.height}]`, err.message));
+    if (cur_lastBlock) {
+      if (lastBlock.height - cur_lastBlock.height > 1) {
+        const task = new PromiseOut();
+        const startHeight = cur_lastBlock.height + 1;
+        const endHeight = lastBlock.height - 1;
+        const task_name = `补全区块数据${startHeight} ~ ${endHeight}`;
+        let cg;
+        try {
+          // 缺少最新区块，下载补全
+          const { worker, req_id } = await this.downloadBlockInWorker(startHeight, endHeight, lastBlock.height);
+          worker.addEventListener("message", (e) => {
+            const msg = e.data;
+            if (msg && msg.req_id === req_id) {
+              console.log(msg);
+              switch (msg.type) {
+                case "start-download":
+                  console.log("开始", task_name);
+                  break;
+                case "end-download":
+                  console.log("完成", task_name);
+                  this.tryEmit("BLOCKCHAIN:CHANGED");
+                  // this._download_worker = undefined;
+                  task.resolve();
+                  break;
+                case "progress":
+                  console.log("下载中", task_name, msg.data);
+                  this.tryEmit("BLOCKCHAIN:CHANGED");
+                  break;
+                case "error":
+                  task.reject(msg.data);
+                  break;
+                default:
+                  console.warn("unhandle message:", msg);
+                  break;
+              }
+            }
+          });
+          await task.promise;
+        } finally {
+          cg && cg();
+        }
+      }
+    }
+  }
+
   private _listenUnconfirmTransaction() {
     this.io.on("transactions/unconfirm", data => {
       const tran: TransactionModel = data.transaction;
@@ -346,15 +461,16 @@ export class BlockServiceProvider extends FLP_Tool {
     return promise_pro.follow(this.getLastBlock());
   });
 
-  tstamp = Date.UTC(
-    AppSettingProvider.SEED_DATE[0],
-    AppSettingProvider.SEED_DATE[1],
-    AppSettingProvider.SEED_DATE[2],
-    AppSettingProvider.SEED_DATE[3],
-    AppSettingProvider.SEED_DATE[4],
-    AppSettingProvider.SEED_DATE[5],
-    AppSettingProvider.SEED_DATE[6],
-  ) / 1000;
+  tstamp =
+    Date.UTC(
+      AppSettingProvider.SEED_DATE[0],
+      AppSettingProvider.SEED_DATE[1],
+      AppSettingProvider.SEED_DATE[2],
+      AppSettingProvider.SEED_DATE[3],
+      AppSettingProvider.SEED_DATE[4],
+      AppSettingProvider.SEED_DATE[5],
+      AppSettingProvider.SEED_DATE[6],
+    ) / 1000;
   /**
    * 获取输入的时间戳的完整时间戳,TODO: 和minSer重复了
    * @param timestamp

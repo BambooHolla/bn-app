@@ -78,11 +78,14 @@ export type CommonResponseData<T> = {
 @Injectable()
 export class AppFetchProvider {
   ServerResError = ServerResError;
+  get io_url_path() {
+    return AppSettingProvider.SERVER_URL + "/web";
+  }
   private _io?: SocketIOClient.Socket;
   get io() {
     return (
       this._io ||
-      (this._io = io(AppSettingProvider.SERVER_URL + "/web", {
+      (this._io = io(this.io_url_path, {
         transports: ["websocket"],
       }))
     );
