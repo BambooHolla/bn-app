@@ -12,9 +12,6 @@ import {
 import { AniBase } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 
-// import * as THREE from "three";
-// import { SimplexNoise } from "../SimplexNoise";
-import * as SimplexNoise from "simplex-noise";
 export const loader = new PIXI.loaders.Loader();
 export const _load_resource_promiseout = new PromiseOut<
   PIXI.loaders.ResourceDictionary

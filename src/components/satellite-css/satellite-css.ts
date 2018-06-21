@@ -6,7 +6,7 @@ import {
 } from "@angular/core";
 import { CssAniBase, Easing } from "../AniBase";
 import * as PIXI from "pixi.js";
-import * as SimplexNoise from "simplex-noise";
+import SimplexNoise from "simplex-noise";
 
 @Component({
   selector: "satellite-css",

@@ -12,7 +12,7 @@ import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
-import * as PIXI_SOUND from "pixi-sound";
+import PIXI_SOUND from "pixi-sound";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";

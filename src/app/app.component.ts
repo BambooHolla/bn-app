@@ -30,6 +30,7 @@ import { BenefitServiceProvider } from "../providers/benefit-service/benefit-ser
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
+import {global} from '../bnqkl-framework/helper';
 
 import { CommonTransition } from "./common.transition";
 import {
@@ -38,12 +39,12 @@ import {
 } from "../pages/custom-dialog/custom-dialog.transform";
 
 if (
-  window["cordova"] &&
-  window["cordova"].plugins &&
-  window["cordova"].plugins.iosrtc
+  global["cordova"] &&
+  global["cordova"].plugins &&
+  global["cordova"].plugins.iosrtc
 ) {
   if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
-    (navigator as any)["mediaDevices"] = window["cordova"].plugins.iosrtc;
+    (navigator as any)["mediaDevices"] = global["cordova"].plugins.iosrtc;
   }
 }
 
@@ -82,22 +83,22 @@ export class MyApp implements OnInit {
     public faio: FingerprintAIO,
     public androidPermissions: AndroidPermissions,
   ) {
-    window["ac"] = this;
-    window["clipboard"] = clipboard;
-    window["translate"] = translate;
-    window["platform"] = platform;
-    window["alertCtrl"] = alertCtrl;
-    window["loadingCtrl"] = loadingCtrl;
-    window["toastCtrl"] = toastCtrl;
-    window["toast"] = toast;
-    window["actionSheetCtrl"] = actionSheetCtrl;
-    window["modalCtrl"] = modalController;
-    window["accountService"] = accountService;
-    window["benefitService"] = benefitService;
-    window["userInfo"] = userInfo;
-    window["appSetting"] = appSetting;
-    window["minService"] = minService;
-    window["myapp"] = this;
+    global["ac"] = this;
+    global["clipboard"] = clipboard;
+    global["translate"] = translate;
+    global["platform"] = platform;
+    global["alertCtrl"] = alertCtrl;
+    global["loadingCtrl"] = loadingCtrl;
+    global["toastCtrl"] = toastCtrl;
+    global["toast"] = toast;
+    global["actionSheetCtrl"] = actionSheetCtrl;
+    global["modalCtrl"] = modalController;
+    global["accountService"] = accountService;
+    global["benefitService"] = benefitService;
+    global["userInfo"] = userInfo;
+    global["appSetting"] = appSetting;
+    global["minService"] = minService;
+    global["myapp"] = this;
     config.setTransition("common-transition", CommonTransition);
     config.setTransition("custom-dialog-pop-in", CustomDialogPopIn);
     config.setTransition("custom-dialog-pop-out", CustomDialogPopOut);
@@ -194,7 +195,7 @@ export class MyApp implements OnInit {
     if (this.isIOS || this.overlay_finished) {
       return;
     }
-    if (window.innerHeight < MyApp.WINDOW_MAX_HEIGHT) {
+    if (global.innerHeight < MyApp.WINDOW_MAX_HEIGHT) {
       // 如果高度不对劲的话，尽可能重新搞一下
       this.overlaysWebView();
     } else {
@@ -476,7 +477,7 @@ export class MyApp implements OnInit {
   }
 }
 
-/*获取window正确的最大高度，可能对于分屏支持有问题*/
+/*获取global正确的最大高度，可能对于分屏支持有问题*/
 var resizeInfo = document.createElement("div");
 function onresize() {
   if (!resizeInfo.parentElement && document.body) {
@@ -485,17 +486,17 @@ function onresize() {
     document.body.appendChild(resizeInfo);
   }
   resizeInfo.innerHTML += `<p>${[
-    window.innerHeight,
+    global.innerHeight,
     document.body.clientHeight,
   ]}</p>`;
   MyApp.WINDOW_MAX_HEIGHT = Math.max(
     MyApp.WINDOW_MAX_HEIGHT,
-    window.innerHeight,
+    global.innerHeight,
   );
 }
 onresize();
-window.addEventListener("resize", onresize);
-window["importLS"] = function(o) {
+global.addEventListener("resize", onresize);
+global["importLS"] = function(o) {
   for (var k in o) {
     localStorage.setItem(k, o[k]);
   }

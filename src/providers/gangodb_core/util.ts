@@ -1,6 +1,6 @@
 import deepMerge from "deepmerge";
-import * as clone from "clone";
-import * as objectHash from "object-hash";
+import clone from "clone";
+import objectHash from "object-hash";
 
 export const toPathPieces = (path: string) => path.split(".");
 

@@ -1,4 +1,4 @@
-import * as Q from "q";
+import Q from "q";
 
 import { getIDBError } from "./util";
 import Cursor from "./cursor";

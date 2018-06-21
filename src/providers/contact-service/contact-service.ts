@@ -21,7 +21,7 @@ import { DbCacheProvider } from "../db-cache/db-cache";
 import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./contact.types";
 export * from "./contact.types";
-import * as pinyin from "tiny-pinyin";
+import pinyin from "tiny-pinyin";
 import { Mdb } from "../mdb";
 
 export type ContactGroupItem = { letter: string; list: TYPE.ContactModel[] };

@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events';
-import * as Q from 'q';
+import { EventEmitter } from 'eventemitter3';
+import Q from 'q';
 
 import createNextFn from './create_next_fn';
 import filter from './filter';

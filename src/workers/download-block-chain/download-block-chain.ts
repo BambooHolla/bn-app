@@ -1,5 +1,5 @@
-import * as shareProto from "../../shareProto";
-import * as EventEmitter from "eventemitter3";
+import shareProto from "../../shareProto";
+import EventEmitter from "eventemitter3";
 import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 import { Mdb } from "../../providers/mdb";
 export type BlockModel = import("../../providers/block-service/block-service").BlockModel;

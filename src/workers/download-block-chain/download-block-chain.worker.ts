@@ -1,5 +1,5 @@
-self.importScripts("./assets/workers/system-production.js");
-import * as socketio from "socket.io-client";
+import "babel-polyfill";
+import socketio from "socket.io-client";
 import { BlockChainDownloader, BlockModel } from "./download-block-chain";
 import { Mdb } from "../../providers/mdb";
 

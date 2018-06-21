@@ -5,11 +5,11 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["dom", "es2015", "webworker"],
-    "module": "system",
+    "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": false,
     "target": "es6",
-    "outFile": "../../assets/workers/download-block-chain.js",
+    "outFile": "../../assets/workers/download-block-chain.core.js",
     "typeRoots": ["../../../node_modules/@types", "../../typings"],
     "strictPropertyInitialization": true,
     "strictNullChecks": true

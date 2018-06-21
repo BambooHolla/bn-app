@@ -21,7 +21,7 @@ import { MyApp } from "../../app/app.component";
 // } from "./sign-in-and-sign-up.animations";
 import { MainPage } from "../pages";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
-import * as plumin from "plumin.js";
+import plumin from "plumin.js";
 
 // @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({

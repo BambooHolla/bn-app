@@ -1,4 +1,4 @@
-import * as EventEmitter from "eventemitter3";
+import EventEmitter from "eventemitter3";
 
 var BACKEND_VERSION = localStorage.getItem("BACKEND_VERSION");
 if (typeof BACKEND_VERSION !== "string") {

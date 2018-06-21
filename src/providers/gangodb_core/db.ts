@@ -1,6 +1,6 @@
-import * as EventEmitter from "eventemitter3";
-import * as memoize from "memoizee";
-import * as Q from "q";
+import EventEmitter from "eventemitter3";
+import memoize from "memoizee";
+import Q from "q";
 
 import { getIDBError } from "./util";
 import Collection from "./collection";

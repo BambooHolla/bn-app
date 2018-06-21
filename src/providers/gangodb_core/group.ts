@@ -1,4 +1,4 @@
-import * as memoize from "memoizee";
+import memoize from "memoizee";
 
 import { unknownOp, hashify } from "./util";
 import build from "./lang/expression";

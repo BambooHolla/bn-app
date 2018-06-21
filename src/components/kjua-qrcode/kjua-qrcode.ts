@@ -9,7 +9,7 @@ import {
   SimpleChange,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import * as kjua from "kjua";
+import kjua from "kjua";
 
 const default_config: KjuaConfig = {
   // render method: 'canvas' or 'image'

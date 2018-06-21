@@ -14,7 +14,6 @@ import {
 	ContactGroupList,
 	ContactGroupItem,
 } from "../../../providers/contact-service/contact-service";
-import * as pinyin from "tiny-pinyin";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 
 @IonicPage({ name: "pay-select-my-contacts" })

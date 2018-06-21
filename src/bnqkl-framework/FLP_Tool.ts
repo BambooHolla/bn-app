@@ -1,7 +1,7 @@
 // import { isDevMode } from "@angular/core";
 import { Clipboard } from "@ionic-native/clipboard";
 import { TranslateService } from "@ngx-translate/core";
-import * as EventEmitter from "eventemitter3";
+import EventEmitter from "eventemitter3";
 import {
   ActionSheetController,
   AlertController,
@@ -12,7 +12,7 @@ import {
   ToastController,
   ModalController,
 } from "ionic-angular";
-export { is_dev, tryRegisterGlobal } from "./helper";
+export { is_dev, tryRegisterGlobal, global } from "./helper";
 
 export class FLP_Tool {
   constructor() {}
@@ -315,7 +315,7 @@ export class FLP_Tool {
         enumerable: true,
         configurable: true,
         get() {
-          return this[hidden_prop_name] || window[name];
+          return this[hidden_prop_name] || global[name];
         },
         set(v) {
           this[hidden_prop_name] = v;
