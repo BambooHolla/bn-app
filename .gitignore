@@ -11,6 +11,7 @@ log.txt
 *.sublime-workspace
 .vscode/
 .vs/
+.cache
 npm-debug.log*
 
 .idea/

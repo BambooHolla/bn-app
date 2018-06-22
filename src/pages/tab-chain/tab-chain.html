@@ -27,7 +27,7 @@
   </div>
   <div class="list-wrapper">
     <virtual-scroll #vscroll class="block-list" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
-      <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeToChainBlockDetail(block)" [attr.data-height]="block.height" [class.fake]="block.fake" [class.latest-block]="block.height==1">
+      <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeToChainBlockDetail(block)" [attr.data-height]="block.height" [class.fake]="block.fake" [class.round-end]="block.height%57==0" [class.latest-block]="block.height==1">
         <div class="header">
           <div class="height">
             <div class="value">{{block.height}}</div>

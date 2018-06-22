@@ -120,9 +120,9 @@ export class TabChainPage extends FirstLevelPage {
     let block_1:
       | SingleBlockModel
       | undefined = await this.blockService.blockDb.findOne(
-      {},
-      { sort: { height: 1 } },
-    );
+        {},
+        { sort: { height: 1 } },
+      );
     const latest_block = await this.blockService.getLastBlock();
     if (!block_1) {
       block_1 = latest_block;
@@ -325,7 +325,7 @@ export class TabChainPage extends FirstLevelPage {
           this.block_list = this.block_list.slice(1);
         }
 
-        if (startHeight > cur_top_height) {
+        if (startHeight > cur_top_height + 1) {
           // 这里区块链断链了，斩断后面的链，用最新的
           this.block_list = list;
         } else {

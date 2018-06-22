@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import * as Q from 'q';
 
 import createNextFn from './create_next_fn';
