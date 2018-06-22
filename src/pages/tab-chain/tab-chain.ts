@@ -35,9 +35,10 @@ import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 interface FakeBlock extends BlockModel {
   fake: true;
 }
-const fakeBlock: FakeBlock = {
-  fake: true,
-
+interface PlaceholderBlock extends BlockModel {
+  placeholder: true;
+}
+const _base_block = {
   height: 0,
   id: "",
   timestamp: 0,
@@ -57,6 +58,14 @@ const fakeBlock: FakeBlock = {
   confirmations: "",
   totalForged: "0",
 };
+const fakeBlock: FakeBlock = {
+  ..._base_block,
+  fake: true,
+};
+const placeholderBlock: PlaceholderBlock = {
+  ..._base_block,
+  placeholder: true,
+}
 // @IonicPage({ name: "tab-chain" })
 @Component({
   selector: "page-tab-chain",
@@ -85,7 +94,7 @@ export class TabChainPage extends FirstLevelPage {
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
-  block_list: Array<BlockModel | FakeBlock> = [];
+  block_list: Array<BlockModel | FakeBlock | PlaceholderBlock> = [];
   block_list_config = {
     loading: false,
     // page: 1,
@@ -136,7 +145,6 @@ export class TabChainPage extends FirstLevelPage {
   }
 
   loading_dialog?: Loading;
-  cur_sync_progres = 0;
 
   @TabChainPage.didEnter
   showLoading() {
@@ -146,7 +154,6 @@ export class TabChainPage extends FirstLevelPage {
         showBackdrop: false,
       });
       this.loading_dialog.present();
-      this.cdRef.markForCheck();
       this.setProgress(this.cur_sync_progres);
     }
   }
@@ -158,6 +165,7 @@ export class TabChainPage extends FirstLevelPage {
       this.loading_dialog = undefined;
     }
   }
+  cur_sync_progres = 0;
   setProgress = async (progress: number) => {
     this.cur_sync_progres = progress;
     if (this.loading_dialog) {
@@ -181,11 +189,10 @@ export class TabChainPage extends FirstLevelPage {
     if (this._download_task) {
       return this._download_task.promise;
     }
-    const task = new PromiseOut<void>();
-    this._download_task = task;
     let cg;
     try {
-      const { worker, req_id } = this.blockService.downloadBlockInWorker(startHeight, endHeight, max_end_height);
+      const { worker, req_id, task } = this.blockService.downloadBlockInWorker(startHeight, endHeight, max_end_height);
+      this._download_task = task;
       // this._download_worker = worker;
       const onmessage = (e) => {
         const msg = e.data;
@@ -198,16 +205,9 @@ export class TabChainPage extends FirstLevelPage {
             case "end-download":
               this.closeLoading();
               // this._download_worker = undefined;
-              task.resolve();
               break;
             case "progress":
               this.setProgress(msg.data);
-              break;
-            case "error":
-              task.reject(msg.data);
-              break;
-            default:
-              console.warn("unhandle message:", msg);
               break;
           }
         }
@@ -222,8 +222,14 @@ export class TabChainPage extends FirstLevelPage {
     }
   }
 
+  /*绑定页面的区块链数据更新器*/
+  @TabChainPage.onInit
+  bindBlockListViewRefresher() {
+    // const unconfirm_height = await this.loadUnconfirmBlock();
+    this.registerViewEvent(this.blockService.event, "BLOCKCHAIN:CHANGED", )
+  }
+
   // @TabChainPage
-  @TabChainPage.willEnter
   @asyncCtrlGenerator.error(() =>
     TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
   )
@@ -369,15 +375,31 @@ export class TabChainPage extends FirstLevelPage {
       1,
       min_block.height - block_list_config.pageSize,
     );
+    const placeholder_block_list = Array.from({
+      length: endHeight - startHeight + 1
+    }, (_, i) => ({
+      ...placeholderBlock, height: startHeight + 1
+    }));
+    block_list_config.has_more = startHeight > 1;
 
-    const new_block_list = await this.blockService.getBlocksByRange(
+    this.blockService.getBlocksByRange(
       startHeight,
       endHeight,
       -1,
-    );
-    block_list_config.has_more = startHeight > 1;
+    ).then((new_block_list) => {
+      const { block_list, top_block } = this;
+      if (top_block) {
+        const max_height = top_block.height;
+        const min_height = top_block
+        // if(block_list[0])
+        for (var i = 0; i < block_list.length; i += 1) {
+          const block = block_list[i];
+          new_block_list[]
+        }
+      }
+    });
 
-    this.block_list.push(...new_block_list);
+    this.block_list.push(...placeholder_block_list);
     this.dispatchEvent("when-block-list-changed");
   }
   blockListTrackByFn(index, item: BlockModel) {
@@ -426,6 +448,26 @@ export class TabChainPage extends FirstLevelPage {
         return block;
       }
     }
+  }
+  get last_block() {
+    const block = this.block_list[this.block_list.length - 1];
+    return block.fake ? undefined : block;
+  }
+
+  getBlockListByRange(startHeight: number, endHeight: number) {
+    const { top_block,block_list,last_block} = this;
+    if (top_block && last_block) {
+      const max_height = top_block.height;
+      const min_height = last_block.height;
+      // if(endHeight<max_height&&startHeight>min_height){
+
+      // }
+      const from = Math.min(max_height,startHeight);
+      const to = Math.max(min_height,endHeight);
+      
+      const min_height_index = block_list.length - 1;
+    }
+    return [];
   }
 
   pullToTop() {

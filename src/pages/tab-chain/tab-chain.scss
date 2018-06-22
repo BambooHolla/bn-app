@@ -158,7 +158,14 @@ page-tab-chain {
         0 0rem 0.2rem rgba(0, 0, 0, 0.05);
       position: relative;
       margin-bottom: #{$block-distance}rem;
-
+      &.round-end{
+        filter: hue-rotate(205deg);
+      }
+      &.placeholder{
+       .trans_num,.info{
+        visibility: hidden;
+       } 
+      }
       &.fake {
         /* height: 10rem; */
         opacity: 0;

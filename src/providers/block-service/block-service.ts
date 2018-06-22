@@ -336,6 +336,7 @@ export class BlockServiceProvider extends FLP_Tool {
     // 缺少最新区块，下载补全
     const download_worker = this.getDownloadWorker();
     const req_id = this._download_req_id_acc++;
+    let cg;
     download_worker.postMessage({
       cmd: "download",
       webio_path: this.fetch.io_url_path,
@@ -344,9 +345,43 @@ export class BlockServiceProvider extends FLP_Tool {
       max_end_height,
       req_id,
     });
+    const task_name = `补全区块数据${startHeight} ~ ${endHeight}`;
+    const task = new PromiseOut<void>();
+    const onmessage = (e) => {
+      const msg = e.data;
+      if (msg && msg.req_id === req_id) {
+        console.log(msg);
+        switch (msg.type) {
+          case "start-download":
+            console.log("开始", task_name);
+            break;
+          case "end-download":
+            console.log("完成", task_name);
+            this.tryEmit("BLOCKCHAIN:CHANGED");
+            // this._download_worker = undefined;
+            task.resolve();
+            break;
+          case "progress":
+            console.log("下载中", task_name, msg.data);
+            this.tryEmit("BLOCKCHAIN:CHANGED");
+            break;
+          case "error":
+            task.reject(msg.data);
+            break;
+          default:
+            console.warn("unhandle message:", msg);
+            break;
+        }
+      }
+    };
+    download_worker.addEventListener("message", onmessage);
+    cg = () => download_worker.removeEventListener("message", onmessage);
+    // 不论如何都将监听函数移除掉
+    task.promise.then(cg, cg);
     return {
       worker: download_worker,
       req_id,
+      task,
     }
   }
   /**更新最新的区块，并尝试下载破损的区块链数据*/
@@ -385,52 +420,19 @@ export class BlockServiceProvider extends FLP_Tool {
         return
       }
     }
-    this.tryEmit("BLOCKCHAIN:CHANGED");
 
     await this.blockDb
       .insert(block)
       .catch(err => console.warn(`[${lastBlock.height}]`, err.message));
+    // 新的输入插入后，就要通知更新区块链
+    this.tryEmit("BLOCKCHAIN:CHANGED");
     if (cur_lastBlock) {
       if (lastBlock.height - cur_lastBlock.height > 1) {
-        const task = new PromiseOut();
         const startHeight = cur_lastBlock.height + 1;
         const endHeight = lastBlock.height - 1;
-        const task_name = `补全区块数据${startHeight} ~ ${endHeight}`;
-        let cg;
-        try {
-          // 缺少最新区块，下载补全
-          const { worker, req_id } = await this.downloadBlockInWorker(startHeight, endHeight, lastBlock.height);
-          worker.addEventListener("message", (e) => {
-            const msg = e.data;
-            if (msg && msg.req_id === req_id) {
-              console.log(msg);
-              switch (msg.type) {
-                case "start-download":
-                  console.log("开始", task_name);
-                  break;
-                case "end-download":
-                  console.log("完成", task_name);
-                  this.tryEmit("BLOCKCHAIN:CHANGED");
-                  // this._download_worker = undefined;
-                  task.resolve();
-                  break;
-                case "progress":
-                  console.log("下载中", task_name, msg.data);
-                  this.tryEmit("BLOCKCHAIN:CHANGED");
-                  break;
-                case "error":
-                  task.reject(msg.data);
-                  break;
-                default:
-                  console.warn("unhandle message:", msg);
-                  break;
-              }
-            }
-          });
-          await task.promise;
-        } finally {
-          cg && cg();
-        }
+        // 缺少最新区块，下载补全
+        const { task } = await this.downloadBlockInWorker(startHeight, endHeight, lastBlock.height);
+        await task.promise;
       }
     }
   }
