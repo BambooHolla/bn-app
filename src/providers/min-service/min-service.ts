@@ -313,7 +313,7 @@ export class MinServiceProvider extends FLP_Tool {
     // 获取可投的账户
     const { delegates: voteable_delegates } =
       // 如果已经投过票了，自动投票模式下不会提供可投的57票
-      voted_delegate_list.length === 0
+      voted_delegate_list.length !== 0
         ? { delegates: [] }
         : await this.getVoteAbleDelegates(0, 57, this.userInfo.address);
     if (voteable_delegates.length || true) {
