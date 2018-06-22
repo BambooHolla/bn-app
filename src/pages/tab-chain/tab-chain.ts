@@ -109,17 +109,17 @@ export class TabChainPage extends FirstLevelPage {
     this.routeTo("chain-block-detail", { block });
   }
 
+  // async checkBlockchainCompleteWithNetworkCheck() {
+  //   await this.netWorkConnection();
+  //   return this.checkBlockchainComplete();
+  // }
+  // @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE", undefined, {
+  //   cssClass: "can-tap",
+  //   showBackdrop: false,
+  // })
   @TabChainPage.onInit
-  async checkBlockchainCompleteWithNetworkCheck() {
-    await this.netWorkConnection();
-    return this.checkBlockchainComplete();
-  }
-
-  @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE", undefined, {
-    cssClass: "can-tap",
-    showBackdrop: false,
-  })
   async checkBlockchainComplete() {
+    await this.netWorkConnection();
     // 检测现有数据库中最低的块是否为1
     let block_1:
       | SingleBlockModel

@@ -187,7 +187,7 @@ export class AppFetchProvider {
       const custom_api_config:
         | installApiCache<T>
         | undefined = this.dbCache.cache_api_map.get(
-          `${method}:${new URL(url).pathname}`,
+          `${method}:${AppUrl.getPathName(url)}`,
         );
       if (custom_api_config) {
         const api_service = custom_api_config;
@@ -219,7 +219,9 @@ export class AppFetchProvider {
                   ),
                 };
               }),
-            ).then(res_list => api_service.afterService(res_list));
+            ).then(res_list => api_service.afterService(res_list)).catch((err) => {
+              console.warn('联网数据不可用', err);
+            });
             return api_service.dbHandle(db, mix_data, cache, requestOptions);
           } else {
             console.log(

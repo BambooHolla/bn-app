@@ -112,7 +112,11 @@ export class BlockServiceProvider extends FLP_Tool {
         if (Number.isFinite(limit) && blocks.length == limit) {
           return { reqs: [], cache };
         }
-        return { reqs: [request_opts], cache };
+        if (navigator.onLine) {
+          return { reqs: [request_opts], cache };
+        } else {
+          return { reqs: [], cache };
+        }
       },
       async req_res_list => {
         if (req_res_list.length > 0) {
@@ -253,7 +257,7 @@ export class BlockServiceProvider extends FLP_Tool {
       return;
     }
     // 更新缓存中的最新区块
-    if(!(await this.blockDb.has({id:last_block.id}))){
+    if (!(await this.blockDb.has({ id: last_block.id }))) {
       // 将最新区块插入到数据库中
       await this.blockDb.insert(this.formatBlockData(last_block)).catch(err =>
         console.warn('更新最新区块失败', last_block, err));

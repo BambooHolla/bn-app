@@ -7,7 +7,10 @@ if (typeof BACKEND_VERSION !== "string") {
 export class AppUrl {
   static SERVER_URL = "http://127.0.0.1";
   static BACKEND_VERSION = BACKEND_VERSION;
-  constructor(public path) {}
+  static getPathName(url: string) {
+    return new URL(url).pathname.replace("/api/" + AppUrl.BACKEND_VERSION, "/api/");
+  }
+  constructor(public path) { }
   toString() {
     return (
       (this.disposable_server_url || AppUrl.SERVER_URL) +
