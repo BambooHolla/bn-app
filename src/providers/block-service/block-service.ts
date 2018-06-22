@@ -247,7 +247,7 @@ export class BlockServiceProvider extends FLP_Tool {
   }
 
   round_end_time = new Date();
-  @asyncCtrlGenerator.retry()
+  // @asyncCtrlGenerator.retry()
   private async _updateHeight(last_block?: TYPE.BlockModel) {
     this.lastBlock.refresh("update Height");
     if (!last_block) {
