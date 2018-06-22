@@ -18,6 +18,9 @@
   <div class="income-logs">
     <div class="title">
       {{'RECENT'|translate}}
+      <button class="right" (click)="toggleAmountView()">
+        <ali-icon [name]="appSetting.settings.can_view_amount?'ifm-yincangmima':'ifm-xianshimima'"></ali-icon>
+      </button>
     </div>
     <ion-content #logsContent class="log-list" [ion-content-scroll-shadow]="{from_color: [29, 98, 113, 0],to_color: [29, 98, 113, 0.3]}">
       <!-- <ion-refresher (ionRefresh)="loadReceiveLogs($event)">
@@ -29,7 +32,7 @@
           <div class="sub-title create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         </div>
         <div class="right">
-          +{{log.amount|amountEuler|number:'1.8-8'}}
+          +{{amountViewer(log.amount|amountEuler|number:'1.8-8')}}
         </div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreReceiveLogs())" [enabled]="receive_config.has_more">
