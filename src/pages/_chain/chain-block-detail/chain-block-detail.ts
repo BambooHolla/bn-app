@@ -6,6 +6,7 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import {
   BlockServiceProvider,
   BlockModel,
+  SingleBlockModel,
 } from "../../../providers/block-service/block-service";
 import {
   TransactionModel,
@@ -91,7 +92,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     }
     return 0;
   }
-  private _lastBlock?: BlockModel
+  private _lastBlock?: SingleBlockModel
   @ChainBlockDetailPage.addEvent("HEIGHT:CHANGED")
   watchHeightChanged() {
     this.blockService.lastBlock.getPromise().then(lastBlock => {
