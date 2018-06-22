@@ -251,7 +251,7 @@ export class BlockServiceProvider extends FLP_Tool {
   private async _updateHeight(last_block?: TYPE.BlockModel) {
     this.lastBlock.refresh("update Height");
     if (!last_block) {
-      last_block = await this.lastBlock.getPromise();
+      last_block = await this.getBlockByHeight((await this.lastBlock.getPromise()).height);
     }
     if (last_block.height <= this.appSetting.getHeight()) {
       return;
@@ -339,7 +339,7 @@ export class BlockServiceProvider extends FLP_Tool {
     } else {
       const last_block = await this.blockDb.findOne({}, { sort: { height: -1 } });
       if (last_block) {
-        return last_block;
+        return last_block as TYPE.SingleBlockModel;
       }
       return {
         ...this.empty_block
@@ -347,7 +347,7 @@ export class BlockServiceProvider extends FLP_Tool {
     }
   }
 
-  lastBlock = new AsyncBehaviorSubject<TYPE.BlockModel>(promise_pro => {
+  lastBlock = new AsyncBehaviorSubject<TYPE.SingleBlockModel>(promise_pro => {
     return promise_pro.follow(this.getLastBlock());
   });
 
