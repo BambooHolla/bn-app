@@ -595,7 +595,7 @@ export class MinServiceProvider extends FLP_Tool {
     };
     let data = await this.fetch.get<any>(this.MY_RANK, { search: query });
 
-    return data.ranks || [];
+    return data.profits || [];
   }
 
   myRank!: AsyncBehaviorSubject<TYPE.RankModel[]>;
@@ -623,7 +623,7 @@ export class MinServiceProvider extends FLP_Tool {
     };
     let data = await this.fetch.get<any>(this.ALL_RANK, { search: query });
 
-    return data.ranks || [];
+    return data.profits || [];
   }
   // 这里只缓存最常用的初始20条
   rankListOf20!: AsyncBehaviorSubject<TYPE.RankModel[]>;

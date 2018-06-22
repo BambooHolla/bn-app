@@ -110,6 +110,11 @@ export class TabChainPage extends FirstLevelPage {
   }
 
   @TabChainPage.onInit
+  async checkBlockchainCompleteWithNetworkCheck() {
+    await this.netWorkConnection();
+    return this.checkBlockchainComplete();
+  }
+
   @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE", undefined, {
     cssClass: "can-tap",
     showBackdrop: false,
