@@ -41,6 +41,10 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     }
     return false;
   }
+  show_all_remark = false;
+  toggleShowAllRemark(){
+    this.show_all_remark = !this.show_all_remark;
+  }
   block_info?: BlockModel;
   pre_block_id?: string;
   tran_list: TransactionModel[] = [];

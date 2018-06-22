@@ -184,7 +184,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
     const reversed_list = amount_list.reverse();
     cLine.lineStyle(pt(2.5), 0xffffff, 1);
     for (
-      let i = -1, len = reversed_list.length - 1, next_x, next_y;
+      var i = -1, len = reversed_list.length - 1, next_x, next_y;
       i < len;
       i += 1
     ) {

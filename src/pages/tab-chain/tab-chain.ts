@@ -138,17 +138,23 @@ export class TabChainPage extends FirstLevelPage {
     const startHeight = 1;
     const endHeight = block_1.height;
     const max_end_height = latest_block.height;
+    const download_handler = () => {
+      // 开始下载
+      this.downloadBlock(startHeight, endHeight, max_end_height);
+    }
     this._showCustomDialog({
-      title: this.getTranslateSync("ADVICE"),
+      // title: this.getTranslateSync("ADVICE"),
       message: this.getTranslateSync("BEFORE_DOWNLOAD_TIP"),
-      buttons: [{
-        text: this.getTranslateSync("OK_I_KNOWN"),
-        cssClass: "ok",
-        handler: () => {
-          // 开始下载
-          this.downloadBlock(startHeight, endHeight, max_end_height);
-        }
-      }]
+      buttons: [
+        {
+          text: this.getTranslateSync("CANCEL"),
+          cssClass: "cancel",
+          handler: download_handler,
+        }, {
+          text: this.getTranslateSync("OK_I_KNOWN"),
+          cssClass: "ok",
+          handler: download_handler
+        }]
     }, true);
   }
 

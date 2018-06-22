@@ -96,11 +96,17 @@
           {{block_info?.previousBlock}}
         </div>
       </div>
-      <div class="line extend-data" *ngIf="block_info?.remark">
-        <details>
-          <summary>{{'BLOCK_remark'|translate}}</summary>
-          <div>{{block_info?.remark}}</div>
-        </details>
+      <div class="line extend-data" *ngIf="block_info?.remark" [class.show-all]="show_all_remark" (click)="toggleShowAllRemark()">
+        <div class="label">
+          <div class="left">
+            <ali-icon name="ifm-fill-form"></ali-icon>
+            {{'BLOCK_remark'|translate}}
+          </div>
+          <div class="right"><ali-icon name="ifm-arrow-to-right"></ali-icon></div>
+        </div>
+        <div class="remark-content">
+          {{block_info?.remark}}
+        </div>
       </div>
     </div>
   </div>

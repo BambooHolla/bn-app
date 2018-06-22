@@ -41,60 +41,53 @@ page-chain-block-detail {
           justify-self: flex-end;
         }
         &.extend-data {
+          color: #7c7c7c;
           height: auto;
-          >details {
-            color: #7c7c7c;
-            padding-bottom: 1rem;
-            width: 100%;
-            >summary {
-              height: 4.6rem;
+          min-height: 6rem;
+          display: block;
+          >.label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 3rem;
+            font-size: 1.45rem;
+            >.left {
               display: flex;
               align-items: center;
-              position: relative;
-              &::after {
-                right: 0;
-                font-family: "ifmicon";
-                content: "\e62d";
-                position: absolute;
-                width: 1em;
-                height: 1em;
-                /* margin: 0.2em 0 0 0.5ch; */
-                transition: transform 0.2s;
-                /* transform: rotate(180deg); */
+              ali-icon {
+                margin-right: 0.6rem;
+                font-size: 1.4rem;
               }
             }
-            >content {
-              /*  transition-duration: 0.2s;
-            transform: scaleY(1); */
-              animation: sweep 0.25s ease-in-out;
-            }
-
-            @keyframes sweep {
-              0% {
-                opacity: 0;
-              }
-              100% {
-                opacity: 1;
+          }
+          &.show-all {
+            .right {
+              ali-icon {
+                transform: rotate(90deg);
               }
             }
-            &:not([open]) {
-              padding-bottom: 0rem;
-              >summary {
-                &::after {
-                  /* margin-top: .25em; */
-                  transform: rotate(-90deg);
-                }
-              }
-              /* > content {
-              transform: scaleY(0);
-            } */
+            >.remark-content {
+              height: auto;
+              mask-image: none;
             }
-             ::-webkit-details-marker {
-              /*  direction: ltr;
-            color: gray;
-            margin-left: 0.5ch; */
-              display: none;
+          }
+          .right {
+            ali-icon {
+              font-size: 1.3rem;
+              transform: rotate(0deg);
+              transition: transform 0.2s;
             }
+          }
+          >.remark-content {
+            font-size: 1.3rem;
+            height: 3rem;
+            padding-bottom: 1rem;
+            overflow: hidden;
+            mask-image: linear-gradient(
+              to bottom,
+              rgba(#000, 1) 0%,
+              rgba(#000, 0) 100%
+            );
           }
         }
       }
