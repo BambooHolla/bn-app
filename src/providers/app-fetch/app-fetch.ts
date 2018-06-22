@@ -51,7 +51,7 @@ export class ServerResError extends Error {
         } else {
           break;
         }
-      } catch (err) {}
+      } catch (err) { }
     }
     const err = new ServerResError(CODE_LIST, MESSAGE, details);
     return this.removeErrorCurrentStackLine(err);
@@ -87,6 +87,13 @@ export class AppFetchProvider {
       }))
     );
   }
+  async ioEmitAsync<T>(path, body) {
+    return this._handlePromise(new Promise<T>((resolve, reject) => {
+      this.io.emit(path, body, (res) => {
+        res.success ? resolve(res) : reject(res)
+      });
+    }));
+  }
   // private _user_token!: string;
 
   constructor(
@@ -101,7 +108,7 @@ export class AppFetchProvider {
   }
 
   private _handleResThen(res) {
-    const data = res.json();
+    const data = res.json instanceof Function ? res.json() : res;
 
     if (data.success) {
       return data;
@@ -111,7 +118,7 @@ export class AppFetchProvider {
     }
   }
   private _handleResCatch(res) {
-    const data = res.json();
+    const data = res.json instanceof Function ? res.json() : res;
     const error = data.error;
     if (error) {
       // debugger;
@@ -142,8 +149,8 @@ export class AppFetchProvider {
       }
     }
   }
-  private _catchData() {}
-  private _handlePromise(promise: Promise<any>) {
+  private _catchData() { }
+  private _handlePromise<T>(promise: Promise<T>) {
     return promise
       .catch(this._handleResCatch.bind(this))
       .then(this._handleResThen.bind(this));
@@ -180,8 +187,8 @@ export class AppFetchProvider {
       const custom_api_config:
         | installApiCache<T>
         | undefined = this.dbCache.cache_api_map.get(
-        `${method}:${new URL(url).pathname}`,
-      );
+          `${method}:${new URL(url).pathname}`,
+        );
       if (custom_api_config) {
         const api_service = custom_api_config;
         const db = this.dbCache.dbMap.get(api_service.dbname);

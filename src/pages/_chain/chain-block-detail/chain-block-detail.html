@@ -66,7 +66,7 @@
           {{'BLOCK_confirmations'|translate}}
         </div>
         <div class="right">
-          {{block_info?.confirmations}}{{'BLOCK_confirmations_UNIT'|translate}}
+          {{block_confirmations}}{{'BLOCK_confirmations_UNIT'|translate}}
         </div>
       </div>
       <div class="line fee">
@@ -92,9 +92,15 @@
           <ali-icon name="ifm-id"></ali-icon>
           {{'BLOCK_pre_block_id'|translate}}
         </div>
-        <div class="right" [click-to-copy]="pre_block_id" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('BLOCK_pre_block_id'|translate)}">
+        <div class="right" (click)="toPerBlock()">
           {{block_info?.previousBlock}}
         </div>
+      </div>
+      <div class="line extend-data" *ngIf="block_info?.remark">
+        <details>
+          <summary>{{'BLOCK_remark'|translate}}</summary>
+          <div>{{block_info?.remark}}</div>
+        </details>
       </div>
     </div>
   </div>

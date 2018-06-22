@@ -68,12 +68,6 @@ export class BlockServiceProvider extends FLP_Tool {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 
-    // // 启动轮询更新更新
-    // this._loopGetAndSetHeight();
-
-    // 启动websocket的监听更新
-    this._listenGetAndSetHeight();
-
     // 安装api服务
     this.blockDb = dbCache.installDatabase("blocks", []);
     dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
@@ -133,8 +127,8 @@ export class BlockServiceProvider extends FLP_Tool {
               cache.blocks instanceof Array
                 ? cache.blocks
                 : await db.find({
-                    height: { $in: res_blocks.map(b => b.height) },
-                  });
+                  height: { $in: res_blocks.map(b => b.height) },
+                });
             const unique_height_set = new Set<number>(
               old_blocks.map(b => b.height),
             );
@@ -180,6 +174,13 @@ export class BlockServiceProvider extends FLP_Tool {
         return cache;
       },
     );
+
+    // 未连接上websocket前，先使用本地缓存来更新一下高度
+    this.blockDb.findOne({}, { sort: { height: -1 } }).then(local_newest_block=>{
+      this._updateHeight(local_newest_block);
+    });
+    // 启动websocket的监听更新
+    this._listenGetAndSetHeight();
   }
   /// TODO: 弃用
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
@@ -199,7 +200,6 @@ export class BlockServiceProvider extends FLP_Tool {
     //   this._timestamp_from = second_block.timestamp;
     // }
     const last_block = await this.lastBlock.getPromise();
-    this.appSetting.setHeight(last_block.height);
 
     const lastTime = this.getFullTimestamp(last_block.timestamp);
     const currentTime = Date.now();
@@ -222,97 +222,48 @@ export class BlockServiceProvider extends FLP_Tool {
     );
   }
 
-  private _refresh_interval = 0;
-  private _retry_interval = 0;
-  private async _loopGetAndSetHeight(emit_retry?: boolean) {
-    const do_loop = async () => {
-      const old_data = await this.lastBlock.getPromise();
-      this.lastBlock.refresh();
-      const new_data = await this.lastBlock.getPromise();
-      // 这里不需要捕捉错误，_loop内有完整的错误捕捉方案。所以只需要执行就可以了
-      this._loopGetAndSetHeight(new_data == old_data);
-    };
-    const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
-    try {
-      if (emit_retry) {
-        // 刷新时间递增
-        if (this._refresh_interval === 0) {
-          this._refresh_interval = 1e3;
-        } else {
-          this._refresh_interval *= 2;
-        }
-        // 至少二分之一轮要更新一次
-        this._refresh_interval = Math.min(
-          BLOCK_UNIT_TIME / 2,
-          this._refresh_interval,
-        );
-        setTimeout(do_loop, this._refresh_interval);
-      } else {
-        let diff_time = await this.getLastBlockRefreshInterval();
-        // if (diff_time <= 0) {
-        //   throw new RangeError("Wrong diff time");
-        // }
-        diff_time %= BLOCK_UNIT_TIME;
-        if (diff_time < BLOCK_UNIT_TIME) {
-          this._refresh_interval = 0;
-          console.log(
-            `%c高度将在${new Date(
-              Date.now() + BLOCK_UNIT_TIME - diff_time,
-            ).toLocaleTimeString()}进行更新`,
-            "background-color:#3ef;color:#FFF",
-          );
-          setTimeout(do_loop, BLOCK_UNIT_TIME - diff_time);
-        }
-      }
-      this._retry_interval = 0; // 无异常，重置异常计时器
-    } catch (err) {
-      console.warn(err);
-      if (this._retry_interval === 0) {
-        this._retry_interval = 1e3;
-      } else {
-        this._retry_interval *= 2;
-      }
-      this._retry_interval = Math.min(
-        BLOCK_UNIT_TIME / 2,
-        this._retry_interval,
-      );
-      setTimeout(do_loop, this._retry_interval);
-    }
-  }
   round_end_time = new Date();
   @asyncCtrlGenerator.retry()
-  private async _updateHeight(last_block?: TYPE.SingleBlockModel) {
-    this.lastBlock.refresh("update Height");
+  private async _updateHeight(last_block?: TYPE.BlockModel) {
     if (!last_block) {
-      last_block = await this.lastBlock.getPromise();
+      last_block = (await this.fetch.ioEmitAsync<TYPE.BlockResModel>('get' + this.GET_LAST_BLOCK_URL.path, {})).block;
     }
+    if (last_block.height <= this.appSetting.getHeight()) {
+      return;
+    }
+    // 更新缓存中的最新区块
+    this.lastBlock.refresh("update Height");
+    // 将最新区块插入到数据库中
+    await this.blockDb.insert(last_block).catch(err =>
+      console.warn('更新最新区块失败', last_block, err));
+    // 更新轮次计时器
     this.round_end_time = new Date(
       Date.now() +
-        this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
-          this.appSetting.BLOCK_UNIT_TIME,
+      this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
+      this.appSetting.BLOCK_UNIT_TIME,
     );
+    // 更新高度
     this.appSetting.setHeight(last_block.height);
   }
   private async _listenGetAndSetHeight() {
-    this.io.on("blocks/change", data => {
+    this.io.on("blocks/change", async data => {
       // 计算流量大小
       this.appSetting.settings.contribution_traffic +=
         getJsonObjectByteSize(data) /*返回的JSON对象大小*/ +
         19 /*基础消耗*/;
+      console.log(
+        "%c区块更新",
+        "color:green;background-color:#eee;font-size:1.2rem",
+      );
 
+      this._updateHeight(data.lastBlock);
+
+      // 更新预期交易区块
       this._expectblock_uncommited = 0;
       this._expectblock_fee_reward = 0;
       this.getExpectBlockInfo().then(expect_block => {
         this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
       });
-      console.log(
-        "%c区块更新",
-        "color:green;background-color:#eee;font-size:1.2rem",
-      );
-      if (data.lastBlock) {
-        this.blockDb.insert(data.lastBlock);
-      }
-      this._updateHeight(data.lastBlock);
     });
     this.io.on("connect", () => {
       this._updateHeight();
@@ -336,44 +287,23 @@ export class BlockServiceProvider extends FLP_Tool {
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
-  async getLastBlock(): Promise<TYPE.SingleBlockModel> {
+  async getLastBlock() {
     // return blocks_res.blocks[0];
-    let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
-    return data.block;
+    // let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
+    // return data.block;
+    return this.getBlockByHeight(this.appSetting.getHeight());
   }
 
-  lastBlock = new AsyncBehaviorSubject<TYPE.SingleBlockModel>(promise_pro => {
+  lastBlock = new AsyncBehaviorSubject<TYPE.BlockModel>(promise_pro => {
     return promise_pro.follow(this.getLastBlock());
   });
 
-  tstamp = Date.UTC(
-    AppSettingProvider.SEED_DATE[0],
-    AppSettingProvider.SEED_DATE[1],
-    AppSettingProvider.SEED_DATE[2],
-    AppSettingProvider.SEED_DATE[3],
-    AppSettingProvider.SEED_DATE[4],
-    AppSettingProvider.SEED_DATE[5],
-    AppSettingProvider.SEED_DATE[6],
-  ) / 1000;
   /**
    * 获取输入的时间戳的完整时间戳,TODO: 和minSer重复了
    * @param timestamp
    */
   getFullTimestamp(timestamp: number) {
-    // let seed = new Date(
-    //   Date.UTC(
-    //     AppSettingProvider.SEED_DATE[0],
-    //     AppSettingProvider.SEED_DATE[1],
-    //     AppSettingProvider.SEED_DATE[2],
-    //     AppSettingProvider.SEED_DATE[3],
-    //     AppSettingProvider.SEED_DATE[4],
-    //     AppSettingProvider.SEED_DATE[5],
-    //     AppSettingProvider.SEED_DATE[6],
-    //   ),
-    // );
-    // let tstamp = parseInt((seed.getTime() / 1000).toString());
-    const { tstamp } = this;
-    const fullTimestamp = (timestamp + tstamp) * 1000;
+    const fullTimestamp = (timestamp + AppSettingProvider.seedDateTimestamp) * 1000;
     return fullTimestamp;
   }
 
@@ -382,7 +312,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {string} blockId
    * @returns {Promise<any>}
    */
-  async getBlockById(blockId: string): Promise<TYPE.SingleBlockModel> {
+  async getBlockById(blockId: string) {
     const data = await this.fetch.get<TYPE.BlockResModel>(
       this.GET_BLOCK_BY_ID,
       {
@@ -400,14 +330,14 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {number} height
    * @returns {Promise<any>}
    */
-  async getBlockByHeight(height: number): Promise<TYPE.BlockModel[]> {
+  async getBlockByHeight(height: number): Promise<TYPE.BlockModel> {
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
       search: {
         height: height,
       },
     });
 
-    return data.blocks;
+    return data.blocks[0];
   }
 
   /**
@@ -415,14 +345,14 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {string} address
    * @returns {Promise<any>}
    */
-  async getBlocksByAddress(address: string): Promise<TYPE.BlockModel[]> {
+  async getBlocksByAddress(address: string): Promise<TYPE.BlockModel> {
     let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
       search: {
         generatorId: address,
       },
     });
 
-    return data.blocks;
+    return data.blocks[0];
   }
 
   /**
@@ -432,24 +362,24 @@ export class BlockServiceProvider extends FLP_Tool {
    */
   async searchBlocks(
     query: string,
-  ): Promise<TYPE.BlockModel[] | TYPE.SingleBlockModel[]> {
+  ): Promise<TYPE.BlockModel[]> {
     //如果是纯数字且不是以0开头就查高度
     if (/[1-9][0-9]*/.test(query)) {
       const query_num = parseFloat(query) * 1;
       let data = await this.getBlockByHeight(query_num);
       // if (data.length > 0) {
-      return data;
+      return [data];
       // }
     } else {
       //首先查创块人
       let data1 = await this.getBlocksByAddress(query);
-      if (data1.length > 0) {
-        return data1;
+      if (data1) {
+        return [data1];
       }
 
       //不是创块人则搜索ID
       let data2 = await this.getBlockById(query);
-      if (data2.id) {
+      if (data2) {
         return [data2];
       }
 

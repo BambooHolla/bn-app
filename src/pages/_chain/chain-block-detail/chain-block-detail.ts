@@ -41,19 +41,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     }
     return false;
   }
-  block_info!: BlockModel /* = {
-    create_time: new Date(
-      Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000,
-    ),
-    address: "b7LA11Tgg3HNiAD6rJMDpD44y3V4WGNX8R",
-    reward: 200 * Math.random(),
-    height: (1000 * Math.random()) | 0,
-    is_delay: Math.random() > 0.5,
-    trans_num: (Math.random() * 5000) | 0,
-    trans_assets: Math.random() * 10000,
-    fee: 5000 * Math.random() * 0.00000001,
-    tran_list: [],
-  }*/;
+  block_info?: BlockModel;
   pre_block_id?: string;
   tran_list: TransactionModel[] = [];
   tran_list_config = {
@@ -63,32 +51,57 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     has_more: true,
   };
   @ChainBlockDetailPage.willEnter
-  initAndLoadData() {
-    const block: BlockModel = this.navParams.get("block");
+  async initAndLoadData(block_id?: string) {
+    let block: BlockModel | undefined;
+    if (!block) {
+      if (typeof block_id === "string") {
+        block = await this.blockService.getBlockById(block_id);
+      }
+    }
+    if (!block) {
+      const height = this.navParams.get("height");
+      if (typeof height === "number") {
+        block = await this.blockService.getBlockByHeight(height);
+      }
+    }
+    if (!block) {
+      block = this.navParams.get("block");
+    }
+
     if (!block) {
       return this.navCtrl.goToRoot({});
     }
     if (this.block_info == block) {
       return;
     }
-    this.block_info = block;
-    this.loadTranLogs();
-    this.loadDelegateInfo();
+    if (block) {
+      this.block_info = block;
+      this.loadTranLogs();
+      this.loadDelegateInfo();
+    }
   }
 
+  get block_confirmations() {
+    if (this.block_info && this._lastBlock) {
+      return this._lastBlock.height - this.block_info.height
+    }
+    return 0;
+  }
+  private _lastBlock?: BlockModel
   @ChainBlockDetailPage.addEvent("HEIGHT:CHANGED")
   watchHeightChanged() {
     this.blockService.lastBlock.getPromise().then(lastBlock => {
-      this.block_info.confirmations = `${lastBlock.height -
-        this.block_info.height}`;
+      this._lastBlock = lastBlock
     });
   }
   delegate_info?: DelegateModel;
   @asyncCtrlGenerator.error()
   async loadDelegateInfo() {
-    this.delegate_info = await this.minService.getDelegateInfo(
-      this.block_info.generatorPublicKey,
-    );
+    if (this.block_info) {
+      this.delegate_info = await this.minService.getDelegateInfo(
+        this.block_info.generatorPublicKey,
+      );
+    }
   }
 
   @asyncCtrlGenerator.error(() =>
@@ -108,6 +121,9 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   }
   async _loadTranLogs() {
     const { block_info, tran_list_config } = this;
+    if (!block_info) {
+      return [];
+    }
     tran_list_config.loading = true;
     try {
       // 重置page
@@ -133,8 +149,10 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     tran_list.push(...transaction_list);
   }
 
-  @asyncCtrlGenerator.error("QAQ")
-  async testOneDialog() {
-    throw "hehha";
+  @asyncCtrlGenerator.loading()
+  async toPerBlock() {
+    if (this.block_info) {
+      return this.initAndLoadData(this.block_info.previousBlock);
+    }
   }
 }

@@ -49,6 +49,7 @@
   "BLOCK_id": "区块ID",
   "BLOCK_pre_block_id": "前块ID",
   "BLOCK_transactions": "交易记录",
+  "BLOCK_remark": "备注",
 
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "关于IBT",

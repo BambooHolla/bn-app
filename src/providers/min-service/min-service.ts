@@ -337,7 +337,7 @@ export class MinServiceProvider extends FLP_Tool {
   }
   private _pre_round_pwd_info?: { cache_key: string } & PromiseType<
     ReturnType<typeof FLP_Form.prototype.getUserPassword>
-  >;
+    >;
   private _pre_round_pwd_info_block?: PromiseOut<void>;
   async refreshPerRoundPwdInfo(input_dialog_title: string) {
     const lock = new PromiseOut<void>();
@@ -587,8 +587,10 @@ export class MinServiceProvider extends FLP_Tool {
   /**
    * 获取我在上一轮的排名
    */
-  async getMyRank(): Promise<TYPE.RankModel[]> {
+  async getMyRank(before = 1, after = 1): Promise<TYPE.RankModel[]> {
     let query = {
+      before,
+      after,
       address: this.userInfo.userInfo.address,
     };
     let data = await this.fetch.get<any>(this.MY_RANK, { search: query });
