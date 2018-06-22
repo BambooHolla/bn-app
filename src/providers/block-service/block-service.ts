@@ -134,7 +134,7 @@ export class BlockServiceProvider extends FLP_Tool {
             );
             const new_blocks = res_blocks.filter(block => {
               return !unique_height_set.has(block.height);
-            });
+            }).map(b => this.formatBlockData(b));
             await db.insertMany(new_blocks);
           }
           return mix_res;
@@ -166,9 +166,9 @@ export class BlockServiceProvider extends FLP_Tool {
       async (db, mix_res, cache) => {
         if (mix_res) {
           const new_block = mix_res.block;
-          if (await db.has({ id: new_block.id })) {
+          if (!(await db.has({ id: new_block.id }))) {
+            await db.insert(this.formatBlockData(new_block));
           }
-          await db.insert(new_block);
           cache.block = new_block;
         }
         return cache;
@@ -176,7 +176,7 @@ export class BlockServiceProvider extends FLP_Tool {
     );
 
     // 未连接上websocket前，先使用本地缓存来更新一下高度
-    this.blockDb.findOne({}, { sort: { height: -1 } }).then(local_newest_block=>{
+    this.blockDb.findOne({}, { sort: { height: -1 } }).then(local_newest_block => {
       this._updateHeight(local_newest_block);
     });
     // 启动websocket的监听更新
@@ -221,21 +221,43 @@ export class BlockServiceProvider extends FLP_Tool {
         .then(res => res.blocks[0]),
     );
   }
+  formatBlockData(block: TYPE.BlockModel): TYPE.BlockModel {
+    return {
+      version: block.version,
+      timestamp: block.timestamp,
+      totalAmount: block.totalAmount,
+      totalFee: block.totalFee,
+      reward: block.reward,
+      numberOfTransactions: block.numberOfTransactions,
+      payloadLength: block.payloadLength,
+      payloadHash: block.payloadHash,
+      generatorId: block.generatorId,
+      generatorPublicKey: block.generatorPublicKey,
+      blockSignature: block.blockSignature,
+      previousBlock: block.previousBlock,
+      id: block.id,
+      height: block.height,
+      blockSize: block.blockSize,
+      remark: block.remark,
+    }
+  }
 
   round_end_time = new Date();
   @asyncCtrlGenerator.retry()
   private async _updateHeight(last_block?: TYPE.BlockModel) {
+    this.lastBlock.refresh("update Height");
     if (!last_block) {
-      last_block = (await this.fetch.ioEmitAsync<TYPE.BlockResModel>('get' + this.GET_LAST_BLOCK_URL.path, {})).block;
+      last_block = await this.lastBlock.getPromise();
     }
     if (last_block.height <= this.appSetting.getHeight()) {
       return;
     }
     // 更新缓存中的最新区块
-    this.lastBlock.refresh("update Height");
-    // 将最新区块插入到数据库中
-    await this.blockDb.insert(last_block).catch(err =>
-      console.warn('更新最新区块失败', last_block, err));
+    if(!(await this.blockDb.has({id:last_block.id}))){
+      // 将最新区块插入到数据库中
+      await this.blockDb.insert(this.formatBlockData(last_block)).catch(err =>
+        console.warn('更新最新区块失败', last_block, err));
+    }
     // 更新轮次计时器
     this.round_end_time = new Date(
       Date.now() +
@@ -283,15 +305,42 @@ export class BlockServiceProvider extends FLP_Tool {
     });
   }
 
+  empty_block: TYPE.BlockModel = {
+    height: 0,
+    id: "",
+    timestamp: 0,
+
+    version: 0,
+    previousBlock: "",
+    numberOfTransactions: 0,
+    totalAmount: "0",
+    totalFee: "0",
+    reward: "0",
+    payloadLength: 0,
+    payloadHash: "",
+    generatorPublicKey: "",
+    generatorId: "",
+    blockSignature: "",
+    blockSize: "0",
+    remark: "",
+  }
+
   /**
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
   async getLastBlock() {
-    // return blocks_res.blocks[0];
-    // let data = await this.fetch.get<any>(this.GET_LAST_BLOCK_URL);
-    // return data.block;
-    return this.getBlockByHeight(this.appSetting.getHeight());
+    if (navigator.onLine) {
+      return (await this.fetch.ioEmitAsync<TYPE.BlockResModel>('get' + this.GET_LAST_BLOCK_URL.path, {})).block;
+    } else {
+      const last_block = await this.blockDb.findOne({}, { sort: { height: -1 } });
+      if (last_block) {
+        return last_block;
+      }
+      return {
+        ...this.empty_block
+      }
+    }
   }
 
   lastBlock = new AsyncBehaviorSubject<TYPE.BlockModel>(promise_pro => {

@@ -54,8 +54,7 @@ const fakeBlock: FakeBlock = {
   generatorId: "",
   blockSignature: "",
   blockSize: "0",
-  confirmations: "",
-  totalForged: "0",
+  remark: "",
 };
 // @IonicPage({ name: "tab-chain" })
 @Component({
@@ -131,8 +130,21 @@ export class TabChainPage extends FirstLevelPage {
     if (block_1.height <= 1) {
       return true;
     }
-    // 开始下载
-    this.downloadBlock(1, block_1.height - 1, latest_block.height);
+    const startHeight = 1;
+    const endHeight = block_1.height;
+    const max_end_height = latest_block.height;
+    this._showCustomDialog({
+      title: this.getTranslateSync("ADVICE"),
+      message: this.getTranslateSync("BEFORE_DOWNLOAD_TIP"),
+      buttons: [{
+        text: this.getTranslateSync("OK_I_KNOWN"),
+        cssClass: "ok",
+        handler: () => {
+          // 开始下载
+          this.downloadBlock(startHeight, endHeight, max_end_height);
+        }
+      }]
+    }, true);
   }
 
   loading_dialog?: Loading;
