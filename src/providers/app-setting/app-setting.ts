@@ -392,6 +392,8 @@ export class AppSettingProvider extends CommonService {
     detal_tran_num: 0,
     /**贡献的流量*/
     contribution_traffic: 0,
+    /**隐藏账户金额信息*/
+    can_view_amount: false,
   };
 }
 if (

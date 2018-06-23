@@ -1,4 +1,4 @@
-import { Component, Optional, ViewChild } from "@angular/core";
+import { Component, Optional, ViewChild,ChangeDetectorRef } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
@@ -26,6 +26,7 @@ export class PayReceivePage extends SecondLevelPage {
     public navParams: NavParams,
     public transactionService: TransactionServiceProvider,
     @Optional() public tabs: TabsPage,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
   }

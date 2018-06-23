@@ -11,10 +11,10 @@ export interface BlockModel extends SingleBlockModel {
   generatorId: string;
   blockSignature: string;
   blockSize: string;
-  confirmations: string;
-  totalForged: string;
+  confirmations?: number;
   delay?: boolean;
   fake?: boolean;
+  remark: string;
 }
 
 export interface SingleBlockModel {

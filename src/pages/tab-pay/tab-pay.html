@@ -35,7 +35,7 @@
     <div class="fee" (click)="setTransferFee()">
       <ali-icon class="left" name="ifm-info"></ali-icon>
       <span class="value">{{formData.transfer_fee|number:'1.8-8'}}</span>
-      <div class="balance-info">{{'BALANCE' | translate}}：{{userInfo.balance|amountEuler|number:'1.8-8'}}</div>
+      <div class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div>
     </div>
     <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'SUBMIT_TRANSFER' | translate}}</button>
   </div>
@@ -53,7 +53,7 @@
         <!-- <div class="create-time">{{log.create_time|amLocal:localName|amTimeAgo}}</div> -->
         <div class="create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         <div class="address" [innerHTML]="log.recipientId|mask:'@address'"></div>
-        <div class="amount">{{log.amount|amountEuler|number:'1.8-8'}}</div>
+        <div class="amount">{{amountViewer(log.amount|amountEuler|number:'1.8-8')}}</div>
       </div>
       <div class="empty" *ngIf="!roll_out_config.loading&&roll_out_logs.length==0">
         <i>{{'NO_OUT_COME_RECORED' | translate}}</i>

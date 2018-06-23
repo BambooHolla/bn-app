@@ -228,7 +228,7 @@ export class MinServiceProvider extends FLP_Tool {
       return;
     }
     if (parseFloat(fee) > parseFloat(this.userInfo.balance)) {
-      throw new Error("@@NOT_ENOUGH_BALANCE_TO_VOTE");
+      throw new Error(this.getTranslateSync("NOT_ENOUGH_BALANCE_TO_VOTE"));
     }
     const voted_delegate_list = await this.voted_delegates_db.find({
       publicKey: { $in: voteable_delegates.map(del => del.publicKey) },
@@ -313,7 +313,7 @@ export class MinServiceProvider extends FLP_Tool {
     // 获取可投的账户
     const { delegates: voteable_delegates } =
       // 如果已经投过票了，自动投票模式下不会提供可投的57票
-      voted_delegate_list.length === 0
+      voted_delegate_list.length !== 0
         ? { delegates: [] }
         : await this.getVoteAbleDelegates(0, 57, this.userInfo.address);
     if (voteable_delegates.length || true) {
@@ -573,7 +573,7 @@ export class MinServiceProvider extends FLP_Tool {
     };
     const data = await this.fetch.get<any>(this.MY_RANK, { search: query });
 
-    return data.ranks || [];
+    return data.profits || [];
   }
 
   myRank!: AsyncBehaviorSubject<TYPE.RankModel[]>;
@@ -601,7 +601,7 @@ export class MinServiceProvider extends FLP_Tool {
     };
     let data = await this.fetch.get<any>(this.ALL_RANK, { search: query });
 
-    return data.ranks || [];
+    return data.profits || [];
   }
   // 这里只缓存最常用的初始20条
   rankListOf20!: AsyncBehaviorSubject<TYPE.RankModel[]>;

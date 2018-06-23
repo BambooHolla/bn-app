@@ -2,12 +2,15 @@ import EventEmitter from "eventemitter3";
 
 var BACKEND_VERSION = localStorage.getItem("BACKEND_VERSION");
 if (typeof BACKEND_VERSION !== "string") {
-  BACKEND_VERSION = "v3.0.0/";
+  BACKEND_VERSION = "v3.0.1/";
 }
 export class AppUrl {
   static SERVER_URL = "http://127.0.0.1";
   static BACKEND_VERSION = BACKEND_VERSION;
-  constructor(public path) {}
+  static getPathName(url: string) {
+    return new URL(url).pathname.replace("/api/" + AppUrl.BACKEND_VERSION, "/api/");
+  }
+  constructor(public path) { }
   toString() {
     return (
       (this.disposable_server_url || AppUrl.SERVER_URL) +

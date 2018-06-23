@@ -538,6 +538,9 @@ export function singleRunWrap(opts: { update_key?: string } = {}) {
   };
 }
 
+export function queneTask(){}
+
+
 export const asyncCtrlGenerator = {
   single: singleRunWrap,
   success: asyncSuccessWrapGenerator,
@@ -622,3 +625,4 @@ export const asyncCtrlGenerator = {
     );
   },
 };
+

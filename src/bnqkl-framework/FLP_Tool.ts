@@ -142,7 +142,7 @@ export class FLP_Tool {
   }
   async _showCustomDialog(
     data: {
-      title: string;
+      title?: string;
       iconType?: string;
       subTitle?: string;
       message?: string;

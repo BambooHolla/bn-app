@@ -498,7 +498,7 @@ export class FirstLevelPage extends FLP_Data {
         }
       };
     } else {
-      this.fixIOSCacheBug = () => {};
+      this.fixIOSCacheBug = () => { };
     }
     this.fixIOSCacheBug(ele);
   }
@@ -516,7 +516,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-      )
+    )
       .present();
   }
 
@@ -568,5 +568,19 @@ export class FirstLevelPage extends FLP_Data {
       this.dispatchEvent("ROUND:CHANGED", round, is_first);
       is_first = false;
     });
+  }
+
+
+  amountViewer(amount, hide_symbol_num = 8) {
+    if (this.appSetting.settings.can_view_amount) {
+      return amount;
+    } else {
+      return "*".repeat(hide_symbol_num);
+    }
+  }
+  /*切换金额是否可见*/
+  toggleAmountView() {
+    this.appSetting.settings.can_view_amount = !this.appSetting.settings.can_view_amount;
+    this.cdRef && this.cdRef.markForCheck();
   }
 }

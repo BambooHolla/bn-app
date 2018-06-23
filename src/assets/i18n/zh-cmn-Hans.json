@@ -6,10 +6,12 @@
   "NO": "否",
   "CANCEL": "取消",
   "BACK_BUTTON_TEXT": "回退",
+  "OK_I_KNOWN":"我知道了",
   "PULLING_REFRESH_LIST": "下拉更新列表",
   "COPY_SUCCESS": "复制成功",
   "#INFO#_COPY_SUCCESS": "{{info}}复制成功",
   "RANK_OF_ME": "我",
+  "ADVICE":"敬告",
   "TRANSACTION_FEES": "手续费",
   "SAVE": "保存",
   "EMPTY_LIST": "空列表",
@@ -49,6 +51,7 @@
   "BLOCK_id": "区块ID",
   "BLOCK_pre_block_id": "前块ID",
   "BLOCK_transactions": "交易记录",
+  "BLOCK_remark": "备注",
 
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "关于IBT",
@@ -137,6 +140,7 @@
   "VOTE_INCOME_HISTORY": "历史挖矿收益",
   "START_VOTE_VERIFY": "开启挖矿校验",
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
+  "BEFORE_DOWNLOAD_TIP": "即将同步区块链数据，第一次同步可能需要一点时间，在这个过程中你依然可以进行其它操作",
 
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "本轮挖矿收益",

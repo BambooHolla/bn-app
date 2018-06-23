@@ -55,8 +55,7 @@ const _base_block = {
   generatorId: "",
   blockSignature: "",
   blockSize: "0",
-  confirmations: "",
-  totalForged: "0",
+  remark: "",
 };
 const fakeBlock: FakeBlock = {
   ..._base_block,
@@ -119,12 +118,17 @@ export class TabChainPage extends FirstLevelPage {
     this.routeTo("chain-block-detail", { block });
   }
 
+  // async checkBlockchainCompleteWithNetworkCheck() {
+  //   await this.netWorkConnection();
+  //   return this.checkBlockchainComplete();
+  // }
+  // @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE", undefined, {
+  //   cssClass: "can-tap",
+  //   showBackdrop: false,
+  // })
   @TabChainPage.onInit
-  @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE", undefined, {
-    cssClass: "can-tap",
-    showBackdrop: false,
-  })
   async checkBlockchainComplete() {
+    await this.netWorkConnection();
     // 检测现有数据库中最低的块是否为1
     let block_1:
       | SingleBlockModel
@@ -140,8 +144,27 @@ export class TabChainPage extends FirstLevelPage {
     if (block_1.height <= 1) {
       return true;
     }
-    // 开始下载
-    this.downloadBlock(1, block_1.height - 1, latest_block.height);
+    const startHeight = 1;
+    const endHeight = block_1.height;
+    const max_end_height = latest_block.height;
+    const download_handler = () => {
+      // 开始下载
+      this.downloadBlock(startHeight, endHeight, max_end_height);
+    }
+    this._showCustomDialog({
+      // title: this.getTranslateSync("ADVICE"),
+      message: this.getTranslateSync("BEFORE_DOWNLOAD_TIP"),
+      buttons: [
+        {
+          text: this.getTranslateSync("CANCEL"),
+          cssClass: "cancel",
+          handler: download_handler,
+        }, {
+          text: this.getTranslateSync("OK_I_KNOWN"),
+          cssClass: "ok",
+          handler: download_handler
+        }]
+    }, true);
   }
 
   loading_dialog?: Loading;
@@ -319,7 +342,7 @@ export class TabChainPage extends FirstLevelPage {
           this.block_list = this.block_list.slice(1);
         }
 
-        if (startHeight > cur_top_height) {
+        if (startHeight > cur_top_height + 1) {
           // 这里区块链断链了，斩断后面的链，用最新的
           this.block_list = list;
         } else {

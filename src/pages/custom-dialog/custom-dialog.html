@@ -17,9 +17,9 @@
         </div>
       </ng-container>
       <div class="content">
-        <div>{{content_title}}</div>
-        <div>{{content_subTitle}}</div>
-        <div>{{content_message}}</div>
+        <div class="title">{{content_title}}</div>
+        <div class="sub-title">{{content_subTitle}}</div>
+        <div class="message">{{content_message}}</div>
       </div>
       <div class="buttons" *ngIf="buttons?.length">
         <button *ngFor="let button of buttons" [ngClass]="button.cssClass" (click)="runButtonHandler(button)">
