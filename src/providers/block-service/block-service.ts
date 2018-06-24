@@ -96,9 +96,10 @@ export class BlockServiceProvider extends FLP_Tool {
             limit = Math.abs(endHeight - startHeight) + 1;
           }
         }
-        {
+        let sort;
+        if (typeof orderBy === "string") {
           const sort_params = orderBy.split(":");
-          var sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
+          sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
         }
         const blocks = await db.find(query, {
           sort,

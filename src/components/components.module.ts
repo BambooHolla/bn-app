@@ -19,6 +19,7 @@ import { MacArk_1Component } from './mac-ark-1/mac-ark-1';
 import { MacArk_2Component } from './mac-ark-2/mac-ark-2';
 import { UsageProgressComponent } from './usage-progress/usage-progress';
 import { OfflineTransactionTicketComponent } from './offline-transaction-ticket/offline-transaction-ticket';
+import { ChainListComponent } from './chain-list/chain-list';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { OfflineTransactionTicketComponent } from './offline-transaction-ticket/
     MacArk_2Component,
     UsageProgressComponent,
     OfflineTransactionTicketComponent,
+    ChainListComponent,
   ],
   imports: [],
   exports: [
@@ -65,6 +67,7 @@ import { OfflineTransactionTicketComponent } from './offline-transaction-ticket/
     MacArk_2Component,
     UsageProgressComponent,
     OfflineTransactionTicketComponent,
+    ChainListComponent,
   ],
 })
 export class ComponentsModule {}

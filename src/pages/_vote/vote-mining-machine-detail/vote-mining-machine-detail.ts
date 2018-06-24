@@ -87,7 +87,7 @@ export class VoteMiningMachineDetailPage extends SecondLevelPage {
 		this.loadIsForgeEnabled();
 	}
 	/**加载矿机挖矿状态*/
-	@asyncCtrlGenerator.error("@LOAD_FORGE_STATUS_FAIL")
+	@asyncCtrlGenerator.error("@@LOAD_FORGE_STATUS_FAIL")
 	async loadIsForgeEnabled() {
 		const { mac, minService } = this;
 		mac.loading_is_enabled = true;

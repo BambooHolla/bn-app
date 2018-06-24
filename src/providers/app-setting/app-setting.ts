@@ -355,6 +355,9 @@ export class AppSettingProvider extends CommonService {
   getRound() {
     return this.round.getValue();
   }
+  share_settings = {
+    
+  }
 
   settings = {
     lang: "",

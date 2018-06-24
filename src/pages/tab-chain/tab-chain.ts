@@ -128,6 +128,9 @@ export class TabChainPage extends FirstLevelPage {
   // })
   @TabChainPage.onInit
   async checkBlockchainComplete() {
+    if (localStorage.getItem("AUTO_DOWNLOAD_BLOCKCHAINE") === "disabled") {
+      return;
+    }
     await this.netWorkConnection();
     // 检测现有数据库中最低的块是否为1
     let block_1:
@@ -249,7 +252,7 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.onInit
   bindBlockListViewRefresher() {
     // const unconfirm_height = await this.loadUnconfirmBlock();
-    this.registerViewEvent(this.blockService.event, "BLOCKCHAIN:CHANGED", )
+    // this.registerViewEvent(this.blockService.event, "BLOCKCHAIN:CHANGED", )
   }
 
   // @TabChainPage
@@ -417,7 +420,7 @@ export class TabChainPage extends FirstLevelPage {
         // if(block_list[0])
         for (var i = 0; i < block_list.length; i += 1) {
           const block = block_list[i];
-          new_block_list[]
+          // new_block_list[]
         }
       }
     });
@@ -478,16 +481,16 @@ export class TabChainPage extends FirstLevelPage {
   }
 
   getBlockListByRange(startHeight: number, endHeight: number) {
-    const { top_block,block_list,last_block} = this;
+    const { top_block, block_list, last_block } = this;
     if (top_block && last_block) {
       const max_height = top_block.height;
       const min_height = last_block.height;
       // if(endHeight<max_height&&startHeight>min_height){
 
       // }
-      const from = Math.min(max_height,startHeight);
-      const to = Math.max(min_height,endHeight);
-      
+      const from = Math.min(max_height, startHeight);
+      const to = Math.max(min_height, endHeight);
+
       const min_height_index = block_list.length - 1;
     }
     return [];
