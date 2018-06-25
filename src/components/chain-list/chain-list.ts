@@ -89,9 +89,8 @@ export class ChainListComponent extends AniBase {
 			}
 			this.app = ChainListComponent.PIXIAppbuilder({
 				view: canvasNode,
-				width: (this.renderer_width = canvasNode.clientWidth),
-				height: (this.renderer_height = canvasNode.clientHeight),
-				resolution: this.devicePixelRatio,
+				width: (this.renderer_width = this.pt(canvasNode.clientWidth)),
+				height: (this.renderer_height = this.pt(canvasNode.clientHeight)),
 				transparent: false,
 				antialias: true,
 				autoStart: true,
@@ -167,6 +166,7 @@ export class ChainListComponent extends AniBase {
 		let touch_start_point: PIXI.Point | undefined;
 		let per_point: PIXI.Point;
 		let list_start_y: number;
+		let acc_move_y: number;// 累计的滑动距离。 到一定程度的时候，就要禁止滚动了
 
 		let velocity = 0;
 		let amplitude = 0;
@@ -186,10 +186,12 @@ export class ChainListComponent extends AniBase {
 			velocity = 0.8 * v + 0.2 * velocity;
 
 			// track
-			if (velocity > 20 || velocity < -20 || now - start_timestamp > 500) {
+			if (acc_move_y > 20 || now - start_timestamp > 500) {
 				// 进入滚动状态，或者进入长按状态，禁用点击
 				this.setBlockCardListTap(false);
 			} else {
+				// 过了阈值就不需要再累加了
+				acc_move_y += Math.abs(delta);
 				this.setBlockCardListTap(true);
 			}
 		};
@@ -252,6 +254,7 @@ export class ChainListComponent extends AniBase {
 		list_view.on("pointerdown", (e: PIXI.interaction.InteractionEvent) => {
 			touch_start_point = per_point = e.data.global.clone();
 			list_start_y = list_view_y;
+			acc_move_y = 0;
 
 			velocity = amplitude = 0;
 			start_timestamp = timestamp = performance.now();
@@ -348,7 +351,7 @@ export class ChainListComponent extends AniBase {
 	}
 	// 一些基本的样式
 	// 列表第一个元素的前置留白
-	private _list_padding_top = 300;
+	private _list_padding_top = this.pt(300);
 	get list_padding_top() { return this._list_padding_top };
 	set list_padding_top(v) {
 		if (v !== this._list_padding_top) {
@@ -357,7 +360,7 @@ export class ChainListComponent extends AniBase {
 		}
 	};
 	// 最后一个元素的底部留白
-	private _list_padding_bottom = 100;
+	private _list_padding_bottom = this.pt(100);
 	get list_padding_bottom() { return this._list_padding_bottom };
 	set list_padding_bottom(v) {
 		if (v !== this._list_padding_bottom) {

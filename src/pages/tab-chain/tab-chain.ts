@@ -122,7 +122,7 @@ export class TabChainPage extends FirstLevelPage {
 
   @TabChainPage.didEnter
   initChainListPaddingTop() {
-    this.chainList.list_padding_top = this.fixedHeader.nativeElement.clientHeight + 12/*1rem*/;
+    this.chainList.list_padding_top = this.chainList.pt(this.fixedHeader.nativeElement.clientHeight + 12/*1rem*/);
   }
 
   pullToTop() {
