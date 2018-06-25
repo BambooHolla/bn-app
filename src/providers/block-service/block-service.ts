@@ -10,7 +10,7 @@ import {
 } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import { PromisePro, PromiseOut } from "../../bnqkl-framework/PromiseExtends";
+import { PromisePro, PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 
 import {
   AppSettingProvider,
@@ -452,16 +452,17 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getLastBlock() {
+    const last_block = await this.blockDb.findOne({}, { sort: { height: -1 } }).then((b) => b || {
+      ...this.empty_block
+    });
+
     if (navigator.onLine) {
-      return (await this.fetch.ioEmitAsync<TYPE.BlockResModel>('get' + this.GET_LAST_BLOCK_URL.path, {})).block;
+      return await Promise.race([
+        this.fetch.ioEmitAsync<TYPE.BlockResModel>('get' + this.GET_LAST_BLOCK_URL.path, {}).then(res => res.block),
+        sleep(3000).then(() => last_block),
+      ])
     } else {
-      const last_block = await this.blockDb.findOne({}, { sort: { height: -1 } });
-      if (last_block) {
-        return last_block as TYPE.SingleBlockModel;
-      }
-      return {
-        ...this.empty_block
-      }
+      return last_block
     }
   }
 
@@ -738,7 +739,7 @@ export class BlockServiceProvider extends FLP_Tool {
       reward: 3500000000 + this._expectblock_fee_reward,
       fee: this._expectblock_fee_reward,
       uncommited: this._expectblock_uncommited,
-      height: this.appSetting.getHeight() + 1,
+      height: (await this.lastBlock.getPromise()).height + 1,
     };
   }
   expectBlockInfo!: AsyncBehaviorSubject<TYPE.UnconfirmBlockModel>;

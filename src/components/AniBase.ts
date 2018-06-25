@@ -1,6 +1,9 @@
 import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
 import { tryRegisterGlobal, FLP_Tool } from "../bnqkl-framework/FLP_Tool";
+import * as FontFaceObserver from "fontfaceobserver";
+export const ifmicon_font_ready = new FontFaceObserver('ifmicon').load();
+
 function _tick(time) {
   this._requestId = null;
 
@@ -274,6 +277,30 @@ export class AniBase extends EventEmitter {
     };
   }
   Easing = Easing;
+  static amountToString(amount: string | undefined) {
+    if (typeof amount !== "string") {
+      return "";
+    }
+    const amount_value = parseFloat(amount) / 1e8;
+    const amount_info = amount_value.toFixed(8).split(".");
+    const int_str = amount_info[0] || "";
+    const float_str = amount_info[1] || "";
+
+    const tmp =
+      int_str
+        .split("")
+        .reverse()
+        .join("")
+        .match(/\d{1,3}/g) || [];
+
+    const formated_int_str = tmp
+      .join(",")
+      .split("")
+      .reverse()
+      .join("");
+    return formated_int_str + "." + float_str;
+  }
+  amountToString = AniBase.amountToString;
 }
 
 export class CssAniBase extends AniBase {

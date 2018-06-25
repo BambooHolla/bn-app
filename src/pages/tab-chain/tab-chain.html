@@ -1,5 +1,5 @@
 <ion-content>
-  <div class="fixed-header" (click)="pullToTop()">
+  <div #fixedHeader class="fixed-header" (click)="pullToTop()">
     <div class="title">
       <div class="left"></div>
       <div class="center">
@@ -26,41 +26,6 @@
     </div>
   </div>
   <div class="list-wrapper">
-    <chain-list class="block-list"></chain-list>
-    <virtual-scroll style="display:none" #vscroll class="block-list" [items]="block_list" (update)="viewPortItems = $event" (change)="onListChange($event)">
-      <div *ngFor="let block of viewPortItems;trackBy:blockListTrackByFn" class="block-item" (click)="routeToChainBlockDetail(block)" [attr.data-height]="block.height" [class.fake]="block.fake" [class.placeholder]="block.placeholder" [class.round-end]="block.height%57==0" [class.latest-block]="block.height==1">
-        <div class="header">
-          <div class="height">
-            <div class="value">{{block.height}}</div>
-            <span class="title"><ali-icon name="ifm-resize-height"></ali-icon>{{'HEIGHT' | translate}}</span>
-          </div>
-          <div class="trans_num">
-            <div class="value">{{block.numberOfTransactions}}</div>
-            <span class="title"><ali-icon name="ifm-tran"></ali-icon>{{'TRANSACTION_AMOUNT' | translate}}</span>
-          </div>
-        </div>
-        <div class="info">
-          <div class="delay" [ngClass]="block.delay?'true':''">
-            <ali-icon name="ifm-chain-tran-error"></ali-icon>
-          </div>
-          <div class="total-amount">
-            <span class="title"><ali-icon name="ifm-coins"></ali-icon>{{'TOTALAMOUNT' | translate}}</span>
-            <div class="value">{{block.totalAmount|amountEuler|number:'1.8-8'}}</div>
-          </div>
-          <div class="fee">
-            <span class="title"><ali-icon name="ifm-wallet"></ali-icon>{{'FEE' | translate}}</span>
-            <div class="value">{{block.totalFee|amountEuler|number:'1.8-8'}}</div>
-          </div>
-        </div>
-        <div class="footer">
-          {{'CHECK_BLOCK' | translate}}
-          <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-        </div>
-        <div class="chain-container">
-          <div class="left chain"></div>
-          <div class="right chain"></div>
-        </div>
-      </div>
-    </virtual-scroll>
+    <chain-list class="block-list" [class.loading]="!chain_list_view_able" [max-chain-height]="unconfirm_block?.height-1" [max-chain-height]="" (click-item-footer)="routeToChainBlockDetail($event.height)"></chain-list>
   </div>
 </ion-content>

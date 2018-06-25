@@ -30,6 +30,7 @@ import {
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { Subscription } from "rxjs/Subscription";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
+import { ChainListComponent } from "../../components/chain-list/chain-list";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 
 interface FakeBlock extends BlockModel {
@@ -93,16 +94,9 @@ export class TabChainPage extends FirstLevelPage {
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
-  block_list: Array<BlockModel | FakeBlock | PlaceholderBlock> = [];
-  block_list_config = {
-    loading: false,
-    // page: 1,
-    pageSize: 20,
-    has_more: false,
-  };
-
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
   unconfirm_block?: UnconfirmBlockModel;
+  @TabChainPage.onInit
   async loadUnconfirmBlock() {
     const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
     this.unconfirm_block = unconfirm_block;
@@ -110,13 +104,31 @@ export class TabChainPage extends FirstLevelPage {
     return unconfirm_block.height;
   }
 
-  private _is_into_second_page = false;
-  private _into_block?: BlockModel;
-  routeToChainBlockDetail(block: BlockModel) {
-    this._is_into_second_page = true;
-    this._into_block = block;
-    this.routeTo("chain-block-detail", { block });
+  routeToChainBlockDetail(height: number) {
+    this.routeTo("chain-block-detail", { height });
   }
+
+  @ViewChild("fixedHeader") fixedHeader!: ElementRef;
+  @ViewChild(ChainListComponent) chainList!: ChainListComponent;
+  chain_list_view_able = false
+  @TabChainPage.onInit
+  checkChainListViewAble() {
+    if (!(this.chain_list_view_able = this.chainList.renderer_started)) {
+      this.chainList.once("renderer-started", () => {
+        this.chain_list_view_able = true;
+      });
+    }
+  }
+
+  @TabChainPage.didEnter
+  initChainListPaddingTop() {
+    this.chainList.list_padding_top = this.fixedHeader.nativeElement.clientHeight + 12/*1rem*/;
+  }
+
+  pullToTop() {
+    this.chainList.setListViewPosY(0, 1000);
+  }
+
 
   // async checkBlockchainCompleteWithNetworkCheck() {
   //   await this.netWorkConnection();
@@ -172,6 +184,7 @@ export class TabChainPage extends FirstLevelPage {
 
   loading_dialog?: Loading;
 
+  /*显示loading*/
   @TabChainPage.didEnter
   showLoading() {
     if (this._download_task && !this.loading_dialog) {
@@ -183,6 +196,7 @@ export class TabChainPage extends FirstLevelPage {
       this.setProgress(this.cur_sync_progres);
     }
   }
+  /*关闭loading*/
   @TabChainPage.didLeave
   closeLoading() {
     if (this.loading_dialog) {
@@ -192,6 +206,7 @@ export class TabChainPage extends FirstLevelPage {
     }
   }
   cur_sync_progres = 0;
+  /*改变loading文本*/
   setProgress = async (progress: number) => {
     this.cur_sync_progres = progress;
     if (this.loading_dialog) {
@@ -206,6 +221,7 @@ export class TabChainPage extends FirstLevelPage {
 
   // private _download_worker?: Worker;
   private _download_task?: PromiseOut<void>;
+  /*下载区块链数据*/
   @asyncCtrlGenerator.success("@@DOWNLOAD_BLOCKCHAIN_COMPLETE")
   async downloadBlock(
     startHeight: number,
@@ -248,255 +264,18 @@ export class TabChainPage extends FirstLevelPage {
     }
   }
 
-  /*绑定页面的区块链数据更新器*/
-  @TabChainPage.onInit
-  bindBlockListViewRefresher() {
-    // const unconfirm_height = await this.loadUnconfirmBlock();
-    // this.registerViewEvent(this.blockService.event, "BLOCKCHAIN:CHANGED", )
-  }
-
-  // @TabChainPage
-  @asyncCtrlGenerator.error(() =>
-    TabChainPage.getTranslate("LOAD_BLOCK_LIST_ERROR"),
-  )
-  async loadBlockList(
-    opts: {
-      force?: boolean;
-      increment?: boolean;
-      increment_length?: number;
-    } = {},
-  ) {
-    if (this._into_block && this.vscroll) {
-      const view_index = this.block_list.indexOf(this._into_block) - 1;
-      const view_item = this.block_list[view_index];
-      if (view_item) {
-        const scrollAnimationTime = this.vscroll.scrollAnimationTime;
-        this.vscroll.scrollAnimationTime = 0;
-        this.vscroll.scrollInto(view_item);
-        this.vscroll.scrollAnimationTime = scrollAnimationTime;
-      }
-      this._into_block = undefined;
-    }
-    if (this._is_into_second_page) {
-      this._is_into_second_page = false;
-      return;
-    }
-    const { block_list_config, block_list } = this;
-    const increment = !!opts.increment;
-    if (block_list.length && !opts.force && !increment) {
-      // 只初始化加载一次列表
-      return;
-    }
-    // TODO:这里可能需要暂存最后一次请求的函数，只保留最后一次的，然后等完成后，再将最后一次的拿出来执行。
-    if (block_list_config.loading) {
-      // 规避快速的列表切换
-      return;
-    }
-    block_list_config.loading = true;
-    try {
-      const size_length = increment
-        ? opts.increment_length
-        : block_list_config.pageSize;
-      if (!size_length) {
-        throw new TypeError("the length of get block list is error");
-      }
-      if (size_length <= 0) {
-        throw new RangeError("the length of get block list is outof range");
-      }
-      let top_blocks_list: BlockModel[];
-      // if (increment) {
-      //   top_blocks_list = await this.blockService.getTopBlocks(size_length);
-      // } else {
-      const unconfirm_height = await this.loadUnconfirmBlock();
-      const endHeight = unconfirm_height - 1;
-      const { top_block } = this;
-      const cur_top_height = top_block ? top_block.height : endHeight;
-      let startHeight = Math.min(
-        cur_top_height + 1,
-        endHeight - size_length + 1,
-      );
-      if (endHeight - startHeight >= 100) {
-        // 超过一次性最大的加载数量，
-        startHeight = endHeight - 99;
-      }
-
-      top_blocks_list = await this.blockService.getBlocksByRange(
-        startHeight,
-        endHeight,
-        -1,
-      );
-      // }
-      let list: BlockModel[];
-      if (increment) {
-        // 添加到头部
-        list = this.blockService.blockListHandle(
-          top_blocks_list,
-          undefined,
-          this.top_block,
-        );
-      } else {
-        // 整体替换
-        list = this.blockService.blockListHandle(top_blocks_list);
-      }
-
-      if (increment) {
-        // 增量更新
-        if (this.block_list[0] === fakeBlock) {
-          this.block_list = this.block_list.slice(1);
-        }
-
-        if (startHeight > cur_top_height + 1) {
-          // 这里区块链断链了，斩断后面的链，用最新的
-          this.block_list = list;
-        } else {
-          this.block_list = list.concat(this.block_list);
-        }
-        this.dispatchEvent("when-block-list-changed");
-      } else {
-        this.block_list = list;
-        this.dispatchEvent("when-block-list-changed");
-        block_list_config.has_more = list.length == block_list_config.pageSize;
-      }
-      this.block_list.unshift(fakeBlock);
-    } finally {
-      block_list_config.loading = false;
-    }
-    // 列表加载完后进行刷新
-    this.cdRef.markForCheck();
-  }
-  @ViewChild("vscroll") vscroll?: VirtualScrollComponent;
-  _vscroll_container_ele?: HTMLElement;
-  get vSrollContainer() {
-    if (this.vscroll) {
-      return (
-        this._vscroll_container_ele ||
-        (this._vscroll_container_ele = ((this.vscroll as any)
-          .element as ElementRef).nativeElement as HTMLElement)
-      );
-    }
-  }
-
-  current_element_index?: number = 0;
-
-  async onListChange(event: ChangeEvent) {
-    this.current_element_index = event.end;
-    if (event.end !== this.block_list.length) return;
-    await this.loadMoreBlockList();
-    this.block_list = this.block_list.slice();
-    this.cdRef.markForCheck();
-  }
-  @asyncCtrlGenerator.error(() =>
-    TabChainPage.getTranslate("LOAD_MORE_BLOCK_LIST_ERROR"),
-  )
-  // 使用retry，实现对断网的控制
-  @asyncCtrlGenerator.retry()
-  async loadMoreBlockList() {
-    const { block_list_config, block_list } = this;
-    const min_block = block_list[block_list.length - 1];
-    if (!min_block || min_block.height <= 1) {
-      return;
-    }
-    const endHeight = min_block.height - 1;
-    const startHeight = Math.max(
-      1,
-      min_block.height - block_list_config.pageSize,
-    );
-    const placeholder_block_list = Array.from({
-      length: endHeight - startHeight + 1
-    }, (_, i) => ({
-      ...placeholderBlock, height: startHeight + 1
-    }));
-    block_list_config.has_more = startHeight > 1;
-
-    this.blockService.getBlocksByRange(
-      startHeight,
-      endHeight,
-      -1,
-    ).then((new_block_list) => {
-      const { block_list, top_block } = this;
-      if (top_block) {
-        const max_height = top_block.height;
-        const min_height = top_block
-        // if(block_list[0])
-        for (var i = 0; i < block_list.length; i += 1) {
-          const block = block_list[i];
-          // new_block_list[]
-        }
-      }
-    });
-
-    this.block_list.push(...placeholder_block_list);
-    this.dispatchEvent("when-block-list-changed");
-  }
-  blockListTrackByFn(index, item: BlockModel) {
-    return item.height;
-  }
-
   // TOOD: 不在监听Height change，而是监听区块链change，并刷新页面上的数据
   /** TODO：切换可用节点，或者寻找新的可用节点，然后开始重新执行这个函数
    *  这点应该做成一个peerService中提供的通用catchErrorAndReLinkPeerThenRetryTask修饰器
    */
-  // @TabChainPage.addEvent("HEIGHT:CHANGED")
   // @asyncCtrlGenerator.error(
   //   "更新区块链失败，重试次数过多，已停止重试，请检测网络",
   // )
   // @asyncCtrlGenerator.retry()
+  @TabChainPage.addEvent("HEIGHT:CHANGED")
   async watchHeightChange(height) {
-    const tasks: Promise<any>[] = [];
-
-    const top_block = this.top_block;
-    if (!top_block) {
-      tasks[tasks.length] = this.loadBlockList();
-    } else {
-      const current_length = top_block.height;
-      // TODO：暂停预期块的动画=>实现块进入的动画=>再次开启预期块的动画
-      if (current_length < height) {
-        // 增量更新
-        tasks[tasks.length] = this.loadBlockList({
-          increment: true,
-          increment_length: height - current_length,
-        }).then(() => {
-          if (this.vscroll) {
-            this.vscroll.refresh();
-          }
-        });
-      }
-    }
-    tasks[tasks.length] = this.loadUnconfirmBlock();
-    await Promise.all(tasks);
+    await this.loadUnconfirmBlock();
     this.cdRef.markForCheck();
   }
 
-  get top_block() {
-    for (var i = 0; i < this.block_list.length; i += 1) {
-      const block = this.block_list[i];
-      if (!block.fake) {
-        return block;
-      }
-    }
-  }
-  get last_block() {
-    const block = this.block_list[this.block_list.length - 1];
-    return block.fake ? undefined : block;
-  }
-
-  getBlockListByRange(startHeight: number, endHeight: number) {
-    const { top_block, block_list, last_block } = this;
-    if (top_block && last_block) {
-      const max_height = top_block.height;
-      const min_height = last_block.height;
-      // if(endHeight<max_height&&startHeight>min_height){
-
-      // }
-      const from = Math.min(max_height, startHeight);
-      const to = Math.max(min_height, endHeight);
-
-      const min_height_index = block_list.length - 1;
-    }
-    return [];
-  }
-
-  pullToTop() {
-    this.vscroll && this.vscroll.scrollInto(this.block_list[0]);
-  }
 }

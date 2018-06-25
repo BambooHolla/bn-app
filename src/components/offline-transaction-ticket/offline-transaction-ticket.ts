@@ -301,29 +301,6 @@ class OfflineTransactionTicketDrawer extends AniBase {
 		}
 		return username;
 	}
-	amountToString(amount: string | undefined) {
-		if (typeof amount !== "string") {
-			return;
-		}
-		const amount_value = parseFloat(amount) / 1e8;
-		const amount_info = amount_value.toFixed(8).split(".");
-		const int_str = amount_info[0] || "";
-		const float_str = amount_info[1] || "";
-
-		const tmp =
-			int_str
-				.split("")
-				.reverse()
-				.join("")
-				.match(/\d{1,3}/g) || [];
-
-		const formated_int_str = tmp
-			.join(",")
-			.split("")
-			.reverse()
-			.join("");
-		return formated_int_str + "." + float_str;
-	}
 	tidToString(id: string, mode: RenderMode = "canvas") {
 		if (typeof id !== "string") {
 			return;

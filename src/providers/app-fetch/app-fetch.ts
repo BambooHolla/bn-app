@@ -227,14 +227,14 @@ export class AppFetchProvider {
             });
             return api_service.dbHandle(db, mix_data, cache, requestOptions);
           } else {
-            console.log(
-              "%cOFFLINE-SERVICE",
-              "color:#009688;",
-              api_service.dbname,
-              api_service.url.path,
-              options,
-              cache,
-            );
+            // console.log(
+            //   "%cOFFLINE-SERVICE",
+            //   "color:#009688;",
+            //   api_service.dbname,
+            //   api_service.url.path,
+            //   options,
+            //   cache,
+            // );
             return cache;
           }
         }
