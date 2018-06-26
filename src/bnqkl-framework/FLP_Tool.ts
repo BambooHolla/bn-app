@@ -16,7 +16,7 @@ import { is_dev, tryRegisterGlobal, global } from "./helper";
 export { is_dev, tryRegisterGlobal, global };
 
 export class FLP_Tool {
-  constructor() {}
+  constructor() { }
   // 全局弹出层控制器
   @FLP_Tool.FromGlobal actionSheetCtrl!: ActionSheetController;
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
@@ -376,15 +376,16 @@ export class FLP_Tool {
   static addProtoArray = addProtoArray;
   static removeProtoArray = removeProtoArray;
   static _raf_id_acc = 0;
-  static _raf_map = new Map<number, Function>();
+  static _raf_map = {};
   private static _raf_register(callback) {
-    this._raf_map.set(++this._raf_id_acc, callback);
-    if (this._cur_raf_id === null) {
-      this._cur_raf_id = this.native_raf(t => {
-        const cbs = [...this._raf_map.values()];
-        this._raf_map.clear();
-        this._cur_raf_id = null;
-        for (var cb of cbs) {
+    FLP_Tool._raf_map[++FLP_Tool._raf_id_acc] = callback;
+    if (FLP_Tool._cur_raf_id === null) {
+      FLP_Tool._cur_raf_id = FLP_Tool.native_raf(t => {
+        const raf_map = FLP_Tool._raf_map;
+        FLP_Tool._raf_map = {};
+        FLP_Tool._cur_raf_id = null;
+        for (var _id in raf_map) {
+          const cb = raf_map[_id];
           try {
             cb(t);
           } catch (err) {
@@ -393,13 +394,18 @@ export class FLP_Tool {
         }
       });
     }
-    return this._raf_id_acc;
+    return FLP_Tool._raf_id_acc;
   }
   private static _raf_unregister(id) {
-    this._raf_map.delete(id);
-    if (this._raf_map.size === 0 && this._cur_raf_id !== null) {
-      this.native_unraf(this._cur_raf_id);
-      this._cur_raf_id = null;
+    delete FLP_Tool._raf_map[id];
+    var has_size = false;
+    for (var _k in FLP_Tool._raf_map) {
+      has_size = true;
+      break;
+    }
+    if (has_size && FLP_Tool._cur_raf_id !== null) {
+      FLP_Tool.native_unraf(FLP_Tool._cur_raf_id);
+      FLP_Tool._cur_raf_id = null;
     }
   }
   private static _cur_raf_id: number | null = null;

@@ -64,6 +64,13 @@ export class ChainListComponent extends AniBase {
 		// this.ctx = this.canvasNode.getContext("2d");
 		return super._init();
 	}
+	startAnimation() {
+		this.is_started = true;
+	}
+	stopAnimation(){
+		this.is_started = false;
+	}
+
 	_renderer_width = 0
 	get renderer_width() { return this._renderer_width; }
 	set renderer_width(v) {
