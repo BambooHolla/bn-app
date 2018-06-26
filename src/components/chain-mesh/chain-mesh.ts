@@ -95,7 +95,6 @@ export class ChainMeshComponent extends AniBase {
     const app = this.app;
 
     const resources = await _load_resource_promiseout.promise;
-    console.log("resources", resources);
     // 处理resource成动画帧
     const { stage, renderer, ticker } = app;
     const wh_size = Math.min(renderer.width, renderer.height);

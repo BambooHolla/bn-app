@@ -94,7 +94,6 @@ export class FallCoinsComponent extends AniBase {
     }
     const app = this.app;
     const resources = await _load_resource_promiseout.promise;
-    console.log("resources", resources);
     // 处理resource成动画帧
     const frames_list: Array<PIXI.Texture[]> = [];
     _coin_assets.forEach(asset => {

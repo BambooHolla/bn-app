@@ -33,39 +33,6 @@ import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { ChainListComponent } from "../../components/chain-list/chain-list";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 
-interface FakeBlock extends BlockModel {
-  fake: true;
-}
-interface PlaceholderBlock extends BlockModel {
-  placeholder: true;
-}
-const _base_block = {
-  height: 0,
-  id: "",
-  timestamp: 0,
-
-  version: 0,
-  previousBlock: "",
-  numberOfTransactions: 0,
-  totalAmount: "0",
-  totalFee: "0",
-  reward: "0",
-  payloadLength: 0,
-  payloadHash: "",
-  generatorPublicKey: "",
-  generatorId: "",
-  blockSignature: "",
-  blockSize: "0",
-  remark: "",
-};
-const fakeBlock: FakeBlock = {
-  ..._base_block,
-  fake: true,
-};
-const placeholderBlock: PlaceholderBlock = {
-  ..._base_block,
-  placeholder: true,
-}
 // @IonicPage({ name: "tab-chain" })
 @Component({
   selector: "page-tab-chain",
@@ -110,7 +77,7 @@ export class TabChainPage extends FirstLevelPage {
 
   @ViewChild("fixedHeader") fixedHeader!: ElementRef;
   @ViewChild(ChainListComponent) chainList!: ChainListComponent;
-  chain_list_view_able = false
+  chain_list_view_able = false;
   @TabChainPage.onInit
   checkChainListViewAble() {
     if (!(this.chain_list_view_able = this.chainList.renderer_started)) {
@@ -122,13 +89,14 @@ export class TabChainPage extends FirstLevelPage {
 
   @TabChainPage.didEnter
   initChainListPaddingTop() {
-    this.chainList.list_padding_top = this.chainList.pt(this.fixedHeader.nativeElement.clientHeight + 12/*1rem*/);
+    this.chainList.list_padding_top = this.chainList.pt(
+      this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/,
+    );
   }
 
   pullToTop() {
     this.chainList.setListViewPosY(0, 1000);
   }
-
 
   // async checkBlockchainCompleteWithNetworkCheck() {
   //   await this.netWorkConnection();
@@ -148,9 +116,9 @@ export class TabChainPage extends FirstLevelPage {
     let block_1:
       | SingleBlockModel
       | undefined = await this.blockService.blockDb.findOne(
-        {},
-        { sort: { height: 1 } },
-      );
+      {},
+      { sort: { height: 1 } },
+    );
     const latest_block = await this.blockService.getLastBlock();
     if (!block_1) {
       block_1 = latest_block;
@@ -165,21 +133,26 @@ export class TabChainPage extends FirstLevelPage {
     const download_handler = () => {
       // 开始下载
       this.downloadBlock(startHeight, endHeight, max_end_height);
-    }
-    this._showCustomDialog({
-      // title: this.getTranslateSync("ADVICE"),
-      message: this.getTranslateSync("BEFORE_DOWNLOAD_TIP"),
-      buttons: [
-        {
-          text: this.getTranslateSync("CANCEL"),
-          cssClass: "cancel",
-          handler: download_handler,
-        }, {
-          text: this.getTranslateSync("OK_I_KNOWN"),
-          cssClass: "ok",
-          handler: download_handler
-        }]
-    }, true);
+    };
+    this._showCustomDialog(
+      {
+        // title: this.getTranslateSync("ADVICE"),
+        message: this.getTranslateSync("BEFORE_DOWNLOAD_TIP"),
+        buttons: [
+          {
+            text: this.getTranslateSync("CANCEL"),
+            cssClass: "cancel",
+            handler: download_handler,
+          },
+          {
+            text: this.getTranslateSync("OK_I_KNOWN"),
+            cssClass: "ok",
+            handler: download_handler,
+          },
+        ],
+      },
+      true,
+    );
   }
 
   loading_dialog?: Loading;
@@ -233,10 +206,14 @@ export class TabChainPage extends FirstLevelPage {
     }
     let cg;
     try {
-      const { worker, req_id, task } = this.blockService.downloadBlockInWorker(startHeight, endHeight, max_end_height);
+      const { worker, req_id, task } = this.blockService.downloadBlockInWorker(
+        startHeight,
+        endHeight,
+        max_end_height,
+      );
       this._download_task = task;
       // this._download_worker = worker;
-      const onmessage = (e) => {
+      const onmessage = e => {
         const msg = e.data;
         if (msg && msg.req_id === req_id) {
           console.log(msg);
@@ -277,5 +254,4 @@ export class TabChainPage extends FirstLevelPage {
     await this.loadUnconfirmBlock();
     this.cdRef.markForCheck();
   }
-
 }

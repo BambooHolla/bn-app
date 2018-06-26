@@ -33,6 +33,7 @@ export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 loader.add("block_card_blue_bg", "assets/imgs/tab-chain/block-card-blue.png");
 loader.add("block_card_gold_bg", "assets/imgs/tab-chain/block-card-gold.png");
+loader.add("chain_texture", "assets/imgs/tab-chain/chain-texture.png");
 
 loader.onError.add(err => {
 	_load_resource_promiseout.reject(err);
@@ -102,6 +103,7 @@ export class ChainListComponent extends AniBase {
 		const resource: PIXI.loaders.ResourceDictionary = await _load_resource_promiseout.promise;
 		BlockCard.bg_resource = resource.block_card_blue_bg.texture;
 		GoldBlockCard.bg_resource = resource.block_card_gold_bg.texture;
+		CardChain.bg_resource = resource.chain_texture.texture;
 		this._draw_init();
 	}
 
@@ -118,7 +120,7 @@ export class ChainListComponent extends AniBase {
 	private _calcMaxViewHeight() {
 		if (this.renderer_height && this._max_chain_height && this.renderer_started) {
 			this.max_view_height = Math.max(this.renderer_height, this._max_chain_height * this.item_height + this.list_padding_top + this.list_padding_bottom);
-			if (-this._getListViewY() < this.item_height * 2) {
+			if (this._isInTouch() === false && -this._getListViewY() < this.item_height * 2) {
 				// 刷新参数
 				this._init_scroll({ no_refresh: true });
 				// 使用动画的方式滚动到第一个块
@@ -327,6 +329,7 @@ export class ChainListComponent extends AniBase {
 		}
 		this._getListViewY = () => list_view_y;
 		this._get_velocity = () => delta;
+		this._isInTouch = () => !!touch_start_point;
 
 		this.renderer_started = true;
 		this.emit("renderer-started");
@@ -349,6 +352,7 @@ export class ChainListComponent extends AniBase {
 	private _getListViewY() {
 		return 0;
 	}
+	private _isInTouch() { return false }
 	// 一些基本的样式
 	// 列表第一个元素的前置留白
 	private _list_padding_top = this.pt(300);
@@ -894,6 +898,10 @@ class GoldBlockCard extends BlockCard {
 }
 
 class CardChain extends PIXI.Container {
+	static bg_resource: PIXI.Texture
+	get bg_resource() {
+		return (this.constructor as typeof BlockCard).bg_resource;
+	}
 	constructor(public W: number, public H: number) {
 		super();
 		this.drawChain();
@@ -916,37 +924,43 @@ class CardChain extends PIXI.Container {
 		const { W, H } = this;
 		const unit_w = W * 0.1;
 		const unit_h = H;
-		// 绘制圈圈
-		const top_circle = new PIXI.Graphics();
-		top_circle.beginFill(0, 0.2);
-		top_circle.drawCircle(unit_w * 0.15, unit_w * 0.15, unit_w * 0.15);
-		top_circle.endFill();
+		// 直接使用贴图
+		const s = new PIXI.Sprite(this.bg_resource);
+		parent.addChild(s);
+		s.height = H * 0.25;
+		s.scale.x = s.scale.y;
+		parent.addChild(s);
+		// // 绘制圈圈
+		// const top_circle = new PIXI.Graphics();
+		// top_circle.beginFill(0, 0.2);
+		// top_circle.drawCircle(unit_w * 0.15, unit_w * 0.15, unit_w * 0.15);
+		// top_circle.endFill();
 
-		const bottom_circle = new PIXI.Graphics();
-		bottom_circle.beginFill(0, 0.2);
-		bottom_circle.drawCircle(unit_w * 0.15, unit_w * 0.15, unit_w * 0.15);
-		bottom_circle.y = + unit_h * 0.2 - unit_w * 0.075;
-		bottom_circle.endFill();
+		// const bottom_circle = new PIXI.Graphics();
+		// bottom_circle.beginFill(0, 0.2);
+		// bottom_circle.drawCircle(unit_w * 0.15, unit_w * 0.15, unit_w * 0.15);
+		// bottom_circle.y = + unit_h * 0.2 - unit_w * 0.075;
+		// bottom_circle.endFill();
 
-		const chain_line = new PIXI.Graphics();
-		chain_line.beginFill(0xffffff, 1);
-		chain_line.drawRoundedRect(0, 0, unit_w * 0.1, unit_h * 0.2, unit_w * 0.05);
-		chain_line.x = unit_w * 0.1;
-		chain_line.y = unit_w * 0.1;
-		chain_line.endFill();
-		const shadow_filter = new PIXI.filters.DropShadowFilter();
-		shadow_filter.alpha = 0.3;
-		shadow_filter.blur = unit_w * 0.05;
-		// shadow_filter.rotation = 90;
-		shadow_filter.quality = 3;
-		shadow_filter.distance = unit_w * 0.02;
-		// shadow_filter.shadowOnly = true;
-		shadow_filter.color = 0x0;
-		chain_line.filters = [shadow_filter];
+		// const chain_line = new PIXI.Graphics();
+		// chain_line.beginFill(0xffffff, 1);
+		// chain_line.drawRoundedRect(0, 0, unit_w * 0.1, unit_h * 0.2, unit_w * 0.05);
+		// chain_line.x = unit_w * 0.1;
+		// chain_line.y = unit_w * 0.1;
+		// chain_line.endFill();
+		// const shadow_filter = new PIXI.filters.DropShadowFilter();
+		// shadow_filter.alpha = 0.3;
+		// shadow_filter.blur = unit_w * 0.05;
+		// // shadow_filter.rotation = 90;
+		// shadow_filter.quality = 3;
+		// shadow_filter.distance = unit_w * 0.02;
+		// // shadow_filter.shadowOnly = true;
+		// shadow_filter.color = 0x0;
+		// chain_line.filters = [shadow_filter];
 
-		// end
-		parent.addChild(top_circle);
-		parent.addChild(bottom_circle);
-		parent.addChild(chain_line);
+		// // end
+		// parent.addChild(top_circle);
+		// parent.addChild(bottom_circle);
+		// parent.addChild(chain_line);
 	}
 }
