@@ -94,7 +94,6 @@ export class FallCoinsComponent extends AniBase {
     }
     const app = this.app;
     const resources = await _load_resource_promiseout.promise;
-    console.log("resources", resources);
     // 处理resource成动画帧
     const frames_list: Array<PIXI.Texture[]> = [];
     _coin_assets.forEach(asset => {
@@ -174,19 +173,19 @@ export class FallCoinsComponent extends AniBase {
       const end_y =
         renderer.height * 0.95 -
         u_size -
-        (target_line.cur + target_line.y) * u_size / 5;
+        ((target_line.cur + target_line.y) * u_size) / 5;
 
       /*距离*/
       const diff_y = end_y - ani.y;
       /*根据加速度与距离算出时间 a*t*t=y*2 */
-      const total_time = Math.pow(diff_y * 2 / gravity, 0.5);
+      const total_time = Math.pow((diff_y * 2) / gravity, 0.5);
       /*假设每帧的时间固定*/
       const u_frame_ms = 16;
       /*可以推算出帧数，要超出终点才停止，所以多出来的一帧*/
-      const ani_frame_num = Math.ceil(total_time * 1000 / u_frame_ms);
+      const ani_frame_num = Math.ceil((total_time * 1000) / u_frame_ms);
       const end_frame = 26;
       /*总帧数 36, 目标帧为24,可以算出起始的帧*/
-      const start_frame = 36 - (ani_frame_num - end_frame) % 36;
+      const start_frame = 36 - ((ani_frame_num - end_frame) % 36);
 
       ani.gotoAndStop(start_frame);
 
@@ -204,7 +203,7 @@ export class FallCoinsComponent extends AniBase {
         const add_speed = gravity * diff_second;
         const pre_speed = speed;
         speed += add_speed;
-        ani.y += (pre_speed + speed) / 2 * diff_second;
+        ani.y += ((pre_speed + speed) / 2) * diff_second;
 
         // 到达终点，停止动画，并固定这一帧的结果
         if (ani.y >= end_y || this.no_animate || this.auto_skip_animate) {

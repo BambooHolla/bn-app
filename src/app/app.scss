@@ -187,8 +187,8 @@ ion-content {
 }
 
 .common-gradient {
-  >.button-inner{
-    background: linear-gradient(bottom, #61ebde 0%, #44cfeb 100%)!important;
+  > .button-inner {
+    background: linear-gradient(bottom, #61ebde 0%, #44cfeb 100%) !important;
     @extend .clip-text;
   }
 }

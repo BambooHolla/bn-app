@@ -1,5 +1,7 @@
 import EventEmitter from "eventemitter3";
-export type PromiseType<T extends Promise<any>> = T extends Promise<infer R>?R:any;
+export type PromiseType<T extends Promise<any>> = T extends Promise<infer R>
+  ? R
+  : any;
 
 /**
  * 将resolve和reject暴露出来

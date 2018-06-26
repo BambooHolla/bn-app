@@ -30,7 +30,7 @@ import { BenefitServiceProvider } from "../providers/benefit-service/benefit-ser
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
-import {global} from '../bnqkl-framework/helper';
+import { global } from "../bnqkl-framework/helper";
 
 import { CommonTransition } from "./common.transition";
 import {

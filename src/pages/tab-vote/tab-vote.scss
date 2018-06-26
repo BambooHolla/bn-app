@@ -268,7 +268,8 @@ page-tab-vote {
     /* justify-content: center; */
     .auto-start-button-wrapper {
       position: relative;
-      top: calc(24.5vh); /* width: 76vw; */
+      top: calc(24.5vh);
+      /* width: 76vw; */
       width: 80.48vw; /* height: 76vw; */
       height: 80.48vw;
       border-radius: 50%;
@@ -898,13 +899,11 @@ page-tab-vote {
     // padding: 1.5rem 0 0.6rem 0;
     box-sizing: content-box;
     padding-top: calc(11.1vw + 4vh);
-
     width: 100%;
     z-index: -1;
     // min-height: calc(#{$panel-min-height} + 5rem);
     height: calc(#{$panel-height} + 4rem - 15.2121vw);
     overflow: hidden;
-
     bottom: 15.2121vw;
     bottom: calc(15.2121vw + #{constant(safe-area-inset-top)});
     bottom: calc(15.2121vw + #{env(safe-area-inset-top)});

@@ -340,7 +340,7 @@ export class AppSettingProvider extends CommonService {
     return Math.ceil(height / 57);
   }
   getBlockNumberToRoundEnd(cur_height) {
-    return 57 - cur_height % 57;
+    return 57 - (cur_height % 57);
   }
   getRoundStartHeight(round_num: number) {
     return (round_num - 1) * 57 + 1;
@@ -355,6 +355,7 @@ export class AppSettingProvider extends CommonService {
   getRound() {
     return this.round.getValue();
   }
+  share_settings = {};
 
   settings = {
     lang: "",

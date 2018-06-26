@@ -43,7 +43,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     return false;
   }
   show_all_remark = false;
-  toggleShowAllRemark(){
+  toggleShowAllRemark() {
     this.show_all_remark = !this.show_all_remark;
   }
   block_info?: BlockModel;
@@ -88,15 +88,15 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 
   get block_confirmations() {
     if (this.block_info && this._lastBlock) {
-      return this._lastBlock.height - this.block_info.height
+      return this._lastBlock.height - this.block_info.height;
     }
     return 0;
   }
-  private _lastBlock?: SingleBlockModel
+  private _lastBlock?: SingleBlockModel;
   @ChainBlockDetailPage.addEvent("HEIGHT:CHANGED")
   watchHeightChanged() {
     this.blockService.lastBlock.getPromise().then(lastBlock => {
-      this._lastBlock = lastBlock
+      this._lastBlock = lastBlock;
     });
   }
   delegate_info?: DelegateModel;

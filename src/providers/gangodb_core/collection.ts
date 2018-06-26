@@ -8,215 +8,215 @@ import remove from "./remove";
 
 /** Class representing a collection. */
 export default class Collection {
-    /** <strong>Note:</strong> Do not instantiate directly. */
-    _indexes = new Set<string>();
-    constructor(private _db, private _name) {}
+  /** <strong>Note:</strong> Do not instantiate directly. */
+  _indexes = new Set<string>();
+  constructor(private _db, private _name) {}
 
-    /**
-     * The name of the collection.
-     * @type {string}
-     */
-    get name() {
-        return this._name;
+  /**
+   * The name of the collection.
+   * @type {string}
+   */
+  get name() {
+    return this._name;
+  }
+
+  _isIndexed(path) {
+    return this._indexes.has(path) || path === "_id";
+  }
+
+  /**
+   * Open a cursor that satisfies the specified query criteria.
+   * @param {object} [expr] The query document to filter by.
+   * @param {object} [projection_spec] Specification for projection.
+   * @return {Cursor}
+   *
+   * @example
+   * col.find({ x: 4, g: { $lt: 10 } }, { k: 0 });
+   */
+  find(expr, projection_spec?) {
+    const cur = new Cursor(this, "readonly");
+
+    cur.filter(expr);
+
+    if (projection_spec) {
+      cur.project(projection_spec);
     }
 
-    _isIndexed(path) {
-        return this._indexes.has(path) || path === "_id";
+    return cur;
+  }
+
+  /**
+   * Retrieve one document that satisfies the specified query criteria.
+   * @param {object} [expr] The query document to filter by.
+   * @param {object} [projection_spec] Specification for projection.
+   * @param {function} [cb] The result callback.
+   * @return {Promise}
+   *
+   * @example
+   * col.findOne({ x: 4, g: { $lt: 10 } }, { k: 0 });
+   */
+  findOne(expr, projection_spec?, cb?) {
+    if (typeof projection_spec === "function") {
+      cb = projection_spec;
+      projection_spec = null;
     }
 
-    /**
-     * Open a cursor that satisfies the specified query criteria.
-     * @param {object} [expr] The query document to filter by.
-     * @param {object} [projection_spec] Specification for projection.
-     * @return {Cursor}
-     *
-     * @example
-     * col.find({ x: 4, g: { $lt: 10 } }, { k: 0 });
-     */
-    find(expr, projection_spec?) {
-        const cur = new Cursor(this, "readonly");
+    const deferred = Q.defer();
+    const cur = this.find(expr, projection_spec).limit(1);
 
-        cur.filter(expr);
+    cur.toArray((error, docs) => {
+      if (error) {
+        deferred.reject(error);
+      } else {
+        deferred.resolve(docs[0]);
+      }
+    });
 
-        if (projection_spec) {
-            cur.project(projection_spec);
+    deferred.promise.nodeify(cb);
+
+    return deferred.promise;
+  }
+
+  /**
+   * Evaluate an aggregation framework pipeline.
+   * @param {object[]} pipeline The pipeline.
+   * @return {Cursor}
+   *
+   * @example
+   * col.aggregate([
+   *     { $match: { x: { $lt: 8 } } },
+   *     { $group: { _id: '$x', array: { $push: '$y' } } },
+   *     { $unwind: '$array' }
+   * ]);
+   */
+  aggregate(pipeline) {
+    return aggregate(this, pipeline);
+  }
+
+  _validate(doc) {
+    for (var field in doc) {
+      if (field[0] === "$") {
+        throw Error("field name cannot start with '$'");
+      }
+
+      const value = doc[field];
+
+      if (Array.isArray(value)) {
+        for (var element of value) {
+          this._validate(element);
         }
+      } else if (typeof value === "object") {
+        this._validate(value);
+      }
+    }
+  }
 
-        return cur;
+  /**
+   * @param {object|object[]} docs Documents to insert.
+   * @param {function} [cb] The result callback.
+   * @return {Promise}
+   *
+   * @example
+   * col.insert([{ x: 4 }, { k: 8 }], (error) => {
+   *     if (error) { throw error; }
+   * });
+   *
+   * @example
+   * col.insert({ x: 4 }, (error) => {
+   *     if (error) { throw error; }
+   * });
+   */
+  async insert(docs, cb) {
+    if (!Array.isArray(docs)) {
+      docs = [docs];
     }
 
-    /**
-     * Retrieve one document that satisfies the specified query criteria.
-     * @param {object} [expr] The query document to filter by.
-     * @param {object} [projection_spec] Specification for projection.
-     * @param {function} [cb] The result callback.
-     * @return {Promise}
-     *
-     * @example
-     * col.findOne({ x: 4, g: { $lt: 10 } }, { k: 0 });
-     */
-    findOne(expr, projection_spec?, cb?) {
-        if (typeof projection_spec === "function") {
-            cb = projection_spec;
-            projection_spec = null;
-        }
+    const deferred = Q.defer();
 
-        const deferred = Q.defer();
-        const cur = this.find(expr, projection_spec).limit(1);
+    this._db.conn.then(async idb => {
+      let trans;
 
-        cur.toArray((error, docs) => {
-            if (error) {
-                deferred.reject(error);
-            } else {
-                deferred.resolve(docs[0]);
-            }
-        });
+      const name = this._name;
 
-        deferred.promise.nodeify(cb);
+      try {
+        trans = idb.transaction([name], "readwrite");
+      } catch (error) {
+        return deferred.reject(error);
+      }
 
-        return deferred.promise;
-    }
+      trans.oncomplete = () => deferred.resolve();
+      trans.onerror = e => deferred.reject(getIDBError(e));
 
-    /**
-     * Evaluate an aggregation framework pipeline.
-     * @param {object[]} pipeline The pipeline.
-     * @return {Cursor}
-     *
-     * @example
-     * col.aggregate([
-     *     { $match: { x: { $lt: 8 } } },
-     *     { $group: { _id: '$x', array: { $push: '$y' } } },
-     *     { $unwind: '$array' }
-     * ]);
-     */
-    aggregate(pipeline) {
-        return aggregate(this, pipeline);
-    }
+      const store = trans.objectStore(name);
 
-    _validate(doc) {
-        for (var field in doc) {
-            if (field[0] === "$") {
-                throw Error("field name cannot start with '$'");
-            }
+      for (var _doc of docs) {
+        const doc = _doc;
+        await new Promise((resolve, reject) => {
+          this._validate(doc);
+          const req = store.add(doc);
+          req.onsuccess = resolve;
+        }).catch(e => deferred.reject(getIDBError(e)));
+      }
+    }, cb);
 
-            const value = doc[field];
+    deferred.promise.nodeify(cb);
 
-            if (Array.isArray(value)) {
-                for (var element of value) {
-                    this._validate(element);
-                }
-            } else if (typeof value === "object") {
-                this._validate(value);
-            }
-        }
-    }
+    return deferred.promise;
+  }
 
-    /**
-     * @param {object|object[]} docs Documents to insert.
-     * @param {function} [cb] The result callback.
-     * @return {Promise}
-     *
-     * @example
-     * col.insert([{ x: 4 }, { k: 8 }], (error) => {
-     *     if (error) { throw error; }
-     * });
-     *
-     * @example
-     * col.insert({ x: 4 }, (error) => {
-     *     if (error) { throw error; }
-     * });
-     */
-    async insert(docs, cb) {
-        if (!Array.isArray(docs)) {
-            docs = [docs];
-        }
+  _modify(fn, expr, cb) {
+    const deferred = Q.defer();
+    const cur = new Cursor(this, "readwrite");
 
-        const deferred = Q.defer();
+    cur.filter(expr);
 
-        this._db.conn.then(async idb => {
-            let trans;
+    fn(cur, (error, res) => {
+      if (error) {
+        deferred.reject(error);
+      } else {
+        deferred.resolve(res);
+      }
+    });
 
-            const name = this._name;
+    deferred.promise.nodeify(cb);
 
-            try {
-                trans = idb.transaction([name], "readwrite");
-            } catch (error) {
-                return deferred.reject(error);
-            }
+    return deferred.promise;
+  }
 
-            trans.oncomplete = () => deferred.resolve();
-            trans.onerror = e => deferred.reject(getIDBError(e));
+  /**
+   * Update documents that match a filter.
+   * @param {object} expr The query document to filter by.
+   * @param {object} spec Specification for updating.
+   * @param {function} [cb] The result callback.
+   * @return {Promise}
+   *
+   * @example
+   * col.update({
+   *     age: { $gte: 18 }
+   * }, {
+   *     adult: true
+   * }, (error) => {
+   *     if (error) { throw error; }
+   * });
+   */
+  update(expr, spec, cb) {
+    const fn = (cur, cb) => update(cur, spec, cb);
 
-            const store = trans.objectStore(name);
+    return this._modify(fn, expr, cb);
+  }
 
-            for (var _doc of docs) {
-                const doc = _doc;
-                await new Promise((resolve, reject) => {
-                    this._validate(doc);
-                    const req = store.add(doc);
-                    req.onsuccess = resolve;
-                }).catch(e => deferred.reject(getIDBError(e)));
-            }
-        }, cb);
-
-        deferred.promise.nodeify(cb);
-
-        return deferred.promise;
-    }
-
-    _modify(fn, expr, cb) {
-        const deferred = Q.defer();
-        const cur = new Cursor(this, "readwrite");
-
-        cur.filter(expr);
-
-        fn(cur, (error, res) => {
-            if (error) {
-                deferred.reject(error);
-            } else {
-                deferred.resolve(res);
-            }
-        });
-
-        deferred.promise.nodeify(cb);
-
-        return deferred.promise;
-    }
-
-    /**
-     * Update documents that match a filter.
-     * @param {object} expr The query document to filter by.
-     * @param {object} spec Specification for updating.
-     * @param {function} [cb] The result callback.
-     * @return {Promise}
-     *
-     * @example
-     * col.update({
-     *     age: { $gte: 18 }
-     * }, {
-     *     adult: true
-     * }, (error) => {
-     *     if (error) { throw error; }
-     * });
-     */
-    update(expr, spec, cb) {
-        const fn = (cur, cb) => update(cur, spec, cb);
-
-        return this._modify(fn, expr, cb);
-    }
-
-    /**
-     * Delete documents that match a filter.
-     * @param {object} expr The query document to filter by.
-     * @param {function} [cb] The result callback.
-     * @return {Promise}
-     *
-     * @example
-     * col.remove({ x: { $ne: 10 } }, (error) => {
-     *     if (error) { throw error; }
-     * });
-     */
-    remove(expr, cb) {
-        return this._modify(remove, expr, cb);
-    }
+  /**
+   * Delete documents that match a filter.
+   * @param {object} expr The query document to filter by.
+   * @param {function} [cb] The result callback.
+   * @return {Promise}
+   *
+   * @example
+   * col.remove({ x: { $ne: 10 } }, (error) => {
+   *     if (error) { throw error; }
+   * });
+   */
+  remove(expr, cb) {
+    return this._modify(remove, expr, cb);
+  }
 }

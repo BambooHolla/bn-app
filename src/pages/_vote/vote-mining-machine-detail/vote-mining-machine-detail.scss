@@ -12,7 +12,7 @@ page-vote-mining-machine-detail {
         margin-bottom: 0.2rem;
         width: 50vw;
       }
-      .info{
+      .info {
         font-size: 1.2rem;
       }
     }
@@ -23,13 +23,13 @@ page-vote-mining-machine-detail {
     width: 100%;
     padding: 1rem 1.5rem;
     padding-bottom: 0;
-    >.unable-info{
+    > .unable-info {
       display: none;
     }
     &.disabled {
       filter: grayscale(1);
       pointer-events: none;
-      >.unable-info{
+      > .unable-info {
         display: block;
       }
     }

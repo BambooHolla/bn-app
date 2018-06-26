@@ -19,7 +19,7 @@
     <div class="title">
       {{'RECENT'|translate}}
       <button class="right" (click)="toggleAmountView()">
-        <ali-icon [name]="appSetting.settings.can_view_amount?'ifm-yincangmima':'ifm-xianshimima'"></ali-icon>
+        <ali-icon [name]="!appSetting.settings.can_view_amount?'ifm-yincangmima':'ifm-xianshimima'"></ali-icon>
       </button>
     </div>
     <ion-content #logsContent class="log-list" [ion-content-scroll-shadow]="{from_color: [29, 98, 113, 0],to_color: [29, 98, 113, 0.3]}">

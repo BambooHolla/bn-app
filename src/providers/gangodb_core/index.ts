@@ -1,2 +1,2 @@
-import Db from './db';
+import Db from "./db";
 export default Db;

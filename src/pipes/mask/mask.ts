@@ -15,7 +15,9 @@ export class MaskPipe implements PipeTransform {
       const type = args[0].substr(1);
       if (type === "address") {
         if (value === this.userInfo.address) {
-          return `<span class="address-is-me">${FLP_Tool.getTranslateSync("ME")}</span>`;
+          return `<span class="address-is-me">${FLP_Tool.getTranslateSync(
+            "ME",
+          )}</span>`;
         }
         return (
           value.substr(0, 4) +

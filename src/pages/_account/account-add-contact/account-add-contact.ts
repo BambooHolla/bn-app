@@ -48,7 +48,7 @@ export class AccountAddContactPage extends SecondLevelPage {
     }
   }
 
-  adding_contact = false
+  adding_contact = false;
 
   @asyncCtrlGenerator.error(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_ERROR"),
@@ -56,7 +56,7 @@ export class AccountAddContactPage extends SecondLevelPage {
   @asyncCtrlGenerator.success(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
   )
-  @asyncCtrlGenerator.single({update_key:"adding_contact"})
+  @asyncCtrlGenerator.single({ update_key: "adding_contact" })
   async addContacts() {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
       custom_fee: true,
@@ -71,5 +71,4 @@ export class AccountAddContactPage extends SecondLevelPage {
     );
     this.finishJob();
   }
-
 }

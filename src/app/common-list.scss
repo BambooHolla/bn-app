@@ -29,7 +29,7 @@
       flex-direction: column;
       align-items: flex-end;
     }
-    &.disabled{
+    &.disabled {
       filter: grayscale(1);
       pointer-events: none;
     }

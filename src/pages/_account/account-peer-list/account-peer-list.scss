@@ -1,13 +1,13 @@
 page-account-peer-list {
   @extend .header-no-border;
-  >.content {
-    >.scroll-content {
+  > .content {
+    > .scroll-content {
       background-color: #eeeeee;
     }
   }
   .cur-peer-list {
     margin-top: 1rem;
-    >.header {
+    > .header {
       background-color: #fff;
       color: #4e4e4e;
       height: 4rem;
@@ -15,19 +15,19 @@ page-account-peer-list {
       display: flex;
       align-items: center;
     }
-    >.row {
+    > .row {
       display: flex;
       align-items: center;
       background: #fff;
       color: #7b7b7b;
       justify-content: space-around;
       padding: 0;
-      >.item {
+      > .item {
         flex: 1;
         text-align: center;
       }
     }
-    >.table-head {
+    > .table-head {
       font-size: 2rem;
       height: 2.6rem;
     }

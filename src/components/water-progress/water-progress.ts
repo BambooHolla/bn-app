@@ -46,7 +46,7 @@ export class WaterProgressComponent extends AniBase {
         this._progress = 1;
       }
     } else if (this._progress < 0) {
-      this._progress = this._progress % 1 + 1;
+      this._progress = (this._progress % 1) + 1;
       if (this._progress === 0) {
         this._progress = 1;
       }
@@ -177,7 +177,7 @@ export class WaterProgressComponent extends AniBase {
       //画3个不同颜色的矩形
       for (var j = lines.length - 1; j >= 0; j--) {
         //每个矩形的角度都不同
-        var angle = (_step * 10 + j * 15) * Math.PI / 180;
+        var angle = ((_step * 10 + j * 15) * Math.PI) / 180;
 
         const reversed_list = Array.from({ length: 4 }, (_, i) => {
           return this.noise.noise2D(j, _step + i);
@@ -186,7 +186,7 @@ export class WaterProgressComponent extends AniBase {
           return (
             (v * 0.3 +
               Math.sin(
-                (_step * (j + 1) / lines.length + xv + j * 2) * Math.PI * 2,
+                ((_step * (j + 1)) / lines.length + xv + j * 2) * Math.PI * 2,
               ) *
                 0.7) *
               wave_height +
@@ -212,7 +212,12 @@ export class WaterProgressComponent extends AniBase {
             ctx.quadraticCurveTo(x, y, (x + next_x) / 2, (y + next_y) / 2);
           }
         }
-        ctx.quadraticCurveTo(next_x, next_y, (len + 1) / len * W, base_height);
+        ctx.quadraticCurveTo(
+          next_x,
+          next_y,
+          ((len + 1) / len) * W,
+          base_height,
+        );
         ctx.lineTo(W, H);
         ctx.lineTo(0, H);
         ctx.closePath();

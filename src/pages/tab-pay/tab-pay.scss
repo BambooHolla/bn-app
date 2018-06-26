@@ -13,7 +13,7 @@ page-tab-pay {
       display: flex;
       flex-direction: column;
       align-items: center;
-      >.title{
+      > .title {
         box-sizing: content-box;
         height: 4rem;
         padding-top: 20.012px;
@@ -22,7 +22,7 @@ page-tab-pay {
         line-height: 4rem;
         font-size: 1.8rem;
         font-weight: bold;
-        color: #FFF;
+        color: #fff;
       }
     }
   }

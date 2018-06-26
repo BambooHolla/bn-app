@@ -6,12 +6,12 @@ import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from "../../../pipes/pipes.module";
 
 @NgModule({
-	declarations: [AccountPeerListPage],
-	imports: [
-		IonicPageModule.forChild(AccountPeerListPage),
-		TranslateModule,
-		ComponentsModule,
-		PipesModule,
-	],
+  declarations: [AccountPeerListPage],
+  imports: [
+    IonicPageModule.forChild(AccountPeerListPage),
+    TranslateModule,
+    ComponentsModule,
+    PipesModule,
+  ],
 })
 export class AccountPeerListPageModule {}

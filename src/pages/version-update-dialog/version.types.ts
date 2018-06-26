@@ -1,4 +1,3 @@
-
 export type PEER_INFO = {
   title: string;
   config: {
@@ -7,7 +6,7 @@ export type PEER_INFO = {
     BLOCK_UNIT_TIME: string | number;
     HIDE_FLAG?: string;
   };
-}
+};
 export type LATEST_VERSION_INFO = {
   [x: string]: any;
   version: string;
@@ -32,5 +31,5 @@ export type LATEST_VERSION_INFO = {
   /** 是否处于IOS审核期间 */
   in_ios_check?: boolean;
   "//": string;
-  peer_list?:PEER_INFO[]
+  peer_list?: PEER_INFO[];
 };

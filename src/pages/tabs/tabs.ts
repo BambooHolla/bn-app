@@ -110,13 +110,13 @@ export class TabsPage extends FLP_Lifecycle {
     // 没有pertabpage，说明处于初始化状态，就不需要手动触发这些事件了
     if (perTabPage) {
       perTabPage.ionViewWillLeave();
-      // this.raf(() => {
-      perTabPage.ionViewDidLeave();
-      // });
+      this.raf(() => {
+        perTabPage.ionViewDidLeave();
+      });
       tabPage.ionViewWillEnter();
-      // this.raf(() => {
-      tabPage.ionViewDidEnter();
-      // });
+      this.raf(() => {
+        tabPage.ionViewDidEnter();
+      });
     }
     // 页面切换动画
     const perTabPageContainer = this.selectedTabPageContainer;

@@ -55,7 +55,8 @@ export class CountdownComponent {
     if (!this.update()) {
       return;
     }
-    let res_ms = (this.end_data as Date).getMilliseconds() - Date.now() % 1000;
+    let res_ms =
+      (this.end_data as Date).getMilliseconds() - (Date.now() % 1000);
     if (res_ms < 0) {
       res_ms += 1000;
     }
