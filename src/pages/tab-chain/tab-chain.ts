@@ -57,12 +57,14 @@ export class TabChainPage extends FirstLevelPage {
       this.unconfirm_block = expect_block;
       this.cdRef.markForCheck();
     });
+    // this.registerViewEvent(this)
   }
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
   unconfirm_block?: UnconfirmBlockModel;
+  // 在应用启动的时候就需要进行一次数据加载
   @TabChainPage.onInit
   async loadUnconfirmBlock() {
     const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
@@ -116,9 +118,9 @@ export class TabChainPage extends FirstLevelPage {
     let block_1:
       | SingleBlockModel
       | undefined = await this.blockService.blockDb.findOne(
-      {},
-      { sort: { height: 1 } },
-    );
+        {},
+        { sort: { height: 1 } },
+      );
     const latest_block = await this.blockService.getLastBlock();
     if (!block_1) {
       block_1 = latest_block;

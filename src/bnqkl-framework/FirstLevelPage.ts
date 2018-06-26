@@ -523,14 +523,20 @@ export class FirstLevelPage extends FLP_Data {
   @FirstLevelPage.autoUnsubscribe() private _token_subscription?: Subscription;
   /**通用的高度监控*/
   @FirstLevelPage.autoUnsubscribe() private _height_subscription?: Subscription;
+  /*页面离开后，height很可能没有发生改变，所以Subscription里头的函数并不需要进行再次触发更新*/
+  // 最后一次触发更新的height
+  private _last_height = -1;
+  // 最后一次触发更新的round
+  private _last_round = -1;
   @FirstLevelPage.willEnter
   __watchHeightChanged() {
     if (this._height_subscription) {
       return;
     }
     let is_first = true;
+    /*在用户进行切换登录的时候，需要进行数据更新，所以这里进行了额外的触发，但理论上不会触发到这里来*/
     this.appSetting.account_address.subscribe(token => {
-      if (is_first) {
+      if (!is_first) {
         // 等_height_subscription触发后再说
         this.dispatchEvent(
           "HEIGHT:CHANGED",
@@ -541,8 +547,12 @@ export class FirstLevelPage extends FLP_Data {
     });
     this._height_subscription = this.appSetting.after_height.subscribe(
       height => {
-        this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
         is_first = false;
+        if (this._last_height === height) {
+          return;
+        }
+        this._last_height = height;
+        this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
       },
     );
   }
@@ -555,7 +565,7 @@ export class FirstLevelPage extends FLP_Data {
     }
     let is_first = true;
     this.appSetting.account_address.subscribe(token => {
-      if (is_first) {
+      if (!is_first) {
         // 等_round_subscription触发后再说
         this.dispatchEvent(
           "ROUND:CHANGED",
@@ -565,8 +575,12 @@ export class FirstLevelPage extends FLP_Data {
       }
     });
     this._round_subscription = this.appSetting.after_round.subscribe(round => {
-      this.dispatchEvent("ROUND:CHANGED", round, is_first);
       is_first = false;
+      if (this._last_round === round) {
+        return;
+      }
+      this._last_round = round;
+      this.dispatchEvent("ROUND:CHANGED", round, is_first);
     });
   }
 
