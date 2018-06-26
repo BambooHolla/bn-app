@@ -127,9 +127,9 @@ export class BlockChainDownloader extends EventEmitter {
       const block = {
         ...unpack_block,
         // 这里强行转化为string类型，避免错误的发生
-        reward: '' + unpack_block.reward,
-        totalAmount: '' + unpack_block.totalAmount,
-        totalFee: '' + unpack_block.totalFee,
+        reward: "" + unpack_block.reward,
+        totalAmount: "" + unpack_block.totalAmount,
+        totalFee: "" + unpack_block.totalFee,
         // 一些hex(0~f)字符串的转化
         payloadHash: buf2hex(unpack_block.payloadHash),
         generatorPublicKey: buf2hex(unpack_block.generatorPublicKey),
@@ -144,7 +144,9 @@ export class BlockChainDownloader extends EventEmitter {
     await this.blockDb.insertMany(blocks).catch(console.warn);
 
     // 更改进度
-    this.emit("progress", ((ownEndHeight - 1 - cur_start_height) / total) * 100);
+    this.emit(
+      "progress",
+      ((ownEndHeight - 1 - cur_start_height) / total) * 100,
+    );
   }
-
 }

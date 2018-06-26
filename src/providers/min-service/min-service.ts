@@ -163,7 +163,7 @@ export class MinServiceProvider extends FLP_Tool {
     const roundTime = data.nextRoundTime;
     const { timestamp } = await this.transactionService.getTimestamp();
     const roundProgress = (
-      (1 - roundTime / (57 * timestamp / 1000)) *
+      (1 - roundTime / ((57 * timestamp) / 1000)) *
       100
     ).toFixed(2);
     return roundProgress;
@@ -337,7 +337,7 @@ export class MinServiceProvider extends FLP_Tool {
   }
   private _pre_round_pwd_info?: { cache_key: string } & PromiseType<
     ReturnType<typeof FLP_Form.prototype.getUserPassword>
-    >;
+  >;
   private _pre_round_pwd_info_block?: PromiseOut<void>;
   async refreshPerRoundPwdInfo(input_dialog_title: string) {
     const lock = new PromiseOut<void>();

@@ -24,8 +24,8 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { Screenshot } from "@ionic-native/screenshot";
 import { SocialSharing } from "@ionic-native/social-sharing";
 import { FileTransfer } from "@ionic-native/file-transfer";
-import { Network } from '@ionic-native/network';
-import { NetworkInterface } from '@ionic-native/network-interface';
+import { Network } from "@ionic-native/network";
+import { NetworkInterface } from "@ionic-native/network-interface";
 import { File } from "@ionic-native/file";
 import { FileOpener } from "@ionic-native/file-opener";
 import { LocalNotifications } from "@ionic-native/local-notifications";
@@ -96,8 +96,8 @@ import { VotePreRoundIncomeRateComponent } from "../components/vote-pre-round-in
 import { VotePreRoundIncomeRankingComponent } from "../components/vote-pre-round-income-ranking/vote-pre-round-income-ranking";
 
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
-import { DbCacheProvider } from '../providers/db-cache/db-cache';
-import { VoucherServiceProvider } from '../providers/voucher-service/voucher-service';
+import { DbCacheProvider } from "../providers/db-cache/db-cache";
+import { VoucherServiceProvider } from "../providers/voucher-service/voucher-service";
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 

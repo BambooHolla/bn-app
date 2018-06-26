@@ -114,7 +114,7 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       );
       this.fileTransfer.onProgress(e => {
         this.download_progress = this.sanitizer.bypassSecurityTrustStyle(
-          `--progress:${e.loaded / e.total * 100}%`,
+          `--progress:${(e.loaded / e.total) * 100}%`,
         );
       });
       const entry = await this.fileTransfer.download(

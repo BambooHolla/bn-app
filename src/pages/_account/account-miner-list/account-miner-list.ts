@@ -43,7 +43,6 @@ export class AccountMinerListPage extends SecondLevelPage {
       : [];
   }
 
-
   // @AccountMinerListPage.willEnter
   async initMinterList() {
     const cur_minter_list = await this.minService.allMinersCurRound.getPromise();

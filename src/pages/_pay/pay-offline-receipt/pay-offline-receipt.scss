@@ -1,140 +1,140 @@
 page-pay-offline-receipt {
-	@extend .header-no-border;
-	> .header {
-		.toolbar-title {
-			color: #fff;
-		}
-		.back-button .button-inner .back-button-icon::before {
-			color: #fff !important;
-		}
-	}
-	> .content {
-		background: linear-gradient(to bottom, #3fcdeb 0%, #3edfca 100%);
-		> .scroll-content {
-			height: calc(100vh - 15.2121vw);
-			overflow: hidden;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			> .title {
-				box-sizing: content-box;
-				height: 4rem;
-				padding-top: 20.012px;
-				padding-top: #{constant(safe-area-inset-top)};
-				padding-top: #{env(safe-area-inset-top)};
-				line-height: 4rem;
-				font-size: 1.8rem;
-				font-weight: bold;
-				color: #fff;
-			}
-		}
-	}
-	.info-container {
-		box-shadow: 0 0.2 0.5 rgba(#fff, 0.2);
-		border-radius: 0.2rem;
-		background-color: #fff;
-		width: 94%;
-		margin: 2%;
-		padding: 1rem 2rem 1.6rem 2rem;
-		text-align: center;
-		color: #7b7b7b;
-		> .recipient-info {
-			> .label {
-				font-size: 1.4rem;
-			}
-			> .address {
-				font-size: 1.3rem;
-			}
-		}
-		> .amount-info {
-			padding-top: 1.5rem;
-			display: flex;
-			flex-direction: row;
-			align-items: baseline;
-			justify-content: center;
-			&::before {
-				content: " ";
-				flex: 1;
-			}
-			> .value {
-				flex: 1;
-				font-size: 2.8rem;
-				color: #02e1f4;
-				font-weight: 500;
-				text-shadow: 0.05rem 0.05rem 0.1rem rgba(0, 0, 0, 0.3);
-			}
-			> .unit {
-				flex: 1;
-				color: #7b7b7b;
-				font-size: 1.3rem;
-			}
-		}
-		> .qrcode-wrapper {
-			width: 94%;
-			margin: 0 auto;
-			> kjua-qrcode {
-				display: flex;
-				padding: 0;
-			}
-			> .scan-tip {
-				font-size: 1.6rem;
-				font-weight: 600;
-				transform: translateY(-0.5rem);
-			}
-		}
-		> .ticket-wrapper {
-			display: flex;
-			> .left,
-			> .right {
-				flex: 1;
-				color: #afafb0;
-				font-size: 1.3rem;
-				font-weight: lighter;
-			}
-			> .center {
-				flex: 1.2;
-				canvas {
-					box-shadow: 0.1rem 0rem 0.3rem rgba(0, 0, 0, 0.2);
-				}
-			}
-		}
-		> .footer-info {
-			padding-top: 2rem;
-			text-align: left;
-			> .postscript,
-			> .transaction-id {
-				/* color: #7b7b7b; */
-				display: flex;
-				> .label {
-					flex-grow: 0;
-					flex-shrink: 0;
-					width: 4rem;
-				}
-				> .text {
-					flex-grow: 1;
-					word-break: break-all;
-				}
-			}
-			> .postscript {
-				> .label {
-					font-size: 1.4rem;
-				}
-				> .text {
-					font-size: 1.3rem;
-					&.empty {
-						font-style: italic;
-					}
-				}
-			}
-			> .transaction-id {
-				padding-top: 2rem;
-				> .label {
-					font-size: 1.1rem;
-				}
-				> .text {
-					font-size: 1rem;
-				}
-			}
-		}
-	}
+  @extend .header-no-border;
+  > .header {
+    .toolbar-title {
+      color: #fff;
+    }
+    .back-button .button-inner .back-button-icon::before {
+      color: #fff !important;
+    }
+  }
+  > .content {
+    background: linear-gradient(to bottom, #3fcdeb 0%, #3edfca 100%);
+    > .scroll-content {
+      height: calc(100vh - 15.2121vw);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      > .title {
+        box-sizing: content-box;
+        height: 4rem;
+        padding-top: 20.012px;
+        padding-top: #{constant(safe-area-inset-top)};
+        padding-top: #{env(safe-area-inset-top)};
+        line-height: 4rem;
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #fff;
+      }
+    }
+  }
+  .info-container {
+    box-shadow: 0 0.2 0.5 rgba(#fff, 0.2);
+    border-radius: 0.2rem;
+    background-color: #fff;
+    width: 94%;
+    margin: 2%;
+    padding: 1rem 2rem 1.6rem 2rem;
+    text-align: center;
+    color: #7b7b7b;
+    > .recipient-info {
+      > .label {
+        font-size: 1.4rem;
+      }
+      > .address {
+        font-size: 1.3rem;
+      }
+    }
+    > .amount-info {
+      padding-top: 1.5rem;
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: center;
+      &::before {
+        content: " ";
+        flex: 1;
+      }
+      > .value {
+        flex: 1;
+        font-size: 2.8rem;
+        color: #02e1f4;
+        font-weight: 500;
+        text-shadow: 0.05rem 0.05rem 0.1rem rgba(0, 0, 0, 0.3);
+      }
+      > .unit {
+        flex: 1;
+        color: #7b7b7b;
+        font-size: 1.3rem;
+      }
+    }
+    > .qrcode-wrapper {
+      width: 94%;
+      margin: 0 auto;
+      > kjua-qrcode {
+        display: flex;
+        padding: 0;
+      }
+      > .scan-tip {
+        font-size: 1.6rem;
+        font-weight: 600;
+        transform: translateY(-0.5rem);
+      }
+    }
+    > .ticket-wrapper {
+      display: flex;
+      > .left,
+      > .right {
+        flex: 1;
+        color: #afafb0;
+        font-size: 1.3rem;
+        font-weight: lighter;
+      }
+      > .center {
+        flex: 1.2;
+        canvas {
+          box-shadow: 0.1rem 0rem 0.3rem rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+    > .footer-info {
+      padding-top: 2rem;
+      text-align: left;
+      > .postscript,
+      > .transaction-id {
+        /* color: #7b7b7b; */
+        display: flex;
+        > .label {
+          flex-grow: 0;
+          flex-shrink: 0;
+          width: 4rem;
+        }
+        > .text {
+          flex-grow: 1;
+          word-break: break-all;
+        }
+      }
+      > .postscript {
+        > .label {
+          font-size: 1.4rem;
+        }
+        > .text {
+          font-size: 1.3rem;
+          &.empty {
+            font-style: italic;
+          }
+        }
+      }
+      > .transaction-id {
+        padding-top: 2rem;
+        > .label {
+          font-size: 1.1rem;
+        }
+        > .text {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
 }

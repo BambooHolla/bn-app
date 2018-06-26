@@ -105,7 +105,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
     const average_amount =
       amount_list.reduce((o, v) => o + v, 0) / amount_list.length;
     const max_amount = Math.max(...amount_list, average_amount * 1.1) || 1; // 如果是0，则默认为1
-    const min_amount = 0;//Math.min(...amount_list, average_amount * 0.9);
+    const min_amount = 0; //Math.min(...amount_list, average_amount * 0.9);
     const pad_amount =
       (max_amount - min_amount) * (text_style.fontSize / 2 / yAxis_height);
     {
@@ -159,7 +159,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
         // } else if (i === len) {
         //   x_item.x = 0;
         // } else {
-        x_item.x = (len - i) / len * xAxis_line_width - x_item.width / 2;
+        x_item.x = ((len - i) / len) * xAxis_line_width - x_item.width / 2;
         // }
         x_item.y = xAxis_height - x_item.height;
         xAxis.addChild(x_item);
@@ -177,7 +177,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
     const y_dif_amount = y_max_amount - y_min_amount;
     function getY(amount: number) {
       return (
-        yAxis_height - (amount - y_min_amount) / y_dif_amount * yAxis_height
+        yAxis_height - ((amount - y_min_amount) / y_dif_amount) * yAxis_height
       );
     }
     // 从最小的点开始画
@@ -190,7 +190,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
     ) {
       const x = next_x;
       const y = next_y;
-      next_x = (i + 1) / len * xAxis_line_width;
+      next_x = ((i + 1) / len) * xAxis_line_width;
       next_y = getY(reversed_list[i + 1]);
       if (i === 0) {
         cLine.moveTo(x, y);

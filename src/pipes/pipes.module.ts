@@ -15,4 +15,4 @@ import { BytesPipe } from "./bytes/bytes";
   imports: [],
   exports: [MaskPipe, TimestampPipe, DatediffPipe, AmountEulerPipe, BytesPipe],
 })
-export class PipesModule { }
+export class PipesModule {}

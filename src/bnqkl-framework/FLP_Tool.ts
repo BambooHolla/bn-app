@@ -16,7 +16,7 @@ import { is_dev, tryRegisterGlobal, global } from "./helper";
 export { is_dev, tryRegisterGlobal, global };
 
 export class FLP_Tool {
-  constructor() { }
+  constructor() {}
   // 全局弹出层控制器
   @FLP_Tool.FromGlobal actionSheetCtrl!: ActionSheetController;
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;

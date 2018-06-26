@@ -144,7 +144,7 @@ page-tab-chain {
     flex-direction: column;
     align-items: center;
     transform: translateZ(0);
-    &.loading{
+    &.loading {
       visibility: hidden;
     }
   }

@@ -67,7 +67,7 @@ export class TabAccountPage extends FirstLevelPage {
           enterAnimation: "custom-dialog-pop-in",
           leaveAnimation: "custom-dialog-pop-out",
         },
-    )
+      )
       .present();
   }
 
@@ -81,11 +81,15 @@ export class TabAccountPage extends FirstLevelPage {
   @TabAccountPage.onInit
   @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
   async checkAndroidUpdate() {
-    this.app_version_info = await checkUpdate(this.fetch, {
-      isAndroid: this.isAndroid,
-      isIOS: this.isIOS,
-      lang: this.translate.currentLang,
-      modalCtrl: this.modalCtrl,
-    }, this.appSetting.settings.auto_update_app/*用来判定是否打开升级的对话框*/);
+    this.app_version_info = await checkUpdate(
+      this.fetch,
+      {
+        isAndroid: this.isAndroid,
+        isIOS: this.isIOS,
+        lang: this.translate.currentLang,
+        modalCtrl: this.modalCtrl,
+      },
+      this.appSetting.settings.auto_update_app /*用来判定是否打开升级的对话框*/,
+    );
   }
 }

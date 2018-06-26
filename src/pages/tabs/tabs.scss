@@ -31,9 +31,9 @@ page-tabs {
     backdrop-filter: blur(10px);
     border-top: 0.55px solid #eee;
     &.transparent-bg {
-      border-top-color: transparent!important;
-      background: transparent!important;
-      backdrop-filter: none!important;
+      border-top-color: transparent !important;
+      background: transparent !important;
+      backdrop-filter: none !important;
     }
     &.power-saving {
       .tab-item.selected {
@@ -47,12 +47,12 @@ page-tabs {
     &.in-3 {
       background: #fff;
       backdrop-filter: none;
-      &.force-hidden{
+      &.force-hidden {
         display: flex;
         z-index: 0;
       }
     }
-    &.force-hidden{
+    &.force-hidden {
       display: none;
     }
   }
@@ -155,7 +155,6 @@ page-tabs {
       }
     }
   }
-
   .tab-item.selected {
     &:nth-child(3) {
       &::before {
@@ -171,7 +170,6 @@ page-tabs {
       }
     }
   }
-
   .tab-item.selected {
     &:nth-child(4) {
       &::before {

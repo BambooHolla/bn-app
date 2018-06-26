@@ -10,7 +10,11 @@ import {
 } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import { PromisePro, PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
+import {
+  PromisePro,
+  PromiseOut,
+  sleep,
+} from "../../bnqkl-framework/PromiseExtends";
 
 import {
   AppSettingProvider,
@@ -132,14 +136,16 @@ export class BlockServiceProvider extends FLP_Tool {
               cache.blocks instanceof Array
                 ? cache.blocks
                 : await db.find({
-                  height: { $in: res_blocks.map(b => b.height) },
-                });
+                    height: { $in: res_blocks.map(b => b.height) },
+                  });
             const unique_height_set = new Set<number>(
               old_blocks.map(b => b.height),
             );
-            const new_blocks = res_blocks.filter(block => {
-              return !unique_height_set.has(block.height);
-            }).map(b => this.formatBlockData(b));
+            const new_blocks = res_blocks
+              .filter(block => {
+                return !unique_height_set.has(block.height);
+              })
+              .map(b => this.formatBlockData(b));
             await db.insertMany(new_blocks);
           }
           return mix_res;
@@ -181,9 +187,11 @@ export class BlockServiceProvider extends FLP_Tool {
     );
 
     // 未连接上websocket前，先使用本地缓存来更新一下高度
-    this.blockDb.findOne({}, { sort: { height: -1 } }).then(local_newest_block => {
-      this._updateHeight(local_newest_block);
-    });
+    this.blockDb
+      .findOne({}, { sort: { height: -1 } })
+      .then(local_newest_block => {
+        this._updateHeight(local_newest_block);
+      });
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
   }
@@ -244,7 +252,7 @@ export class BlockServiceProvider extends FLP_Tool {
       height: block.height,
       blockSize: block.blockSize,
       remark: block.remark,
-    }
+    };
   }
 
   round_end_time = new Date();
@@ -252,7 +260,9 @@ export class BlockServiceProvider extends FLP_Tool {
   private async _updateHeight(last_block?: TYPE.BlockModel) {
     this.lastBlock.refresh("update Height");
     if (!last_block) {
-      last_block = await this.getBlockByHeight((await this.lastBlock.getPromise()).height);
+      last_block = await this.getBlockByHeight(
+        (await this.lastBlock.getPromise()).height,
+      );
     }
     if (last_block.height <= this.appSetting.getHeight()) {
       return;
@@ -260,14 +270,15 @@ export class BlockServiceProvider extends FLP_Tool {
     // 更新缓存中的最新区块
     if (!(await this.blockDb.has({ id: last_block.id }))) {
       // 将最新区块插入到数据库中
-      await this.blockDb.insert(this.formatBlockData(last_block)).catch(err =>
-        console.warn('更新最新区块失败', last_block, err));
+      await this.blockDb
+        .insert(this.formatBlockData(last_block))
+        .catch(err => console.warn("更新最新区块失败", last_block, err));
     }
     // 更新轮次计时器
     this.round_end_time = new Date(
       Date.now() +
-      this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
-      this.appSetting.BLOCK_UNIT_TIME,
+        this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
+          this.appSetting.BLOCK_UNIT_TIME,
     );
     // 更新高度
     this.appSetting.setHeight(last_block.height);
@@ -276,8 +287,7 @@ export class BlockServiceProvider extends FLP_Tool {
     this.io.on("blocks/change", async data => {
       // 计算流量大小
       this.appSetting.settings.contribution_traffic +=
-        getJsonObjectByteSize(data) /*返回的JSON对象大小*/ +
-        19 /*基础消耗*/;
+        getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
       console.log(
         "%c区块更新",
         "color:green;background-color:#eee;font-size:1.2rem",
@@ -298,10 +308,12 @@ export class BlockServiceProvider extends FLP_Tool {
     // 安装未处理交易的预估
     this._listenUnconfirmTransaction();
   }
-  private _download_worker?: Worker
+  private _download_worker?: Worker;
   getDownloadWorker() {
     if (!this._download_worker) {
-      this._download_worker = new Worker("./assets/workers/download-block-chain.worker.js");
+      this._download_worker = new Worker(
+        "./assets/workers/download-block-chain.worker.js",
+      );
     }
     return this._download_worker;
   }
@@ -325,7 +337,7 @@ export class BlockServiceProvider extends FLP_Tool {
     });
     const task_name = `补全区块数据${startHeight} ~ ${endHeight}`;
     const task = new PromiseOut<void>();
-    const onmessage = (e) => {
+    const onmessage = e => {
       const msg = e.data;
       if (msg && msg.req_id === req_id) {
         console.log(msg);
@@ -360,7 +372,7 @@ export class BlockServiceProvider extends FLP_Tool {
       worker: download_worker,
       req_id,
       task,
-    }
+    };
   }
   /**更新最新的区块，并尝试下载破损的区块链数据*/
   async updateLastBlockAndTryDownloadDestoryBlocks(lastBlock: TYPE.BlockModel) {
@@ -395,7 +407,7 @@ export class BlockServiceProvider extends FLP_Tool {
       if (cur_lastBlock.height >= lastBlock.height) {
         // TOOD：拜占庭询问区块是否正确，然后进行更新或者拉黑名单的操作
         console.error("区块数移除，存在比当前最新区块更高的区块");
-        return
+        return;
       }
     }
 
@@ -409,7 +421,11 @@ export class BlockServiceProvider extends FLP_Tool {
         const startHeight = cur_lastBlock.height + 1;
         const endHeight = lastBlock.height - 1;
         // 缺少最新区块，下载补全
-        const { task } = await this.downloadBlockInWorker(startHeight, endHeight, lastBlock.height);
+        const { task } = await this.downloadBlockInWorker(
+          startHeight,
+          endHeight,
+          lastBlock.height,
+        );
         await task.promise;
       }
     }
@@ -445,24 +461,34 @@ export class BlockServiceProvider extends FLP_Tool {
     blockSignature: "",
     blockSize: "0",
     remark: "",
-  }
+  };
 
   /**
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
   async getLastBlock() {
-    const last_block = await this.blockDb.findOne({}, { sort: { height: -1 } }).then((b) => b || {
-      ...this.empty_block
-    });
+    const last_block = await this.blockDb
+      .findOne({}, { sort: { height: -1 } })
+      .then(
+        b =>
+          b || {
+            ...this.empty_block,
+          },
+      );
 
     if (navigator.onLine) {
       return await Promise.race([
-        this.fetch.ioEmitAsync<TYPE.BlockResModel>('get' + this.GET_LAST_BLOCK_URL.path, {}).then(res => res.block),
+        this.fetch
+          .ioEmitAsync<TYPE.BlockResModel>(
+            "get" + this.GET_LAST_BLOCK_URL.path,
+            {},
+          )
+          .then(res => res.block),
         sleep(3000).then(() => last_block),
-      ])
+      ]);
     } else {
-      return last_block
+      return last_block;
     }
   }
 
@@ -475,7 +501,8 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param timestamp
    */
   getFullTimestamp(timestamp: number) {
-    const fullTimestamp = (timestamp + AppSettingProvider.seedDateTimestamp) * 1000;
+    const fullTimestamp =
+      (timestamp + AppSettingProvider.seedDateTimestamp) * 1000;
     return fullTimestamp;
   }
 
@@ -532,9 +559,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {string} query
    * @returns {Promise<any>}
    */
-  async searchBlocks(
-    query: string,
-  ): Promise<TYPE.BlockModel[]> {
+  async searchBlocks(query: string): Promise<TYPE.BlockModel[]> {
     //如果是纯数字且不是以0开头就查高度
     if (/[1-9][0-9]*/.test(query)) {
       const query_num = parseFloat(query) * 1;

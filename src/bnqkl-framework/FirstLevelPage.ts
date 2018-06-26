@@ -183,10 +183,10 @@ export class FirstLevelPage extends FLP_Data {
       if (to_time - from_time > from_to_max_span) {
         return;
       }
-      let source_speed = 10 * (to - from) / (to_time - from_time);
+      let source_speed = (10 * (to - from)) / (to_time - from_time);
       // const dir = -source_speed / Math.abs(source_speed);
       const total_will_ani_time = source_speed * 10;
-      const total_will_move = source_speed / 2 * total_will_ani_time;
+      const total_will_move = (source_speed / 2) * total_will_ani_time;
 
       // let pre_t = performance.now();
       const start_t = performance.now();
@@ -498,7 +498,7 @@ export class FirstLevelPage extends FLP_Data {
         }
       };
     } else {
-      this.fixIOSCacheBug = () => { };
+      this.fixIOSCacheBug = () => {};
     }
     this.fixIOSCacheBug(ele);
   }
@@ -516,7 +516,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-    )
+      )
       .present();
   }
 
@@ -570,7 +570,6 @@ export class FirstLevelPage extends FLP_Data {
     });
   }
 
-
   amountViewer(amount, hide_symbol_num = 8) {
     if (this.appSetting.settings.can_view_amount) {
       return amount;
@@ -580,7 +579,8 @@ export class FirstLevelPage extends FLP_Data {
   }
   /*切换金额是否可见*/
   toggleAmountView() {
-    this.appSetting.settings.can_view_amount = !this.appSetting.settings.can_view_amount;
+    this.appSetting.settings.can_view_amount = !this.appSetting.settings
+      .can_view_amount;
     this.cdRef && this.cdRef.markForCheck();
   }
 }

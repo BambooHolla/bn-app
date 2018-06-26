@@ -1,5 +1,10 @@
 import { DomSanitizer } from "@angular/platform-browser";
-import { Component, Optional, ChangeDetectionStrategy,ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  Optional,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
@@ -26,7 +31,7 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     public viewCtrl: ViewController,
     public newsService: NewsProvider,
     public sanitizer: DomSanitizer,
-    public cdRef:ChangeDetectorRef
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
     // this.auto_header_shadow_when_scroll_down = true;

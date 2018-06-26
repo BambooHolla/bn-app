@@ -2,7 +2,7 @@ import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
 import { tryRegisterGlobal, FLP_Tool } from "../bnqkl-framework/FLP_Tool";
 import * as FontFaceObserver from "fontfaceobserver";
-export const ifmicon_font_ready = new FontFaceObserver('ifmicon').load();
+export const ifmicon_font_ready = new FontFaceObserver("ifmicon").load();
 
 function _tick(time) {
   this._requestId = null;
@@ -379,10 +379,10 @@ export const Easing = {
     return 0.5 * ((k -= 2) * k * k * k * k + 2);
   },
   Sinusoidal_In(k: number) {
-    return 1 - Math.cos(k * Math.PI / 2);
+    return 1 - Math.cos((k * Math.PI) / 2);
   },
   Sinusoidal_Out(k: number) {
-    return Math.sin(k * Math.PI / 2);
+    return Math.sin((k * Math.PI) / 2);
   },
   Sinusoidal_InOut(k: number) {
     return 0.5 * (1 - Math.cos(Math.PI * k));
@@ -431,12 +431,12 @@ export const Easing = {
       a = 1;
       s = p / 4;
     } else {
-      s = p * Math.asin(1 / a) / (2 * Math.PI);
+      s = (p * Math.asin(1 / a)) / (2 * Math.PI);
     }
     return -(
       a *
       Math.pow(2, 10 * (k -= 1)) *
-      Math.sin((k - s) * (2 * Math.PI) / p)
+      Math.sin(((k - s) * (2 * Math.PI)) / p)
     );
   },
   Elastic_Out(k: number) {
@@ -453,9 +453,11 @@ export const Easing = {
       a = 1;
       s = p / 4;
     } else {
-      s = p * Math.asin(1 / a) / (2 * Math.PI);
+      s = (p * Math.asin(1 / a)) / (2 * Math.PI);
     }
-    return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
+    return (
+      a * Math.pow(2, -10 * k) * Math.sin(((k - s) * (2 * Math.PI)) / p) + 1
+    );
   },
   Elastic_InOut(k: number) {
     var s;
@@ -471,18 +473,20 @@ export const Easing = {
       a = 1;
       s = p / 4;
     } else {
-      s = p * Math.asin(1 / a) / (2 * Math.PI);
+      s = (p * Math.asin(1 / a)) / (2 * Math.PI);
     }
     if ((k *= 2) < 1) {
       return (
         -0.5 *
-        (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p))
+        (a *
+          Math.pow(2, 10 * (k -= 1)) *
+          Math.sin(((k - s) * (2 * Math.PI)) / p))
       );
     }
     return (
       a *
         Math.pow(2, -10 * (k -= 1)) *
-        Math.sin((k - s) * (2 * Math.PI) / p) *
+        Math.sin(((k - s) * (2 * Math.PI)) / p) *
         0.5 +
       1
     );

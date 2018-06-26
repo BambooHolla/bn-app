@@ -75,7 +75,7 @@ export class SatellitePixiComponent extends AniBase {
     root_circle.y = renderer.height / 2;
 
     const point_num = 180;
-    const u_deg = Math.PI * 2 / point_num;
+    const u_deg = (Math.PI * 2) / point_num;
     root_circle.beginFill(0xf7d13f, 1);
     for (var i = 0; i < point_num; i += 1) {
       const deg = u_deg * i;
@@ -115,7 +115,7 @@ export class SatellitePixiComponent extends AniBase {
         min_tail_length +
         (max_tail_length - min_tail_length) *
           (1 - Math.abs(center_tail_index - i) / center_tail_index);
-      const deg = i / (tails_num - 1) * (to_deg - from_deg) + from_deg;
+      const deg = (i / (tails_num - 1)) * (to_deg - from_deg) + from_deg;
       const x = Math.sin(deg) * 25;
       const y = Math.cos(deg) * 25;
       tail.moveTo(0, 0);

@@ -8,8 +8,7 @@ import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { Storage } from "@ionic/storage";
 
-import {getUTF8ByteSize} from './calcHelper';
-
+import { getUTF8ByteSize } from "./calcHelper";
 
 @IonicPage({ name: "settings-cache-manage" })
 @Component({

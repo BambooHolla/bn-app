@@ -41,10 +41,8 @@ export class InputContainerDirective implements OnDestroy {
     // 		console.log(mutation.type);
     // 	});
     // });
-
     // // 配置观察选项:
     // var config = { attributes: true };
-
     // // 传入目标节点和观察选项
     // observer.observe(target, config);
   }
