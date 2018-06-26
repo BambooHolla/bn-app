@@ -66,6 +66,10 @@ export class TabChainPage extends FirstLevelPage {
   unconfirm_block?: UnconfirmBlockModel;
   // 在应用启动的时候就需要进行一次数据加载
   @TabChainPage.onInit
+  async initUnconfirmBlock() {
+    await this.loadUnconfirmBlock();
+    this.cdRef.markForCheck();
+  }
   async loadUnconfirmBlock() {
     const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
     this.unconfirm_block = unconfirm_block;
@@ -85,8 +89,10 @@ export class TabChainPage extends FirstLevelPage {
     if (!(this.chain_list_view_able = this.chainList.renderer_started)) {
       this.chainList.once("renderer-started", () => {
         this.chain_list_view_able = true;
+        this.cdRef.markForCheck();
       });
     }
+    this.cdRef.markForCheck();
   }
 
   @TabChainPage.didEnter
@@ -94,6 +100,7 @@ export class TabChainPage extends FirstLevelPage {
     this.chainList.list_padding_top = this.chainList.pt(
       this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/,
     );
+    this.cdRef.markForCheck();
   }
 
   pullToTop() {

@@ -26,6 +26,7 @@
     </div>
   </div>
   <div class="list-wrapper">
+    <div class="loading-placeholer" [class.hide]="chain_list_view_able"></div>
     <chain-list class="block-list" [class.loading]="!chain_list_view_able" [max-chain-height]="unconfirm_block?.height-1" [max-chain-height]="" (click-item-footer)="routeToChainBlockDetail($event.height)"></chain-list>
   </div>
 </ion-content>

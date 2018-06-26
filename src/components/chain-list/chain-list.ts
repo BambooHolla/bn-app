@@ -25,7 +25,6 @@ Object.assign(PIXI.filters, PIXI_Filters);
 type BlockItem = {
 	block?: BlockModel | Promise<BlockModel>;
 	chain_height: number;
-	loading: boolean;
 	y: number;
 	cardView: BlockCard;
 };
@@ -33,7 +32,7 @@ type BlockItem = {
 export const loader = new PIXI.loaders.Loader();
 export const _load_resource_promiseout = new PromiseOut<
 	PIXI.loaders.ResourceDictionary
->();
+	>();
 export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 loader.add("block_card_blue_bg", "assets/imgs/tab-chain/block-card-blue.png");
@@ -141,14 +140,14 @@ export class ChainListComponent extends AniBase {
 	private _calcMaxViewHeight() {
 		if (
 			this.renderer_height &&
-			this._max_chain_height &&
+			this.max_chain_height &&
 			this.renderer_started
 		) {
 			this.max_view_height = Math.max(
 				this.renderer_height,
-				this._max_chain_height * this.item_height +
-					this.list_padding_top +
-					this.list_padding_bottom,
+				this.max_chain_height * this.item_height +
+				this.list_padding_top +
+				this.list_padding_bottom,
 			);
 			if (
 				this._isInTouch() === false &&
@@ -174,7 +173,7 @@ export class ChainListComponent extends AniBase {
 	// // 以下两个参数是用来在max_chain_height变动后，尽可能保持当前的视觉中的元素位置不发生改变
 	// private _pre_list_view_y = 0;
 	// private _pre_max_view_height = 0;
-	private _scroll_config_host_reload = (no_refresh?: boolean) => {};
+	private _scroll_config_host_reload = (no_refresh?: boolean) => { };
 	private _get_velocity = () => 0;
 	private _inited_scroll = false;
 	private _init_scroll(opts: { no_refresh?: boolean } = {}) {
@@ -190,7 +189,7 @@ export class ChainListComponent extends AniBase {
 			return;
 		}
 		this._inited_scroll = true;
-		const { list_view, item_height, renderer_height } = this;
+		const { list_view, item_height, renderer_height, pt } = this;
 		const render_h = this.app.renderer.height;
 		const item_n = render_h / item_height;
 		list_view.interactive = true;
@@ -264,6 +263,7 @@ export class ChainListComponent extends AniBase {
 
 		let raf_id;
 		let delta;
+		const allow_tap_range = pt(15);
 		const autoScroll = (time_const: number) => {
 			if (amplitude) {
 				const elapsed = performance.now() - timestamp;
@@ -275,7 +275,7 @@ export class ChainListComponent extends AniBase {
 				} else {
 					list_view_y = target;
 				}
-				if (delta > 5 || delta < -5) {
+				if (delta > allow_tap_range || delta < -allow_tap_range) {
 					this.setBlockCardListTap(false);
 				} else {
 					this.setBlockCardListTap(true);
@@ -317,13 +317,12 @@ export class ChainListComponent extends AniBase {
 				target = list_view_y + amplitude;
 				timestamp = performance.now();
 				raf(timeConstant);
-			} else if (performance.now() - start_timestamp < 500) {
+			} /*if (performance.now() - start_timestamp < 500)*/ else {
+				// 没有滚动的情况下，可以直接重置为可点击
 				// 快速的点击并起来，能重新使得元素可点击
 				this.setBlockCardListTap(true);
 			}
 		});
-		// 初始化绘制
-		updateAndCheckEdge();
 		// 默认可以点击子元素
 		this.setBlockCardListTap(true);
 		this._scroll_config_host_reload = (no_refresh?: boolean) => {
@@ -352,12 +351,13 @@ export class ChainListComponent extends AniBase {
 				timestamp = performance.now();
 				amplitude = new_list_view_y - list_view_y;
 				raf(ani_ms / Math.log(Math.abs(amplitude) * 2));
-			} else {
-				const diff = list_view_y - new_list_view_y;
-				list_view_y -= diff;
-				list_start_y -= diff;
-				target -= diff;
+				// 使用动画滚动，理论上当前这一帧的list_view_y没有发生改变，所以返回false
+				return false;
 			}
+			const diff = list_view_y - new_list_view_y;
+			list_view_y -= diff;
+			list_start_y -= diff;
+			target -= diff;
 			return true;
 		};
 		this._getListViewY = () => list_view_y;
@@ -365,6 +365,8 @@ export class ChainListComponent extends AniBase {
 		this._isInTouch = () => !!touch_start_point;
 
 		this.renderer_started = true;
+		// 初始化绘制
+		this._calcMaxViewHeight();
 		this.emit("renderer-started");
 	}
 	private _block_card_list_can_tap;
@@ -452,7 +454,8 @@ export class ChainListComponent extends AniBase {
 		/// 计算需要显示在屏幕中的元素
 		const from_chain_height = max_chain_height - skip_chain_num;
 
-		const cur_render_info = from_chain_height + "," + abs_y.toFixed(1);
+		const cur_render_info =
+			from_chain_height + "," + abs_y.toFixed(1) + "," + renderer_height;
 		// console.log(cur_render_info, _pre_render_info)
 		if (cur_render_info === _pre_render_info) {
 			// console.log("tiaozhen")
@@ -473,7 +476,6 @@ export class ChainListComponent extends AniBase {
 				cache_data = {
 					block: undefined, // dataService.getBlockByHeight(chain_height),
 					chain_height,
-					loading: true,
 					y: 0,
 					cardView: this._getUseableBlockCard(chain_height),
 				};
@@ -650,6 +652,13 @@ class BlockCard extends PIXI.Graphics {
 		this._can_tap = can_tap;
 		this.cacheAsBitmap = !can_tap;
 		this.footer_container.interactive = can_tap;
+		if (can_tap) {
+			// 刷新显示
+			this.toggleFooterContainerMask();
+		} else {
+			// 取消点击
+			this.toggleFooterContainerMask(false);
+		}
 	}
 	get label_config() {
 		return this._label_config;
@@ -672,6 +681,13 @@ class BlockCard extends PIXI.Graphics {
 		const { shadown } = this;
 
 		// init shadown
+		// {
+		// 	const bg = new PIXI.Sprite(this.bg_resource);
+		// 	bg.width = W;
+		// 	bg.scale.y = bg.scale.x;
+		// 	shadown.addChild(bg);
+		// 	this.addChild(shadown);
+		// }
 		{
 			const s_w = this.width * 0.92;
 			const s_h = this.height * 0.92;
@@ -694,6 +710,17 @@ class BlockCard extends PIXI.Graphics {
 			// shadow_filter.shadowOnly = true;
 			shadow_filter.color = 0x0;
 			this.filters = [shadow_filter];
+			// 在不确定帧后在进行缓存
+			let cache_fps = (100 * Math.random()) | 0;
+			const tryCacheAsBitmap = () => {
+				if (cache_fps <= 0) {
+					shadown.cacheAsBitmap = true;
+				} else {
+					cache_fps -= 1;
+					FLP_Tool.raf(tryCacheAsBitmap);
+				}
+			}
+			tryCacheAsBitmap();
 			this.addChild(shadown);
 		}
 
@@ -709,9 +736,22 @@ class BlockCard extends PIXI.Graphics {
 
 		this.addChild(this.footer_container);
 		this.footer_container.interactive = true;
+		this.footer_container.on("pointerdown", () => {
+			this.toggleFooterContainerMask(true);
+			this.emit("refresh-frame-in-async");
+		});
+		this.footer_container.on("pointerup", () => {
+			// // 可能被取消
+			// if (this._show_footer_container_mask === false) {
+			// 	return;
+			// }
+			this.toggleFooterContainerMask(false);
+			this.emit("refresh-frame-in-async");
+		});
 		this.footer_container.on("pointertap", () => {
 			this.emit("click-footer", this.chain_height, this.block);
 		});
+		this.footer_container.addChild(this.footer_container_mask);
 		this.footer_container.addChild(this.view_block_detail_label);
 		this.footer_container.addChild(this.view_block_detail_label_icon);
 		// 尝试绘制
@@ -739,53 +779,65 @@ class BlockCard extends PIXI.Graphics {
 				this.emit("refresh-frame-in-async");
 			});
 	}
-	vw(val: number) {
-		return this.W * val;
+	private _show_footer_container_mask = true;
+	toggleFooterContainerMask(show = this._show_footer_container_mask) {
+		this._show_footer_container_mask = show;
+		const res_aplha = show && this.footer_container.interactive ? 1 : 0;
+		if (this.footer_container_mask.alpha !== res_aplha) {
+			// this.footer_container.cacheAsBitmap = false;
+			this.footer_container_mask.alpha = res_aplha;
+			// this.footer_container.cacheAsBitmap = true;
+		}
 	}
 	shadown = new PIXI.Graphics();
 
 	get style_header_content() {
+		const { W } = this;
 		return {
 			fill: 0x7b7b7b,
-			fontSize: this.vw(0.075),
+			fontSize: W * 0.075,
 			fontFamily: "ifmicon",
-			padding: this.vw(0.05),
+			padding: W * 0.05,
 			fontWeight: "500",
 			wordWrap: true,
-			wordWrapWidth: this.vw(0.25),
+			wordWrapWidth: W * 0.25,
 			align: "center",
 		};
 	}
 	get style_header_label() {
+		const { W } = this;
 		return {
 			fill: [0x66d5fa, 0x67f0e4],
-			fontSize: this.vw(0.04),
+			fontSize: W * 0.04,
 			fontFamily: "ifmicon",
-			padding: this.vw(0.04),
+			padding: W * 0.04,
 		};
 	}
 	get style_detail_label() {
+		const { W } = this;
 		return {
 			fill: 0x7b7b7b,
-			fontSize: this.vw(0.038),
+			fontSize: W * 0.038,
 			fontFamily: "ifmicon",
-			padding: this.vw(0.038),
+			padding: W * 0.038,
 		};
 	}
 	get style_footer_label() {
+		const { W } = this;
 		return {
 			fill: 0xffffff,
-			fontSize: this.vw(0.038),
+			fontSize: W * 0.038,
 			fontFamily: "ifmicon",
-			padding: this.vw(0.038),
+			padding: W * 0.038,
 		};
 	}
 	get style_footer_label_icon() {
+		const { W } = this;
 		return {
 			fill: 0xffffff,
-			fontSize: this.vw(0.1),
+			fontSize: W * 0.1,
 			fontFamily: "ifmicon",
-			padding: this.vw(0.05),
+			padding: W * 0.05,
 		};
 	}
 	/*模拟 text-align: center*/
@@ -794,7 +846,8 @@ class BlockCard extends PIXI.Graphics {
 		vw: number,
 		left_or_right: 1 | -1,
 	) {
-		const min_content_width = this.vw(vw);
+		const { W } = this;
+		const min_content_width = W * vw;
 		if (text.width < min_content_width) {
 			text.x += ((min_content_width - text.width) / 2) * left_or_right;
 		}
@@ -808,7 +861,8 @@ class BlockCard extends PIXI.Graphics {
 	total_fee_label = new PIXI.Text("", this.style_detail_label);
 	total_fee_content = new PIXI.Text("", this.style_detail_label);
 
-	footer_container = new PIXI.Graphics();
+	footer_container = new PIXI.Container();
+	footer_container_mask = new PIXI.Graphics();
 	view_block_detail_label = new PIXI.Text("", this.style_footer_label);
 	view_block_detail_label_icon = new PIXI.Text(
 		"",
@@ -828,6 +882,7 @@ class BlockCard extends PIXI.Graphics {
 			total_fee_label,
 
 			footer_container,
+			footer_container_mask,
 			view_block_detail_label,
 			view_block_detail_label_icon,
 		} = this;
@@ -856,29 +911,30 @@ class BlockCard extends PIXI.Graphics {
 		}
 		{
 			const w = W * 0.92;
-			const h = 0.175 * H * 0.9;
+			const h = 0.183 * H * 0.9;
 			const l = (W - w) / 2;
-			const t = H * 0.95 - h;
-			footer_container.cacheAsBitmap = false;
-			footer_container.beginFill(0, 0);
+			const t = H * 0.955 - h;
 			footer_container.x = l;
 			footer_container.y = t;
-			footer_container.drawRect(0, 0, w, h);
-			footer_container.endFill();
+			// footer_container.cacheAsBitmap = false;
+			footer_container_mask.beginFill(0, 0.1);
+			footer_container_mask.drawRoundedRect(0, 0, w, h, h * 0.1);
+			footer_container_mask.endFill();
 			// 查看区块
 			view_block_detail_label.text = label_config.view_block_detail;
-			view_block_detail_label.y = (h - this.vw(0.038)) / 2;
+			view_block_detail_label.y = (h - W * 0.038) / 2;
 			view_block_detail_label.x =
 				w * 0.48 - getLabelWidth(view_block_detail_label) / 2;
 			// ->
 			view_block_detail_label_icon.text =
 				label_config.view_block_detail_icon;
-			view_block_detail_label_icon.y = (h - this.vw(0.1)) / 2;
+			view_block_detail_label_icon.y = (h - W * 0.1) / 2;
 			view_block_detail_label_icon.x =
 				view_block_detail_label.x +
 				getLabelWidth(view_block_detail_label) +
 				w * 0.01;
-			footer_container.cacheAsBitmap = true;
+			// footer_container.cacheAsBitmap = true;
+			this.toggleFooterContainerMask(false);
 		}
 
 		this.cacheAsBitmap = !this._can_tap;
@@ -1000,11 +1056,12 @@ class BlockCard extends PIXI.Graphics {
 
 class GoldBlockCard extends BlockCard {
 	get style_header_label() {
+		const { W } = this;
 		return {
 			fill: [0xf9a760, 0xfbc554],
-			fontSize: this.vw(0.04),
+			fontSize: W * 0.04,
 			fontFamily: "ifmicon",
-			padding: this.vw(0.04),
+			padding: W * 0.04,
 		};
 	}
 }
