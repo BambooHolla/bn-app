@@ -498,7 +498,7 @@ export class FirstLevelPage extends FLP_Data {
         }
       };
     } else {
-      this.fixIOSCacheBug = () => {};
+      this.fixIOSCacheBug = () => { };
     }
     this.fixIOSCacheBug(ele);
   }
@@ -516,7 +516,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-      )
+    )
       .present();
   }
 
@@ -547,12 +547,12 @@ export class FirstLevelPage extends FLP_Data {
     });
     this._height_subscription = this.appSetting.after_height.subscribe(
       height => {
-        is_first = false;
         if (this._last_height === height) {
           return;
         }
         this._last_height = height;
         this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
+        is_first = false;
       },
     );
   }
@@ -575,12 +575,12 @@ export class FirstLevelPage extends FLP_Data {
       }
     });
     this._round_subscription = this.appSetting.after_round.subscribe(round => {
-      is_first = false;
       if (this._last_round === round) {
         return;
       }
       this._last_round = round;
       this.dispatchEvent("ROUND:CHANGED", round, is_first);
+      is_first = false;
     });
   }
 
