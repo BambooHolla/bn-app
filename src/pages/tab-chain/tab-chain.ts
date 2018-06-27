@@ -224,8 +224,8 @@ export class TabChainPage extends FirstLevelPage {
       // this._download_worker = worker;
       const onmessage = e => {
         const msg = e.data;
+        console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
-          console.log(msg);
           switch (msg.type) {
             case "start-download":
               this.showLoading();
@@ -246,7 +246,10 @@ export class TabChainPage extends FirstLevelPage {
       await task.promise;
     } finally {
       this._download_task = undefined;
-      cg && cg();
+      // 并不马上进行cg，可能end-download还没执行
+      this.raf(() => {
+        cg && cg();
+      });
     }
   }
 

@@ -75,7 +75,6 @@ export class TransactionServiceProvider {
     public user: UserInfoProvider,
   ) {
     tryRegisterGlobal("transactionService", this);
-    console.log("Hello TransactionServiceProvider Provider");
     this.transaction = this.ifmJs.Api(
       AppSettingProvider.HTTP_PROVIDER,
     ).transaction;

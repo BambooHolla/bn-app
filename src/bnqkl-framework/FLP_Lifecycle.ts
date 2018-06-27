@@ -80,7 +80,7 @@ export class FLP_Lifecycle extends FLP_Tool
       // 视图处于离线状态，监听视图激活
       const check_id = `${
         this.instance_id
-      }:notifyViewEvent:${evetname}:${description}`;
+        }:notifyViewEvent:${evetname}:${description}`;
       if (!emitter[check_id]) {
         emitter[check_id] = true;
         this.event.once("willEnter", () => {
@@ -203,9 +203,10 @@ export class FLP_Lifecycle extends FLP_Tool
   ): void;
   dispatchEvent(fire_event_name: string, ...args: any[]) {
     console.group(
-      "%cdispatchEvent",
-      "color:blue;background-color:#FFF",
-      fire_event_name,
+      `%cdispatchEvent %cfire_event_name %c${this.cname}`,
+      "color:blue;",
+      "color:inherit;",
+      "color:green;"
     );
     for (var { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {

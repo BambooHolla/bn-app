@@ -108,7 +108,7 @@ export class AniBase extends EventEmitter {
       this.raf(() => this._init());
       return false;
     }
-    console.group("init-start");
+    console.group("init-start", this.cname);
     this.emit("init-start", this.canvasNode);
     console.groupEnd();
     this.is_inited = true;
@@ -485,9 +485,9 @@ export const Easing = {
     }
     return (
       a *
-        Math.pow(2, -10 * (k -= 1)) *
-        Math.sin(((k - s) * (2 * Math.PI)) / p) *
-        0.5 +
+      Math.pow(2, -10 * (k -= 1)) *
+      Math.sin(((k - s) * (2 * Math.PI)) / p) *
+      0.5 +
       1
     );
   },

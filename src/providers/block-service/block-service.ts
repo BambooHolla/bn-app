@@ -328,6 +328,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const req_id = this._download_req_id_acc++;
     let cg;
     download_worker.postMessage({
+      NET_VERSION: AppSettingProvider.NET_VERSION,
       cmd: "download",
       webio_path: this.fetch.io_url_path,
       startHeight,
@@ -340,15 +341,13 @@ export class BlockServiceProvider extends FLP_Tool {
     const onmessage = e => {
       const msg = e.data;
       if (msg && msg.req_id === req_id) {
-        console.log(msg);
+        console.log("bs", msg);
         switch (msg.type) {
           case "start-download":
             console.log("开始", task_name);
             break;
           case "end-download":
             console.log("完成", task_name);
-            this.tryEmit("BLOCKCHAIN:CHANGED");
-            // this._download_worker = undefined;
             task.resolve();
             break;
           case "progress":

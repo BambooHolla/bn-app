@@ -2,6 +2,7 @@ import shareProto from "../../shareProto";
 import EventEmitter from "eventemitter3";
 import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 import { Mdb } from "../../providers/mdb";
+
 export type BlockModel = import("../../providers/block-service/block-service").BlockModel;
 
 export const buf2hex = (buffer: ArrayBuffer) => {
@@ -21,6 +22,7 @@ export class BlockChainDownloader extends EventEmitter {
   constructor(
     public webio: SocketIOClient.Socket,
     public blockDb: Mdb<BlockModel>,
+    public ifmJs: any
   ) {
     super();
   }
@@ -133,11 +135,13 @@ export class BlockChainDownloader extends EventEmitter {
         // 一些hex(0~f)字符串的转化
         payloadHash: buf2hex(unpack_block.payloadHash),
         generatorPublicKey: buf2hex(unpack_block.generatorPublicKey),
+        generatorId: "",
         blockSignature: buf2hex(unpack_block.blockSignature),
         previousBlock: buf2hex(unpack_block.previousBlock),
         id: buf2hex(unpack_block.id),
         remark: new TextDecoder("utf-8").decode(unpack_block.remark),
       };
+      block.generatorId = this.ifmJs.addressCheck.generateBase58CheckAddress(block.generatorPublicKey);
       return block;
     });
     // 数据库插入出错的话，忽略错误，继续往下走

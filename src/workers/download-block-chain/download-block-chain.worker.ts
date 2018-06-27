@@ -2,6 +2,7 @@ import "babel-polyfill";
 import socketio from "socket.io-client";
 import { BlockChainDownloader, BlockModel } from "./download-block-chain";
 import { Mdb } from "../../providers/mdb";
+import IFM from "ifmchain-ibt";
 
 onmessage = async e => {
   const msg = e.data;
@@ -24,12 +25,13 @@ function errorFormat(err) {
 }
 
 const cmd_handler = {
-  download({ webio_path, startHeight, endHeight, max_end_height, req_id }) {
+  download({ NET_VERSION, webio_path, startHeight, endHeight, max_end_height, req_id }) {
     const webio = socketio(webio_path, {
       transports: ["websocket"],
     });
     const blockDb = new Mdb<BlockModel>("blocks");
-    const blockChainDownloader = new BlockChainDownloader(webio, blockDb);
+    const ifmJs = new IFM(NET_VERSION);
+    const blockChainDownloader = new BlockChainDownloader(webio, blockDb, ifmJs);
 
     // 事件注册
     ["start-download", "end-download", "progress"].forEach(eventname => {
