@@ -122,22 +122,22 @@ export class TabChainPage extends FirstLevelPage {
     }
     await this.netWorkConnection();
     // 检测现有数据库中最低的块是否为1
-    let block_1:
+    let min_height_block:
       | SingleBlockModel
       | undefined = await this.blockService.blockDb.findOne(
         {},
         { sort: { height: 1 } },
       );
     const latest_block = await this.blockService.getLastBlock();
-    if (!block_1) {
-      block_1 = latest_block;
+    if (!min_height_block) {
+      min_height_block = latest_block;
     }
 
-    if (block_1.height <= 1) {
+    if (min_height_block.height <= 1) {
       return true;
     }
     const startHeight = 1;
-    const endHeight = block_1.height;
+    const endHeight = min_height_block.height;
     const max_end_height = latest_block.height;
     const download_handler = () => {
       // 开始下载

@@ -10788,11 +10788,11 @@ class BlockChainDownloader extends eventemitter3_1.default {
     }
     _download_with_auto_retry(startHeight, endHeight, ownEndHeight) {
         return __awaiter(this, void 0, void 0, function* () {
-            const total = ownEndHeight - 1 - startHeight;
+            const total = ownEndHeight - startHeight + 1;
             const pageSize = 100;
             var acc_endHeight = endHeight;
             // 初始化触发一下当前的进度
-            this.emit("progress", (ownEndHeight - 1 - acc_endHeight) / total * 100);
+            this.emit("progress", (ownEndHeight - acc_endHeight) / total * 100);
             do {
                 let retry_interval = 1000;
                 try {

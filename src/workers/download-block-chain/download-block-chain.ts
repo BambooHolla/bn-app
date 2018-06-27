@@ -60,11 +60,11 @@ export class BlockChainDownloader extends EventEmitter {
     endHeight: number,
     ownEndHeight: number,
   ) {
-    const total = ownEndHeight - 1 - startHeight;
+    const total = ownEndHeight - startHeight + 1;
     const pageSize = 100;
     var acc_endHeight = endHeight;
     // 初始化触发一下当前的进度
-    this.emit("progress", ((ownEndHeight - 1 - acc_endHeight) / total) * 100);
+    this.emit("progress", ((ownEndHeight - acc_endHeight) / total) * 100);
     do {
       let retry_interval = 1000;
       try {
