@@ -21,6 +21,9 @@ export class FeeInputPage extends FirstLevelPage {
     super(navCtrl, navParams);
   }
   formData = this._initFormData();
+  formDataKeyI18nMap = {
+    custom_fee: "@@TRANSACTION_FEES",
+  };
   private _initFormData() {
     return {
       custom_fee: this.appSetting.settings.default_fee,

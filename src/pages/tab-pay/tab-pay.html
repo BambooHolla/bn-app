@@ -37,7 +37,7 @@
       <span class="value">{{formData.transfer_fee|number:'1.8-8'}}</span>
       <div class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div>
     </div>
-    <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'SUBMIT_TRANSFER' | translate}}</button>
+    <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()" (un-submit)="helpSubmit($event)">{{'SUBMIT_TRANSFER' | translate}}</button>
   </div>
   <div class="roll-out-logs">
     <div class="title">

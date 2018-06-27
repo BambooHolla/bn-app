@@ -12,7 +12,10 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
-import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import {
+  asyncCtrlGenerator,
+  formatAndTranslateMessage,
+} from "../../bnqkl-framework/Decorator";
 import { Subscription } from "rxjs/Subscription";
 // import { Network } from '@ionic-native/network';
 
@@ -69,6 +72,12 @@ export class TabPayPage extends FirstLevelPage {
     transfer_amount: "",
     transfer_mark: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
+  };
+  formDataKeyI18nMap = {
+    transfer_address: "@@TRANSFER_ADDRESS",
+    transfer_amount: "@@TRANSFER_AMOUNT",
+    transfer_mark: "@@TRANSFER_MARK",
+    transfer_fee: "@@TRANSFER_FEE",
   };
 
   @asyncCtrlGenerator.error()
@@ -140,26 +149,57 @@ export class TabPayPage extends FirstLevelPage {
 
   @TabPayPage.setErrorTo("errors", "transfer_address", ["wrongAddress"])
   check_transfer_address() {
-    if (
-      !this.transactionService.isAddressCorrect(this.formData.transfer_address)
-    ) {
-      return { wrongAddress: true };
+    const transfer_address = this.formData.transfer_address.trim();
+    if (transfer_address === this.userInfo.address) {
+      return {
+        wrongAddress: "@@TRANSFER_DESTINATION_CAN_NOT_BE_YOURSELF",
+      };
+    }
+    if (!this.transactionService.isAddressCorrect(transfer_address)) {
+      return { wrongAddress: "@@TRANSFER_ADDRESS_IS_MALFORMED" };
     }
   }
   ignore_keys = ["transfer_mark"];
 
   @TabPayPage.setErrorTo("errors", "transfer_amount", ["rangeError"])
   check_transfer_amount() {
-    const { transfer_amount } = this.formData;
-    if (typeof transfer_amount === "number") {
-      if (
-        transfer_amount < 0 ||
-        transfer_amount > parseFloat(this.userInfo.balance) / 1e8
-      ) {
-        return {
-          rangeError: true,
-        };
-      }
+    const { transfer_amount, transfer_fee } = this.formData;
+    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+    if (user_balance === 0) {
+      return {
+        NoBalance: "@@USER_HAS_NO_BALANCE",
+      };
+    }
+    const total_amount = parseFloat(transfer_amount) + transfer_fee;
+    if (total_amount > user_balance) {
+      return {
+        NoEnoughBalance: "@@USER_HAS_NO_BALANCE",
+      };
+    }
+    if (total_amount < 0.00000001) {
+      return {
+        ErrorRange: "@@TOO_LITTLE_TRANSFER_AMOUNT",
+      };
+    }
+  }
+  @TabPayPage.setErrorTo("errors", "transfer_fee", ["rangeError"])
+  check_transfer_fee() {
+    const { transfer_fee } = this.formData;
+    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+    if (user_balance === 0) {
+      return {
+        NoBalance: "@@USER_HAS_NO_BALANCE",
+      };
+    }
+    if (transfer_fee > user_balance) {
+      return {
+        NoEnoughBalance: "@@USER_HAS_NO_BALANCE",
+      };
+    }
+    if (transfer_fee < 0.00000001) {
+      return {
+        ErrorRange: "@@TOO_LITTLE_FEE",
+      };
     }
   }
   @asyncCtrlGenerator.error()
@@ -191,7 +231,7 @@ export class TabPayPage extends FirstLevelPage {
         transfer_mark,
       } = this.formData;
       const txData = this.transactionService.createTxData(
-        transfer_address,
+        transfer_address.trim(),
         transfer_amount,
         this.formData.transfer_fee,
         password,
@@ -201,6 +241,23 @@ export class TabPayPage extends FirstLevelPage {
         txData,
       );
       this.routeTo("pay-offline-receipt", { transaction });
+    }
+  }
+  /*辅助用户填写表单*/
+  async helpSubmit(has_err) {
+    // 如果错误是因为没有填写手续费，那帮助用户弹出手续费输入框
+    if (this.formData.transfer_fee === 0) {
+      this.showConfirmDialog("@@YOU_NEED_AV", () => {
+        this.setTransferFee();
+      });
+    } else {
+      const message = await formatAndTranslateMessage(has_err);
+      this.toastCtrl
+        .create({
+          message,
+          duration: 2000,
+        })
+        .present();
     }
   }
   @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")

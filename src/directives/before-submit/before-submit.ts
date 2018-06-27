@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { Clipboard } from "@ionic-native/clipboard";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import { translateMessage } from "../../bnqkl-framework/Decorator";
+import { formatAndTranslateMessage } from "../../bnqkl-framework/Decorator";
 import { ToastController } from "ionic-angular";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -48,19 +48,7 @@ export class BeforeSubmitDirective {
 		});
 	}
 	async commonErrorHandle(has_error) {
-		let err_message = "@@ERROR";
-		let args;
-		if (has_error instanceof Error) {
-			err_message = has_error.message;
-		} else if (has_error && has_error.message) {
-			err_message = has_error.message.toString();
-			if (has_error.detail && has_error.detail.i18n) {
-				args = has_error.detail.i18n;
-			}
-		} else if (typeof has_error === "string") {
-			err_message = has_error;
-		}
-		const message = await translateMessage(err_message, args);
+		const message = await formatAndTranslateMessage(has_error);
 		this.toastCtrl
 			.create({
 				message,

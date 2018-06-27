@@ -458,6 +458,11 @@
   "CHECK_UPDATE": "检查更新",
 
   "//": "tab-pay",
+  "TRANSFER_ADDRESS": "转账地址",
+  "TRANSFER_AMOUNT": "转账数量",
+  "TRANSFER_MARK": "转账附言",
+  "TRANSFER_FEE": "转账手续费",
+  "TOO_LITTLE_TRANSFER_AMOUNT": "转账额度过低",
   "TRANSFER_SUBMIT_ERROR": "转账提交失败",
   "SUBMIT_TRANSFER_TITLE": "提交转账交易",
   "TRANSFER_SUBMITING": "转账提交中",
@@ -477,6 +482,8 @@
   "COULD_NOT_FOUND_TRANSFER": "找不到指定转账交易",
   "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT":
     "这笔交易凭证的接收人不是当前账户",
+  "TRANSFER_DESTINATION_CAN_NOT_BE_YOURSELF": "转账目标不能是自己",
+  "TRANSFER_ADDRESS_IS_MALFORMED": "转账地址格式有误",
 
   "//": "pay-transfer-receipt",
   "TRANSFER": "转账",

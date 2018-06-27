@@ -27,8 +27,8 @@ export class PwdInputPage extends FirstLevelPage {
   }
   formData = this._initFormData();
   formDataKeyI18nMap = {
-    password: "@@PAY_PASSPHRASE",
-    pay_pwd: "@@LOGIN_PASSPHRASE",
+    password: "@@LOGIN_PASSPHRASE",
+    pay_pwd: "@@PAY_PASSPHRASE",
     custom_fee: "@@TRANSACTION_FEES",
   };
   private _initFormData() {
@@ -56,16 +56,31 @@ export class PwdInputPage extends FirstLevelPage {
   //   if(this.formData.password!==this.userInfo.password){
   //   }
   // }
-  @PwdInputPage.setErrorTo("errors", "pay_pwd", ["VerificationFailure"])
+  @PwdInputPage.setErrorTo(
+    "errors",
+    "pay_pwd",
+    ["VerificationFailure", "NeedInput"],
+    {
+      check_when_empty: true,
+    },
+  )
   check_pay_pwd() {
-    if (
-      this.formData.need_pay_pwd &&
-      this.formData.pay_pwd &&
-      !this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
-    ) {
-      return {
-        VerificationFailure: "@@PAY_PWD_VERIFICATION_FAILURE",
-      };
+    if (this.formData.need_pay_pwd) {
+      if (this.formData.pay_pwd) {
+        if (
+          !this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
+        ) {
+          return {
+            VerificationFailure: "@@PAY_PWD_VERIFICATION_FAILURE",
+          };
+        }
+      } else {
+        return {
+          NeedInput: this.getTranslateSync("NEED_INPUT_#FORM_KEY#", {
+            form_key: this.getTranslateSync("PAY_PASSPHRASE"),
+          }),
+        };
+      }
     }
   }
 

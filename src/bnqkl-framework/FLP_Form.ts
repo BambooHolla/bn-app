@@ -26,7 +26,16 @@ export class FLP_Form extends FLP_Route {
    * @param namespalce 目标字段
    * @param key 字段属性
    */
-  static setErrorTo(namespace: string, key: string, error_keys: string[]) {
+  static setErrorTo(
+    namespace: string,
+    key: string,
+    error_keys: string[],
+    extends_opts: {
+      check_when_empty?: boolean;
+      formData_key?: string;
+    } = {},
+  ) {
+    const formData_key = extends_opts.formData_key || "formData";
     return (target: any, name: string, descriptor: PropertyDescriptor) => {
       const error_checks_col = target._error_checks_col;
       if (!(key in error_checks_col)) {
@@ -36,7 +45,12 @@ export class FLP_Form extends FLP_Route {
 
       const source_fun = descriptor.value;
       descriptor.value = function(...args) {
-        const res = source_fun.apply(this, args);
+        var res;
+        if (!extends_opts.check_when_empty && !this[formData_key][key]) {
+          // ignore check
+        } else {
+          res = source_fun.apply(this, args);
+        }
         const bind_errors = _err_map => {
           const all_errors = this[namespace] || (this[namespace] = {});
           const current_error = all_errors[key] || {};
