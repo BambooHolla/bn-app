@@ -463,6 +463,7 @@
   "TRANSFER_MARK": "转账附言",
   "TRANSFER_FEE": "转账手续费",
   "TOO_LITTLE_TRANSFER_AMOUNT": "转账额度过低",
+  "YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW": "您还未设置转账手续费，现在就设置？",
   "TRANSFER_SUBMIT_ERROR": "转账提交失败",
   "SUBMIT_TRANSFER_TITLE": "提交转账交易",
   "TRANSFER_SUBMITING": "转账提交中",

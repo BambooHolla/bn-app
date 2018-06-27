@@ -247,7 +247,7 @@ export class TabPayPage extends FirstLevelPage {
   async helpSubmit(has_err) {
     // 如果错误是因为没有填写手续费，那帮助用户弹出手续费输入框
     if (this.formData.transfer_fee === 0) {
-      this.showConfirmDialog("@@YOU_NEED_AV", () => {
+      this.showConfirmDialog("@@YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW", () => {
         this.setTransferFee();
       });
     } else {
