@@ -61,7 +61,7 @@ export class BlockChainDownloader extends EventEmitter {
     ownEndHeight: number,
   ) {
     const total = ownEndHeight - startHeight + 1;
-    const pageSize = 100;
+    const pageSize = 10;
     var acc_endHeight = endHeight;
     // 初始化触发一下当前的进度
     this.emit("progress", ((ownEndHeight - acc_endHeight) / total) * 100);
@@ -124,26 +124,32 @@ export class BlockChainDownloader extends EventEmitter {
     const { blocks: blocks_array_buffer } = await tin_task.promise;
 
     const blocks_buffer = new Uint8Array(blocks_array_buffer);
-    const blocks = shareProto.PackList.decode(blocks_buffer).list.map(b => {
-      const unpack_block = shareProto.SimpleBlock.decode(b);
-      const block = {
-        ...unpack_block,
-        // 这里强行转化为string类型，避免错误的发生
-        reward: "" + unpack_block.reward,
-        totalAmount: "" + unpack_block.totalAmount,
-        totalFee: "" + unpack_block.totalFee,
-        // 一些hex(0~f)字符串的转化
-        payloadHash: buf2hex(unpack_block.payloadHash),
-        generatorPublicKey: buf2hex(unpack_block.generatorPublicKey),
-        generatorId: "",
-        blockSignature: buf2hex(unpack_block.blockSignature),
-        previousBlock: buf2hex(unpack_block.previousBlock),
-        id: buf2hex(unpack_block.id),
-        remark: new TextDecoder("utf-8").decode(unpack_block.remark),
-      };
-      block.generatorId = this.ifmJs.addressCheck.generateBase58CheckAddress(block.generatorPublicKey);
-      return block;
-    });
+    const blocks:BlockModel[] = [];
+    {
+      const list = shareProto.PackList.decode(blocks_buffer).list;
+      for(var _b of list){
+        const b = _b;
+        const unpack_block = shareProto.SimpleBlock.decode(b);
+        const generatorPublicKey = buf2hex(unpack_block.generatorPublicKey)
+        const block = {
+          ...unpack_block,
+          // 这里强行转化为string类型，避免错误的发生
+          reward: "" + unpack_block.reward,
+          totalAmount: "" + unpack_block.totalAmount,
+          totalFee: "" + unpack_block.totalFee,
+          // 一些hex(0~f)字符串的转化
+          payloadHash: buf2hex(unpack_block.payloadHash),
+          generatorPublicKey,
+          generatorId: this.ifmJs.addressCheck.generateBase58CheckAddress(generatorPublicKey),
+          blockSignature: buf2hex(unpack_block.blockSignature),
+          previousBlock: buf2hex(unpack_block.previousBlock),
+          id: buf2hex(unpack_block.id),
+          remark: new TextDecoder("utf-8").decode(unpack_block.remark),
+        };
+        blocks.push(block);
+      }
+    }
+
     // 数据库插入出错的话，忽略错误，继续往下走
     await this.blockDb.insertMany(blocks).catch(console.warn);
 

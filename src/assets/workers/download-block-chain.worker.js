@@ -10789,7 +10789,7 @@ class BlockChainDownloader extends eventemitter3_1.default {
     _download_with_auto_retry(startHeight, endHeight, ownEndHeight) {
         return __awaiter(this, void 0, void 0, function* () {
             const total = ownEndHeight - startHeight + 1;
-            const pageSize = 100;
+            const pageSize = 10;
             var acc_endHeight = endHeight;
             // 初始化触发一下当前的进度
             this.emit("progress", (ownEndHeight - acc_endHeight) / total * 100);
@@ -10831,16 +10831,21 @@ class BlockChainDownloader extends eventemitter3_1.default {
             PromiseExtends_1.sleep(1000).then(() => tin_task.reject(new Error("TIME OUT")));
             const { blocks: blocks_array_buffer } = yield tin_task.promise;
             const blocks_buffer = new Uint8Array(blocks_array_buffer);
-            const blocks = shareProto_1.default.PackList.decode(blocks_buffer).list.map(b => {
-                const unpack_block = shareProto_1.default.SimpleBlock.decode(b);
-                const block = Object.assign({}, unpack_block, {
-                    // 这里强行转化为string类型，避免错误的发生
-                    reward: "" + unpack_block.reward, totalAmount: "" + unpack_block.totalAmount, totalFee: "" + unpack_block.totalFee,
-                    // 一些hex(0~f)字符串的转化
-                    payloadHash: exports.buf2hex(unpack_block.payloadHash), generatorPublicKey: exports.buf2hex(unpack_block.generatorPublicKey), generatorId: "", blockSignature: exports.buf2hex(unpack_block.blockSignature), previousBlock: exports.buf2hex(unpack_block.previousBlock), id: exports.buf2hex(unpack_block.id), remark: new TextDecoder("utf-8").decode(unpack_block.remark) });
-                block.generatorId = this.ifmJs.addressCheck.generateBase58CheckAddress(block.generatorPublicKey);
-                return block;
-            });
+            const blocks = [];
+            {
+                const list = shareProto_1.default.PackList.decode(blocks_buffer).list;
+                for (var _b of list) {
+                    const b = _b;
+                    const unpack_block = shareProto_1.default.SimpleBlock.decode(b);
+                    const generatorPublicKey = exports.buf2hex(unpack_block.generatorPublicKey);
+                    const block = Object.assign({}, unpack_block, {
+                        // 这里强行转化为string类型，避免错误的发生
+                        reward: "" + unpack_block.reward, totalAmount: "" + unpack_block.totalAmount, totalFee: "" + unpack_block.totalFee,
+                        // 一些hex(0~f)字符串的转化
+                        payloadHash: exports.buf2hex(unpack_block.payloadHash), generatorPublicKey, generatorId: this.ifmJs.addressCheck.generateBase58CheckAddress(generatorPublicKey), blockSignature: exports.buf2hex(unpack_block.blockSignature), previousBlock: exports.buf2hex(unpack_block.previousBlock), id: exports.buf2hex(unpack_block.id), remark: new TextDecoder("utf-8").decode(unpack_block.remark) });
+                    blocks.push(block);
+                }
+            }
             // 数据库插入出错的话，忽略错误，继续往下走
             yield this.blockDb.insertMany(blocks).catch(console.warn);
             // 更改进度
