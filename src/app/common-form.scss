@@ -106,6 +106,9 @@
   justify-content: center;
   font-weight: 700;
   text-align: center;
+  &.disabled {
+    opacity: .6;
+  }
 }
 .platform-ios {
   .submit-button {

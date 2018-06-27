@@ -39,7 +39,7 @@ export function isErrorFromAsyncerror(err) {
   return err && err.code === _ERROR_FROM_ASYNCERROR_CODE;
 }
 
-export function translateMessage(self: FLP_Tool, message: any, arg: any) {
+export function translateMessage(message: any, arg?: any, self?: FLP_Tool) {
   if (message instanceof Function) {
     message = message(arg);
   }
@@ -47,7 +47,7 @@ export function translateMessage(self: FLP_Tool, message: any, arg: any) {
     message = "" + message;
     if (typeof message === "string" && message.startsWith("@@")) {
       const i18n_key = message.substr(2);
-      message = () => self.getTranslate(i18n_key);
+      message = () => (self || FLP_Tool).getTranslate(i18n_key);
     }
     if (message instanceof Function) {
       message = message(arg);
@@ -148,7 +148,7 @@ export function asyncErrorWrapGenerator(
           }
           const _dialogGenerator = dialogGenerator;
 
-          error_title = translateMessage(this, error_title, err);
+          error_title = translateMessage(error_title, err);
 
           Promise.all([
             error_title,
@@ -219,7 +219,7 @@ export function asyncSuccessWrapGenerator(
           console.log("不弹出成功提示因为页面的切换");
           return data;
         }
-        success_msg = translateMessage(this, success_msg, data);
+        success_msg = translateMessage(success_msg, data);
 
         if ("plugins" in window && "toast" in window["plugins"]) {
           const toast = window["toast"] as Toast;
@@ -262,7 +262,7 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
     loading?: Loading;
     promises: Set<Promise<any>>;
   }
->());
+  >());
 export function asyncLoadingWrapGenerator(
   loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
@@ -293,7 +293,7 @@ export function asyncLoadingWrapGenerator(
         );
       }
       // 创建loading
-      loading_msg = translateMessage(this, loading_msg, null);
+      loading_msg = translateMessage(loading_msg, null);
 
       Promise.resolve(loading_msg).then(loading_msg => {
         loading.setContent(String(loading_msg));
@@ -431,9 +431,9 @@ export function autoRetryWrapGenerator(
     | (() => IterableIterator<number>)
     | number
     | {
-        max_retry_seconed?: number;
-        max_retry_times?: number;
-      },
+      max_retry_seconed?: number;
+      max_retry_times?: number;
+    },
   onAbort?: Function,
 ) {
   var max_retry_seconed = 16;
@@ -448,7 +448,7 @@ export function autoRetryWrapGenerator(
   if (maxSeconed_or_timeGenerator instanceof Function) {
     timeGenerator = maxSeconed_or_timeGenerator;
   } else {
-    timeGenerator = function*() {
+    timeGenerator = function* () {
       var second = 1;
       var times = 0;
       do {
@@ -538,7 +538,7 @@ export function singleRunWrap(opts: { update_key?: string } = {}) {
   };
 }
 
-export function queneTask() {}
+export function queneTask() { }
 
 export const asyncCtrlGenerator = {
   single: singleRunWrap,

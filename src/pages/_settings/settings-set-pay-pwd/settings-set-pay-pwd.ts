@@ -24,6 +24,11 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
     confrim_pay_pwd: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+  formDataKeyI18nMap = {
+    pay_pwd: "@@PAY_PASSPHRASE",
+    confrim_pay_pwd: "@@CONFIRM_PAY_PASSPHRASE",
+    transfer_fee: "@@TRANSACTION_FEES",
+  };
   @asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
   async setTransferFee() {
     const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
@@ -64,7 +69,7 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
   check_TwoPwd() {
     const res: any = {};
     if (this.formData.confrim_pay_pwd !== this.formData.pay_pwd) {
-      res.noSame = true;
+      res.noSame = "@@TWO_PWD_NOT_SAME";
     }
     return res;
   }

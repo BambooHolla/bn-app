@@ -18,5 +18,5 @@
     {{'TRANSACTION_FEES'|translate}}
     <span class="fee">{{formData.transfer_fee|number:'1.8-8'}}</span>
   </div>
-  <button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'OK'|translate}}</button>
+  <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()">{{'OK'|translate}}</button>
 </ion-content>

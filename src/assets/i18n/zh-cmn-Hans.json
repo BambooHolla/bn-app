@@ -6,12 +6,12 @@
   "NO": "否",
   "CANCEL": "取消",
   "BACK_BUTTON_TEXT": "回退",
-  "OK_I_KNOWN":"我知道了",
+  "OK_I_KNOWN": "我知道了",
   "PULLING_REFRESH_LIST": "下拉更新列表",
   "COPY_SUCCESS": "复制成功",
   "#INFO#_COPY_SUCCESS": "{{info}}复制成功",
   "RANK_OF_ME": "我",
-  "ADVICE":"敬告",
+  "ADVICE": "敬告",
   "TRANSACTION_FEES": "手续费",
   "SAVE": "保存",
   "EMPTY_LIST": "空列表",
@@ -21,6 +21,7 @@
   "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT":
     "参与贡献获得{{times}}次收益共：{{amount}}个IBT",
   "ME": "我",
+  "NEED_INPUT_#FORM_KEY#": "请填写“{{form_key}}”",
 
   "//": "fingerprint-optional",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN": "账户登录校验",
@@ -82,6 +83,11 @@
 
   "//": "pwd-input",
   "PLEASE_INPUT_TRANSACTION_FEES": "请输入手续费",
+  "PAY_PWD_VERIFICATION_FAILURE": "支付密码输入错误",
+
+  "//": "fee-input",
+  "USER_HAS_NO_BALANCE": "账户余额不足",
+  "TOO_LITTLE_FEE": "手续费太少，至少要 0.000,000,01",
 
   "//": "tab-account",
   "MY_CONTACTS": "我的联系人",
@@ -131,7 +137,8 @@
 
   "//": "tab-vote",
   "AUTO_MINING_NEED_INPUT_PAY_PWD": "启动自动挖矿需要确认支付密码",
-  "AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT": "设置支付密码后自动挖矿需要重新输入支付密码",
+  "AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT":
+    "设置支付密码后自动挖矿需要重新输入支付密码",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",
   "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
   "AUTO_VOTE_ERROR": "自动挖矿失败",
@@ -140,7 +147,8 @@
   "VOTE_INCOME_HISTORY": "历史挖矿收益",
   "START_VOTE_VERIFY": "开启挖矿校验",
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
-  "BEFORE_DOWNLOAD_TIP": "即将同步区块链数据，第一次同步可能需要一点时间，在这个过程中你依然可以进行其它操作",
+  "BEFORE_DOWNLOAD_TIP":
+    "即将同步区块链数据，第一次同步可能需要一点时间，在这个过程中你依然可以进行其它操作",
 
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "本轮挖矿收益",
@@ -206,7 +214,7 @@
   "TRANSCATION_RECIPIENT": "接收者",
 
   "//": "account-my-contacts",
-  "CONFIRM_TO_IGNORE_THIS_CONTACT":"确定要将此联系人拉入黑名单？",
+  "CONFIRM_TO_IGNORE_THIS_CONTACT": "确定要将此联系人拉入黑名单？",
   "ADD_UNCONFIRM_CONTACT_TITLE": "同意添加联系人",
   "REMOVE_CONFIRMED_CONTACT_TITLE": "移除联系人",
   "SCAN_QR_CODE_TO_ADD_CONTACT": "扫一扫添加联系人",
@@ -438,6 +446,7 @@
   "SET_PAY_PWD_SUBMITING": "设置支付密码提交中",
   "SET_PAY_PWD_SUBMIT_ERROR": "设置支付密码提交失败",
   "SET_PAY_PWD_SUBMIT_SUCCESS": "设置支付密码提交成功",
+  "TWO_PWD_NOT_SAME": "输入的两次密码不相同",
 
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "设置用户名",

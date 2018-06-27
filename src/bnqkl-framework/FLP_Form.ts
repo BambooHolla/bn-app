@@ -1,11 +1,21 @@
 import { FLP_Route } from "./FLP_Route";
 import { FLP_Tool } from "./FLP_Tool";
-import { getErrorFromAsyncerror } from "./Decorator";
+import {
+  NavController,
+  NavOptions,
+  NavParams,
+  ViewController,
+} from "ionic-angular";
+import { getErrorFromAsyncerror, translateMessage } from "./Decorator";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { asyncCtrlGenerator } from "./Decorator";
 
 export class FLP_Form extends FLP_Route {
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+    super(navCtrl, navParams);
+    this.trySubmit = this.trySubmit.bind(this);
+  }
   private __ecc__?: { [prop_name: string]: string[] };
   private get _error_checks_col() {
     return this.__ecc__ || (this.__ecc__ = {});
@@ -58,7 +68,10 @@ export class FLP_Form extends FLP_Route {
   }
   errors: any = {};
   hasError(errors = this.errors) {
-    return !!Object.keys(errors).length;
+    for (var k in errors) {
+      return true;
+    }
+    return false;
   }
   protected allHaveValues(obj) {
     for (var k in obj) {
@@ -219,5 +232,42 @@ export class FLP_Form extends FLP_Route {
         reject(err);
       }
     });
+  }
+  formDataKeyI18nMap: any = {};
+
+  async trySubmit() {
+    // 先找有对应翻译的错误
+    const has_error = this.hasError();
+    if (has_error) {
+      for (var err_key in this.errors) {
+        const errors = this.errors[err_key];
+        for (var err_message_key in errors) {
+          const err_message = errors[err_message_key];
+          if (typeof err_message === "string") {
+            return err_message;
+          }
+        }
+      }
+    }
+    // 找空的字段
+    if (!this.canSubmit) {
+      for (var form_key in this.formData) {
+        if (
+          !(
+            this.ignore_keys.indexOf(form_key) !== -1 ||
+            this.formData[form_key] ||
+            typeof this.formData[form_key] === "boolean"
+          )
+        ) {
+          return this.getTranslateSync("NEED_INPUT_#FORM_KEY#", {
+            form_key: await translateMessage(
+              this.formDataKeyI18nMap[form_key] || form_key,
+            ),
+          });
+        }
+      }
+    }
+
+    return has_error;
   }
 }
