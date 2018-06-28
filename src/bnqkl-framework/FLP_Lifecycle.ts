@@ -211,7 +211,6 @@ export class FLP_Lifecycle extends FLP_Tool
     for (var { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
         try {
-          console.log(handle_name);
           this[handle_name](...args);
         } catch (err) {
           console.error(err);

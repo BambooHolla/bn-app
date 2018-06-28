@@ -93595,7 +93595,12 @@ onmessage = e => __awaiter(_this, void 0, void 0, function* () {
     if (msg && msg.cmd in cmd_handler) {
         const handler = cmd_handler[msg.cmd];
         try {
-            yield handler(msg);
+            const res = yield handler(msg);
+            postMessage({
+                type: "return",
+                res,
+                req_id: msg.req_id
+            });
         } catch (err) {
             postMessage({
                 type: "error",
@@ -93609,14 +93614,23 @@ function errorFormat(err) {
     console.error(err);
     return err instanceof Error ? err.message : err;
 }
-const cmd_handler = {
-    download({ NET_VERSION, webio_path, startHeight, endHeight, max_end_height, req_id }) {
+const blockChainDownloaderCache = new Map();
+function getBlockChainDownloader(NET_VERSION, webio_path, startHeight, endHeight) {
+    const id = `${NET_VERSION} ${webio_path} ${startHeight} ${endHeight}`;
+    var blockChainDownloader = blockChainDownloaderCache.get(id);
+    if (!blockChainDownloader) {
         const webio = socket_io_client_1.default(webio_path, {
             transports: ["websocket"]
         });
         const blockDb = new mdb_1.Mdb("blocks");
         const ifmJs = new ifmchain_ibt_1.default(NET_VERSION);
-        const blockChainDownloader = new download_block_chain_1.BlockChainDownloader(webio, blockDb, ifmJs);
+        blockChainDownloader = new download_block_chain_1.BlockChainDownloader(webio, blockDb, ifmJs);
+    }
+    return blockChainDownloader;
+}
+const cmd_handler = {
+    download({ NET_VERSION, webio_path, startHeight, endHeight, max_end_height, req_id }) {
+        const blockChainDownloader = getBlockChainDownloader(NET_VERSION, webio_path, startHeight, endHeight);
         // 事件注册
         ["start-download", "end-download", "progress"].forEach(eventname => {
             blockChainDownloader.on(eventname, data => {
@@ -93630,6 +93644,10 @@ const cmd_handler = {
         const downloader = blockChainDownloader;
         // 开始发送通知
         return blockChainDownloader.downloadBlocks(startHeight, endHeight, max_end_height);
+    },
+    getCurrentMaxEndHeight({ NET_VERSION, webio_path }) {
+        const blockChainDownloader = getBlockChainDownloader(NET_VERSION, webio_path);
+        return blockChainDownloader;
     }
 };
 },{"core-js/modules/es7.object.values":8,"core-js/modules/es7.object.entries":9,"core-js/modules/es7.object.get-own-property-descriptors":10,"core-js/modules/es7.string.pad-start":11,"core-js/modules/es7.string.pad-end":12,"core-js/modules/web.timers":13,"core-js/modules/web.immediate":14,"core-js/modules/web.dom.iterable":15,"socket.io-client":16,"./download-block-chain":5,"../../providers/mdb":4,"ifmchain-ibt":234}]},{},[1], null)

@@ -357,7 +357,7 @@ export class TabVotePage extends FirstLevelPage {
 
   routeToVoteDetail() {
     this.notifyExtendPanel("HEIGHT:CHANGED");
-    this.notifyExtendPanel("ROUND:CHANGED");
+    this.notifyExtendPanel("ROUND:CHANGED", true);
     this.min_starting = false;
     this.setBgTransparent(false);
     this.page_status = VotePage.VoteDetail;
@@ -732,7 +732,7 @@ export class TabVotePage extends FirstLevelPage {
         this._whenRoundChangeAni(); // 执行动画
       }
       this._pre_ani_round = cur_round;
-      this.notifyExtendPanel("ROUND:CHANGED");
+      this.notifyExtendPanel("ROUND:CHANGED", true);
     }
 
     if (this.page_status === VotePage.Countdown) {
@@ -758,6 +758,7 @@ export class TabVotePage extends FirstLevelPage {
   @ViewChild("extendsPanel4") extendsPanel4?: VoteMyContributionComponent;
   @ViewChild("extendsPanel5") extendsPanel5?: VotePreRoundIncomeRateComponent;
   notifyExtendPanel(eventname, force?: boolean) {
+    console.log("notifyExtendPanel", eventname);
     const current_height = this.appSetting.getHeight();
     if (this.pre_notify_height === current_height && !force) {
       return;

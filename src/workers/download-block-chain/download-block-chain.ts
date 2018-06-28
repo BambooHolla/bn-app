@@ -22,7 +22,7 @@ export class BlockChainDownloader extends EventEmitter {
   constructor(
     public webio: SocketIOClient.Socket,
     public blockDb: Mdb<BlockModel>,
-    public ifmJs: any
+    public ifmJs: any,
   ) {
     super();
   }
@@ -124,13 +124,13 @@ export class BlockChainDownloader extends EventEmitter {
     const { blocks: blocks_array_buffer } = await tin_task.promise;
 
     const blocks_buffer = new Uint8Array(blocks_array_buffer);
-    const blocks:BlockModel[] = [];
+    const blocks: BlockModel[] = [];
     {
       const list = shareProto.PackList.decode(blocks_buffer).list;
-      for(var _b of list){
+      for (var _b of list) {
         const b = _b;
         const unpack_block = shareProto.SimpleBlock.decode(b);
-        const generatorPublicKey = buf2hex(unpack_block.generatorPublicKey)
+        const generatorPublicKey = buf2hex(unpack_block.generatorPublicKey);
         const block = {
           ...unpack_block,
           // 这里强行转化为string类型，避免错误的发生
@@ -140,7 +140,9 @@ export class BlockChainDownloader extends EventEmitter {
           // 一些hex(0~f)字符串的转化
           payloadHash: buf2hex(unpack_block.payloadHash),
           generatorPublicKey,
-          generatorId: this.ifmJs.addressCheck.generateBase58CheckAddress(generatorPublicKey),
+          generatorId: this.ifmJs.addressCheck.generateBase58CheckAddress(
+            generatorPublicKey,
+          ),
           blockSignature: buf2hex(unpack_block.blockSignature),
           previousBlock: buf2hex(unpack_block.previousBlock),
           id: buf2hex(unpack_block.id),
@@ -159,4 +161,5 @@ export class BlockChainDownloader extends EventEmitter {
       ((ownEndHeight - 1 - cur_start_height) / total) * 100,
     );
   }
+  // async getLocal
 }

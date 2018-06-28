@@ -9,7 +9,12 @@ onmessage = async e => {
   if (msg && msg.cmd in cmd_handler) {
     const handler = cmd_handler[msg.cmd];
     try {
-      await handler(msg);
+      const res = await handler(msg);
+      postMessage({
+        type: "return",
+        res,
+        req_id: msg.req_id,
+      });
     } catch (err) {
       postMessage({
         type: "error",
@@ -24,14 +29,41 @@ function errorFormat(err) {
   return err instanceof Error ? err.message : err;
 }
 
-const cmd_handler = {
-  download({ NET_VERSION, webio_path, startHeight, endHeight, max_end_height, req_id }) {
+const blockChainDownloaderCache = new Map<string, BlockChainDownloader>();
+function getBlockChainDownloader(
+  NET_VERSION,
+  webio_path,
+  startHeight: number,
+  endHeight: number,
+) {
+  const id = `${NET_VERSION} ${webio_path} ${startHeight} ${endHeight}`;
+  var blockChainDownloader = blockChainDownloaderCache.get(id);
+  if (!blockChainDownloader) {
     const webio = socketio(webio_path, {
       transports: ["websocket"],
     });
     const blockDb = new Mdb<BlockModel>("blocks");
     const ifmJs = new IFM(NET_VERSION);
-    const blockChainDownloader = new BlockChainDownloader(webio, blockDb, ifmJs);
+    blockChainDownloader = new BlockChainDownloader(webio, blockDb, ifmJs);
+  }
+  return blockChainDownloader;
+}
+
+const cmd_handler = {
+  download({
+    NET_VERSION,
+    webio_path,
+    startHeight,
+    endHeight,
+    max_end_height,
+    req_id,
+  }) {
+    const blockChainDownloader = getBlockChainDownloader(
+      NET_VERSION,
+      webio_path,
+      startHeight,
+      endHeight,
+    );
 
     // 事件注册
     ["start-download", "end-download", "progress"].forEach(eventname => {
@@ -51,5 +83,12 @@ const cmd_handler = {
       endHeight,
       max_end_height,
     );
+  },
+  getCurrentMaxEndHeight({ NET_VERSION, webio_path }) {
+    const blockChainDownloader = getBlockChainDownloader(
+      NET_VERSION,
+      webio_path,
+    );
+    return blockChainDownloader;
   },
 };
