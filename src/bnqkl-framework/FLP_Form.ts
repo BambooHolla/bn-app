@@ -68,6 +68,9 @@ export class FLP_Form extends FLP_Route {
           } else {
             delete all_errors[key];
           }
+          if (this.cdRef) {
+            this.cdRef.markForCheck();
+          }
           return _err_map;
         };
         if (res instanceof Promise) {

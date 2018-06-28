@@ -54,7 +54,7 @@ export class FeeInputPage extends FirstLevelPage {
     }
     if (custom_fee > user_balance) {
       return {
-        NoEnoughBalance: "@@USER_HAS_NO_BALANCE",
+        NoEnoughBalance: "@@USER_HAS_NO_ENOUGH_BALANCE",
       };
     }
     if (custom_fee < 0.00000001) {

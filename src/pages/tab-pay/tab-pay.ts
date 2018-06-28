@@ -69,7 +69,7 @@ export class TabPayPage extends FirstLevelPage {
   }
   formData = {
     transfer_address: "",
-    transfer_amount: "",
+    transfer_amount: 0,
     transfer_mark: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
@@ -144,6 +144,7 @@ export class TabPayPage extends FirstLevelPage {
   async setTransferFee() {
     const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
     this.formData.transfer_fee = custom_fee;
+    this.setInputstatus("transfer_fee", { type: "input" });
     this.cdRef.markForCheck();
   }
 
@@ -161,49 +162,60 @@ export class TabPayPage extends FirstLevelPage {
   }
   ignore_keys = ["transfer_mark"];
 
-  @TabPayPage.setErrorTo("errors", "transfer_amount", ["rangeError"])
-  check_transfer_amount() {
-    const { transfer_amount, transfer_fee } = this.formData;
-    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+  private _check_total_amount(user_balance: number) {
     if (user_balance === 0) {
       return {
         NoBalance: "@@USER_HAS_NO_BALANCE",
       };
     }
-    const total_amount = parseFloat(transfer_amount) + transfer_fee;
+    const { transfer_amount, transfer_fee } = this.formData;
+    const total_amount = transfer_amount + transfer_fee;
     if (total_amount > user_balance) {
       return {
-        NoEnoughBalance: "@@USER_HAS_NO_BALANCE",
+        NoEnoughBalance: "@@USER_HAS_NO_ENOUGH_BALANCE",
       };
     }
-    if (total_amount < 0.00000001) {
+  }
+  @TabPayPage.setErrorTo("errors", "transfer_amount", [
+    "NoBalance",
+    "NoEnoughBalance",
+    "ErrorRange",
+  ])
+  check_transfer_amount() {
+    const { transfer_amount, transfer_fee } = this.formData;
+    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+
+    if (transfer_amount < 0.00000001) {
       return {
         ErrorRange: "@@TOO_LITTLE_TRANSFER_AMOUNT",
       };
     }
+    return this._check_total_amount(user_balance);
   }
-  @TabPayPage.setErrorTo("errors", "transfer_fee", ["rangeError"])
+  @TabPayPage.setErrorTo("errors", "transfer_fee", [
+    "NoBalance",
+    "NoEnoughBalance",
+    "ErrorRange",
+  ])
   check_transfer_fee() {
-    const { transfer_fee } = this.formData;
+    const { transfer_amount, transfer_fee } = this.formData;
     const user_balance = parseFloat(this.userInfo.balance) / 1e8;
-    if (user_balance === 0) {
-      return {
-        NoBalance: "@@USER_HAS_NO_BALANCE",
-      };
-    }
-    if (transfer_fee > user_balance) {
-      return {
-        NoEnoughBalance: "@@USER_HAS_NO_BALANCE",
-      };
-    }
+
     if (transfer_fee < 0.00000001) {
       return {
         ErrorRange: "@@TOO_LITTLE_FEE",
       };
     }
+    // return this._check_total_amount(user_balance);
   }
   @asyncCtrlGenerator.error()
   async submit() {
+    if (!this.appSetting.settings._is_show_first_transfer_tip) {
+      if (!(await this.waitTipDialogConfirm("@@FIRST_TRANSFER_TIP"))) {
+        return;
+      }
+      this.appSetting.settings._is_show_first_transfer_tip = true;
+    }
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
     });
@@ -283,7 +295,7 @@ export class TabPayPage extends FirstLevelPage {
 
   resetFormData() {
     super.resetFormData();
-    this.formData.transfer_amount = "";
+    delete this.formData.transfer_amount;
     this.cdRef && this.cdRef.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>

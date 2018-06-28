@@ -26,7 +26,7 @@
     </div>
     <div class="input-container">
       <ali-icon class="left" name="ifm-amount"></ali-icon>
-      <input type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
+      <input type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" [watch-input-keys]="['transfer_fee']" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
     </div>
     <div class="input-container">
       <ali-icon class="left" name="ifm-duihua"></ali-icon>

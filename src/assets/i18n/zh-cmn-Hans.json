@@ -87,6 +87,7 @@
 
   "//": "fee-input",
   "USER_HAS_NO_BALANCE": "账户余额不足",
+  "USER_HAS_NO_ENOUGH_BALANCE": "账户余额不足",
   "TOO_LITTLE_FEE": "手续费太少，至少要 0.000,000,01",
 
   "//": "tab-account",
@@ -464,6 +465,8 @@
   "TRANSFER_FEE": "转账手续费",
   "TOO_LITTLE_TRANSFER_AMOUNT": "转账额度过低",
   "YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW": "您还未设置转账手续费，现在就设置？",
+  "FIRST_TRANSFER_TIP":
+    "确认转出操作从本地成功转出后，一般都会在区块链网络上得到确认。但可能出现网络上数据暂时还未达成一致的情况，其它节点并不会接受您的转出交易，此时您的转出将不会成功，而此时您并不会接收到任何失败的通知。您可以通过“我的”-“我的交易”-“已确认交易”确认交易的状态。",
   "TRANSFER_SUBMIT_ERROR": "转账提交失败",
   "SUBMIT_TRANSFER_TITLE": "提交转账交易",
   "TRANSFER_SUBMITING": "转账提交中",

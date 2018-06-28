@@ -395,6 +395,8 @@ export class AppSettingProvider extends CommonService {
     contribution_traffic: 0,
     /**隐藏账户金额信息*/
     can_view_amount: false,
+    /**是否显示过 初次转账提醒*/
+    _is_show_first_transfer_tip: false
   };
 }
 if (
