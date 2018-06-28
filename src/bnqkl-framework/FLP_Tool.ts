@@ -12,8 +12,10 @@ import {
   ToastController,
   ModalController,
 } from "ionic-angular";
+import { PromiseOut } from "./PromiseExtends";
 import { is_dev, tryRegisterGlobal, global } from "./helper";
 export { is_dev, tryRegisterGlobal, global };
+import { getErrorFromAsyncerror, isErrorFromAsyncerror } from "./const";
 
 export class FLP_Tool {
   constructor() {}
@@ -26,6 +28,11 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
+  formatAndTranslateMessage = formatAndTranslateMessage;
+  static formatAndTranslateMessage = formatAndTranslateMessage;
+  translateMessage = translateMessage;
+  static translateMessage = translateMessage;
+
   _event?: EventEmitter;
   get event() {
     return this._event || (this._event = new EventEmitter());
@@ -185,6 +192,33 @@ export class FLP_Tool {
         }
       },
     });
+  }
+  async waitTipDialogConfirm(message, opts: {} = {}) {
+    const res = new PromiseOut<boolean>();
+    this._showCustomDialog(
+      {
+        // title: this.getTranslateSync("ADVICE"),
+        message: await translateMessage(message),
+        buttons: [
+          {
+            text: this.getTranslateSync("CANCEL"),
+            cssClass: "cancel",
+            handler: () => {
+              res.resolve(false);
+            },
+          },
+          {
+            text: this.getTranslateSync("OK_I_KNOWN"),
+            cssClass: "ok",
+            handler: () => {
+              res.resolve(true);
+            },
+          },
+        ],
+      },
+      true,
+    );
+    return res.promise;
   }
   async showWarningDialog(
     title: string,
@@ -434,6 +468,39 @@ export class FLP_Tool {
     return FLP_Tool._raf_unregister(rafId);
   }
   caf = FLP_Tool.caf;
+}
+
+export function formatAndTranslateMessage(has_error: any, self?: FLP_Tool) {
+  let err_message = "@@ERROR";
+  let args;
+  if (has_error instanceof Error) {
+    err_message = has_error.message;
+  } else if (has_error && has_error.message) {
+    err_message = has_error.message.toString();
+    if (has_error.detail && has_error.detail.i18n) {
+      args = has_error.detail.i18n;
+    }
+  } else if (typeof has_error === "string") {
+    err_message = has_error;
+  }
+  return translateMessage(err_message, args);
+}
+
+export function translateMessage(message: any, arg?: any, self?: FLP_Tool) {
+  if (message instanceof Function) {
+    message = message(arg);
+  }
+  return Promise.resolve(message).then(message => {
+    message = "" + message;
+    if (typeof message === "string" && message.startsWith("@@")) {
+      const i18n_key = message.substr(2);
+      message = () => (self || FLP_Tool).getTranslate(i18n_key);
+    }
+    if (message instanceof Function) {
+      message = message(arg);
+    }
+    return message as string;
+  });
 }
 
 // 存储在原型链上的数据（字符串）集合

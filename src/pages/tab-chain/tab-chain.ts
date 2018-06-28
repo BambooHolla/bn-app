@@ -125,9 +125,9 @@ export class TabChainPage extends FirstLevelPage {
     let min_height_block:
       | SingleBlockModel
       | undefined = await this.blockService.blockDb.findOne(
-        {},
-        { sort: { height: 1 } },
-      );
+      {},
+      { sort: { height: 1 } },
+    );
     const latest_block = await this.blockService.getLastBlock();
     if (!min_height_block) {
       min_height_block = latest_block;
@@ -139,29 +139,9 @@ export class TabChainPage extends FirstLevelPage {
     const startHeight = 1;
     const endHeight = min_height_block.height;
     const max_end_height = latest_block.height;
-    const download_handler = () => {
-      // 开始下载
-      this.downloadBlock(startHeight, endHeight, max_end_height);
-    };
-    this._showCustomDialog(
-      {
-        // title: this.getTranslateSync("ADVICE"),
-        message: this.getTranslateSync("BEFORE_DOWNLOAD_TIP"),
-        buttons: [
-          {
-            text: this.getTranslateSync("CANCEL"),
-            cssClass: "cancel",
-            handler: download_handler,
-          },
-          {
-            text: this.getTranslateSync("OK_I_KNOWN"),
-            cssClass: "ok",
-            handler: download_handler,
-          },
-        ],
-      },
-      true,
-    );
+    await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
+    // 开始下载
+    this.downloadBlock(startHeight, endHeight, max_end_height);
   }
 
   loading_dialog?: Loading;

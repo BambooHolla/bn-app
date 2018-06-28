@@ -10,68 +10,24 @@ import {
   Modal,
   Alert,
 } from "ionic-angular";
-import { PAGE_STATUS } from "./const";
+import {
+  PAGE_STATUS,
+  getErrorFromAsyncerror,
+  isErrorFromAsyncerror,
+} from "./const";
+export { getErrorFromAsyncerror, isErrorFromAsyncerror };
 import { Toast } from "@ionic-native/toast";
 import { TranslateService } from "@ngx-translate/core";
-import { FLP_Tool } from "./FLP_Tool";
+import {
+  FLP_Tool,
+  formatAndTranslateMessage,
+  translateMessage,
+} from "./FLP_Tool";
+export { formatAndTranslateMessage, translateMessage };
 import { AbortError, PromiseOut } from "./PromiseExtends";
 
 function getTranslateSync(key: string | string[], interpolateParams?: Object) {
   return window["translate"].instant(key, interpolateParams);
-}
-
-const _ERROR_FROM_ASYNCERROR_CODE =
-  "CATCHED_ERROR@" +
-  Math.random()
-    .toString(36)
-    .substr(2);
-
-export function getErrorFromAsyncerror(keep_throw: boolean) {
-  const res = {
-    code: _ERROR_FROM_ASYNCERROR_CODE,
-  };
-  if (keep_throw) {
-    return Promise.reject<{ code: string }>(res);
-  }
-  return res;
-}
-export function isErrorFromAsyncerror(err) {
-  return err && err.code === _ERROR_FROM_ASYNCERROR_CODE;
-}
-export function formatAndTranslateMessage(
-  has_error: any,
-  self?: FLP_Tool,
-) {
-  let err_message = "@@ERROR";
-  let args;
-  if (has_error instanceof Error) {
-    err_message = has_error.message;
-  } else if (has_error && has_error.message) {
-    err_message = has_error.message.toString();
-    if (has_error.detail && has_error.detail.i18n) {
-      args = has_error.detail.i18n;
-    }
-  } else if (typeof has_error === "string") {
-    err_message = has_error;
-  }
-  return translateMessage(err_message, args);
-}
-
-export function translateMessage(message: any, arg?: any, self?: FLP_Tool) {
-  if (message instanceof Function) {
-    message = message(arg);
-  }
-  return Promise.resolve(message).then(message => {
-    message = "" + message;
-    if (typeof message === "string" && message.startsWith("@@")) {
-      const i18n_key = message.substr(2);
-      message = () => (self || FLP_Tool).getTranslate(i18n_key);
-    }
-    if (message instanceof Function) {
-      message = message(arg);
-    }
-    return message as string;
-  });
 }
 
 export interface ErrorAlertOptions extends AlertOptions {
