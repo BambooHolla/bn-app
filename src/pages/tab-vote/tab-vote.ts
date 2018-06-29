@@ -329,10 +329,10 @@ export class TabVotePage extends FirstLevelPage {
     this.chain_mesh.startAnimation();
   }
   private _page_status = VotePage.None;
-  get page_status(){
-    return this._page_status
+  get page_status() {
+    return this._page_status;
   }
-  set page_status(v){
+  set page_status(v) {
     this._page_status = v;
     this.cdRef.markForCheck();
   }
@@ -588,7 +588,12 @@ export class TabVotePage extends FirstLevelPage {
 
   try_min_starting = false;
   min_starting = false;
-  autoStartButtonPressDown() {
+  async autoStartButtonPressDown() {
+    if (!this.appSetting.settings._is_show_first_mining_tip) {
+      this.appSetting.settings._is_show_first_mining_tip = await this.waitTipDialogConfirm(
+        "@@FIRST_MINGING_TIP",
+      );
+    }
     this.try_min_starting = true;
   }
   autoStartButtonPressUp(event: TouchEvent | MouseEvent) {

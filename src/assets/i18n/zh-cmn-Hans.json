@@ -150,6 +150,8 @@
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
   "BEFORE_DOWNLOAD_TIP":
     "即将同步区块链数据，第一次同步可能需要一点时间，在这个过程中你依然可以进行其它操作",
+  "FIRST_MINGING_TIP":
+    "在IFMChain中，所谓挖矿就是将您当前设备的计算能力、存储能力、通信能力贡献给IFMChain区块链网络，网络中其它节点可以通过IFMChain的共识协议使用您设备的计算能力、存储能力和通信能力，当您的设备开始参与贡献后，IFMChain区块链将会给您发放凭证，作为您曾经做过贡献的证明，将作为您未来使用区块链的权益，也这个权益凭证就是您的挖矿收益。",
 
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "本轮挖矿收益",

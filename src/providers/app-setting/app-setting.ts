@@ -399,6 +399,8 @@ export class AppSettingProvider extends CommonService {
     _is_show_first_transfer_tip: false,
     /**是否显示过 区块详情*/
     _is_show_first_block_remark: false,
+    /**是否显示过 初次挖矿提示*/
+    _is_show_first_mining_tip: false,
   };
 }
 if (
