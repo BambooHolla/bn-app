@@ -288,6 +288,7 @@ export class ChainListComponent extends AniBase {
       touch_start_point = per_point = e.data.global.clone();
       list_start_y = list_view_y;
       acc_move_y = 0;
+      delta = 0; // 清空速度值
 
       velocity = amplitude = 0;
       start_timestamp = timestamp = performance.now();
@@ -318,7 +319,7 @@ export class ChainListComponent extends AniBase {
       } /*if (performance.now() - start_timestamp < 500)*/ else {
         // 没有滚动的情况下，可以直接重置为可点击
         // 快速的点击并起来，能重新使得元素可点击
-        delta = 0;// 清空速度值
+        delta = 0; // 清空速度值
         this.setBlockCardListTap(true);
       }
     });
@@ -462,7 +463,7 @@ export class ChainListComponent extends AniBase {
     }
     this._pre_render_info = cur_render_info;
     // console.log('abs_y', abs_y | 0, 'skip_y', skip_y | 0, 'skip_chain_num', skip_chain_num,
-    // 	'from_y', from_y | 0, 'view_end_y', view_end_y | 0);
+    //   'from_y', from_y | 0, 'view_end_y', view_end_y | 0);
 
     /// 生成新的list以及它对应的缓存
     const new_list: typeof list = [];
@@ -673,11 +674,11 @@ class BlockCard extends PIXI.Graphics {
 
     // init shadown
     // {
-    // 	const bg = new PIXI.Sprite(this.bg_resource);
-    // 	bg.width = W;
-    // 	bg.scale.y = bg.scale.x;
-    // 	shadown.addChild(bg);
-    // 	this.addChild(shadown);
+    //   const bg = new PIXI.Sprite(this.bg_resource);
+    //   bg.width = W;
+    //   bg.scale.y = bg.scale.x;
+    //   shadown.addChild(bg);
+    //   this.addChild(shadown);
     // }
     {
       const s_w = this.width * 0.92;
@@ -734,7 +735,7 @@ class BlockCard extends PIXI.Graphics {
     this.footer_container.on("pointerup", () => {
       // // 可能被取消
       // if (this._show_footer_container_mask === false) {
-      // 	return;
+      //   return;
       // }
       this.toggleFooterContainerMask(false);
       this.emit("refresh-frame-in-async");
@@ -942,11 +943,11 @@ class BlockCard extends PIXI.Graphics {
     } else if (this.block && !block) {
       need_redraw_block = true;
     } /* else if (this.block
-			&& !(this.block instanceof Promise)
-			&& this.block.height !== this.chain_height) {
-			debugger
-			need_redraw_block = true;
-		}*/
+      && !(this.block instanceof Promise)
+      && this.block.height !== this.chain_height) {
+      debugger
+      need_redraw_block = true;
+    }*/
     if (need_redraw_block) {
       this.block = block;
       if (block instanceof Promise) {
