@@ -85,7 +85,7 @@ export class TabVotePage extends FirstLevelPage {
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
     public blockService: BlockServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    // public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
 
@@ -334,7 +334,7 @@ export class TabVotePage extends FirstLevelPage {
   }
   set page_status(v) {
     this._page_status = v;
-    this.cdRef.markForCheck();
+    // this.cdRef.markForCheck();
   }
 
   @ViewChild(EffectCountdownComponent)
