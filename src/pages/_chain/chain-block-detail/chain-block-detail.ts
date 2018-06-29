@@ -44,9 +44,13 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   }
   show_all_remark = false;
   async toggleShowAllRemark() {
-    if (!this.appSetting.settings._is_show_first_block_remark) {
-      await this.waitTipDialogConfirm("@@FIRST_VIEW_BLOCK_REMARK_TIP");
-      this.appSetting.settings._is_show_first_block_remark = true;
+    if (
+      !this.show_all_remark &&
+      !this.appSetting.settings._is_show_first_block_remark
+    ) {
+      this.appSetting.settings._is_show_first_block_remark = await this.waitTipDialogConfirm(
+        "@@FIRST_VIEW_BLOCK_REMARK_TIP",
+      );
     }
     this.show_all_remark = !this.show_all_remark;
   }
