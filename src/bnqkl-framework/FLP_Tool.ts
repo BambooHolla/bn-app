@@ -193,7 +193,12 @@ export class FLP_Tool {
       },
     });
   }
-  async waitTipDialogConfirm(message, opts: {} = {}) {
+  async waitTipDialogConfirm(
+    message,
+    opts: {
+      cancel_with_error?: boolean;
+    } = {},
+  ) {
     const res = new PromiseOut<boolean>();
     this._showCustomDialog(
       {
@@ -204,7 +209,11 @@ export class FLP_Tool {
             text: this.getTranslateSync("CANCEL"),
             cssClass: "cancel",
             handler: () => {
-              res.resolve(false);
+              if (opts.cancel_with_error) {
+                res.reject(getErrorFromAsyncerror());
+              } else {
+                res.resolve(false);
+              }
             },
           },
           {

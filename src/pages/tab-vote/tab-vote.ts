@@ -588,12 +588,7 @@ export class TabVotePage extends FirstLevelPage {
 
   try_min_starting = false;
   min_starting = false;
-  async autoStartButtonPressDown() {
-    if (!this.appSetting.settings._is_show_first_mining_tip) {
-      this.appSetting.settings._is_show_first_mining_tip = await this.waitTipDialogConfirm(
-        "@@FIRST_MINGING_TIP",
-      );
-    }
+  autoStartButtonPressDown() {
     this.try_min_starting = true;
   }
   autoStartButtonPressUp(event: TouchEvent | MouseEvent) {
@@ -621,6 +616,12 @@ export class TabVotePage extends FirstLevelPage {
   async startMin() {
     if (this.min_starting) {
       return;
+    }
+    if (!this.appSetting.settings._is_show_first_mining_tip) {
+      this.appSetting.settings._is_show_first_mining_tip = await this.waitTipDialogConfirm(
+        "@@FIRST_MINGING_TIP",
+        { cancel_with_error: true },
+      );
     }
     this._user_agree_auto_mining_in_background = true;
     this.min_starting = true;
