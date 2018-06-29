@@ -85,8 +85,8 @@ export class TabVotePage extends FirstLevelPage {
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
     public blockService: BlockServiceProvider,
-    // public cdRef: ChangeDetectorRef,
-  ) {
+  ) // public cdRef: ChangeDetectorRef,
+  {
     super(navCtrl, navParams);
 
     this.registerViewEvent(this.minService.event, "vote-error", () => {
@@ -843,11 +843,10 @@ export class TabVotePage extends FirstLevelPage {
     this.tap_times += 1;
     if (this.tap_times === 5) {
       try {
-        this.routeTo('vote-income-logs');
+        this.routeTo("vote-list");
       } catch (err) {
         alert("配置失败：" + err.message);
       }
     }
   }
-
 }
