@@ -843,7 +843,7 @@ export class TabVotePage extends FirstLevelPage {
     this.tap_times += 1;
     if (this.tap_times === 5) {
       try {
-        this.routeToVoteDetail();
+        this.routeTo('vote-income-logs');
       } catch (err) {
         alert("配置失败：" + err.message);
       }

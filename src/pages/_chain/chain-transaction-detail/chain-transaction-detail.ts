@@ -52,7 +52,8 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
   async queryUserBalance(address: string) {
     const account = await this.accountService.getAccountByAddress(address);
     await this.showSuccessDialog(
-      (parseFloat(account.balance) / 1e8).toFixed(8),
+      "余额:" + (parseFloat(account.balance) / 1e8).toFixed(8),
+      "收益:" + (parseFloat(account.votingReward) / 1e8).toFixed(8),
     );
   }
 }
