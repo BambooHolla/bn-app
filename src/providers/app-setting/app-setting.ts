@@ -396,7 +396,9 @@ export class AppSettingProvider extends CommonService {
     /**隐藏账户金额信息*/
     can_view_amount: false,
     /**是否显示过 初次转账提醒*/
-    _is_show_first_transfer_tip: false
+    _is_show_first_transfer_tip: false,
+    /**是否显示过 区块详情*/
+    _is_show_first_block_remark: false,
   };
 }
 if (
