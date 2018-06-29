@@ -106,8 +106,8 @@ export class ChainListComponent extends AniBase {
       }
       this.app = ChainListComponent.PIXIAppbuilder({
         view: canvasNode,
-        width: (this.renderer_width = this.pt(canvasNode.clientWidth)),
-        height: (this.renderer_height = this.pt(canvasNode.clientHeight)),
+        width: (this.renderer_width = this.pt(document.body.clientWidth)),
+        height: (this.renderer_height = this.pt(document.body.clientHeight)),
         transparent: false,
         antialias: true,
         autoStart: true,
