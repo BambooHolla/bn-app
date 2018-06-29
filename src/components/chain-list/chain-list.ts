@@ -56,7 +56,7 @@ loader.load((loader, resources) => {
 })
 export class ChainListComponent extends AniBase {
   @ViewChild("canvas") canvasRef!: ElementRef;
-  devicePixelRatio = Math.ceil(Math.sqrt(window.devicePixelRatio));
+  // devicePixelRatio = Math.ceil(Math.sqrt(window.devicePixelRatio));
 
   constructor(public blockService: BlockServiceProvider) {
     super();
@@ -419,7 +419,7 @@ export class ChainListComponent extends AniBase {
   }
   // 元素高度
   get item_height() {
-    return this.renderer_width * 0.62;
+    return this.renderer_width *  0.55;//0.62;
   }
 
   list_view = new PIXI.Container();
@@ -643,7 +643,7 @@ class BlockCard extends PIXI.Graphics {
   setTapAble(can_tap: boolean) {
     this._can_tap = can_tap;
     this.cacheAsBitmap = !can_tap;
-    this.footer_container.interactive = can_tap;
+    this.interactive = can_tap;
     if (can_tap) {
       // 刷新显示
       this.toggleFooterContainerMask();
@@ -694,7 +694,7 @@ class BlockCard extends PIXI.Graphics {
       shadown.addChild(bg);
       // const glow_filter = new PIXI.filters.GlowFilter();
       const shadow_filter = new PIXI.filters.DropShadowFilter();
-      shadow_filter.alpha = 0.3;
+      shadow_filter.alpha = 0.2;
       shadow_filter.blur = W * 0.005 * 2;
       shadow_filter.rotation = 90;
       shadow_filter.quality = 5;
@@ -727,12 +727,12 @@ class BlockCard extends PIXI.Graphics {
     this.addChild(this.total_fee_content);
 
     this.addChild(this.footer_container);
-    this.footer_container.interactive = true;
-    this.footer_container.on("pointerdown", () => {
+    this.interactive = true;
+    this.on("pointerdown", () => {
       this.toggleFooterContainerMask(true);
       this.emit("refresh-frame-in-async");
     });
-    this.footer_container.on("pointerup", () => {
+    this.on("pointerup", () => {
       // // 可能被取消
       // if (this._show_footer_container_mask === false) {
       //   return;
@@ -740,7 +740,7 @@ class BlockCard extends PIXI.Graphics {
       this.toggleFooterContainerMask(false);
       this.emit("refresh-frame-in-async");
     });
-    this.footer_container.on("pointertap", () => {
+    this.on("pointertap", () => {
       this.emit("click-footer", this.chain_height, this.block);
     });
     this.footer_container.addChild(this.footer_container_mask);
@@ -774,7 +774,7 @@ class BlockCard extends PIXI.Graphics {
   private _show_footer_container_mask = true;
   toggleFooterContainerMask(show = this._show_footer_container_mask) {
     this._show_footer_container_mask = show;
-    const res_aplha = show && this.footer_container.interactive ? 1 : 0;
+    const res_aplha = show && this.interactive ? 1 : 0;
     if (this.footer_container_mask.alpha !== res_aplha) {
       // this.footer_container.cacheAsBitmap = false;
       this.footer_container_mask.alpha = res_aplha;
@@ -905,7 +905,7 @@ class BlockCard extends PIXI.Graphics {
       footer_container.x = l;
       footer_container.y = t;
       // footer_container.cacheAsBitmap = false;
-      footer_container_mask.beginFill(0, 0.1);
+      footer_container_mask.beginFill(0xffffff, 0.15);
       footer_container_mask.drawRoundedRect(0, 0, w, h, h * 0.1);
       footer_container_mask.endFill();
       // 查看区块

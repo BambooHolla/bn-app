@@ -211,7 +211,11 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.error()
   async submit() {
     if (!this.appSetting.settings._is_show_first_transfer_tip) {
-      if (!(await this.waitTipDialogConfirm("@@FIRST_TRANSFER_TIP"))) {
+      if (
+        !(await this.waitTipDialogConfirm("@@FIRST_TRANSFER_TIP", {
+          true_text: "@@OK",
+        }))
+      ) {
         return;
       }
       this.appSetting.settings._is_show_first_transfer_tip = true;

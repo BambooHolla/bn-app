@@ -1,5 +1,6 @@
 {
-  "OK": "确定",
+  "OK": "好的",
+  "CONFIRM": "确定",
   "CONFIRM_DELETE": "确认删除",
   "REMOVE": "删除",
   "YES": "是",
@@ -22,6 +23,7 @@
     "参与贡献获得{{times}}次收益共：{{amount}}个IBT",
   "ME": "我",
   "NEED_INPUT_#FORM_KEY#": "请填写“{{form_key}}”",
+  "COZY_TIPS": "温馨提示",
 
   "//": "fingerprint-optional",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN": "账户登录校验",
@@ -80,6 +82,15 @@
   "PLEASE_INPUT_CODE": "请输入常用密码",
   "INFORMATION_NOT_SAVE_IN_BLOCKCHAIN": "仅用于生成密码数据不会保存在区块链上",
   "ALREADY_HAS_PASSPHRASE": "我已有密码 立即开始",
+  "RGISTER_PWD_TIP":
+    "您的密码已生成，为了防止您遗忘密码，建议您现在就到备忘录粘贴。",
+  "COPY_NOW": "立即复制",
+  "CANCEL_COPY": "不保存",
+  "LOGIN_PWD_TIP":
+    "请确认您的密码已经保存，由于区块链去中心的特性，您的密码一旦丢失，将无法找回。请再次确认已保存？",
+  "SAVE_NOW": "现在保存",
+  "ALREADY_SAVED": "我已保存",
+  "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD": "您的密码已经保存到剪切板",
 
   "//": "pwd-input",
   "PLEASE_INPUT_TRANSACTION_FEES": "请输入手续费",
@@ -108,7 +119,7 @@
   "FACEBOOK": "脸书",
   "INSTAGRAM": "Instagram",
   "SHARE_APP_ERROR": "应用分享失败",
-  "YOU_SEEMS_TO_HAS_NO_INSTALL_THIS_APP": "你似乎没有安装这个应用",
+  "YOU_SEEMS_TO_HAS_NO_INSTALL_THIS_APP": "您似乎没有安装这个应用",
 
   "//": "version-update-dialog",
   "VERSION_UPDATE": "版本更新",
@@ -149,9 +160,9 @@
   "START_VOTE_VERIFY": "开启挖矿校验",
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
   "BEFORE_DOWNLOAD_TIP":
-    "即将同步区块链数据，第一次同步可能需要一点时间，在这个过程中你依然可以进行其它操作",
+    "即将同步区块链数据，第一次同步可能需要较长时间，在这个过程中您依然可以进行其它操作",
   "FIRST_MINGING_TIP":
-    "在IFMChain中，所谓挖矿就是将您当前设备的计算能力、存储能力、通信能力贡献给IFMChain区块链网络，网络中其它节点可以通过IFMChain的共识协议使用您设备的计算能力、存储能力和通信能力，当您的设备开始参与贡献后，IFMChain区块链将会给您发放凭证，作为您曾经做过贡献的证明，将作为您未来使用区块链的权益，也这个权益凭证就是您的挖矿收益。",
+    "在IFMChain中，所谓挖矿就是将您当前设备的计算能力、存储能力、通信能力贡献给IFMChain区块链网络，网络中其它节点可以通过IFMChain的共识协议使用您设备的计算能力、存储能力和通信能力，当您的设备开始参与贡献后，IFMChain区块链将会给您发放凭证，作为您曾经做过贡献的证明，将作为您未来使用区块链的权益，这个权益凭证就是您的挖矿收益。",
 
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "本轮挖矿收益",
@@ -224,12 +235,12 @@
   "REMOVE_CONFIRMED_CONTACT_TITLE": "移除联系人",
   "SCAN_QR_CODE_TO_ADD_CONTACT": "扫一扫添加联系人",
   "IGNORE_UNCONFIRM_CONTACT_ERROR": "拒绝通过联系人失败",
-  "ADD_CONTACT_SUBMIT_ERROR": "同意添加联系人提交失败",
-  "ADD_CONTACT_SUBMITING": "同意添加联系人提交中",
-  "ADD_CONTACT_SUBMIT_SUCCESS": "同意添加联系人提交成功",
-  "REMOVE_CONTACT_SUBMIT_ERROR": "删除联系人提交失败",
-  "REMOVE_CONTACT_SUBMITING": "删除联系人提交中",
-  "REMOVE_CONTACT_SUBMIT_SUCCESS": "删除联系人提交成功",
+  "ADD_CONTACT_SUBMIT_ERROR": "同意添加联系人广播失败",
+  "ADD_CONTACT_SUBMITING": "同意添加联系人广播中",
+  "ADD_CONTACT_SUBMIT_SUCCESS": "同意添加联系人广播成功",
+  "REMOVE_CONTACT_SUBMIT_ERROR": "删除联系人广播失败",
+  "REMOVE_CONTACT_SUBMITING": "删除联系人广播中",
+  "REMOVE_CONTACT_SUBMIT_SUCCESS": "删除联系人广播成功",
   "CONFIRM_TO_REMOVE_CONTACT": "确定要删除联系人吗？",
   "SET_REMARK": "备注",
 
@@ -443,23 +454,23 @@
   "PLEASE_INPUT_PAY_PASSPHRASE": "请输入支付密码",
   "LOGIN_PASSPHRASE": "登录密码",
   "PLEASE_INPUT_LOGIN_PASSPHRASE": "请输入登录密码",
-  "SUBMIT": "提交",
+  "SUBMIT": "确认",
 
   "//": "settings-set-pay-pwd",
   "SETTINGS-SET-PAY-PWD": "设置支付密码",
   "CONFIRM_PAY_PASSPHRASE": "再次确认密码",
-  "SET_PAY_PWD_SUBMITING": "设置支付密码提交中",
-  "SET_PAY_PWD_SUBMIT_ERROR": "设置支付密码提交失败",
-  "SET_PAY_PWD_SUBMIT_SUCCESS": "设置支付密码提交成功",
+  "SET_PAY_PWD_SUBMITING": "设置支付密码广播中",
+  "SET_PAY_PWD_SUBMIT_ERROR": "设置支付密码广播失败",
+  "SET_PAY_PWD_SUBMIT_SUCCESS": "设置支付密码广播成功",
   "TWO_PWD_NOT_SAME": "输入的两次密码不相同",
 
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "设置用户名",
   "ACCOUNT_SET_USERNAME_TITLE": "设置用户名",
   "USERNAME": "用户名",
-  "SET_USERNAME_SUBMIT_ERROR": "设置用户名提交失败",
-  "SET_USERNAME_SUBMITING": "设置用户名提交中",
-  "SET_USERNAME_SUBMIT_SUCCESS": "设置用户名提交成功",
+  "SET_USERNAME_SUBMIT_ERROR": "设置用户名广播失败",
+  "SET_USERNAME_SUBMITING": "设置用户名广播中",
+  "SET_USERNAME_SUBMIT_SUCCESS": "设置用户名广播成功",
   "CHECK_UPDATE": "检查更新",
 
   "//": "tab-pay",
@@ -471,10 +482,10 @@
   "YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW": "您还未设置转账手续费，现在就设置？",
   "FIRST_TRANSFER_TIP":
     "确认转出操作从本地成功转出后，一般都会在区块链网络上得到确认。但可能出现网络上数据暂时还未达成一致的情况，其它节点并不会接受您的转出交易，此时您的转出将不会成功，而此时您并不会接收到任何失败的通知。您可以通过“我的”-“我的交易”-“已确认交易”确认交易的状态。",
-  "TRANSFER_SUBMIT_ERROR": "转账提交失败",
-  "SUBMIT_TRANSFER_TITLE": "提交转账交易",
-  "TRANSFER_SUBMITING": "转账提交中",
-  "TRANSFER_SUBMIT_SUCCESS": "转账提交成功",
+  "TRANSFER_SUBMIT_ERROR": "转账广播失败",
+  "SUBMIT_TRANSFER_TITLE": "广播转账交易",
+  "TRANSFER_SUBMITING": "转账广播中",
+  "TRANSFER_SUBMIT_SUCCESS": "转账交易已广播",
   "TRANSFER_UPDATE_ERROR":
     "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
   "PAYMENT": "支付",
@@ -500,7 +511,7 @@
   "GENERATING_CAPTURE": "凭证图生成中",
   "CAPTURE_GENERATE_SUCCESS": "凭证图生成成功",
   "CAPTURE_GENERATE_ERROR": "凭证图生成失败",
-  "SUBMITTED_TIME": "已提交",
+  "SUBMITTED_TIME": "已广播",
   "EXPECTED_CONFIRMATION_TIME": "预计确认",
   "CONFIRMED_TIME": "已确认",
   "SHARE_ERROR": "分享失败",
@@ -577,7 +588,7 @@
   "TUTORIAL_CONTINUE_BUTTON": "继续",
 
   "TUTORIAL_SLIDE1_TITLE": "蔚蓝星球上",
-  "TUTORIAL_SLIDE1_DESCRIPTION": "我们给你无限未来",
+  "TUTORIAL_SLIDE1_DESCRIPTION": "我们给您无限未来",
 
   "TUTORIAL_SLIDE2_TITLE": "有的未来",
   "TUTORIAL_SLIDE2_DESCRIPTION": "公正公平人人可信",
@@ -587,7 +598,7 @@
 
   "TUTORIAL_SLIDE4_TITLE": "开始进入手机挖矿时代？",
 
-  "WELCOME_INTRO": "出发，你的下一个强大的<b>区块链应用</b>",
+  "WELCOME_INTRO": "出发，您的下一个强大的<b>区块链应用</b>",
 
   "SETTINGS_TITLE": "设置",
   "SETTINGS_OPTION1": "选项 1",

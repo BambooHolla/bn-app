@@ -179,7 +179,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         closeButton: false,
         buttons: [
           {
-            text: await self.getTranslate("OK"),
+            text: await self.getTranslate("CONFIRM"),
             handler() {
               self.finishJob();
             },

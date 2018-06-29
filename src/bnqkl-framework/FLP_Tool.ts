@@ -118,7 +118,7 @@ export class FLP_Tool {
         message,
         buttons: [
           {
-            text: await this.getTranslate("OK"),
+            text: await this.getTranslate("CONFIRM"),
             cssClass: "ok",
             handler: () => {
               if (ok_handle instanceof Function) {
@@ -197,16 +197,19 @@ export class FLP_Tool {
     message,
     opts: {
       cancel_with_error?: boolean;
+      false_text?: string;
+      true_text?: string;
     } = {},
   ) {
     const res = new PromiseOut<boolean>();
     this._showCustomDialog(
       {
         // title: this.getTranslateSync("ADVICE"),
+        title: await this.getTranslate("COZY_TIPS"),
         message: await translateMessage(message),
         buttons: [
           {
-            text: this.getTranslateSync("CANCEL"),
+            text: await translateMessage(opts.false_text || "@@CANCEL"),
             cssClass: "cancel",
             handler: () => {
               if (opts.cancel_with_error) {
@@ -217,7 +220,7 @@ export class FLP_Tool {
             },
           },
           {
-            text: this.getTranslateSync("OK_I_KNOWN"),
+            text: await translateMessage(opts.true_text || "@@OK_I_KNOWN"),
             cssClass: "ok",
             handler: () => {
               res.resolve(true);

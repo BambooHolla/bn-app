@@ -1,4 +1,4 @@
-import { Component, Optional } from "@angular/core";
+import { Component, Optional, ChangeDetectorRef } from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -29,18 +29,28 @@ export class AccountMyContactsPage extends SecondLevelPage {
     // public accountService: AccountServiceProvider,
     public contactService: ContactServiceProvider,
     public viewCtrl: ViewController,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
     // this.auto_header_shadow_when_scroll_down = true;
   }
   get search_placeholder() {
-    if (this.loading_my_contact_list) {
+    if (!this.loading_my_contact_list) {
       if (this.my_contact_list.length == 0) {
         return this.getTranslateSync("NO_CONTACT");
       } else {
         return this.getTranslateSync("SEARCH_#NUM#_CONTACTS", {
           num: this.my_contact_list.length,
         });
+      }
+    } else {
+      return this.getTranslateSync("LOADING_CONTACT");
+    }
+  }
+  get list_placeholder() {
+    if (!this.loading_my_contact_list) {
+      if (this.my_contact_list.length == 0) {
+        return this.getTranslateSync("NO_CONTACT");
       }
     } else {
       return this.getTranslateSync("LOADING_CONTACT");
@@ -57,7 +67,14 @@ export class AccountMyContactsPage extends SecondLevelPage {
   listTrackBy(item, contact: ContactModel) {
     return contact.address;
   }
-  loading_my_contact_list = false;
+  _loading_my_contact_list = false;
+  get loading_my_contact_list() {
+    return this._loading_my_contact_list;
+  }
+  set loading_my_contact_list(v) {
+    this._loading_my_contact_list = v;
+    this.cdRef.markForCheck();
+  }
   // @AccountMyContactsPage.willEnter
   async loadMyContactList() {
     this.loading_my_contact_list = true;

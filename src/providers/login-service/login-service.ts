@@ -183,7 +183,7 @@ export class LoginServiceProvider extends FLP_Tool {
       let alert = this.alertController.create({
         title: "error",
         subTitle: "Your passphrase is incorrect.",
-        buttons: ["OK"],
+        buttons: ["CONFIRM"],
       });
       alert.present();
       return false;

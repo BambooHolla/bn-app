@@ -45,18 +45,18 @@ export class FeeInputPage extends FirstLevelPage {
     "ErrorRange",
   ])
   check_custom_fee(fee = this.formData.custom_fee) {
-    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+    // const user_balance = parseFloat(this.userInfo.balance) / 1e8;
     const custom_fee = parseFloat(fee);
-    if (user_balance === 0) {
-      return {
-        NoBalance: "@@USER_HAS_NO_BALANCE",
-      };
-    }
-    if (custom_fee > user_balance) {
-      return {
-        NoEnoughBalance: "@@USER_HAS_NO_ENOUGH_BALANCE",
-      };
-    }
+    // if (user_balance === 0) {
+    //   return {
+    //     NoBalance: "@@USER_HAS_NO_BALANCE",
+    //   };
+    // }
+    // if (custom_fee > user_balance) {
+    //   return {
+    //     NoEnoughBalance: "@@USER_HAS_NO_ENOUGH_BALANCE",
+    //   };
+    // }
     if (custom_fee < 0.00000001) {
       return {
         ErrorRange: "@@TOO_LITTLE_FEE",

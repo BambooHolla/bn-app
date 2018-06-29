@@ -138,7 +138,7 @@ export function asyncErrorWrapGenerator(
                 {
                   title: String(error_title),
                   subTitle: String(err_msg),
-                  buttons: [getTranslateSync("OK")],
+                  buttons: [getTranslateSync("CONFIRM")],
                 },
                 opts,
               );
@@ -550,7 +550,7 @@ export const asyncCtrlGenerator = {
         if (
           buttons &&
           buttons.length == 1 &&
-          buttons[0] === getTranslateSync("OK")
+          buttons[0] === getTranslateSync("CONFIRM")
         ) {
           buttons.length = 0;
         }
@@ -583,7 +583,7 @@ export const asyncCtrlGenerator = {
         if (
           buttons &&
           buttons.length == 1 &&
-          buttons[0] === getTranslateSync("OK")
+          buttons[0] === getTranslateSync("CONFIRM")
         ) {
           buttons.length = 0;
         }

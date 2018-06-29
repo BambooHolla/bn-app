@@ -75,6 +75,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     pwd: "",
     remember_pwd: true,
   };
+  pwd_by_register = "";
   _ture_pwd = "";
   pwd_textarea_height = "";
 
@@ -215,7 +216,25 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   )
   // @asyncCtrlGenerator.loading(() => SignInAndSignUpPage.getTranslate("LOGINNG"))
   async doLogin() {
-    let result = await this.loginService.doLogin(
+    if (
+      this.pwd_by_register === this.formData.pwd &&
+      (await this.waitTipDialogConfirm("@@LOGIN_PWD_TIP", {
+        true_text: "@@SAVE_NOW",
+        false_text: "@@ALREADY_SAVED",
+      }))
+    ) {
+      await this.navigatorClipboard.writeText(this.formData.pwd);
+      this.toastCtrl
+        .create({
+          message: this.getTranslateSync(
+            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD",
+          ),
+          duration: 2000,
+        })
+        .present();
+      return;
+    }
+    const result = await this.loginService.doLogin(
       this.formData.pwd.trim(),
       this.formData.remember_pwd,
     );
@@ -250,12 +269,27 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     let passphrase = this.loginService.generateNewPassphrase(params);
     this.gotoLogin();
     this.formData.pwd = passphrase;
+    this.pwd_by_register = passphrase;
     this.show_pwd = true;
     this.hiddenPwd();
     this.platform.raf(() => {
       this.autoReHeightPWDTextArea(true);
     });
-
-    console.log(passphrase);
+    if (
+      await this.waitTipDialogConfirm("@@RGISTER_PWD_TIP", {
+        true_text: "@@COPY_NOW",
+        false_text: "@@CANCEL_COPY",
+      })
+    ) {
+      await this.navigatorClipboard.writeText(this.formData.pwd);
+      this.toastCtrl
+        .create({
+          message: this.getTranslateSync(
+            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD",
+          ),
+          duration: 2000,
+        })
+        .present();
+    }
   }
 }
