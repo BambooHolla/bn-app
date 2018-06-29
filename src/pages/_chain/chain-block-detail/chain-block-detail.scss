@@ -55,7 +55,13 @@ page-chain-block-detail {
                 transform: rotate(90deg);
               }
             }
+            > .label {
+              > .center {
+                display: none;
+              }
+            }
             > .remark-content {
+              display: block;
               height: auto;
               mask-image: none;
             }
@@ -77,7 +83,9 @@ page-chain-block-detail {
             > .center {
               flex: 1;
               font-size: 1.3rem;
-              padding: 0 0.5rem;
+              // padding: 0 0.5rem;
+              padding-left: 3rem;
+              padding-right: 1rem;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;

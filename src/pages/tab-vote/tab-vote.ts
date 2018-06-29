@@ -828,4 +828,26 @@ export class TabVotePage extends FirstLevelPage {
       }, 4000);
     }, 1000);
   }
+
+  /*隐藏功能*/
+
+  tap_times = 0;
+  per_tap_time = 0;
+  tryEnterCountdown() {
+    const cur_tap_time = Date.now();
+    if (cur_tap_time - this.per_tap_time > 500) {
+      // 两次点击的间隔不能多余半秒，否则重置计数
+      this.tap_times = 0;
+    }
+    this.per_tap_time = cur_tap_time;
+    this.tap_times += 1;
+    if (this.tap_times === 5) {
+      try {
+        this.routeToVoteDetail();
+      } catch (err) {
+        alert("配置失败：" + err.message);
+      }
+    }
+  }
+
 }

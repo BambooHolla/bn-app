@@ -79,6 +79,15 @@ export class TabPayPage extends FirstLevelPage {
     transfer_mark: "@@TRANSFER_MARK",
     transfer_fee: "@@TRANSFER_FEE",
   };
+  /*尝试设置交易手续费*/
+  @TabPayPage.willEnter
+  tryResetTransferFee() {
+    if (this.formData.transfer_fee === 0) {
+      this.formData.transfer_fee = parseFloat(
+        this.appSetting.settings.default_fee,
+      );
+    }
+  }
 
   @asyncCtrlGenerator.error()
   async receiptOfflineTransaction(tran: TransactionModel) {

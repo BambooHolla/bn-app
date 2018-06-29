@@ -18,7 +18,7 @@
   </div>
   <div class="pages-container">
     <div class="bootstrap-page" [ngClass]="page_status">
-      <div class="main-container">
+      <div class="main-container" (click)="tryEnterCountdown()">
         <div class="auto-start-button-wrapper">
           <div class="auto-start-button" [class.opening]="min_starting||try_min_starting" (touchstart)="autoStartButtonPressDown()" (touchcancel)="autoStartButtonPressOut()" (touchend)="autoStartButtonPressUp($event)" (mousedown)="autoStartButtonPressDown()" (mouseup)="autoStartButtonPressUp($event)">
             <div class="press-down-layer"></div>
