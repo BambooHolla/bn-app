@@ -328,7 +328,14 @@ export class TabVotePage extends FirstLevelPage {
     }
     this.chain_mesh.startAnimation();
   }
-  page_status = VotePage.None;
+  private _page_status = VotePage.None;
+  get page_status(){
+    return this._page_status
+  }
+  set page_status(v){
+    this._page_status = v;
+    this.cdRef.markForCheck();
+  }
 
   @ViewChild(EffectCountdownComponent)
   effect_countdown!: EffectCountdownComponent;
