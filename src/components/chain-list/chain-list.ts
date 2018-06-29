@@ -318,6 +318,7 @@ export class ChainListComponent extends AniBase {
       } /*if (performance.now() - start_timestamp < 500)*/ else {
         // 没有滚动的情况下，可以直接重置为可点击
         // 快速的点击并起来，能重新使得元素可点击
+        delta = 0;// 清空速度值
         this.setBlockCardListTap(true);
       }
     });
