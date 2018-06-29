@@ -26,11 +26,11 @@
         </div>
       </div>
       <div class="assets-info" *ngIf="show_mining_history">
-        <div class="balance">
+        <div class="balance" (click)="routeTo('vote-income-logs')">
           <text-gradient [text]="miningReward|amountEuler|number:'1.8-8'" from="#f8846f" to="#ffc85e" direction="to right"></text-gradient>
         </div>
-        <div class="history-logs">
-          <a class="linker" (click)="routeTo('vote-income-logs')">{{'VOTE_INCOME_HISTORY' | translate}}</a>
+        <div class="history-logs" (click)="routeTo('vote-income-logs')">
+          <a class="linker">{{'VOTE_INCOME_HISTORY' | translate}}</a>
         </div>
       </div>
       <div class="start-tip" *ngIf="!show_mining_history">
