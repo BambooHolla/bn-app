@@ -6,6 +6,7 @@ import { ScrollParentIonContentFirstDirective } from "./scroll-parent-ion-conten
 import { ListAniDirective } from "./list-ani/list-ani";
 import { ClickToCopyDirective } from "./click-to-copy/click-to-copy";
 import { TapWaitforDirective } from "./tap-waitfor/tap-waitfor";
+import { BeforeSubmitDirective } from './before-submit/before-submit';
 @NgModule({
   declarations: [
     IonContentScrollShadowDirective,
@@ -15,6 +16,7 @@ import { TapWaitforDirective } from "./tap-waitfor/tap-waitfor";
     ListAniDirective,
     ClickToCopyDirective,
     TapWaitforDirective,
+    BeforeSubmitDirective,
   ],
   imports: [],
   exports: [
@@ -25,6 +27,7 @@ import { TapWaitforDirective } from "./tap-waitfor/tap-waitfor";
     ListAniDirective,
     ClickToCopyDirective,
     TapWaitforDirective,
+    BeforeSubmitDirective,
   ],
 })
 export class DirectivesModule {}

@@ -198,3 +198,11 @@ ion-content {
   -ms-touch-action: all !important;
   touch-action: all !important;
 }
+
+#ion-diagnostics-toast {
+  opacity: 0.88;
+  pointer-events: none;
+  > * {
+    pointer-events: none !important;
+  }
+}

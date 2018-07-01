@@ -43,7 +43,15 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     return false;
   }
   show_all_remark = false;
-  toggleShowAllRemark() {
+  async toggleShowAllRemark() {
+    if (
+      !this.show_all_remark &&
+      !this.appSetting.settings._is_show_first_block_remark
+    ) {
+      this.appSetting.settings._is_show_first_block_remark = await this.waitTipDialogConfirm(
+        "@@FIRST_VIEW_BLOCK_REMARK_TIP",
+      );
+    }
     this.show_all_remark = !this.show_all_remark;
   }
   block_info?: BlockModel;

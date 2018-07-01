@@ -85,8 +85,8 @@ export class TabVotePage extends FirstLevelPage {
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
     public blockService: BlockServiceProvider,
-    public cdRef: ChangeDetectorRef,
-  ) {
+  ) // public cdRef: ChangeDetectorRef,
+  {
     super(navCtrl, navParams);
 
     this.registerViewEvent(this.minService.event, "vote-error", () => {
@@ -328,7 +328,14 @@ export class TabVotePage extends FirstLevelPage {
     }
     this.chain_mesh.startAnimation();
   }
-  page_status = VotePage.None;
+  private _page_status = VotePage.None;
+  get page_status() {
+    return this._page_status;
+  }
+  set page_status(v) {
+    this._page_status = v;
+    // this.cdRef.markForCheck();
+  }
 
   @ViewChild(EffectCountdownComponent)
   effect_countdown!: EffectCountdownComponent;
@@ -357,7 +364,7 @@ export class TabVotePage extends FirstLevelPage {
 
   routeToVoteDetail() {
     this.notifyExtendPanel("HEIGHT:CHANGED");
-    this.notifyExtendPanel("ROUND:CHANGED");
+    this.notifyExtendPanel("ROUND:CHANGED", true);
     this.min_starting = false;
     this.setBgTransparent(false);
     this.page_status = VotePage.VoteDetail;
@@ -610,6 +617,12 @@ export class TabVotePage extends FirstLevelPage {
     if (this.min_starting) {
       return;
     }
+    if (!this.appSetting.settings._is_show_first_mining_tip) {
+      this.appSetting.settings._is_show_first_mining_tip = await this.waitTipDialogConfirm(
+        "@@FIRST_MINGING_TIP",
+        { cancel_with_error: true },
+      );
+    }
     this._user_agree_auto_mining_in_background = true;
     this.min_starting = true;
     try {
@@ -732,7 +745,7 @@ export class TabVotePage extends FirstLevelPage {
         this._whenRoundChangeAni(); // 执行动画
       }
       this._pre_ani_round = cur_round;
-      this.notifyExtendPanel("ROUND:CHANGED");
+      this.notifyExtendPanel("ROUND:CHANGED", true);
     }
 
     if (this.page_status === VotePage.Countdown) {
@@ -758,6 +771,7 @@ export class TabVotePage extends FirstLevelPage {
   @ViewChild("extendsPanel4") extendsPanel4?: VoteMyContributionComponent;
   @ViewChild("extendsPanel5") extendsPanel5?: VotePreRoundIncomeRateComponent;
   notifyExtendPanel(eventname, force?: boolean) {
+    console.log("notifyExtendPanel", eventname);
     const current_height = this.appSetting.getHeight();
     if (this.pre_notify_height === current_height && !force) {
       return;
@@ -813,5 +827,26 @@ export class TabVotePage extends FirstLevelPage {
         this._startVoteAnimate();
       }, 4000);
     }, 1000);
+  }
+
+  /*隐藏功能*/
+
+  tap_times = 0;
+  per_tap_time = 0;
+  tryEnterCountdown() {
+    const cur_tap_time = Date.now();
+    if (cur_tap_time - this.per_tap_time > 500) {
+      // 两次点击的间隔不能多余半秒，否则重置计数
+      this.tap_times = 0;
+    }
+    this.per_tap_time = cur_tap_time;
+    this.tap_times += 1;
+    if (this.tap_times === 5) {
+      try {
+        this.routeTo("vote-list");
+      } catch (err) {
+        alert("配置失败：" + err.message);
+      }
+    }
   }
 }

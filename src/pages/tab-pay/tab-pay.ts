@@ -12,7 +12,10 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
-import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import {
+  asyncCtrlGenerator,
+  formatAndTranslateMessage,
+} from "../../bnqkl-framework/Decorator";
 import { Subscription } from "rxjs/Subscription";
 // import { Network } from '@ionic-native/network';
 
@@ -66,10 +69,25 @@ export class TabPayPage extends FirstLevelPage {
   }
   formData = {
     transfer_address: "",
-    transfer_amount: "",
+    transfer_amount: 0,
     transfer_mark: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+  formDataKeyI18nMap = {
+    transfer_address: "@@TRANSFER_ADDRESS",
+    transfer_amount: "@@TRANSFER_AMOUNT",
+    transfer_mark: "@@TRANSFER_MARK",
+    transfer_fee: "@@TRANSFER_FEE",
+  };
+  /*尝试设置交易手续费*/
+  @TabPayPage.willEnter
+  tryResetTransferFee() {
+    if (this.formData.transfer_fee === 0) {
+      this.formData.transfer_fee = parseFloat(
+        this.appSetting.settings.default_fee,
+      );
+    }
+  }
 
   @asyncCtrlGenerator.error()
   async receiptOfflineTransaction(tran: TransactionModel) {
@@ -135,35 +153,82 @@ export class TabPayPage extends FirstLevelPage {
   async setTransferFee() {
     const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
     this.formData.transfer_fee = custom_fee;
+    this.setInputstatus("transfer_fee", { type: "input" });
     this.cdRef.markForCheck();
   }
 
   @TabPayPage.setErrorTo("errors", "transfer_address", ["wrongAddress"])
   check_transfer_address() {
-    if (
-      !this.transactionService.isAddressCorrect(this.formData.transfer_address)
-    ) {
-      return { wrongAddress: true };
+    const transfer_address = this.formData.transfer_address.trim();
+    if (transfer_address === this.userInfo.address) {
+      return {
+        wrongAddress: "@@TRANSFER_DESTINATION_CAN_NOT_BE_YOURSELF",
+      };
+    }
+    if (!this.transactionService.isAddressCorrect(transfer_address)) {
+      return { wrongAddress: "@@TRANSFER_ADDRESS_IS_MALFORMED" };
     }
   }
   ignore_keys = ["transfer_mark"];
 
-  @TabPayPage.setErrorTo("errors", "transfer_amount", ["rangeError"])
-  check_transfer_amount() {
-    const { transfer_amount } = this.formData;
-    if (typeof transfer_amount === "number") {
-      if (
-        transfer_amount < 0 ||
-        transfer_amount > parseFloat(this.userInfo.balance) / 1e8
-      ) {
-        return {
-          rangeError: true,
-        };
-      }
+  private _check_total_amount(user_balance: number) {
+    if (user_balance === 0) {
+      return {
+        NoBalance: "@@USER_HAS_NO_BALANCE",
+      };
     }
+    const { transfer_amount, transfer_fee } = this.formData;
+    const total_amount = transfer_amount + transfer_fee;
+    if (total_amount > user_balance) {
+      return {
+        NoEnoughBalance: "@@USER_HAS_NO_ENOUGH_BALANCE",
+      };
+    }
+  }
+  @TabPayPage.setErrorTo("errors", "transfer_amount", [
+    "NoBalance",
+    "NoEnoughBalance",
+    "ErrorRange",
+  ])
+  check_transfer_amount() {
+    const { transfer_amount, transfer_fee } = this.formData;
+    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+
+    if (transfer_amount < 0.00000001) {
+      return {
+        ErrorRange: "@@TOO_LITTLE_TRANSFER_AMOUNT",
+      };
+    }
+    return this._check_total_amount(user_balance);
+  }
+  @TabPayPage.setErrorTo("errors", "transfer_fee", [
+    "NoBalance",
+    "NoEnoughBalance",
+    "ErrorRange",
+  ])
+  check_transfer_fee() {
+    const { transfer_amount, transfer_fee } = this.formData;
+    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+
+    if (transfer_fee < 0.00000001) {
+      return {
+        ErrorRange: "@@TOO_LITTLE_FEE",
+      };
+    }
+    // return this._check_total_amount(user_balance);
   }
   @asyncCtrlGenerator.error()
   async submit() {
+    if (!this.appSetting.settings._is_show_first_transfer_tip) {
+      if (
+        !(await this.waitTipDialogConfirm("@@FIRST_TRANSFER_TIP", {
+          true_text: "@@OK",
+        }))
+      ) {
+        return;
+      }
+      this.appSetting.settings._is_show_first_transfer_tip = true;
+    }
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
     });
@@ -191,7 +256,7 @@ export class TabPayPage extends FirstLevelPage {
         transfer_mark,
       } = this.formData;
       const txData = this.transactionService.createTxData(
-        transfer_address,
+        transfer_address.trim(),
         transfer_amount,
         this.formData.transfer_fee,
         password,
@@ -201,6 +266,23 @@ export class TabPayPage extends FirstLevelPage {
         txData,
       );
       this.routeTo("pay-offline-receipt", { transaction });
+    }
+  }
+  /*辅助用户填写表单*/
+  async helpSubmit(has_err) {
+    // 如果错误是因为没有填写手续费，那帮助用户弹出手续费输入框
+    if (this.formData.transfer_fee === 0) {
+      this.showConfirmDialog("@@YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW", () => {
+        this.setTransferFee();
+      });
+    } else {
+      const message = await formatAndTranslateMessage(has_err);
+      this.toastCtrl
+        .create({
+          message,
+          duration: 2000,
+        })
+        .present();
     }
   }
   @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
@@ -226,7 +308,7 @@ export class TabPayPage extends FirstLevelPage {
 
   resetFormData() {
     super.resetFormData();
-    this.formData.transfer_amount = "";
+    delete this.formData.transfer_amount;
     this.cdRef && this.cdRef.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>

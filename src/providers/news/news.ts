@@ -184,6 +184,9 @@ export class NewsProvider {
         url: this.sanitizer.bypassSecurityTrustUrl(
           "assets/video/IFMChain%E7%A7%BB%E5%8A%A8%E5%85%AC%E6%9C%89%E9%93%BE%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83.mp4",
         ),
+        poster: this.sanitizer.bypassSecurityTrustUrl(
+          "assets/video/IFMChain%E7%A7%BB%E5%8A%A8%E5%85%AC%E6%9C%89%E9%93%BE%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83.png",
+        ),
       },
       {
         title: "移动区块链元年开启 IFMChain星燿濠江",

@@ -13,11 +13,11 @@
 </ion-header>
 <ion-content>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E6%88%91%E7%9A%84%E8%81%94%E7%B3%BB%E4%BA%BA%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
-  <div class="search-bar common-form">
+  <!-- <div class="search-bar common-form">
     <div class="input-container search-contact">
       <input type="text" [placeholder]="search_placeholder">
     </div>
-  </div>
+  </div> -->
   <div class="unconfim-list common-list" *ngIf="unconfirm_contact_list.length">
     <div class="header-divider common-item" [class.open]="!hide_unconfirm_contact_list" (click)="toggleUnconfirmContactList()">
       <div class="left">
@@ -47,10 +47,11 @@
     </ng-container>
   </div>
   <ion-list class="contact-list list">
+    <div *ngIf="list_placeholder" class="divider">{{search_placeholder}}</div>
     <ng-container *ngFor="let letter_contacts of my_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
       <ion-item-sliding *ngFor="let contact of letter_contacts.list">
-        <ion-item (click)="routeTo('account-contact-detail', {contact:contact})">
+        <ion-item (click)="tryShowUserBalance(contact.address)"><!-- (click)="routeTo('account-contact-detail', {contact:contact})" -->
           <div class="left">
             <div class="username" *ngIf="contact.username">{{contact.username}}</div>
             <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>

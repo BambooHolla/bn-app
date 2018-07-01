@@ -122,46 +122,26 @@ export class TabChainPage extends FirstLevelPage {
     }
     await this.netWorkConnection();
     // 检测现有数据库中最低的块是否为1
-    let block_1:
+    let min_height_block:
       | SingleBlockModel
       | undefined = await this.blockService.blockDb.findOne(
-        {},
-        { sort: { height: 1 } },
-      );
+      {},
+      { sort: { height: 1 } },
+    );
     const latest_block = await this.blockService.getLastBlock();
-    if (!block_1) {
-      block_1 = latest_block;
+    if (!min_height_block) {
+      min_height_block = latest_block;
     }
 
-    if (block_1.height <= 1) {
+    if (min_height_block.height <= 1) {
       return true;
     }
     const startHeight = 1;
-    const endHeight = block_1.height;
+    const endHeight = min_height_block.height;
     const max_end_height = latest_block.height;
-    const download_handler = () => {
-      // 开始下载
-      this.downloadBlock(startHeight, endHeight, max_end_height);
-    };
-    this._showCustomDialog(
-      {
-        // title: this.getTranslateSync("ADVICE"),
-        message: this.getTranslateSync("BEFORE_DOWNLOAD_TIP"),
-        buttons: [
-          {
-            text: this.getTranslateSync("CANCEL"),
-            cssClass: "cancel",
-            handler: download_handler,
-          },
-          {
-            text: this.getTranslateSync("OK_I_KNOWN"),
-            cssClass: "ok",
-            handler: download_handler,
-          },
-        ],
-      },
-      true,
-    );
+    await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
+    // 开始下载
+    this.downloadBlock(startHeight, endHeight, max_end_height);
   }
 
   loading_dialog?: Loading;
@@ -224,8 +204,8 @@ export class TabChainPage extends FirstLevelPage {
       // this._download_worker = worker;
       const onmessage = e => {
         const msg = e.data;
+        console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
-          console.log(msg);
           switch (msg.type) {
             case "start-download":
               this.showLoading();
@@ -246,7 +226,10 @@ export class TabChainPage extends FirstLevelPage {
       await task.promise;
     } finally {
       this._download_task = undefined;
-      cg && cg();
+      // 并不马上进行cg，可能end-download还没执行
+      this.raf(() => {
+        cg && cg();
+      });
     }
   }
 

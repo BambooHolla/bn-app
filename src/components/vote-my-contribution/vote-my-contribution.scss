@@ -37,6 +37,7 @@ vote-my-contribution {
       height: 8.5rem;
       flex-grow: 0;
       flex-shrink: 0;
+      background: none;
     }
     > .list {
       display: block;
@@ -53,6 +54,10 @@ vote-my-contribution {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    background-image: url('../assets/imgs/tab-vote/my-contribution-card-bg.jpg');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: bottom;
     > .item {
       > .value {
         font-size: 2rem;
@@ -65,7 +70,12 @@ vote-my-contribution {
     }
   }
   > .list {
+    width: 100%;
     display: none;
+    background-image: url('../assets/imgs/tab-vote/my-contribution-card-bg.jpg');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: bottom;
   }
   > .wave-bg {
     position: absolute;

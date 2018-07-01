@@ -7,6 +7,7 @@ export type AccountModel = {
   unconfirmedBalance: string;
   unconfirmedSignature: boolean;
   username: string;
+  votingReward: string;
 };
 export type AccountResModel = {
   account: AccountModel;

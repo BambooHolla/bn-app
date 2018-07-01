@@ -1,4 +1,10 @@
-import { Component, Optional, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  Optional,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+} from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -33,6 +39,7 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
     public viewCtrl: ViewController,
     @Optional() public tabs: TabsPage,
     public voucherService: VoucherServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -45,6 +52,7 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
       return this.navCtrl.goToRoot({});
     }
     this.transaction = transaction;
+    this.cdRef.markForCheck();
   }
   /*是否已经在钱包中*/
   already_in_wallet = false;

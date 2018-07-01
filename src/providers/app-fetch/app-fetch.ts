@@ -108,7 +108,6 @@ export class AppFetchProvider {
     public translateService: TranslateService,
     public dbCache: DbCacheProvider,
   ) {
-    console.log("Hello AppFetchProvider Provider");
     tryRegisterGlobal("FETCH", this);
   }
 

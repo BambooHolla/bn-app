@@ -26,6 +26,11 @@ export class PwdInputPage extends FirstLevelPage {
     super(navCtrl, navParams);
   }
   formData = this._initFormData();
+  formDataKeyI18nMap = {
+    password: "@@LOGIN_PASSPHRASE",
+    pay_pwd: "@@PAY_PASSPHRASE",
+    custom_fee: "@@TRANSACTION_FEES",
+  };
   private _initFormData() {
     return {
       password: this.userInfo.password,
@@ -51,29 +56,58 @@ export class PwdInputPage extends FirstLevelPage {
   //   if(this.formData.password!==this.userInfo.password){
   //   }
   // }
-  @PwdInputPage.setErrorTo("errors", "pay_pwd", ["VerificationFailure"])
+  @PwdInputPage.setErrorTo(
+    "errors",
+    "pay_pwd",
+    ["VerificationFailure", "NeedInput"],
+    {
+      check_when_empty: true,
+    },
+  )
   check_pay_pwd() {
-    if (
-      this.formData.need_pay_pwd &&
-      this.formData.pay_pwd &&
-      !this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
-    ) {
-      return {
-        VerificationFailure: true,
-      };
+    if (this.formData.need_pay_pwd) {
+      if (this.formData.pay_pwd) {
+        if (
+          !this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
+        ) {
+          return {
+            VerificationFailure: "@@PAY_PWD_VERIFICATION_FAILURE",
+          };
+        }
+      } else {
+        return {
+          NeedInput: this.getTranslateSync("NEED_INPUT_#FORM_KEY#", {
+            form_key: this.getTranslateSync("PAY_PASSPHRASE"),
+          }),
+        };
+      }
     }
   }
 
-  @PwdInputPage.setErrorTo("errors", "custom_fee", ["ErrorRange"])
-  check_custom_fee(need_custom_fee = this.formData.need_custom_fee) {
-    const custom_fee = parseFloat(this.formData.custom_fee);
-    if (
-      (this.formData.need_custom_fee && custom_fee <= 0) ||
-      custom_fee > parseFloat(this.userInfo.balance) ||
-      custom_fee < 1 / 1e8
-    ) {
+  @PwdInputPage.setErrorTo("errors", "custom_fee", [
+    "NoBalance",
+    "NoEnoughBalance",
+    "ErrorRange",
+  ])
+  check_custom_fee(fee = this.formData.custom_fee) {
+    if (!this.formData.need_custom_fee) {
+      return;
+    }
+    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+    const custom_fee = parseFloat(fee);
+    if (user_balance === 0) {
       return {
-        ErrorRange: true,
+        NoBalance: "@@USER_HAS_NO_BALANCE",
+      };
+    }
+    if (custom_fee > user_balance) {
+      return {
+        NoEnoughBalance: "@@USER_HAS_NO_ENOUGH_BALANCE",
+      };
+    }
+    if (custom_fee < 0.00000001) {
+      return {
+        ErrorRange: "@@TOO_LITTLE_FEE",
       };
     }
   }

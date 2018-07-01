@@ -76,6 +76,7 @@
   "ALREADY_HAS_PASSPHRASE": "Ho già una password",
   "//": "pwd-input",
   "PLEASE_INPUT_TRANSACTION_FEES": "Si prega di inserire la tassa",
+  "//": "fee-input",
   "//": "tab-account",
   "MY_CONTACTS": "Il mio contatto",
   "PEER_LIST": "Nodo di rete",

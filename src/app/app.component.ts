@@ -47,6 +47,8 @@ if (
     (navigator as any)["mediaDevices"] = global["cordova"].plugins.iosrtc;
   }
 }
+// 强行让SecondLevelPage编译进来
+(function noop(x){})(SecondLevelPage);
 
 enum FAIO_CHECK {
   Login,

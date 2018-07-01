@@ -100,17 +100,21 @@ page-custom-dialog {
         align-items: center;
         color: #787878;
         text-align: center;
-        .title,
+        padding-top: 1.7rem;
+        padding-bottom: 1rem;
+        > .title {
+          padding: 0 0.5rem;
+          padding-bottom: 0.5rem;
+          color: #333;
+          font-size: 1.8rem;
+          font-weight: 600;
+        }
         .sub-title {
           padding: 0 0.5rem;
         }
         .message {
-          padding: 1rem 0.5rem;
-        }
-        > .title {
-          color: #333;
-          font-size: 1.6rem;
-          padding: 0.5rem;
+          padding: 1rem 1.5rem;
+          line-height: 2rem;
         }
       }
       > .buttons {

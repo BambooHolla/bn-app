@@ -10,50 +10,24 @@ import {
   Modal,
   Alert,
 } from "ionic-angular";
-import { PAGE_STATUS } from "./const";
+import {
+  PAGE_STATUS,
+  getErrorFromAsyncerror,
+  isErrorFromAsyncerror,
+} from "./const";
+export { getErrorFromAsyncerror, isErrorFromAsyncerror };
 import { Toast } from "@ionic-native/toast";
 import { TranslateService } from "@ngx-translate/core";
-import { FLP_Tool } from "./FLP_Tool";
+import {
+  FLP_Tool,
+  formatAndTranslateMessage,
+  translateMessage,
+} from "./FLP_Tool";
+export { formatAndTranslateMessage, translateMessage };
 import { AbortError, PromiseOut } from "./PromiseExtends";
 
 function getTranslateSync(key: string | string[], interpolateParams?: Object) {
   return window["translate"].instant(key, interpolateParams);
-}
-
-const _ERROR_FROM_ASYNCERROR_CODE =
-  "CATCHED_ERROR@" +
-  Math.random()
-    .toString(36)
-    .substr(2);
-
-export function getErrorFromAsyncerror(keep_throw: boolean) {
-  const res = {
-    code: _ERROR_FROM_ASYNCERROR_CODE,
-  };
-  if (keep_throw) {
-    return Promise.reject<{ code: string }>(res);
-  }
-  return res;
-}
-export function isErrorFromAsyncerror(err) {
-  return err && err.code === _ERROR_FROM_ASYNCERROR_CODE;
-}
-
-export function translateMessage(self: FLP_Tool, message: any, arg: any) {
-  if (message instanceof Function) {
-    message = message(arg);
-  }
-  return Promise.resolve(message).then(message => {
-    message = "" + message;
-    if (typeof message === "string" && message.startsWith("@@")) {
-      const i18n_key = message.substr(2);
-      message = () => self.getTranslate(i18n_key);
-    }
-    if (message instanceof Function) {
-      message = message(arg);
-    }
-    return message as string;
-  });
 }
 
 export interface ErrorAlertOptions extends AlertOptions {
@@ -148,7 +122,7 @@ export function asyncErrorWrapGenerator(
           }
           const _dialogGenerator = dialogGenerator;
 
-          error_title = translateMessage(this, error_title, err);
+          error_title = translateMessage(error_title, err);
 
           Promise.all([
             error_title,
@@ -164,7 +138,7 @@ export function asyncErrorWrapGenerator(
                 {
                   title: String(error_title),
                   subTitle: String(err_msg),
-                  buttons: [getTranslateSync("OK")],
+                  buttons: [getTranslateSync("CONFIRM")],
                 },
                 opts,
               );
@@ -219,7 +193,7 @@ export function asyncSuccessWrapGenerator(
           console.log("不弹出成功提示因为页面的切换");
           return data;
         }
-        success_msg = translateMessage(this, success_msg, data);
+        success_msg = translateMessage(success_msg, data);
 
         if ("plugins" in window && "toast" in window["plugins"]) {
           const toast = window["toast"] as Toast;
@@ -293,7 +267,7 @@ export function asyncLoadingWrapGenerator(
         );
       }
       // 创建loading
-      loading_msg = translateMessage(this, loading_msg, null);
+      loading_msg = translateMessage(loading_msg, null);
 
       Promise.resolve(loading_msg).then(loading_msg => {
         loading.setContent(String(loading_msg));
@@ -576,7 +550,7 @@ export const asyncCtrlGenerator = {
         if (
           buttons &&
           buttons.length == 1 &&
-          buttons[0] === getTranslateSync("OK")
+          buttons[0] === getTranslateSync("CONFIRM")
         ) {
           buttons.length = 0;
         }
@@ -609,7 +583,7 @@ export const asyncCtrlGenerator = {
         if (
           buttons &&
           buttons.length == 1 &&
-          buttons[0] === getTranslateSync("OK")
+          buttons[0] === getTranslateSync("CONFIRM")
         ) {
           buttons.length = 0;
         }

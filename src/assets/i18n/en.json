@@ -1,15 +1,18 @@
 {
   "OK": "OK",
+  "CONFIRM": "Confirm",
   "CONFIRM_DELETE": "Confirm to delete",
   "REMOVE": "Remove",
   "YES": "Yes",
   "NO": "No",
   "CANCEL": "Cancel",
   "BACK_BUTTON_TEXT": "Back",
+  "OK_I_KNOWN": "Ok i known",
   "PULLING_REFRESH_LIST": "Pull down refresh list",
   "COPY_SUCCESS": "Copy success",
   "#INFO#_COPY_SUCCESS": "{{info}} copy success",
   "RANK_OF_ME": "Me",
+  "ADVICE": "Advice",
   "TRANSACTION_FEES": "Transaction fee",
   "SAVE": "Save",
   "EMPTY_LIST": "Empty list",
@@ -19,6 +22,8 @@
   "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT":
     "Multi{{times}} mining income #amount#ibt",
   "ME": "Me",
+  "NEED_INPUT_#FORM_KEY#": "Please fill in \"{{form_key}}\"",
+  "COZY_TIPS": "Tips",
   "//": "fingerprint-optional",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN": "Account login verification",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN_WITH_FACE":
@@ -46,10 +51,12 @@
   "BLOCK_height": "Height",
   "BLOCK_blockSize": "Size",
   "BLOCK_confirmations": "Number of confirmation",
+  "BLOCK_confirmations_UNIT": "Block confirmations unit",
   "BLOCK_totalFee": "Fee",
   "BLOCK_id": "Block ID",
   "BLOCK_pre_block_id": "Previous block ID",
   "BLOCK_transactions": "Transaction records",
+  "BLOCK_remark": "Block remark",
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "About IBT",
   "ABOUT_IBT_INFO":
@@ -76,8 +83,23 @@
   "INFORMATION_NOT_SAVE_IN_BLOCKCHAIN":
     "Only used for generating password data and not saved in blockchain",
   "ALREADY_HAS_PASSPHRASE": "Already has password, start immediately",
+  "RGISTER_PWD_TIP":
+    "Your password has been generated. To prevent you from forgetting your password, it is recommended that you go to the memo now.",
+  "COPY_NOW": "Copy now",
+  "CANCEL_COPY": "do not save",
+  "LOGIN_PWD_TIP":
+    "Please confirm that your password has been saved. Due to the decentralized nature of the blockchain, if your password is lost, you will not be able to retrieve it. Please confirm again that it has been saved?",
+  "SAVE_NOW": "Save now",
+  "ALREADY_SAVED": "I have saved",
+  "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD":
+    "Your password has been saved to the clipboard",
   "//": "pwd-input",
   "PLEASE_INPUT_TRANSACTION_FEES": "Please input transaction fees",
+  "PAY_PWD_VERIFICATION_FAILURE": "Payment password input error",
+  "//": "fee-input",
+  "USER_HAS_NO_BALANCE": "Insufficient account balance",
+  "USER_HAS_NO_ENOUGH_BALANCE": "Insufficient account balance",
+  "TOO_LITTLE_FEE": "The fee is too low, at least 0.000,000,01",
   "//": "tab-account",
   "MY_CONTACTS": "My contacts",
   "PEER_LIST": "Node list",
@@ -125,6 +147,8 @@
   "//": "tab-vote",
   "AUTO_MINING_NEED_INPUT_PAY_PWD":
     "Please input payment password for automatic mining",
+  "AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT":
+    "After change pay pwd auto mining need reinput",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING":
     "Press the golden button to start automatic mining",
   "START_AUTO_VOTE_ERROR": "Start automatic mining error",
@@ -134,6 +158,8 @@
   "VOTE_INCOME_HISTORY": "Mining income history",
   "START_VOTE_VERIFY": "Start vote verify",
   "WATING_VOTE_CONFIRM": "Waiting for vote confirmation",
+  "BEFORE_DOWNLOAD_TIP": "Before download tip",
+  "FIRST_MINGING_TIP": "First minging tip",
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "Mining income in this round",
   "CURRENT_ROUND": "Current round",
@@ -170,6 +196,7 @@
   "HEIGHT": "Height",
   "FEE": "Fee",
   "CHECK_BLOCK": "Check block",
+  "CHECK_BLOCKCHAIN_IS_COMPLETE": "Check blockchain is complete",
   "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#":
     "Full blockchain downloading {{progress}}%",
   "DOWNLOAD_BLOCKCHAIN_COMPLETE": "Download blockchain complete",
@@ -181,6 +208,7 @@
   "BLOCK_TRANSACTION_LIST_IS_EMPTY": "Transaction list is empty",
   "LOADING_MORE_TRANSACTION_LIST": "Loading more transaction records",
   "GET_PRE_BLOCK_ID_ERROR": "Get previous block ID error",
+  "FIRST_VIEW_BLOCK_REMARK_TIP": "First view block remark tip",
   "//": "chain-transaction-detail",
   "CHAIN-TRANSACTION-DETAIL": "Transaction details",
   "TRANSACTION_id": "Transaction ID",
@@ -194,6 +222,7 @@
   "TRANSCATION_SENDER": "Sender",
   "TRANSCATION_RECIPIENT": "Recipient",
   "//": "account-my-contacts",
+  "CONFIRM_TO_IGNORE_THIS_CONTACT": "Confirm to ignore this contact",
   "ADD_UNCONFIRM_CONTACT_TITLE": "Add unconfirm contact",
   "REMOVE_CONFIRMED_CONTACT_TITLE": "Remove confirmed contact",
   "SCAN_QR_CODE_TO_ADD_CONTACT": "Scan QR code to add contact",
@@ -256,6 +285,8 @@
   "INPUT_ADDRESS_TO_ADD_CONTACT": "Input address to add contact",
   "UNCONFIM_CONTACT_LIST": "Unconfimed contact list",
   "NO_CONTACT": "No contacts",
+  "LOADING_CONTACT": "Loading contact",
+  "SEARCH_#NUM#_CONTACTS": "Search {{num}} contacts",
   "ADD_CONTACT": "Add contacts",
   "//": "pay-receive",
   "PAY-RECEIVE": "Receive",
@@ -401,6 +432,7 @@
   "SET_PAY_PWD_SUBMITING": "Set payment password submiting",
   "SET_PAY_PWD_SUBMIT_ERROR": "Set payment password submit error",
   "SET_PAY_PWD_SUBMIT_SUCCESS": "Set payment password submit success",
+  "TWO_PWD_NOT_SAME": "The two passwords entered are different",
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "Set username",
   "ACCOUNT_SET_USERNAME_TITLE": "Account set username title",
@@ -410,6 +442,15 @@
   "SET_USERNAME_SUBMIT_SUCCESS": "Set username submit success",
   "CHECK_UPDATE": "Check update",
   "//": "tab-pay",
+  "TRANSFER_ADDRESS": "Transfer address",
+  "TRANSFER_AMOUNT": "Transfers",
+  "TRANSFER_MARK": "Transfer Postscript",
+  "TRANSFER_FEE": "Transfer fee",
+  "TOO_LITTLE_TRANSFER_AMOUNT": "Transfer limit too low",
+  "YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW":
+    "You have not set up a transfer fee. Set it now?",
+  "FIRST_TRANSFER_TIP":
+    "After confirming that the transfer operation was successfully transferred from the local, it is generally confirmed on the blockchain network. However, there may be situations where the data on the network has not reached an agreement yet. Other nodes will not accept your transfer transaction. At this time, your transfer will not be successful, and at this time, you will not receive any notification of failure. . You can confirm the status of the transaction with \"My\" - \"My Transaction\" - \"Confirmed Transaction\".",
   "TRANSFER_SUBMIT_ERROR": "Transfer submit error",
   "SUBMIT_TRANSFER_TITLE": "Submit transfer title",
   "TRANSFER_SUBMITING": "Transfer submiting",
@@ -429,6 +470,9 @@
   "COULD_NOT_FOUND_TRANSFER": "Could not find specified transfer",
   "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT":
     "The recipient of this transaction voucher is not the current account",
+  "TRANSFER_DESTINATION_CAN_NOT_BE_YOURSELF":
+    "Transfer destination can not be yourself",
+  "TRANSFER_ADDRESS_IS_MALFORMED": "Transfer address is malformed",
   "//": "pay-transfer-receipt",
   "TRANSFER": "Transfer",
   "PAYER": "Payer",
@@ -564,5 +608,6 @@
   "Second passphrase verified error": "Second passphrase verified error",
   "NOT_MORE_VOTE_ABLE_DELEGATE": "Not more vote able delegate",
   "NOT_ENOUGH_BALANCE_TO_VOTE": "Not enough balance to vote",
+  "Invalid passphrase": "Invalid passphrase",
   "//": "OVER"
 }

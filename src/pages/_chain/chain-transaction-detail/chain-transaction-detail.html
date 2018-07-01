@@ -76,13 +76,13 @@
     </div>
   </div>
   <div class="common-list detail-info">
-    <div class="common-item sender" [click-to-copy]="transaction?.senderId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_SENDER'|translate)}">
+    <div class="common-item sender" [click-to-copy]="transaction?.senderId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_SENDER'|translate)}" (click)="tryShowUserBalance(transaction?.senderId)">
       <div class="left">
         <div class="title">{{'TRANSCATION_SENDER'|translate}}</div>
         <div class="content">{{transaction?.senderId}}</div>
       </div>
     </div>
-    <div class="common-item receiver" *ngIf="transaction?.recipientId" [click-to-copy]="transaction?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}">
+    <div class="common-item receiver" *ngIf="transaction?.recipientId" [click-to-copy]="transaction?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}" (click)="tryShowUserBalance(transaction?.recipientId)">
       <div class="left">
         <div class="title">{{'TRANSCATION_RECIPIENT'|translate}}</div>
         <div class="content">{{transaction?.recipientId}}</div>

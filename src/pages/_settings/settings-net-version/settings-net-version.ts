@@ -94,7 +94,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
             text: await this.getTranslate("CANCEL"),
           },
           {
-            text: await this.getTranslate("OK"),
+            text: await this.getTranslate("CONFIRM"),
             handler: () => this._changeNetVersion(peer),
           },
         ],

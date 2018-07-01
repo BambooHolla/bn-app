@@ -579,7 +579,11 @@ export class MinServiceProvider extends FLP_Tool {
   myRank!: AsyncBehaviorSubject<TYPE.RankModel[]>;
   @ROUND_AB_Generator("myRank", true)
   myRank_Executor(promise_pro) {
-    return promise_pro.follow(this.getMyRank());
+    return promise_pro.follow(
+      this.getMyRank(1, 2 /*如果自己是第一名，要确保第三名也拿到*/).then(list =>
+        list.slice(0, 3),
+      ),
+    );
   }
 
   default_rank_list_pageSize = 20;

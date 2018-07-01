@@ -395,6 +395,12 @@ export class AppSettingProvider extends CommonService {
     contribution_traffic: 0,
     /**隐藏账户金额信息*/
     can_view_amount: false,
+    /**是否显示过 初次转账提醒*/
+    _is_show_first_transfer_tip: false,
+    /**是否显示过 区块详情*/
+    _is_show_first_block_remark: false,
+    /**是否显示过 初次挖矿提示*/
+    _is_show_first_mining_tip: false,
   };
 }
 if (
@@ -416,7 +422,6 @@ function getQueryVariable(variable) {
       return decodeURIComponent(pair[1]);
     }
   }
-  console.log("Query variable %s not found", variable);
 }
 
 const server_host =
