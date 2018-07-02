@@ -1,7 +1,11 @@
 <ion-content>
   <div #fixedHeader class="fixed-header" (click)="pullToTop()">
     <div class="title">
-      <div class="left"></div>
+      <div class="left">
+        <div class="sync-progress" *ngIf="is_show_sync_loading" (click)="routeTo('chain-sync-detail')">
+          <ali-icon name="ifm-sync-progress" class="ani-rotate-45deg"></ali-icon>{{sync_progress_fixed}}%
+        </div>
+      </div>
       <div class="center">
         {{'BLOCKCHAIN' | translate}}
       </div>

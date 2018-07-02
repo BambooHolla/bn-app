@@ -34,6 +34,19 @@ page-tab-chain {
           justify-content: space-between;
           > .left {
             flex: 1;
+            > .sync-progress {
+              font-size: 1.35rem;
+              font-weight: lighter;
+              text-align: left;
+              transform: translateX(4vw);
+              display: flex;
+              align-items: center;
+              ali-icon {
+                font-size: 2rem;
+                margin-right: 0.5rem;
+                animation-duration: 1s;
+              }
+            }
           }
           > .center {
             flex: 1;

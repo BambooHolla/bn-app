@@ -338,9 +338,15 @@ export class FLP_Tool {
   presented_loading_instances: Array<Loading> = [];
 
   // 页面上通用的辅助函数
-  toFixed(num: any, fix_to: number) {
+  toFixed(num: any, fix_to: number, pre_fix?: number) {
     num = parseFloat(num) || 0;
-    return num.toFixed(fix_to);
+    var res = num.toFixed(fix_to);
+    if (pre_fix) {
+      res = ("0".repeat(pre_fix - 1) + res).substr(
+        -Math.max(res.length, fix_to ? fix_to + pre_fix + 1 : pre_fix),
+      );
+    }
+    return res;
   }
   toBool(v: any) {
     if (v) {

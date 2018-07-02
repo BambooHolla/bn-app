@@ -392,7 +392,7 @@ export class AppSettingProvider extends CommonService {
     /**已经处理的交易*/
     detal_tran_num: 0,
     /**贡献的流量*/
-    contribution_traffic: 0,
+    contribution_flow: 0,
     /**隐藏账户金额信息*/
     can_view_amount: false,
     /**是否显示过 初次转账提醒*/
@@ -401,6 +401,22 @@ export class AppSettingProvider extends CommonService {
     _is_show_first_block_remark: false,
     /**是否显示过 初次挖矿提示*/
     _is_show_first_mining_tip: false,
+    /**第一次同步数据的开始时间*/
+    sync_start_time: 0,
+    /**同步区块 的进度 0 ~ 100*/
+    sync_progress_blocks: 0,
+    /**同步交易 的进度 0 ~ 100*/
+    sync_progress_transactions: 0,
+    /**同步权益 的进度 0 ~ 100*/
+    sync_progress_equitys: 0,
+    /**启用同步区块*/
+    enable_sync_progress_blocks: true,
+    /**启用同步交易*/
+    enable_sync_progress_transactions: false,
+    /**启用同步权益*/
+    enable_sync_progress_equitys: false,
+    /**同步数据累计使用的流量*/
+    sync_data_flow: 0,
   };
 }
 if (

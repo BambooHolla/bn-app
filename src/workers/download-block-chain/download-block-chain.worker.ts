@@ -66,15 +66,17 @@ const cmd_handler = {
     );
 
     // 事件注册
-    ["start-download", "end-download", "progress"].forEach(eventname => {
-      blockChainDownloader.on(eventname, data => {
-        postMessage({
-          req_id,
-          type: eventname,
-          data,
+    ["start-download", "end-download", "progress", "use-flow"].forEach(
+      eventname => {
+        blockChainDownloader.on(eventname, data => {
+          postMessage({
+            req_id,
+            type: eventname,
+            data,
+          });
         });
-      });
-    });
+      },
+    );
 
     const downloader = blockChainDownloader;
     // 开始发送通知

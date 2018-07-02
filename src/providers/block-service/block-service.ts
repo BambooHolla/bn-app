@@ -286,8 +286,10 @@ export class BlockServiceProvider extends FLP_Tool {
   private async _listenGetAndSetHeight() {
     this.io.on("blocks/change", async data => {
       // 计算流量大小
-      this.appSetting.settings.contribution_traffic +=
+      const flow =
         getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
+      this.appSetting.settings.sync_data_flow += flow; // 同步的流量
+      this.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
       console.log(
         "%c区块更新",
         "color:green;background-color:#eee;font-size:1.2rem",
@@ -341,7 +343,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const onmessage = e => {
       const msg = e.data;
       if (msg && msg.req_id === req_id) {
-        console.log("bs", msg);
+        // console.log("bs", msg);
         switch (msg.type) {
           case "start-download":
             console.log("开始", task_name);
@@ -349,6 +351,10 @@ export class BlockServiceProvider extends FLP_Tool {
           case "end-download":
             console.log("完成", task_name);
             task.resolve();
+            break;
+          case "use-flow":
+            this.appSetting.settings.sync_data_flow +=
+              (+msg.data.up || 0) + (+msg.data.down || 0);
             break;
           case "progress":
             console.log("下载中", task_name, msg.data);

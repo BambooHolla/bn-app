@@ -419,7 +419,7 @@ export class ChainListComponent extends AniBase {
   }
   // 元素高度
   get item_height() {
-    return this.renderer_width *  0.55;//0.62;
+    return this.renderer_width * 0.55; //0.62;
   }
 
   list_view = new PIXI.Container();
@@ -701,6 +701,7 @@ class BlockCard extends PIXI.Graphics {
       shadow_filter.distance = W * 0.01;
       // shadow_filter.shadowOnly = true;
       shadow_filter.color = 0x0;
+      this.shadow_filter = shadow_filter;
       this.filters = [shadow_filter];
       // 在不确定帧后再进行缓存
       let cache_fps = (100 * Math.random()) | 0;
@@ -779,6 +780,14 @@ class BlockCard extends PIXI.Graphics {
       // this.footer_container.cacheAsBitmap = false;
       this.footer_container_mask.alpha = res_aplha;
       // this.footer_container.cacheAsBitmap = true;
+      const old_cacheAsBitmap = this.shadown.cacheAsBitmap;
+      if (old_cacheAsBitmap) {
+        this.shadown.cacheAsBitmap = false;
+        this.shadow_filter.alpha = res_aplha ? 0.5 : 0.2;
+        this.shadown.cacheAsBitmap = true;
+      } else {
+        this.shadow_filter.alpha = res_aplha ? 0.5 : 0.2;
+      }
     }
   }
   shadown = new PIXI.Graphics();
@@ -840,6 +849,7 @@ class BlockCard extends PIXI.Graphics {
       text.x += ((min_content_width - text.width) / 2) * left_or_right;
     }
   }
+  shadow_filter: PIXI.filters.DropShadowFilter;
   height_content = new PIXI.Text("", this.style_header_content);
   tran_num_content = new PIXI.Text("", this.style_header_content);
   height_label = new PIXI.Text("", this.style_header_label);
@@ -942,12 +952,7 @@ class BlockCard extends PIXI.Graphics {
       need_redraw_block = true;
     } else if (this.block && !block) {
       need_redraw_block = true;
-    } /* else if (this.block
-      && !(this.block instanceof Promise)
-      && this.block.height !== this.chain_height) {
-      debugger
-      need_redraw_block = true;
-    }*/
+    }
     if (need_redraw_block) {
       this.block = block;
       if (block instanceof Promise) {
@@ -1083,37 +1088,5 @@ class CardChain extends PIXI.Container {
     s.height = H * 0.25;
     s.scale.x = s.scale.y;
     parent.addChild(s);
-    // // 绘制圈圈
-    // const top_circle = new PIXI.Graphics();
-    // top_circle.beginFill(0, 0.2);
-    // top_circle.drawCircle(unit_w * 0.15, unit_w * 0.15, unit_w * 0.15);
-    // top_circle.endFill();
-
-    // const bottom_circle = new PIXI.Graphics();
-    // bottom_circle.beginFill(0, 0.2);
-    // bottom_circle.drawCircle(unit_w * 0.15, unit_w * 0.15, unit_w * 0.15);
-    // bottom_circle.y = + unit_h * 0.2 - unit_w * 0.075;
-    // bottom_circle.endFill();
-
-    // const chain_line = new PIXI.Graphics();
-    // chain_line.beginFill(0xffffff, 1);
-    // chain_line.drawRoundedRect(0, 0, unit_w * 0.1, unit_h * 0.2, unit_w * 0.05);
-    // chain_line.x = unit_w * 0.1;
-    // chain_line.y = unit_w * 0.1;
-    // chain_line.endFill();
-    // const shadow_filter = new PIXI.filters.DropShadowFilter();
-    // shadow_filter.alpha = 0.3;
-    // shadow_filter.blur = unit_w * 0.05;
-    // // shadow_filter.rotation = 90;
-    // shadow_filter.quality = 3;
-    // shadow_filter.distance = unit_w * 0.02;
-    // // shadow_filter.shadowOnly = true;
-    // shadow_filter.color = 0x0;
-    // chain_line.filters = [shadow_filter];
-
-    // // end
-    // parent.addChild(top_circle);
-    // parent.addChild(bottom_circle);
-    // parent.addChild(chain_line);
   }
 }

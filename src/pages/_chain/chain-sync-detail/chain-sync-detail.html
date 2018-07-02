@@ -4,5 +4,82 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-	
+  <div class="progress-wrapper">
+    <sync-progress-spinner class="spinner"></sync-progress-spinner>
+    <div class="sync-progress-detail">
+      <div class="item sync-blocks">
+        <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
+        </i>
+        </i>
+        <div class="label">{{'SYNC_BLOCKS'|translate}}</div>
+        <div class="progress">{{toFixed(sync_progress_blocks,2,2)}}%</div>
+      </div>
+      <div class="item sync-transactions">
+        <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
+        </i>
+        </i>
+        <div class="label">{{'SYNC_TRANSACTIONS'|translate}}</div>
+        <div class="progress">{{toFixed(sync_progress_transactions,2,2)}}%</div>
+      </div>
+      <div class="item sync-equitys">
+        <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
+        </i>
+        </i>
+        <div class="label">{{'SYNC_EQUITYS'|translate}}</div>
+        <div class="progress">{{toFixed(sync_progress_equitys,2,2)}}%</div>
+      </div>
+    </div>
+    <div class="general-progress">
+      <div class="value">
+        <span class="left"></span>
+        <span class="center">{{general_progress}}</span>
+        <span class="right unit">%</span>
+      </div>
+      <div class="label">{{'GENERAL_PROGRESS'|translate}}</div>
+    </div>
+    <div class="peer-num">
+      <div class="label">{{'NUMBER_OF_PEERS'|translate}}</div>
+      <div class="value">1</div>
+    </div>
+  </div>
+  <div class="extends-info">
+    <div class="top header">
+      <ali-icon name="ifm-liuliang"></ali-icon>
+      {{'SYNCHRONOUS_TRAFFIC'|translate}}
+    </div>
+    <div class="center">
+      <div class="value">
+        {{sync_data_flow_info.value}}
+      </div>
+      <div class="unit">
+        {{sync_data_flow_info.unit}}
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="left">
+        <div class="label">
+          <ali-icon name="ifm-resize-height"></ali-icon>
+          {{'CURRENT_BLOCKCHAIN_HEIGHT'|translate}}
+        </div>
+        <div class="detail">
+          {{block_height}}
+        </div>
+      </div>
+      <div class="center"></div>
+      <div class="right">
+        <div class="label">
+          <ali-icon name="ifm-start-time"></ali-icon>
+          {{'SYNC_START_TIME'|translate}}
+        </div>
+        <div class="detail">
+          {{sync_start_time|amDateFormat:"MM-DD HH:mm"}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <button class="sync-background" (click)="syncInBackground()">
+      <span class="inner">{{'SYNC_BACKGROUND'|translate}}</span>
+    </button>
+  </div>
 </ion-content>

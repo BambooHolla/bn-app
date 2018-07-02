@@ -80,7 +80,7 @@ export class FLP_Lifecycle extends FLP_Tool
       // 视图处于离线状态，监听视图激活
       const check_id = `${
         this.instance_id
-        }:notifyViewEvent:${evetname}:${description}`;
+      }:notifyViewEvent:${evetname}:${description}`;
       if (!emitter[check_id]) {
         emitter[check_id] = true;
         this.event.once("willEnter", () => {
@@ -142,6 +142,15 @@ export class FLP_Lifecycle extends FLP_Tool
 
   @FLP_Tool.FromGlobal myapp!: any;
   cdRef?: ChangeDetectorRef;
+  markForCheck() {
+    if (this.cdRef) {
+      this.markForCheck = () => {
+        this.cdRef!.markForCheck();
+      };
+      this.markForCheck();
+      return;
+    }
+  }
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;
     if (this.cdRef instanceof ChangeDetectorRef) {
@@ -206,7 +215,7 @@ export class FLP_Lifecycle extends FLP_Tool
       `%cdispatchEvent %cfire_event_name %c${this.cname}`,
       "color:blue;",
       "color:inherit;",
-      "color:green;"
+      "color:green;",
     );
     for (var { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {

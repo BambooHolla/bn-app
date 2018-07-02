@@ -91,4 +91,22 @@ ali-icon {
       }
     }
   }
+  &[name="ifm-sync-progress"] {
+    > .ifmicon {
+      position: relative;
+      &::before {
+        content: " ";
+        background-image: url("../assets/icon/LOADING.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        color: transparent; /* 需要来占位不然heigth和width撑不起来 */
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+  }
 }

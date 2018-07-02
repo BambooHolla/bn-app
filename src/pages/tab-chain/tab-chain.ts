@@ -140,43 +140,24 @@ export class TabChainPage extends FirstLevelPage {
     const endHeight = min_height_block.height;
     const max_end_height = latest_block.height;
     await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
+    // 记录第一次同步区块的时间
+    if (!this.appSetting.settings.sync_start_time) {
+      this.appSetting.settings.sync_start_time = Date.now();
+    }
     // 开始下载
     this.downloadBlock(startHeight, endHeight, max_end_height);
   }
 
-  loading_dialog?: Loading;
-
-  /*显示loading*/
-  @TabChainPage.didEnter
-  showLoading() {
-    if (this._download_task && !this.loading_dialog) {
-      this.loading_dialog = this.loadingCtrl.create({
-        cssClass: "can-tap",
-        showBackdrop: false,
-      });
-      this.loading_dialog.present();
-      this.setProgress(this.cur_sync_progres);
-    }
-  }
-  /*关闭loading*/
-  @TabChainPage.didLeave
-  closeLoading() {
-    if (this.loading_dialog) {
-      this.loading_dialog.dismiss();
-      this.cdRef.markForCheck();
-      this.loading_dialog = undefined;
-    }
-  }
-  cur_sync_progres = 0;
+  /*下载进度的相关属性*/
+  is_show_sync_loading = false;
+  cur_sync_progress = 0;
+  sync_progress_fixed = "00.00";
   /*改变loading文本*/
   setProgress = async (progress: number) => {
-    this.cur_sync_progres = progress;
-    if (this.loading_dialog) {
-      this.loading_dialog.setContent(
-        await this.getTranslate("FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#", {
-          progress: ("0" + progress.toFixed(2)).substr(-5),
-        }),
-      );
+    this.cur_sync_progress = progress;
+    this.appSetting.settings.sync_progress_blocks = progress;
+    if (this.is_show_sync_loading) {
+      this.sync_progress_fixed = ("0" + progress.toFixed(2)).substr(-5);
       this.cdRef.markForCheck();
     }
   };
@@ -204,15 +185,18 @@ export class TabChainPage extends FirstLevelPage {
       // this._download_worker = worker;
       const onmessage = e => {
         const msg = e.data;
-        console.log("bs", msg);
+        // console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
           switch (msg.type) {
             case "start-download":
-              this.showLoading();
+              this.is_show_sync_loading = true;
+              this.cdRef.markForCheck();
               break;
             case "end-download":
-              this.closeLoading();
-              // this._download_worker = undefined;
+              // 结束下载，进度设置成100%
+              this.appSetting.settings.sync_progress_blocks = 100;
+              this.is_show_sync_loading = false;
+              this.cdRef.markForCheck();
               break;
             case "progress":
               this.setProgress(msg.data);

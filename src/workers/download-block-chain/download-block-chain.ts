@@ -2,6 +2,7 @@ import shareProto from "../../shareProto";
 import EventEmitter from "eventemitter3";
 import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 import { Mdb } from "../../providers/mdb";
+// import { getJsonObjectByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
 
 export type BlockModel = import("../../providers/block-service/block-service").BlockModel;
 
@@ -160,6 +161,11 @@ export class BlockChainDownloader extends EventEmitter {
       "progress",
       ((ownEndHeight - 1 - cur_start_height) / total) * 100,
     );
+    // 统计消耗流量
+    this.emit("use-flow", {
+      up: 70, // 上传：70+, 平均72
+      down: blocks_buffer.length,
+    });
   }
   // async getLocal
 }
