@@ -130,7 +130,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   @asyncCtrlGenerator.error(() =>
     SignInAndSignUpPage.getTranslate("LOGIN_ERROR"),
   )
-  // @asyncCtrlGenerator.loading(() => SignInAndSignUpPage.getTranslate("LOGINNG"))
+  // @asyncCtrlGenerator.loading("@@LOGINNG")
   async doLogin() {
     if (
       this.pwd_by_register === this.formData.pwd &&
@@ -156,7 +156,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     );
     if (result) {
       // this.routeTo("scan-nodes");
-      await this.myapp.openPage(MainPage, undefined, null);
+      await this.myapp.openPage(MainPage, undefined, null/*"@@LOGINNG"*/);
     }
   }
   gotoRegister() {

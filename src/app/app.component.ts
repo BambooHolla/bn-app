@@ -31,6 +31,7 @@ import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { global } from "../bnqkl-framework/helper";
+import { translateMessage } from "../bnqkl-framework/FLP_Tool";
 
 import { CommonTransition } from "./common.transition";
 import {
@@ -48,7 +49,7 @@ if (
   }
 }
 // 强行让SecondLevelPage编译进来
-(function noop(x){})(SecondLevelPage);
+(function noop(x) {})(SecondLevelPage);
 
 enum FAIO_CHECK {
   Login,
@@ -294,29 +295,29 @@ export class MyApp implements OnInit {
         if (!(await this.showFAIO(FAIO_CHECK.Login))) {
           return;
         }
-        // if (loading_content === undefined) {
-        //   loading_content = await this.translate.get("LOGINNG").toPromise();
-        // }
+        if (loading_content) {
+          loading_content = await translateMessage(loading_content);
+        }
       }
 
       this.currentPage = page;
-      // const loadinger = loading_content
-      //   ? this.loadingCtrl.create({
-      //       content: loading_content,
-      //     })
-      //   : null;
-      // await (loadinger && loadinger.present());
-      // try {
-      if (this.nav) {
-        await this.nav.setRoot(page);
-      } else {
-        await this._onNavInitedPromise.promise.then(() => {
-          return this.nav && this.nav.setRoot(page);
-        });
+      const loadinger = loading_content
+        ? this.loadingCtrl.create({
+            content: loading_content,
+          })
+        : this.loadingCtrl.create();
+      await (loadinger && loadinger.present());
+      try {
+        if (this.nav) {
+          await this.nav.setRoot(page);
+        } else {
+          await this._onNavInitedPromise.promise.then(() => {
+            return this.nav && this.nav.setRoot(page);
+          });
+        }
+      } finally {
+        await (loadinger && loadinger.dismiss());
       }
-      // } finally {
-      //   await (loadinger && loadinger.dismiss());
-      // }
     } finally {
       // 还原临时对象
       this._currentOpeningPage = this.currentPage;
