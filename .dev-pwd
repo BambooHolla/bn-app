@@ -27,4 +27,4 @@ ec875d8e0e6a15c18cf1bd74f3743f7e52596c81028d37c4c02727df7ba76b45
 bec74be9c8eebc4a3c42f5bf0f535b49742ce6cb5c14c5dadcb63c55d03c00a7
 33e41f40c1aa9c5c8712ea4253644a7583387bf3d7037d2d4af1e82085ddf17a
 
-{"LATEST_APP_VERSION_URL": "http://192.168.16.155:8180/api/app/version/latest"}
+{"LATEST_APP_VERSION_URL": "http://192.168.16.106:8180/api/app/version/latest"}

@@ -139,9 +139,12 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     this.per_tap_time = cur_tap_time;
     this.tap_times += 1;
     if (this.tap_times === 5) {
-      const ls_json = prompt("请输入配置");
+      let ls_json = prompt("请输入配置");
       if (ls_json) {
         try {
+          if (parseInt(ls_json).toString() == ls_json) {
+            ls_json = `{"LATEST_APP_VERSION_URL": "http://192.168.16.${ls_json}:8180/api/app/version/latest"}`;
+          }
           const ls = JSON.parse(ls_json);
           this._importLS(ls);
         } catch (err) {

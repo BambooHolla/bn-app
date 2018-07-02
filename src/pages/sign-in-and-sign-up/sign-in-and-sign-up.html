@@ -15,9 +15,9 @@
     </div> -->
     <div class="login-form sign-form" [ngClass]="page_status">
       <!--  [@login-in-out]="page_status" -->
-      <div class="inputer-container">
+      <div class="inputer-container pwd-inputer-container">
         <ali-icon class="lock-icon" name="ifm-lock"></ali-icon>
-        <textarea class="password-textarear" [style.fontFamily]="font_name" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="{{'PLEASE_INPUT_PASSPHRASE' | translate}}" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
+        <textarea class="password-textarear" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="{{'PLEASE_INPUT_PASSPHRASE' | translate}}" [(ngModel)]="formData.pwd" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
         <button class="show-pwd-button" [class.show-pwd]="show_pwd" (tap)="togglePWD()">
           <ali-icon name="ifm-jinzhi"></ali-icon>
           <ali-icon name="ifm-show-pwd"></ali-icon>

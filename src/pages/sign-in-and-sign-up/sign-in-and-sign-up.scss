@@ -52,10 +52,10 @@ page-sign-in-and-sign-up {
   }
   @keyframes rotate-bg3 {
     0% {
-      transform: rotate(0deg);
+      transform: rotate(0deg) translateZ(0);
     }
     100% {
-      transform: rotate(360deg);
+      transform: rotate(360deg) translateZ(0);
     }
   }
   .net-select-button {
@@ -176,6 +176,28 @@ page-sign-in-and-sign-up {
       .inputer-container {
         position: relative;
         width: 72vw;
+        &.pwd-inputer-container::after {
+          margin-top: 2.5rem;
+          content: " ";
+          top: 0;
+          left: 0;
+          display: block;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            to bottom,
+            rgba(#fff, 0.5) 0%,
+            rgba(#fff, 0.5) 2%,
+            transparent 2%,
+            transparent 100%
+          );
+          background-size: 100% 4rem;
+          background-position: 0 3rem;
+          background-attachment: local;
+          z-index: 0;
+          pointer-events: none;
+        }
         .password-inputer-wrapper {
           position: relative;
           ali-icon {
@@ -233,19 +255,12 @@ page-sign-in-and-sign-up {
           overflow-y: visible;
           font-family: "PWD";
           font-size: 1.4rem;
-          background: linear-gradient(
-            to bottom,
-            rgba(#fff, 0.5) 0%,
-            rgba(#fff, 0.5) 2%,
-            transparent 2%,
-            transparent 100%
-          );
-          background-size: 100% 4rem;
-          background-position: 0 3rem;
-          background-attachment: local;
+          position: relative;
+          background: transparent;
           // letter-spacing: 6px;
           &.show-pwd {
-            font-family: "monospace", "Menlo" !important;
+            /* font-family: "monospace", "Menlo" !important; */
+            filter: blur(3.4px) drop-shadow(1px 1px 3px #FFF);
           }
           &::selection {
             // color: transparent;

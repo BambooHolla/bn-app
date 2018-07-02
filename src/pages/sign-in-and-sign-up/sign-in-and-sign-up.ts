@@ -21,7 +21,6 @@ import { MyApp } from "../../app/app.component";
 // } from "./sign-in-and-sign-up.animations";
 import { MainPage } from "../pages";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
-import plumin from "plumin.js";
 
 // @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -107,25 +106,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       this.autoReHeightPWDTextArea();
     });
   }
-  pwd_font_char_map = new Map();
-  pwd_font = (() => {
-    // const canvas_ele = document.createElement("canvas");
-    // canvas_ele.style.display = "none";
-    // document.body.appendChild(canvas_ele);
-    plumin.setup({
-      width: 1024,
-      height: 1024,
-    });
 
-    return new plumin.Font({
-      familyName: "PWD",
-      ascender: 800,
-      descender: -200,
-    });
-  })();
-  hiddenPwd() {
-    this.generatePWDFont();
-  }
   font_name: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("PWD");
   @ViewChild("fontCalc") fontCalcEle?: ElementRef;
   calcFontWidth(c): number {
@@ -136,72 +117,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     }
     return 0;
   }
-  generatePWDFont() {
-    const { pwd_font_char_map } = this;
-    const pwd_str = this.formData.pwd;
-    const new_char_list: any[] = [];
-    for (var i = 0; i < pwd_str.length; i += 1) {
-      const char = pwd_str[i];
-      if (pwd_font_char_map.has(char)) {
-        continue;
-      }
-      const char_width = this.calcFontWidth(char);
-      if (/\s/.test(char)) {
-        continue;
-      }
-      if (!char_width) {
-        // 可能有回车符号之类的不可见符号
-        continue;
-      }
-      const char_g = new plumin.Glyph({
-        name: "PWD:" + char,
-        unicode: char,
-        advanceWidth: 76.57 * char_width, //536,
-      });
 
-      const shape = new plumin.Path.Ellipse({
-        point: [50, 0],
-        size: [436, 510],
-      });
-      char_g.addContour(shape);
-      new_char_list.push(char_g);
-      pwd_font_char_map.set(char, char_g);
-    }
-    // if (new_char_list.length) {
-    //   // const font_name =
-    //   //   "PWD-" +
-    //   //   Date.now()
-    //   //     .toString(36)
-    //   //     .substr(2);
-    //   // this.font_name = this.domSanitizer.bypassSecurityTrustStyle(font_name);
-    //   // const pwd_font = new plumin.Font({
-    //   //   familyName: font_name,
-    //   //   ascender: 800,
-    //   //   descender: -200,
-    //   // });
-    //   const font_name = "PWD";
-    //   const { pwd_font } = this;
-    //   pwd_font.addGlyphs(new_char_list);
-    //   pwd_font.updateOTCommands();
-    //   pwd_font.addToFonts(undefined, font_name, true);
-    // }
-    const font_name =
-      "PWD-" +
-      Date.now()
-        .toString(36)
-        .substr(2);
-    this.font_name = this.domSanitizer.bypassSecurityTrustStyle(font_name);
-    const pwd_font = new plumin.Font({
-      familyName: font_name,
-      ascender: 800,
-      descender: -200,
-    });
-    this.pwd_font = pwd_font;
-
-    pwd_font.addGlyphs([...pwd_font_char_map.values()]);
-    pwd_font.updateOTCommands();
-    pwd_font.addToFonts(undefined, font_name, true);
-  }
 
   page_status = "login";
   gotoLogin() {
@@ -249,7 +165,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   get canDoRegister() {
     return true; //this.allHaveValues(this.formData);
   }
-
+  @asyncCtrlGenerator.single()
   async doRegister() {
     // // let peers = await this.peerService.getAllPeers();
     // let sortPeer = await this.peerService.sortPeers();
@@ -271,7 +187,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     this.formData.pwd = passphrase;
     this.pwd_by_register = passphrase;
     this.show_pwd = true;
-    this.hiddenPwd();
+
     this.platform.raf(() => {
       this.autoReHeightPWDTextArea(true);
     });
