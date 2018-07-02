@@ -61,6 +61,10 @@
   "ABOUT_IBT_INFO":
     "IFMChain是全球首款可接入移动终端的区块链3.0产品，IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
 
+  "//": "account-faq",
+  "ACCOUNT-FAQ": "帮助中心",
+  "COMMON_PROBLEM": "常见问题",
+
   "//": "account-voucher-wallet",
   "ACCOUNT-VOUCHER-WALLET": "离线权益",
   "VOUCHER_CONFIRMED": "已 兑",
@@ -215,6 +219,26 @@
   "GET_PRE_BLOCK_ID_ERROR": "获取前块ID出错",
   "FIRST_VIEW_BLOCK_REMARK_TIP":
     "该备注信息由锻造区块的矿工填写，请注意分辨内容。",
+
+  "//": "chain-sync-detail",
+  "CHAIN-SYNC-DETAIL": "数据同步",
+  "SYNC_BLOCKS": "同步区块",
+  "SYNC_TRANSACTIONS": "同步交易",
+  "SYNC_EQUITYS": "同步权益",
+  "TOTAL_PROGRESS": "总进度",
+  "NUMBER_OF_PEERS": "节点数",
+  "SYNCHRONOUS_TRAFFIC": "同步流量",
+  "CURRENT_BLOCKCHAIN_HEIGHT": "当前区块高度",
+  "SYNC_START_TIME": "开始时间",
+
+  "//": "chain-reward-detail",
+  "CHAIN-REWARD-DETAIL": "区块奖励来源与分配",
+  "TOTAL_REWARDS_OF_BLOCK": "区块奖励总数",
+  "BLOCK_FORGE_AWARD": "区块锻造奖励",
+  "FORGING_FEES": "手续费",
+  "BLOCK_REWARD_DISTRIBUTION": "区块奖励分配",
+  "BLOCK_GENERATOR": "区块锻造者",
+  "BLOCK_VOTER": "投票人",
 
   "//": "chain-transaction-detail",
   "CHAIN-TRANSACTION-DETAIL": "交易明细",

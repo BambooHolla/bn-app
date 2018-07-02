@@ -20,6 +20,8 @@ import { MacArk_2Component } from "./mac-ark-2/mac-ark-2";
 import { UsageProgressComponent } from "./usage-progress/usage-progress";
 import { OfflineTransactionTicketComponent } from "./offline-transaction-ticket/offline-transaction-ticket";
 import { ChainListComponent } from "./chain-list/chain-list";
+import { VoteExpectedProfitsComponent } from './vote-expected-profits/vote-expected-profits';
+import { SyncProgressSpinnerComponent } from './sync-progress-spinner/sync-progress-spinner';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { ChainListComponent } from "./chain-list/chain-list";
     UsageProgressComponent,
     OfflineTransactionTicketComponent,
     ChainListComponent,
+    VoteExpectedProfitsComponent,
+    SyncProgressSpinnerComponent,
   ],
   imports: [],
   exports: [
@@ -68,6 +72,8 @@ import { ChainListComponent } from "./chain-list/chain-list";
     UsageProgressComponent,
     OfflineTransactionTicketComponent,
     ChainListComponent,
+    VoteExpectedProfitsComponent,
+    SyncProgressSpinnerComponent,
   ],
 })
 export class ComponentsModule {}

@@ -162,54 +162,7 @@ export class BuddhaGlowComponent extends AniBase {
   }
   loop_skip = 2; // 跳2帧，20fps
   lights: PIXI.Sprite[] = [];
-  static createLinearGradient(
-    x1 = 300,
-    y1 = 0,
-    stops = [[0, "#FFF"], [1, "#000"]],
-  ) {
-    var canvas = document.createElement("canvas");
-    const size = Math.max(x1, y1);
-    const min = Math.min(x1, y1);
-    if (x1 < y1) {
-      canvas.height = size;
-      canvas.width = min || 1;
-    } else {
-      canvas.width = size;
-      canvas.height = min || 1;
-    }
 
-    var ctx = canvas.getContext("2d");
-    if (ctx) {
-      var gradient = ctx.createLinearGradient(0, 0, x1, y1);
-      stops.forEach(stop => {
-        gradient.addColorStop(stop[0] as number, stop[1] as string);
-      });
-      ctx.fillStyle = gradient;
-
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-    return canvas;
-  }
-  static createRadialGradient(r = 300, stops = [[0, "#FFF"], [1, "#000"]]) {
-    var canvas = document.createElement("canvas");
-
-    canvas.height = r;
-    canvas.width = r;
-
-    const half_r = r / 2;
-
-    var ctx = canvas.getContext("2d");
-    if (ctx) {
-      var gradient = ctx.createRadialGradient(half_r, 0, half_r, half_r, 0, 0);
-      stops.forEach(stop => {
-        gradient.addColorStop(stop[0] as number, stop[1] as string);
-      });
-      ctx.fillStyle = gradient;
-
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-    return canvas;
-  }
   startPixiApp() {
     this.app && this.app.start();
   }

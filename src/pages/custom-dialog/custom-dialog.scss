@@ -52,6 +52,8 @@ page-custom-dialog {
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      padding-top: 1.7rem;
+      padding-bottom: 1rem;
       > .icon {
         flex: 1;
         font-size: 5.6rem;
@@ -100,8 +102,6 @@ page-custom-dialog {
         align-items: center;
         color: #787878;
         text-align: center;
-        padding-top: 1.7rem;
-        padding-bottom: 1rem;
         > .title {
           padding: 0 0.5rem;
           padding-bottom: 0.5rem;
