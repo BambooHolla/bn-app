@@ -135,11 +135,9 @@ export class AccountServiceProvider {
    * @param {string} address
    * @returns {Promise<any>}
    */
-  async getAccountByAddress(address: string): Promise<TYPE.AccountModel> {
-    let data = await this.fetch.get<any>(this.GET_USER, {
-      search: {
-        address: address,
-      },
+  async getAccountByAddress(address: string) {
+    const data = await this.fetch.get<TYPE.AccountResModel>(this.GET_USER, {
+      search: { address },
     });
     return data.account;
   }
@@ -149,12 +147,13 @@ export class AccountServiceProvider {
    * @param {string} username
    * @returns {Promise<any>}
    */
-  async getAccountByUsername(username: string): Promise<TYPE.AccountModel> {
-    let data = await this.fetch.get<any>(this.GET_USER_BY_USERNAME, {
-      search: {
-        username: username,
+  async getAccountByUsername(username: string) {
+    const data = await this.fetch.get<TYPE.AccountResModel>(
+      this.GET_USER_BY_USERNAME,
+      {
+        search: { username },
       },
-    });
+    );
 
     return data.account;
   }

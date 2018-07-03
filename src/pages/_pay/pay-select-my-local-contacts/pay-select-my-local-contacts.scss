@@ -1,0 +1,52 @@
+page-pay-select-my-local-contacts {
+  .list {
+    width: 100%;
+    background-color: #eeeeee;
+    color: #7a7a7a;
+    > .item {
+      &:hover {
+        background-color: #f9f9f9;
+      }
+      height: 5rem;
+      padding: 0 1.4rem;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      margin-bottom: 1px;
+      > .left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+      }
+      > .right {
+        margin-left: auto;
+        justify-self: flex-end;
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+  .contact-list {
+    > .divider {
+      color: #505050;
+      height: 2rem;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      padding-left: 1.4rem;
+      font-weight: 600;
+    }
+  }
+  .fast-nav {
+    position: fixed;
+    width: 2rem;
+    right: 0;
+    font-size: 1.3rem;
+    color: #505050;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    bottom: 0;
+  }
+}

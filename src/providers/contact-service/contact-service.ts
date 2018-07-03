@@ -281,9 +281,9 @@ export class ContactServiceProvider {
    */
   async searchContact(address?: string, username?: string) {
     if (address) {
-      return await this.accountService.getAccountByAddress;
+      return await this.accountService.getAccountByAddress(address);
     } else if (username) {
-      return await this.accountService.getAccountByUsername;
+      return await this.accountService.getAccountByUsername(username);
     } else {
       return null;
     }

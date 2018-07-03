@@ -255,6 +255,7 @@
   "TRANSCATION_RECIPIENT": "接收者",
 
   "//": "account-my-contacts",
+  "ACCOUNT-MY-CONTACTS": "我的联系人",
   "CONFIRM_TO_IGNORE_THIS_CONTACT": "确定要将此联系人拉入黑名单？",
   "ADD_UNCONFIRM_CONTACT_TITLE": "同意添加联系人",
   "REMOVE_CONFIRMED_CONTACT_TITLE": "移除联系人",
@@ -268,6 +269,23 @@
   "REMOVE_CONTACT_SUBMIT_SUCCESS": "删除联系人广播成功",
   "CONFIRM_TO_REMOVE_CONTACT": "确定要删除联系人吗？",
   "SET_REMARK": "备注",
+  "SCAN_QRCOED_TO_ADD_CONTACT": "扫码添加联系人",
+  "INPUT_ADDRESS_TO_ADD_CONTACT": "输入地址添加联系人",
+  "UNCONFIM_CONTACT_LIST": "等待确认列表",
+  "NO_CONTACT": "暂无联系人",
+  "LOADING_CONTACT": "同步联系人中……",
+  "SEARCH_#NUM#_CONTACTS": "搜索{{num}}位联系人",
+  "ADD_CONTACT": "添加联系人",
+
+  "//": "account-my-local-contacts",
+  "ACCOUNT-MY-LOCAL-CONTACTS": "我的联系人",
+  "ADD_LOCAL_CONTACT_SUBMIT_ERROR": "同意添加联系人失败",
+  "ADD_LOCAL_CONTACT_SUBMITING": "同意添加联系人中",
+  "ADD_LOCAL_CONTACT_SUBMIT_SUCCESS": "同意添加联系人成功",
+  "REMOVE_LOCAL_CONTACT_SUBMIT_ERROR": "删除联系人失败",
+  "REMOVE_LOCAL_CONTACT_SUBMITING": "删除联系人中",
+  "REMOVE_LOCAL_CONTACT_SUBMIT_SUCCESS": "删除联系人成功",
+  "CONFIRM_TO_REMOVE_LOCAL_CONTACT": "确定要删除联系人吗？",
 
   "//": "account-contact-detail",
   "ACCOUNT-CONTACT-DETAIL": "详细信息",
@@ -277,9 +295,11 @@
   "ACCOUNT-REMARK-CONTACT": "设置备注及标签",
   "REMAKR_NICKNAME": "备注名",
   "CLASSIFY_CONTACTS_BY_TAG": "通过标签给联系人进行分类",
-  "ADD_REMARK_PHONE": "添加电话号码",
+  "ADD_REMARK_PHONE_NUMBER": "添加电话号码",
   "ADD_MORE_INFORMATION_REMARKS": "添加更多备注信息",
   "ADD_REAMRK_PHOTO": "添加名片或相关图片",
+  "REMAKR_ONLY_SAVE_ON_LOCAL_TIP":
+    "备注信息保存在本机上，更换手机是备注信息需要重新设置",
 
   "//": "account-remark-contact-tags",
   "ACCOUNT-REMARK-CONTACT-TAGS": "添加标签",
@@ -295,6 +315,13 @@
   "CONFIRM_THEN_ADD": "确定添加",
   "ADD_CONTACT_ERROR": "添加联系人失败",
   "ADD_CONTACT_SUCCESS": "添加联系人成功",
+
+  "//": "account-add-local-contact",
+  "ACCOUNT-ADD-LOCAL-CONTACT": "添加联系人",
+  "ACCOUNT_NO_FOUND": "找不到指定账户",
+  "ADD_LOCAL_CONTACT_ERROR": "添加联系人失败",
+  "COULD_NOT_ADD_SELF_AS_CONTACT": "不可以添加自己作为联系人",
+  "ADD_LOCAL_CONTACT_SUCCESS": "添加联系人成功",
 
   "//": "account-dapp-list",
   "ACCOUNT-DAPP-LIST": "我的应用",
@@ -322,16 +349,6 @@
   "GET_FORGIN_BLOCK_ERROR": "获取委托人打造的区块出错",
   "LOADING_MORE_FOGIN_BLOCK_LIST": "加载更多打快节点中……",
 
-  "//": "account-my-contacts",
-  "ACCOUNT-MY-CONTACTS": "我的联系人",
-  "SCAN_QRCOED_TO_ADD_CONTACT": "扫码添加联系人",
-  "INPUT_ADDRESS_TO_ADD_CONTACT": "输入地址添加联系人",
-  "UNCONFIM_CONTACT_LIST": "等待确认列表",
-  "NO_CONTACT": "暂无联系人",
-  "LOADING_CONTACT": "同步联系人中……",
-  "SEARCH_#NUM#_CONTACTS": "搜索{{num}}位联系人",
-  "ADD_CONTACT": "添加联系人",
-
   "//": "pay-receive",
   "PAY-RECEIVE": "接收",
   "RECENT": "最近",
@@ -341,6 +358,9 @@
 
   "//": "pay-select-my-contacts",
   "PAY-SELECT-MY-CONTACTS": "选择联系人",
+
+  "//": "pay-select-my-local-contacts",
+  "PAY-SELECT-MY-LOCAL-CONTACTS": "选择联系人",
 
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "离线支付",
@@ -688,6 +708,7 @@
   "NOT_MORE_VOTE_ABLE_DELEGATE": "没有可投的委托人",
   "NOT_ENOUGH_BALANCE_TO_VOTE": "挖矿手续费不足",
   "Invalid passphrase": "登录密码错误",
+  "CONTACT_ALREADY_EXISTS": "联系人已经存在",
 
   "//": "OVER"
 }

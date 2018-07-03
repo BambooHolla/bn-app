@@ -144,8 +144,16 @@ export class FLP_Lifecycle extends FLP_Tool
   cdRef?: ChangeDetectorRef;
   markForCheck() {
     if (this.cdRef) {
+      let one_lock;
       this.markForCheck = () => {
-        this.cdRef!.markForCheck();
+        if (one_lock) {
+          return;
+        }
+        /*microtask，把这个任务放到事件循环的最后面来做，避免重复工作*/
+        one_lock = Promise.resolve().then(() => {
+          one_lock = undefined;
+          this.cdRef!.markForCheck();
+        });
       };
       this.markForCheck();
       return;

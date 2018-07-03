@@ -59,6 +59,7 @@ page-custom-dialog {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
+        padding-bottom: 1rem;
         &.error {
           > ali-icon {
             margin-top: auto;

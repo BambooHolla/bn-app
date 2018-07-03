@@ -40,6 +40,13 @@
         font-size: 1.45rem;
       }
     }
+    > textarea {
+      background-color: transparent;
+      &::-webkit-input-placeholder {
+        color: #7b7b7b;
+        font-size: 1.45rem;
+      }
+    }
     > .right {
       margin-left: auto;
       justify-self: flex-end;

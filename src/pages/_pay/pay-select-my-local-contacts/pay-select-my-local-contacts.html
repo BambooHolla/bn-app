@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{'PAY-SELECT-MY-LOCAL-CONTACTS'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="contact-list list">
+    <ng-container *ngFor="let letter_contacts of grouped_contact_list;trackBy:listTrackBy">
+      <div class="divider">{{letter_contacts.letter}}</div>
+      <div class="item" *ngFor="let contact of letter_contacts.list" (click)="tapContact(contact)">
+        <div class="left">
+          <div class="username" *ngIf="contact.username">{{contact.username}}</div>
+          <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
+        </div>
+      </div>
+    </ng-container>
+    <div class="divider" *ngIf="!loading_my_contact_list&&my_contact_list.length==0">
+      <i>{{'NO_CONTACT'|translate}}</i>
+    </div>
+  </div>
+    <div class="fast-nav">
+    <ali-icon name="ifm-sousuo"></ali-icon>
+    <div class="item" *ngFor="let letter_contacts of my_contact_list">
+      {{letter_contacts.letter}}
+    </div>
+  </div>
+</ion-content>

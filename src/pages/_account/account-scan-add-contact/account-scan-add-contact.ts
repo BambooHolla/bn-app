@@ -245,6 +245,16 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       m.onDidDismiss(() => {
         this.finishJob();
       });
+    } else if (mode === "try-to-add-local-contact") {
+      const m = this.modalCtrl.create("account-add-local-contact", {
+        address: res,
+        auto_search: true,
+        showCloseButton: true,
+      });
+      m.present();
+      m.onDidDismiss(() => {
+        this.finishJob();
+      });
     } else {
       this.jobRes(res);
       this.finishJob();

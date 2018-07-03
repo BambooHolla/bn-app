@@ -123,6 +123,7 @@ export function asyncErrorWrapGenerator(
           const _dialogGenerator = dialogGenerator;
 
           error_title = translateMessage(error_title, err);
+          err_msg = translateMessage(err_msg, err);
 
           Promise.all([
             error_title,

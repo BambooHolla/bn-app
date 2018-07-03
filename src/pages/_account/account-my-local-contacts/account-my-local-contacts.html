@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{'ACCOUNT-MY-LOCAL-CONTACTS'|translate}}</ion-title>
+    <ion-buttons right>
+      <button [title]="'SCAN_QRCOED_TO_ADD_CONTACT'|translate" (click)="routeTo('account-scan-add-contact',{auto_return:true,title:getTranslateSync('SCAN_QR_CODE_TO_ADD_CONTACT'),mode:'try-to-add-contact'})">
+        <ali-icon name="ifm-scan"></ali-icon>
+      </button>
+      <button [title]="'INPUT_ADDRESS_TO_ADD_CONTACT'|translate" (click)="routeTo('account-add-local-contact',{auto_return:true})">
+        <ali-icon name="ifm-add"></ali-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <!-- <div class="search-bar common-form">
+    <div class="input-container search-contact">
+      <input type="text" [placeholder]="search_placeholder">
+    </div>
+  </div> -->
+  <ion-list class="contact-list list">
+    <div *ngIf="list_placeholder" class="divider">{{search_placeholder}}</div>
+    <ng-container *ngFor="let letter_contacts of grouped_contact_list;trackBy:listTrackBy">
+      <div class="divider">{{letter_contacts.letter}}</div>
+      <ion-item-sliding *ngFor="let contact of letter_contacts.list">
+        <ion-item (click)="routeTo('account-contact-detail', {contact:contact})"><!-- (click)="tryShowUserBalance(contact.address)" -->
+          <div class="left">
+            <div class="username" *ngIf="contact.username">{{contact.username}}</div>
+            <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
+          </div>
+        </ion-item>
+        <ion-item-options side="right">
+          <button class="options-item list-remark" (click)="routeTo('account-remark-contact',{contact:contact})">
+            <span class="inner">{{'SET_REMARK'|translate}}</span>
+          </button>
+          <button class="options-item list-delete" (click)="confirmToDelete(contact)">
+            <span class="inner">{{'REMOVE'|translate}}</span>
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ng-container>
+  </ion-list>
+  <div class="fast-nav">
+    <ali-icon name="ifm-sousuo"></ali-icon>
+    <div class="item" *ngFor="let letter_contacts of my_contact_list">
+      {{letter_contacts.letter}}
+    </div>
+  </div>
+</ion-content>

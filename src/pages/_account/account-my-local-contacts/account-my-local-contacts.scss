@@ -1,0 +1,81 @@
+page-account-my-local-contacts {
+  @extend .header-no-border;
+  > .header {
+    position: sticky;
+    top: 0;
+  }
+  .search-bar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+    > .search-contact {
+      background-color: #fff;
+      > input {
+        padding: 0.5rem;
+        border-radius: 0.2rem;
+        background-color: #eeeeee;
+        &::placeholder {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+  .list {
+    width: 100%;
+    background-color: #eeeeee;
+    .username {
+      color: #7a7a7a;
+      font-size: 1.4rem;
+    }
+    .address {
+      color: #7a7a7a;
+      font-size: 1.3rem;
+    }
+    .options-item {
+      font-size: 1.5rem;
+      width: 6rem;
+    }
+    .list-remark {
+      background-color: #c1c1c1;
+      color: #fff;
+    }
+    .list-delete {
+      background-color: #ff5c5b;
+      color: #fff;
+    }
+    ion-item {
+      border-bottom: 0.55px solid #eeeeee !important;
+      .item-inner {
+        border-bottom: none !important;
+      }
+    }
+    ion-item-options {
+      border-bottom: none !important;
+    }
+  }
+  .contact-list {
+    > .divider {
+      color: #505050;
+      height: 2rem;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      padding-left: 1.4rem;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+  }
+  .fast-nav {
+    position: fixed;
+    width: 2rem;
+    right: 0;
+    font-size: 1.3rem;
+    color: #505050;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    bottom: 0;
+  }
+}
