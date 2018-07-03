@@ -110,7 +110,10 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   delegate_info?: DelegateModel;
   @asyncCtrlGenerator.error()
   async loadDelegateInfo() {
-    if (this.block_info) {
+    if (
+      this.block_info &&
+      this.block_info.height !== 1 /*创世块账户不是受托人*/
+    ) {
       this.delegate_info = await this.minService.getDelegateInfo(
         this.block_info.generatorPublicKey,
       );
@@ -164,7 +167,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.loading()
   async toPerBlock() {
-    if (this.block_info&&this.block_info.previousBlock) {
+    if (this.block_info) {
       return this.initAndLoadData(this.block_info.previousBlock);
     }
   }
