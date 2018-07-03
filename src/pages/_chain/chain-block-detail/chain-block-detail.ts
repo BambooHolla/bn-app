@@ -164,7 +164,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.loading()
   async toPerBlock() {
-    if (this.block_info) {
+    if (this.block_info&&this.block_info.previousBlock) {
       return this.initAndLoadData(this.block_info.previousBlock);
     }
   }

@@ -87,7 +87,7 @@
           {{block_info?.id}}
         </div>
       </div>
-      <div class="line block-id">
+      <div class="line block-id" *ngIf="block_info?.previousBlock">
         <div class="left">
           <ali-icon name="ifm-id"></ali-icon>
           {{'BLOCK_pre_block_id'|translate}}
