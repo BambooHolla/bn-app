@@ -2,6 +2,7 @@ import { Storage } from "@ionic/storage";
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptionsArgs } from "@angular/http";
 import { TranslateService } from "@ngx-translate/core";
+import EventEmitter from "eventemitter3";
 
 import { AppUrl } from "../app-setting/app-setting";
 
@@ -76,19 +77,32 @@ export type CommonResponseData<T> = {
   result: T;
 };
 @Injectable()
-export class AppFetchProvider {
+export class AppFetchProvider extends EventEmitter {
+  private _onLine = false;
+  get onLine() {
+    return this._onLine;
+  }
+
   ServerResError = ServerResError;
   get io_url_path() {
     return AppSettingProvider.SERVER_URL + "/web";
   }
   private _io?: SocketIOClient.Socket;
   get io() {
-    return (
-      this._io ||
-      (this._io = io(this.io_url_path, {
+    if (!this._io) {
+      this._io = io(this.io_url_path, {
         transports: ["websocket"],
-      }))
-    );
+      });
+      this._io.on("connect", () => {
+        this._onLine = true;
+        this.emit("ononline");
+      });
+      this._io.on("disconnect", () => {
+        this._onLine = false;
+        this.emit("onoffline");
+      });
+    }
+    return this._io;
   }
   async ioEmitAsync<T>(path, body) {
     return this._handlePromise(
@@ -108,6 +122,7 @@ export class AppFetchProvider {
     public translateService: TranslateService,
     public dbCache: DbCacheProvider,
   ) {
+    super();
     tryRegisterGlobal("FETCH", this);
   }
 

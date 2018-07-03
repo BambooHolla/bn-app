@@ -100,6 +100,9 @@ export class BlockServiceProvider extends FLP_Tool {
             limit = Math.abs(endHeight - startHeight) + 1;
           }
         }
+        if (Number.isFinite(query.height)){
+          limit = 1;
+        }
         let sort;
         if (typeof orderBy === "string") {
           const sort_params = orderBy.split(":");

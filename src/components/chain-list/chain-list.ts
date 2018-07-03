@@ -218,8 +218,8 @@ export class ChainListComponent extends AniBase {
       velocity = 0.8 * v + 0.2 * velocity;
 
       // track
-      if (acc_move_y > 20 || now - start_timestamp > 500) {
-        // 进入滚动状态，或者进入长按状态，禁用点击
+      if (acc_move_y > 20 || now - start_timestamp > 500 || v > 500) {
+        // 进入滚动状态，或者进入长按状态，或者快速地短距离地在滚动时，禁用点击
         this.setBlockCardListTap(false);
       } else {
         // 过了阈值就不需要再累加了
@@ -228,18 +228,20 @@ export class ChainListComponent extends AniBase {
       }
     };
     // 更新视图并且检测是否未到达边缘
-    const updateAndCheckEdge = () => {
+    const updateAndCheckEdge = (force_render?: boolean) => {
       // 未到达边缘
       var res = true;
       if (list_view_y > 0) {
         list_view_y = 0;
         res = false;
+        delta = 0; // 速度归0
       } else if (-list_view_y > max_view_y) {
         list_view_y = -max_view_y;
         res = false;
+        delta = 0; // 速度归0
       }
       // 更新视野中的元素
-      this._calcInViewBlockItems(list_view_y);
+      this._calcInViewBlockItems(list_view_y, force_render);
       return res;
     };
 
@@ -288,10 +290,12 @@ export class ChainListComponent extends AniBase {
       touch_start_point = per_point = e.data.global.clone();
       list_start_y = list_view_y;
       acc_move_y = 0;
-      delta = 0; // 清空速度值
 
       velocity = amplitude = 0;
       start_timestamp = timestamp = performance.now();
+
+      delta = 0; // 清空速度值
+      updateAndCheckEdge(true); // 强制渲染一下
     });
     list_view.on("pointermove", (e: PIXI.interaction.InteractionEvent) => {
       if (touch_start_point) {
@@ -321,6 +325,7 @@ export class ChainListComponent extends AniBase {
         // 快速的点击并起来，能重新使得元素可点击
         delta = 0; // 清空速度值
         this.setBlockCardListTap(true);
+        // updateAndCheckEdge(true);// 强制渲染一下
       }
     });
     // 默认可以点击子元素
@@ -431,7 +436,10 @@ export class ChainListComponent extends AniBase {
   }
   private _pre_render_info = "";
   /*计算出目前在视野中的blockModel以及对应的坐标*/
-  private _calcInViewBlockItems(y = this._getListViewY()) {
+  private _calcInViewBlockItems(
+    y = this._getListViewY(),
+    force_render?: boolean,
+  ) {
     const {
       item_height,
       renderer_height,
@@ -457,7 +465,7 @@ export class ChainListComponent extends AniBase {
     const cur_render_info =
       from_chain_height + "," + abs_y.toFixed(1) + "," + renderer_height;
     // console.log(cur_render_info, _pre_render_info)
-    if (cur_render_info === _pre_render_info) {
+    if (cur_render_info === _pre_render_info && !force_render) {
       // console.log("tiaozhen")
       return;
     }
@@ -936,6 +944,7 @@ class BlockCard extends PIXI.Graphics {
 
     this.setCacheAsBitmap(!this._can_tap);
   }
+  private _checkRegisterDrawBlockModel = () => false;
   updateBlockModel(
     height: number,
     block: BlockModel | Promise<BlockModel> | undefined,
@@ -956,6 +965,7 @@ class BlockCard extends PIXI.Graphics {
     if (need_redraw_block) {
       this.block = block;
       if (block instanceof Promise) {
+        this._checkRegisterDrawBlockModel = () => this.block === block;
         block.then(bm => {
           if (this.block === block && this.parent) {
             this.block = bm;
