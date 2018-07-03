@@ -642,7 +642,7 @@ class BlockCard extends PIXI.Graphics {
   private _can_tap = false;
   setTapAble(can_tap: boolean) {
     this._can_tap = can_tap;
-    this.cacheAsBitmap = !can_tap;
+    this.setCacheAsBitmap(!can_tap);
     this.interactive = can_tap;
     if (can_tap) {
       // 刷新显示
@@ -783,10 +783,10 @@ class BlockCard extends PIXI.Graphics {
       const old_cacheAsBitmap = this.shadown.cacheAsBitmap;
       if (old_cacheAsBitmap) {
         this.shadown.cacheAsBitmap = false;
-        this.shadow_filter.alpha = res_aplha ? 0.5 : 0.2;
+        this.shadow_filter.alpha = res_aplha ? 0.3 : 0.2;
         this.shadown.cacheAsBitmap = true;
       } else {
-        this.shadow_filter.alpha = res_aplha ? 0.5 : 0.2;
+        this.shadow_filter.alpha = res_aplha ? 0.3 : 0.2;
       }
     }
   }
@@ -868,7 +868,7 @@ class BlockCard extends PIXI.Graphics {
   );
 
   drawLabels() {
-    this.cacheAsBitmap = false;
+    this.setCacheAsBitmap(false);
     const {
       H,
       W,
@@ -934,7 +934,7 @@ class BlockCard extends PIXI.Graphics {
       this.toggleFooterContainerMask(false);
     }
 
-    this.cacheAsBitmap = !this._can_tap;
+    this.setCacheAsBitmap(!this._can_tap);
   }
   updateBlockModel(
     height: number,
@@ -972,7 +972,7 @@ class BlockCard extends PIXI.Graphics {
     }
   }
   drawHeightContent() {
-    this.cacheAsBitmap = false;
+    this.setCacheAsBitmap(false);
     const {
       H,
       W,
@@ -986,14 +986,14 @@ class BlockCard extends PIXI.Graphics {
     height_content.y = H * 0.18;
     this._textAlignCenter(height_content, 0.16, 1);
 
-    this.cacheAsBitmap = !this._can_tap;
+    this.setCacheAsBitmap(!this._can_tap);
   }
   drawBlockModel(block: {
     numberOfTransactions: number | string;
     totalAmount: string;
     totalFee: string;
   }) {
-    this.cacheAsBitmap = false;
+    this.setCacheAsBitmap(false);
     const {
       H,
       W,
@@ -1024,10 +1024,10 @@ class BlockCard extends PIXI.Graphics {
       total_fee_content.x = right_base_line - total_fee_content.width;
       total_fee_content.y = H * 0.69;
     }
-    this.cacheAsBitmap = !this._can_tap;
+    this.setCacheAsBitmap(!this._can_tap);
   }
   undrawBlockModel() {
-    this.cacheAsBitmap = false;
+    this.setCacheAsBitmap(false);
     const {
       H,
       W,
@@ -1039,7 +1039,27 @@ class BlockCard extends PIXI.Graphics {
     tran_num_content.visible = false;
     total_amount_content.visible = false;
     total_fee_content.visible = false;
-    this.cacheAsBitmap = !this._can_tap;
+    this.setCacheAsBitmap(!this._can_tap);
+  }
+
+  private _cache_as_bitmap_ti?: number;
+  setCacheAsBitmap(v: boolean) {
+    if (v === true) {
+      if (this._cache_as_bitmap_ti) {
+        return;
+      } else {
+        this._cache_as_bitmap_ti = FLP_Tool.raf(() => {
+          this._cache_as_bitmap_ti = undefined;
+          this.cacheAsBitmap = true;
+        });
+      }
+    } else {
+      if (this._cache_as_bitmap_ti) {
+        FLP_Tool.caf(this._cache_as_bitmap_ti);
+        this._cache_as_bitmap_ti = undefined;
+      }
+      this.cacheAsBitmap = false;
+    }
   }
 }
 
