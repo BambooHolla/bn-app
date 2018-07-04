@@ -30,7 +30,7 @@
           </div>
         </ion-item>
         <ion-item-options side="right">
-          <button class="options-item list-remark" (click)="routeTo('account-remark-contact',{contact:contact})">
+          <button class="options-item list-remark" (click)="routeTo('account-remark-contact',{contact:contact,auto_return:true})">
             <span class="inner">{{'SET_REMARK'|translate}}</span>
           </button>
           <button class="options-item list-delete" (click)="confirmToDelete(contact)">

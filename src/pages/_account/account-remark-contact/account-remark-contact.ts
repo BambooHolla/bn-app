@@ -68,7 +68,7 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     tags: [] as string[],
     phones: [] as { value: string }[],
     remark: "",
-    image: null,
+    image: undefined,
   };
   ignore_keys = ["nickname", "tags", "phones", "remark", "image"];
 
@@ -111,5 +111,22 @@ export class AccountRemarkContactPage extends SecondLevelPage {
       textAreaNode.style.height = "5px";
       textAreaNode.style.height = textAreaNode.scrollHeight + "px";
     }
+  }
+
+  @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.success("CONTACT_REMARK_SAVE_SUCCESS")
+  async saveContact() {
+    const { nickname, tags, phones, remark, image } = this.formData;
+    const local_contact: LocalContactModel = {
+      ...this.contact,
+      nickname,
+      tags,
+      phones: phones.map(p => p.value),
+      remark,
+      image,
+    };
+    await this.localContact.updateLocaContact(local_contact);
+    this.jobRes({ updated_local_contact_id: local_contact._id });
+    this.finishJob();
   }
 }
