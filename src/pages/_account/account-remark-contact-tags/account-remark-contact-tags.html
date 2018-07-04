@@ -21,7 +21,7 @@
   </ng-container>
   <div class="all-tags tag-list">
     <div class="title">{{'ALL_TAGS'|translate}}</div>
-    <div class="tag-item" *ngFor="let tag of all_tags" [class.un-use]="used_tags.indexOf(tag)==-1">
+    <div class="tag-item" *ngFor="let tag of all_tags" [class.un-use]="used_tags.indexOf(tag)==-1" (click)="toggleUseTag(tag)">
       <span class="inner">{{tag.name}}</span>
     </div>
   </div>

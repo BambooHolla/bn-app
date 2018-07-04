@@ -25,7 +25,7 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 @Component({
   selector: "page-account-remark-contact",
   templateUrl: "account-remark-contact.html",
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountRemarkContactPage extends SecondLevelPage {
   constructor(

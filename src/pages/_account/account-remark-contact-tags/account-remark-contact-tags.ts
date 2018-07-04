@@ -47,7 +47,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
   }
   contact!: LocalContactModel;
   /*因为tags都是小数组，所以这里都都直接用indexOf直接搞，不做索引了*/
-  all_tags: PTagModel[] = [];
+  all_tags: TagModel[] = [];
   used_tags: PTagModel[] = [];
   selected_tag?: PTagModel;
   formData = {
@@ -63,6 +63,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
       return this.navCtrl.goToRoot({});
     }
     this.contact = contact;
+    this.markForCheck();
     this.used_tags = contact.tags.map(name => ({ name }));
     this.all_tags = await this.localContact.getTags();
     this.used_tags = this.all_tags.filter(
@@ -85,6 +86,15 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
     this.selected_tag = tag;
     this.markForCheck();
   }
+  toggleUseTag(tag: TagModel) {
+    const index = this.used_tags.findIndex(t => t.name === tag.name);
+    if (index !== -1) {
+      this.used_tags.splice(index, 1);
+    } else {
+      this.used_tags.push(tag);
+    }
+    this.markForCheck();
+  }
   @ViewChild("newTagInputer") newTagInputer!: ElementRef;
   // 准备生成一个新的tag
   addNewTag() {
@@ -105,6 +115,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
         if (index !== -1) {
           new_tag = this.all_tags[index];
         } else {
+          // 否则进行新建
           new_tag = {
             name: new_tag_name,
           };
