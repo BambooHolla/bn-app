@@ -38,6 +38,15 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
+    this.event.on("job-finished",({id,data})=>{
+      switch (id) {
+        case "account-remark-contact-tags":
+          if(data.contact_id === this.contact._id){
+            this.contact.tags = data.new_tags;
+          }
+          break;
+      }
+    })
   }
   contact!: LocalContactModel;
 
@@ -113,8 +122,8 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     }
   }
 
-  @asyncCtrlGenerator.error()
-  @asyncCtrlGenerator.success("CONTACT_REMARK_SAVE_SUCCESS")
+  @asyncCtrlGenerator.error("@@CONTACT_REMARK_SAVE_FAIL")
+  @asyncCtrlGenerator.success("@@CONTACT_REMARK_SAVE_SUCCESS")
   async saveContact() {
     const { nickname, tags, phones, remark, image } = this.formData;
     const local_contact: LocalContactModel = {

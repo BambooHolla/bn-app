@@ -306,6 +306,9 @@
   "//": "account-remark-contact-tags",
   "ACCOUNT-REMARK-CONTACT-TAGS": "添加标签",
   "ALL_TAGS": "所有标签",
+  "INPUT_NEW_TAG_NAME": "输入标签",
+  "TAG_NAME_OVER_RANGE_#MAX#_#NUM#":
+    "标签最多支持{{max}}个字，已经超过{{num}}个字",
 
   "//": "account-news-detail",
   "ACCOUNT-NEWS-DETAIL": "动态详情",

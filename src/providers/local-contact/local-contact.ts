@@ -155,4 +155,51 @@ export class LocalContactProvider extends EventEmitter {
 			return a.letter.localeCompare(b.letter);
 		});
 	}
+	/*标签相关的API*/
+	getTags(owner_publicKey = this.userInfo.publicKey) {
+		return this.tag_db.find({
+			owner_publicKey,
+		});
+	}
+	getTagByName(name: string, owner_publicKey = this.userInfo.publicKey) {
+		return this.tag_db.findOne({
+			name,
+			owner_publicKey,
+		});
+	}
+	async addTag(
+		name: string,
+		contact_ids: string[],
+		owner_publicKey = this.userInfo.publicKey,
+	) {
+		if (await this.getTagByName(name, owner_publicKey)) {
+			throw new Error("@@TAG_ALREADY_EXISTS");
+		}
+		const _id = owner_publicKey + "-" + name; // 使用name作为_id的一部分，如果name要进行改变，那么与其关联的联系人也都要进行变动
+		await this.tag_db.insert({
+			_id,
+			name,
+			contact_ids,
+			owner_publicKey,
+			create_time: Date.now(),
+		});
+		return _id;
+	}
+	removeTag(_id: string) {
+		return this.tag_db.remove({ _id });
+	}
+	async updateTag(tag: TYPE.TagModel) {
+		const { _id, ...updates } = tag;
+		// 如果这个标签里头已经没有联系人了，就自动删除标签
+		if (updates.contact_ids.length) {
+			return this.tag_db.update(
+				{
+					_id,
+				},
+				updates,
+			);
+		} else {
+			return this.removeTag(_id);
+		}
+	}
 }

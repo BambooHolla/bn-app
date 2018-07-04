@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="divider bg-color"></div>
-    <div class="common-item tags">
+    <div class="common-item tags" (click)="routeTo('account-remark-contact-tags',{contact:contact,auto_return:true})">
       <ng-container *ngIf="formData?.tags.length;else tagEmptyPlaceholder">
         <div class="left">
           <div class="tag-item" *ngFor="let tag of formData?.tags">

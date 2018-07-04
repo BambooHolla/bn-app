@@ -3,6 +3,7 @@ import { IonicPageModule } from "ionic-angular";
 import { AccountRemarkContactTagsPage } from "./account-remark-contact-tags";
 import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from "../../../pipes/pipes.module";
+import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
@@ -11,6 +12,7 @@ import { TranslateModule } from "@ngx-translate/core";
     IonicPageModule.forChild(AccountRemarkContactTagsPage),
     ComponentsModule,
     PipesModule,
+    DirectivesModule,
     TranslateModule,
   ],
 })

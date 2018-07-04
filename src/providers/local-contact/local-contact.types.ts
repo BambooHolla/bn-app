@@ -13,7 +13,7 @@ export interface LocalContactModel {
 export interface TagModel {
   _id: string;
   owner_publicKey: string;
-  tag: string;
+  name: string;
   contact_ids: string[];
   create_time: number;
 }

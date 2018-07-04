@@ -3,6 +3,29 @@
     <ion-title>{{'ACCOUNT-REMARK-CONTACT-TAGS'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content >
-
+<ion-content>
+  <div class="selected-tags tag-list">
+    <div class="tag-item" *ngFor="let tag of used_tags" (click)="selectThenRemoveTag(tag)" [class.selected]="tag.name==selected_tag?.name">
+      <span class="inner">{{tag.name}}</span>
+    </div>
+    <div class="tag-item input-wrapper" [class.has-error]="errors.new_tag_name">
+      <div #newTagInputer class="inputer" set-input-status="new_tag_name" contenteditable="true" (input)="onNewTagInput($event)" (focus)="selectTag()" (blur)="addNewTag()" maxlength="18" (keydown)="onNewTagKeyDown($event)"></div>
+      <span class="placeholder" [class.hidden]="formData.new_tag_name">{{'INPUT_NEW_TAG_NAME'|translate}}</span>
+    </div>
+  </div>
+  <ng-container *ngIf="errors?.new_tag_name?.wrongRange">
+    <div class="error-tip">
+      <ali-icon name="ifm-info"></ali-icon>
+      {{errors.new_tag_name.wrongRange}}
+    </div>
+  </ng-container>
+  <div class="all-tags tag-list">
+    <div class="title">{{'ALL_TAGS'|translate}}</div>
+    <div class="tag-item" *ngFor="let tag of all_tags" [class.un-use]="used_tags.indexOf(tag)==-1">
+      <span class="inner">{{tag.name}}</span>
+    </div>
+  </div>
+  <div class="footer">
+    <button class="submit-button" (click)="saveContactTags()">{{'SAVE'|translate}}</button>
+  </div>
 </ion-content>

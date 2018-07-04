@@ -160,6 +160,7 @@ export class FLP_Form extends FLP_Route {
         this.formData[key] = 0
       }*/
     }
+    this.markForCheck();
   }
 
   /*要求用户输入支付密码*/
