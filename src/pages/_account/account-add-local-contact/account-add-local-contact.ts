@@ -52,7 +52,7 @@ export class AccountAddLocalContactPage extends SecondLevelPage {
 
 	@asyncCtrlGenerator.error("@@ADD_LOCAL_CONTACT_ERROR")
 	@asyncCtrlGenerator.success("@@ADD_LOCAL_CONTACT_SUCCESS")
-	@asyncCtrlGenerator.single({ update_key: "adding_contact" })
+	@asyncCtrlGenerator.single({ lock_prop_key: "adding_contact" })
 	async addContacts() {
 		const address_or_username = this.formData.search_text;
 		if (address_or_username === this.userInfo.address) {

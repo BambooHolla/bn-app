@@ -482,7 +482,7 @@ export function autoRetryWrapGenerator(
   };
 }
 
-export function singleRunWrap(opts: { update_key?: string } = {}) {
+export function singleRunWrap(opts: { lock_prop_key?: string } = {}) {
   return function(target, name, descriptor) {
     const source_fun = descriptor.value;
     var run_lock: PromiseOut<any> | undefined;
@@ -490,8 +490,8 @@ export function singleRunWrap(opts: { update_key?: string } = {}) {
       if (run_lock) {
         return run_lock.promise;
       }
-      if (opts.update_key) {
-        this[opts.update_key] = true;
+      if (opts.lock_prop_key) {
+        this[opts.lock_prop_key] = true;
       }
       run_lock = new PromiseOut();
       const promise = run_lock.promise;
@@ -502,8 +502,8 @@ export function singleRunWrap(opts: { update_key?: string } = {}) {
         run_lock.reject(err);
       } finally {
         run_lock = undefined;
-        if (opts.update_key) {
-          this[opts.update_key] = false;
+        if (opts.lock_prop_key) {
+          this[opts.lock_prop_key] = false;
         }
       }
       return promise;

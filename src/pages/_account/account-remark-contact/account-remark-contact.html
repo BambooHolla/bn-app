@@ -3,7 +3,7 @@
     <ion-title>{{'ACCOUNT-REMARK-CONTACT'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content #content>
   <div class="common-form common-list remark-form">
     <div class="divider bg-color"></div>
     <div class="input-container nickname">
@@ -17,9 +17,9 @@
     </div>
     <div class="divider bg-color"></div>
     <div class="common-item tags">
-      <ng-container *ngIf="formData.tags.length;else tagEmptyPlaceholder">
+      <ng-container *ngIf="formData?.tags.length;else tagEmptyPlaceholder">
         <div class="left">
-          <div class="tag-item" *ngFor="let tag of formData.tags">
+          <div class="tag-item" *ngFor="let tag of formData?.tags">
             <span class="inner">{{tag}}</span>
           </div>
         </div>
@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="divider bg-color"></div>
-    <div class="input-container phone-item" *ngFor="let phone of formData.phones; let i = index">
+    <div class="input-container phone-item" *ngFor="let phone of formData?.phones; let i = index">
       <input type="tel" [(ngModel)]="phone.value" (ngModelChange)="onPhoneItemChanged(i)" [placeholder]="'ADD_REMARK_PHONE_NUMBER'|translate">
       <div class="right">
         <button class="icon-button" [disabled]="i==formData.phones.length-1" (click)="removePhoneItem(i)">
@@ -60,4 +60,4 @@
     <button class="submit-button">{{'SAVE'|translate}}</button>
   </div>
 </ion-content>
-<ion-footer></ion-footer>
+<ion-footer [keyboardAttach]="content"></ion-footer>

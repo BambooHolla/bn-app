@@ -16,6 +16,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner";
 import { Camera } from "@ionic-native/camera";
+import { Device } from "@ionic-native/device";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
@@ -98,7 +99,7 @@ import { VotePreRoundIncomeRankingComponent } from "../components/vote-pre-round
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { DbCacheProvider } from "../providers/db-cache/db-cache";
 import { VoucherServiceProvider } from "../providers/voucher-service/voucher-service";
-import { LocalContactProvider } from '../providers/local-contact/local-contact';
+import { LocalContactProvider } from "../providers/local-contact/local-contact";
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
@@ -185,6 +186,7 @@ const heightLevelModules = [
     AndroidPermissions,
     BarcodeScanner,
     Camera,
+    Device,
     SplashScreen,
     Keyboard,
     Toast,

@@ -56,7 +56,7 @@ export class AccountAddContactPage extends SecondLevelPage {
   @asyncCtrlGenerator.success(() =>
     AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
   )
-  @asyncCtrlGenerator.single({ update_key: "adding_contact" })
+  @asyncCtrlGenerator.single({ lock_prop_key: "adding_contact" })
   async addContacts() {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
       custom_fee: true,

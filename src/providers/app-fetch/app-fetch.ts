@@ -1,4 +1,5 @@
 import { Storage } from "@ionic/storage";
+import { Device } from "@ionic-native/device";
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptionsArgs } from "@angular/http";
 import { TranslateService } from "@ngx-translate/core";
@@ -121,9 +122,15 @@ export class AppFetchProvider extends EventEmitter {
     public storage: Storage,
     public translateService: TranslateService,
     public dbCache: DbCacheProvider,
+    public device: Device,
   ) {
     super();
     tryRegisterGlobal("FETCH", this);
+    // 向服务端发送安全的设备信息进行统计
+    this.io.emit("app-start", {
+      version: AppSettingProvider.APP_VERSION,
+      ...device,
+    });
   }
 
   private _handleResThen(res) {
