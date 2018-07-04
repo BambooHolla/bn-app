@@ -783,18 +783,22 @@ class BlockCard extends PIXI.Graphics {
   private _show_footer_container_mask = true;
   toggleFooterContainerMask(show = this._show_footer_container_mask) {
     this._show_footer_container_mask = show;
-    const res_aplha = show && this.interactive ? 1 : 0;
-    if (this.footer_container_mask.alpha !== res_aplha) {
-      // this.footer_container.cacheAsBitmap = false;
-      this.footer_container_mask.alpha = res_aplha;
-      // this.footer_container.cacheAsBitmap = true;
+    const is_show = show && this.interactive;
+    // const res_aplha = is_show ? 1 : 0;
+    // if (this.footer_container_mask.alpha !== res_aplha) {
+    //   // this.footer_container.cacheAsBitmap = false;
+    //   this.footer_container_mask.alpha = res_aplha;
+    //   // this.footer_container.cacheAsBitmap = true;
+    // }
+    const shadow_filter_alpha = is_show ? 0.4 : 0.2;
+    if (this.shadow_filter.alpha !== shadow_filter_alpha) {
       const old_cacheAsBitmap = this.shadown.cacheAsBitmap;
       if (old_cacheAsBitmap) {
         this.shadown.cacheAsBitmap = false;
-        this.shadow_filter.alpha = res_aplha ? 0.3 : 0.2;
+        this.shadow_filter.alpha = shadow_filter_alpha;
         this.shadown.cacheAsBitmap = true;
       } else {
-        this.shadow_filter.alpha = res_aplha ? 0.3 : 0.2;
+        this.shadow_filter.alpha = shadow_filter_alpha;
       }
     }
   }
