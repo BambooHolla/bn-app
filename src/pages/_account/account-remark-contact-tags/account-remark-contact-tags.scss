@@ -5,7 +5,7 @@ page-account-remark-contact-tags {
 	> .content {
 		> .scroll-content {
 			background-color: #efefef;
-			padding-bottom: 5.5rem;
+			padding-bottom: 6.5rem;
 			.footer {
 				position: fixed;
 				display: flex;
@@ -14,12 +14,13 @@ page-account-remark-contact-tags {
 				justify-content: center;
 				width: 100%;
 				bottom: 0;
-				height: 5.5rem;
+				height: 6.5rem;
 				background-color: rgba(#efefef, 0.62);
 				backdrop-filter: blur(5px);
 				padding: 1rem 0;
 				.submit-button {
 					flex-shrink: 0;
+					margin-top: 0;
 				}
 			}
 		}
@@ -41,7 +42,7 @@ page-account-remark-contact-tags {
 		background: #fff;
 		position: relative;
 		vertical-align: top;
-		
+
 		> .inner {
 			display: inline-block;
 			/* background: linear-gradient(to bottom, #62ebde 100%, #43ceeb 0%);
