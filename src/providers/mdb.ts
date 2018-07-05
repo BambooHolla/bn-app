@@ -24,7 +24,7 @@ const Promise_allNoArray = (async_arr: any) => {
 };
 
 export class Mdb<T> {
-  private db: Collection;
+  db: Collection;
   constructor(public name: string, inMemoryOnly?: boolean) {
     this.db = mdb.collection(name);
   }

@@ -2,22 +2,9 @@ import shareProto from "../../shareProto";
 import EventEmitter from "eventemitter3";
 import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 import { Mdb } from "../../providers/mdb";
-// import { getJsonObjectByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
+import { BlockchainVerifier } from "./blockchain-verifier";
 
-export type BlockModel = import("../../providers/block-service/block-service").BlockModel;
-
-export const buf2hex = (buffer: ArrayBuffer) => {
-  var hex = "";
-  const uarr = new Uint8Array(buffer);
-  for (var i = 0; i < uarr.length; i += 1) {
-    let char = uarr[i].toString(16);
-    if (char.length === 1) {
-      char = "0" + char;
-    }
-    hex += char;
-  }
-  return hex;
-};
+import { buf2hex, BlockModel } from "./helper";
 
 export class BlockChainDownloader extends EventEmitter {
   constructor(
@@ -27,6 +14,8 @@ export class BlockChainDownloader extends EventEmitter {
   ) {
     super();
   }
+  verifier = new BlockchainVerifier(this.webio, this.blockDb);
+
   private _download_lock?: PromiseOut<void>;
   /**
    * endHeight一般情况下是不等于ownEndHeight的
@@ -167,5 +156,10 @@ export class BlockChainDownloader extends EventEmitter {
       down: blocks_buffer.length,
     });
   }
-  // async getLocal
+
+  private async downloadFullBlockchain() {
+    for await (var _range of this.verifier.useableLocalBlocksFinder()) {
+      const range = _range;
+    }
+  }
 }
