@@ -401,8 +401,8 @@ export class AppSettingProvider extends CommonService {
     _is_show_first_block_remark: false,
     /**是否显示过 初次挖矿提示*/
     _is_show_first_mining_tip: false,
-    /**第一次同步数据的开始时间*/
-    sync_start_time: 0,
+    /**是否已经同步过区块链数据*/
+    is_agree_to_the_agreement_of_sync_blockchain: false,
     /**同步区块 的进度 0 ~ 100*/
     sync_progress_blocks: 0,
     /**同步交易 的进度 0 ~ 100*/

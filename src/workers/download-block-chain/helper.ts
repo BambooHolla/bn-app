@@ -3,6 +3,10 @@ import {
   BlockListResModel,
 } from "../../providers/block-service/block.types";
 export { BlockModel, BlockListResModel };
+export type ChainRange = {
+  startHeight: number;
+  endHeight: number;
+};
 
 export const buf2hex = (buffer: ArrayBuffer) => {
   var hex = "";

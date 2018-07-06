@@ -1,7 +1,7 @@
 import { Animation } from "ionic-angular/animations/animation";
 import { isPresent } from "ionic-angular/util/util";
 import { PageTransition } from "ionic-angular/transitions/page-transition";
-import { ViewController } from "ionic-angular";
+import { ViewController } from "ionic-angular/navigation/view-controller";
 import { ElementRef } from "@angular/core";
 
 /*const DURATION = 500;

@@ -50,7 +50,7 @@ function getBlockChainDownloader(
 }
 
 const cmd_handler = {
-  download({
+  async download({
     NET_VERSION,
     webio_path,
     startHeight,
@@ -66,31 +66,73 @@ const cmd_handler = {
     );
 
     // 事件注册
-    ["start-download", "end-download", "progress", "use-flow"].forEach(
-      eventname => {
-        blockChainDownloader.on(eventname, data => {
-          postMessage({
-            req_id,
-            type: eventname,
-            data,
-          });
+    const cgs = [
+      "start-download",
+      "end-download",
+      "progress",
+      "use-flow",
+    ].map(eventname => {
+      const fun = data => {
+        postMessage({
+          req_id,
+          type: eventname,
+          data,
         });
-      },
-    );
+      };
+      blockChainDownloader.on(eventname, fun);
+      return () => {
+        blockChainDownloader.off(eventname, fun);
+      };
+    });
 
     const downloader = blockChainDownloader;
-    // 开始发送通知
-    return blockChainDownloader.downloadBlocks(
-      startHeight,
-      endHeight,
-      max_end_height,
-    );
+    try {
+      // 开始发送通知
+      return blockChainDownloader.downloadBlocks(
+        startHeight,
+        endHeight,
+        max_end_height,
+      );
+    } finally {
+      cgs.forEach(cg => cg());
+    }
   },
-  getCurrentMaxEndHeight({ NET_VERSION, webio_path }) {
+  async syncBlockChain({ NET_VERSION, webio_path, max_end_height, req_id }) {
     const blockChainDownloader = getBlockChainDownloader(
       NET_VERSION,
       webio_path,
+      1,
+      max_end_height,
     );
-    return blockChainDownloader;
+
+    // 事件注册
+    const cgs = [
+      "start-sync",
+      "end-sync",
+      "start-download",
+      "end-download",
+      "progress",
+      "use-flow",
+    ].map(eventname => {
+      const fun = data => {
+        postMessage({
+          req_id,
+          type: eventname,
+          data,
+        });
+      };
+      blockChainDownloader.on(eventname, fun);
+      return () => {
+        blockChainDownloader.off(eventname, fun);
+      };
+    });
+
+    const downloader = blockChainDownloader;
+    try {
+      // 开始同步区块链
+      return await blockChainDownloader.syncFullBlockchain(max_end_height);
+    } finally {
+      cgs.forEach(cg => cg());
+    }
   },
 };

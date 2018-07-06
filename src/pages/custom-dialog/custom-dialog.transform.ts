@@ -1,7 +1,8 @@
 import { Animation } from "ionic-angular/animations/animation";
 import { isPresent } from "ionic-angular/util/util";
 import { PageTransition } from "ionic-angular/transitions/page-transition";
-import { ViewController, Transition } from "ionic-angular";
+import { ViewController } from "ionic-angular/navigation/view-controller";
+import { Transition } from "ionic-angular/transitions/transition";
 import { ElementRef } from "@angular/core";
 
 export class CustomDialogPopIn extends Transition {

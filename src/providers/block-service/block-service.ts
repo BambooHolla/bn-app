@@ -100,7 +100,7 @@ export class BlockServiceProvider extends FLP_Tool {
             limit = Math.abs(endHeight - startHeight) + 1;
           }
         }
-        if (Number.isFinite(query.height)){
+        if (Number.isFinite(query.height)) {
           limit = 1;
         }
         let sort;
@@ -323,6 +323,64 @@ export class BlockServiceProvider extends FLP_Tool {
     return this._download_worker;
   }
   private _download_req_id_acc = 0;
+  syncBlockChain(max_end_height: number) {
+    const download_worker = this.getDownloadWorker();
+    const req_id = this._download_req_id_acc++;
+    let cg;
+    download_worker.postMessage({
+      NET_VERSION: AppSettingProvider.NET_VERSION,
+      cmd: "syncBlockChain",
+      webio_path: this.fetch.io_url_path,
+      max_end_height,
+      req_id,
+    });
+    const task_name = `同步区块链至:${max_end_height}`;
+    const task = new PromiseOut<void>();
+    const onmessage = e => {
+      const msg = e.data;
+      if (msg && msg.req_id === req_id) {
+        // console.log("bs", msg);
+        switch (msg.type) {
+          case "start-sync":
+            console.log("开始同步", task_name);
+            break;
+          case "start-download":
+            console.log("开始子任务", msg.data);
+            break;
+          case "end-download":
+            console.log("完成子任务", msg.data);
+            break;
+          case "end-sync":
+            console.log("结束同步", task_name);
+            task.resolve();
+            break;
+          case "use-flow":
+            this.appSetting.settings.sync_data_flow +=
+              (+msg.data.up || 0) + (+msg.data.down || 0);
+            break;
+          case "progress":
+            console.log("下载中", task_name, msg.data);
+            this.tryEmit("BLOCKCHAIN:CHANGED");
+            break;
+          case "error":
+            task.reject(msg.data);
+            break;
+          default:
+            console.warn("unhandle message:", msg);
+            break;
+        }
+      }
+    };
+    download_worker.addEventListener("message", onmessage);
+    cg = () => download_worker.removeEventListener("message", onmessage);
+    // 不论如何都将监听函数移除掉
+    task.promise.then(cg, cg);
+    return {
+      worker: download_worker,
+      req_id,
+      task,
+    };
+  }
   downloadBlockInWorker(
     startHeight: number,
     endHeight: number,

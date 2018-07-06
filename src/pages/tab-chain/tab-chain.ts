@@ -32,6 +32,8 @@ import { Subscription } from "rxjs/Subscription";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { ChainListComponent } from "../../components/chain-list/chain-list";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
+// test
+import { BlockchainVerifier } from "../../workers/download-block-chain/blockchain-verifier";
 
 // @IonicPage({ name: "tab-chain" })
 @Component({
@@ -59,6 +61,10 @@ export class TabChainPage extends FirstLevelPage {
     });
     // this.registerViewEvent(this)
   }
+  blockchainVerifier = new BlockchainVerifier(
+    this.fetch.io,
+    this.blockService.blockDb,
+  );
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
@@ -121,31 +127,17 @@ export class TabChainPage extends FirstLevelPage {
       return;
     }
     await this.netWorkConnection();
-    // 检测现有数据库中最低的块是否为1
-    let min_height_block:
-      | SingleBlockModel
-      | undefined = await this.blockService.blockDb.findOne(
-      {},
-      { sort: { height: 1 } },
-    );
     const latest_block = await this.blockService.getLastBlock();
-    if (!min_height_block) {
-      min_height_block = latest_block;
-    }
-
-    if (min_height_block.height <= 1) {
-      return true;
-    }
-    const startHeight = 1;
-    const endHeight = min_height_block.height;
     const max_end_height = latest_block.height;
-    await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
     // 记录第一次同步区块的时间
-    if (!this.appSetting.settings.sync_start_time) {
-      this.appSetting.settings.sync_start_time = Date.now();
+    if (
+      !this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain
+    ) {
+      await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
+      this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
     }
     // 开始下载
-    this.downloadBlock(startHeight, endHeight, max_end_height);
+    this.syncBlockchain(max_end_height);
   }
 
   /*下载进度的相关属性*/
@@ -166,19 +158,13 @@ export class TabChainPage extends FirstLevelPage {
   private _download_task?: PromiseOut<void>;
   /*下载区块链数据*/
   @asyncCtrlGenerator.success("@@DOWNLOAD_BLOCKCHAIN_COMPLETE")
-  async downloadBlock(
-    startHeight: number,
-    endHeight: number,
-    max_end_height: number,
-  ) {
+  async syncBlockchain(max_end_height: number) {
     if (this._download_task) {
       return this._download_task.promise;
     }
     let cg;
     try {
-      const { worker, req_id, task } = this.blockService.downloadBlockInWorker(
-        startHeight,
-        endHeight,
+      const { worker, req_id, task } = this.blockService.syncBlockChain(
         max_end_height,
       );
       this._download_task = task;
@@ -188,11 +174,11 @@ export class TabChainPage extends FirstLevelPage {
         // console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
           switch (msg.type) {
-            case "start-download":
+            case "start-sync":
               this.is_show_sync_loading = true;
               this.cdRef.markForCheck();
               break;
-            case "end-download":
+            case "end-sync":
               // 结束下载，进度设置成100%
               this.appSetting.settings.sync_progress_blocks = 100;
               this.is_show_sync_loading = false;

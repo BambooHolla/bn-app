@@ -207,7 +207,7 @@
   "CHECK_BLOCK": "查看区块",
   "CHECK_BLOCKCHAIN_IS_COMPLETE": "正在检查区块链是否完整",
   "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#": "正在同步区块:{{progress}}%",
-  "DOWNLOAD_BLOCKCHAIN_COMPLETE": "区块链下载完成",
+  "DOWNLOAD_BLOCKCHAIN_COMPLETE": "区块链同步完成",
 
   "//": "chain-block-detail",
   "CHAIN-BLOCK-DETAIL": "区块信息",
@@ -230,6 +230,7 @@
   "SYNCHRONOUS_TRAFFIC": "同步流量",
   "CURRENT_BLOCKCHAIN_HEIGHT": "当前区块高度",
   "SYNC_START_TIME": "开始时间",
+  "SYNC_DELAY_TIME": "落后时间",
   "SYNC_BACKGROUND": "后台同步",
 
   "//": "chain-reward-detail",

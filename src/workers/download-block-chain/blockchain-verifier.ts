@@ -9,7 +9,13 @@ import {
 	reqCursorLooper,
 	BlockChain,
 	SKETCHY_CHECK_RES,
+	ChainRange,
 } from "./helper";
+
+/*
+区块链验证模块中直接耦合了删除错误数据。
+
+TODO: 关于冗余数据，因为区块可以重复下载缓存，在验证的过程中，会查出重复的区块链数据并删除*/
 
 export class BlockchainVerifier {
 	constructor(
@@ -43,10 +49,7 @@ export class BlockchainVerifier {
 	async *useableLocalBlocksFinder() {
 		const continuousBlockChain = this.continuousBlockChainGenerator();
 		for await (var _blockchains of continuousBlockChain) {
-			const usable_ranges: {
-				startHeight: number;
-				endHeight: number;
-			}[] = [];
+			const usable_ranges: ChainRange[] = [];
 			const blockchains = [..._blockchains.values()];
 			const check_tasks = blockchains.map(bc => {
 				// TODO: 目前没有提供单区块校验的接口，所以先直接设定为扔掉这个数据
@@ -108,6 +111,12 @@ export class BlockchainVerifier {
 			}
 			// 尝试进行删除无用数据
 			if (delete_range.endHeight > delete_range.startHeight) {
+				console.log(
+					"尝试移除",
+					delete_range.startHeight,
+					delete_range.endHeight,
+					"范围内有问题的数据",
+				);
 				await this._IDB_deleteBlocks(
 					delete_range.startHeight,
 					delete_range.endHeight,
@@ -206,11 +215,12 @@ export class BlockchainVerifier {
 		start_block: BlockModel,
 		end_block: BlockModel,
 	) {
-		const b = new Uint8Array(80 /*8+8+32+32*/);
+		const v = new DataView(new ArrayBuffer(80 /*8+8+32+32*/));
 		// 注入height1-startHeight
-		b.set(new Uint8Array(new Float64Array([start_block.height]).buffer), 0);
+		v.setFloat64(0, start_block.height, true);
 		// 注入height2-endHeight
-		b.set(new Uint8Array(new Float64Array([end_block.height]).buffer), 8);
+		v.setFloat64(8, end_block.height, true);
+		const b = new Uint8Array(v.buffer);
 		// 注入字符串
 		const id1_buf = hex2buf(start_block.id);
 		b.set(id1_buf, 16);
@@ -225,18 +235,19 @@ export class BlockchainVerifier {
 	}
 	/*小范围校验区块*/
 	private _smallRangeCheckBlocks(blocks: BlockModel[], n = 0) {
-		const b = new Float32Array(blocks.length + 9 /*8(height)+1(n)*/);
-		b.set(new Uint8Array(new Float64Array([blocks[0].height])), 0);
-		b.set(new Uint8Array([n]), 8);
+		const v = new DataView(
+			new ArrayBuffer(blocks.length + 9 /*8(height)+1(n)*/),
+		);
+		v.setFloat64(0, blocks[0].height);
+		v.setUint8(8, n);
 
-		const iddd = blocks.reduce((idd, b) => {
-			// b.setUint8(parseInt(b.id.substr(n, 2)), 9 + i);
-			return idd + b.id.substr(n, 2);
-		}, "");
-		b.set(hex2buf(iddd), 9);
+		blocks.forEach((b, i) => {
+			v.setUint8(parseInt(b.id.substr(n, 2)), 9 + i);
+		});
+
 		return this.ioRequest<{ checkResult: number }>(
 			"get/api/blocks/preciseCheck",
-			b.buffer,
+			v.buffer,
 		).then(res => res.checkResult);
 	}
 	/*获取所有的碎片区块链*/
@@ -244,13 +255,13 @@ export class BlockchainVerifier {
 		let done = false;
 		let from = 1;
 		const limit = 1096;
-		const getQueryTask = (linking_blockchains?: Set<BlockChain>) => {
-			const task = this._IDB_getContinuousBlockChain(
+		const getQueryTask = async (linking_blockchains?: Set<BlockChain>) => {
+			const task = await this._IDB_getContinuousBlockChain(
 				from,
 				limit,
 				linking_blockchains,
 			);
-			from += limit;
+			from = task.plan_to;
 			return task;
 		};
 		let cur_query = await getQueryTask();
@@ -277,6 +288,9 @@ export class BlockchainVerifier {
 		const trans = idb.transaction(["blocks"], "readwrite");
 		const objectStore = trans.objectStore("blocks");
 		const index = objectStore.index("height");
+		const repeated_block_ids: Set<
+			typeof IDBCursor.prototype.key
+		> = new Set();
 
 		/*预计的最大高度<plan_to*/
 		let plan_to = from + limit + 1;
@@ -327,6 +341,7 @@ export class BlockchainVerifier {
 		return {
 			linking_blockchains,
 			finished_blockchains,
+			repeated_block_ids,
 			from,
 			plan_to,
 			done,

@@ -4,7 +4,7 @@ import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 import { Mdb } from "../../providers/mdb";
 import { BlockchainVerifier } from "./blockchain-verifier";
 
-import { buf2hex, BlockModel } from "./helper";
+import { buf2hex, BlockModel, ChainRange } from "./helper";
 
 export class BlockChainDownloader extends EventEmitter {
   constructor(
@@ -25,32 +25,37 @@ export class BlockChainDownloader extends EventEmitter {
     startHeight: number,
     endHeight: number,
     ownEndHeight: number,
+    total?: number,
   ) {
     if (this._download_lock) {
       return this._download_lock.promise;
     }
     this._download_lock = new PromiseOut();
-    this.emit("start-download");
+    this.emit("start-download", { startHeight, endHeight, ownEndHeight });
 
     try {
       await this._download_with_auto_retry(
         startHeight,
         endHeight,
         ownEndHeight,
+        total,
       );
     } finally {
       this._download_lock.resolve();
       this._download_lock = undefined;
 
-      this.emit("end-download");
+      this.emit("end-download", { startHeight, endHeight, ownEndHeight });
     }
   }
   private async _download_with_auto_retry(
     startHeight: number,
     endHeight: number,
     ownEndHeight: number,
+    total?: number,
   ) {
-    const total = ownEndHeight - startHeight + 1;
+    if (typeof total !== "number") {
+      total = ownEndHeight - startHeight + 1;
+    }
     const pageSize = 10;
     var acc_endHeight = endHeight;
     // 初始化触发一下当前的进度
@@ -157,9 +162,36 @@ export class BlockChainDownloader extends EventEmitter {
     });
   }
 
-  private async downloadFullBlockchain() {
-    for await (var _range of this.verifier.useableLocalBlocksFinder()) {
-      const range = _range;
+  private _sync_id_acc = 0;
+  /*同步截止高度的区块链*/
+  async syncFullBlockchain(
+    /*range_list:ChainRange[],*/ max_end_height: number,
+  ) {
+    const sync_id = ++this._sync_id_acc;
+    this.emit("start-sync", { sync_id, max_end_height });
+    let start_height = 1;
+    let end_height = Infinity;
+    for await (var _ranges of this.verifier.useableLocalBlocksFinder()) {
+      const ranges = _ranges;
+      for (var _range of ranges) {
+        const range = _range;
+        this.emit("sync-local-check", { sync_id, range });
+        // start_height = Math.min(start_height,range.)
+        end_height = Math.min(range.startHeight - 1, max_end_height - 1);
+        if (end_height >= start_height) {
+          await this.downloadBlocks(
+            start_height,
+            end_height,
+            max_end_height,
+            max_end_height,
+          );
+        }
+        start_height = range.endHeight + 1;
+        if (start_height >= max_end_height) {
+          break;
+        }
+      }
     }
+    this.emit("end-sync", { sync_id, max_end_height });
   }
 }
