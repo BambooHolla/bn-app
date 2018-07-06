@@ -264,7 +264,7 @@ export class ProgressSpinner extends PIXI.Container {
 		progress_arc.endFill();
 	}
 	private _progress_ani_id;
-	setProgress(new_progress: number, ani_ms?: number) {
+	setProgress(new_progress: number, ani_ms?: number,after_finished?) {
 		if (
 			!(
 				typeof new_progress === "number" &&
@@ -290,7 +290,7 @@ export class ProgressSpinner extends PIXI.Container {
 					return;
 				}
 				this.setProgress(v);
-			});
+			},after_finished);
 			return;
 		}
 		const stroke_w = this.arc_width;

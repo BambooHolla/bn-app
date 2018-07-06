@@ -20,7 +20,7 @@ export class SettingsSetDefaultFeePage extends SecondLevelPage {
   formData = {
     default_fee: parseFloat(this.appSetting.settings.default_fee)
       ? this.appSetting.settings.default_fee
-      : "0.00000030",
+      : "0.00000001",
     max_fee: this.appSetting.settings.auto_update_default_fee_max_amount,
   };
   @SettingsSetDefaultFeePage.setErrorTo("errors", "default_fee", ["wrongRange"])

@@ -60,6 +60,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	/**页面变量的定义*/
 	// 目前同步的连续区块的最低高度与最高高度的时间差
 	sync_delay_time: { value: string; unit: string }[] = [];
+	sync_progress_height = 1;
 	delay_ms = -1;
 	// 区块高度
 	block_height = 0;
@@ -112,6 +113,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 			lock = true;
 			const cur_height = this.appSetting.getHeight();
 			const { sync_progress_height } = this.appSetting.settings;
+			this.sync_progress_height = sync_progress_height;
 			if (cur_height <= sync_progress_height) {
 				this.sync_delay_time = [];
 				this.delay_ms = 0;
@@ -212,7 +214,6 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	private _calcSyncDelayTime() {
 		this.blockService;
 	}
-
 	@ChainSyncDetailPage.onInit
 	initBindSyncProgress() {
 		[
@@ -220,41 +221,6 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 			"sync_progress_transactions",
 			"sync_progress_equitys",
 		].forEach((k, i) => {
-			let ps: ProgressSpinner | undefined;
-			{
-				// 重写getter/setter
-				const private_k = Symbol(k);
-				this[private_k] = this[k];
-				Object.defineProperty(this, k, {
-					get: () => this[private_k],
-					set: v => {
-						this[private_k] = v;
-						this.cdRef.markForCheck();
-						if (ps) {
-							// 如果进度倒退了，就快速显示成小的进度，避免出现倒退的问题
-							const old_progress = ps.progress;
-							const new_progress = v / 100;
-							ps.setProgress(
-								v / 100,
-								old_progress > new_progress ? 0 : 1000,
-							);
-						}
-						if (!ps) {
-							ps =
-								this.syncProgressSpinner &&
-								this.syncProgressSpinner.getPS(i);
-							if (ps) {
-								// 第一次，默认没有动画，除非是被禁用的
-								ps.setProgress(
-									v / 100,
-									this[enable_k] ? 0 : 1000,
-								);
-							}
-						}
-					},
-				});
-			}
-
 			const on_sync_progress_changed = progress => {
 				this[k] = progress;
 			};
@@ -264,6 +230,44 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				on_sync_progress_changed,
 			);
 			on_sync_progress_changed(this.appSetting.settings[k]);
+
+			const enable_k = "enable_" + k;
+			const on_enable_sync_progress_changed = is_enabled => {
+				this[enable_k] = is_enabled;
+			};
+			this.registerViewEvent(
+				this.appSetting,
+				"changed@setting." + enable_k,
+				on_enable_sync_progress_changed,
+			);
+			on_enable_sync_progress_changed(this.appSetting.settings[enable_k]);
+		});
+	}
+
+	bindPSWithSyncProgressAfterEnter() {
+		[
+			"sync_progress_blocks",
+			"sync_progress_transactions",
+			"sync_progress_equitys",
+		].forEach((k, i) => {
+			const ps = this.syncProgressSpinner!.getPS(i);
+			{
+				// 重写getter/setter
+				const private_k = Symbol(k);
+				this[private_k] = this[k];
+				Object.defineProperty(this, k, {
+					get: () => this[private_k],
+					set: v => {
+						this[private_k] = v;
+						this.cdRef.markForCheck();
+
+						// 如果进度倒退了，就快速显示成小的进度，避免出现倒退的问题
+						const old_progress = ps.progress;
+						const new_progress = v / 100;
+						ps.setProgress(v / 100, 500);
+					},
+				});
+			}
 
 			/**是否禁用*/
 
@@ -277,30 +281,26 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 					set: v => {
 						this[private_enable_k] = v;
 						this.cdRef.markForCheck();
-						if (!ps) {
-							ps =
-								this.syncProgressSpinner &&
-								this.syncProgressSpinner.getPS(i);
-						}
-						if (ps) {
-							ps.setDisabled(!v);
-						}
+
+						ps.setDisabled(!v);
 					},
 				});
 			}
-			const on_enable_sync_progress_changed = is_enabled => {
-				this[enable_k] = is_enabled;
-			};
-			this.registerViewEvent(
-				this.appSetting,
-				"changed@setting." + enable_k,
-				on_enable_sync_progress_changed,
-			);
-			on_enable_sync_progress_changed(this.appSetting.settings[enable_k]);
 		});
 	}
 	@ChainSyncDetailPage.didEnter
-	bindSyncProgress() {
+	async bindSyncProgress() {
+		const ani_init = i => {
+			return new Promise(resolve => {
+				this.syncProgressSpinner!.getPS(i).setProgress(
+					0,
+					500,
+					resolve,
+				);
+			});
+		};
+		await Promise.all([ani_init(0), ani_init(1), ani_init(2)]);
+		this.bindPSWithSyncProgressAfterEnter();
 		this.enable_sync_progress_blocks = this.enable_sync_progress_blocks;
 		this.enable_sync_progress_transactions = this.enable_sync_progress_transactions;
 		this.enable_sync_progress_equitys = this.enable_sync_progress_equitys;

@@ -12,21 +12,42 @@
         </i>
         </i>
         <div class="label">{{'SYNC_BLOCKS'|translate}}</div>
-        <div class="progress">{{toFixed(sync_progress_blocks,2,2)}}%</div>
+        <div class="progress">
+          <ng-container *ngIf="enable_sync_progress_blocks">
+            {{toFixed(sync_progress_blocks,2,2)}}%
+          </ng-container>
+          <ng-container *ngIf="!enable_sync_progress_blocks">
+            {{'SYNC_DISABLED'|translate}}
+          </ng-container>
+        </div>
       </div>
       <div class="item sync-transactions">
         <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
         </i>
         </i>
         <div class="label">{{'SYNC_TRANSACTIONS'|translate}}</div>
-        <div class="progress">{{toFixed(sync_progress_transactions,2,2)}}%</div>
+        <div class="progress">
+          <ng-container *ngIf="enable_sync_progress_transactions">
+            {{toFixed(sync_progress_transactions,2,2)}}%
+          </ng-container>
+          <ng-container *ngIf="!enable_sync_progress_transactions">
+            {{'SYNC_DISABLED'|translate}}
+          </ng-container>
+        </div>
       </div>
       <div class="item sync-equitys">
         <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
         </i>
         </i>
         <div class="label">{{'SYNC_EQUITYS'|translate}}</div>
-        <div class="progress">{{toFixed(sync_progress_equitys,2,2)}}%</div>
+        <div class="progress">
+          <ng-container *ngIf="enable_sync_progress_equitys">
+            {{toFixed(sync_progress_equitys,2,2)}}%
+          </ng-container>
+          <ng-container *ngIf="!enable_sync_progress_equitys">
+            {{'SYNC_DISABLED'|translate}}
+          </ng-container>
+        </div>
       </div>
     </div>
     <div class="general-progress">
@@ -69,7 +90,7 @@
           {{'CURRENT_BLOCKCHAIN_HEIGHT'|translate}}
         </div>
         <div class="detail">
-          {{block_height}}
+          {{sync_progress_height}}
         </div>
       </div>
       <div class="center"></div>

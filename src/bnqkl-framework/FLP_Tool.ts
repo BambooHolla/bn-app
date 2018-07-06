@@ -328,6 +328,32 @@ export class FLP_Tool {
     return currentLang;
   }
 
+  private async _showCustomLoadingDialog(
+    msg,
+    opts: { auto_open?: boolean,cssClass?: string, extends},
+  ) {
+    const dialog = this.modalCtrl.create(
+      "custom-loading-dialog",
+      {
+        message: await translateMessage(msg),
+      },
+      {
+        cssClass:opts.cssClass,
+      },
+    );
+    if (opts.auto_open) {
+      dialog.present();
+    }
+    return dialog;
+  }
+  /*系统级别的加载动画*/
+  // async showLogoLoading(msg, auto_open = true) {
+  //   this._showCustomLoadingDialog(msg, "logo-loading", { auto_open });
+  // }
+  // showChainLoading(msg, auto_open = true) {
+  //   this._showCustomLoadingDialog(msg, "blockchain-loading", { auto_open });
+  // }
+
   /**
    * 用于管理loading对象的对象池
    * 由于有的页面loading的显示时，用户可以直接无视返回上一级页面，所以就需要有一个对象池缓存这些对象并在页面离开的时候销毁它们

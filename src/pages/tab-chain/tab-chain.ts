@@ -134,7 +134,8 @@ export class TabChainPage extends FirstLevelPage {
       !this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain
     ) {
       await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
-      this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
+      // 这个点击确认后的is_agree_to_the_agreement_of_sync_blockchain，在区块链正式开始下载后才设置为true
+      // this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
     }
     // 开始下载
     this.syncBlockchain(max_end_height);
@@ -174,6 +175,18 @@ export class TabChainPage extends FirstLevelPage {
         // console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
           switch (msg.type) {
+            case "start-verifier":
+              if (
+                !this.appSetting.settings
+                  .is_agree_to_the_agreement_of_sync_blockchain
+              ) {
+                this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
+              }
+              this.showVerifierLoading();
+              break;
+            case "end-verifier":
+              this.closeVerifierLoading();
+              break;
             case "start-sync":
               this.is_show_sync_loading = true;
               this.cdRef.markForCheck();
@@ -217,7 +230,12 @@ export class TabChainPage extends FirstLevelPage {
     this.cdRef.markForCheck();
   }
 
-  showChainSyncDetail(){
-    this.modalCtrl.create('chain-sync-detail').present();
+  showChainSyncDetail() {
+    this.modalCtrl.create("chain-sync-detail").present();
   }
+
+  showVerifierLoading() {
+    // this.loadingCtrl.create("")
+  }
+  closeVerifierLoading() {}
 }
