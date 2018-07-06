@@ -74,14 +74,19 @@
       </ng-container>
     </div>
     <div class="center">
-      <ng-container *ngFor="let time_info of sync_delay_time">
-        <div class="value">
-          {{time_info.value}}
-        </div>
-        <div class="unit">
-          {{time_info.unit|translate}}
-        </div>
+      <ng-container *ngIf="is_calcing_delay_time;else SyncDelayTimeInfo">
+        {{'CALCING_SYNC_DELAY_TIME'|translate}}
       </ng-container>
+      <ng-template #SyncDelayTimeInfo>
+        <ng-container *ngFor="let time_info of sync_delay_time">
+          <div class="value">
+            {{time_info.value}}
+          </div>
+          <div class="unit">
+            {{time_info.unit|translate}}
+          </div>
+        </ng-container>
+      </ng-template>
     </div>
     <div class="bottom">
       <div class="left">

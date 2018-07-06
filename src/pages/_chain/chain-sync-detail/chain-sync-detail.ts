@@ -60,6 +60,8 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	/**页面变量的定义*/
 	// 目前同步的连续区块的最低高度与最高高度的时间差
 	sync_delay_time: { value: string; unit: string }[] = [];
+	// 加载区块的数据，如果可能要卡很久，因为区块1可能也是卡死的
+	is_calcing_delay_time = true;
 	sync_progress_height = 1;
 	delay_ms = -1;
 	// 区块高度
@@ -106,19 +108,26 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	@ChainSyncDetailPage.onInit
 	initBindSyncProgressHeight() {
 		let lock;
+		const clear_sync_delay_time = () => {
+			this.is_calcing_delay_time = false;
+			this.sync_delay_time = [];
+		};
 		const on_sync_progress_height_changed = async () => {
 			if (lock) {
 				return;
 			}
 			lock = true;
+			const finished = () => {
+				this.markForCheck();
+				lock = false;
+			};
 			const cur_height = this.appSetting.getHeight();
 			const { sync_progress_height } = this.appSetting.settings;
 			this.sync_progress_height = sync_progress_height;
 			if (cur_height <= sync_progress_height) {
-				this.sync_delay_time = [];
+				clear_sync_delay_time();
 				this.delay_ms = 0;
-				this.markForCheck();
-				lock = false;
+				finished();
 				// 区块链完整后自动关闭界面
 				this.syncInBackground();
 				return;
@@ -128,6 +137,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				this.blockService.getBlockByHeight(cur_height),
 				this.blockService.getBlockByHeight(sync_progress_height),
 			]);
+
 			const cur_time = TimestampPipe.transform(cur_block.timestamp);
 			const process_time = TimestampPipe.transform(
 				process_block.timestamp,
@@ -143,7 +153,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				// "millisecond",
 			];
 
-			this.sync_delay_time = [];
+			clear_sync_delay_time();
 			let is_start_col = false;
 			let diff_timespan = cur_time.valueOf() - process_time.valueOf();
 			this.delay_ms = diff_timespan;
@@ -167,8 +177,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				}
 			}
 
-			this.markForCheck();
-			lock = false;
+			finished();
 		};
 		this.registerViewEvent(
 			this.appSetting,
@@ -292,11 +301,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	async bindSyncProgress() {
 		const ani_init = i => {
 			return new Promise(resolve => {
-				this.syncProgressSpinner!.getPS(i).setProgress(
-					0,
-					500,
-					resolve,
-				);
+				this.syncProgressSpinner!.getPS(i).setProgress(0, 500, resolve);
 			});
 		};
 		await Promise.all([ani_init(0), ani_init(1), ani_init(2)]);

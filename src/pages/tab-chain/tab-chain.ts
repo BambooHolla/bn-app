@@ -176,12 +176,6 @@ export class TabChainPage extends FirstLevelPage {
         if (msg && msg.req_id === req_id) {
           switch (msg.type) {
             case "start-verifier":
-              this.showVerifierLoading();
-              break;
-            case "end-verifier":
-              this.closeVerifierLoading();
-              break;
-            case "start-sync":
               if (
                 !this.appSetting.settings
                   .is_agree_to_the_agreement_of_sync_blockchain
@@ -189,6 +183,12 @@ export class TabChainPage extends FirstLevelPage {
                 this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
                 this.openChainSyncDetail();
               }
+              this.showVerifierLoading();
+              break;
+            case "end-verifier":
+              this.closeVerifierLoading();
+              break;
+            case "start-sync":
               this.is_show_sync_loading = true;
               this.cdRef.markForCheck();
               break;

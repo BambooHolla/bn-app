@@ -242,6 +242,7 @@
   "ALREADY_SYNCHRONIZED_TO_THE_LATEST": "已经同步到最新区块",
   "BLOCKCHAIN_INTEGRITY": "区块链完整",
   "SYNC_DISABLED": "不同步",
+  "CALCING_SYNC_DELAY_TIME": "计算中",
 
   "//": "chain-reward-detail",
   "CHAIN-REWARD-DETAIL": "区块奖励来源与分配",
