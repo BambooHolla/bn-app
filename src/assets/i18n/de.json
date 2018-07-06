@@ -56,6 +56,7 @@
   "ACCOUNT-ABOUT-IBT": "Über IBT",
   "ABOUT_IBT_INFO":
     "IFMChain ist das weltweit erste Produkt der Blockchain 3.0 mit Zugriff auf mobile Endgeräte, IBT ist seine Knoten-Software und steht für Instinct Blockchain Technology.",
+  "//": "account-faq",
   "//": "account-voucher-wallet",
   "//": "sign-in-and-sign-up",
   "LOGINNG": "Netzwerksynchronisierung",
@@ -175,6 +176,10 @@
   "LOADING_MORE_TRANSACTION_LIST":
     "Laden Sie weitere Blocktransaktionsdatensätze ...",
   "GET_PRE_BLOCK_ID_ERROR": "Fehler beim Abrufen der vorherigen Block-ID",
+  "//": "chain-sync-detail",
+  "CALCING_SYNC_DELAY_TIME": "In der Berechnung",
+  "//": "chain-reward-detail",
+  "FORGING_FEES": "Gebühren",
   "//": "chain-transaction-detail",
   "CHAIN-TRANSACTION-DETAIL": "Transaktionsdetails",
   "TRANSACTION_id": "Transaktions-ID",
@@ -188,6 +193,7 @@
   "TRANSCATION_SENDER": "Absender",
   "TRANSCATION_RECIPIENT": "Empfänger",
   "//": "account-my-contacts",
+  "ACCOUNT-MY-CONTACTS": "Mein Kontakt",
   "SCAN_QR_CODE_TO_ADD_CONTACT": "Sweep, um einen Kontakt hinzuzufügen",
   "IGNORE_UNCONFIRM_CONTACT_ERROR": "Fehler beim Übergeben des Kontakts",
   "ADD_CONTACT_SUBMIT_ERROR":
@@ -195,6 +201,15 @@
   "ADD_CONTACT_SUBMITING": "Zustimmen, die Kontaktübergabe hinzuzufügen",
   "ADD_CONTACT_SUBMIT_SUCCESS":
     "Zustimmen, dass Kontakte hinzugefügt werden, um sie erfolgreich zu übermitteln",
+  "SCAN_QRCOED_TO_ADD_CONTACT":
+    "Scannen Sie den Code, um Kontakte hinzuzufügen",
+  "INPUT_ADDRESS_TO_ADD_CONTACT":
+    "Geben Sie die Adresse ein, um den Kontakt hinzuzufügen",
+  "UNCONFIM_CONTACT_LIST": "Warten auf Bestätigungsliste",
+  "NO_CONTACT": "Kein Kontakt",
+  "ADD_CONTACT": "Fügen Sie einen Kontakt hinzu",
+  "//": "account-my-local-contacts",
+  "ACCOUNT-MY-LOCAL-CONTACTS": "Mein Kontakt",
   "//": "account-contact-detail",
   "//": "account-remark-contact",
   "//": "account-remark-contact-tags",
@@ -207,6 +222,10 @@
   "CONFIRM_THEN_ADD": "OK zum Hinzufügen",
   "ADD_CONTACT_ERROR": "Fehler beim Hinzufügen des Kontakts",
   "ADD_CONTACT_SUCCESS": "Fügen Sie den Kontakt erfolgreich hinzu",
+  "//": "account-add-local-contact",
+  "ACCOUNT-ADD-LOCAL-CONTACT": "Fügen Sie einen Kontakt hinzu",
+  "ADD_LOCAL_CONTACT_ERROR": "Fehler beim Hinzufügen des Kontakts",
+  "ADD_LOCAL_CONTACT_SUCCESS": "Fügen Sie den Kontakt erfolgreich hinzu",
   "//": "account-dapp-list",
   "ACCOUNT-DAPP-LIST": "Meine Bewerbung",
   "//": "account-info",
@@ -230,15 +249,6 @@
   "GET_FORGIN_BLOCK_ERROR":
     "Fehler beim Abrufen des vom Client erstellten Blocks",
   "LOADING_MORE_FOGIN_BLOCK_LIST": "Laden Sie schnellere Knoten ...",
-  "//": "account-my-contacts",
-  "ACCOUNT-MY-CONTACTS": "Mein Kontakt",
-  "SCAN_QRCOED_TO_ADD_CONTACT":
-    "Scannen Sie den Code, um Kontakte hinzuzufügen",
-  "INPUT_ADDRESS_TO_ADD_CONTACT":
-    "Geben Sie die Adresse ein, um den Kontakt hinzuzufügen",
-  "UNCONFIM_CONTACT_LIST": "Warten auf Bestätigungsliste",
-  "NO_CONTACT": "Kein Kontakt",
-  "ADD_CONTACT": "Fügen Sie einen Kontakt hinzu",
   "//": "pay-receive",
   "PAY-RECEIVE": "Empfangen",
   "RECENT": "Kürzlich",
@@ -246,6 +256,7 @@
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "Der eingehende Datensatz konnte nicht aktualisiert werden, zu viele Versuche wurden wiederholt, der Versuch wurde erneut versucht, das Netzwerk wurde überprüft",
   "//": "pay-select-my-contacts",
+  "//": "pay-select-my-local-contacts",
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "Offline-Zahlungen",
   "SCAN_TO_RECEIVE": "Scannen, um zu empfangen",
