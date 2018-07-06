@@ -176,18 +176,19 @@ export class TabChainPage extends FirstLevelPage {
         if (msg && msg.req_id === req_id) {
           switch (msg.type) {
             case "start-verifier":
-              if (
-                !this.appSetting.settings
-                  .is_agree_to_the_agreement_of_sync_blockchain
-              ) {
-                this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
-              }
               this.showVerifierLoading();
               break;
             case "end-verifier":
               this.closeVerifierLoading();
               break;
             case "start-sync":
+              if (
+                !this.appSetting.settings
+                  .is_agree_to_the_agreement_of_sync_blockchain
+              ) {
+                this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
+                this.openChainSyncDetail();
+              }
               this.is_show_sync_loading = true;
               this.cdRef.markForCheck();
               break;
@@ -230,7 +231,7 @@ export class TabChainPage extends FirstLevelPage {
     this.cdRef.markForCheck();
   }
 
-  showChainSyncDetail() {
+  openChainSyncDetail() {
     this.modalCtrl.create("chain-sync-detail").present();
   }
 

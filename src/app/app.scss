@@ -206,3 +206,82 @@ ion-content {
     pointer-events: none !important;
   }
 }
+
+ion-loading.logo-loading {
+  .loading-wrapper {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    > .loading-spinner {
+      background-image: url("../assets/icon/loading-logo.gif");
+      width: 16vw;
+      height: 16vw;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation-name: bounce;
+      animation-iteration-count: infinite;
+      animation-duration: 1s;
+      > .spinner {
+        display: none;
+      }
+    }
+    > .loading-content {
+      font-weight: normal;
+      color: #fff;
+      margin: 0;
+      margin-top: 1.5rem;
+      font-size: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &::after {
+        content: ". . . . . .";
+      }
+    }
+  }
+}
+
+ion-loading.blockchain-loading {
+  .loading-wrapper {
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+    height: 40vw;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    > .loading-spinner {
+      position: absolute;
+      background-image: url("../assets/icon/loading-blockchain.png");
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      animation-name: ani-rotate-circle;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+      animation-duration: 8s;
+      > .spinner {
+        display: none;
+      }
+    }
+    > .loading-content {
+      font-weight: normal;
+      color: #fff;
+      margin: 0;
+      margin-top: 1.5rem;
+      font-size: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      &::after {
+        content: ". . . . . .";
+      }
+    }
+  }
+}

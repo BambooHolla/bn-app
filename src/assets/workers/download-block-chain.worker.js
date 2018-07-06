@@ -112462,7 +112462,7 @@ const cmd_handler = {
         return __awaiter(this, void 0, void 0, function* () {
             const blockChainDownloader = getBlockChainDownloader(NET_VERSION, webio_path, 1, max_end_height);
             // 事件注册
-            const cgs = ["start-sync", "end-sync", "start-download", "end-download", "progress", "use-flow", "process-height"].map(eventname => {
+            const cgs = ["start-verifier", "end-verifier", "start-sync", "end-sync", "start-download", "end-download", "progress", "use-flow", "process-height"].map(eventname => {
                 const fun = data => {
                     postMessage({
                         req_id,

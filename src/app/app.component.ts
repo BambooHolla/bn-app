@@ -18,6 +18,7 @@ import {
   LoadingController,
   ToastController,
   ModalController,
+  LoadingOptions,
 } from "ionic-angular";
 
 import { AndroidPermissions } from "@ionic-native/android-permissions";
@@ -301,11 +302,13 @@ export class MyApp implements OnInit {
       }
 
       this.currentPage = page;
+      const loading_opts: LoadingOptions = { cssClass: "logo-loading" };
       const loadinger = loading_content
         ? this.loadingCtrl.create({
             content: loading_content,
+            ...loading_opts,
           })
-        : this.loadingCtrl.create();
+        : this.loadingCtrl.create(loading_opts);
       await (loadinger && loadinger.present());
       try {
         if (this.nav) {

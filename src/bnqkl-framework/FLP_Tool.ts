@@ -11,6 +11,7 @@ import {
   Loading,
   ToastController,
   ModalController,
+  LoadingOptions,
 } from "ionic-angular";
 import { PromiseOut } from "./PromiseExtends";
 import { is_dev, tryRegisterGlobal, global } from "./helper";
@@ -330,29 +331,27 @@ export class FLP_Tool {
 
   private async _showCustomLoadingDialog(
     msg,
-    opts: { auto_open?: boolean,cssClass?: string, extends},
+    opts: { auto_open?: boolean } & LoadingOptions,
   ) {
-    const dialog = this.modalCtrl.create(
-      "custom-loading-dialog",
-      {
-        message: await translateMessage(msg),
-      },
-      {
-        cssClass:opts.cssClass,
-      },
-    );
+    const dialog = this.loadingCtrl.create({
+      content: await translateMessage(msg),
+      cssClass: opts.cssClass,
+    });
     if (opts.auto_open) {
       dialog.present();
     }
     return dialog;
   }
   /*系统级别的加载动画*/
-  // async showLogoLoading(msg, auto_open = true) {
-  //   this._showCustomLoadingDialog(msg, "logo-loading", { auto_open });
-  // }
-  // showChainLoading(msg, auto_open = true) {
-  //   this._showCustomLoadingDialog(msg, "blockchain-loading", { auto_open });
-  // }
+  async showLogoLoading(msg, auto_open = true) {
+    this._showCustomLoadingDialog(msg, { auto_open, cssClass: "logo-loading" });
+  }
+  showChainLoading(msg, auto_open = true) {
+    this._showCustomLoadingDialog(msg, {
+      auto_open,
+      cssClass: "blockchain-loading",
+    });
+  }
 
   /**
    * 用于管理loading对象的对象池
