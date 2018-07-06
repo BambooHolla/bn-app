@@ -202,7 +202,7 @@ export class BlockServiceProvider extends FLP_Tool {
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
   );
-  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks");
+  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
   readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
   readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
   readonly GET_FORGING_BLOCK = this.appSetting.APP_URL(

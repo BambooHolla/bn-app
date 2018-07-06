@@ -97,7 +97,7 @@ export class TransactionServiceProvider {
   readonly GET_TIMESTAMP = this.appSetting.APP_URL(
     "/api/transactions/getslottime",
   );
-  readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions");
+  readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions/");
   readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL(
     "/api/transactions/query",
   );

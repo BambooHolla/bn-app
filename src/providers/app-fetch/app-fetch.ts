@@ -83,7 +83,17 @@ export class AppFetchProvider extends EventEmitter {
   get onLine() {
     return this._onLine;
   }
-
+  ioRequest<T>(path, query) {
+    return new Promise<T>((resolve, reject) => {
+      this.io.emit(path, query, res => {
+        if (res.success) {
+          resolve(res);
+        } else {
+          reject(res);
+        }
+      });
+    });
+  }
   ServerResError = ServerResError;
   get io_url_path() {
     return AppSettingProvider.SERVER_URL + "/web";
@@ -105,10 +115,12 @@ export class AppFetchProvider extends EventEmitter {
     }
     return this._io;
   }
+  wsHttp: any = {};
   async ioEmitAsync<T>(path, body) {
     return this._handlePromise(
       new Promise<T>((resolve, reject) => {
         this.io.emit(path, body, res => {
+          // resolve(res);
           res.success ? resolve(res) : reject(res);
         });
       }),
@@ -130,6 +142,25 @@ export class AppFetchProvider extends EventEmitter {
     this.io.emit("app-start", {
       version: AppSettingProvider.APP_VERSION,
       ...device,
+    });
+    //
+    const wsHttpReq = (method, url, query) => {
+      return this.ioRequest(
+        `${method}${url
+          .replace(AppUrl.SERVER_URL, "")
+          .replace(AppUrl.BACKEND_VERSION, "")}`,
+        query,
+      );
+    };
+    ["get", "delete", "head", "options"].forEach(method => {
+      this.wsHttp[method] = (url: string, options) => {
+        return wsHttpReq(method, url, options.search);
+      };
+    });
+    ["post", "put", "patch"].forEach(method => {
+      this.wsHttp[method] = (url: string, body, options) => {
+        return wsHttpReq(method, url, body);
+      };
     });
   }
 
@@ -289,15 +320,16 @@ export class AppFetchProvider extends EventEmitter {
       case "delete":
       case "head":
       case "options":
-        req = this.http[method](reqInfo.url, reqInfo.options);
+        req = this.wsHttp[method](reqInfo.url, reqInfo.options);
         break;
       case "post":
       case "put":
       case "patch":
-        req = this.http[method](reqInfo.url, body, reqInfo.options);
+        req = this.wsHttp[method](reqInfo.url, body, reqInfo.options);
         break;
     }
-    var req_promise = req.toPromise();
+    // debugger;
+    var req_promise = req.then instanceof Function ? req : req.toPromise();
     if (isFinite(timeout_ms) && timeout_ms > 0) {
       req_promise = Promise.race([
         req_promise,

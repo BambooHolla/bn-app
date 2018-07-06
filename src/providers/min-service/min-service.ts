@@ -127,7 +127,7 @@ export class MinServiceProvider extends FLP_Tool {
     "/api/delegates/alreadyVotingDelegates",
   );
   readonly SYSTEM_SHUTDOWN = this.appSetting.APP_URL("/api/system/shutdown");
-  readonly MINERS = this.appSetting.APP_URL("/api/delegates");
+  readonly MINERS = this.appSetting.APP_URL("/api/delegates/");
   readonly DELEGATES = this.appSetting.APP_URL("/api/accounts/delegates");
   readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/myProfitRanking");
   readonly ALL_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");

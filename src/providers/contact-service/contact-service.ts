@@ -117,7 +117,7 @@ export class ContactServiceProvider {
     return contact.username + contact.address;
   }
 
-  readonly GET_CONTACT = this.appSetting.APP_URL("/api/contacts");
+  readonly GET_CONTACT = this.appSetting.APP_URL("/api/contacts/");
 
   /**
    * 获取我的联系人，默认返回所有
