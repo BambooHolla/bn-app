@@ -216,4 +216,8 @@ export class TabChainPage extends FirstLevelPage {
     await this.loadUnconfirmBlock();
     this.cdRef.markForCheck();
   }
+
+  showChainSyncDetail(){
+    this.modalCtrl.create('chain-sync-detail').present();
+  }
 }

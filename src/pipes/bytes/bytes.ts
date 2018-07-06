@@ -96,5 +96,6 @@ function isInteger(value: number): boolean {
   return value % 1 === 0;
 }
 function toDecimal(value: number, decimal: number): number {
-  return Math.round(value * Math.pow(10, decimal)) / Math.pow(10, decimal);
+  const d = Math.pow(10, decimal);
+  return Math.round(value * d) / d;
 }

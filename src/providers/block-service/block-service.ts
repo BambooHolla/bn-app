@@ -283,6 +283,10 @@ export class BlockServiceProvider extends FLP_Tool {
         this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
           this.appSetting.BLOCK_UNIT_TIME,
     );
+    // 如果同步进度是最新区块的话，那么继续跟进这个进度
+    if(this.appSetting.settings.sync_progress_height === this.appSetting.getHeight()){
+      this.appSetting.settings.sync_progress_height = last_block.height;
+    }
     // 更新高度
     this.appSetting.setHeight(last_block.height);
   }
@@ -342,6 +346,7 @@ export class BlockServiceProvider extends FLP_Tool {
         // console.log("bs", msg);
         switch (msg.type) {
           case "start-sync":
+            this.appSetting.settings.sync_progress_height = 1;
             console.log("开始同步", task_name);
             break;
           case "start-download":
@@ -351,8 +356,13 @@ export class BlockServiceProvider extends FLP_Tool {
             console.log("完成子任务", msg.data);
             break;
           case "end-sync":
+            this.appSetting.settings.sync_progress_height = this.appSetting.getHeight();
             console.log("结束同步", task_name);
             task.resolve();
+            break;
+          case "process-height":
+            this.appSetting.settings.sync_progress_height =
+              msg.data.cursorHeight;
             break;
           case "use-flow":
             this.appSetting.settings.sync_data_flow +=

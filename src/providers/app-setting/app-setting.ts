@@ -330,6 +330,7 @@ export class AppSettingProvider extends CommonService {
     }
     this.height.next(height);
     this.after_height.next(height);
+    this.emit("HEIGHT:CHANGED");
     const pre_round = this.getRound();
     const cur_round = this.calcRoundByHeight(height);
     if (cur_round !== pre_round) {
@@ -351,6 +352,7 @@ export class AppSettingProvider extends CommonService {
   setRound(round: number) {
     this.round.next(round);
     this.after_round.next(round);
+    this.emit("ROUND:CHANGED");
   }
   getRound() {
     return this.round.getValue();
@@ -417,6 +419,8 @@ export class AppSettingProvider extends CommonService {
     enable_sync_progress_equitys: false,
     /**同步数据累计使用的流量*/
     sync_data_flow: 0,
+    /**当前同步的进度区块*/
+    sync_progress_height: 0,
   };
 }
 if (

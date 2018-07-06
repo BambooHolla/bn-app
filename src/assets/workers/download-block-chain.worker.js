@@ -10841,10 +10841,7 @@ class BlockChain {
         }
     }
     range() {
-        return {
-            startHeight: this.first ? this.first.height : 0,
-            endHeight: this.last ? this.last.height : 0
-        };
+        return new Range(this.first ? this.first.height : 0, this.last ? this.last.height : 0);
     }
 }
 exports.BlockChain = BlockChain;
@@ -10854,6 +10851,50 @@ var SKETCHY_CHECK_RES;
     SKETCHY_CHECK_RES[SKETCHY_CHECK_RES["HALF"] = 1] = "HALF";
     SKETCHY_CHECK_RES[SKETCHY_CHECK_RES["YES"] = 2] = "YES";
 })(SKETCHY_CHECK_RES = exports.SKETCHY_CHECK_RES || (exports.SKETCHY_CHECK_RES = {}));
+class RangeHelper {
+    constructor(start, end) {
+        this.ranges = [];
+        this.ranges.push(new Range(start, end));
+    }
+    split(rm_start, rm_end) {
+        for (var i = 0; i < this.ranges.length; i += 1) {
+            const range = this.ranges[i];
+            let new_range;
+            if (range.start >= rm_start && range.start <= rm_end) {
+                // [ (rmS, {S, rmE), E} ]
+                range.start = rm_end + 1;
+            } else if (range.end >= rm_start && range.end <= rm_end) {
+                // [ {S, (rmS, E}, rmE) ]
+                range.end = rm_start - 1;
+            } else if (range.start <= rm_start && range.end >= rm_end) {
+                // [ {S, (rmS, rmE), E} ]
+                new_range = new Range(rm_end + 1, range.end);
+                range.end = rm_start - 1;
+            } else if (range.start >= rm_start && range.end <= rm_end) {
+                // [ (rmS, {S, E}, rmE) ]
+                range.start = rm_end;
+                range.end = rm_start;
+            }
+            if (range.start > range.end) {
+                this.ranges.splice(i, 1);
+                i -= 1;
+            }
+            if (new_range && new_range.end >= new_range.start) {
+                // 塞入一个新的。这个新的也不用检测了直接跳过
+                this.ranges.splice(i + 1, 0, new_range);
+                i += 1;
+            }
+        }
+    }
+}
+exports.RangeHelper = RangeHelper;
+class Range {
+    constructor(start, end) {
+        this.start = start;
+        this.end = end;
+    }
+}
+exports.Range = Range;
 },{"../../providers/block-service/block.types":97}],32:[function(require,module,exports) {
 "use strict";
 
@@ -11001,7 +11042,8 @@ class BlockchainVerifier {
                     const delete_range = {
                         startHeight: Infinity,
                         endHeight: -Infinity,
-                        keep_id_set: new Set()
+                        keep_id_set: new Set(),
+                        rm_id_set: new Set()
                     };
                     const save_block_chain_list = yield __await(Promise.all(check_tasks));
                     for (var i = 0; i < check_tasks.length; i += 1) {
@@ -11016,19 +11058,25 @@ class BlockchainVerifier {
                             } else {
                                 console.log("%cLOCAL INCOMPLETE CHAIN", "color:darkorange;", useable_range, source_block_chain.range());
                             }
-                            // 把要保留的id存起来
-                            to_keep_save_block_chain.forEach(b => delete_range.keep_id_set.add(b["_id"]));
+                            // // 把要保留的id存起来
+                            // to_keep_save_block_chain.forEach(b =>
+                            // 	delete_range.keep_id_set.add(b["_id"]),
+                            // );
                         } else {
                             const source_range = source_block_chain.range();
-                            delete_range.startHeight = Math.min(source_range.startHeight, delete_range.startHeight);
-                            delete_range.endHeight = Math.max(source_range.endHeight, delete_range.endHeight);
+                            source_block_chain.forEach(b => {
+                                // 强行删除
+                                delete_range.rm_id_set.add(b["_id"]);
+                            });
+                            delete_range.startHeight = Math.min(source_range.start, delete_range.startHeight);
+                            delete_range.endHeight = Math.max(source_range.end, delete_range.endHeight);
                             console.log("%cLOCAL BAD CHAIN", "color:darkred;", source_range);
                         }
                     }
                     // 尝试进行删除无用数据
-                    if (delete_range.endHeight > delete_range.startHeight) {
+                    if (delete_range.endHeight >= delete_range.startHeight) {
                         console.log("尝试移除", delete_range.startHeight, delete_range.endHeight, "范围内有问题的数据");
-                        yield __await(this._IDB_deleteBlocks(delete_range.startHeight, delete_range.endHeight, delete_range.keep_id_set));
+                        yield __await(this._IDB_deleteBlocks(delete_range.startHeight, delete_range.endHeight, delete_range.keep_id_set, delete_range.rm_id_set));
                     }
                     yield yield __await(usable_ranges);
                 }
@@ -11223,7 +11271,7 @@ class BlockchainVerifier {
         });
     }
     /*删除一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
-    _IDB_deleteBlocks(start_height, end_height, keep_id_set) {
+    _IDB_deleteBlocks(start_height, end_height, keep_id_set, rm_id_set) {
         return __awaiter(this, void 0, void 0, function* () {
             const idb = yield this.blockDb.db._db.conn;
             const trans = idb.transaction(["blocks"], "readwrite");
@@ -11232,7 +11280,7 @@ class BlockchainVerifier {
             const key_range = IDBKeyRange.bound(start_height, end_height);
             const del_tasks = [];
             yield helper_1.reqCursorLooper(index.openCursor(key_range), (block, height, cursor, i) => {
-                if (!keep_id_set.has(block.id)) {
+                if (!keep_id_set.has(block["_id"]) || rm_id_set.has(block["_id"])) {
                     del_tasks[del_tasks.length] = helper_1.reqToPromise(cursor.delete());
                 }
                 return true;
@@ -11310,7 +11358,7 @@ class BlockChainDownloader extends eventemitter3_1.default {
      * endHeight一般情况下是不等于ownEndHeight的
      * ownEndHeight指的是拥有的最高的height，这个height的block是不下载的
      */
-    downloadBlocks(startHeight, endHeight, ownEndHeight, total) {
+    downloadBlocks(startHeight, endHeight, ownEndHeight, total, asc) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._download_lock) {
                 return this._download_lock.promise;
@@ -11318,7 +11366,11 @@ class BlockChainDownloader extends eventemitter3_1.default {
             this._download_lock = new PromiseExtends_1.PromiseOut();
             this.emit("start-download", { startHeight, endHeight, ownEndHeight });
             try {
-                yield this._download_with_auto_retry(startHeight, endHeight, ownEndHeight, total);
+                if (asc) {
+                    yield this._download_with_auto_retry_asc(startHeight, endHeight, ownEndHeight, total);
+                } else {
+                    yield this._download_with_auto_retry(startHeight, endHeight, ownEndHeight, total);
+                }
             } finally {
                 this._download_lock.resolve();
                 this._download_lock = undefined;
@@ -11399,31 +11451,99 @@ class BlockChainDownloader extends eventemitter3_1.default {
             });
         });
     }
+    // 升序下载
+    _download_with_auto_retry_asc(startHeight, endHeight, ownEndHeight, total) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof total !== "number") {
+                total = ownEndHeight - startHeight + 1;
+            }
+            const pageSize = 10;
+            var acc_startHeight = startHeight;
+            // 初始化触发一下当前的进度
+            this.emit("progress", (acc_startHeight - 1) / total * 100);
+            this.emit("process-height", {
+                cursorHeight: Math.max(acc_startHeight - 1, 1)
+            });
+            do {
+                let retry_interval = 1000;
+                try {
+                    yield this._download_range_blocks_asc(pageSize, acc_startHeight, endHeight, ownEndHeight, total);
+                    if (acc_startHeight < endHeight) {
+                        /*这里不包含等于的情况，但可以生成等于的情况*/
+                        acc_startHeight = Math.min(acc_startHeight + pageSize, endHeight);
+                    } else {
+                        /*等于情况。在这就进行终结*/
+                        break;
+                    }
+                } catch (err) {
+                    console.warn(err);
+                    retry_interval = Math.min(retry_interval + 1000, 5000);
+                    yield PromiseExtends_1.sleep(retry_interval); // 1s~5s 后重试
+                }
+            } while (acc_startHeight <= endHeight); /*等于的情况，也可以继续进行下载*/
+        });
+    }
+    _download_range_blocks_asc(pageSize, acc_startHeight, endHeight, ownEndHeight, total) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const cur_start_height = acc_startHeight;
+            const cur_end_height = Math.min(cur_start_height + (pageSize - 1), endHeight);
+            const tin_task = new PromiseExtends_1.PromiseOut();
+            // await this.blockService.getBlocksByRange(startHeight, endHeight);
+            console.log("cur_start_height", cur_start_height, "cur_end_height", cur_end_height);
+            this.webio.emit("get/api/blocks/protobuf", {
+                startHeight: cur_start_height,
+                endHeight: cur_end_height
+            }, res => {
+                if (res.success) {
+                    tin_task.resolve(res);
+                } else {
+                    // prettier-ignore
+                    tin_task.reject(Object.assign(new Error("SERVER REJECT"), res));
+                }
+            });
+            /*五秒的时间下载区块（1KB左右的数据），下载不下来基本就是断网了*/
+            PromiseExtends_1.sleep(5000).then(() => tin_task.reject(new Error("TIME OUT")));
+            const { blocks: blocks_array_buffer } = yield tin_task.promise;
+            const blocks_buffer = new Uint8Array(blocks_array_buffer);
+            const blocks = [];
+            {
+                const list = shareProto_1.default.PackList.decode(blocks_buffer).list;
+                for (var _b of list) {
+                    const b = _b;
+                    const unpack_block = shareProto_1.default.SimpleBlock.decode(b);
+                    const generatorPublicKey = helper_1.buf2hex(unpack_block.generatorPublicKey);
+                    const block = Object.assign({}, unpack_block, {
+                        // 这里强行转化为string类型，避免错误的发生
+                        reward: "" + unpack_block.reward, totalAmount: "" + unpack_block.totalAmount, totalFee: "" + unpack_block.totalFee,
+                        // 一些hex(0~f)字符串的转化
+                        payloadHash: helper_1.buf2hex(unpack_block.payloadHash), generatorPublicKey, generatorId: this.ifmJs.addressCheck.generateBase58CheckAddress(generatorPublicKey), blockSignature: helper_1.buf2hex(unpack_block.blockSignature), previousBlock: helper_1.buf2hex(unpack_block.previousBlock), id: helper_1.buf2hex(unpack_block.id), remark: new TextDecoder("utf-8").decode(unpack_block.remark) });
+                    blocks.push(block);
+                }
+            }
+            // 数据库插入出错的话，忽略错误，继续往下走
+            yield this.blockDb.insertMany(blocks).catch(console.warn);
+            // 更改进度
+            this.emit("progress", (cur_end_height + 1) / total * 100);
+            this.emit("process-height", { cursorHeight: cur_end_height + 1 });
+            // 统计消耗流量
+            this.emit("use-flow", {
+                up: 70,
+                down: blocks_buffer.length
+            });
+        });
+    }
     /*同步截止高度的区块链*/
-    syncFullBlockchain(
-    /*range_list:ChainRange[],*/max_end_height) {
+    syncFullBlockchain( /*range_list:Range[],*/max_end_height) {
         return __awaiter(this, void 0, void 0, function* () {
             var e_1, _a;
             const sync_id = ++this._sync_id_acc;
-            this.emit("start-sync", { sync_id, max_end_height });
-            let start_height = 1;
-            let end_height = Infinity;
+            const rangeHelper = new helper_1.RangeHelper(1, max_end_height - 1);
+            this.emit("start-verifier", { ranges: rangeHelper.ranges });
             try {
                 for (var _c = __asyncValues(this.verifier.useableLocalBlocksFinder()), _d; _d = yield _c.next(), !_d.done;) {
                     var _ranges = _d.value;
-                    const ranges = _ranges;
-                    for (var _range of ranges) {
-                        const range = _range;
-                        this.emit("sync-local-check", { sync_id, range });
-                        // start_height = Math.min(start_height,range.)
-                        end_height = Math.min(range.startHeight - 1, max_end_height - 1);
-                        if (end_height >= start_height) {
-                            yield this.downloadBlocks(start_height, end_height, max_end_height, max_end_height);
-                        }
-                        start_height = range.endHeight + 1;
-                        if (start_height >= max_end_height) {
-                            break;
-                        }
+                    for (var _range of _ranges) {
+                        rangeHelper.split(_range.start, _range.end);
                     }
                 }
             } catch (e_1_1) {
@@ -11435,7 +11555,18 @@ class BlockChainDownloader extends eventemitter3_1.default {
                     if (e_1) throw e_1.error;
                 }
             }
-            this.emit("end-sync", { sync_id, max_end_height });
+            this.emit("end-verifier", { ranges: rangeHelper.ranges });
+            this.emit("start-sync", {});
+            console.log("download ranges:", rangeHelper.ranges);
+            for (var _range of rangeHelper.ranges) {
+                const range = _range;
+                yield this.downloadBlocks(range.start, range.end, max_end_height, max_end_height, true);
+            }
+            this.emit("end-sync", {});
+            /** TODO:
+             * 在已经确保区块链已经完整的情况下，再次运行 useableLocalBlocksFinder，
+             * 拿出不是1~max_end_height的数据片，进行删除，因为那些是冗余数据
+             */
         });
     }
 }
@@ -112331,7 +112462,7 @@ const cmd_handler = {
         return __awaiter(this, void 0, void 0, function* () {
             const blockChainDownloader = getBlockChainDownloader(NET_VERSION, webio_path, 1, max_end_height);
             // 事件注册
-            const cgs = ["start-sync", "end-sync", "start-download", "end-download", "progress", "use-flow"].map(eventname => {
+            const cgs = ["start-sync", "end-sync", "start-download", "end-download", "progress", "use-flow", "process-height"].map(eventname => {
                 const fun = data => {
                     postMessage({
                         req_id,

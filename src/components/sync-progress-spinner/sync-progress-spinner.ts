@@ -184,6 +184,8 @@ export class ProgressSpinner extends PIXI.Container {
 		// this.progress_arc.cacheAsBitmap = true;
 		this.graphice_bg.mask = this.progress_arc;
 		// this.rotation = -90;
+		// 默认显示为禁用
+		this.setDisabled(true);
 	}
 	progress = 1;
 	graphice_bg!: PIXI.Sprite | PIXI.Graphics;
@@ -340,9 +342,10 @@ export class ProgressSpinner extends PIXI.Container {
 			return;
 		}
 		this.is_disabled = is_disabled;
-		this.graphice_bg.blendMode = is_disabled
-			? PIXI.BLEND_MODES.MULTIPLY
-			: PIXI.BLEND_MODES.NORMAL;
+		this.graphice_bg.alpha = is_disabled ? 0.3 : 1;
+		// this.graphice_bg.blendMode = is_disabled
+		// 	? PIXI.BLEND_MODES.MULTIPLY
+		// 	: PIXI.BLEND_MODES.NORMAL;
 		this.emit("refresh-frame");
 	}
 	getArcPoints(angle: number, x: number, y: number, r: number) {

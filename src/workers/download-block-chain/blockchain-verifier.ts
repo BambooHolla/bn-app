@@ -9,7 +9,7 @@ import {
 	reqCursorLooper,
 	BlockChain,
 	SKETCHY_CHECK_RES,
-	ChainRange,
+	Range,
 } from "./helper";
 
 /*
@@ -36,10 +36,7 @@ export class BlockchainVerifier {
 		});
 	}
 	async useableLocalBlockRanges() {
-		const all_ranges: {
-			startHeight: number;
-			endHeight: number;
-		}[] = [];
+		const all_ranges: Range[] = [];
 		for await (var _range of this.useableLocalBlocksFinder()) {
 			all_ranges.push(..._range);
 		}
@@ -49,7 +46,7 @@ export class BlockchainVerifier {
 	async *useableLocalBlocksFinder() {
 		const continuousBlockChain = this.continuousBlockChainGenerator();
 		for await (var _blockchains of continuousBlockChain) {
-			const usable_ranges: ChainRange[] = [];
+			const usable_ranges: Range[] = [];
 			const blockchains = [..._blockchains.values()];
 			const check_tasks = blockchains.map(bc => {
 				// TODO: 目前没有提供单区块校验的接口，所以先直接设定为扔掉这个数据
@@ -62,6 +59,7 @@ export class BlockchainVerifier {
 				startHeight: Infinity,
 				endHeight: -Infinity,
 				keep_id_set: new Set(),
+				rm_id_set: new Set(),
 			};
 			const save_block_chain_list = await Promise.all(check_tasks);
 			for (var i = 0; i < check_tasks.length; i += 1) {
@@ -88,18 +86,22 @@ export class BlockchainVerifier {
 							source_block_chain.range(),
 						);
 					}
-					// 把要保留的id存起来
-					to_keep_save_block_chain.forEach(b =>
-						delete_range.keep_id_set.add(b["_id"]),
-					);
+					// // 把要保留的id存起来
+					// to_keep_save_block_chain.forEach(b =>
+					// 	delete_range.keep_id_set.add(b["_id"]),
+					// );
 				} else {
 					const source_range = source_block_chain.range();
+					source_block_chain.forEach(b => {
+						// 强行删除
+						delete_range.rm_id_set.add(b["_id"]);
+					});
 					delete_range.startHeight = Math.min(
-						source_range.startHeight,
+						source_range.start,
 						delete_range.startHeight,
 					);
 					delete_range.endHeight = Math.max(
-						source_range.endHeight,
+						source_range.end,
 						delete_range.endHeight,
 					);
 					console.log(
@@ -110,7 +112,7 @@ export class BlockchainVerifier {
 				}
 			}
 			// 尝试进行删除无用数据
-			if (delete_range.endHeight > delete_range.startHeight) {
+			if (delete_range.endHeight >= delete_range.startHeight) {
 				console.log(
 					"尝试移除",
 					delete_range.startHeight,
@@ -121,6 +123,7 @@ export class BlockchainVerifier {
 					delete_range.startHeight,
 					delete_range.endHeight,
 					delete_range.keep_id_set,
+					delete_range.rm_id_set,
 				);
 			}
 			yield usable_ranges;
@@ -352,6 +355,7 @@ export class BlockchainVerifier {
 		start_height: number,
 		end_height: number,
 		keep_id_set: Set<typeof IDBCursor.prototype.key>,
+		rm_id_set: Set<typeof IDBCursor.prototype.key>,
 	) {
 		const idb = await this.blockDb.db._db.conn;
 		const trans = idb.transaction(["blocks"], "readwrite");
@@ -363,7 +367,10 @@ export class BlockchainVerifier {
 		await reqCursorLooper<BlockModel>(
 			index.openCursor(key_range),
 			(block, height: number, cursor, i) => {
-				if (!keep_id_set.has(block.id)) {
+				if (
+					!keep_id_set.has(block["_id"]) ||
+					rm_id_set.has(block["_id"])
+				) {
 					del_tasks[del_tasks.length] = reqToPromise(cursor.delete());
 				}
 				return true;

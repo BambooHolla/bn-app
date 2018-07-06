@@ -3,10 +3,6 @@ import {
   BlockListResModel,
 } from "../../providers/block-service/block.types";
 export { BlockModel, BlockListResModel };
-export type ChainRange = {
-  startHeight: number;
-  endHeight: number;
-};
 
 export const buf2hex = (buffer: ArrayBuffer) => {
   var hex = "";
@@ -131,10 +127,10 @@ export class BlockChain {
     }
   }
   range() {
-    return {
-      startHeight: this.first ? this.first.height : 0,
-      endHeight: this.last ? this.last.height : 0,
-    };
+    return new Range(
+      this.first ? this.first.height : 0,
+      this.last ? this.last.height : 0,
+    );
   }
 }
 
@@ -142,4 +138,46 @@ export enum SKETCHY_CHECK_RES {
   NO = 0,
   HALF = 1,
   YES = 2,
+}
+
+export class RangeHelper {
+  ranges: Range[] = [];
+  constructor(start: number, end: number) {
+    this.ranges.push(new Range(start, end));
+  }
+  split(rm_start: number, rm_end: number) {
+    for (var i = 0; i < this.ranges.length; i += 1) {
+      const range = this.ranges[i];
+      let new_range: Range | undefined;
+      if (range.start >= rm_start && range.start <= rm_end) {
+        // [ (rmS, {S, rmE), E} ]
+        range.start = rm_end + 1;
+      } else if (range.end >= rm_start && range.end <= rm_end) {
+        // [ {S, (rmS, E}, rmE) ]
+        range.end = rm_start - 1;
+      } else if (range.start <= rm_start && range.end >= rm_end) {
+        // [ {S, (rmS, rmE), E} ]
+        new_range = new Range(rm_end + 1, range.end);
+        range.end = rm_start - 1;
+      } else if (range.start >= rm_start && range.end <= rm_end) {
+        // [ (rmS, {S, E}, rmE) ]
+        range.start = rm_end;
+        range.end = rm_start;
+      }
+
+      if (range.start > range.end) {
+        this.ranges.splice(i, 1);
+        i -= 1;
+      }
+      if (new_range && new_range.end >= new_range.start) {
+        // 塞入一个新的。这个新的也不用检测了直接跳过
+        this.ranges.splice(i + 1, 0, new_range);
+        i += 1;
+      }
+    }
+  }
+}
+
+export class Range {
+  constructor(public start: number, public end: number) {}
 }

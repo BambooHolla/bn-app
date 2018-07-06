@@ -45,15 +45,22 @@
   <div class="extends-info">
     <div class="top header">
       <ali-icon name="ifm-liuliang"></ali-icon>
-      {{'SYNCHRONOUS_TRAFFIC'|translate}}
+      <ng-container *ngIf="delay_ms">
+        {{'SYNC_DELAY_TIME'|translate}}
+      </ng-container>
+      <ng-container *ngIf="!delay_ms">
+        {{'BLOCKCHAIN_INTEGRITY'|translate}}
+      </ng-container>
     </div>
     <div class="center">
-      <div class="value">
-        {{sync_data_flow_info.value}}
-      </div>
-      <div class="unit">
-        {{sync_data_flow_info.unit}}
-      </div>
+      <ng-container *ngFor="let time_info of sync_delay_time">
+        <div class="value">
+          {{time_info.value}}
+        </div>
+        <div class="unit">
+          {{time_info.unit|translate}}
+        </div>
+      </ng-container>
     </div>
     <div class="bottom">
       <div class="left">
@@ -69,10 +76,10 @@
       <div class="right">
         <div class="label">
           <ali-icon name="ifm-start-time"></ali-icon>
-          {{'SYNC_START_TIME'|translate}}
+          {{'SYNCHRONOUS_TRAFFIC'|translate}}
         </div>
         <div class="detail">
-          {{sync_start_time|amDateFormat:"MM-DD HH:mm"}}
+          {{sync_data_flow_info.value}}{{sync_data_flow_info.unit}}
         </div>
       </div>
     </div>

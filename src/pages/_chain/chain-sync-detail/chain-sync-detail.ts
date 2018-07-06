@@ -8,7 +8,12 @@ import {
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import {
+	IonicPage,
+	NavController,
+	NavParams,
+	ViewController,
+} from "ionic-angular";
 import {
 	BlockServiceProvider,
 	BlockModel,
@@ -23,6 +28,17 @@ import {
 	SyncProgressSpinnerComponent,
 	ProgressSpinner,
 } from "../../../components/sync-progress-spinner/sync-progress-spinner";
+import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
+
+const TIMESPAN_MULTIPLE = {
+	year: 365 * 24 * 60 * 60 * 1000,
+	month: 30 * 24 * 60 * 60 * 1000,
+	day: 24 * 60 * 60 * 1000,
+	hour: 60 * 60 * 1000,
+	minute: 60 * 1000,
+	second: 1000,
+	millisecond: 1,
+};
 
 @IonicPage({ name: "chain-sync-detail" })
 @Component({
@@ -37,12 +53,14 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 		@Optional() public tabs: TabsPage,
 		public blockService: BlockServiceProvider,
 		public cdRef: ChangeDetectorRef,
+		public viewCtrl: ViewController,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
 	/**页面变量的定义*/
-	// 第一次同步时间
-	sync_start_time = new Date(0);
+	// 目前同步的连续区块的最低高度与最高高度的时间差
+	sync_delay_time: { value: string; unit: string }[] = [];
+	delay_ms = -1;
 	// 区块高度
 	block_height = 0;
 	// 同步使用的流量
@@ -84,21 +102,92 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	enable_sync_progress_equitys = false;
 
 	/**动态监听变量的变动*/
+	@ChainSyncDetailPage.onInit
+	initBindSyncProgressHeight() {
+		let lock;
+		const on_sync_progress_height_changed = async () => {
+			if (lock) {
+				return;
+			}
+			lock = true;
+			const cur_height = this.appSetting.getHeight();
+			const { sync_progress_height } = this.appSetting.settings;
+			if (cur_height <= sync_progress_height) {
+				this.sync_delay_time = [];
+				this.delay_ms = 0;
+				this.markForCheck();
+				lock = false;
+				// 区块链完整后自动关闭界面
+				this.syncInBackground();
+				return;
+			}
 
-	@ChainSyncDetailPage.willEnter
-	initBindSyncStartTime() {
-		this.sync_start_time = new Date(
-			this.appSetting.settings.sync_start_time,
+			const [cur_block, process_block] = await Promise.all([
+				this.blockService.getBlockByHeight(cur_height),
+				this.blockService.getBlockByHeight(sync_progress_height),
+			]);
+			const cur_time = TimestampPipe.transform(cur_block.timestamp);
+			const process_time = TimestampPipe.transform(
+				process_block.timestamp,
+			);
+
+			const time_keys = [
+				"year",
+				"month",
+				"day",
+				"hour",
+				"minute",
+				"second",
+				// "millisecond",
+			];
+
+			this.sync_delay_time = [];
+			let is_start_col = false;
+			let diff_timespan = cur_time.valueOf() - process_time.valueOf();
+			this.delay_ms = diff_timespan;
+			for (var time_key of time_keys) {
+				time_keys[time_key];
+				const val = Math.floor(
+					diff_timespan / TIMESPAN_MULTIPLE[time_key],
+				);
+				diff_timespan -= val * TIMESPAN_MULTIPLE[time_key];
+				if (val) {
+					is_start_col = true;
+				}
+				if (is_start_col) {
+					this.sync_delay_time.push({
+						value: this.toFixed(val, 0, 2),
+						unit: "UNIT_" + time_key,
+					});
+				}
+				if (this.sync_delay_time.length >= 3) {
+					break;
+				}
+			}
+
+			this.markForCheck();
+			lock = false;
+		};
+		this.registerViewEvent(
+			this.appSetting,
+			"changed@setting.sync_progress_height",
+			on_sync_progress_height_changed,
 		);
-		this.markForCheck();
+		this.registerViewEvent(
+			this.appSetting,
+			"HEIGHT:CHANGED",
+			on_sync_progress_height_changed,
+		);
+		on_sync_progress_height_changed();
 	}
+
 	@ChainSyncDetailPage.onInit
 	initBindContributionTraffic() {
 		const on_sync_data_flow_changed = sync_data_flow => {
 			const info = BytesPipe.transform(sync_data_flow, 2);
 			if (typeof info === "string" && info.indexOf(" ") !== -1) {
 				const [value, unit] = info.split(" ");
-				this.sync_data_flow_info.value = value;
+				this.sync_data_flow_info.value = parseFloat(value).toFixed(2);
 				this.sync_data_flow_info.unit = unit;
 			} else {
 				this.sync_data_flow_info.value = "???";
@@ -111,15 +200,17 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 			"changed@setting.sync_data_flow",
 			on_sync_data_flow_changed,
 		);
-		on_sync_data_flow_changed(
-			this.appSetting.settings.sync_data_flow,
-		);
+		on_sync_data_flow_changed(this.appSetting.settings.sync_data_flow);
 	}
 
 	@ChainSyncDetailPage.addEvent("HEIGHT:CHANGED")
 	initBindBlockHeight() {
 		this.block_height = this.appSetting.getHeight();
 		this.markForCheck();
+	}
+	/*TODO，对时间进行计算*/
+	private _calcSyncDelayTime() {
+		this.blockService;
 	}
 
 	@ChainSyncDetailPage.onInit
@@ -219,6 +310,6 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	}
 
 	syncInBackground() {
-		this.finishJob(true);
+		this.finishJob(true, 10);
 	}
 }

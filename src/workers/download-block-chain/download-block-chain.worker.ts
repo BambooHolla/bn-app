@@ -113,6 +113,7 @@ const cmd_handler = {
       "end-download",
       "progress",
       "use-flow",
+      "process-height",
     ].map(eventname => {
       const fun = data => {
         postMessage({
