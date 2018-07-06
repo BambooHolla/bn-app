@@ -107,19 +107,13 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	/**动态监听变量的变动*/
 	@ChainSyncDetailPage.onInit
 	initBindSyncProgressHeight() {
-		let lock;
 		const clear_sync_delay_time = () => {
 			this.is_calcing_delay_time = false;
 			this.sync_delay_time = [];
 		};
 		const on_sync_progress_height_changed = async () => {
-			if (lock) {
-				return;
-			}
-			lock = true;
 			const finished = () => {
 				this.markForCheck();
-				lock = false;
 			};
 			const cur_height = this.appSetting.getHeight();
 			const { sync_progress_height } = this.appSetting.settings;
