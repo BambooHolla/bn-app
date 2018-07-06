@@ -117,8 +117,8 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				this.delay_ms = 0;
 				this.markForCheck();
 				lock = false;
-				// 区块链完整后自动关闭界面
-				this.syncInBackground();
+				// // 区块链完整后自动关闭界面
+				// this.syncInBackground();
 				return;
 			}
 

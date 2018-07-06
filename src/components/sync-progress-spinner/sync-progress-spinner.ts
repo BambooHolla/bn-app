@@ -52,7 +52,7 @@ export class SyncProgressSpinnerComponent extends AniBase {
 				transparent: true,
 				antialias: true,
 				autoStart: true,
-				backgroundColor: 0xffffff,
+				// backgroundColor: 0xffffff,
 			});
 		}
 

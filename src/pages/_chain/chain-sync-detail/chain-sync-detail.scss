@@ -18,6 +18,8 @@ page-chain-sync-detail {
 	> .content {
 		background: transparent;
 		> .scroll-content {
+			height: 100%;
+			overflow: hidden;
 			display: flex;
 			flex-direction: column;
 			width: 100%;
@@ -182,6 +184,9 @@ page-chain-sync-detail {
 				}
 			}
 			> .extends-info {
+				position: fixed;
+				bottom: 24vw;
+				left: 3vw;
 				box-shadow: -0.2rem 0 2rem rgba(0, 0, 0, 0.1);
 				width: 94vw;
 				height: 52.2222vw;
@@ -261,9 +266,10 @@ page-chain-sync-detail {
 				margin: 0 auto;
 				> button {
 					background: #fff;
-					margin: 1rem 5vw;
+					margin: 2.5vw 5vw;
 					width: 90vw;
-					height: 4.5rem;
+					min-height: 4.5rem;
+					height: 15vw;
 					border-radius: 0.8rem;
 					box-shadow: 0rem 0rem 0.5rem rgba(0, 0, 0, 0.2),
 						0rem 0.3rem 1.5rem rgba(0, 0, 0, 0.3);
