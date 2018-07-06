@@ -214,12 +214,21 @@ ion-loading.logo-loading {
     flex-direction: column;
     padding: 0;
     > .loading-spinner {
-      background-image: url("../assets/icon/loading-logo.gif");
+      background-image: url("../assets/icon/loading-logo.png");
+      // width: 16vw;
+      // height: 21vw;
+      // background-size: 600%;
+      // background-repeat: no-repeat;
+      // background-position: center 45%;
       width: 16vw;
-      height: 21vw;
-      background-size: 600%;
+      height: 16vw;
+      background-size: contain;
       background-repeat: no-repeat;
-      background-position: center 45%;
+      background-position: center;
+      animation-name: fadeDownUp;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: 2s;
       > .spinner {
         display: none;
       }
@@ -239,6 +248,19 @@ ion-loading.logo-loading {
     }
   }
 }
+
+@-webkit-keyframes fadeDownUp {
+  0% {
+    transform: translate3d(0, -20%, 0);
+  }
+  50% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, -20%, 0);
+  }
+}
+
 
 ion-loading.blockchain-loading {
   .loading-wrapper {
