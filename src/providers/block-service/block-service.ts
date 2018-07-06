@@ -284,7 +284,10 @@ export class BlockServiceProvider extends FLP_Tool {
           this.appSetting.BLOCK_UNIT_TIME,
     );
     // 如果同步进度是最新区块的话，那么继续跟进这个进度
-    if(this.appSetting.settings.sync_progress_height === this.appSetting.getHeight()){
+    if (
+      this.appSetting.settings.sync_progress_height ===
+      this.appSetting.getHeight()
+    ) {
       this.appSetting.settings.sync_progress_height = last_block.height;
     }
     // 更新高度
@@ -327,7 +330,15 @@ export class BlockServiceProvider extends FLP_Tool {
     return this._download_worker;
   }
   private _download_req_id_acc = 0;
+  private _sync_lock?: {
+    worker: Worker;
+    req_id: number;
+    task: PromiseOut<void>;
+  };
   syncBlockChain(max_end_height: number) {
+    if (this._sync_lock) {
+      return this._sync_lock;
+    }
     const download_worker = this.getDownloadWorker();
     const req_id = this._download_req_id_acc++;
     let cg;
@@ -385,11 +396,13 @@ export class BlockServiceProvider extends FLP_Tool {
     cg = () => download_worker.removeEventListener("message", onmessage);
     // 不论如何都将监听函数移除掉
     task.promise.then(cg, cg);
-    return {
+    const res = {
       worker: download_worker,
       req_id,
       task,
     };
+    this._sync_lock = res;
+    return res;
   }
   downloadBlockInWorker(
     startHeight: number,
