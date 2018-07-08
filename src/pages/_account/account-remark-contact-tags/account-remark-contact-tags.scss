@@ -103,6 +103,7 @@ page-account-remark-contact-tags {
 			padding-top: 0.2rem;
 			padding-bottom: 0.2rem;
 			> .inputer {
+				user-select: text;
 				display: block;
 				height: 100%;
 				min-width: 5rem;
