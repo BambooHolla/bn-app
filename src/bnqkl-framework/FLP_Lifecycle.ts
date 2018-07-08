@@ -26,7 +26,7 @@ export class FLP_Lifecycle extends FLP_Tool
    *  注册后，在leave期间，事件不会触发，但会收集，等再次进入页面的时候按需更新一次
    *  这个函数主要是用来配合ChangeDetectorRef进行手动更新视图用的
    */
-  registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function) {
+  registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function,is_run_when_bind?:boolean) {
     let should_emit: any = null;
     const proxy_handle = (...args) => {
       if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
@@ -55,6 +55,11 @@ export class FLP_Lifecycle extends FLP_Tool
         should_emit = null;
       }
     });
+    if(is_run_when_bind){
+      this.event.once("didEnter", ()=>{
+        handle();
+      });
+    }
   }
 
   /** 广播视图层相关的事件

@@ -356,7 +356,14 @@ export class BlockServiceProvider extends FLP_Tool {
       if (msg && msg.req_id === req_id) {
         // console.log("bs", msg);
         switch (msg.type) {
+          case "start-verifier":
+            this.appSetting.settings.sync_is_verifying_block = true;
+            break;
+          case "end-verifier":
+            this.appSetting.settings.sync_is_verifying_block = false;
+            break;
           case "start-sync":
+            this.appSetting.settings.sync_progress_height = 1;
             console.log("开始同步", task_name);
             break;
           case "start-download":
@@ -366,8 +373,8 @@ export class BlockServiceProvider extends FLP_Tool {
             console.log("完成子任务", msg.data);
             break;
           case "end-sync":
-            this.appSetting.settings.sync_progress_height = 1;
             this.appSetting.settings.sync_progress_height = this.appSetting.getHeight();
+              this.appSetting.settings.sync_progress_blocks = 100;
             console.log("结束同步", task_name);
             task.resolve();
             break;
@@ -381,6 +388,7 @@ export class BlockServiceProvider extends FLP_Tool {
             break;
           case "progress":
             console.log("下载中", task_name, msg.data);
+            this.appSetting.settings.sync_progress_blocks = msg.data;
             this.tryEmit("BLOCKCHAIN:CHANGED");
             break;
           case "error":

@@ -57,7 +57,7 @@ export class TabChainPage extends FirstLevelPage {
 
     this.blockService.event.on("EXPECTBLOCK:CHANGED", expect_block => {
       this.unconfirm_block = expect_block;
-      this.cdRef.markForCheck();
+      this.markForCheck();
     });
     // this.registerViewEvent(this)
   }
@@ -74,7 +74,7 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.onInit
   async initUnconfirmBlock() {
     await this.loadUnconfirmBlock();
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
   async loadUnconfirmBlock() {
     const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
@@ -95,10 +95,10 @@ export class TabChainPage extends FirstLevelPage {
     if (!(this.chain_list_view_able = this.chainList.renderer_started)) {
       this.chainList.once("renderer-started", () => {
         this.chain_list_view_able = true;
-        this.cdRef.markForCheck();
+        this.markForCheck();
       });
     }
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
 
   @TabChainPage.didEnter
@@ -106,7 +106,7 @@ export class TabChainPage extends FirstLevelPage {
     this.chainList.list_padding_top = this.chainList.pt(
       this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/,
     );
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
 
   pullToTop() {
@@ -143,17 +143,32 @@ export class TabChainPage extends FirstLevelPage {
 
   /*下载进度的相关属性*/
   is_show_sync_loading = false;
-  cur_sync_progress = 0;
-  sync_progress_fixed = "00.00";
-  /*改变loading文本*/
-  setProgress = async (progress: number) => {
-    this.cur_sync_progress = progress;
-    this.appSetting.settings.sync_progress_blocks = progress;
-    if (this.is_show_sync_loading) {
-      this.sync_progress_fixed = ("0" + progress.toFixed(2)).substr(-5);
-      this.cdRef.markForCheck();
-    }
-  };
+  sync_progress_blocks = 0;
+  sync_is_verifying_block = false;
+
+  @TabChainPage.onInit
+  bindSyncInfo() {
+    // 是否在校验区块
+    this.registerViewEvent(
+      this.appSetting,
+      "changed@setting.sync_is_verifying_block",
+      () => {
+        this.sync_is_verifying_block = this.appSetting.settings.sync_is_verifying_block;
+        this.markForCheck();
+      },
+      true,
+    );
+    // 同步区块的进度
+    this.registerViewEvent(
+      this.appSetting,
+      "changed@setting.sync_progress_blocks",
+      () => {
+        this.sync_progress_blocks = this.appSetting.settings.sync_progress_blocks;
+        this.markForCheck();
+      },
+      true,
+    );
+  }
 
   // private _download_worker?: Worker;
   private _download_task?: PromiseOut<void>;
@@ -175,6 +190,7 @@ export class TabChainPage extends FirstLevelPage {
         // console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
           switch (msg.type) {
+            // 校验开始，显示同步loading
             case "start-verifier":
               if (
                 !this.appSetting.settings
@@ -183,23 +199,14 @@ export class TabChainPage extends FirstLevelPage {
                 this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
                 this.openChainSyncDetail();
               }
-              this.showVerifierLoading();
-              break;
-            case "end-verifier":
-              this.closeVerifierLoading();
-              break;
-            case "start-sync":
               this.is_show_sync_loading = true;
-              this.cdRef.markForCheck();
+              this.markForCheck();
               break;
+            // 同步结束，关闭同步loading
             case "end-sync":
-              // 结束下载，进度设置成100%
-              this.appSetting.settings.sync_progress_blocks = 100;
+              // 结束下载，关闭loading
               this.is_show_sync_loading = false;
-              this.cdRef.markForCheck();
-              break;
-            case "progress":
-              this.setProgress(msg.data);
+              this.markForCheck();
               break;
           }
         }
@@ -228,7 +235,7 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.addEvent("HEIGHT:CHANGED")
   async watchHeightChange(height) {
     await this.loadUnconfirmBlock();
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
 
   openChainSyncDetail() {

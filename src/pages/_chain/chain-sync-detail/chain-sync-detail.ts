@@ -94,6 +94,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 
 	@ViewChild(SyncProgressSpinnerComponent)
 	syncProgressSpinner?: SyncProgressSpinnerComponent;
+	sync_is_verifying_block = false;
 	//同步区块 的进度
 	sync_progress_blocks = 0;
 	enable_sync_progress_blocks = false;
@@ -107,11 +108,23 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	/**动态监听变量的变动*/
 	@ChainSyncDetailPage.onInit
 	initBindSyncProgressHeight() {
+		this.registerViewEvent(
+			this.appSetting,
+			"changed@setting.sync_is_verifying_block",
+			() => {
+				this.sync_is_verifying_block = this.appSetting.settings.sync_is_verifying_block;
+				this.markForCheck();
+			},
+			true,
+		);
 		const clear_sync_delay_time = () => {
 			this.is_calcing_delay_time = false;
 			this.sync_delay_time = [];
 		};
 		const on_sync_progress_height_changed = async () => {
+			if (this.appSetting.settings.sync_is_verifying_block) {
+				return;
+			}
 			const finished = () => {
 				this.markForCheck();
 			};
@@ -188,24 +201,28 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 
 	@ChainSyncDetailPage.onInit
 	initBindContributionTraffic() {
-		const on_sync_data_flow_changed = sync_data_flow => {
-			const info = BytesPipe.transform(sync_data_flow, 2);
-			if (typeof info === "string" && info.indexOf(" ") !== -1) {
-				const [value, unit] = info.split(" ");
-				this.sync_data_flow_info.value = parseFloat(value).toFixed(2);
-				this.sync_data_flow_info.unit = unit;
-			} else {
-				this.sync_data_flow_info.value = "???";
-				this.sync_data_flow_info.unit = "KB";
-			}
-			this.markForCheck();
-		};
 		this.registerViewEvent(
 			this.appSetting,
 			"changed@setting.sync_data_flow",
-			on_sync_data_flow_changed,
+			() => {
+				const info = BytesPipe.transform(
+					this.appSetting.settings.sync_data_flow,
+					2,
+				);
+				if (typeof info === "string" && info.indexOf(" ") !== -1) {
+					const [value, unit] = info.split(" ");
+					this.sync_data_flow_info.value = parseFloat(value).toFixed(
+						2,
+					);
+					this.sync_data_flow_info.unit = unit;
+				} else {
+					this.sync_data_flow_info.value = "???";
+					this.sync_data_flow_info.unit = "KB";
+				}
+				this.markForCheck();
+			},
+			true,
 		);
-		on_sync_data_flow_changed(this.appSetting.settings.sync_data_flow);
 	}
 
 	@ChainSyncDetailPage.addEvent("HEIGHT:CHANGED")
@@ -224,26 +241,24 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 			"sync_progress_transactions",
 			"sync_progress_equitys",
 		].forEach((k, i) => {
-			const on_sync_progress_changed = progress => {
-				this[k] = progress;
-			};
 			this.registerViewEvent(
 				this.appSetting,
 				"changed@setting." + k,
-				on_sync_progress_changed,
+				() => {
+					this[k] = this.appSetting.settings[k];
+				},
+				true,
 			);
-			on_sync_progress_changed(this.appSetting.settings[k]);
 
 			const enable_k = "enable_" + k;
-			const on_enable_sync_progress_changed = is_enabled => {
-				this[enable_k] = is_enabled;
-			};
 			this.registerViewEvent(
 				this.appSetting,
 				"changed@setting." + enable_k,
-				on_enable_sync_progress_changed,
+				() => {
+					this[enable_k] = this.appSetting.settings[enable_k];
+				},
+				true,
 			);
-			on_enable_sync_progress_changed(this.appSetting.settings[enable_k]);
 		});
 	}
 

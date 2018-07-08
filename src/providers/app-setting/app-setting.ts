@@ -421,6 +421,8 @@ export class AppSettingProvider extends CommonService {
     sync_data_flow: 0,
     /**当前同步的进度区块*/
     sync_progress_height: 0,
+    /**当前是否在验证区块*/
+    sync_is_verifying_block: false,
   };
 }
 if (
