@@ -309,18 +309,21 @@ export class AppFetchProvider extends EventEmitter {
     timeout_ms = this.timeout_ms,
   ) {
     const reqInfo = this._handleUrlAndOptions(url, options, without_token);
+    const httpAdapter =
+      url.indexOf(AppUrl.SERVER_URL) !== -1 ? this.wsHttp : this.http;
+
     var req;
     switch (method) {
       case "get":
       case "delete":
       case "head":
       case "options":
-        req = this.wsHttp[method](reqInfo.url, reqInfo.options);
+        req = httpAdapter[method](reqInfo.url, reqInfo.options);
         break;
       case "post":
       case "put":
       case "patch":
-        req = this.wsHttp[method](reqInfo.url, body, reqInfo.options);
+        req = httpAdapter[method](reqInfo.url, body, reqInfo.options);
         break;
     }
     // debugger;
