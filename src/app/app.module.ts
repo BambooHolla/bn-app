@@ -35,7 +35,6 @@ import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import {
-  IonicApp,
   IonicErrorHandler,
   IonicModule,
   DeepLinkConfigToken,
@@ -43,6 +42,9 @@ import {
   UrlSerializer,
   App,
 } from "ionic-angular";
+import { IonicApp } from "ionic-angular/components/app/app-root";
+import { ClickBlock } from "ionic-angular/components/app/click-block";
+import { OverlayPortal } from "ionic-angular/components/app/overlay-portal";
 import { setupPreloading } from "ionic-angular/util/module-loader";
 import {
   ModuleLoader,
@@ -146,7 +148,13 @@ const heightLevelModules = [
 ];
 
 @NgModule({
-  declarations: [...pages, ...heightLevelModules],
+  declarations: [
+    ...pages,
+    ...heightLevelModules,
+    IonicApp,
+    ClickBlock,
+    OverlayPortal,
+  ],
   imports: [
     BrowserModule,
     // BrowserAnimationsModule,

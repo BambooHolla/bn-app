@@ -87,7 +87,7 @@
     "fontfaceobserver": "^2.0.13",
     "gangodb": "^2.0.1",
     "ifmchain-ibt": "0.0.9",
-    "ionic-angular": "3.9.2",
+    "ionic-angular": "^3.9.2",
     "ionic-plugin-keyboard": "^2.2.1",
     "ionicons": "3.0.0",
     "js-nacl": "^1.2.2",
