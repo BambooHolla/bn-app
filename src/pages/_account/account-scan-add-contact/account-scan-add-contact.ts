@@ -235,18 +235,12 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     }
 
     const mode = this.navParams.get("mode");
-    if (mode === "try-to-add-contact") {
-      const m = this.modalCtrl.create("account-add-contact", {
-        address: res,
-        auto_search: true,
-        showCloseButton: true,
-      });
-      m.present();
-      m.onDidDismiss(() => {
-        this.finishJob();
-      });
-    } else if (mode === "try-to-add-local-contact") {
-      const m = this.modalCtrl.create("account-add-local-contact", {
+    const ADD_CONTACT_MODE_MAP = {
+      "try-to-add-contact":"account-add-contact",
+      "try-to-add-local-contact":"account-add-local-contact",
+    }
+    if (mode in ADD_CONTACT_MODE_MAP) {
+      const m = this.modalCtrl.create(ADD_CONTACT_MODE_MAP[mode], {
         address: res,
         auto_search: true,
         showCloseButton: true,

@@ -2,7 +2,7 @@
   <ion-navbar color="white">
     <ion-title>{{'ACCOUNT-MY-LOCAL-CONTACTS'|translate}}</ion-title>
     <ion-buttons right>
-      <button [title]="'SCAN_QRCOED_TO_ADD_CONTACT'|translate" (click)="routeTo('account-scan-add-contact',{auto_return:true,title:getTranslateSync('SCAN_QR_CODE_TO_ADD_CONTACT'),mode:'try-to-add-contact'})">
+      <button [title]="'SCAN_QRCOED_TO_ADD_CONTACT'|translate" (click)="routeTo('account-scan-add-contact',{auto_return:true,title:getTranslateSync('SCAN_QR_CODE_TO_ADD_CONTACT'),mode:'try-to-add-local-contact'})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
       <button [title]="'INPUT_ADDRESS_TO_ADD_CONTACT'|translate" (click)="routeTo('account-add-local-contact',{auto_return:true})">
