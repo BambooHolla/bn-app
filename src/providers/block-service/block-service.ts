@@ -357,7 +357,6 @@ export class BlockServiceProvider extends FLP_Tool {
         // console.log("bs", msg);
         switch (msg.type) {
           case "start-sync":
-            this.appSetting.settings.sync_progress_height = 1;
             console.log("开始同步", task_name);
             break;
           case "start-download":
@@ -367,6 +366,7 @@ export class BlockServiceProvider extends FLP_Tool {
             console.log("完成子任务", msg.data);
             break;
           case "end-sync":
+            this.appSetting.settings.sync_progress_height = 1;
             this.appSetting.settings.sync_progress_height = this.appSetting.getHeight();
             console.log("结束同步", task_name);
             task.resolve();
