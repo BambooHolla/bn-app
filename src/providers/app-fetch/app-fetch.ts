@@ -176,22 +176,17 @@ export class AppFetchProvider extends EventEmitter {
   }
   private _handleResCatch(res) {
     const data = res.json instanceof Function ? res.json() : res;
-    const error = data.error;
+    const error = data.message ? data : data.error;
     if (error) {
-      // debugger;
-      if (data.error) {
-        let { message: err_message, code: error_code, ...details } = data.error;
-        if (typeof data.error === "string") {
-          err_message = data.error;
-        }
-        throw ServerResError.translateAndParseErrorMessage(
-          err_message,
-          error_code,
-          details,
-        );
-      } else {
-        throw new Error(data.error);
+      let { message: err_message, code: error_code, ...details } = error;
+      if (typeof error === "string") {
+        err_message = error;
       }
+      throw ServerResError.translateAndParseErrorMessage(
+        err_message,
+        error_code,
+        details,
+      );
     } else {
       if (data) {
         if (
