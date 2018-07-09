@@ -41,10 +41,11 @@ import {
   Config,
   UrlSerializer,
   App,
+  IonicApp,
 } from "ionic-angular";
-import { IonicApp } from "ionic-angular/components/app/app-root";
-import { ClickBlock } from "ionic-angular/components/app/click-block";
-import { OverlayPortal } from "ionic-angular/components/app/overlay-portal";
+// import { IonicApp } from "ionic-angular/components/app/app-root";
+// import { ClickBlock } from "ionic-angular/components/app/click-block";
+// import { OverlayPortal } from "ionic-angular/components/app/overlay-portal";
 import { setupPreloading } from "ionic-angular/util/module-loader";
 import {
   ModuleLoader,
@@ -151,9 +152,9 @@ const heightLevelModules = [
   declarations: [
     ...pages,
     ...heightLevelModules,
-    IonicApp,
-    ClickBlock,
-    OverlayPortal,
+    // IonicApp,
+    // ClickBlock,
+    // OverlayPortal,
   ],
   imports: [
     BrowserModule,
