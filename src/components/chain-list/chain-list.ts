@@ -547,6 +547,7 @@ export class ChainListComponent extends AniBase {
   } = {};
   private _useable_gold_blockcard?: GoldBlockCard;
   private _getUseableBlockCard(height: number) {
+    // 1. 金色区块
     if (height % 57 === 0) {
       let { _useable_gold_blockcard } = this;
       if (!_useable_gold_blockcard) {
@@ -562,15 +563,18 @@ export class ChainListComponent extends AniBase {
     }
     const { _useable_blockcard_cache } = this;
     const cache = _useable_blockcard_cache[height];
+    // 2. 等高区块
     if (cache) {
       delete _useable_blockcard_cache[height];
       return cache;
     }
+    // 3. 不等高区块
     for (var k in _useable_blockcard_cache) {
       const cache = _useable_blockcard_cache[k];
       delete _useable_blockcard_cache[k];
       return cache;
     }
+    // 新区块
     const block_card = new BlockCard(this.item_width, this.item_height, height);
     this._init_block_card_bind(block_card);
     return block_card;
@@ -958,10 +962,8 @@ class BlockCard extends PIXI.Graphics {
       this.chain_height = height;
       this.drawHeightContent();
     }
-    let need_redraw_block = false;
-    if (no_same_height) {
-      need_redraw_block = true;
-    } else if (!this.block && block) {
+    let need_redraw_block = no_same_height;
+    if (!this.block && block) {
       need_redraw_block = true;
     } else if (this.block && !block) {
       need_redraw_block = true;
@@ -971,7 +973,7 @@ class BlockCard extends PIXI.Graphics {
       if (block instanceof Promise) {
         this._checkRegisterDrawBlockModel = () => this.block === block;
         block.then(bm => {
-          if (this.block === block && this.parent) {
+          if (this.chain_height === bm.height && this.parent) {
             this.block = bm;
             this.drawBlockModel(bm);
             this.emit("refresh-frame-in-async");
