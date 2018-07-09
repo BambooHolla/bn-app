@@ -73,19 +73,24 @@ page-tab-chain {
           text-shadow: 0 0 0.2rem rgba(255, 255, 255, 0.8);
           top: 0;
           text-align: center;
+
+          .title {
+            font-size: 1.5rem;
+            color: inherit;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            ali-icon {
+              font-size: 2rem;
+              margin-right: 0.5rem;
+            }
+          }
           > .trans_num {
             flex: 1;
             > .value {
               font-size: 2.6rem;
               height: 2.7rem;
               color: inherit;
-            }
-            .title {
-              font-size: 1.5rem;
-              color: inherit;
-              ali-icon {
-                font-size: 2rem;
-              }
             }
           }
           > .reward {
