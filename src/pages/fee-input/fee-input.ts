@@ -71,4 +71,8 @@ export class FeeInputPage extends FirstLevelPage {
     };
     this.viewCtrl.dismiss(formData);
   }
+
+  closeDialog() {
+    this.viewCtrl.dismiss();
+  }
 }
