@@ -140,6 +140,16 @@ export class TabChainPage extends FirstLevelPage {
     // 开始下载
     this.syncBlockchain(max_end_height);
   }
+  @asyncCtrlGenerator.queue()
+  async simpleQueue(v) {
+    console.log("simpleQueue", v);
+    return v;
+  }
+  @asyncCtrlGenerator.queue({ can_mix_queue: 1 })
+  async mixQueue(v) {
+    console.log("mixQueue", v);
+    return v;
+  }
 
   /*下载进度的相关属性*/
   is_show_sync_loading = false;

@@ -66,16 +66,26 @@ export class AccountServiceProvider {
         "get",
         api_url,
         async (db, request_opts) => {
-          const query = request_opts.reqOptions.search;
-          const cache_account = await db.findOne(query);
-          const cache = {
-            account: cache_account,
-            success: true,
-          } as TYPE.AccountResModel;
-          if (cache_account) {
-            return { reqs: [], cache };
+          if (this.fetch.onLine) {
+            return {
+              reqs: [request_opts],
+              cache: {
+                success: true,
+                account: {} as TYPE.AccountModel,
+              },
+            };
+          } else {
+            const query = request_opts.reqOptions.search;
+            const cache_account = await db.findOne(query);
+            const cache = {
+              account: cache_account,
+              success: true,
+            } as TYPE.AccountResModel;
+            if (cache_account) {
+              return { reqs: [], cache };
+            }
+            return { reqs: [request_opts], cache };
           }
-          return { reqs: [request_opts], cache };
         },
         async req_res_list => {
           if (req_res_list.length > 0) {
@@ -85,10 +95,16 @@ export class AccountServiceProvider {
         async (db, mix_res, cache) => {
           if (mix_res) {
             const new_account = mix_res.account;
-            if (await db.has({ address: new_account.address })) {
+            if (
+              (await db.update(
+                { address: new_account.address },
+                new_account,
+              )) === 0
+            ) {
+              await db.insert(new_account);
             }
-            await db.insert(new_account);
-            cache.account = new_account;
+            // cache.account = new_account;
+            return mix_res;
           }
           return cache;
         },

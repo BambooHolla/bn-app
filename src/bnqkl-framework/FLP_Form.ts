@@ -15,6 +15,9 @@ export class FLP_Form extends FLP_Route {
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     super(navCtrl, navParams);
     this.trySubmit = this.trySubmit.bind(this);
+    this.registerViewEvent(this.userInfo, "changed", () => {
+      this.markForCheck();
+    });
   }
   private __ecc__?: { [prop_name: string]: string[] };
   private get _error_checks_col() {

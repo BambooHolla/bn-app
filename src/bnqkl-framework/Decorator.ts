@@ -513,9 +513,55 @@ export function singleRunWrap(opts: { lock_prop_key?: string } = {}) {
   };
 }
 
-export function queneTask() {}
+/** 确保一个时间点内只有一个任务在执行
+ *  这个工具函数，主要是因为在读取数据的同时还要写入数据，所以模拟了原子性，将任务排队。
+ *  还有一种场景，就是注册触发函数，被动触发的函数可能会有多个入口
+ *  ，在一些极端情况下，这些入口可能会被同时触发，这时候就需要将这些任务进行合并
+ */
+export function queneTask(
+  opts: {
+    // 在开始执行的时候，对某个参数进行true赋值
+    lock_prop_key?: string;
+    // 多个任务一起排队时，最多允许几个任务在队列中，自动将后面的任务合并成一个任务
+    // 如果为1，那么意味着如果当前有任务在跑，后面的任务都会使用这个的返回值，如果为2，就等于最多有两个在队列，一个在跑，一个在等，其它使用第二个的结果
+    can_mix_queue?: number;
+  } = {},
+) {
+  return function(target, name, descriptor) {
+    const source_fun = descriptor.value;
+    var run_lock: Promise<any> = Promise.resolve();
+    var queue_num = 0;
+    descriptor.value = async function queue(...args) {
+      const { lock_prop_key } = opts;
+      queue_num += 1;
+      if (lock_prop_key) {
+        this[lock_prop_key] = true;
+      }
+      const resolve = res => {
+        if (lock_prop_key) {
+          this[lock_prop_key] = false;
+        }
+        queue_num -= 1;
+        return res;
+      };
+      const reject = err => {
+        throw resolve(err);
+      };
+      // 任务合并
+      if (opts.can_mix_queue && queue_num > opts.can_mix_queue) {
+        return run_lock.then(resolve, reject);
+      }
+      return (run_lock = run_lock
+        .then(per_res => source_fun.apply(this, args))
+        .then(resolve, reject));
+    };
+    descriptor.value.source_fun = source_fun;
+    return descriptor;
+  };
+}
 
 export const asyncCtrlGenerator = {
+  queue: queneTask,
   single: singleRunWrap,
   success: asyncSuccessWrapGenerator,
   loading: asyncLoadingWrapGenerator,

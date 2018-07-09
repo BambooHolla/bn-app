@@ -54,6 +54,7 @@ export class BlockServiceProvider extends FLP_Tool {
     );
   }
 
+  private _blockDb_inited = new PromisePro();
   blockDb: Mdb<TYPE.BlockModel>;
 
   constructor(
@@ -74,6 +75,7 @@ export class BlockServiceProvider extends FLP_Tool {
 
     // 安装api服务
     this.blockDb = dbCache.installDatabase("blocks", []);
+    this._blockDb_inited.resolve();
     dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
       "blocks",
       "get",
@@ -259,7 +261,7 @@ export class BlockServiceProvider extends FLP_Tool {
   }
 
   round_end_time = new Date();
-  // @asyncCtrlGenerator.retry()
+  @asyncCtrlGenerator.queue({ can_mix_queue: 1 })
   private async _updateHeight(last_block?: TYPE.BlockModel) {
     this.lastBlock.refresh("update Height");
     if (!last_block) {
@@ -267,7 +269,10 @@ export class BlockServiceProvider extends FLP_Tool {
         (await this.lastBlock.getPromise()).height,
       );
     }
-    if (last_block.height <= this.appSetting.getHeight()) {
+    if (
+      this.appSetting.getHeight() === last_block.height &&
+      (await this.lastBlock.getPromise()).id === last_block.id
+    ) {
       return;
     }
     // 更新缓存中的最新区块
@@ -314,9 +319,17 @@ export class BlockServiceProvider extends FLP_Tool {
         this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
       });
     });
-    this.io.on("connect", () => {
+    this.fetch.on("ononline", () => {
+      // 联网的时候，更新一下区块
       this._updateHeight();
     });
+    this.io.on("connect", () => {
+      // websocket连接上的时候更新
+      this._updateHeight();
+    });
+    // this.fetch.on("onoffline", () => {
+    //   this._updateHeight();
+    // });
     // 安装未处理交易的预估
     this._listenUnconfirmTransaction();
   }
@@ -374,7 +387,7 @@ export class BlockServiceProvider extends FLP_Tool {
             break;
           case "end-sync":
             this.appSetting.settings.sync_progress_height = this.appSetting.getHeight();
-              this.appSetting.settings.sync_progress_blocks = 100;
+            this.appSetting.settings.sync_progress_blocks = 100;
             console.log("结束同步", task_name);
             task.resolve();
             break;
@@ -560,32 +573,34 @@ export class BlockServiceProvider extends FLP_Tool {
     remark: "",
   };
 
+  private _getLocalLastBlock() {
+    if (this._blockDb_inited.is_done) {
+      return this.___getLocalLastBlock();
+    } else {
+      return this._blockDb_inited.promise.then(() =>
+        this.___getLocalLastBlock(),
+      );
+    }
+  }
+  private ___getLocalLastBlock() {
+    return this.blockDb.findOne({}, { sort: { height: -1 } }).then(
+      b =>
+        b || {
+          ...this.empty_block,
+        },
+    );
+  }
   /**
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
-  async getLastBlock() {
-    const last_block = await this.blockDb
-      .findOne({}, { sort: { height: -1 } })
-      .then(
-        b =>
-          b || {
-            ...this.empty_block,
-          },
-      );
-
-    if (navigator.onLine) {
-      return await Promise.race([
-        this.fetch
-          .ioEmitAsync<TYPE.BlockResModel>(
-            "get" + this.GET_LAST_BLOCK_URL.path,
-            {},
-          )
-          .then(res => res.block),
-        sleep(3000).then(() => last_block),
-      ]);
+  getLastBlock() {
+    if (this.fetch.onLine) {
+      return this.fetch
+        .get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL)
+        .then(res => res.block as TYPE.SingleBlockModel);
     } else {
-      return last_block;
+      return this._getLocalLastBlock();
     }
   }
 
