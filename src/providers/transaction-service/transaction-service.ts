@@ -571,8 +571,8 @@ export class TransactionServiceProvider {
       this.QUERY_TRANSACTIONS,
       {
         search: {
-          query,
-          order,
+          query: JSON.stringify(query),
+          order: JSON.stringify(order),
           limit,
           offset,
         },
