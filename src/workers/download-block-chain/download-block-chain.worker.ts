@@ -1,6 +1,7 @@
 import "babel-polyfill";
 import socketio from "socket.io-client";
-import { BlockChainDownloader, BlockModel } from "./download-block-chain";
+import { BlockChainDownloader } from "./download-block-chain";
+import { BlockModel } from "./helper";
 import { Mdb } from "../../providers/mdb";
 import IFM from "ifmchain-ibt";
 
@@ -66,24 +67,21 @@ const cmd_handler = {
     );
 
     // 事件注册
-    const cgs = [
-      "start-download",
-      "end-download",
-      "progress",
-      "use-flow",
-    ].map(eventname => {
-      const fun = data => {
-        postMessage({
-          req_id,
-          type: eventname,
-          data,
-        });
-      };
-      blockChainDownloader.on(eventname, fun);
-      return () => {
-        blockChainDownloader.off(eventname, fun);
-      };
-    });
+    const cgs = ["start-download", "end-download", "progress", "use-flow"].map(
+      eventname => {
+        const fun = data => {
+          postMessage({
+            req_id,
+            type: eventname,
+            data,
+          });
+        };
+        blockChainDownloader.on(eventname, fun);
+        return () => {
+          blockChainDownloader.off(eventname, fun);
+        };
+      },
+    );
 
     const downloader = blockChainDownloader;
     try {
@@ -107,8 +105,8 @@ const cmd_handler = {
 
     // 事件注册
     const cgs = [
-    "start-verifier",
-"end-verifier",
+      "start-verifier",
+      "end-verifier",
       "start-sync",
       "end-sync",
       "start-download",

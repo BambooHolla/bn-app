@@ -241,11 +241,11 @@ export class BlockchainVerifier {
 		const v = new DataView(
 			new ArrayBuffer(blocks.length + 9 /*8(height)+1(n)*/),
 		);
-		v.setFloat64(0, blocks[0].height);
+		v.setFloat64(0, blocks[0].height, true);
 		v.setUint8(8, n);
 
 		blocks.forEach((b, i) => {
-			v.setUint8(parseInt(b.id.substr(n, 2)), 9 + i);
+			v.setUint8(9 + i, parseInt(b.id.substr(n, 2)));
 		});
 
 		return this.ioRequest<{ checkResult: number }>(
