@@ -69,6 +69,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
     this.used_tags = this.all_tags.filter(
       t => contact.tags.indexOf(t.name) !== -1,
     );
+    this.markForCheck();
   }
 
   // 选中并移除

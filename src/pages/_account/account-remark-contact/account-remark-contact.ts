@@ -38,20 +38,26 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
-    this.event.on("job-finished",({id,data})=>{
+    this.event.on("job-finished", ({ id, data }) => {
       switch (id) {
         case "account-remark-contact-tags":
-          if(data.contact_id === this.contact._id){
+          if (data.contact_id === this.contact._id) {
+            this._is_back_from_remark_contact_editor = true;
             this.contact.tags = data.new_tags;
           }
           break;
       }
-    })
+    });
   }
   contact!: LocalContactModel;
+  private _is_back_from_remark_contact_editor = false;
 
   @AccountRemarkContactPage.willEnter
   initData() {
+    if (this._is_back_from_remark_contact_editor) {
+      this._is_back_from_remark_contact_editor = false;
+      return;
+    }
     const contact: LocalContactModel = this.navParams.get("contact");
     if (!contact) {
       return this.navCtrl.goToRoot({});
@@ -137,5 +143,13 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     await this.localContact.updateLocaContact(local_contact);
     this.jobRes({ updated_local_contact_id: local_contact._id });
     this.finishJob();
+  }
+
+  async goToTagsEditor() {
+    await this.routeTo("account-remark-contact-tags", {
+      contact: this.contact,
+      auto_return: true,
+    });
+    this._is_back_from_remark_contact_editor = true;
   }
 }

@@ -27,6 +27,7 @@
           <!-- (click)="routeTo('account-contact-detail', {contact:contact})" -->
           <div class="left">
             <div class="username" *ngIf="contact.username">{{contact.username}}</div>
+            <div class="nickname" *ngIf="contact.nickname">{{contact.nickname}}</div>
             <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
           </div>
         </ion-item>
