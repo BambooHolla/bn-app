@@ -79,7 +79,7 @@ export type CommonResponseData<T> = {
 };
 @Injectable()
 export class AppFetchProvider extends EventEmitter {
-  private _onLine = false;
+  private _onLine = navigator.onLine;
   get onLine() {
     return this._onLine;
   }
