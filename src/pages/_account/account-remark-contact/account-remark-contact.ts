@@ -73,6 +73,7 @@ export class AccountRemarkContactPage extends SecondLevelPage {
         }
       })
       .filter(v => v) as any;
+    this.formData.remark = contact.remark || "";
     // 提供一个基本的占位输入
     this._tryAddPhoneInput();
     this.markForCheck();
