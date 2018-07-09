@@ -53,7 +53,10 @@ export class TabPayPage extends FirstLevelPage {
     this.enable_timeago_clock = true;
     this.event.on("job-finished", async ({ id, data }) => {
       console.log("job-finished", id, data);
-      if (id === "pay-select-my-contacts") {
+      if (
+        id === "pay-select-my-contacts" ||
+        id === "pay-select-my-local-contacts"
+      ) {
         this.formData.transfer_address = data.address;
         this.cdRef.markForCheck();
       }

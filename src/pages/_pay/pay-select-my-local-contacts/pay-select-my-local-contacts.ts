@@ -1,4 +1,9 @@
-import { Component, Optional } from "@angular/core";
+import {
+	Component,
+	Optional,
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+} from "@angular/core";
 import {
 	IonicPage,
 	NavController,
@@ -19,6 +24,7 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 @Component({
 	selector: "page-pay-select-my-local-contacts",
 	templateUrl: "pay-select-my-local-contacts.html",
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaySelectMyLocalContactsPage extends SecondLevelPage {
 	constructor(
@@ -28,6 +34,7 @@ export class PaySelectMyLocalContactsPage extends SecondLevelPage {
 		public accountService: AccountServiceProvider,
 		public localContact: LocalContactProvider,
 		public viewCtrl: ViewController,
+		public cdRef: ChangeDetectorRef,
 	) {
 		super(navCtrl, navParams, true, tabs);
 		this.auto_header_shadow_when_scroll_down = true;
@@ -37,8 +44,16 @@ export class PaySelectMyLocalContactsPage extends SecondLevelPage {
 	listTrackBy(item, contact: LocalContactModel) {
 		return contact.address;
 	}
-	loading_my_contact_list = false;
-	// @PaySelectMyContactsPage.willEnter
+
+	private _loading_my_contact_list = false;
+	get loading_my_contact_list() {
+		return this._loading_my_contact_list;
+	}
+	set loading_my_contact_list(v) {
+		this._loading_my_contact_list = v;
+		this.cdRef.markForCheck();
+	}
+	@PaySelectMyLocalContactsPage.willEnter
 	async loadMyContactList() {
 		this.loading_my_contact_list = true;
 		try {

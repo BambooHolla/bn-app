@@ -10,17 +10,18 @@
       <div class="item" *ngFor="let contact of letter_contacts.list" (click)="tapContact(contact)">
         <div class="left">
           <div class="username" *ngIf="contact.username">{{contact.username}}</div>
+          <div class="nickname" *ngIf="contact.nickname">{{contact.nickname}}</div>
           <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
         </div>
       </div>
     </ng-container>
-    <div class="divider" *ngIf="!loading_my_contact_list&&my_contact_list.length==0">
+    <div class="divider" *ngIf="!loading_my_contact_list&&grouped_contact_list.length==0">
       <i>{{'NO_CONTACT'|translate}}</i>
     </div>
   </div>
     <div class="fast-nav">
     <ali-icon name="ifm-sousuo"></ali-icon>
-    <div class="item" *ngFor="let letter_contacts of my_contact_list">
+    <div class="item" *ngFor="let letter_contacts of grouped_contact_list">
       {{letter_contacts.letter}}
     </div>
   </div>
