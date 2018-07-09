@@ -28,6 +28,9 @@ import {
   VoucherServiceProvider,
   ExchangeStatus,
 } from "../../providers/voucher-service/voucher-service";
+import {
+  AppFetchProvider
+} from "../../providers/app-fetch/app-fetch";
 
 function generateRollOutLog(len = 20, from = Date.now()) {
   return Array.from(Array(len)).map(_ => {
@@ -48,6 +51,7 @@ export class TabPayPage extends FirstLevelPage {
     public transactionService: TransactionServiceProvider,
     public voucherService: VoucherServiceProvider,
     public cdRef: ChangeDetectorRef, // public network: Network
+    public fetch:AppFetchProvider
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
@@ -58,12 +62,12 @@ export class TabPayPage extends FirstLevelPage {
         id === "pay-select-my-local-contacts"
       ) {
         this.formData.transfer_address = data.address;
-        this.cdRef.markForCheck();
+        this.markForCheck();
       }
       if (id === "account-scan-add-contact") {
         if (typeof data === "string") {
           this.formData.transfer_address = data;
-          this.cdRef.markForCheck();
+          this.markForCheck();
         } else if (data && data.protocol === "ifmchain-transaction") {
           this.receiptOfflineTransaction(data.transaction);
         }
@@ -76,6 +80,7 @@ export class TabPayPage extends FirstLevelPage {
     transfer_mark: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+  /*用于错误提示输入*/
   formDataKeyI18nMap = {
     transfer_address: "@@TRANSFER_ADDRESS",
     transfer_amount: "@@TRANSFER_AMOUNT",
@@ -102,7 +107,7 @@ export class TabPayPage extends FirstLevelPage {
       );
     }
     // todo: check voucher is my
-    if (navigator.onLine) {
+    if (this.fetch.onLine) {
       await this.putThirdTransaction(tran);
     } else {
       await this.showReceiptToVoucher(tran);
@@ -129,7 +134,7 @@ export class TabPayPage extends FirstLevelPage {
       await this.voucherService.updateVoucher(voucher);
     }
 
-    this.showTransferReceipt(tran);
+    await this.showTransferReceipt(tran);
   }
 
   @asyncCtrlGenerator.error()
@@ -157,7 +162,7 @@ export class TabPayPage extends FirstLevelPage {
     const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
     this.formData.transfer_fee = custom_fee;
     this.setInputstatus("transfer_fee", { type: "input" });
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
 
   @TabPayPage.setErrorTo("errors", "transfer_address", ["wrongAddress"])
@@ -235,7 +240,7 @@ export class TabPayPage extends FirstLevelPage {
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
     });
-    let online = navigator.onLine;
+    let online = this.fetch.onLine;
     if (online) {
       try {
         const { transfer } = await this._submit(
@@ -244,7 +249,7 @@ export class TabPayPage extends FirstLevelPage {
           this.formData.transfer_fee,
         );
         this.resetFormData();
-        this.showTransferReceipt(transfer);
+        await this.showTransferReceipt(transfer);
       } catch (err) {
         console.error("online but peer no work", err);
         online = false;
@@ -288,11 +293,10 @@ export class TabPayPage extends FirstLevelPage {
         .present();
     }
   }
-  @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
-  @asyncCtrlGenerator.retry()
+  // @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
   async showTransferReceipt(transfer: TransactionModel) {
     if (!transfer) {
-      throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
+      throw new Error(this.getTranslateSync("COULD_NOT_FOUND_TRANSFER"));
     }
     return this.modalCtrl
       .create(
@@ -312,7 +316,7 @@ export class TabPayPage extends FirstLevelPage {
   resetFormData() {
     super.resetFormData();
     delete this.formData.transfer_amount;
-    this.cdRef && this.cdRef.markForCheck();
+    this.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
     TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"),
