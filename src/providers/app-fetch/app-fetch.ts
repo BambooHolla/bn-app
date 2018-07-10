@@ -328,14 +328,17 @@ export class AppFetchProvider extends EventEmitter {
     }
     // debugger;
     var req_promise = req.then instanceof Function ? req : req.toPromise();
-    if (isFinite(timeout_ms) && timeout_ms > 0) {
+    if (
+      httpAdapter === this.wsHttp /*websocket默认提供5s的请求超时*/ ||
+      (isFinite(timeout_ms) && timeout_ms > 0)
+    ) {
       req_promise = Promise.race([
         req_promise,
         new Promise((resolve, reject) =>
           setTimeout(() => {
             // TOOO: 国际化
             reject(new Error("TIME OUT"));
-          }, timeout_ms),
+          }, timeout_ms || 5000),
         ),
       ]);
     }
