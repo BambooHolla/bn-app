@@ -84,9 +84,8 @@ export class TabVotePage extends FirstLevelPage {
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
-    public blockService: BlockServiceProvider,
-  ) // public cdRef: ChangeDetectorRef,
-  {
+    public blockService: BlockServiceProvider, // public cdRef: ChangeDetectorRef,
+  ) {
     super(navCtrl, navParams);
 
     this.registerViewEvent(this.minService.event, "vote-error", () => {
@@ -156,7 +155,10 @@ export class TabVotePage extends FirstLevelPage {
     return this.appSetting.settings._has_mining_income;
   }
 
-  @TabVotePage.didEnter
+  /* PS:这里setBgTransparent， setTabHidden理论上应该都放在didEnter，didLeave
+   * 但是这里我们自己实现了tabs，为了提升渲染效率，确保一次性渲染到尾，这些操作就统一放在will*里头
+   */
+  @TabVotePage.willEnter
   hiddenTabBg() {
     if (this.page_status === VotePage.None) {
       this.page_status = VotePage.Bootstrap;
@@ -174,18 +176,18 @@ export class TabVotePage extends FirstLevelPage {
         this.page_status === VotePage.Countdown,
     );
   }
-  @TabVotePage.didLeave
+  @TabVotePage.willLeave
   recoverTabBg() {
     this.setBgTransparent(false);
   }
   setBgTransparent(is_tran: boolean) {
     this.event.emit("tabs:setBgTransparent", is_tran, this.cname);
   }
-  @TabVotePage.didEnter
+  @TabVotePage.willEnter
   hiddenTab() {
     this.setTabHidden(this.page_status === VotePage.ExtendsPanel);
   }
-  @TabVotePage.didEnter
+  @TabVotePage.willEnter
   recoverTab() {
     this.setTabHidden(false);
   }
