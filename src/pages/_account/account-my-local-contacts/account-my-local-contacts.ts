@@ -76,7 +76,7 @@ export class AccountMyLocalContactsPage extends SecondLevelPage {
 	}
 	set loading_my_contact_list(v) {
 		this._loading_my_contact_list = v;
-		this.cdRef.markForCheck();
+		this.markForCheck();
 	}
 	@AccountMyLocalContactsPage.willEnter
 	async loadMyContactList() {

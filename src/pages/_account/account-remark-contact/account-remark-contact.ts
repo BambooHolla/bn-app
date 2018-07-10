@@ -44,6 +44,8 @@ export class AccountRemarkContactPage extends SecondLevelPage {
           if (data.contact_id === this.contact._id) {
             this._is_back_from_remark_contact_editor = true;
             this.contact.tags = data.new_tags;
+            this.formData.tags = data.new_tags.slice();
+            this.markForCheck();
           }
           break;
       }
@@ -137,7 +139,7 @@ export class AccountRemarkContactPage extends SecondLevelPage {
       ...this.contact,
       nickname,
       tags,
-      phones: phones.map(p => p.value),
+      phones: phones.map(p => p.value).filter(v => v.trim()),
       remark,
       image,
     };
