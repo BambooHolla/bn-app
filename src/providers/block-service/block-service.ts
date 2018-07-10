@@ -405,6 +405,7 @@ export class BlockServiceProvider extends FLP_Tool {
             this.tryEmit("BLOCKCHAIN:CHANGED");
             break;
           case "error":
+            this.appSetting.settings.sync_is_verifying_block = false;
             task.reject(msg.data);
             break;
           default:

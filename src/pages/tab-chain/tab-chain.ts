@@ -218,6 +218,11 @@ export class TabChainPage extends FirstLevelPage {
               this.is_show_sync_loading = false;
               this.markForCheck();
               break;
+            case "error":
+              this.showErrorDialog(this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"), "", msg.data);
+              this.is_show_sync_loading = false;
+              this.markForCheck();
+              break;
           }
         }
       };

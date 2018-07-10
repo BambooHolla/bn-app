@@ -112485,7 +112485,7 @@ const cmd_handler = {
         });
     }
 };
-},{"core-js/modules/es7.object.values":731,"core-js/modules/es7.object.entries":730,"core-js/modules/es7.object.get-own-property-descriptors":732,"core-js/modules/es7.string.pad-start":729,"core-js/modules/es7.string.pad-end":733,"core-js/modules/web.timers":7,"core-js/modules/web.immediate":8,"core-js/modules/web.dom.iterable":9,"socket.io-client":10,"./download-block-chain":5,"../../providers/mdb":4,"ifmchain-ibt":6}],728:[function(require,module,exports) {
+},{"core-js/modules/es7.object.values":731,"core-js/modules/es7.object.entries":730,"core-js/modules/es7.object.get-own-property-descriptors":732,"core-js/modules/es7.string.pad-start":729,"core-js/modules/es7.string.pad-end":733,"core-js/modules/web.timers":7,"core-js/modules/web.immediate":8,"core-js/modules/web.dom.iterable":9,"socket.io-client":10,"./download-block-chain":5,"../../providers/mdb":4,"ifmchain-ibt":6}],711:[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -112514,7 +112514,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '9393' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '8811' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -112655,4 +112655,4 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[728,1], null)
+},{}]},{},[711,1], null)
