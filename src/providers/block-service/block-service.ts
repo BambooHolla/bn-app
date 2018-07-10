@@ -290,10 +290,10 @@ export class BlockServiceProvider extends FLP_Tool {
     );
     // 如果同步进度是最新区块的话，那么继续跟进这个进度
     if (
-      this.appSetting.settings.sync_progress_height ===
+      this.appSetting.share_settings.sync_progress_height ===
       this.appSetting.getHeight()
     ) {
-      this.appSetting.settings.sync_progress_height = last_block.height;
+      this.appSetting.share_settings.sync_progress_height = last_block.height;
     }
     // 更新高度
     this.appSetting.setHeight(last_block.height);
@@ -303,7 +303,7 @@ export class BlockServiceProvider extends FLP_Tool {
       // 计算流量大小
       const flow =
         getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
-      this.appSetting.settings.sync_data_flow += flow; // 同步的流量
+      this.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
       this.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
       console.log(
         "%c区块更新",
@@ -370,13 +370,14 @@ export class BlockServiceProvider extends FLP_Tool {
         // console.log("bs", msg);
         switch (msg.type) {
           case "start-verifier":
-            this.appSetting.settings.sync_is_verifying_block = true;
+            this.appSetting.share_settings.is_syncing_blocks = false;
+            this.appSetting.share_settings.sync_is_verifying_block = true;
             break;
           case "end-verifier":
-            this.appSetting.settings.sync_is_verifying_block = false;
+            this.appSetting.share_settings.sync_is_verifying_block = false;
             break;
           case "start-sync":
-            this.appSetting.settings.sync_progress_height = 1;
+            this.appSetting.share_settings.sync_progress_height = 1;
             console.log("开始同步", task_name);
             break;
           case "start-download":
@@ -386,26 +387,28 @@ export class BlockServiceProvider extends FLP_Tool {
             console.log("完成子任务", msg.data);
             break;
           case "end-sync":
-            this.appSetting.settings.sync_progress_height = this.appSetting.getHeight();
-            this.appSetting.settings.sync_progress_blocks = 100;
+            this.appSetting.share_settings.sync_progress_height = this.appSetting.getHeight();
+            this.appSetting.share_settings.sync_progress_blocks = 100;
+            this.appSetting.share_settings.is_syncing_blocks = false;
             console.log("结束同步", task_name);
             task.resolve();
             break;
           case "process-height":
-            this.appSetting.settings.sync_progress_height =
+            this.appSetting.share_settings.sync_progress_height =
               msg.data.cursorHeight;
             break;
           case "use-flow":
-            this.appSetting.settings.sync_data_flow +=
+            this.appSetting.share_settings.sync_data_flow +=
               (+msg.data.up || 0) + (+msg.data.down || 0);
             break;
           case "progress":
             console.log("下载中", task_name, msg.data);
-            this.appSetting.settings.sync_progress_blocks = msg.data;
+            this.appSetting.share_settings.sync_progress_blocks = msg.data;
             this.tryEmit("BLOCKCHAIN:CHANGED");
             break;
           case "error":
-            this.appSetting.settings.sync_is_verifying_block = false;
+            this.appSetting.share_settings.sync_is_verifying_block = false;
+            this.appSetting.share_settings.is_syncing_blocks = false;
             task.reject(msg.data);
             break;
           default:

@@ -110,9 +110,9 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	initBindSyncProgressHeight() {
 		this.registerViewEvent(
 			this.appSetting,
-			"changed@setting.sync_is_verifying_block",
+			"changed@share_settings.sync_is_verifying_block",
 			() => {
-				this.sync_is_verifying_block = this.appSetting.settings.sync_is_verifying_block;
+				this.sync_is_verifying_block = this.appSetting.share_settings.sync_is_verifying_block;
 				this.markForCheck();
 			},
 			true,
@@ -122,14 +122,14 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 			this.sync_delay_time = [];
 		};
 		const on_sync_progress_height_changed = async () => {
-			if (this.appSetting.settings.sync_is_verifying_block) {
+			if (this.appSetting.share_settings.sync_is_verifying_block) {
 				return;
 			}
 			const finished = () => {
 				this.markForCheck();
 			};
 			const cur_height = this.appSetting.getHeight();
-			const { sync_progress_height } = this.appSetting.settings;
+			const { sync_progress_height } = this.appSetting.share_settings;
 			this.sync_progress_height = sync_progress_height;
 			if (cur_height <= sync_progress_height) {
 				clear_sync_delay_time();
@@ -188,7 +188,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 		};
 		this.registerViewEvent(
 			this.appSetting,
-			"changed@setting.sync_progress_height",
+			"changed@share_settings.sync_progress_height",
 			on_sync_progress_height_changed,
 		);
 		this.registerViewEvent(
@@ -203,10 +203,10 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	initBindContributionTraffic() {
 		this.registerViewEvent(
 			this.appSetting,
-			"changed@setting.sync_data_flow",
+			"changed@share_settings.sync_data_flow",
 			() => {
 				const info = BytesPipe.transform(
-					this.appSetting.settings.sync_data_flow,
+					this.appSetting.share_settings.sync_data_flow,
 					2,
 				);
 				if (typeof info === "string" && info.indexOf(" ") !== -1) {
@@ -243,7 +243,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 		].forEach((k, i) => {
 			this.registerViewEvent(
 				this.appSetting,
-				"changed@setting." + k,
+				"changed@share_settings." + k,
 				() => {
 					this[k] = this.appSetting.settings[k];
 				},
@@ -253,7 +253,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 			const enable_k = "enable_" + k;
 			this.registerViewEvent(
 				this.appSetting,
-				"changed@setting." + enable_k,
+				"changed@share_settings." + enable_k,
 				() => {
 					this[enable_k] = this.appSetting.settings[enable_k];
 				},

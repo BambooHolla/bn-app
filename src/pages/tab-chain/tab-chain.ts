@@ -131,7 +131,7 @@ export class TabChainPage extends FirstLevelPage {
     const max_end_height = latest_block.height;
     // 记录第一次同步区块的时间
     if (
-      !this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain
+      !this.appSetting.share_settings.is_agree_to_sync_blockchain
     ) {
       await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
       // 这个点击确认后的is_agree_to_the_agreement_of_sync_blockchain，在区块链正式开始下载后才设置为true
@@ -158,12 +158,22 @@ export class TabChainPage extends FirstLevelPage {
 
   @TabChainPage.onInit
   bindSyncInfo() {
+    // 是否在同步区块
+    this.registerViewEvent(
+      this.appSetting,
+      "changed@share_settings.is_syncing_blocks",
+      () => {
+        this.is_show_sync_loading = this.appSetting.share_settings.is_syncing_blocks;
+        this.markForCheck();
+      },
+      true,
+    );
     // 是否在校验区块
     this.registerViewEvent(
       this.appSetting,
-      "changed@setting.sync_is_verifying_block",
+      "changed@share_settings.sync_is_verifying_block",
       () => {
-        this.sync_is_verifying_block = this.appSetting.settings.sync_is_verifying_block;
+        this.sync_is_verifying_block = this.appSetting.share_settings.sync_is_verifying_block;
         this.markForCheck();
       },
       true,
@@ -171,9 +181,9 @@ export class TabChainPage extends FirstLevelPage {
     // 同步区块的进度
     this.registerViewEvent(
       this.appSetting,
-      "changed@setting.sync_progress_blocks",
+      "changed@share_settings.sync_progress_blocks",
       () => {
-        this.sync_progress_blocks = this.appSetting.settings.sync_progress_blocks;
+        this.sync_progress_blocks = this.appSetting.share_settings.sync_progress_blocks;
         this.markForCheck();
       },
       true,
@@ -203,25 +213,19 @@ export class TabChainPage extends FirstLevelPage {
             // 校验开始，显示同步loading
             case "start-verifier":
               if (
-                !this.appSetting.settings
-                  .is_agree_to_the_agreement_of_sync_blockchain
+                !this.appSetting.share_settings
+                  .is_agree_to_sync_blockchain
               ) {
-                this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
+                this.appSetting.share_settings.is_agree_to_sync_blockchain = true;
                 this.openChainSyncDetail();
               }
-              this.is_show_sync_loading = true;
-              this.markForCheck();
-              break;
-            // 同步结束，关闭同步loading
-            case "end-sync":
-              // 结束下载，关闭loading
-              this.is_show_sync_loading = false;
-              this.markForCheck();
               break;
             case "error":
-              this.showErrorDialog(this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"), "", msg.data);
-              this.is_show_sync_loading = false;
-              this.markForCheck();
+              this.showErrorDialog(
+                this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"),
+                "",
+                msg.data,
+              );
               break;
           }
         }

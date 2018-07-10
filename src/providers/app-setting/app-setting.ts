@@ -118,70 +118,134 @@ export class AppSettingProvider extends CommonService {
       })
       .distinctUntilChanged<string>();
 
-    const default_settings = { ...this.settings };
-    const get_settings_key = () => {
-      return (
-        this.user.address &&
-        `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
+    /** 独立账户的数据与配置*/
+    {
+      const default_settings = { ...this.settings };
+      const get_settings_key = () => {
+        return (
+          this.user.address &&
+          `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
+            AppSettingProvider.NET_VERSION
+          }|${AppSettingProvider.SERVER_URL}|${
+            AppSettingProvider.BLOCK_UNIT_TIME
+          }`
+        );
+      };
+      const getUserSettings = () => {
+        let settings: typeof default_settings | undefined;
+        const settings_key = get_settings_key();
+        if (settings_key) {
+          const settings_json = localStorage.getItem(settings_key);
+          let should_write_in = true; // 是否需要初始化写入
+          if (typeof settings_json === "string") {
+            try {
+              settings = JSON.parse(settings_json); //JSON可用
+              should_write_in = false;
+            } catch (e) {}
+          }
+          // 进行初始化写入
+          if (should_write_in) {
+            localStorage.setItem(
+              settings_key,
+              JSON.stringify((settings = { ...default_settings })),
+            );
+          }
+        }
+        return settings;
+      };
+      // 将setting与本地存储进行关联
+      for (var _key in this.settings) {
+        const key = _key;
+        const default_value = default_settings[key];
+        Object.defineProperty(this.settings, key, {
+          get: () => {
+            let value = default_value;
+            const settings = getUserSettings();
+            if (settings) {
+              if (key in settings) {
+                value = settings[key];
+              } else {
+                settings[key] = value;
+
+                const settings_key = get_settings_key();
+                localStorage.setItem(settings_key, JSON.stringify(settings));
+              }
+            }
+            return value;
+          },
+          set: value => {
+            const settings_key = get_settings_key();
+            const settings = getUserSettings();
+            if (settings) {
+              settings[key] = value;
+              localStorage.setItem(settings_key, JSON.stringify(settings));
+              this.emit(`changed@setting.${key}`, value);
+              this.emit(`changed@setting`, { key, value });
+            }
+          },
+        });
+      }
+    }
+
+    /** 多账户共享的数据与配置*/
+    {
+      const default_share_settings = { ...this.share_settings };
+      const get_share_settings_key = () => {
+        return `SHARE:${AppSettingProvider.SETTING_KEY_PERFIX}:${
           AppSettingProvider.NET_VERSION
         }|${AppSettingProvider.SERVER_URL}|${
           AppSettingProvider.BLOCK_UNIT_TIME
-        }`
-      );
-    };
-    const getUserSettings = () => {
-      let settings: typeof default_settings | undefined;
-      const settings_key = get_settings_key();
-      if (settings_key) {
-        const settings_json = localStorage.getItem(settings_key);
-        let should_write_in = true; // 是否需要初始化写入
-        if (typeof settings_json === "string") {
-          try {
-            settings = JSON.parse(settings_json); //JSON可用
-            should_write_in = false;
-          } catch (e) {}
-        }
-        // 进行初始化写入
-        if (should_write_in) {
-          localStorage.setItem(
-            settings_key,
-            JSON.stringify((settings = { ...default_settings })),
-          );
-        }
-      }
-      return settings;
-    };
-    // 将setting与本地存储进行关联
-    for (var _key in this.settings) {
-      const key = _key;
-      const default_value = default_settings[key];
-      Object.defineProperty(this.settings, key, {
-        get: () => {
-          let value = default_value;
-          const settings = getUserSettings();
-          if (settings) {
+        }`;
+      };
+      const shareSettingCtrl = (() => {
+        const settings_key = get_share_settings_key();
+        let micro_task_lock;
+        const cur_settings = { ...default_share_settings };
+        return {
+          save(settings) {
+            if (cur_settings !== settings) {
+              Object.assign(cur_settings, settings);
+            }
+            if (micro_task_lock) {
+              return;
+            }
+            // 创建一个微任务
+            micro_task_lock = Promise.resolve().then(() => {
+              // 写入
+              localStorage.setItem(settings_key, JSON.stringify(cur_settings));
+              // 结束微任务
+              micro_task_lock = undefined;
+            });
+          },
+          get() {
+            return cur_settings;
+          },
+        };
+      })();
+      // 将setting与本地存储进行关联
+      for (var _key in this.share_settings) {
+        const key = _key;
+        const default_value = default_share_settings[key];
+        Object.defineProperty(this.share_settings, key, {
+          get: () => {
+            let value = default_value;
+            const settings = shareSettingCtrl.get();
             if (key in settings) {
               value = settings[key];
-            } else {
-              settings[key] = value;
-
-              const settings_key = get_settings_key();
-              localStorage.setItem(settings_key, JSON.stringify(settings));
             }
-          }
-          return value;
-        },
-        set: value => {
-          const settings_key = get_settings_key();
-          const settings = getUserSettings();
-          if (settings) {
-            settings[key] = value;
-            localStorage.setItem(settings_key, JSON.stringify(settings));
-            this.emit(`changed@setting.${key}`, value);
-            this.emit(`changed@setting`, { key, value });
-          }
-        },
-      });
+            return value;
+          },
+          set: value => {
+            const settings = shareSettingCtrl.get();
+            if (key in settings) {
+              settings[key] = value;
+              shareSettingCtrl.save(settings);
+              this.emit(`changed@share_settings.${key}`, value);
+              this.emit(`changed@share_settings`, { key, value });
+            }
+          },
+        });
+      }
     }
     // 省电模式
     {
@@ -357,7 +421,6 @@ export class AppSettingProvider extends CommonService {
   getRound() {
     return this.round.getValue();
   }
-  share_settings = {};
 
   settings = {
     lang: "",
@@ -403,8 +466,13 @@ export class AppSettingProvider extends CommonService {
     _is_show_first_block_remark: false,
     /**是否显示过 初次挖矿提示*/
     _is_show_first_mining_tip: false,
+  };
+  /*多个账户之间共享的数据*/
+  share_settings = {
     /**是否已经同步过区块链数据*/
-    is_agree_to_the_agreement_of_sync_blockchain: false,
+    is_agree_to_sync_blockchain: false,
+    /**是否正在同步中*/
+    is_syncing_blocks: false,
     /**同步区块 的进度 0 ~ 100*/
     sync_progress_blocks: 0,
     /**同步交易 的进度 0 ~ 100*/
