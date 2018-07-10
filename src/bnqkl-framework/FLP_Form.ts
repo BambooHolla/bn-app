@@ -237,6 +237,7 @@ export class FLP_Form extends FLP_Route {
         model.present();
         model.onDidDismiss(data => {
           if (data) {
+            data.custom_fee = parseFloat(data.custom_fee);
             resolve(data);
           } else {
             if (current_fee && isFinite(current_fee)) {
