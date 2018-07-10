@@ -368,10 +368,11 @@ export class BlockchainVerifier {
 			index.openCursor(key_range),
 			(block, height: number, cursor, i) => {
 				if (
-					!keep_id_set.has(block["_id"]) ||
+					// !keep_id_set.has(block["_id"]) ||
 					rm_id_set.has(block["_id"])
 				) {
-					del_tasks[del_tasks.length] = reqToPromise(cursor.delete());
+					// del_tasks[del_tasks.length] = reqToPromise(cursor.delete());
+					cursor.delete();
 				}
 				return true;
 			},
