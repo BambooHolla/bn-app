@@ -134,7 +134,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
   }
 
   /*隐藏功能*/
-  @asyncCtrlGenerator.tttttap()// 这个要放第一个
+  @asyncCtrlGenerator.tttttap() // 这个要放第一个
   @asyncCtrlGenerator.error()
   @asyncCtrlGenerator.loading()
   async tryShowAccountBalanceDetail() {
@@ -146,8 +146,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
     );
     return this.showSuccessDialog(
       "资产信息",
-      `余额：${accountInfo.balance}`,
-      `挖矿收益：${accountInfo.votingReward}`,
+      `余额：${(parseFloat(accountInfo.balance) / 1e8).toFixed(8)}`,
+      `挖矿收益：${(parseFloat(accountInfo.votingReward) / 1e8).toFixed(8)}`,
     );
   }
 }
