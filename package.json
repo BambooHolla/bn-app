@@ -8,7 +8,7 @@
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
     "lint": "ionic-app-scripts lint",
-    "worker:1": "cd src/workers/download-block-chain & parcel watch download-block-chain.worker.ts --no-source-maps --out-dir ../../assets/workers",
+    "worker:1": "cd src/workers/download-block-chain & parcel watch download-block-chain.worker.ts --no-source-maps --no-hmr --out-dir ../../assets/workers",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
     "format:diff": "node scripts/format.js --from-git-diff",

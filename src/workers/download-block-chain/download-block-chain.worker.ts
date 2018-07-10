@@ -4,6 +4,7 @@ import { BlockChainDownloader } from "./download-block-chain";
 import { BlockModel } from "./helper";
 import { Mdb } from "../../providers/mdb";
 import IFM from "ifmchain-ibt";
+import "core-js/modules/es7.symbol.async-iterator";
 
 onmessage = async e => {
   const msg = e.data;
