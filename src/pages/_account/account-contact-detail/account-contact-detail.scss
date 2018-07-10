@@ -1,2 +1,207 @@
 page-account-contact-detail {
+	@extend .header-no-border;
+	> .content {
+		.scroll-content {
+			background-color: #eeeeee;
+		}
+	}
+	.common-list {
+		> .base-info {
+			background: linear-gradient(to bottom, #ff5a5a 0%, #ffa982 100%);
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			min-height: 3rem;
+			color: #fff;
+			padding: 0.8rem 1.7rem;
+			font-size: 1.4rem;
+			font-weight: lighter;
+			> .mainname {
+			}
+			> .address {
+				vertical-align: baseline;
+				font-size: 1.5rem;
+				ali-icon {
+					font-size: 1.6rem;
+					margin-right: 0.5rem;
+				}
+			}
+			> .nickname {
+			}
+		}
+		> .remark-info {
+			padding: 1.7rem;
+			background-color: #fff;
+			> .phones {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: flex-start;
+				align-items: center;
+				flex-wrap: wrap;
+				font-size: 1.4rem;
+				> ali-icon {
+					font-size: 2rem;
+					margin-right: 0.6rem;
+					color: #666;
+				}
+				> .phone-item {
+					height: 1.6rem;
+					display: flex;
+					align-items: center;
+					> a {
+						text-decoration: none;
+						color: #3e90ff;
+						&:active {
+						}
+					}
+					> .split {
+						width: 1px;
+						height: 100%;
+						background: #eee;
+						display: inline-block;
+						transform: skewX(-25deg);
+						margin: 0 1.5rem;
+					}
+
+					&:last-child {
+						> .split {
+							display: none;
+						}
+					}
+				}
+			}
+			> .tags {
+				margin-top: 1.5rem;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: flex-start;
+				align-items: center;
+				flex-wrap: wrap;
+				> ali-icon {
+					font-size: 1.7rem;
+					margin-right: 0.6rem;
+					color: #666;
+				}
+				.tag-item {
+					display: inline-block;
+					margin: 0.2rem 0.5rem;
+					padding: 0.4rem 0.8rem;
+					height: 2.2rem;
+					border-radius: 1.5rem;
+					border: 1px solid #45d0ea;
+					background: #fff;
+					position: relative;
+					vertical-align: top;
+
+					> .inner {
+						display: inline-block;
+						color: #43ceeb;
+						font-size: 1.3rem;
+						max-width: calc(
+							100vw - 3rem - 2rem /*省略号*/ - 1.5rem /*关闭符号*/
+						);
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+					}
+				}
+			}
+			> .remark-text {
+				margin-top: 1.5rem;
+				font-size: 1.4rem;
+				color: #666;
+				font-weight: lighter;
+				/* display: flex;
+				flex-direction: row;
+				align-items: flex-start; */
+				> .label {
+					display: inline-block;
+					margin-right: 0.3rem;
+					flex-shrink: 0;
+					font-weight: normal;
+				}
+			}
+		}
+
+		> .tran-logs {
+			background-color: #fff;
+			> .title {
+				background-color: #fff;
+				position: sticky;
+				top: 0;
+				border-bottom: #eee 0.55px solid;
+				padding: 0.8rem 1.7rem;
+				font-weight: bold;
+				font-size: 1.3rem;
+				ali-icon {
+					font-size: 1.6rem;
+				}
+			}
+			> .tran-item {
+				width: calc(100 - 4rem);
+				height: 4.6rem;
+				border-bottom: 0.55px solid #e5e5e5;
+				flex-shrink: 0;
+				flex-grow: 0;
+				margin: 0 2rem;
+				padding: 0; 
+				display: flex;
+				align-items: center;
+				font-size: 1.35rem;
+				color: #787878;
+				> .left {
+					height: 100%;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: flex-start;
+					> .amount {
+						color: #505050;
+						font-weight: 500;
+					}
+					> .create-time {
+						color: #b5b5b5;
+						font-size: 1.2rem;
+					}
+				}
+				> .right {
+					height: 100%;
+					margin-left: auto;
+					align-self: flex-end;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: flex-end;
+					color: #505050;
+					> .from-to {
+						display: flex;
+						align-items: center;
+						ali-icon {
+							font-size: 3rem;
+							margin: 0 0.2rem;
+						}
+					}
+				}
+			}
+			> .empty-list {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				> img {
+					margin-top: 2rem;
+					margin-bottom: 2rem;
+					opacity: 0.6;
+					height: 20vh;
+					width: 20vh;
+				}
+				> .message {
+					font-size: 1.4rem;
+					color: #787878;
+				}
+			}
+		}
+	}
 }

@@ -302,8 +302,11 @@
   "CONFIRM_TO_REMOVE_LOCAL_CONTACT": "确定要删除联系人吗？",
 
   "//": "account-contact-detail",
-  "ACCOUNT-CONTACT-DETAIL": "详细信息",
+  "ACCOUNT-CONTACT-DETAIL": "联系人详细信息",
   "REMARK_TEXT_LABEL": "备注信息",
+  "TRANSACTION_LOGS": "转账记录",
+  "CONTACT_TRANSACTION_LIST_IS_EMPTY": "没有交易记录",
+  "LOADING_MOREC_CONTACT_TRANSACTION_LIST": "加载更多联系人的交易记录中……",
 
   "//": "account-remark-contact",
   "ACCOUNT-REMARK-CONTACT": "设置备注及标签",

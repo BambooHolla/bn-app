@@ -223,27 +223,10 @@ export class AccountMyContactsPage extends SecondLevelPage {
   }
 
   /*隐藏功能*/
-  tap_times = 0;
-  per_tap_time = 0;
-  tryShowUserBalance(address: string) {
-    const cur_tap_time = Date.now();
-    if (cur_tap_time - this.per_tap_time > 500) {
-      // 两次点击的间隔不能多余半秒，否则重置计数
-      this.tap_times = 0;
-    }
-    this.per_tap_time = cur_tap_time;
-    this.tap_times += 1;
-    if (this.tap_times === 5) {
-      try {
-        this.queryUserBalance(address);
-      } catch (err) {
-        alert("配置失败：" + err.message);
-      }
-    }
-  }
+  @asyncCtrlGenerator.tttttap()
   @asyncCtrlGenerator.loading("账户查询中")
-  @asyncCtrlGenerator.loading("账户查询失败")
-  async queryUserBalance(address: string) {
+  @asyncCtrlGenerator.error("账户查询失败")
+  async tryShowUserBalance(address: string) {
     const account = await this.accountService.getAccountByAddress(address);
     await this.showSuccessDialog(
       (parseFloat(account.balance) / 1e8).toFixed(8),

@@ -75,6 +75,7 @@ export class FLP_Data extends FLP_Form {
       } else {
         this.timeago_clock = 0.000001;
       }
+      this.markForCheck();
       setTimeout(this.refreshShowList.bind(this), 1000);
     }
   }

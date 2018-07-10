@@ -1,39 +1,86 @@
 <ion-header>
   <ion-navbar color="white">
     <ion-title>{{'ACCOUNT-CONTACT-DETAIL'|translate}}</ion-title>
+    <ion-buttons right>
+      <button (click)="goToEditContact()">
+        <ali-icon name="ifm-bianji"></ali-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <div class="common-list">
-    <div class="base-info">
-      <div class="main-name" *ngIf="mainname">{{mainname}}</div>
+    <div class="base-info" (click)="tryShowAccountBalanceDetail()">
+      <div class="mainname">{{mainname}}</div>
       <div class="address">
-        <ali-icon name="ifm-account-detail">{{contact?.address}}</ali-icon>
+        <ali-icon name="ifm-account-detail"></ali-icon>
+        {{contact?.address}}
       </div>
-      <div class="nick-name" *ngIf="nickname">{{nickname}}</div>
+      <div class="nickname">{{username}}</div>
     </div>
     <div class="remark-info">
       <div class="phones" *ngIf="contact?.phones?.length">
         <ali-icon name="ifm-phone"></ali-icon>
         <div class="phone-item" *ngFor="let phone of contact.phones">
           <a [href]="'tel:'+phone">{{phone}}</a>
-          <span class="split">/</span>
+          <span class="split"></span>
         </div>
       </div>
       <div class="tags" *ngIf="contact?.tags?.length">
-      	<div class="tag-item" *ngFor="let tag of contact.tags">{{tag}}</div>
+        <ali-icon name="ifm-biaoqian"></ali-icon>
+        <div class="tag-item" *ngFor="let tag of contact.tags">
+          <span class="inner">{{tag}}</span>
+        </div>
       </div>
       <div class="remark-image" *ngIf="contact?.image">
-      	<img [src]="contact.image">
+        <img [src]="contact.image">
       </div>
       <div class="remark-text" *ngIf="contact?.remark">
-      	<div class="label">{{'REMARK_TEXT_LABEL'|translate}}</div>
-      	<div class="text">{{contact.remark}}</div>
+        <!-- <div class="text"> -->
+        <div class="label">{{'REMARK_TEXT_LABEL'|translate}} :</div>{{contact.remark}}
+        <!-- </div> -->
       </div>
     </div>
     <div class="divider"></div>
-    <div class="tran-logs">
-    	<div class="title"></div>
+    <div class="tran-logs common-list">
+      <div class="title">
+        <ali-icon name="ifm-tran-history"></ali-icon>
+        {{'TRANSACTION_LOGS'|translate}}
+      </div>
+      <div class="tran-item common-item" *ngFor="let tran of transaction_list;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
+        <div class="left">
+          <div class="tran-type">
+            {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+          </div>
+          <div class="create-time">
+            {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+          </div>
+        </div>
+        <div class="right">
+          <div class="from-to">
+            <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
+            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+              <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+              <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
+            </ng-container>
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+            {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
+            - {{tran?.fee|amountEuler|number:"1.8-8"}}
+          </div>
+        </div>
+      </div>
+      <div class="empty-list" *ngIf="transaction_list.length==0&&transaction_config.loading==false">
+        <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST
+    '|translate">
+        <div class="message">{{'CONTACT_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
+      </div>
+
+      <ion-infinite-scroll (ionInfinite)="$event.waitFor(getMoreTransactionLogs())" [enabled]="transaction_config.has_more">
+        <ion-infinite-scroll-content [loadingText]="'LOADING_MOREC_CONTACT_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </div>
   </div>
 </ion-content>

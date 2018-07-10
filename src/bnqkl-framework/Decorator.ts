@@ -560,7 +560,30 @@ export function queneTask(
   };
 }
 
+export function tttttap(opts: { times: number } = { times: 5 }) {
+  return function(target, name, descriptor) {
+    var tap_times = 0;
+    var per_tap_time = 0;
+    const source_fun = descriptor.value;
+    descriptor.value = function tttttap(...args) {
+      const cur_tap_time = Date.now();
+      if (cur_tap_time - per_tap_time > 500) {
+        // 两次点击的间隔不能多余半秒，否则重置计数
+        tap_times = 0;
+      }
+      per_tap_time = cur_tap_time;
+      tap_times += 1;
+      if (tap_times === opts.times) {
+        return source_fun.apply(this, args);
+      }
+    };
+    descriptor.value.source_fun = source_fun;
+    return descriptor;
+  };
+}
+
 export const asyncCtrlGenerator = {
+  tttttap: tttttap,
   queue: queneTask,
   single: singleRunWrap,
   success: asyncSuccessWrapGenerator,

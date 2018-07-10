@@ -42,7 +42,6 @@ export class AccountRemarkContactPage extends SecondLevelPage {
       switch (id) {
         case "account-remark-contact-tags":
           if (data.contact_id === this.contact._id) {
-            this._is_back_from_remark_contact_editor = true;
             this.contact.tags = data.new_tags;
             this.formData.tags = data.new_tags.slice();
             this.markForCheck();
@@ -144,7 +143,7 @@ export class AccountRemarkContactPage extends SecondLevelPage {
       image,
     };
     await this.localContact.updateLocaContact(local_contact);
-    this.jobRes({ updated_local_contact_id: local_contact._id });
+    this.jobRes({ updated_contact: local_contact });
     this.finishJob();
   }
 
