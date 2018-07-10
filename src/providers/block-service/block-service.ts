@@ -462,7 +462,7 @@ export class BlockServiceProvider extends FLP_Tool {
             task.resolve();
             break;
           case "use-flow":
-            this.appSetting.settings.sync_data_flow +=
+            this.appSetting.share_settings.sync_data_flow +=
               (+msg.data.up || 0) + (+msg.data.down || 0);
             break;
           case "progress":
