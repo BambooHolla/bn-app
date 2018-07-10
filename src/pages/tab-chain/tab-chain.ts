@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   ViewChild,
+  ViewChildren,
   Renderer2,
   AfterViewChecked,
   ChangeDetectionStrategy,
@@ -130,9 +131,7 @@ export class TabChainPage extends FirstLevelPage {
     const latest_block = await this.blockService.getLastBlock();
     const max_end_height = latest_block.height;
     // 记录第一次同步区块的时间
-    if (
-      !this.appSetting.share_settings.is_agree_to_sync_blockchain
-    ) {
+    if (!this.appSetting.share_settings.is_agree_to_sync_blockchain) {
       await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
       // 这个点击确认后的is_agree_to_the_agreement_of_sync_blockchain，在区块链正式开始下载后才设置为true
       // this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
@@ -212,10 +211,7 @@ export class TabChainPage extends FirstLevelPage {
           switch (msg.type) {
             // 校验开始，显示同步loading
             case "start-verifier":
-              if (
-                !this.appSetting.share_settings
-                  .is_agree_to_sync_blockchain
-              ) {
+              if (!this.appSetting.share_settings.is_agree_to_sync_blockchain) {
                 this.appSetting.share_settings.is_agree_to_sync_blockchain = true;
                 this.openChainSyncDetail();
               }
@@ -255,6 +251,39 @@ export class TabChainPage extends FirstLevelPage {
   async watchHeightChange(height) {
     await this.loadUnconfirmBlock();
     this.markForCheck();
+  }
+
+  @ViewChild("progressCircle", { read: ElementRef })
+  progressCircle!: ElementRef;
+  private _progressCircle_rotate = 0;
+  _before_markForCheck() {
+    if (this.is_show_sync_loading) {
+      this._pre_progressCircle_ani_time = performance.now();
+      this._progressCircle_rotate = (this._progressCircle_rotate + 45) % 360;
+      this.raf(() => {
+        (this.progressCircle
+          .nativeElement as HTMLElement).style.transform = `rotate(${
+          this._progressCircle_rotate
+        }deg)`;
+      });
+      this.cdRef.detectChanges;
+    }
+  }
+  private _auto_aniProgressCircle_ti;
+  private _pre_progressCircle_ani_time;
+  // 至少每秒要让这个spinner动一次
+  @TabChainPage.didEnter
+  private _auto_aniProgressCircle() {
+    this._auto_aniProgressCircle_ti = setInterval(() => {
+      const now = performance.now();
+      if (now - this._pre_progressCircle_ani_time >= 990) {
+        this._before_markForCheck();
+      }
+    }, 1000);
+  }
+  @TabChainPage.didLeave
+  private _clear_aniProgressCircle() {
+    clearInterval(this._auto_aniProgressCircle_ti);
   }
 
   openChainSyncDetail() {

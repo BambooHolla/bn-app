@@ -156,7 +156,7 @@
       "cordova-plugin-media-capture": {},
       "ionic-plugin-keyboard": {},
       "cordova-plugin-crosswalk-webview": {
-        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security",
+        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security --enable-gpu-rasterization",
         "XWALK_VERSION": "23+",
         "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
         "XWALK_MODE": "embedded",

@@ -157,6 +157,7 @@ export class FLP_Lifecycle extends FLP_Tool
         /*microtask，把这个任务放到事件循环的最后面来做，避免重复工作*/
         one_lock = Promise.resolve().then(() => {
           one_lock = undefined;
+          this._before_markForCheck();
           this.cdRef!.markForCheck();
         });
       };
@@ -164,6 +165,10 @@ export class FLP_Lifecycle extends FLP_Tool
       return;
     }
   }
+  // 钩子函数
+  _before_markForCheck(){}
+
+
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;
     if (this.cdRef instanceof ChangeDetectorRef) {

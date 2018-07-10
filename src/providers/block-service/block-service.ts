@@ -370,7 +370,7 @@ export class BlockServiceProvider extends FLP_Tool {
         // console.log("bs", msg);
         switch (msg.type) {
           case "start-verifier":
-            this.appSetting.share_settings.is_syncing_blocks = false;
+            this.appSetting.share_settings.is_syncing_blocks = true;
             this.appSetting.share_settings.sync_is_verifying_block = true;
             break;
           case "end-verifier":

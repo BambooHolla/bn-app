@@ -62,10 +62,8 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	sync_delay_time: { value: string; unit: string }[] = [];
 	// 加载区块的数据，如果可能要卡很久，因为区块1可能也是卡死的
 	is_calcing_delay_time = true;
-	sync_progress_height = 1;
+	sync_progress_height = this.appSetting.share_settings.sync_progress_height;
 	delay_ms = -1;
-	// 区块高度
-	block_height = 0;
 	// 同步使用的流量
 	sync_data_flow_info = { value: "0", unit: "KB" };
 	// 总进度
@@ -225,11 +223,6 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 		);
 	}
 
-	@ChainSyncDetailPage.addEvent("HEIGHT:CHANGED")
-	initBindBlockHeight() {
-		this.block_height = this.appSetting.getHeight();
-		this.markForCheck();
-	}
 	/*TODO，对时间进行计算*/
 	private _calcSyncDelayTime() {
 		this.blockService;
@@ -245,7 +238,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				this.appSetting,
 				"changed@share_settings." + k,
 				() => {
-					this[k] = this.appSetting.settings[k];
+					this[k] = this.appSetting.share_settings[k];
 				},
 				true,
 			);
@@ -255,7 +248,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				this.appSetting,
 				"changed@share_settings." + enable_k,
 				() => {
-					this[enable_k] = this.appSetting.settings[enable_k];
+					this[enable_k] = this.appSetting.share_settings[enable_k];
 				},
 				true,
 			);

@@ -117,7 +117,7 @@
     <plugin name="cordova-plugin-media-capture" spec="^3.0.1" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <plugin name="cordova-plugin-crosswalk-webview" spec="^2.3.0">
-        <variable name="XWALK_COMMANDLINE" value="--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security" />
+        <variable name="XWALK_COMMANDLINE" value="--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security --enable-gpu-rasterization" />
         <variable name="XWALK_VERSION" value="23+" />
         <variable name="XWALK_LITEVERSION" value="xwalk_core_library_canary:17+" />
         <variable name="XWALK_MODE" value="embedded" />

@@ -35,16 +35,25 @@ page-tab-chain {
           > .left {
             flex: 1;
             > .sync-progress {
+              // overflow: hidden;
               font-size: 1.35rem;
               font-weight: lighter;
               text-align: left;
               transform: translateX(4vw);
               display: flex;
               align-items: center;
+
+              &:not(.show){
+                display: none;
+              }
               ali-icon {
                 font-size: 2rem;
-                margin-right: 0.5rem;
-                animation-duration: 1s;
+                // animation-duration: 1s;
+                transform: translateX(4vw);
+                transform-origin: 51.4% 56.2%;
+              }
+              .progress-value {
+                padding-left: 0.5rem;
               }
             }
           }

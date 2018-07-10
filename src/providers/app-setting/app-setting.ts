@@ -200,7 +200,10 @@ export class AppSettingProvider extends CommonService {
       const shareSettingCtrl = (() => {
         const settings_key = get_share_settings_key();
         let micro_task_lock;
-        const cur_settings = { ...default_share_settings };
+        const cur_settings = {
+          ...default_share_settings,
+          ...JSON.parse(localStorage.getItem(settings_key) || "{}"),
+        };
         return {
           save(settings) {
             if (cur_settings !== settings) {
