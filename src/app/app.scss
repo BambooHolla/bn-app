@@ -85,6 +85,15 @@ ion-loading {
   &.can-tap {
     pointer-events: none;
     background-color: transparent;
+    > ion-backdrop {
+      background-color: transparent;
+    }
+    &.blockchain-loading {
+      // filter: drop-shadow(0 0vw 4vw rgba(0, 0, 0, 0.2));
+      .loading-wrapper > .loading-content {
+        color: #666;
+      }
+    }
     &:not(.blockchain-loading) {
       > .loading-wrapper {
         box-shadow: 0 0rem 0.2rem rgba(255, 255, 255, 0.3),

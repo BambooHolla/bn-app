@@ -402,7 +402,7 @@ export class BlockServiceProvider extends FLP_Tool {
               (+msg.data.up || 0) + (+msg.data.down || 0);
             break;
           case "progress":
-            console.log("下载中", task_name, msg.data);
+            // console.log("下载中", task_name, msg.data);
             this.appSetting.share_settings.sync_progress_blocks = msg.data;
             this.tryEmit("BLOCKCHAIN:CHANGED");
             break;
@@ -467,7 +467,7 @@ export class BlockServiceProvider extends FLP_Tool {
               (+msg.data.up || 0) + (+msg.data.down || 0);
             break;
           case "progress":
-            console.log("下载中", task_name, msg.data);
+            // console.log("下载中", task_name, msg.data);
             this.tryEmit("BLOCKCHAIN:CHANGED");
             break;
           case "error":

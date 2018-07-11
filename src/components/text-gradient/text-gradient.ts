@@ -71,7 +71,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     this.span_text_node.textContent = this.text;
 
     textEle.style.fontSize = this.fontSize;
-    textEle.style.fontFamily = this.fontFamily.join(" ");
+    textEle.style.fontFamily = this.fontFamily as any;
     textEle.style.fontWeight = this.fontWeight;
     const { width, height } = textEle.getBoundingClientRect();
     // console.log("width, height", width, height);
