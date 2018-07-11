@@ -82,9 +82,10 @@
           {{'CALCING_SYNC_DELAY_TIME'|translate}}
         </ng-container>
         <ng-template #SyncDelayTimeInfo>
-          <ng-container *ngFor="let time_info of sync_delay_time">
+          <ng-container *ngFor="let time_info of sync_delay_time;trackBy:listTrackBy">
             <div class="value">
-              {{time_info.value}}
+              <!-- {{time_info.value}} -->
+              <text-gradient [text]="time_info.value" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
             </div>
             <div class="unit">
               {{time_info.unit|translate}}

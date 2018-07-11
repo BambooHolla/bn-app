@@ -316,7 +316,7 @@
   "ADD_MORE_INFORMATION_REMARKS": "添加更多备注信息",
   "ADD_REAMRK_PHOTO": "添加名片或相关图片",
   "REMAKR_ONLY_SAVE_ON_LOCAL_TIP":
-    "备注信息保存在本机上，更换手机是备注信息需要重新设置",
+    "备注信息保存在本机上，更换手机时备注信息需要重新设置",
   "CONTACT_REMARK_SAVE_FAIL": "联系人备注信息保存失败",
   "CONTACT_REMARK_SAVE_SUCCESS": "联系人备注信息保存成功",
 

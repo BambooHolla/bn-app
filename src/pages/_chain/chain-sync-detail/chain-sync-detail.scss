@@ -217,15 +217,15 @@ page-chain-sync-detail {
 					height: 15vw;
 					.value {
 						font-size: 10.5vw;
-						-webkit-background-clip: text !important;
-						background-clip: text;
-						color: transparent;
-						font-weight: bolder;
-						background: linear-gradient(
-							to bottom,
-							#f9a561 0%,
-							#fccd51 100%
-						);
+						// -webkit-background-clip: text !important;
+						// background-clip: text;
+						// color: transparent;
+						// font-weight: bolder;
+						// background: linear-gradient(
+						// 	to bottom,
+						// 	#f9a561 0%,
+						// 	#fccd51 100%
+						// );
 						/* text-shadow: 0 1vw 1vw rgba(0, 0, 0, 0.3); */
 						filter: drop-shadow(0 0.5vw 0.8vw rgba(0, 0, 0, 0.2));
 					}

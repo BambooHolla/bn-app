@@ -32,6 +32,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
   get stops() {
     return this._stops || [[0, this.from], [1, this.to]];
   }
+  @Input("no-trim-blank") no_trim_blank = false;
   @Input("fontSize") fontSize = "1.6em";
   @Input("fontWeight") fontWeight = "normal";
   @Input("fontFamily")
@@ -122,21 +123,23 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     ctx.fillStyle = gradient;
     ctx.font = font;
     ctx.fillText(text, padding_width, canvas.height - 2 * padding_height);
-    // 过滤掉空白
-    const bound = TextGradientComponent.trim(canvas);
-    if (
-      bound &&
-      (canvas.width !== bound.width || canvas.height !== bound.height)
-    ) {
-      const data = ctx.getImageData(
-        bound.left,
-        bound.top,
-        bound.width,
-        bound.height,
-      );
-      canvas.width = bound.width;
-      canvas.height = bound.height;
-      ctx.putImageData(data, 0, 0);
+    if (!this.no_trim_blank) {
+      // 过滤掉空白
+      const bound = TextGradientComponent.trim(canvas);
+      if (
+        bound &&
+        (canvas.width !== bound.width || canvas.height !== bound.height)
+      ) {
+        const data = ctx.getImageData(
+          bound.left,
+          bound.top,
+          bound.width,
+          bound.height,
+        );
+        canvas.width = bound.width;
+        canvas.height = bound.height;
+        ctx.putImageData(data, 0, 0);
+      }
     }
   }
   static formatDirection(width: number, height: number, direction: string) {
