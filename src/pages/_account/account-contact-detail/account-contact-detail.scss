@@ -102,29 +102,6 @@ page-account-contact-detail {
 					margin-right: 0.6rem;
 					color: #666;
 				}
-				.tag-item {
-					display: inline-block;
-					margin: 0.2rem 0.5rem;
-					padding: 0.4rem 0.8rem;
-					height: 2.2rem;
-					border-radius: 1.5rem;
-					border: 1px solid #45d0ea;
-					background: #fff;
-					position: relative;
-					vertical-align: top;
-
-					> .inner {
-						display: inline-block;
-						color: #43ceeb;
-						font-size: 1.3rem;
-						max-width: calc(
-							100vw - 3rem - 2rem /*省略号*/ - 1.5rem /*关闭符号*/
-						);
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-					}
-				}
 			}
 			> .remark-text {
 				margin-top: 1.5rem;
