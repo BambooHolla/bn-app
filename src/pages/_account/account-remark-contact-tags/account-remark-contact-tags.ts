@@ -137,7 +137,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
     }
   }
   onNewTagKeyDown(e: KeyboardEvent) {
-    switch (e.code) {
+    switch (e.code || e.key) {
       case "Backspace":
         if (this.formData.new_tag_name === "") {
           // 尝试删除，因为是基于keydown事件，所以会连续触发，进行连续删除
