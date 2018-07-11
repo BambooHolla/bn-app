@@ -75,11 +75,11 @@
     </div>
     <div class="center">
       <ng-container *ngIf="sync_is_verifying_block;else showSyncDelayTimeInfo">
-        {{'VERIFYING_BLOCK'|translate}}
+        <text-gradient [text]="'VERIFYING_BLOCK'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
       </ng-container>
       <ng-template #showSyncDelayTimeInfo>
         <ng-container *ngIf="is_calcing_delay_time;else SyncDelayTimeInfo">
-          {{'CALCING_SYNC_DELAY_TIME'|translate}}
+          <text-gradient [text]="'CALCING_SYNC_DELAY_TIME'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
         </ng-container>
         <ng-template #SyncDelayTimeInfo>
           <ng-container *ngFor="let time_info of sync_delay_time;trackBy:listTrackBy">

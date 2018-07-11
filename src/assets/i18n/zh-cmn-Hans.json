@@ -194,7 +194,7 @@
 
   "//": "tab-chain",
   "SYNC_BLOCKCHAIN_ERROR": "区块链同步出错",
-  "VERIFYING_BLOCK": "校验中",
+  "VERIFYING_BLOCK": "区块校验中",
   "LOADING_BLOCK_LIST": "加载区块链中",
   "LOAD_BLOCK_LIST_ERROR": "加载区块链失败",
   "LOADING_MORE_BLOCK_LIST": "加载更多区块中……",
