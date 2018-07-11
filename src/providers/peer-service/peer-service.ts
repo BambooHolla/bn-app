@@ -10,7 +10,13 @@ import * as IFM from "ifmchain-ibt";
 import { CommonService } from "../commonService";
 import * as TYPE from "./peer.types";
 export * from "./peer.types";
-const PEERS = ["http://mainnet.ifmchain.org"];
+const PEERS = [
+  // "http://mainnet.ifmchain.org",
+  "http://35.194.161.10:19002",
+  "http://35.194.129.80:19002",
+  "http://35.194.234.159:19002",
+  "http://35.185.142.124:19002",
+];
 
 @Injectable()
 export class PeerServiceProvider extends CommonService {

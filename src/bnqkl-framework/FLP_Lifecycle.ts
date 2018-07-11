@@ -26,7 +26,12 @@ export class FLP_Lifecycle extends FLP_Tool
    *  注册后，在leave期间，事件不会触发，但会收集，等再次进入页面的时候按需更新一次
    *  这个函数主要是用来配合ChangeDetectorRef进行手动更新视图用的
    */
-  registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function,is_run_when_bind?:boolean) {
+  registerViewEvent(
+    emitter: EventEmitter,
+    evetname: string,
+    handle: Function,
+    is_run_when_bind?: boolean,
+  ) {
     let should_emit: any = null;
     const proxy_handle = (...args) => {
       if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
@@ -55,8 +60,8 @@ export class FLP_Lifecycle extends FLP_Tool
         should_emit = null;
       }
     });
-    if(is_run_when_bind){
-      this.event.once("didEnter", ()=>{
+    if (is_run_when_bind) {
+      this.event.once("didEnter", () => {
         handle();
       });
     }
@@ -166,8 +171,36 @@ export class FLP_Lifecycle extends FLP_Tool
     }
   }
   // 钩子函数
-  _before_markForCheck(){}
+  _before_markForCheck() {}
 
+  static markForCheck(
+    target: any,
+    name: string,
+    descriptor?: PropertyDescriptor,
+  ) {
+    if (!descriptor) {
+      let val;
+      descriptor = {
+        get() {
+          return val;
+        },
+        set(v) {
+          if (v !== val) {
+            val = v;
+            this.markForCheck();
+          }
+        },
+      };
+      Object.defineProperty(target, name, descriptor);
+    } else if (descriptor.set) {
+      const srouce_set = descriptor.set;
+      descriptor.set = function(v) {
+        srouce_set.call(this, v);
+        this.markForCheck();
+      };
+    }
+    // return descriptor;
+  }
 
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;

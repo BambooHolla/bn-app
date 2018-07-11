@@ -101,7 +101,7 @@ export class FLP_Route extends FLP_Lifecycle {
     "hide_jump_loading",
     {
       showBackdrop: false,
-      cssClass: "can-tap",
+      cssClass: "can-tap blockchain-loading",
     },
   )
   @asyncCtrlGenerator.error(FLP_Route.jump_error_title)

@@ -84,8 +84,9 @@ export class TabVotePage extends FirstLevelPage {
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
-    public blockService: BlockServiceProvider, // public cdRef: ChangeDetectorRef,
-  ) {
+    public blockService: BlockServiceProvider,
+  ) // public cdRef: ChangeDetectorRef,
+  {
     super(navCtrl, navParams);
 
     this.registerViewEvent(this.minService.event, "vote-error", () => {
@@ -330,14 +331,12 @@ export class TabVotePage extends FirstLevelPage {
     }
     this.chain_mesh.startAnimation();
   }
-  private _page_status = VotePage.None;
-  get page_status() {
-    return this._page_status;
-  }
-  set page_status(v) {
-    this._page_status = v;
-    // this.cdRef.markForCheck();
-  }
+  @TabVotePage.markForCheck
+  page_status = VotePage.None;
+
+  @TabVotePage.markForCheck
+  zz = 1
+
 
   @ViewChild(EffectCountdownComponent)
   effect_countdown!: EffectCountdownComponent;

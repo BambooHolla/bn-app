@@ -73,12 +73,13 @@ export class AccountContactDetailPage extends SecondLevelPage {
       } // 如果没有昵称的话，那么mainname就会显示昵称，这里就不用显示用户名了，返回空
     }
   }
-  private _is_back_from_remark_contact_editor = false;
+  private _is_back_from_child_page = false;
 
   @AccountContactDetailPage.willEnter
-  initData() {
-    if (this._is_back_from_remark_contact_editor) {
-      this._is_back_from_remark_contact_editor = false;
+  // @asyncCtrlGenerator.loading()
+  async initData() {
+    if (this._is_back_from_child_page) {
+      this._is_back_from_child_page = false;
       return;
     }
     const contact: LocalContactModel | undefined = this.navParams.get(
@@ -87,17 +88,25 @@ export class AccountContactDetailPage extends SecondLevelPage {
     const account: AccountModel | undefined = this.navParams.get("account");
     this.contact = contact || account;
     if (!this.contact) {
+      const account_string: string | undefined = this.navParams.get("address");
+      if (account_string) {
+        this.contact = await this.accountService.getAccountByAddress(
+          account_string,
+        );
+      }
+    }
+    if (!this.contact) {
       return this.navCtrl.goToRoot({});
     }
     this.hide_navbar_tools = this.contact.address === this.userInfo.address;
-    if (this.hide_navbar_tools) {
-      return;
+    if (!this.hide_navbar_tools) {
+      if (account) {
+        await this.checkIsMyContact();
+      } else {
+        this.is_my_contact = true;
+      }
     }
-    if (account) {
-      this.checkIsMyContact();
-    } else {
-      this.is_my_contact = true;
-    }
+    await this.getTransactionLogs();
   }
   hide_navbar_tools = true;
   checking_is_my_contact = false;
@@ -110,9 +119,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.checking_is_my_contact = true;
     this.markForCheck();
     try {
-      const contact = await this.localContact.findMyContact(
-        this.contact.address,
-      );
+      const contact = await this.localContact.findContact(this.contact.address);
       if ((this.is_my_contact = !!contact)) {
         this.contact = contact;
       }
@@ -127,8 +134,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
     if (!this.contact) {
       return;
     }
-    this._is_back_from_remark_contact_editor = true;
-    this.routeTo("account-remark-contact", {
+    this._is_back_from_child_page = true;
+    return this.routeTo("account-remark-contact", {
       contact: this.contact,
       auto_return: true,
     });
@@ -145,7 +152,14 @@ export class AccountContactDetailPage extends SecondLevelPage {
     await this.checkIsMyContact();
   }
 
-  transaction_list: TransactionModel[] = [];
+  contact_metched_map = new Map<
+    string,
+    Promise<void> | LocalContactModel | undefined
+  >();
+  transaction_list: (TransactionModel & {
+    senderNickname?: string;
+    recipientNickname?: string;
+  })[] = [];
   transaction_config = {
     loading: false,
     has_more: true,
@@ -159,11 +173,40 @@ export class AccountContactDetailPage extends SecondLevelPage {
       if (!this.contact) {
         return [];
       }
-      const list = await this.transactionService.getUserTransactions(
-        this.contact.address,
-        transaction_config.page,
-        transaction_config.pageSize,
-        "or",
+      const list = await Promise.all(
+        (await this.transactionService.getUserTransactions(
+          this.contact.address,
+          transaction_config.page,
+          transaction_config.pageSize,
+          "or",
+        ))
+          // 查询本地联系人
+          .map(async trs => {
+            const nicknames = await Promise.all(
+              [trs.senderId, trs.recipientId].map(async address => {
+                if (!address || this.contact_metched_map.has(address)) {
+                  return;
+                }
+                const task = this.localContact
+                  .findContact(address)
+                  .then(account => {
+                    this.contact_metched_map.set(address, account);
+                  });
+                this.contact_metched_map.set(address, task);
+
+                await task;
+                const contact = await this.contact_metched_map.get(address);
+                if (contact) {
+                  return contact.nickname;
+                }
+              }),
+            );
+            return {
+              ...trs,
+              senderNickname: nicknames[0],
+              recipientNickname: nicknames[1],
+            };
+          }),
       );
       transaction_config.has_more = list.length >= transaction_config.pageSize;
       return list;
@@ -176,8 +219,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
   }
 
   TransactionTypes = TransactionTypes;
-  @AccountContactDetailPage.willEnter
   @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.loading(undefined,undefined,{cssClass:"can-tap blockchain-loading"})
   async getTransactionLogs() {
     this.transaction_config.page = 1;
     this.transaction_list = await this._getTransactionList();
@@ -193,6 +236,12 @@ export class AccountContactDetailPage extends SecondLevelPage {
       this.transaction_config.page -= 1;
     }
     this.markForCheck();
+  }
+
+  // 进入到交易详情页面
+  goToTransactionDetail(tran: TransactionModel) {
+    this._is_back_from_child_page = true;
+    return this.routeTo("chain-transaction-detail", { transaction: tran });
   }
 
   is_show_extend_info = false;
@@ -212,4 +261,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.is_show_extend_info = true;
     this.markForCheck();
   }
+  // async tryTongjiTrans(){
+  //   while(this.)
+  // }
 }

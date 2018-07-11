@@ -162,7 +162,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
   private _getPeerInfo_process: any;
   @asyncCtrlGenerator.loading("@@FETCHING_PEER_INFO", undefined, {
     showBackdrop: false,
-    cssClass: "can-tap",
+    cssClass: "can-tap blockchain-loading",
     dismiss_hanlder_name: "_dismiss_getPeerInfo_loading",
   })
   async getPeerInfo(peer: ExtendsSystemRuntime) {

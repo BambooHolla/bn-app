@@ -22,11 +22,13 @@ export type LocalContactGroupItem = {
 };
 export type LocalContactGroupList = LocalContactGroupItem[];
 export enum LocalContactGroupMethod {
+	/*昵称*/
+	nickname,
 	/*用户名*/
 	username,
 	/*地址*/
 	address,
-	/*以上两者*/
+	/*以上所有*/
 	mix,
 }
 
@@ -51,13 +53,13 @@ export class LocalContactProvider extends EventEmitter {
 			owner_publicKey,
 		});
 	}
-	findMyContact(address: string, owner_publicKey = this.userInfo.publicKey) {
+	findContact(address: string, owner_publicKey = this.userInfo.publicKey) {
 		return this.contact_db
 			.find({
 				owner_publicKey,
 				address,
 			})
-			.then(list => list[0]);
+			.then(list => list[0] as TYPE.LocalContactModel | undefined);
 	}
 	/*搜索联系人*/
 	async searchContact(address_or_username: string) {
@@ -131,12 +133,16 @@ export class LocalContactProvider extends EventEmitter {
 		contact_list.forEach(my_contact => {
 			try {
 				let pingyin_by: string | undefined;
-				if (group_method === LocalContactGroupMethod.username) {
+				if (group_method === LocalContactGroupMethod.nickname) {
+					pingyin_by = my_contact.nickname && my_contact.nickname[0];
+				} else if (group_method === LocalContactGroupMethod.username) {
 					pingyin_by = my_contact.username && my_contact.username[0];
 				} else if (group_method === LocalContactGroupMethod.address) {
 					pingyin_by = my_contact.address[0];
 				} else if (group_method === LocalContactGroupMethod.mix) {
-					pingyin_by = (my_contact.username || my_contact.address)[0];
+					pingyin_by = (my_contact.nickname ||
+						my_contact.username ||
+						my_contact.address)[0];
 				}
 				const word: string | undefined =
 					pingyin_by && pinyin.convertToPinyin(pingyin_by);

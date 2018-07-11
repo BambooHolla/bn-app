@@ -88,6 +88,7 @@ export class AccountMyLocalContactsPage extends SecondLevelPage {
 			this.grouped_contact_list = this.localContactService.contactGroup(
 				local_contacts,
 			);
+			this.markForCheck();
 			// 联网更新联系人信息
 			this._updateMyContactInfo();
 		} finally {

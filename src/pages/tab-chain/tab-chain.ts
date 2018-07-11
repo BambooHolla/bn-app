@@ -119,7 +119,7 @@ export class TabChainPage extends FirstLevelPage {
   //   return this.checkBlockchainComplete();
   // }
   // @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE", undefined, {
-  //   cssClass: "can-tap",
+  //   cssClass: "can-tap blockchain-loading",
   //   showBackdrop: false,
   // })
   @TabChainPage.onInit

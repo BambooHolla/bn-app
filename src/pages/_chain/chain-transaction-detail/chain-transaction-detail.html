@@ -79,13 +79,13 @@
     <div class="common-item sender" (click)="routeToDetail(transaction?.senderId)">
       <div class="left">
         <div class="title">{{'TRANSCATION_SENDER'|translate}}</div>
-        <div class="content" [innerHTML]="transaction?.senderId|mask:'@fulladdress'"></div>
+        <div class="content" [innerHTML]="sender_contact?.nickname||(transaction?.senderId|mask:'@fulladdress')"></div>
       </div>
     </div>
     <div class="common-item receiver" *ngIf="transaction?.recipientId" (click)="routeToDetail(transaction?.recipientId)">
       <div class="left">
         <div class="title">{{'TRANSCATION_RECIPIENT'|translate}}</div>
-        <div class="content" [innerHTML]="transaction?.recipientId|mask:'@fulladdress'"></div>
+        <div class="content" [innerHTML]="recipient_contact?.nickname||(transaction?.recipientId|mask:'@fulladdress')"></div>
       </div>
     </div>
   </div>
