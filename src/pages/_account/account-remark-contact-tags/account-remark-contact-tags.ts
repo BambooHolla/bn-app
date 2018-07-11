@@ -125,14 +125,16 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
 
       this.used_tags.push(new_tag);
       this.resetFormData();
-      this.newTagInputer.nativeElement.textContent = this.formData.new_tag_name;
+      this.newTagInputer.nativeElement.innerHTML = this.formData.new_tag_name;
       // this.markForCheck();
     }
   }
   onNewTagInput(e: Event) {
     const ele = e.target as HTMLElement;
     this.formData.new_tag_name = (ele.textContent || "").replace(/\n/g, "");
-    ele.textContent = this.formData.new_tag_name;
+    if (this.formData.new_tag_name !== ele.innerHTML) {
+      ele.innerHTML = this.formData.new_tag_name;
+    }
   }
   onNewTagKeyDown(e: KeyboardEvent) {
     switch (e.code) {
