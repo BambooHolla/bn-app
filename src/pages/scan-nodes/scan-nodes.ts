@@ -6,6 +6,7 @@ import {
   PeerServiceProvider,
   PeerModel,
 } from "../../providers/peer-service/peer-service";
+import { NetworkInterface } from "@ionic-native/network-interface";
 
 @IonicPage({ name: "scan-nodes" })
 @Component({
@@ -17,6 +18,7 @@ export class ScanNodesPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public peerService: PeerServiceProvider,
+    public networkInterface: NetworkInterface,
   ) {
     super(navCtrl, navParams);
   }

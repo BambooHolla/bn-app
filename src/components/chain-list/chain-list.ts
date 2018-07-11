@@ -108,10 +108,10 @@ export class ChainListComponent extends AniBase {
         view: canvasNode,
         width: (this.renderer_width = this.pt(document.body.clientWidth)),
         height: (this.renderer_height = this.pt(document.body.clientHeight)),
-        transparent: false,
+        transparent: true,
         antialias: true,
         autoStart: true,
-        backgroundColor: 0xffffff,
+        // backgroundColor: 0xffffff,
       });
     }
     this.app.stage.addChild(this.list_view);
@@ -714,18 +714,7 @@ class BlockCard extends PIXI.Graphics {
       // shadow_filter.shadowOnly = true;
       shadow_filter.color = 0x0;
       this.shadow_filter = shadow_filter;
-      this.filters = [shadow_filter];
-      // 在不确定帧后再进行缓存
-      let cache_fps = (100 * Math.random()) | 0;
-      const tryCacheAsBitmap = () => {
-        if (cache_fps <= 0) {
-          shadown.cacheAsBitmap = true;
-        } else {
-          cache_fps -= 1;
-          FLP_Tool.raf(tryCacheAsBitmap);
-        }
-      };
-      tryCacheAsBitmap();
+
       this.addChild(shadown);
     }
 
@@ -794,17 +783,27 @@ class BlockCard extends PIXI.Graphics {
     //   this.footer_container_mask.alpha = res_aplha;
     //   // this.footer_container.cacheAsBitmap = true;
     // }
-    const shadow_filter_alpha = is_show ? 0.4 : 0.2;
-    if (this.shadow_filter.alpha !== shadow_filter_alpha) {
-      const old_cacheAsBitmap = this.shadown.cacheAsBitmap;
-      if (old_cacheAsBitmap) {
-        this.shadown.cacheAsBitmap = false;
-        this.shadow_filter.alpha = shadow_filter_alpha;
-        this.shadown.cacheAsBitmap = true;
-      } else {
-        this.shadow_filter.alpha = shadow_filter_alpha;
+
+    if (is_show) {
+      if (!this.filters || this.filters.length !== 1) {
+        this.filters = [this.shadow_filter];
       }
+    } else {
+      this.filters = null;
     }
+    // const shadow_filter_alpha = is_show ? 0.4 : 0.2;
+    // if (this.shadow_filter.alpha !== shadow_filter_alpha) {
+    //   this.filters = [];
+
+    //   const old_cacheAsBitmap = this.shadown.cacheAsBitmap;
+    //   if (old_cacheAsBitmap) {
+    //     this.shadown.cacheAsBitmap = false;
+    //     this.shadow_filter.alpha = shadow_filter_alpha;
+    //     this.shadown.cacheAsBitmap = true;
+    //   } else {
+    //     this.shadow_filter.alpha = shadow_filter_alpha;
+    //   }
+    // }
   }
   shadown = new PIXI.Graphics();
 
