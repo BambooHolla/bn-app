@@ -56,18 +56,18 @@ export class AccountAddLocalContactPage extends SecondLevelPage {
 	@asyncCtrlGenerator.single({ lock_prop_key: "adding_contact" })
 	async addContacts() {
 		const address_or_username = this.formData.search_text;
-		if (address_or_username === this.userInfo.address) {
-			throw new Error("@@COULD_NOT_ADD_SELF_AS_CONTACT");
-		}
+		// if (address_or_username === this.userInfo.address) {
+		// 	throw new Error("@@COULD_NOT_ADD_SELF_AS_CONTACT");
+		// }
 		const searched_contact = await this.localContact.searchContact(
 			address_or_username,
 		);
 		if (!searched_contact) {
 			throw new Error("@@ACCOUNT_NO_FOUND");
 		}
-		if (searched_contact.address === this.userInfo.address) {
-			throw new Error("@@COULD_NOT_ADD_SELF_AS_CONTACT");
-		}
+		// if (searched_contact.address === this.userInfo.address) {
+		// 	throw new Error("@@COULD_NOT_ADD_SELF_AS_CONTACT");
+		// }
 		// 直接添加，暂时不支持搜索
 		const new_contact_id = await this.localContact.addLocalContact(
 			searched_contact,

@@ -220,7 +220,9 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   TransactionTypes = TransactionTypes;
   @asyncCtrlGenerator.error()
-  @asyncCtrlGenerator.loading(undefined,undefined,{cssClass:"can-tap blockchain-loading"})
+  @asyncCtrlGenerator.loading(undefined, undefined, {
+    cssClass: "can-tap blockchain-loading",
+  })
   async getTransactionLogs() {
     this.transaction_config.page = 1;
     this.transaction_list = await this._getTransactionList();
@@ -261,7 +263,17 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.is_show_extend_info = true;
     this.markForCheck();
   }
-  // async tryTongjiTrans(){
-  //   while(this.)
-  // }
+  @asyncCtrlGenerator.tttttap() // 这个要放第一个
+  @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.loading(undefined, undefined, {
+    cssClass: "can-tap blockchain-loading",
+  })
+  @asyncCtrlGenerator.single()
+  async tryGetAllTrans() {
+    while (this.transaction_config.has_more) {
+      // 增加一次性查询的数量，提升效率
+      this.transaction_config.pageSize = 80;
+      await this.getMoreTransactionLogs();
+    }
+  }
 }

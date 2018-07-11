@@ -89,14 +89,15 @@ export class AccountMyLocalContactsPage extends SecondLevelPage {
 				local_contacts,
 			);
 			this.markForCheck();
-			// 联网更新联系人信息
 			this._updateMyContactInfo();
 		} finally {
 			this.loading_my_contact_list = false;
 		}
 	}
 
+	/*联网更新联系人信息*/
 	/*TODO: 实现订阅功能，在多线程里头订阅我的联系人的改名交易，从而实现更新数据库*/
+	@AccountMyLocalContactsPage.addEvent("HEIGHT:CHANGED")
 	private async _updateMyContactInfo() {
 		const current_height = this.appSetting.getHeight();
 		for (var _contact of this.contact_list) {
@@ -110,10 +111,8 @@ export class AccountMyLocalContactsPage extends SecondLevelPage {
 				);
 				if (account.username) {
 					local_contact.username = account.username;
-					await this.localContactService.updateLocaContact(
-						local_contact,
-					);
 				}
+				await this.localContactService.updateLocaContact(local_contact);
 			}
 		}
 	}
