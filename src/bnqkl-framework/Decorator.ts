@@ -277,7 +277,7 @@ export function asyncLoadingWrapGenerator(
       const loadingOpts = Object.assign(
         {
           content: String(loading_msg),
-          cssClass: (this.PAGE_LEVEL | 0) > 1 ? "can-goback" : "",
+          cssClass: (this.PAGE_LEVEL | 0) > 1 ? "can-goback blockchain-loading" : "blockchain-loading",
         },
         opts,
       );
