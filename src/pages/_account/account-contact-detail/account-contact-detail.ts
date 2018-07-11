@@ -100,7 +100,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     }
     this.hide_navbar_tools = this.contact.address === this.userInfo.address;
     if (!this.hide_navbar_tools) {
-      if (account) {
+      if (this.contact) {
         await this.checkIsMyContact();
       } else {
         this.is_my_contact = true;
