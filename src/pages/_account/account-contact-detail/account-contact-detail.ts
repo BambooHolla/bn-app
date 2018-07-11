@@ -16,6 +16,7 @@ import {
   LocalContactModel,
   LocalContactProvider,
 } from "../../../providers/local-contact/local-contact";
+import { AccountModel } from "../../../providers/account-service/account-service";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 
@@ -47,16 +48,16 @@ export class AccountContactDetailPage extends SecondLevelPage {
       }
     });
   }
-  contact?: LocalContactModel;
+  contact?: LocalContactModel | AccountModel;
   get mainname() {
     const { contact } = this;
     if (contact) {
-      return contact.nickname || contact.username;
+      return contact["nickname"] || contact.username;
     }
   }
   get username() {
     const { contact } = this;
-    if (contact && contact.nickname) {
+    if (contact && contact["nickname"]) {
       return contact.username;
     }
   }
@@ -68,19 +69,63 @@ export class AccountContactDetailPage extends SecondLevelPage {
       this._is_back_from_remark_contact_editor = false;
       return;
     }
-    const contact = this.navParams.get("contact");
-    if (!contact) {
+    const contact: LocalContactModel | undefined = this.navParams.get(
+      "contact",
+    );
+    const account: AccountModel | undefined = this.navParams.get("account");
+    this.contact = contact || account;
+    if (!this.contact) {
       return this.navCtrl.goToRoot({});
     }
-    this.contact = contact;
+    if (account) {
+      this.checkIsMyContact();
+    } else {
+      this.is_my_contact = true;
+    }
   }
+  checking_is_my_contact = false;
+  is_my_contact = false;
+  @asyncCtrlGenerator.error()
+  async checkIsMyContact() {
+    if (!this.contact) {
+      return;
+    }
+    this.checking_is_my_contact = true;
+    this.markForCheck();
+    try {
+      const contact = await this.localContact.findMyContact(
+        this.contact.address,
+      );
+      if ((this.is_my_contact = !!contact)) {
+        this.contact = contact;
+      }
+    } finally {
+      this.checking_is_my_contact = false;
+    }
+    this.markForCheck();
+  }
+
   /*跳转到编辑页面*/
   goToEditContact() {
+    if (!this.contact) {
+      return;
+    }
     this._is_back_from_remark_contact_editor = true;
     this.routeTo("account-remark-contact", {
       contact: this.contact,
       auto_return: true,
     });
+  }
+  /*添加成我的联系人*/
+  @asyncCtrlGenerator.loading()
+  @asyncCtrlGenerator.success("@@ADD_LOCAL_CONTACT_SUCCESS")
+  @asyncCtrlGenerator.single()
+  async addToMyContacts() {
+    if (!this.contact) {
+      return;
+    }
+    await this.localContact.addLocalContact(this.contact);
+    await this.checkIsMyContact();
   }
 
   transaction_list: TransactionModel[] = [];
@@ -133,6 +178,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.markForCheck();
   }
 
+is_show_extend_info = false;
+extend_info?:AccountModel
   /*隐藏功能*/
   @asyncCtrlGenerator.tttttap() // 这个要放第一个
   @asyncCtrlGenerator.error()
@@ -144,10 +191,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
     const accountInfo = await this.accountService.getAccountByAddress(
       this.contact.address,
     );
-    return this.showSuccessDialog(
-      "资产信息",
-      `余额：${(parseFloat(accountInfo.balance) / 1e8).toFixed(8)}`,
-      `挖矿收益：${(parseFloat(accountInfo.votingReward) / 1e8).toFixed(8)}`,
-    );
+    this.extend_info = accountInfo;
+    this.is_show_extend_info = true;
+    this.markForCheck();
   }
 }

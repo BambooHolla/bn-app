@@ -40,6 +40,7 @@ export class UserInfoProvider extends EventEmitter {
   constructor(public storage: Storage) {
     super();
   }
+  TA_address = "";
   initUserInfo(userInfo) {
     if (!userInfo) {
       userInfo = {};

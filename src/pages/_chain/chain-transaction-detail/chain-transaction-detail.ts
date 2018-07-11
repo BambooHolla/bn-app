@@ -29,31 +29,10 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     this.transaction = transaction;
   }
 
-  tap_times = 0;
-  per_tap_time = 0;
-  tryShowUserBalance(address: string) {
-    const cur_tap_time = Date.now();
-    if (cur_tap_time - this.per_tap_time > 500) {
-      // 两次点击的间隔不能多余半秒，否则重置计数
-      this.tap_times = 0;
-    }
-    this.per_tap_time = cur_tap_time;
-    this.tap_times += 1;
-    if (this.tap_times === 5) {
-      try {
-        this.queryUserBalance(address);
-      } catch (err) {
-        alert("配置失败：" + err.message);
-      }
-    }
-  }
-  @asyncCtrlGenerator.loading("账户查询中")
-  @asyncCtrlGenerator.loading("账户查询失败")
-  async queryUserBalance(address: string) {
+  @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.loading()
+  async routeToDetail(address: string) {
     const account = await this.accountService.getAccountByAddress(address);
-    await this.showSuccessDialog(
-      "余额:" + (parseFloat(account.balance) / 1e8).toFixed(8),
-      "收益:" + (parseFloat(account.votingReward) / 1e8).toFixed(8),
-    );
+    return this.routeTo("account-contact-detail", { account: account });
   }
 }

@@ -11,7 +11,7 @@ page-account-contact-detail {
 			display: flex;
 			justify-content: center;
 			flex-direction: column;
-			min-height: 3rem;
+			min-height: 12.3vw;
 			color: #fff;
 			padding: 0.8rem 1.7rem;
 			font-size: 1.4rem;
@@ -30,9 +30,27 @@ page-account-contact-detail {
 			}
 		}
 		> .remark-info {
-			padding: 1.7rem;
+			padding: 0 1.7rem;
 			background-color: #fff;
+			> *:last-child {
+				padding-bottom: 1.7rem;
+			}
+			.empty-items {
+				color: #666;
+				font-size: 1.3rem;
+			}
+			> .line {
+				color: #666;
+				padding-top: 1.7rem;
+				display: flex;
+				> .label {
+					font-weight: bolder;
+					min-width: 21vw;
+					padding-right: 2vw;
+				}
+			}
 			> .phones {
+				padding-top: 1.7rem;
 				display: flex;
 				flex-direction: row;
 				align-items: center;
@@ -72,7 +90,7 @@ page-account-contact-detail {
 				}
 			}
 			> .tags {
-				margin-top: 1.5rem;
+				padding-top: 1.5rem;
 				display: flex;
 				flex-direction: row;
 				align-items: center;
@@ -146,7 +164,7 @@ page-account-contact-detail {
 				flex-shrink: 0;
 				flex-grow: 0;
 				margin: 0 2rem;
-				padding: 0; 
+				padding: 0;
 				display: flex;
 				align-items: center;
 				font-size: 1.35rem;

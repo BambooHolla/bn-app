@@ -19,6 +19,10 @@ export class MaskPipe implements PipeTransform {
             "ME",
           )}</span>`;
         }
+        const TA_address = args[1];
+        if (TA_address && value === TA_address) {
+          return `<span class="address-is-ta">TA</span>`;
+        }
         return (
           value.substr(0, 4) +
           "<span class='hide-content'>**</span>" +

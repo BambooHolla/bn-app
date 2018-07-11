@@ -8,6 +8,7 @@ import {
 	AccountModel,
 } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
+import { AppSettingProvider } from "../app-setting/app-setting";
 import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
 
 import pinyin from "tiny-pinyin";
@@ -40,6 +41,7 @@ export class LocalContactProvider extends EventEmitter {
 	constructor(
 		public accountService: AccountServiceProvider,
 		public userInfo: UserInfoProvider,
+		public appSetting: AppSettingProvider,
 	) {
 		super();
 		this.ifmJs = AppSettingProvider.IFMJS;
@@ -49,6 +51,14 @@ export class LocalContactProvider extends EventEmitter {
 		return this.contact_db.find({
 			owner_publicKey,
 		});
+	}
+	findMyContact(address: string, owner_publicKey = this.userInfo.publicKey) {
+		return this.contact_db
+			.find({
+				owner_publicKey,
+				address,
+			})
+			.then(list => list[0]);
 	}
 	/*搜索联系人*/
 	async searchContact(address_or_username: string) {
@@ -68,7 +78,7 @@ export class LocalContactProvider extends EventEmitter {
 		// TODO
 	}
 	async addLocalContact(
-		new_contact: AccountModel,
+		new_contact: { address: string; username?: string },
 		tags: string[] = [],
 		phones: string[] = [],
 		remark?: string,
@@ -83,11 +93,12 @@ export class LocalContactProvider extends EventEmitter {
 			_id,
 			owner_publicKey,
 			address: new_contact.address,
-			username: new_contact.username,
+			username: new_contact.username || "",
 			tags,
 			phones,
 			remark,
 			image,
+			last_update_height: this.appSetting.getHeight(),
 			create_time: Date.now(),
 		});
 		return _id;
@@ -97,6 +108,7 @@ export class LocalContactProvider extends EventEmitter {
 	}
 	updateLocaContact(local_contact: TYPE.LocalContactModel) {
 		const { _id, ...updates } = local_contact;
+		updates.last_update_height = this.appSetting.getHeight();
 		return this.contact_db.update(
 			{
 				_id,

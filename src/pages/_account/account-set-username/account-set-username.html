@@ -7,7 +7,7 @@
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E8%AE%BE%E7%BD%AE%E7%94%A8%E6%88%B7%E5%90%8D%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="common-form">
     <div class="input-container">
-      <input type="text" [placeholder]="'USERNAME'|translate" [(ngModel)]="formData.username" set-input-status="username">
+      <input type="text" [placeholder]="'USERNAME'|translate" [(ngModel)]="formData.username" set-input-status="username" maxlength="20">
       <div class="right">
         <button class="reset">
           <ali-icon name="ifm-reset"></ali-icon>

@@ -88,8 +88,32 @@ export class AccountMyLocalContactsPage extends SecondLevelPage {
 			this.grouped_contact_list = this.localContactService.contactGroup(
 				local_contacts,
 			);
+			// 联网更新联系人信息
+			this._updateMyContactInfo();
 		} finally {
 			this.loading_my_contact_list = false;
+		}
+	}
+
+	/*TODO: 实现订阅功能，在多线程里头订阅我的联系人的改名交易，从而实现更新数据库*/
+	private async _updateMyContactInfo() {
+		const current_height = this.appSetting.getHeight();
+		for (var _contact of this.contact_list) {
+			const local_contact = _contact;
+			if (
+				!local_contact.username &&
+				local_contact.last_update_height !== current_height
+			) {
+				const account = await this.accountService.getAccountByAddress(
+					local_contact.address,
+				);
+				if (account.username) {
+					local_contact.username = account.username;
+					await this.localContactService.updateLocaContact(
+						local_contact,
+					);
+				}
+			}
 		}
 	}
 

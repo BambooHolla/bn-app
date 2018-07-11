@@ -9,6 +9,7 @@ export interface LocalContactModel {
   remark?: string;
   image?: Blob;
   create_time: number;
+  last_update_height: number;
 }
 export interface TagModel {
   _id: string;

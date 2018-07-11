@@ -1,24 +1,44 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>{{'ACCOUNT-CONTACT-DETAIL'|translate}}</ion-title>
-    <ion-buttons right>
-      <button (click)="goToEditContact()">
-        <ali-icon name="ifm-bianji"></ali-icon>
-      </button>
+    <ion-title>
+      <!-- {{'ACCOUNT-CONTACT-DETAIL'|translate}} -->
+      {{mainname||('ACCOUNT-CONTACT-DETAIL'|translate)}}
+    </ion-title>
+    <ion-buttons *ngIf="!checking_is_my_contact" right>
+      <ng-container *ngIf="is_my_contact;else addContact">
+        <button (click)="goToEditContact()">
+          <ali-icon name="ifm-bianji"></ali-icon>
+        </button>
+      </ng-container>
+      <ng-template #addContact>
+        <button (click)="addToMyContacts()">
+          <ali-icon name="ifm-add"></ali-icon>
+        </button>
+      </ng-template>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <div class="common-list">
     <div class="base-info" (click)="tryShowAccountBalanceDetail()">
-      <div class="mainname">{{mainname}}</div>
-      <div class="address">
+      <div class="address" [click-to-copy]="contact?.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}">
         <ali-icon name="ifm-account-detail"></ali-icon>
         {{contact?.address}}
       </div>
-      <div class="nickname">{{username}}</div>
     </div>
     <div class="remark-info">
+      <div class="extend-info line" *ngIf="is_show_extend_info">
+        <div class="label">{{'BALANCE'|translate}}</div>
+        {{extend_info?.balance|amountEuler|number:'1.8-8'}}
+      </div>
+      <div class="extend-info line" *ngIf="is_show_extend_info">
+        <div class="label">{{'VOTE_INCOME'|translate}}</div>
+        {{extend_info?.votingReward|amountEuler|number:'1.8-8'}}
+      </div>
+      <div class="nickname line" *ngIf="username">
+        <div class="label">{{'USERNAME'|translate}}</div>
+        {{username}}
+      </div>
       <div class="phones" *ngIf="contact?.phones?.length">
         <ali-icon name="ifm-phone"></ali-icon>
         <div class="phone-item" *ngFor="let phone of contact.phones">
@@ -58,10 +78,10 @@
         </div>
         <div class="right">
           <div class="from-to">
-            <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
+            <!-- <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address':contact?.address)"></div> -->
             <ng-container *ngIf="TransactionTypes.SEND == tran.type">
               <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-              <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
+              <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address':contact?.address)"></div>
             </ng-container>
           </div>
           <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
@@ -77,7 +97,6 @@
     '|translate">
         <div class="message">{{'CONTACT_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
       </div>
-
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(getMoreTransactionLogs())" [enabled]="transaction_config.has_more">
         <ion-infinite-scroll-content [loadingText]="'LOADING_MOREC_CONTACT_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>
       </ion-infinite-scroll>

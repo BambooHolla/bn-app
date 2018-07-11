@@ -1,4 +1,5 @@
 export interface ContactModel {
+  _id: any;
   address: string;
   username: string;
 }
