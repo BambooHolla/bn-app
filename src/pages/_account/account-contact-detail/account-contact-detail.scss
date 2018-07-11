@@ -2,21 +2,11 @@ page-account-contact-detail {
 	@extend .header-no-border;
 	> .content {
 		.scroll-content {
-			background-color: #eeeeee;
-			display: flex;
-			flex-direction: column;
+			background-color: #FFF;
 		}
 	}
 	.common-list {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-		overflow: auto;
-
 		> .base-info {
-			width: 100%;
-			flex-shrink: 0;
 			background: linear-gradient(to bottom, #ff5a5a 0%, #ffa982 100%);
 			display: flex;
 			justify-content: center;
@@ -40,8 +30,6 @@ page-account-contact-detail {
 			}
 		}
 		> .remark-info {
-			width: 100%;
-			flex-shrink: 0;
 			padding: 0 1.7rem;
 			background-color: #fff;
 			> *:last-child {
@@ -131,11 +119,11 @@ page-account-contact-detail {
 				}
 			}
 		}
+		>.divider{
+			background-color: #eeeeee;
+		}
 
 		> .tran-logs {
-			width: 100%;
-			flex-shrink: 0;
-			flex-grow: 1;
 			background-color: #fff;
 			> .title {
 				background-color: #fff;
@@ -149,7 +137,6 @@ page-account-contact-detail {
 				height: 12.3vw;
 				display: flex;
 				align-items: center;
-				flex-shrink: 0;
 				ali-icon {
 					font-size: 2rem;
 					margin-right: 0.5rem;
