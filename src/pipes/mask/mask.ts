@@ -31,9 +31,9 @@ export class MaskPipe implements PipeTransform {
       }
       if (type === "fulladdress") {
         if (value === this.userInfo.address) {
-          return `${value}(<span class="address-is-me">${FLP_Tool.getTranslateSync(
+          return `<span class="address-is-me">${FLP_Tool.getTranslateSync(
             "ME",
-          )}</span>)`;
+          )}</span>`;
         }
       }
       if (type === "ip") {

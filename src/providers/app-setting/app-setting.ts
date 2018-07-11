@@ -471,6 +471,8 @@ export class AppSettingProvider extends CommonService {
     _is_show_first_mining_tip: false,
     /**是否已经知道校验区块会导致发热*/
     is_known_verifier_will_heat_up: false,
+    /**是否显示过 我的关注提示*/
+    _is_show_first_local_contacts_tip: false,
   };
   /*多个账户之间共享的数据*/
   share_settings = {

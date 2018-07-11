@@ -93,4 +93,13 @@ export class TabAccountPage extends FirstLevelPage {
       this.appSetting.settings.auto_update_app /*用来判定是否打开升级的对话框*/,
     );
   }
+  /*跳转到我的本地的关注并显示提示*/
+  async routeToMyContacts() {
+    if (!this.appSetting.settings._is_show_first_local_contacts_tip) {
+      this.appSetting.settings._is_show_first_local_contacts_tip = await this.waitTipDialogConfirm(
+        "@@MY_LOCAL_CONTACTS_TIP",
+      );
+    }
+    return this.routeTo("account-my-local-contacts");
+  }
 }
