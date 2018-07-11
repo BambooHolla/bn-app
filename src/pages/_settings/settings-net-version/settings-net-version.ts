@@ -128,28 +128,18 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     }
   }
 
-  tap_times = 0;
-  per_tap_time = 0;
+  @asyncCtrlGenerator.tttttap()
   trySuperImportLS() {
-    const cur_tap_time = Date.now();
-    if (cur_tap_time - this.per_tap_time > 500) {
-      // 两次点击的间隔不能多余半秒，否则重置计数
-      this.tap_times = 0;
-    }
-    this.per_tap_time = cur_tap_time;
-    this.tap_times += 1;
-    if (this.tap_times === 5) {
-      let ls_json = prompt("请输入配置");
-      if (ls_json) {
-        try {
-          if (parseInt(ls_json).toString() == ls_json) {
-            ls_json = `{"LATEST_APP_VERSION_URL": "http://192.168.16.${ls_json}:8180/api/app/version/latest"}`;
-          }
-          const ls = JSON.parse(ls_json);
-          this._importLS(ls);
-        } catch (err) {
-          alert("配置失败：" + err.message);
+    let ls_json = prompt("请输入配置");
+    if (ls_json) {
+      try {
+        if (parseInt(ls_json).toString() == ls_json) {
+          ls_json = `{"LATEST_APP_VERSION_URL": "http://192.168.16.${ls_json}:8180/api/app/version/latest"}`;
         }
+        const ls = JSON.parse(ls_json);
+        this._importLS(ls);
+      } catch (err) {
+        alert("配置失败：" + err.message);
       }
     }
   }
