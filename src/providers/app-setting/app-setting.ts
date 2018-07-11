@@ -469,6 +469,8 @@ export class AppSettingProvider extends CommonService {
     _is_show_first_block_remark: false,
     /**是否显示过 初次挖矿提示*/
     _is_show_first_mining_tip: false,
+    /**是否已经知道校验区块会导致发热*/
+    is_known_verifier_will_heat_up: false,
   };
   /*多个账户之间共享的数据*/
   share_settings = {

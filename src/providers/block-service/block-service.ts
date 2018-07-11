@@ -409,6 +409,7 @@ export class BlockServiceProvider extends FLP_Tool {
           case "error":
             this.appSetting.share_settings.sync_is_verifying_block = false;
             this.appSetting.share_settings.is_syncing_blocks = false;
+            console.error(msg);
             task.reject(msg.data);
             break;
           default:

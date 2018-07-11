@@ -24,7 +24,7 @@
   "ME": "我",
   "NEED_INPUT_#FORM_KEY#": "请填写“{{form_key}}”",
   "COZY_TIPS": "温馨提示",
-  "NONE":"无",
+  "NONE": "无",
 
   "//": "fingerprint-optional",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN": "账户登录校验",
@@ -164,6 +164,8 @@
   "VOTE_INCOME_HISTORY": "历史挖矿收益",
   "START_VOTE_VERIFY": "开启挖矿校验",
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
+  "VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP":
+    "即将对本地区块进行检验，这需要消耗大量的计算能力，可能导致部分型号的手机发热，检验结束后发热的手机将不再发热。",
   "BEFORE_DOWNLOAD_TIP":
     "即将同步区块链数据，第一次同步可能需要较长时间，在这个过程中您依然可以进行其它操作",
   "FIRST_MINGING_TIP":

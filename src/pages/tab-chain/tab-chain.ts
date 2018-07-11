@@ -216,6 +216,16 @@ export class TabChainPage extends FirstLevelPage {
                 this.openChainSyncDetail();
               }
               break;
+            case "do-verifier-from-1":
+              if (!this.appSetting.settings.is_known_verifier_will_heat_up) {
+                this.appSetting.settings.is_known_verifier_will_heat_up = true;
+                this.waitTipDialogConfirm(
+                  "@@VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP",
+                ).then(v => {
+                  this.appSetting.settings.is_known_verifier_will_heat_up = v;
+                });
+              }
+              break;
             case "error":
               this.showErrorDialog(
                 this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"),

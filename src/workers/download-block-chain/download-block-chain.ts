@@ -301,9 +301,14 @@ export class BlockChainDownloader extends EventEmitter {
   async syncFullBlockchain(/*range_list:Range[],*/ max_end_height: number) {
     const sync_id = ++this._sync_id_acc;
     const rangeHelper = new RangeHelper(1, max_end_height - 1);
+    let emited_first_verifier = false;
     this.emit("start-verifier", { ranges: rangeHelper.ranges });
     for await (var _ranges of this.verifier.useableLocalBlocksFinder()) {
       for (var _range of _ranges) {
+        if(emited_first_verifier===false&&_range.start===1){
+          emited_first_verifier = true;
+          this.emit("do-verifier-from-1");
+        }
         rangeHelper.split(_range.start, _range.end);
       }
     }
