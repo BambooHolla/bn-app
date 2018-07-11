@@ -4,7 +4,7 @@
       <!-- {{'ACCOUNT-CONTACT-DETAIL'|translate}} -->
       {{mainname||('ACCOUNT-CONTACT-DETAIL'|translate)}}
     </ion-title>
-    <ion-buttons *ngIf="!checking_is_my_contact" right>
+    <ion-buttons *ngIf="!checking_is_my_contact&&!hide_navbar_tools" right>
       <ng-container *ngIf="is_my_contact;else addContact">
         <button (click)="goToEditContact()">
           <ali-icon name="ifm-bianji"></ali-icon>

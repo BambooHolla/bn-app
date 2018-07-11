@@ -40,7 +40,10 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.event.on("job-finished", ({ id, data }) => {
       switch (id) {
         case "account-remark-contact":
-          if (this.contact && data.updated_contact._id === this.contact._id) {
+          if (
+            this.contact &&
+            data.updated_contact.address === this.contact.address
+          ) {
             this.contact = data.updated_contact;
             this.markForCheck();
           }
@@ -52,13 +55,22 @@ export class AccountContactDetailPage extends SecondLevelPage {
   get mainname() {
     const { contact } = this;
     if (contact) {
+      if (contact.address == this.userInfo.address) {
+        return this.getTranslateSync("ME");
+      }
       return contact["nickname"] || contact.username;
     }
   }
   get username() {
     const { contact } = this;
-    if (contact && contact["nickname"]) {
-      return contact.username;
+    if (contact) {
+      if (contact.address == this.userInfo.address) {
+        return contact.username;
+      }
+      // 如果有昵称的话，这里返回用户名
+      if (contact["nickname"]) {
+        return contact.username;
+      } // 如果没有昵称的话，那么mainname就会显示昵称，这里就不用显示用户名了，返回空
     }
   }
   private _is_back_from_remark_contact_editor = false;
@@ -77,12 +89,17 @@ export class AccountContactDetailPage extends SecondLevelPage {
     if (!this.contact) {
       return this.navCtrl.goToRoot({});
     }
+    this.hide_navbar_tools = this.contact.address === this.userInfo.address;
+    if (this.hide_navbar_tools) {
+      return;
+    }
     if (account) {
       this.checkIsMyContact();
     } else {
       this.is_my_contact = true;
     }
   }
+  hide_navbar_tools = true;
   checking_is_my_contact = false;
   is_my_contact = false;
   @asyncCtrlGenerator.error()
@@ -178,8 +195,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.markForCheck();
   }
 
-is_show_extend_info = false;
-extend_info?:AccountModel
+  is_show_extend_info = false;
+  extend_info?: AccountModel;
   /*隐藏功能*/
   @asyncCtrlGenerator.tttttap() // 这个要放第一个
   @asyncCtrlGenerator.error()

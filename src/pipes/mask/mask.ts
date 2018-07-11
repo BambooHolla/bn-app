@@ -29,6 +29,13 @@ export class MaskPipe implements PipeTransform {
           value.substr(-4)
         );
       }
+      if (type === "fulladdress") {
+        if (value === this.userInfo.address) {
+          return `${value}(<span class="address-is-me">${FLP_Tool.getTranslateSync(
+            "ME",
+          )}</span>)`;
+        }
+      }
       if (type === "ip") {
         const ipinfo = value.split(".");
         if (ipinfo.length == 4) {

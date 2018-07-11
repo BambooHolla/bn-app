@@ -8,7 +8,6 @@ import {
 	AccountModel,
 } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
-import { AppSettingProvider } from "../app-setting/app-setting";
 import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
 
 import pinyin from "tiny-pinyin";
