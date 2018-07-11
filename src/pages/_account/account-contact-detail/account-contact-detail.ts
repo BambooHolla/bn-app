@@ -51,6 +51,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       }
     });
   }
+  @AccountContactDetailPage.markForCheck
   contact?: LocalContactModel | AccountModel;
   get mainname() {
     const { contact } = this;
@@ -76,7 +77,9 @@ export class AccountContactDetailPage extends SecondLevelPage {
   private _is_back_from_child_page = false;
 
   @AccountContactDetailPage.willEnter
-  // @asyncCtrlGenerator.loading()
+  @asyncCtrlGenerator.loading(undefined, undefined, {
+    cssClass: "can-tap blockchain-loading",
+  })
   async initData() {
     if (this._is_back_from_child_page) {
       this._is_back_from_child_page = false;
@@ -161,7 +164,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     recipientNickname?: string;
   })[] = [];
   transaction_config = {
-    loading: false,
+    loading: true,
     has_more: true,
     pageSize: 20,
     page: 1,
@@ -220,9 +223,6 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   TransactionTypes = TransactionTypes;
   @asyncCtrlGenerator.error()
-  @asyncCtrlGenerator.loading(undefined, undefined, {
-    cssClass: "can-tap blockchain-loading",
-  })
   async getTransactionLogs() {
     this.transaction_config.page = 1;
     this.transaction_list = await this._getTransactionList();
