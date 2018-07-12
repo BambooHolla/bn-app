@@ -108,7 +108,8 @@
 
   "//": "tab-account",
   "MY_CONTACTS": "我的关注",
-  "MY_LOCAL_CONTACTS_TIP":"这里关注的信息仅存储在您的本地设备上，但当您更换设备时或卸载后，关注信息将丢失，建议您将关注信息备份到其它地方，以便重新安装IBT或更换设备时可进行恢复。",
+  "MY_LOCAL_CONTACTS_TIP":
+    "这里关注的信息仅存储在您的本地设备上，但当您更换设备时或卸载后，关注信息将丢失，建议您将关注信息备份到其它地方，以便重新安装IBT或更换设备时可进行恢复。",
   "PEER_LIST": "网络节点",
   "MY_TRANSACTION": "我的交易",
   "VOUCHER_WALLET": "离线权益",
@@ -732,6 +733,7 @@
   "NOT_ENOUGH_BALANCE_TO_VOTE": "挖矿手续费不足",
   "Invalid passphrase": "登录密码错误",
   "CONTACT_ALREADY_EXISTS": "联系人已经存在",
+  "TIME OUT": "网络异常",
 
   "//": "OVER"
 }

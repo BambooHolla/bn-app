@@ -50,6 +50,13 @@ loader.load((loader, resources) => {
     });
 });
 
+const commonFontFamily = [
+  "-apple-system",
+  "Helvetica Neue",
+  "Roboto",
+  "sans-serif",
+];
+
 @Component({
   selector: "chain-list",
   templateUrl: "chain-list.html",
@@ -812,7 +819,7 @@ class BlockCard extends PIXI.Graphics {
     return {
       fill: 0x7b7b7b,
       fontSize: W * 0.075,
-      fontFamily: "ifmicon",
+      fontFamily: commonFontFamily,
       padding: W * 0.05,
       fontWeight: "500",
       wordWrap: true,
@@ -825,7 +832,7 @@ class BlockCard extends PIXI.Graphics {
     return {
       fill: [0x66d5fa, 0x67f0e4],
       fontSize: W * 0.04,
-      fontFamily: "ifmicon",
+      fontFamily: ["ifmicon", ...commonFontFamily],
       padding: W * 0.04,
     };
   }
@@ -834,8 +841,15 @@ class BlockCard extends PIXI.Graphics {
     return {
       fill: 0x7b7b7b,
       fontSize: W * 0.038,
-      fontFamily: "ifmicon",
+      fontFamily: ["ifmicon", ...commonFontFamily],
       padding: W * 0.038,
+    };
+  }
+  get style_detail_content() {
+    const { W } = this;
+    return {
+      ...this.style_detail_label,
+      fontFamily: commonFontFamily,
     };
   }
   get style_footer_label() {
@@ -843,7 +857,7 @@ class BlockCard extends PIXI.Graphics {
     return {
       fill: 0xffffff,
       fontSize: W * 0.038,
-      fontFamily: "ifmicon",
+      fontFamily: ["ifmicon", ...commonFontFamily],
       padding: W * 0.038,
     };
   }
@@ -852,7 +866,7 @@ class BlockCard extends PIXI.Graphics {
     return {
       fill: 0xffffff,
       fontSize: W * 0.1,
-      fontFamily: "ifmicon",
+      fontFamily: ["ifmicon", ...commonFontFamily],
       padding: W * 0.05,
     };
   }
@@ -870,9 +884,9 @@ class BlockCard extends PIXI.Graphics {
   height_label = new PIXI.Text("", this.style_header_label);
   tran_num_label = new PIXI.Text("", this.style_header_label);
   total_amount_label = new PIXI.Text("", this.style_detail_label);
-  total_amount_content = new PIXI.Text("", this.style_detail_label);
+  total_amount_content = new PIXI.Text("", this.style_detail_content);
   total_fee_label = new PIXI.Text("", this.style_detail_label);
-  total_fee_content = new PIXI.Text("", this.style_detail_label);
+  total_fee_content = new PIXI.Text("", this.style_detail_content);
 
   footer_container = new PIXI.Container();
   footer_container_mask = new PIXI.Graphics();
@@ -1084,7 +1098,7 @@ class GoldBlockCard extends BlockCard {
     return {
       fill: [0xf9a760, 0xfbc554],
       fontSize: W * 0.04,
-      fontFamily: "ifmicon",
+      fontFamily: ["ifmicon", ...commonFontFamily],
       padding: W * 0.04,
     };
   }

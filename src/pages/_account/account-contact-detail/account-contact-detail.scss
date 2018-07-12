@@ -2,7 +2,7 @@ page-account-contact-detail {
 	@extend .header-no-border;
 	> .content {
 		.scroll-content {
-			background-color: #FFF;
+			background-color: #fff;
 		}
 	}
 	.common-list {
@@ -11,7 +11,7 @@ page-account-contact-detail {
 			display: flex;
 			justify-content: center;
 			flex-direction: column;
-			min-height: 12.3vw;
+			min-height: 4.92rem;
 			color: #fff;
 			padding: 0.8rem 1.7rem;
 			font-size: 1.4rem;
@@ -33,7 +33,10 @@ page-account-contact-detail {
 			padding: 0 1.7rem;
 			background-color: #fff;
 			> *:last-child {
-				padding-bottom: 1.7rem;
+				padding-bottom: 1.7rem !important;
+			}
+			> *:first-child {
+				padding-top: 1.7rem !important;
 			}
 			.empty-items {
 				color: #666;
@@ -41,7 +44,8 @@ page-account-contact-detail {
 			}
 			> .line {
 				color: #666;
-				padding-top: 1.7rem;
+				padding-top: 0.8rem;
+				padding-bottom: 0.8rem;
 				display: flex;
 				> .label {
 					font-weight: bolder;
@@ -119,7 +123,7 @@ page-account-contact-detail {
 				}
 			}
 		}
-		>.divider{
+		> .divider {
 			background-color: #eeeeee;
 		}
 
@@ -134,7 +138,7 @@ page-account-contact-detail {
 				padding: 0 1.7rem;
 				font-weight: bold;
 				font-size: 1.5rem;
-				height: 12.3vw;
+				min-height: 4.92rem * 0.8;
 				display: flex;
 				align-items: center;
 				ali-icon {
@@ -153,7 +157,7 @@ page-account-contact-detail {
 				padding-right: 0;
 				display: flex;
 				align-items: center;
-				font-size: 1.35rem;
+				font-size: 1.45rem;
 				color: #787878;
 				> .left {
 					height: 100%;

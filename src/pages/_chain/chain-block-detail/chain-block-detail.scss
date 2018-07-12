@@ -44,7 +44,7 @@ page-chain-block-detail {
         &.extend-data {
           color: #7c7c7c;
           height: auto;
-          min-height: 12.22vw;
+          min-height: 4.92rem;
           padding-top: 1.765vw;
           display: flex;
           align-items: flex-start;
@@ -116,21 +116,22 @@ page-chain-block-detail {
     }
     > .header {
       padding: 0 1.2rem 0 2rem;
-      height: 12vw;
+      height: 4.92rem;
       color: #fff;
       background: linear-gradient(to bottom, #9af5fc 0%, #9adef0 100%);
       font-weight: lighter;
       ali-icon {
-        margin-right: 0.5rem;
+        margin-right: 1rem;
+        font-size: 1.5rem;
       }
-      >.line{
-        .left{
+      > .line {
+        .left {
           align-items: flex-start;
           flex-direction: column;
-          ali-icon{
+          ali-icon {
             margin-right: 0.5rem;
           }
-          >.label{
+          > .label {
             display: flex;
             align-items: center;
           }
@@ -229,7 +230,7 @@ page-chain-block-detail {
       flex-grow: 0;
       flex-shrink: 0;
       background: linear-gradient(to bottom, #9af5fc 0%, #9adef0 100%);
-      height: 10.87vw;
+      height: 4.92rem * 0.8;
       color: #fff;
       padding: 0 2rem;
       font-size: 1.4rem;
@@ -266,7 +267,7 @@ page-chain-block-detail {
 
       > .item {
         width: 100%;
-        height: 5rem;
+        min-height: 4.92rem;
         border-bottom: 0.55px solid #e5e5e5;
         flex-shrink: 0;
         flex-grow: 0;

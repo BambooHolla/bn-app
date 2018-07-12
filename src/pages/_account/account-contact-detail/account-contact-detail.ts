@@ -157,7 +157,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   contact_metched_map = new Map<
     string,
-    Promise<void> | LocalContactModel | undefined
+    Promise<string | undefined> | LocalContactModel | undefined
   >();
   transaction_list: (TransactionModel & {
     senderNickname?: string;
@@ -176,9 +176,10 @@ export class AccountContactDetailPage extends SecondLevelPage {
       if (!this.contact) {
         return [];
       }
+      const contact = this.contact;
       const list = await Promise.all(
         (await this.transactionService.getUserTransactions(
-          this.contact.address,
+          contact.address,
           transaction_config.page,
           transaction_config.pageSize,
           "or",
@@ -187,21 +188,34 @@ export class AccountContactDetailPage extends SecondLevelPage {
           .map(async trs => {
             const nicknames = await Promise.all(
               [trs.senderId, trs.recipientId].map(async address => {
-                if (!address || this.contact_metched_map.has(address)) {
+                if (!address) {
                   return;
                 }
+                if (address === contact.address) {// 不查询TA
+                  return;
+                }
+                // 这里必须用has判断，应该查询过的可能是空的，但是key还是有设置的
+                if (this.contact_metched_map.has(address)) {
+                  const task_or_res = this.contact_metched_map.get(address);
+                  if (!task_or_res) {
+                    return;
+                  }
+                  if (task_or_res instanceof Promise) {
+                    return await task_or_res;
+                  } else {
+                    return task_or_res.nickname;
+                  }
+                }
+
                 const task = this.localContact
                   .findContact(address)
                   .then(account => {
                     this.contact_metched_map.set(address, account);
+                    return account && account.nickname;
                   });
                 this.contact_metched_map.set(address, task);
 
-                await task;
-                const contact = await this.contact_metched_map.get(address);
-                if (contact) {
-                  return contact.nickname;
-                }
+                return await task;
               }),
             );
             return {
