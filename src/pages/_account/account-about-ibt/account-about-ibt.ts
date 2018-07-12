@@ -56,4 +56,25 @@ export class AccountAboutIbtPage extends SecondLevelPage {
   showVersionInfo() {
     this.showConfirmDialog(`v${AppSettingProvider.APP_VERSION}`);
   }
+
+  private async _tipThenSendEmail(e: MouseEvent, tip: string) {
+    if (
+      await this.waitTipDialogConfirm(tip, {
+        false_text: "@@CANCEL",
+        true_text: "@@SEND_EMAIL",
+      })
+    ) {
+      const linkNode = e.target as HTMLDivElement;
+      const mailto = linkNode.dataset.href;
+      if (mailto && mailto.startsWith("mailto:")) {
+        location.href = mailto;
+      }
+    }
+  }
+  doBusinessCooperation(e: MouseEvent) {
+    return this._tipThenSendEmail(e, "@@BUSINESS_COOPERATION_TIP");
+  }
+  doUserService(e: MouseEvent) {
+    return this._tipThenSendEmail(e, "@@USER_SERVICE_TIP");
+  }
 }

@@ -27,7 +27,7 @@ page-tab-pay {
     }
   }
   .toolbar {
-    height: 5rem;
+    height: 6.8rem;
     display: flex;
     align-items: center;
     // justify-content: space-around;
@@ -35,8 +35,8 @@ page-tab-pay {
     flex-grow: 0;
     padding: 0 9%;
     .tool-item {
-      width: 4.5rem;
-      height: 4.5rem;
+      width: 6rem;
+      height: 6rem;
       flex-shrink: 0;
       flex-grow: 0;
       border-radius: 50%;
@@ -50,7 +50,7 @@ page-tab-pay {
       }
       > ali-icon {
         position: absolute;
-        top: 1.05rem;
+        top: 1.55rem;
         left: 0;
         width: 100%;
         margin: auto;
@@ -74,14 +74,14 @@ page-tab-pay {
     align-items: center;
     > .input-container {
       width: 92.6829%; // 76
-      margin-top: 0.5rem;
+      margin-top: 1.3rem;
       position: relative;
       display: flex;
       align-items: center;
       .left,
       .right {
         /* position: absolute; */
-        font-size: 1.7rem;
+        font-size: 1.9rem;
         color: #fff;
         flex-grow: 0;
         flex-shrink: 0;
@@ -146,9 +146,12 @@ page-tab-pay {
       width: 100%;
       background: #fff;
       border-radius: 0.8rem;
+      margin-top: 0rem;
+      height: 5rem;
       color: #35daeb;
-      font-size: 1.8rem;
-      box-shadow: 0 0.8rem 3rem rgba(99, 99, 99, 0.2);
+      font-size: 2rem;
+      font-weight: lighter;
+      // box-shadow: 0 0.8rem 3rem rgba(99, 99, 99, 0.2);
     }
   }
   .roll-out-logs {
@@ -162,15 +165,15 @@ page-tab-pay {
     > .title {
       flex-grow: 0;
       flex-shrink: 0;
-      height: 3rem;
+      height: 4rem;
       display: flex;
       align-items: center;
       justify-content: flex-start;
       color: #fff;
-      padding: 0 1.2rem;
-      font-size: 1.3rem;
+      padding: 0 1.5rem;
+      font-size: 1.45rem;
       .left {
-        font-size: 2.1rem;
+        font-size: 2.2rem;
       }
       .right {
         font-size: 1.6rem;
@@ -196,7 +199,7 @@ page-tab-pay {
           color: #fff;
           display: flex;
           box-sizing: border-box;
-          padding: 0 1.6rem;
+          padding: 0 1.6rem 0 2rem;
           font-size: 1.2rem;
           font-weight: lighter;
           align-items: center;
@@ -217,8 +220,8 @@ page-tab-pay {
               transparent 18%
             );
             background-repeat: repeat-y;
-            background-size: 0.5rem 0.5rem;
-            background-position: 1.64rem 0.25rem;
+            background-size: 0.6rem 0.6rem;
+            background-position: 2.14rem 0.25rem;
           }
           &:first-child {
             margin-top: -0.6rem;
@@ -240,11 +243,11 @@ page-tab-pay {
             &::before {
               content: " ";
               font-size: 0;
-              height: 0.7rem;
-              width: 0.7rem;
+              height: 0.8rem;
+              width: 0.8rem;
               background-color: #fff;
               border-radius: 50%;
-              margin-right: 0.5rem;
+              margin-right: 0.8rem;
             }
           }
           > .address {
@@ -304,15 +307,13 @@ page-tab-pay {
     height: 25vh;
     background: linear-gradient(to bottom, rgba(#3cdfdc, 0) 0%, #fcdd64 100%);
     z-index: -1;
-    chain-mesh {
+    .chain-mesh{
+      background-image: url("../assets/imgs/net-circle.png");
+      background-size: 160vw 160vw;
+      background-position: center top; 
       width: 100%;
-      display: flex;
-      justify-content: center;
-      opacity: 0.4;
-      canvas {
-        width: 160vw !important;
-        height: 160vw !important;
-      }
+      height: 100%;
+      opacity: 0.5;
     }
   }
 }

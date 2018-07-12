@@ -31,7 +31,7 @@
     <ali-icon class="ani-rotate-45deg" name="ifm-loading"></ali-icon>
   </div>
   <virtual-scroll #vscroll class="list-container" [items]="pre_round_rank_blist" (update)="viewPortItems = $event" (change)="onListChange($event)">
-    <div class="item" *ngFor="let rank_item of viewPortItems" (click)="routeToDelegate(rank_item)" [class.list-of-me]="userInfo.address==rank_item.address" [ngClass]="'ranking-'+rank_item.rate">
+    <div class="item" *ngFor="let rank_item of viewPortItems" (click)="routeToDelegate(rank_item)" [class.list-of-me]="userInfo.address==rank_item.address" [ngClass]="'ranking-'+(rank_item.rate>3?('l-'+rank_item.rate.toString().length):rank_item.rate)">
       <div class="ranking-val">{{rank_item.rate}}</div>
       <div class="ip-address">
         <div class="username rank-of-me">

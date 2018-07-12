@@ -37,6 +37,7 @@ vote-pre-round-income-rate {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
     > .rate-of-return {
       padding-top: 0.5rem; // padding-bottom: 1.5rem;
       height: 5rem;
@@ -45,6 +46,7 @@ vote-pre-round-income-rate {
       flex-grow: 0;
     }
     > .extends-info {
+      justify-self: flex-end;
       display: flex;
       justify-content: space-between;
       padding: 1rem 2rem 1.5rem;

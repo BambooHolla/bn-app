@@ -147,7 +147,7 @@ page-chain-block-detail {
     > .content {
       > .line {
         background-color: #fff;
-        padding: 0 1.8rem;
+        padding: 0 2rem;
       }
       .reward,
       .trans_num {
@@ -160,17 +160,18 @@ page-chain-block-detail {
 
         flex-direction: column;
         > .value {
-          font-size: 1.9rem;
+          font-size: 2rem;
           font-weight: 600;
           color: #7b7b7b;
+          font-weight: 500;
         }
         > .title {
           background: linear-gradient(to bottom, #63d8f8 0%, #69efe6 100%);
           font-weight: bolder;
-          font-size: 1.5rem;
+          font-size: 1.6rem;
           @extend .clip-text;
           ali-icon {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-right: 0.3rem;
             > .ifmicon::before {
               background: linear-gradient(to bottom, #63d8f8 0%, #69efe6 100%);
@@ -192,7 +193,7 @@ page-chain-block-detail {
           flex-grow: 1;
           word-break: break-all;
           text-align: right;
-          font-size: 1.3rem;
+          font-size: 1.4rem;
         }
       }
 
@@ -208,11 +209,11 @@ page-chain-block-detail {
         padding-bottom: 0.8rem;
         margin-bottom: 1px;
         color: #7c7c7c;
-        font-size: 1.45rem;
+        font-size: 1.50rem;
         ali-icon {
           /* font-weight: ; */
           font-size: 1.6rem;
-          margin-right: 0.6rem;
+          margin-right: 0.7rem;
         }
       }
     }
@@ -271,7 +272,7 @@ page-chain-block-detail {
         border-bottom: 0.55px solid #e5e5e5;
         flex-shrink: 0;
         flex-grow: 0;
-        padding: 0 2rem;
+        padding: 0.6rem 2rem;
         display: flex;
         align-items: center;
         font-size: 1.35rem;

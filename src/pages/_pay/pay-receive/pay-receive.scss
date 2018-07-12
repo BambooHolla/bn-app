@@ -40,10 +40,13 @@ page-pay-receive {
       margin: 1rem;
     }
     > .address {
-      font-size: 1.35rem;
+      font-size: 1.45rem;
       margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
       ali-icon {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+        margin-right: 0.5rem;
       }
     }
   }
@@ -94,7 +97,7 @@ page-pay-receive {
           box-sizing: border-box;
           display: flex;
           align-items: center;
-          height: 4.7rem;
+          height: 4.92rem;
           font-weight: lighter;
           > .left {
             padding-left: 0.8rem;

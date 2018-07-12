@@ -39,8 +39,8 @@ page-vote-list {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 8rem;
-        height: 8rem;
+        width: 9.4rem;
+        height: 9.4rem;
         border-radius: 50%;
         color: #fff;
         transition-duration: 0.25s;
@@ -233,7 +233,6 @@ page-vote-list {
         position: fixed;
         width: 100%;
         bottom: 0;
-        height: 6rem;
         padding: 1rem;
         text-align: center;
         &.has-list-item {
@@ -250,8 +249,10 @@ page-vote-list {
           background: #fff;
           padding: 0;
           > .inner-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             border-radius: 1rem;
-            line-height: 3.9rem;
             width: 100%;
             height: 100%;
             color: #fff;
@@ -315,12 +316,12 @@ page-vote-list {
           margin-right: 0.5rem;
           font-size: 1.6rem;
           position: relative;
-          bottom: 1.6rem;
+          bottom: 1.8rem;
         }
         &::after {
           font-size: 1.36rem;
           position: relative;
-          bottom: 1.6rem;
+          bottom: 1.8rem;
         }
         &:nth-child(1) {
           &::before {

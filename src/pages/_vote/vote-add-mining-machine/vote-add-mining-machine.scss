@@ -30,7 +30,7 @@ page-vote-add-mining-machine {
     flex-shrink: 0;
     display: flex;
     flex-direction: row;
-    height: 7rem;
+    /* height: 7rem; */
     > .progress-item-wrapper {
       position: relative;
       flex: 1;
@@ -40,14 +40,14 @@ page-vote-add-mining-machine {
       > .progress-item {
         position: relative;
         z-index: 2;
-        width: 4.5rem;
-        height: 4.5rem;
+        width: 5.6rem;
+        height: 5.6rem;
         display: inline-block;
         border-radius: 50%;
         background: #dcdcdc;
         color: #878787;
-        font-size: 2.8rem;
-        padding-top: 0.85rem; //(4.5 - 2.8) / 2
+        font-size: 3rem;
+        padding-top: (5.6rem - 3rem) / 2;
         &.active {
           background: linear-gradient(to bottom, #fe5c5a 0%, #fda177 100%);
           color: #fff;
@@ -156,7 +156,7 @@ page-vote-add-mining-machine {
         background: linear-gradient(to bottom, #fe5c5a 0%, #fda177 100%);
         border-radius: 1rem;
         color: #fff;
-        height: 4rem;
+        height: 4.5rem;
         &:disabled {
           background: #999;
         }
@@ -176,12 +176,13 @@ page-vote-add-mining-machine {
       background-color: #eeeeee;
       .peer-item {
         width: 100%;
-        height: 4rem;
+        height: 4.92rem;
         padding-left: $list-padding-left;
         background-color: #fff;
         margin-bottom: 0.55px;
         color: #7a7a7a;
         display: flex;
+        align-items: center;
         flex-direction: row;
         justify-content: center;
         position: relative;
@@ -212,16 +213,15 @@ page-vote-add-mining-machine {
         > .right {
           flex: 1;
           display: inline-block;
-          padding-top: 1.4rem;
           // (4 - 1.2) / 2
           text-align: center;
           > .check-radio {
-            width: 1.2rem;
-            height: 1.2rem;
+            width: 1.6rem;
+            height: 1.6rem;
             border-radius: 50%;
             display: inline-block;
             color: transparent;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             background-color: #dcdcdc;
           }
         }
@@ -230,21 +230,24 @@ page-vote-add-mining-machine {
         flex-grow: 0;
         flex-shrink: 0;
         width: 100%;
-        height: 1.5rem;
+        height: 1.9rem;
         color: #6f6f6f;
-        font-size: 1.2rem;
-        padding-bottom: 0.2rem;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
         padding-left: $list-padding-left;
         /* display: flex;
 				flex-direction: row;
 				align-items: center; */
         ali-icon[name="ifm-loading-search"] {
-          font-size: 1.3rem;
+          font-size: 1.6rem;
+          animation-duration: 0.4s;
+          margin: 0 0.3rem;
         }
       }
     }
     &.mining-machine-form {
-      $list-padding-left: 1rem;
+      $list-padding-left: 1.6rem;
       background-color: #eeeeee;
       .item {
         background-color: #fff;

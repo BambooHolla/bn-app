@@ -61,6 +61,11 @@
   "ACCOUNT-ABOUT-IBT": "关于IBT",
   "ABOUT_IBT_INFO":
     "IFMChain是全球首款可接入移动终端的区块链3.0产品，IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
+  "BUSINESS_COOPERATION_TIP":
+    "当您需要将您的产品、服务、业务接入IFMChain，利用IFMChain的独有优势提升您的竞争力时，请通过邮件告诉我们。在邮件中，请尽可能的把您和您所处行业的背景、您遇到的问题、您的初步想法、您的名片尽可能的描述清楚，这样有助于我们初步评估是否可以帮助到您。行业第一个应用，往往成为该行业标杆。",
+  "USER_SERVICE_TIP":
+    "当您需要技术支持时，请通过邮件告诉给我们。在邮件中，请尽可能的把您遇到的问题、您的想法、您的目的描述清楚，并附上截屏、视频等辅助理解的文件，我们会尽可能的帮助您，或直接在下一个版本中改进问题。",
+  "SEND_EMAIL": "发邮件",
 
   "//": "account-faq",
   "ACCOUNT-FAQ": "帮助中心",
@@ -336,7 +341,7 @@
   "ACCOUNT-ADD-CONTACT": "关注新的地址",
   "PLEASE_INPUT_IBT_ADDRESS": "请输入地址",
   "MY_ACCOUNT_IBT_ADDRESS": "本账户地址",
-  "CONFIRM_THEN_ADD": "确定关注",
+  "CONFIRM_THEN_ADD_ADDRESS": "确定关注",
   "ADD_CONTACT_ERROR": "关注地址失败",
   "ADD_CONTACT_SUCCESS": "地址已关注",
 
@@ -452,6 +457,7 @@
   "ADD_MINING_MACHINE_FAIL": "添加矿机失败",
   "ADD_CUSTOM_PEER_FAIL": "自定义矿机添加失败",
   "CUSTOM_PEER_IS_UNAVAILABLE": "自定义矿机不可用",
+  "CONFIRM_THEN_ADD": "确定添加",
 
   "//": "vote-my-mining-machine",
   "VOTE-MY-MINING-MACHINE": "我的矿机",

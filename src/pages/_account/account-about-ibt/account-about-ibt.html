@@ -51,9 +51,12 @@
   </div>
   <div class="footer">
     <ali-icon name="ifm-youjian"></ali-icon>
-    <a href="mailto:ifmteam@ifmchain.com">商务合作：ifmteam@ifmchain.com</a>
-    <a href="mailto:service@ifmchain.com">用户服务：service@ifmchain.com</a>
+    <div class="link-line" (click)="doBusinessCooperation($event)" data-href="mailto:ifmteam@ifmchain.com">
+      <span class="label">商务合作:</span>ifmteam@ifmchain.com</div>
+    <div class="link-line" (click)="doUserService($event)" data-href="mailto:service@ifmchain.com">
+      <span class="label">用户服务:</span>service@ifmchain.com</div>
     <ali-icon name="ifm-shequ"></ali-icon>
-    <a target="_blank" href="http://github.com/ifmchain">开发者社区：github.com/ifmchain</a>
+    <a class="link-line" target="_blank" href="http://github.com/ifmchain">
+      <span class="label">开发者社区:</span>github.com/ifmchain</a>
   </div>
 </ion-content>

@@ -124,18 +124,21 @@ page-custom-dialog {
         background-size: 2px;
         background-size: 1px 1px;
         background-repeat: repeat-x;
-        height: 4rem;
+        height: 4.92rem;
         display: flex;
         flex-direction: row;
         > button {
           flex: 1;
           height: 100%;
-          line-height: 4rem;
+          line-height: 4.92rem;
           text-align: center;
           background-color: transparent;
 
-          font-size: 1.4rem;
+          font-size: 1.55rem;
           margin: 0;
+          &.cancel{
+            color: #666;
+          }
           &.ok {
             background-color: #ff6769;
             color: #fff;

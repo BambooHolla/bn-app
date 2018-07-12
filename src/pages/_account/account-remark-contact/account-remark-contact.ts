@@ -90,7 +90,8 @@ export class AccountRemarkContactPage extends SecondLevelPage {
   ignore_keys = ["nickname", "tags", "phones", "remark", "image"];
 
   clearNickName() {
-    this.formData.nickname;
+    this.formData.nickname = "";
+    this.markForCheck();
   }
 
   onPhoneItemChanged(index: number) {

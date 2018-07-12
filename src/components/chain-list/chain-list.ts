@@ -1012,7 +1012,7 @@ class BlockCard extends PIXI.Graphics {
 
     height_content.text = this.chain_height + "";
     height_content.x = W * 0.075;
-    height_content.y = H * 0.18;
+    height_content.y = H * 0.15;
     this._textAlignCenter(height_content, 0.16, 1);
 
     this.setCacheAsBitmap(!this._can_tap);
@@ -1040,7 +1040,7 @@ class BlockCard extends PIXI.Graphics {
     {
       tran_num_content.text = block.numberOfTransactions + "";
       tran_num_content.x = right_base_line - tran_num_content.width;
-      tran_num_content.y = H * 0.18;
+      tran_num_content.y = H * 0.15;
       this._textAlignCenter(tran_num_content, 0.16, -1);
     }
     {

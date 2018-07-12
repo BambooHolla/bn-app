@@ -63,15 +63,16 @@ page-tab-account {
       text-align: center;
       padding-bottom: 15vw;
       > .ibt-value {
-        margin-bottom: 1rem;
-        font-size: 2.9rem;
-        font-weight: 500;
+        padding-bottom: 1.5rem;
+        font-size: 3.1rem;
+        font-weight: normal;
         display: flex;
         align-items: center;
         justify-content: center;
         > ali-icon {
-          font-size: 2.2rem;
+          font-size: 1.9rem;
           margin-right: 0.6rem;
+          font-weight: lighter;
         }
         > .unit {
           font-weight: lighter;
@@ -80,7 +81,7 @@ page-tab-account {
         }
       }
       > .dollar-value {
-        margin-bottom: 0.8rem;
+        padding-bottom: 1.2rem;
         font-size: 1.8rem;
         text-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.4);
         > .pre-unit {
@@ -99,6 +100,7 @@ page-tab-account {
         user-select: text;
         font-size: 1.5rem;
         font-weight: lighter;
+        letter-spacing: 0.12rem;
         text-shadow: 0 0.25rem 0.2rem rgba(0, 0, 0, 0.3);
       }
     }
@@ -119,8 +121,8 @@ page-tab-account {
     > .nav-item {
       border-bottom: 0.55px solid #f6f6f6;
       background-color: #fff;
-      padding: 0 1.2rem;
-      height: 4.5rem;
+      padding: 0.6rem 1.8rem;
+      height: 5.56rem;
       display: flex;
       align-items: center;
       > .left {
@@ -129,14 +131,14 @@ page-tab-account {
       }
       > .title {
         color: #787878;
-        font-size: 1.45rem;
-        text-indent: 0.5rem;
+        font-size: 1.55rem;
+        padding-left: 0.8rem;
       }
       > .right {
         justify-self: flex-end;
         margin-left: auto;
         color: #9a9a9a;
-        font-size: 1.4rem;
+        font-size: 1.5rem;
       }
     }
   }
