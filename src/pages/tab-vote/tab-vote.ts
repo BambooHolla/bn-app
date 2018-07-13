@@ -85,8 +85,8 @@ export class TabVotePage extends FirstLevelPage {
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
     public blockService: BlockServiceProvider,
-  ) // public cdRef: ChangeDetectorRef,
-  {
+    public cdRef: ChangeDetectorRef,
+  ) {
     super(navCtrl, navParams);
 
     this.registerViewEvent(this.minService.event, "vote-error", () => {
@@ -331,16 +331,12 @@ export class TabVotePage extends FirstLevelPage {
     }
     this.chain_mesh.startAnimation();
   }
-  @TabVotePage.markForCheck
-  page_status = VotePage.None;
-
-  @TabVotePage.markForCheck
-  zz = 1
-
+  @TabVotePage.markForCheck page_status = VotePage.None;
 
   @ViewChild(EffectCountdownComponent)
   effect_countdown!: EffectCountdownComponent;
-  private _countdown_round_end_time?: Date;
+
+  @TabVotePage.markForCheck private _countdown_round_end_time?: Date;
   get countdown_round_end_time() {
     if (
       !this._countdown_round_end_time &&
@@ -586,9 +582,26 @@ export class TabVotePage extends FirstLevelPage {
     round_ani: false,
     mining_person: false,
   };
+  @TabVotePage.onInit
+  bindIsShowPropertuMarkForCheck() {
+    const { is_show } = this;
+    for (var _k in is_show) {
+      const k = _k;
+      let v = is_show[k];
+      Object.defineProperty(is_show, k, {
+        get() {
+          return v;
+        },
+        set: new_v => {
+          v = new_v;
+          this.markForCheck();
+        },
+      });
+    }
+  }
 
-  try_min_starting = false;
-  min_starting = false;
+  @TabVotePage.markForCheck try_min_starting = false;
+  @TabVotePage.markForCheck min_starting = false;
   autoStartButtonPressDown() {
     this.try_min_starting = true;
   }
@@ -701,6 +714,8 @@ export class TabVotePage extends FirstLevelPage {
         this.chain_mesh.forceRenderOneFrame();
       }, 1000);
     }
+    // 会更新 blockService.round_end_time
+    this.markForCheck();
   }
 
   private get _pre_ani_round() {

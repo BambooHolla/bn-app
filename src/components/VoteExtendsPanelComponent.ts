@@ -94,6 +94,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
       await this.refreshBaseData();
     }
     this.cdRef.markForCheck();
+    this.cdRef.detectChanges();
   }
 
   @asyncCtrlGenerator.error()
@@ -102,6 +103,7 @@ export class VoteExtendsPanelComponent extends EventEmitter
     this.cur_round_income_amount = await this.benefitService.benefitThisRound.getPromise();
     console.log("this.cur_round_income_amount", this.cur_round_income_amount);
     this.cdRef.markForCheck();
+    this.cdRef.detectChanges();
   }
   async refreshBaseData(): Promise<any> {
     throw new Error("refreshBaseData没有定义");
