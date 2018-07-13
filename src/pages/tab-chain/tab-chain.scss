@@ -52,43 +52,58 @@ page-tab-chain {
                 transform: translateX(4vw);
                 transform-origin: 51.4% 56.2%;
               }
-              $dot_size : 2rem;
+              $dot_size : 2.2rem;
               $dot_item_size : $dot_size/4;
               $dot_edge : ($dot_size - $dot_item_size) / 2;
               .sync-spinner-dots{
                 width: $dot_size;
                 height: $dot_size;
                 position: relative;
+                /* transform: scale(0.66); */
                 >.item{
+                  display: block;
+                  font-size: 0;
+                  overflow: hidden;
                   position: absolute;
                   width: $dot_item_size;
                   height: $dot_item_size;
                   background-color: rgb(239,112,5);
-                  top: 0;
+                  top: -0.1rem;
                   left: $dot_edge;
+                  border-radius: 50%;
+                  overflow: hidden;
+                  transform-origin: center $dot_size/2;
                   &.dot-1{
                     transform: rotate(45deg * 0);
+                    opacity: 1*0.5*0.5*0.5*0.5*0.5*0.5*0.5;
                   }
                   &.dot-2{
                     transform: rotate(45deg * 1);
+                    opacity: 1*0.5*0.5*0.5*0.5*0.5*0.5;
                   }
                   &.dot-3{
                     transform: rotate(45deg * 2);
+                    opacity: 1*0.5*0.5*0.5*0.5*0.5;
                   }
                   &.dot-4{
                     transform: rotate(45deg * 3);
+                    opacity: 1*0.5*0.5*0.5*0.5;
                   }
                   &.dot-5{
                     transform: rotate(45deg * 4);
+                    opacity: 1*0.5*0.5*0.5;
                   }
                   &.dot-6{
                     transform: rotate(45deg * 5);
+                    opacity: 1*0.5*0.5;
                   }
                   &.dot-7{
                     transform: rotate(45deg * 6);
+                    opacity: 1*0.5;
                   }
                   &.dot-8{
                     transform: rotate(45deg * 7);
+                    opacity: 1;
                   }
                 }
               }
