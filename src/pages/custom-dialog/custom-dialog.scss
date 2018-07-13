@@ -64,10 +64,11 @@ page-custom-dialog {
           > ali-icon {
             margin-top: auto;
             .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #ff5a5a 0%, #fc9f7a 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
+              // color: transparent;
+              // background: linear-gradient(bottom, #ff5a5a 0%, #fc9f7a 100%);
+              // -webkit-background-clip: text !important;
+              // background-clip: text !important;
+              color: #ff5a5a;
             }
           }
         }
@@ -75,10 +76,11 @@ page-custom-dialog {
           > ali-icon {
             margin-top: auto;
             .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #ffcd4a 0%, #fba656 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
+              // color: transparent;
+              // background: linear-gradient(bottom, #ffcd4a 0%, #fba656 100%);
+              // -webkit-background-clip: text !important;
+              // background-clip: text !important;
+              color: #ffcd4a;
             }
           }
         }
@@ -86,10 +88,11 @@ page-custom-dialog {
           > ali-icon {
             margin-top: auto;
             .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #3de0da 0%, #c3d97b 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
+              // color: transparent;
+              // background: linear-gradient(bottom, #3de0da 0%, #c3d97b 100%);
+              // -webkit-background-clip: text !important;
+              // background-clip: text !important;
+              color: #3de0da;
             }
           }
         }
