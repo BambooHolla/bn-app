@@ -196,7 +196,7 @@ export class NewsProvider {
           "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.mp4",
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "assets/video/IFMChain%E7%A7%BB%E5%8A%A8%E5%85%AC%E6%9C%89%E9%93%BE%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83.png",
+          "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.jpg",
         ),
       },
       {
@@ -207,7 +207,7 @@ export class NewsProvider {
           "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.mp4",
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "assets/video/IFMChain%E7%A7%BB%E5%8A%A8%E5%85%AC%E6%9C%89%E9%93%BE%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83.png",
+          "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.jpg",
         ),
       },
       {
@@ -218,7 +218,7 @@ export class NewsProvider {
           "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.mp4",
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "assets/video/IFMChain%E7%A7%BB%E5%8A%A8%E5%85%AC%E6%9C%89%E9%93%BE%E6%AD%A3%E5%BC%8F%E5%8F%91%E5%B8%83.png",
+          "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.jpg",
         ),
       },
       {
