@@ -286,10 +286,10 @@ export class TabChainPage extends FirstLevelPage {
   private _auto_aniProgressCircle() {
     this._auto_aniProgressCircle_ti = setInterval(() => {
       const now = performance.now();
-      if (now - this._pre_progressCircle_ani_time >= 990) {
+      if (now - this._pre_progressCircle_ani_time >= 490) {
         this._before_markForCheck();
       }
-    }, 1000);
+    }, 500);
   }
   @TabChainPage.didLeave
   private _clear_aniProgressCircle() {
