@@ -3,7 +3,16 @@
     <div class="title">
       <div class="left">
         <div class="sync-progress" [class.show]="is_show_sync_loading" (click)="openChainSyncDetail()">
-          <ali-icon #progressCircle name="ifm-sync-progress"><!--  class="ani-rotate-45deg" --></ali-icon>
+          <div class="sync-spinner-dots" #progressCircle>
+            <span class="item dot-1"></span>
+            <span class="item dot-2"></span>
+            <span class="item dot-3"></span>
+            <span class="item dot-4"></span>
+            <span class="item dot-5"></span>
+            <span class="item dot-6"></span>
+            <span class="item dot-7"></span>
+            <span class="item dot-8"></span>
+          </div>
           <span class="progress-value">
             <ng-container *ngIf="sync_is_verifying_block;else showSyncProgress">
               {{'VERIFYING_BLOCK'|translate}}

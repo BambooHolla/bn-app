@@ -46,6 +46,9 @@ export class AccountAboutIbtPage extends SecondLevelPage {
   award_list: any[] = [];
   @AccountAboutIbtPage.willEnter
   loadNewsList() {
+    if (this.video_list.length) {
+      return;
+    }
     this.video_list = [];
     this.news_list = [];
     this.award_list = [];

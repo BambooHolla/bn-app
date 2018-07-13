@@ -81,6 +81,9 @@ page-chain-sync-detail {
 								background: rgba(#f9a661, 1);
 							}
 						}
+						&.sync-transactions,&.sync-equitys{
+							opacity: 0.6;
+						}
 						&.sync-transactions .dot {
 							.l1 {
 								background: rgba(#ff6766, 0.5);
