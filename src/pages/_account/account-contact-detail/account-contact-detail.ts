@@ -15,6 +15,7 @@ import {
 import {
   LocalContactModel,
   LocalContactProvider,
+  TagModel,
 } from "../../../providers/local-contact/local-contact";
 import { AccountModel } from "../../../providers/account-service/account-service";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
@@ -157,7 +158,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   contact_metched_map = new Map<
     string,
-    Promise<string | undefined> | string | undefined
+    Promise<string | undefined> | LocalContactModel | undefined
   >();
   transaction_list: (TransactionModel & {
     senderNickname?: string;
@@ -204,7 +205,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
                   if (task_or_res instanceof Promise) {
                     return await task_or_res;
                   } else {
-                    return task_or_res;
+                    return task_or_res.nickname;
                   }
                 }
 
@@ -212,7 +213,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
                   .findContact(address)
                   .then(account => {
                     const nickanme = account && account.nickname;
-                    this.contact_metched_map.set(address, nickanme);
+                    this.contact_metched_map.set(address, account);
                     return nickanme;
                   });
                 this.contact_metched_map.set(address, task);
@@ -290,6 +291,61 @@ export class AccountContactDetailPage extends SecondLevelPage {
       // 增加一次性查询的数量，提升效率
       this.transaction_config.pageSize = 80;
       await this.getMoreTransactionLogs();
+    }
+  }
+
+  @asyncCtrlGenerator.error("批量备注失败")
+  @asyncCtrlGenerator.single()
+  async tryRemarkAllContacts() {
+    if (
+      !(await this.waitTipDialogConfirm("确定要备注全部关联账户", {
+        false_text: "@@CANCEL",
+        true_text: "@@CONFIRM",
+      }))
+    ) {
+      return;
+    }
+    const contact = this.contact as LocalContactModel;
+    if (!(contact && contact["tags"])) {
+      throw new Error("请先添加为联系人");
+    }
+    const base_name = contact.nickname;
+    if (!base_name) {
+      throw new Error("请先编辑备注名");
+    }
+    await this._remarkAllContacts(contact, base_name);
+  }
+  @asyncCtrlGenerator.loading("批量备注中……")
+  private async _remarkAllContacts(
+    contact: LocalContactModel,
+    base_name: string,
+  ) {
+    await this.tryGetAllTrans();
+    const all_tags = await this.localContact.getTags();
+    const all_tags_map = all_tags.reduce((map, tag) => {
+      map.set(tag.name, tag);
+      return map;
+    }, new Map<string, TagModel>());
+    const tags = contact.tags
+      .map(tagname => all_tags_map.get(tagname))
+      .filter(v => v) as TagModel[];
+    const tags_name = tags.map(t => t.name);
+    for (var [address, local_contact] of this.contact_metched_map.entries()) {
+      if (!local_contact) {
+        // 添加为联系人
+        const _id = await this.localContact.addLocalContact(
+          {
+            address,
+            nickname: `${base_name}-${address.substr(-4)}`,
+          },
+          tags_name,
+        );
+        const add_tags_tasks = tags.map(tag => {
+          tag.contact_ids.push(_id);
+          return this.localContact.updateTag(tag);
+        });
+        await Promise.all(add_tags_tasks);
+      }
     }
   }
 }

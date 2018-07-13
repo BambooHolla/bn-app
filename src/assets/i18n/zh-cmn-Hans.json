@@ -219,7 +219,7 @@
   "CHECK_BLOCK": "查看区块",
   "CHECK_BLOCKCHAIN_IS_COMPLETE": "正在检查区块链是否完整",
   "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#": "正在同步区块:{{progress}}%",
-  "DOWNLOAD_BLOCKCHAIN_COMPLETE": "区块链同步完成",
+  "DOWNLOAD_BLOCKCHAIN_COMPLETE": "本地区块已同步到最新",
 
   "//": "chain-block-detail",
   "CHAIN-BLOCK-DETAIL": "区块信息",

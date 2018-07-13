@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>
+    <ion-title (press)="tryRemarkAllContacts()">
       <!-- {{'ACCOUNT-CONTACT-DETAIL'|translate}} -->
       {{mainname||('ACCOUNT-CONTACT-DETAIL'|translate)}}
     </ion-title>

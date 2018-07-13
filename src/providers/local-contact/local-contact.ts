@@ -79,7 +79,7 @@ export class LocalContactProvider extends EventEmitter {
 		// TODO
 	}
 	async addLocalContact(
-		new_contact: { address: string; username?: string },
+		new_contact: { address: string; username?: string; nickname?: string },
 		tags: string[] = [],
 		phones: string[] = [],
 		remark?: string,
@@ -95,6 +95,7 @@ export class LocalContactProvider extends EventEmitter {
 			owner_publicKey,
 			address: new_contact.address,
 			username: new_contact.username || "",
+			nickname: new_contact.nickname,
 			tags,
 			phones,
 			remark,
