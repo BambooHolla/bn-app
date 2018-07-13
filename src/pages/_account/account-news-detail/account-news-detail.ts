@@ -24,7 +24,7 @@ export class AccountNewsDetailPage extends SecondLevelPage {
     public sanitizer: DomSanitizer,
   ) {
     super(navCtrl, navParams, true, tabs);
-    this.auto_header_shadow_when_scroll_down = true;
+    // this.auto_header_shadow_when_scroll_down = true;
   }
 
   news_detail?: any;
