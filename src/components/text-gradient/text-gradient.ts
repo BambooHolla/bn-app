@@ -106,7 +106,11 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     const wh_rate = canvas.width / canvas.height;
     const padding_height = devicePixelRatio;
     const padding_width = devicePixelRatio * wh_rate;
-    canvas.height += 2 * padding_height;
+    const canvas_base_height = canvas.height + 2 * padding_height;
+    canvas.height = Math.max(
+      canvas_base_height,
+      height * this.devicePixelRatio,
+    );
     canvas.width += 2 * padding_width;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -122,7 +126,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     });
     ctx.fillStyle = gradient;
     ctx.font = font;
-    ctx.fillText(text, padding_width, canvas.height - 2 * padding_height);
+    ctx.fillText(text, padding_width, canvas_base_height - 2 * padding_height);
     if (!this.no_trim_blank) {
       // 过滤掉空白
       const bound = TextGradientComponent.trim(canvas);

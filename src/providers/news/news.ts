@@ -488,102 +488,6 @@ export class NewsProvider {
         ],
       },
       {
-        tag: "新闻",
-        title: "IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！",
-        type: "simple-html",
-        author: "凤凰新闻",
-        publish_time: "2018-06-26",
-        cover_image_url:
-          "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
-        contents: [
-          {
-            type: "p",
-            content:
-              "据凤凰媒体报道：2018年6月21日美国东部时间11点，IFMChain在纳斯达克大屏正式登场。",
-          },
-          {
-            type: "image",
-            content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
-          },
-          {
-            type: "image-alt",
-            content: "（IFMChain登陆纳斯达克大屏）",
-          },
-          {
-            type: "image",
-            content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-2.jpg",
-          },
-          {
-            type: "image-alt",
-            content: "（IFMChain——全球移动区块链先行者）",
-          },
-          {
-            type: "p",
-            content:
-              "28个月日日夜夜的研发，51项区块链发明专利的支撑，2387个版本的迭代升级，本能区块链实验室研发、Instinct Blockchain Technology（Malta）Limited发布的IFMChain3.0核心系统2018年6月15日正式上线公测。",
-          },
-          {
-            type: "p",
-            content:
-              "根据一组公测数据对比，就可以看出IFMChain对整个区块链世界带来了多么令人震惊的贡献：",
-          },
-          {
-            type: "image",
-            content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-3.jpg",
-          },
-          {
-            type: "p",
-            content:
-              "IFMChain登陆纳斯达克大屏，恰逢6月20日和21日IFMChain3.0核心系统在澳门公测发布。",
-          },
-          {
-            type: "image",
-            content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-4.jpg",
-          },
-          {
-            type: "image-alt",
-            content: "（大会现场）",
-          },
-          {
-            type: "p",
-            content:
-              "在会上IFMChain的创造者杨税令表示他将带领技术团队不断完善移动公有链的技术及区块链APP的应用落地。",
-          },
-          {
-            type: "image",
-            content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-5.jpg",
-          },
-          {
-            type: "image-alt",
-            content: "（IFMChain的创造者杨税令先生）",
-          },
-          {
-            type: "p",
-            content:
-              "IFMChain的天使投资人刘庆县先生在会上表达了区块链技术还处在青少年时期，所有的区块链从业者都要为区块链服务的看法。“科研技术人员要为设计更好的共识机制贡献更加完美的代码；非技术人员要做一个真正的区块链布道者，为真正的区块链技术推向市场作好科普及服务工作。”",
-          },
-          {
-            type: "image",
-            content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-6.jpg",
-          },
-          {
-            type: "image-alt",
-            content: "（天使投资人刘庆县先生）",
-          },
-          {
-            type: "p",
-            content:
-              "IFMChain作为信用时代的基础设施为互联网世界搭建了一座通往信用时代的桥梁，为信用时代构建可信社会环境提供了支撑。和谐美好的区块链信用时代即将到来！",
-          },
-        ],
-      },
-      {
         tag: "视频",
         title: "IFMChain移动公有链正式发布",
         author: "腾讯视频",
@@ -708,6 +612,102 @@ export class NewsProvider {
             type: "p",
             content:
               "当天会议过程紧凑，与会人员探讨踊跃，即为我国能够率先突破移动终端区块链技术的瓶颈而欣喜，也为接下来的发展献计献策。我们也期待接下来，我国能够继续走在区块链这个领域的前沿，也希望更多的研究者们能够提供更多基于区块链的应用，从而打造一个更加诚信良好的商业信用环境。",
+          },
+        ],
+      },
+      {
+        tag: "新闻",
+        title: "IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！",
+        type: "simple-html",
+        author: "凤凰新闻",
+        publish_time: "2018-06-26",
+        cover_image_url:
+          "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
+        contents: [
+          {
+            type: "p",
+            content:
+              "据凤凰媒体报道：2018年6月21日美国东部时间11点，IFMChain在纳斯达克大屏正式登场。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（IFMChain登陆纳斯达克大屏）",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-2.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（IFMChain——全球移动区块链先行者）",
+          },
+          {
+            type: "p",
+            content:
+              "28个月日日夜夜的研发，51项区块链发明专利的支撑，2387个版本的迭代升级，本能区块链实验室研发、Instinct Blockchain Technology（Malta）Limited发布的IFMChain3.0核心系统2018年6月15日正式上线公测。",
+          },
+          {
+            type: "p",
+            content:
+              "根据一组公测数据对比，就可以看出IFMChain对整个区块链世界带来了多么令人震惊的贡献：",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-3.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain登陆纳斯达克大屏，恰逢6月20日和21日IFMChain3.0核心系统在澳门公测发布。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-4.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（大会现场）",
+          },
+          {
+            type: "p",
+            content:
+              "在会上IFMChain的创造者杨税令表示他将带领技术团队不断完善移动公有链的技术及区块链APP的应用落地。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-5.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（IFMChain的创造者杨税令先生）",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain的天使投资人刘庆县先生在会上表达了区块链技术还处在青少年时期，所有的区块链从业者都要为区块链服务的看法。“科研技术人员要为设计更好的共识机制贡献更加完美的代码；非技术人员要做一个真正的区块链布道者，为真正的区块链技术推向市场作好科普及服务工作。”",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-6.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（天使投资人刘庆县先生）",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain作为信用时代的基础设施为互联网世界搭建了一座通往信用时代的桥梁，为信用时代构建可信社会环境提供了支撑。和谐美好的区块链信用时代即将到来！",
           },
         ],
       },
