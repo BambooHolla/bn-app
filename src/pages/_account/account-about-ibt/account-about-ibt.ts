@@ -41,17 +41,26 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     return AppSettingProvider.APP_VERSION;
   }
 
+  video_list: any[] = [];
   news_list: any[] = [];
+  award_list: any[] = [];
   @AccountAboutIbtPage.willEnter
   loadNewsList() {
-    const news_list = this.newsService.getNewsList();
-    // news_list.forEach(news => {
-    //   if (news.type === "embed") {
-    //     this.sanitizer.bypassSecurityTrustHtml();
-    //   }
-    // });
-    this.news_list = news_list;
-    this.cdRef.markForCheck();
+    this.video_list = [];
+    this.news_list = [];
+    this.award_list = [];
+    const all_news = this.newsService.getNewsList();
+    all_news.forEach(news => {
+      if (news.tag === "视频") {
+        this.video_list.push(news);
+      } else if (news.tag === "获奖") {
+        this.award_list.push(news);
+      } else if (news.tag === "新闻") {
+        this.news_list.push(news);
+      }
+    });
+
+    this.markForCheck();
   }
   showVersionInfo() {
     this.showConfirmDialog(`v${AppSettingProvider.APP_VERSION}`);

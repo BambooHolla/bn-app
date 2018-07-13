@@ -21,8 +21,64 @@
     </div>
   </div>
   <div class="news-list">
-    <div class="flag">IFMCHAIN新闻</div>
+    <div class="flag-line"><div class="flag">IFMCHAIN视频</div></div>
+    <div class="news-item" *ngFor="let news of video_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
+      <div class="title">{{news.title}}</div>
+      <div class="base-info">
+        <!-- <div class="public-time">
+          {{news.public_time}}
+        </div> -->
+        <div class="author">
+          {{news.author}}
+        </div>
+      </div>
+      <div [ngSwitch]="news.type" class="cover-wrapper" [ngClass]="news.type">
+        <ng-container *ngSwitchCase="'simple-html'">
+          <div class="cover" *ngIf="news.cover_image_url">
+            <img [src]="news.cover_image_url" alt="news.title">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'embed'">
+          <div class="cover" [innerHTML]="news.html">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'video'">
+          <video class="cover" [src]="news.url" [poster]="news.poster" controls="true">
+          </video>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="flag-line"><div class="flag">IFMCHAIN新闻</div></div>
     <div class="news-item" *ngFor="let news of news_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
+      <div class="title">{{news.title}}</div>
+      <div class="base-info">
+        <!-- <div class="public-time">
+          {{news.public_time}}
+        </div> -->
+        <div class="author">
+          {{news.author}}
+        </div>
+      </div>
+      <div [ngSwitch]="news.type" class="cover-wrapper" [ngClass]="news.type">
+        <ng-container *ngSwitchCase="'simple-html'">
+          <div class="cover" *ngIf="news.cover_image_url">
+            <img [src]="news.cover_image_url" alt="news.title">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'embed'">
+          <div class="cover" [innerHTML]="news.html">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'video'">
+          <video class="cover" [src]="news.url" [poster]="news.poster" controls="true">
+          </video>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="flag-line"><div class="flag">IFMCHAIN获奖</div></div>
+    <div class="news-item" *ngFor="let news of award_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
       <div class="base-info">
         <!-- <div class="public-time">

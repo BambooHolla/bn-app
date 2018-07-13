@@ -288,8 +288,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
   @asyncCtrlGenerator.single()
   async tryGetAllTrans() {
     while (this.transaction_config.has_more) {
-      // 增加一次性查询的数量，提升效率
-      this.transaction_config.pageSize = 80;
+      // // 增加一次性查询的数量，提升效率
+      // this.transaction_config.pageSize = 80;
       await this.getMoreTransactionLogs();
     }
   }

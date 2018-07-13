@@ -17,6 +17,411 @@ export class NewsProvider {
   getNewsList() {
     return [
       {
+        tag: "获奖",
+        title: "IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！",
+        type: "simple-html",
+        author: "凤凰新闻",
+        publish_time: "2018-06-26",
+        cover_image_url:
+          "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
+        contents: [
+          {
+            type: "p",
+            content:
+              "据凤凰媒体报道：2018年6月21日美国东部时间11点，IFMChain在纳斯达克大屏正式登场。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（IFMChain登陆纳斯达克大屏）",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-2.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（IFMChain——全球移动区块链先行者）",
+          },
+          {
+            type: "p",
+            content:
+              "28个月日日夜夜的研发，51项区块链发明专利的支撑，2387个版本的迭代升级，本能区块链实验室研发、Instinct Blockchain Technology（Malta）Limited发布的IFMChain3.0核心系统2018年6月15日正式上线公测。",
+          },
+          {
+            type: "p",
+            content:
+              "根据一组公测数据对比，就可以看出IFMChain对整个区块链世界带来了多么令人震惊的贡献：",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-3.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain登陆纳斯达克大屏，恰逢6月20日和21日IFMChain3.0核心系统在澳门公测发布。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-4.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（大会现场）",
+          },
+          {
+            type: "p",
+            content:
+              "在会上IFMChain的创造者杨税令表示他将带领技术团队不断完善移动公有链的技术及区块链APP的应用落地。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-5.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（IFMChain的创造者杨税令先生）",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain的天使投资人刘庆县先生在会上表达了区块链技术还处在青少年时期，所有的区块链从业者都要为区块链服务的看法。“科研技术人员要为设计更好的共识机制贡献更加完美的代码；非技术人员要做一个真正的区块链布道者，为真正的区块链技术推向市场作好科普及服务工作。”",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-6.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "（天使投资人刘庆县先生）",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain作为信用时代的基础设施为互联网世界搭建了一座通往信用时代的桥梁，为信用时代构建可信社会环境提供了支撑。和谐美好的区块链信用时代即将到来！",
+          },
+        ],
+      },
+      {
+        tag: "获奖",
+        title: "IFMChain在区块链世界论坛荣获“年度区块链创新大奖”",
+        type: "simple-html",
+        author: "凤凰新闻",
+        publish_time: "2018-07-12",
+        cover_image_url:"http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
+        contents: [
+          {
+            type: "blockquote",
+            content:
+              "**摘要：** 据报道IFMChain7月5日参加“2018区块链世界论坛”，并获得了”年度区块链创新大奖“。",
+          },
+          {
+            type: "p",
+            content:
+              "2018区块链世界论坛（BlockChain World Forum）于7月5日在深圳召开。论坛邀请了工信部电子标准院区块链研究室负责人、中国区块链生态联盟副理事长 、亚马逊AWS首席云计算技术顾问等相关业界人士到场，就中国与全球区块链市场格局以及商业发展趋势等议题进行高峰座谈，并为全球优秀区块链项目颁奖。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "颁奖典礼",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain由于出众的移动端技术和独到的共识机制设计，作为“技术和解决方案”类案例，从中外众多区块链项目中脱颖而出，荣获“年度区块链创新大奖”。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-2.jpg",
+          },
+          {
+            type: "image-alt",
+            content: "IFMChain获“年度区块链创新大奖”",
+          },
+          {
+            type: "p",
+            content:
+              "本次大奖通过公开征集，初评，并经由主管部门、行业协会、产业联盟、媒体及咨询机构代表等各方人士组成的评审委员会讨论评选出各奖项入围名单，再经评议和投票，最终产生年度获奖名单。",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain是本能区块链实验室自主研发，由Instinct Blockchain Technology（Malta）Limited发布，全球首款移动端公有链。IFMChain首创的DPOP（Delegeted Proof of Participation）共识机制把移动端配置为区块链节点，让移动用户真正直接参与区块链共识机制中并共同治理区块链。",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain把移动端链接到公有链的同时还为各项目技术团队提供了一个应用开发落地平台，技术开发团队可以根据API接口、IOS和Android的SDK、相关源代码及开发指南快速高效的进行区块链应用开发。",
+          },
+          {
+            type: "p",
+            content:
+              "区块链是下一代互联网的灵魂，也是未来信用时代的基础设施，移动端公有链将为我们搭建一个通往信用时代的桥梁。",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain能够在世界区块链论坛获奖，是整个IFMChain技术团队29个月日日夜夜加班努力奋斗的结果。在此期间经历了2395个版本的迭代，在攻克无数难题的过程中也为这些创新申请了51项区块链发明专利，才有了全球第一款移动端的公有链IFMChain的上线。IFMChain的主链上线不仅是中国区块链发展领先的佐证和信号，也是世界区块链发展的见证。主办方期望能有更多的项目像IFMChain一样促进区块链创新生态系统的构建，推动市场和产业的健康发展，为区块链信用时代到来树立里程碑式的标杆。",
+          },
+        ],
+      },
+      {
+        tag: "获奖",
+        title: "致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖",
+        type: "simple-html",
+        author: "凤凰新闻",
+        publish_time: "2018-06-29",
+        cover_image_url:"http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
+        contents: [
+          {
+            type: "blockquote",
+            content:
+              "**摘要：** 2018年中国新商业领导力峰会于2018年6月24日在北京海淀举行。本次活动是创响中国系列活动极为重要的一个活动。活动由国家发展和改革委员会、中国科学技术协会、北京市人民政府主办，由北京市发展和改革委员会、海淀区人民政府承办，由希鸥网、中关村创业大街执行举办，并有众多媒体和单位联合组织支持。活动目地为表彰改革开放40年做出杰出贡献的行业领军个人/集体。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "由本能区块链实验室研发、Instinct Blockchain Technology（Malta）Limited发布的IFMChain获得2018年度中国区块链产业最具创新力项目大奖。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-2.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "2018中国新商业领导力峰会以“新消费、新技术、新投资、新产业”为主题，以创新的思维，用创新的技术，带着创新的产品IFMChain获得中国区块链产业最具创新力项目大奖是实至名归。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-3.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "当整个区块链行业还停留在Bitcoin1.0及ETH2.0的时代，IFMChain已经跨入了区块链3.0时代。技术的创新首先来源于思想创新，如果说区块链是规则，把业务规则以代码的形式编写出来，这些规则的灵魂就是共识机制，**IFMChain所采用的DPOP（Delegeted Proof of Participation）共识机制就是整个公有链系统思想的创新。**",
+          },
+          {
+            type: "p",
+            content:
+              "经典区块链因为受到共识机制规则的限制，在分布式网络、安全、性能、扩展功能等方面无法兼顾，IFMChain因为共识机制创新把经典区块链不能解决的问题都彻底解决，因为技术路径无人走过，本能区块链实验室技术团队每天都在做技术创新，每攻克一个技术难题都是一个伟大的发明，因此**技术团队在28个月的研发时间里，共提交申请了51项区块链发明专利，迭代升级了2387个版本，才有了今天IFMChain3.0核心系统的发布！**来看一组IFMChain和经典区块链的数据对比就知道IFMChain的这些创新带来了什么样的成果：",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-4.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "技术的创新为整个行业带来无比宽广的前景，DPOP共识机制及双通道通信的设计让移动端可以顺利直接参与到区块链网络治理中来，这为区块链的落地应用奠定了用户基础，也为区块链技术广泛应用铺设了一座桥梁。",
+          },
+          {
+            type: "p",
+            content:
+              "技术无限创新中国，IFMChain及其团队是创新的榜样，在科研人员努力为技术研发贡献力量的同时，我们2018年中国新商业领导力峰会也同样要为IFMChain及其团队作出充分的肯定及支持，希望在技术创新的未来他们一直在路上。",
+          },
+        ],
+      },
+      {
+        tag: "获奖",
+        title: "微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖",
+        type: "simple-html",
+        author: "凤凰新闻",
+        publish_time: "2018-07-07",
+        cover_image_url:"http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
+        contents: [
+          {
+            type: "blockquote",
+            content:
+              "**摘要：** 本能区块链实验室研发的公有链——IFMChain，荣获“年度杰出区块链平台”奖。",
+          },
+          {
+            type: "p",
+            content:
+              "由中国云体系产业创新战略联盟、清华大学互联网产业研究院、中国区块链研究联盟于上海联合举办的“链接新世界，开启下一代数字经济”2018新世界区块链技术应用峰会于2018年6月22日在上海圆满落幕。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "作为全球首个移动端公有链项目，IFMChain和微软（中国）同获杰出区块链平台并同台领取“金链奖”。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-2.png",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-3.png",
+          },
+          {
+            type: "p",
+            content:
+              "工信部信息中心-工业经济研究所所长于佳宁和清华大学互联网产业研究院副院长王晓辉亲自颁奖，以表彰立足前沿、开创新时代的优秀区块链项目。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-4.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "此次获奖已经是IFMChain连续第二年获得该奖项荣誉。在2017年新世界区块链技术应用峰会上，央视经济频道（CCTV2）以“区块链技术应用逐步落地”为题进行了跟踪报道。",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain是本能区块链实验室自主研发，由Instinct Blockchain Technology（Malta）Limited发布，全球首款移动端公有链。IFMChain首创的DPOP（Delegeted Proof of Participation）共识机制把移动端配置为区块链节点，让移动用户真正直接参与区块链共识机制中并共同治理区块链。",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain把移动端链接到公有链的同时还为各项目技术团队提供了一个应用开发落地平台，技术开发团队可以根据API接口、IOS和Android的SDK、相关源代码及开发指南快速高效的进行区块链应用开发。",
+          },
+          {
+            type: "p",
+            content:
+              "区块链是下一代互联网的灵魂，也是未来信用时代的基础设施，移动端公有链将为我们搭建一个通往信用时代的桥梁，IFMChain能够率先落地移动公有链平台是信用时代即将来临的一个重要信号。IFMChain能够领先众多科技巨头率先完成移动公有链的产品上线，也是一个科技时代变迁的信号，组委会为创新项目颁奖的同时，也希望更多的科研团队能够像IFMChain的团队一样创造出更多的科技成果，为区块链信用时代的到来添砖加瓦。",
+          },
+        ],
+      },
+      {
+        tag: "获奖",
+        title: "IFMChain斩获全球区块链峰会“卓越区块链技术解决方案”大奖",
+        type: "simple-html",
+        author: "中国创投",
+        publish_time: "2018-06-13",
+        cover_image_url:"http://n.sinaimg.cn/sinacn18/791/w500h291/20180611/dccb-hcufqih1147455.jpg",
+        contents: [
+          {
+            type: "p",
+            content:
+              "2018年6月7日，本能区块链团队受邀参加2018全球区块链技术及应用峰会（GBTS），来自全球的超过800名区块链应用领域的技术开发者、行业专家参加了本次会议，会议上聚焦了区块链核心技术、区块链现状、发展趋势、行业应用、技术实践、投资、数字资产存储与交易、创新前沿技术等主题。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain斩获全球区块链峰会“卓越区块链技术解决方案”大奖-1.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "在本次峰会的智链奖评选环节中，IFMChain荣获年度“卓越区块链技术解决方案“奖，评审团表示：“IFMChain解决了移动端无法参与区块链共识机制的难题，创新的移动端公有链技术解决方案，将真正的技术创新带到了峰会中，为区块链技术的发展和应用落地奠定了基础设施，因为移动端的参与将为区块链行业与各应用落地带来无数的有效用户和革命性变化。”",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/IFMChain斩获全球区块链峰会“卓越区块链技术解决方案”大奖-2.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain是本能区块链实验室研发的全球首个支持移动端的通用底层公有链。截止目前该项目获得了36项国家发明专利的申请回执，21项初审通过。IFMChain已经于2017月12月28号正式上线1.0核心系统，2018年2月28日上线了2.0核心系统，2018年6月15将上线公测3.0的核心系统，3.0核心系统将支持每个区块10万笔以上的交易确认，每秒将达到1000tps以上！是目前为止全球唯一一个已经上线运行良好的移动端公有链，同时也是所有上线的公有链中性能最好的公有链。",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain3.0核心系统正式上线后将为整个区块链行业提供一个可信移动端数字资产发行平台和应用开发落地平台，技术开发团队可以根据本能区块链实验室提供的API接口、IOS和Android的SDK、相关源代码及开发指南快速高效的进行数字资产的发行和区块链应用开发。",
+          },
+          {
+            type: "p",
+            content:
+              "相对其他公有链IFMChain有着天然的技术优势、性能优势和用户优势。独创的DPOP共识机制让移动端可以参与到区块链的共识机制中来，这为IFMChain及各区块链应用带来无数的B端及C端用户，这些用户的加入会促进各区块链应用开发团队快速成长，从而为区块链行业带来良性循环，为区块链行业的发展带来了无限可能。",
+          },
+        ],
+      },
+      {
+        tag: "获奖",
+        title: "全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”",
+        type: "simple-html",
+        author: "凤凰新闻",
+        publish_time: "2018-05-07",
+        cover_image_url:"http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
+        contents: [
+          {
+            type: "blockquote",
+            content:
+              "**摘要：** 据报道，全球首个支持移动终端网络的公有链项目——IFMChain，荣获“2017-2018年度区块链品牌引领奖”。",
+          },
+          {
+            type: "p",
+            content:
+              "4月21日，由金色财经、希鸥网等联合举办的第六届中国创新创业领袖峰会暨2018区块链技术与创新高峰论坛在深圳成功举办。会议聚集了国内活跃的新锐创业者、区块链大咖、北京创业投资协会、中关村中小型科技文化企业促进会、北京投资、沸点资本等投资机构，对本年度优秀创业者给予嘉奖。作为全球首个支持移动端网络的公有链——IFMChain，在峰会上被授予“区块链品牌引领奖”。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-1.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "开启了区块链3.0时代的IFMChain最大的创新就是让移动端可以直接链接区块链网络。",
+          },
+          {
+            type: "p",
+            content:
+              "在智能互联网时代，移动终端占领了半壁江山，无法直接链接移动终端的区块链技术，就无法让移动端用户参与，落地应用就会受到极大的限制。IFMChain的出现为互联网时代和信用时代搭建了一座畅通的桥梁。比特币和以太坊为代表的1.0和2.0区块链，应用更多的是在数字货币行业，想要让区块链技术应用到社会的方方面面，要为社会各行各业提供技术基础，要为社会提供信用的基础设施，移动端的加入至关重要。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "在IFMChain出现之前有很多人认为，区块链技术并没有什么用，当下真正应用的领域也只有数字货币和少量机构间的联盟链场景，IFMChain的出现，让更多人看到了希望。技术团队在IFMChain区块链上就可以直接开发移动端的去中心化应用。比特币、以太坊等区块链网络都不能直接支持移动端链接，大多数的经典区块链需要第三方中心化的服务器才能访问区块链网络。这样一来，移动终端没有直接参与到区块链网络，只是间接访问了区块链网络，区块链在终端用户市场落地有了很大的障碍，加大了一部分对移动端依赖比较强的行业的应用落地难度。例如，微信、微博等便捷型的社交类应用，用户需要随时随地的使用，如果部署在没有移动端的区块链上，基本得不到用户的认可；而打车、外卖等一类的O2O服务更是离不开移动端。另一方面，如果区块链的应用需要第三方的中转服务，就完全违背了区块链去中心化的理念，让我们依然还是需要依靠第三方的信任。",
+          },
+          {
+            type: "image",
+            content:
+              "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-3.jpg",
+          },
+          {
+            type: "p",
+            content:
+              "所以，只有支持移动端的区块链才能真正应用到我们生活的方方面面，生活中的所有电子产品、智能设备，比如手机、智能电视、智能冰箱、汽车、甚至是智能广告牌都可以直接运用区块链技术，那生活的衣食住行、交友、工作等等一切活动都可以直接在这个拥有可信基础的区块链上进行，那我们的生活就再也没有猜忌、虚假、欺骗，IFMChain让世界变得美好而纯粹成为了可能。",
+          },
+          {
+            type: "p",
+            content:
+              "IFMChain还有一个重要的属性，就是可以发行可担保的数字资产。企业在发行数字资产前，共识机制要求冻结相应的数字资产作为担保，一旦出任何信用风险事故，冻结的数字资产将会被共识机制赔付给用户，保护了用户的权益。共识机制的执行不会因任何个人或组织的意志而转移，因此，受到共识机制保护的担保制度，以及移动终端用户直接参与的3.0区块链IFMChain，可以更彻底的保护用户利益，让用户真实的享受到区块链带给我们的安全感，以及因此为我们的生活方方面面带来的美好。",
+          },
+        ],
+      },
+      {
+        tag: "新闻",
         title: "随身的数字资产保险箱 “IFMChain”正式上线",
         type: "simple-html",
         author: "新浪深圳",
@@ -82,6 +487,7 @@ export class NewsProvider {
         ],
       },
       {
+        tag: "新闻",
         title:
           "区块链应用 | 推出支持移动端的公有链IFMChain，「本能」认为移动是区块链的未来",
         author: "36氪",
@@ -178,6 +584,7 @@ export class NewsProvider {
         ],
       },
       {
+        tag: "视频",
         title: "IFMChain移动公有链正式发布",
         author: "腾讯视频",
         type: "video",
@@ -189,6 +596,7 @@ export class NewsProvider {
         ),
       },
       {
+        tag: "视频",
         title: "区块链里程碑IFMChain1月16日正式上线",
         author: "乐透社",
         type: "video",
@@ -200,7 +608,8 @@ export class NewsProvider {
         ),
       },
       {
-        title: "1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启",
+        tag: "视频",
+        title: "区块链技术颠覆式创新，IFMChain正式全球上线",
         author: "第一视频",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
@@ -211,7 +620,8 @@ export class NewsProvider {
         ),
       },
       {
-        title: "1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代",
+        tag: "视频",
+        title: "区块链技术颠覆式创新，IFMChain开启移动公有链",
         author: "新奇视频",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
@@ -222,6 +632,7 @@ export class NewsProvider {
         ),
       },
       {
+        tag: "新闻",
         title: "移动区块链元年开启 IFMChain星燿濠江",
         author: "硅谷科技",
         public_time: "2018-01-19",

@@ -140,22 +140,25 @@ page-account-about-ibt {
   .news-list {
     margin-top: 1.2rem;
     background-color: #fff;
-    .flag {
-      margin-top: 1rem;
-      padding-left: 0.7rem;
-      padding-right: 2.2rem;
-      height: 3.5rem;
-      line-height: 3.5rem;
-      color: #fff;
-      background: linear-gradient(to bottom, #ff6160 0%, #fe926a 100%);
-      display: inline-block;
-      position: relative;
-      font-size: 1.6rem;
-      &::after {
-        content: " ";
-        position: absolute;
-        border-top: 3.5rem solid #fff;
-        border-left: 2.2rem solid transparent;
+    .flag-line {
+      display: block;
+      .flag {
+        margin-top: 1rem;
+        padding-left: 0.7rem;
+        padding-right: 2.2rem;
+        height: 3.5rem;
+        line-height: 3.5rem;
+        color: #fff;
+        background: linear-gradient(to bottom, #ff6160 0%, #fe926a 100%);
+        display: inline-block;
+        position: relative;
+        font-size: 1.6rem;
+        &::after {
+          content: " ";
+          position: absolute;
+          border-top: 3.5rem solid #fff;
+          border-left: 2.2rem solid transparent;
+        }
       }
     }
     .news-item {
@@ -180,6 +183,8 @@ page-account-about-ibt {
       .cover {
         font-size: 0;
         max-width: 100%;
+        max-height: 28rem;
+        overflow: hidden;
         box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
         > iframe {
           max-width: 100%;
@@ -219,7 +224,7 @@ page-account-about-ibt {
       padding: 0.6rem 0;
       width: 100%;
       display: flex;
-      >.label{
+      > .label {
         width: 39%;
         padding-right: 0.8rem;
         text-align: right;
