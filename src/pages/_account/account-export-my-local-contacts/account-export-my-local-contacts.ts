@@ -91,6 +91,7 @@ export class AccountExportMyLocalContactsPage extends SecondLevelPage {
 	// 		>,
 	// 	) => FLP_Tool.getTranslate("LOCAL_CONTACTS_IMPORT_SUCCESS", data),
 	// )
+	@asyncCtrlGenerator.loading()
 	/*从剪切板中读取器*/
 	async tryImportText() {
 		const export_data = await this.navigatorClipboard.readText();

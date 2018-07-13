@@ -284,6 +284,7 @@ export class LocalContactProvider extends EventEmitter {
 							{
 								address: icontact.address,
 								username: icontact.username,
+								nickname: icontact.nickname,
 							},
 							icontact.tags,
 							icontact.phones,
