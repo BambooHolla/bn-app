@@ -9,7 +9,7 @@ import {
 } from "ionic-angular";
 import { TransactionModel } from "../../providers/transaction-service/transaction-service";
 
-@IonicPage({ name: "user-agreement" })
+// @IonicPage({ name: "user-agreement" })
 @Component({
 	selector: "page-user-agreement",
 	templateUrl: "user-agreement.html",
