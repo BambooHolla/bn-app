@@ -57,13 +57,20 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     this.showConfirmDialog(`v${AppSettingProvider.APP_VERSION}`);
   }
 
-  private async _tipThenSendEmail(e: MouseEvent, tip: string) {
-    if (
-      await this.waitTipDialogConfirm(tip, {
+  private async _tipThenSendEmail(
+    e: MouseEvent,
+    tip: string,
+    setting_key: string,
+  ) {
+    let res = this.appSetting.settings[setting_key];
+    if (!res) {
+      this.appSetting.settings[setting_key] = true;
+      res = await this.waitTipDialogConfirm(tip, {
         false_text: "@@CANCEL",
         true_text: "@@SEND_EMAIL",
-      })
-    ) {
+      });
+    }
+    if (res) {
       const linkNode = e.target as HTMLDivElement;
       const mailto = linkNode.dataset.href;
       if (mailto && mailto.startsWith("mailto:")) {
@@ -71,10 +78,18 @@ export class AccountAboutIbtPage extends SecondLevelPage {
       }
     }
   }
-  doBusinessCooperation(e: MouseEvent) {
-    return this._tipThenSendEmail(e, "@@BUSINESS_COOPERATION_TIP");
+  async doBusinessCooperation(e: MouseEvent) {
+    return this._tipThenSendEmail(
+      e,
+      "@@BUSINESS_COOPERATION_TIP",
+      "_is_first_show_send_business_cooperation",
+    );
   }
   doUserService(e: MouseEvent) {
-    return this._tipThenSendEmail(e, "@@USER_SERVICE_TIP");
+    return this._tipThenSendEmail(
+      e,
+      "@@USER_SERVICE_TIP",
+      "_is_first_show_send_user_service",
+    );
   }
 }

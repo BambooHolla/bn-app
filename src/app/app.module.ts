@@ -77,6 +77,7 @@ import { BenefitServiceProvider } from "../providers/benefit-service/benefit-ser
 import { UserInfoProvider } from "../providers/user-info/user-info";
 
 // 预加载页面
+import { UserAgreementPage } from "../pages/user-agreement/user-agreement";
 import { CustomDialogPage } from "../pages/custom-dialog/custom-dialog";
 import { TutorialPage } from "../pages/tutorial/tutorial";
 import { SignInAndSignUpPage } from "../pages/sign-in-and-sign-up/sign-in-and-sign-up";
@@ -108,6 +109,7 @@ export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
 export function customDeepLinkConfig(deepLinkConfig) {
   const static_links = [
+    { component: UserAgreementPage, name: "user-agreement" },
     { component: CustomDialogPage, name: "custom-dialog" },
     { component: TutorialPage, name: "tutorial" },
     { component: TabsPage, name: "tabs" },
@@ -130,6 +132,7 @@ export function customDeepLinkConfig(deepLinkConfig) {
 
 const pages = [
   MyApp,
+  UserAgreementPage,
   CustomDialogPage,
   TutorialPage,
   SignInAndSignUpPage,

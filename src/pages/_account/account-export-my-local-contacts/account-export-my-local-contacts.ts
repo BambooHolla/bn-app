@@ -58,19 +58,13 @@ export class AccountExportMyLocalContactsPage extends SecondLevelPage {
 	})
 	async initData() {
 		this.is_exporting = true;
-		const local_contacts = await this.localContact.getLocalContacts();
-		// 绑定未确认的联系人
+		// 导出
+		const {
+			local_contacts,
+			export_data,
+		} = await this.localContact.exportLocalContacts();
 		this.contact_list = local_contacts;
-
-		this.export_data =
-			"ifmchain-local-contacts://" +
-			JSON.stringify({
-				C: local_contacts.map(c => {
-					// 删除掉不必要的字段
-					const { _id, ...safe_data } = c;
-					return safe_data;
-				}),
-			});
+		this.export_data = export_data;
 		this.is_exporting = false;
 	}
 

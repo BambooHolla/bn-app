@@ -473,6 +473,10 @@ export class AppSettingProvider extends CommonService {
     is_known_verifier_will_heat_up: false,
     /**是否显示过 我的关注提示*/
     _is_show_first_local_contacts_tip: false,
+    /*是否显示过 商务合作的提示*/
+    _is_first_show_send_business_cooperation: false,
+    /*是否显示过 用户服务的提示*/
+    _is_first_show_send_user_service: false,
   };
   /*多个账户之间共享的数据*/
   share_settings = {

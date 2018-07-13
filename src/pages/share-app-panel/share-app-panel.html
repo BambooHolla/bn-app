@@ -7,15 +7,15 @@
     </div>
     <div class="grid">
       <div class="row">
-        <div class="item" *ngFor="let s of shareItems" (click)="shareVia(s.title)">
-          <div class="icon"><img [src]="'assets/imgs/share-app-panel/'+s.title+'.png'" [alt]="s.title"></div>
+        <div class="item" *ngFor="let s of shareItems_line1" [class.disabled]="s.disabled" (click)="shareVia(s)">
+          <div class="icon"><img [src]="'assets/imgs/share-app-panel/'+s.logo+'.png'" [alt]="s.title"></div>
           <div class="label">{{s.title|translate}}</div>
         </div>
       </div>
       <div class="row">
-        <div class="item" (click)="shareMore()">
-          <div class="icon more"><ion-icon name="ios-more"></ion-icon></div>
-          <div class="label">{{'MORE'|translate}}</div>
+        <div class="item" *ngFor="let s of shareItems_line2" [class.disabled]="s.disabled" (click)="shareVia(s)">
+          <div class="icon"><img [src]="'assets/imgs/share-app-panel/'+s.logo+'.png'" [alt]="s.title"></div>
+          <div class="label">{{s.title|translate}}</div>
         </div>
       </div>
     </div>

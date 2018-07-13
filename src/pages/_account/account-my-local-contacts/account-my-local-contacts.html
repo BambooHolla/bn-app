@@ -1,10 +1,10 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>{{'ACCOUNT-MY-LOCAL-CONTACTS'|translate}}</ion-title>
+    <ion-title (press)="routeTo('account-export-my-local-contacts')">{{'ACCOUNT-MY-LOCAL-CONTACTS'|translate}}</ion-title>
     <ion-buttons right>
-      <button [title]="'EXPORT_MY_LOCAL_CONTACTS'|translate" (click)="routeTo('account-export-my-local-contacts')">
+      <!-- <button [title]="'EXPORT_MY_LOCAL_CONTACTS'|translate" (press)="routeTo('account-export-my-local-contacts')">
         <ali-icon name="ifm-daochu"></ali-icon>
-      </button>
+      </button> -->
       <button [title]="'SCAN_QRCOED_TO_ADD_CONTACT'|translate" (click)="routeTo('account-scan-add-contact',{auto_return:true,title:getTranslateSync('SCAN_QR_CODE_TO_ADD_CONTACT'),mode:'try-to-add-local-contact'})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>

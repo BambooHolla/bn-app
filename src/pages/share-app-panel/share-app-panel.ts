@@ -26,10 +26,15 @@ export class ShareAppPanelPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
-  shareItems = [
-    { title: "TWITTER", via: "" },
-    { title: "FACEBOOK", via: "" },
-    { title: "INSTAGRAM", via: "" },
+  shareItems_line1 = [
+    { title: "MORE", logo: "WECHAT", via: "" },
+    { title: "GOOGLE+", logo: "GOOGLE+", via: "", disabled: true },
+    { title: "TWITTER", logo: "TWITTER", via: "" },
+  ];
+  shareItems_line2 = [
+    { title: "FACEBOOK", logo: "FACEBOOK", via: "" },
+    { title: "INSTAGRAM", logo: "INSTAGRAM", via: "" },
+    { title: "LINKIN", logo: "LINKIN", via: "", disabled: true },
   ];
 
   share_message!: string;
@@ -47,26 +52,28 @@ export class ShareAppPanelPage extends FirstLevelPage {
     }
     // this.socialSharing.canShareVia()
   }
-  @asyncCtrlGenerator.error("@@SHARE_APP_ERROR")
-  async shareVia(type: string) {
+  // @asyncCtrlGenerator.error("@@SHARE_APP_ERROR")
+  async shareVia(via: { title: string; logo: string; disabled?: boolean }) {
     try {
-      if (type === "TWITTER") {
+      if (via.title === "TWITTER") {
         await this.socialSharing.shareViaTwitter(
           this.share_message,
           this.share_image_url,
           this.share_link,
         );
-      } else if (type === "FACEBOOK") {
+      } else if (via.title === "FACEBOOK") {
         await this.socialSharing.shareViaFacebook(
           this.share_message,
           this.share_image_url,
           this.share_link,
         );
-      } else if (type === "INSTAGRAM") {
+      } else if (via.title === "INSTAGRAM") {
         await this.socialSharing.shareViaInstagram(
           this.share_message + " " + this.share_link,
           this.share_image_url,
         );
+      } else if (via.title === "MORE") {
+        await this.shareMore();
       }
     } catch (err) {
       console.error(err);

@@ -74,6 +74,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     pwd: "",
     remember_pwd: true,
   };
+  is_agree_user_agreement = false;
   pwd_by_register = "";
   _ture_pwd = "";
   pwd_textarea_height = "";
@@ -118,7 +119,6 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     return 0;
   }
 
-
   page_status = "login";
   gotoLogin() {
     this.page_status = "login";
@@ -132,6 +132,20 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   )
   // @asyncCtrlGenerator.loading("@@LOGINNG")
   async doLogin() {
+    if (!this.is_agree_user_agreement) {
+      this.openUserAgreementPage();
+      return;
+    }
+    if (this.formData.pwd.length < 24) {
+      const res = await this.waitTipDialogConfirm("@@PWD_TOO_SHORT_TIP", {
+        true_text: "@@GO_GENERATOR_NEW_PWD",
+        false_text: "@@KEEP_USE_SHORT_PWD",
+      });
+      if (res) {
+        this.gotoRegister();
+        return;
+      }
+    }
     if (
       this.pwd_by_register === this.formData.pwd &&
       (await this.waitTipDialogConfirm("@@LOGIN_PWD_TIP", {
@@ -156,7 +170,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     );
     if (result) {
       // this.routeTo("scan-nodes");
-      await this.myapp.openPage(MainPage, undefined, null/*"@@LOGINNG"*/);
+      await this.myapp.openPage(MainPage, undefined, null /*"@@LOGINNG"*/);
     }
   }
   gotoRegister() {
@@ -207,5 +221,14 @@ export class SignInAndSignUpPage extends FirstLevelPage {
         })
         .present();
     }
+  }
+
+  /*打开用户协议*/
+  openUserAgreementPage() {
+    const model = this.modalCtrl.create("user-agreement");
+    model.onWillDismiss(data => {
+      this.is_agree_user_agreement = data;
+    });
+    model.present();
   }
 }

@@ -137,8 +137,8 @@ export function asyncErrorWrapGenerator(
             ]) => {
               const dialog_opts = Object.assign(
                 {
-                  title: String(error_title),
-                  subTitle: String(err_msg),
+                  title: String(err_msg),
+                  subTitle: String(error_title),
                   buttons: [getTranslateSync("CONFIRM")],
                 },
                 opts,
@@ -277,7 +277,10 @@ export function asyncLoadingWrapGenerator(
       const loadingOpts = Object.assign(
         {
           content: String(loading_msg),
-          cssClass: (this.PAGE_LEVEL | 0) > 1 ? "can-goback blockchain-loading" : "blockchain-loading",
+          cssClass:
+            (this.PAGE_LEVEL | 0) > 1
+              ? "can-goback blockchain-loading"
+              : "blockchain-loading",
         },
         opts,
       );

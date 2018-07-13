@@ -1,0 +1,29 @@
+page-user-agreement {
+	.level-1 {
+		text-indent: 2rem;
+	}
+	.level-2 {
+		text-indent: 4rem;
+	}
+	h2 {
+		font-size: 2rem;
+	}
+	p {
+		font-size: 1.4rem;
+		line-height: 2.6rem;
+		&.title {
+			font-size: 1.6rem;
+		}
+	}
+
+	.footer {
+		.submit-button {
+			margin: 1rem auto 2rem auto;
+			background: linear-gradient(
+				to bottom,
+				rgba(#02e5f6, 1),
+				rgba(#01acdd, 1)
+			);
+		}
+	}
+}

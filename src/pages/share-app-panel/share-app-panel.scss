@@ -8,9 +8,10 @@ page-share-app-panel {
       align-items: center;
       justify-content: center;
       .panel {
-        width: 85vw;
+        margin-top: -36vw;
+        width: 87vw;
         min-height: 12rem;
-        border-radius: 0.8rem;
+        border-radius: 1rem;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -21,8 +22,8 @@ page-share-app-panel {
         flex-shrink: 0;
         background-color: #eeeeee;
         color: #7c7c7c;
-        font-size: 1.45rem;
-        height: 3.5rem;
+        font-size: 1.7rem;
+        height: 5rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -34,23 +35,31 @@ page-share-app-panel {
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
-        padding-bottom: 2rem;
+        padding-bottom: 3.5rem;
+        padding-top: 1rem;
         .row {
-          padding-top: 1rem;
-          width: 100%;
+          padding-top: 2.5rem;
+          width: 92%;
           display: flex;
           align-items: center;
           justify-content: space-around;
+          flex-wrap: wrap;
           > .item {
             flex: 1;
+            flex-shrink: 0;
+            flex-grow: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            &.disabled{
+              filter: grayscale(1);
+              opacity: 0.8;
+            }
             > .icon {
-              width: 3rem;
+              width: 5.3rem;
               &.more {
-                width: 3rem;
-                height: 3rem;
+                width: 5.3rem;
+                height: 5.3rem;
                 color: #7c7c7c;
                 background-color: #eeeeee;
                 border-radius: 50%;
@@ -60,7 +69,8 @@ page-share-app-panel {
               }
             }
             > .label {
-              padding-top: 0.2rem;
+              color: #7a7a7a;
+              padding-top: 1rem;
             }
           }
         }
@@ -71,27 +81,23 @@ page-share-app-panel {
     pointer-events: all;
     position: fixed;
     width: 100%;
-    bottom: 15%;
+    bottom: 26%;
     left: 0;
-    // display: flex;
-    // justify-content: space-around;
-    // align-items: center;
     > button {
-      // margin-left: calc(50vw - 3.1rem / 2);
       margin: 0 auto;
       display: block;
-      width: 8vh;
-      height: 8vh;
+      width: 12vw;
+      height: 12vw;
       border-radius: 50%;
       background: none;
       text-align: center;
       padding: 0;
-      line-height: 7.8vh;
+      line-height: 15vw;
       &.close-button {
         animation-delay: 500ms;
-        background-color: #929292;
+        background-color: #bab8b9;
         color: #fff;
-        font-size: 6vh;
+        font-size: 9vw;
       }
     }
   }

@@ -79,7 +79,19 @@
         <span class="dot"></span>
       </div>
     </div>
-    <div class="version-info">v{{app_version}}</div>
+    <div class="footer-content" (click)="openUserAgreementPage()">
+      <div class="agree-user-aggreement">
+        <label for="agree-user-aggreement-checkbox" class="radio-label">
+          <span class="radio-button checkbox-wrapper">
+            <input id="agree-user-aggreement-checkbox" type="checkbox" [(ngModel)]="is_agree_user_agreement" />
+              <span class="checked"></span>
+          </span>
+          <span class="checked"></span>
+        </label>
+        <span class="label-text">{{'AGREE_TO_THE_USER_AGREEMENT' | translate}}</span>
+      </div>
+      <div class="version-info">v{{app_version}}</div>
+    </div>
   </div>
 </ion-content>
 <ion-footer>
