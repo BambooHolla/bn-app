@@ -257,7 +257,7 @@ export class PeerServiceProvider extends CommonService {
     return this;
   }
 
-  static fetchPeerPortInfo(ip: string, port: number, timeout_ms = 600) {
+  static fetchPeerPortInfo(ip: string, port: number, timeout_ms = 2000) {
     return new Promise<{ success: boolean; webPort: number }>(
       (resolve, reject) => {
         const xhr = new XMLHttpRequest();
