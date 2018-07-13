@@ -1,4 +1,11 @@
-import { Component, Optional, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  Optional,
+  ViewChild,
+  ElementRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 import {
   IonicPage,
@@ -46,6 +53,7 @@ export function versionToNumber(version: string) {
 @Component({
   selector: "page-version-update-dialog",
   templateUrl: "version-update-dialog.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VersionUpdateDialogPage extends FirstLevelPage {
   constructor(
@@ -56,10 +64,11 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
     public file: File,
     public fileOpener: FileOpener,
     public sanitizer: DomSanitizer,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
   }
-  version_info!: LATEST_VERSION_INFO;
+  @VersionUpdateDialogPage.markForCheck version_info!: LATEST_VERSION_INFO;
   @VersionUpdateDialogPage.willEnter
   initData() {
     this.version_info = this.navParams.get("version_info");
@@ -98,7 +107,8 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
     return res;
   }
   fileTransfer?: FileTransferObject;
-  isDownloading = false;
+  @VersionUpdateDialogPage.markForCheck isDownloading = false;
+  @VersionUpdateDialogPage.markForCheck
   download_progress: SafeStyle = "--progress:0%";
   @asyncCtrlGenerator.error("@@UPDATE_APK_FAIL")
   async androidUpadate() {
