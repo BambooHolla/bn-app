@@ -331,7 +331,7 @@ export class NewsProvider {
         author: "新浪深圳",
         publish_time: "2018-01-19",
         cover_image_url:
-          "https://mmbiz.qpic.cn/mmbiz_jpg/I02ldpKeibBvxM7Cx6VlhWy5rwfBbYTrF1dgeQ8hzRVXu5NXFA3ns02wTian60vKZxmWeoOke3cHFb2NYWVfPvIQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1",
+          "http://cdn-blnc.gaubee.com/随身的数字资产保险箱 “IFMChain”正式上线-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -346,7 +346,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "https://mmbiz.qpic.cn/mmbiz_jpg/I02ldpKeibBvxM7Cx6VlhWy5rwfBbYTrF1dgeQ8hzRVXu5NXFA3ns02wTian60vKZxmWeoOke3cHFb2NYWVfPvIQ/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1",
+              "http://cdn-blnc.gaubee.com/随身的数字资产保险箱 “IFMChain”正式上线-1.jpg",
           },
           {
             type: "p",
