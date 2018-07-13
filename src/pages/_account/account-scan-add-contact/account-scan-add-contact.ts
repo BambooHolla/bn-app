@@ -16,6 +16,10 @@ import {
 import { playSound, addSound } from "../../../components/sound";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
 import {
+  LocalContactProvider,
+  LocalContactModel,
+} from "../../../providers/local-contact/local-contact";
+import {
   TransactionServiceProvider,
   TransactionTypes,
   TransactionModel,
@@ -36,6 +40,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     public androidPermissions: AndroidPermissions,
     public barcodeScanner: BarcodeScanner,
     public transactionService: TransactionServiceProvider,
+    public localContact: LocalContactProvider,
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -229,16 +234,16 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       const protocol = res.substr(0, protocol_index);
       const handler_key = "protocol:" + protocol;
       if (handler_key in this) {
-        this[handler_key](res.substr(protocol_index + 3));
+        this[handler_key](res.substr(protocol_index + 3), res);
         return;
       }
     }
 
     const mode = this.navParams.get("mode");
     const ADD_CONTACT_MODE_MAP = {
-      "try-to-add-contact":"account-add-contact",
-      "try-to-add-local-contact":"account-add-local-contact",
-    }
+      "try-to-add-contact": "account-add-contact",
+      "try-to-add-local-contact": "account-add-local-contact",
+    };
     if (mode in ADD_CONTACT_MODE_MAP) {
       const m = this.modalCtrl.create(ADD_CONTACT_MODE_MAP[mode], {
         address: res,
@@ -394,12 +399,81 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       tran = JSON.parse(content).T;
     } catch (err) {}
     if (!tran) {
-      throw new Error("PROTOCOL_PARSE_ERROR");
+      throw new Error("@@TRANSACTION_PARSE_ERROR");
     }
     this.jobRes({
       protocol: "ifmchain-transaction",
       transaction: tran,
     });
     this.finishJob();
+  }
+
+  @asyncCtrlGenerator.error("@LOCAL_CONTACTS_IMPORT_ERROR")
+  @asyncCtrlGenerator.success("@LOCAL_CONTACTS_IMPORT_SUCCESS")
+  @asyncCtrlGenerator.success()
+  async ["protocol:ifmchain-local-contacts"](
+    content: string,
+    export_data: string,
+  ) {
+    // var local_contacts: LocalContactModel[] | undefined;
+    // try {
+    //   local_contacts = JSON.parse(content).C;
+    // } catch (err) {}
+    // if (!local_contacts) {
+    //   throw new Error("@@LOCAL_CONTACTS_PARSE_ERROR");
+    // }
+    // let success_contacts: LocalContactModel[] = [];
+    // let error_contacts: LocalContactModel[] = [];
+    // let skip_contacts: LocalContactModel[] = [];
+    // if (local_contacts instanceof Array) {
+    //   const has_tags = await this.localContact.getTags();
+    //   await Promise.all(
+    //     local_contacts.map(async import_contact => {
+    //       const contact = await this.localContact.findContact(
+    //         import_contact.address,
+    //       );
+    //       if (contact) {
+    //         if (
+    //           contact.last_update_height > import_contact.last_update_height
+    //         ) {
+    //           // 略过，
+    //           skip_contacts.push(import_contact);
+    //           return;
+    //         }
+    //         import_contact._id = contact._id;
+    //       }
+    //       if (import_contact._id) {
+    //         // 更新
+    //         await this.localContact.updateLocaContact(import_contact);
+    //       } else {
+    //         // 插入
+    //         import_contact._id = await this.localContact.addLocalContact(
+    //           {
+    //             address: import_contact.address,
+    //             username: import_contact.username,
+    //           },
+    //           import_contact.tags,
+    //           import_contact.phones,
+    //           import_contact.remark,
+    //           import_contact.image,
+    //         );
+    //       }
+    //       // 添加标签
+    //       await Promise.all(
+    //         import_contact.tags.map(async tag_name => {
+    //           if (!has_tags.find(t => t.name === tag_name)) {
+    //             return this.localContact.addTag(tag_name, [import_contact._id]);
+    //           }
+    //         }),
+    //       );
+    //     }),
+    //   );
+    // }
+    const parse_result = await this.localContact.importLocalContacts(
+      export_data,
+    );
+    this.jobRes(parse_result);
+    this.finishJob();
+    return parse_result;
   }
 }

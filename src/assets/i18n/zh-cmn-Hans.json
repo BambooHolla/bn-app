@@ -302,11 +302,15 @@
   "ADD_CONTACT": "添加联系人",
 
   "//": "account-my-local-contacts",
+  "EXPORT_MY_LOCAL_CONTACTS": "导出我的关注",
   "ACCOUNT-MY-LOCAL-CONTACTS": "我的关注",
   "REMOVE_LOCAL_CONTACT_SUBMIT_ERROR": "取消关注失败",
   "REMOVE_LOCAL_CONTACT_SUBMITING": "取消关注中",
   "REMOVE_LOCAL_CONTACT_SUBMIT_SUCCESS": "已经不再关注该地址",
   "CONFIRM_TO_REMOVE_LOCAL_CONTACT": "确定不再关注该地址吗？",
+
+  "//": "account-my-export-local-contacts",
+  "ACCOUNT-MY-EXPORT-LOCAL-CONTACTS": "导出我的关注",
 
   "//": "account-contact-detail",
   "ACCOUNT-CONTACT-DETAIL": "地址详细信息",
@@ -613,6 +617,10 @@
   "CAMERA_INITIALIZATION...": "相机初始化中……",
   "ALIGN_QR_CODE-THEN_AUTOMATIC_SCAN": "将二维码放入框内，即可自动扫描",
   "SCAN_ERROR": "扫描异常",
+  "TRANSACTION_PARSE_ERROR":"交易解析出错",
+  "LOCAL_CONTACTS_IMPORT_ERROR":"关注信息导入失败",
+  "LOCAL_CONTACTS_IMPORT_SUCCESS": "关注信息导入完成",
+  "LOCAL_CONTACTS_PARSE_ERROR":"关注信息解析出错",
 
   "SELECT_THE_WAY_TO_GET_QRCODE": "请选择",
   "SELECT_PICTURE_TO_SCAN_QRCODE": "从相册中选择",

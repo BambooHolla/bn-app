@@ -133,6 +133,7 @@ export class AccountRemarkContactPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.error("@@CONTACT_REMARK_SAVE_FAIL")
   @asyncCtrlGenerator.success("@@CONTACT_REMARK_SAVE_SUCCESS")
+  @asyncCtrlGenerator.loading()
   async saveContact() {
     const { nickname, tags, phones, remark, image } = this.formData;
     const local_contact: LocalContactModel = {

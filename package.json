@@ -1,6 +1,6 @@
 {
   "name": "ifm-app-v2",
-  "version": "3.2.5-1",
+  "version": "3.2.5.2",
   "author": "BNQKL Team",
   "homepage": "http://mainnet.ifmchain.org/",
   "private": true,
@@ -51,6 +51,7 @@
     "@ngx-translate/core": "8.0.0",
     "@ngx-translate/http-loader": "^2.0.0",
     "@types/nedb": "^1.8.5",
+    "@zxing/library": "^0.6.0",
     "angular2-moment": "^1.7.1",
     "angular2-virtual-scroll": "^0.3.2",
     "clone": "^2.1.1",

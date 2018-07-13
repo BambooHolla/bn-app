@@ -219,4 +219,117 @@ export class LocalContactProvider extends EventEmitter {
 			return this.removeTag(_id);
 		}
 	}
+
+	/*导出导入*/
+	async exportLocalContacts() {
+		const local_contacts = await this.getLocalContacts();
+		// 绑定未确认的联系人
+		const export_data =
+			"ifmchain-local-contacts://" +
+			JSON.stringify({
+				C: local_contacts.map(c => {
+					// 删除掉不必要的字段
+					const { _id, ...safe_data } = c;
+					return safe_data;
+				}),
+			});
+		return { local_contacts, export_data };
+	}
+	async importLocalContacts(export_data: string) {
+		let import_contacts: TYPE.LocalContactModel[] = [];
+		const protocol_index = export_data.indexOf("://");
+		if (protocol_index === -1) {
+			throw new Error("@@LOCAL_CONTACTS_PARSE_ERROR");
+		}
+		const protocol = export_data.substr(0, protocol_index);
+		if (protocol !== "ifmchain-local-contacts") {
+			throw new Error("@@LOCAL_CONTACTS_PARSE_ERROR");
+		}
+		try {
+			const parse_data = JSON.parse(
+				export_data.substr(protocol_index + 3),
+			);
+			import_contacts = parse_data.C;
+		} catch (err) {}
+		if (!import_contacts) {
+			throw new Error("@@LOCAL_CONTACTS_PARSE_ERROR");
+		}
+		const success_contacts: TYPE.LocalContactModel[] = [];
+		const error_contacts: TYPE.LocalContactModel[] = [];
+		const skip_contacts: TYPE.LocalContactModel[] = [];
+		if (import_contacts instanceof Array) {
+			const has_tags = await this.getTags();
+			const import_contacts_tasks = import_contacts
+				.map(async icontact => {
+					const contact = await this.findContact(icontact.address);
+					const is_update = !!contact;
+					if (contact) {
+						if (
+							contact.last_update_height >=
+							icontact.last_update_height
+						) {
+							// 略过，
+							skip_contacts.push(icontact);
+							return;
+						}
+						icontact._id = contact._id;
+					}
+					if (icontact._id) {
+						// 更新
+						await this.updateLocaContact(icontact);
+					} else {
+						// 插入
+						icontact._id = await this.addLocalContact(
+							{
+								address: icontact.address,
+								username: icontact.username,
+							},
+							icontact.tags,
+							icontact.phones,
+							icontact.remark,
+							icontact.image,
+						);
+					}
+					// 添加标签
+					const add_tags_tasks = icontact.tags.map(async tag_name => {
+						const find_tag = has_tags.find(
+							t => t.name === tag_name,
+						);
+						if (find_tag) {
+							if (
+								find_tag.contact_ids.indexOf(icontact._id) ===
+								-1
+							) {
+								// 更新
+								find_tag.contact_ids.push(icontact._id);
+								this.updateTag(find_tag);
+							}
+							return;
+						}
+						const _id = await this.addTag(tag_name, [icontact._id]);
+						has_tags.push({
+							_id,
+							name: tag_name,
+							contact_ids: [icontact._id],
+							create_time: 0,
+							owner_publicKey: "",
+						});
+					});
+					await Promise.all(add_tags_tasks);
+					success_contacts.push(icontact);
+				})
+				.map((_, i) =>
+					_.catch(err => error_contacts.push(import_contacts[i])),
+				);
+			await Promise.all(import_contacts_tasks);
+		}
+
+		return {
+			protocol,
+			import_contacts,
+			success_contacts,
+			error_contacts,
+			skip_contacts,
+		};
+	}
 }

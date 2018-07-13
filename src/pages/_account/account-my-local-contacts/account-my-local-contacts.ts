@@ -134,6 +134,11 @@ export class AccountMyLocalContactsPage extends SecondLevelPage {
 		);
 	}
 
+	exportContactsToQrcode() {
+		const data = JSON.stringify(this.contact_list);
+		
+	}
+
 	/*隐藏功能*/
 	@asyncCtrlGenerator.tttttap()
 	@asyncCtrlGenerator.loading("账户查询中")

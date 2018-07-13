@@ -79,10 +79,6 @@ export type CommonResponseData<T> = {
 };
 @Injectable()
 export class AppFetchProvider extends EventEmitter {
-  private _onLine = navigator.onLine;
-  get onLine() {
-    return this._onLine;
-  }
   ioRequest<T>(path, query) {
     return new Promise<T>((resolve, reject) => {
       this.io.emit(path, query, res => {
@@ -98,6 +94,11 @@ export class AppFetchProvider extends EventEmitter {
   get io_url_path() {
     return AppSettingProvider.SERVER_URL + "/web";
   }
+  // 是否在线，一开始默认为联网状态
+  private _onLine = navigator.onLine;
+  get onLine() {
+    return this._onLine;
+  }
   private _io?: SocketIOClient.Socket;
   get io() {
     if (!this._io) {
@@ -109,6 +110,10 @@ export class AppFetchProvider extends EventEmitter {
         this.emit("ononline");
       });
       this._io.on("disconnect", () => {
+        this._onLine = false;
+        this.emit("onoffline");
+      });
+      this._io.on("connect_error", () => {
         this._onLine = false;
         this.emit("onoffline");
       });

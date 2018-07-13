@@ -157,7 +157,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   contact_metched_map = new Map<
     string,
-    Promise<string | undefined> | LocalContactModel | undefined
+    Promise<string | undefined> | string | undefined
   >();
   transaction_list: (TransactionModel & {
     senderNickname?: string;
@@ -191,7 +191,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
                 if (!address) {
                   return;
                 }
-                if (address === contact.address) {// 不查询TA
+                if (address === contact.address) {
+                  // 不查询TA
                   return;
                 }
                 // 这里必须用has判断，应该查询过的可能是空的，但是key还是有设置的
@@ -203,15 +204,16 @@ export class AccountContactDetailPage extends SecondLevelPage {
                   if (task_or_res instanceof Promise) {
                     return await task_or_res;
                   } else {
-                    return task_or_res.nickname;
+                    return task_or_res;
                   }
                 }
 
                 const task = this.localContact
                   .findContact(address)
                   .then(account => {
-                    this.contact_metched_map.set(address, account);
-                    return account && account.nickname;
+                    const nickanme = account && account.nickname;
+                    this.contact_metched_map.set(address, nickanme);
+                    return nickanme;
                   });
                 this.contact_metched_map.set(address, task);
 
@@ -279,7 +281,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
   }
   @asyncCtrlGenerator.tttttap() // 这个要放第一个
   @asyncCtrlGenerator.error()
-  @asyncCtrlGenerator.loading(undefined, undefined, {
+  @asyncCtrlGenerator.loading("加载全部的交易中", undefined, {
     cssClass: "can-tap blockchain-loading",
   })
   @asyncCtrlGenerator.single()
