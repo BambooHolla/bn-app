@@ -742,17 +742,13 @@ class BlockCard extends PIXI.Graphics {
       this.emit("refresh-frame-in-async");
     });
     this.on("pointerup", () => {
-      // // 可能被取消
-      // if (this._show_footer_container_mask === false) {
-      //   return;
-      // }
+      // 可能被取消
       this.toggleFooterContainerMask(false);
       this.emit("refresh-frame-in-async");
     });
     this.on("pointertap", () => {
       this.emit("click-footer", this.chain_height, this.block);
     });
-    this.footer_container.addChild(this.footer_container_mask);
     this.footer_container.addChild(this.view_block_detail_label);
     this.footer_container.addChild(this.view_block_detail_label_icon);
     // 尝试绘制
@@ -889,7 +885,6 @@ class BlockCard extends PIXI.Graphics {
   total_fee_content = new PIXI.Text("", this.style_detail_content);
 
   footer_container = new PIXI.Container();
-  footer_container_mask = new PIXI.Graphics();
   view_block_detail_label = new PIXI.Text("", this.style_footer_label);
   view_block_detail_label_icon = new PIXI.Text(
     "",
@@ -909,7 +904,6 @@ class BlockCard extends PIXI.Graphics {
       total_fee_label,
 
       footer_container,
-      footer_container_mask,
       view_block_detail_label,
       view_block_detail_label_icon,
     } = this;
@@ -944,9 +938,6 @@ class BlockCard extends PIXI.Graphics {
       footer_container.x = l;
       footer_container.y = t;
       // footer_container.cacheAsBitmap = false;
-      footer_container_mask.beginFill(0xffffff, 0.15);
-      footer_container_mask.drawRoundedRect(0, 0, w, h, h * 0.1);
-      footer_container_mask.endFill();
       // 查看区块
       view_block_detail_label.text = label_config.view_block_detail;
       view_block_detail_label.y = (h - W * 0.038) / 2;
