@@ -327,9 +327,9 @@ export class BlockServiceProvider extends FLP_Tool {
       // websocket连接上的时候更新
       this._updateHeight();
     });
-    // this.fetch.on("onoffline", () => {
-    //   this._updateHeight();
-    // });
+    this.fetch.on("onoffline", () => {
+      this._updateHeight();
+    });
     // 安装未处理交易的预估
     this._listenUnconfirmTransaction();
   }

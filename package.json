@@ -95,7 +95,7 @@
     "kjua": "^0.1.2",
     "memoizee": "^0.4.12",
     "nedb": "^1.8.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^4.9.2",
     "object-hash": "^1.3.0",
     "phonegap-plugin-barcodescanner": "^7.0.2",
     "phonegap-plugin-local-notification": "^1.0.1",
