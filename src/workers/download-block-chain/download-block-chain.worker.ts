@@ -107,7 +107,6 @@ const cmd_handler = {
     // 事件注册
     const cgs = [
       "start-verifier",
-      "do-verifier-from-1",
       "end-verifier",
       "start-sync",
       "end-sync",

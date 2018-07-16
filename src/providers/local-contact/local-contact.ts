@@ -145,9 +145,10 @@ export class LocalContactProvider extends EventEmitter {
 						my_contact.username ||
 						my_contact.address)[0];
 				}
-				const word: string | undefined =
-					pingyin_by && pinyin.convertToPinyin(pingyin_by);
-				if (!word) {
+				const word:
+					| { source: string; type: number; target: string }
+					| undefined = pinyin.parse(pingyin_by || "")[0];
+				if (!word || word.type === 3) {
 					unkown_letter.list.push(my_contact);
 					return;
 				}

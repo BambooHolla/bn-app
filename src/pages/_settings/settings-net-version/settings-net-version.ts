@@ -133,8 +133,20 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     let ls_json = prompt("请输入配置");
     if (ls_json) {
       try {
-        if (parseInt(ls_json).toString() == ls_json) {
-          ls_json = `{"LATEST_APP_VERSION_URL": "http://192.168.16.${ls_json}:8180/api/app/version/latest"}`;
+        const try_adds = ls_json.split(".");
+        if (
+          try_adds.length <= 4 &&
+          try_adds.every(add => parseInt(add).toString() == add)
+        ) {
+          const footer_adds = Array(3)
+            .concat(try_adds)
+            .slice(-4);
+          const adds = "192.168.16."
+            .split(".")
+            .map((add, i) => footer_adds[i] || add);
+          ls_json = `{"LATEST_APP_VERSION_URL": "http://${adds.join(
+            ".",
+          )}:8180/api/app/version/latest"}`;
         }
         const ls = JSON.parse(ls_json);
         this._importLS(ls);

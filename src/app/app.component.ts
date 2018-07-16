@@ -25,6 +25,7 @@ import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
+import { AppFetchProvider } from "../providers/app-fetch/app-fetch";
 import { MinServiceProvider } from "../providers/min-service/min-service";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
@@ -74,6 +75,7 @@ export class MyApp implements OnInit {
     public accountService: AccountServiceProvider,
     public loginService: LoginServiceProvider,
     public appSetting: AppSettingProvider,
+    public appFetch: AppFetchProvider,
     public minService: MinServiceProvider,
     public storage: Storage,
     public keyboard: Keyboard,
@@ -101,6 +103,7 @@ export class MyApp implements OnInit {
     global["benefitService"] = benefitService;
     global["userInfo"] = userInfo;
     global["appSetting"] = appSetting;
+    global["appFetch"] = appFetch;
     global["minService"] = minService;
     global["myapp"] = this;
     config.setTransition("common-transition", CommonTransition);
@@ -305,7 +308,7 @@ export class MyApp implements OnInit {
       const loading_opts: LoadingOptions = { cssClass: "logo-loading" };
       const loadinger = loading_content
         ? this.loadingCtrl.create({
-            content: loading_content||"",
+            content: loading_content || "",
             ...loading_opts,
           })
         : this.loadingCtrl.create(loading_opts);

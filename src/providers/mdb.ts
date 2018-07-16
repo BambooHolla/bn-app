@@ -1,7 +1,7 @@
 import { tryRegisterGlobal } from "../bnqkl-framework/helper";
 import Db from "./gangodb_core/db";
 import Collection from "./gangodb_core/collection";
-const mdb = new Db("ibt", 9, {
+const mdb = new Db("ibt", 11, {
   blocks: ["height", "id"],
   account: ["address", "publicKey"],
   voted_delegate: true,
@@ -10,7 +10,8 @@ const mdb = new Db("ibt", 9, {
   unconfirm_transaction: ["id"],
 
   contact_tags: ["owner_publicKey", "contact_ids:multiEntry"],
-  local_contact: true
+  local_contact: true,
+  peers: ["origin", "node_quality"],
 });
 tryRegisterGlobal("mdb", mdb);
 
@@ -35,6 +36,7 @@ export class Mdb<T> {
   insert(item: T) {
     return this._insert<T>(item);
   }
+  /*批量插入，尽可能地插入*/
   insertMany(list: T[]) {
     const async_arr = list.map(item => ({
       item,

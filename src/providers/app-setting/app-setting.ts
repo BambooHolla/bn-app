@@ -7,84 +7,44 @@ import {
   Executor,
 } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
-import * as IFM from "ifmchain-ibt";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
 import PIXI_SOUND from "pixi-sound";
-import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import {
+  afCtrl,
+  baseConfig,
+  getQueryVariable,
+} from "../../bnqkl-framework/helper";
 import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
 export { AppUrl };
-
-const net_version =
-  getQueryVariable("NET_VERSION") || localStorage.getItem("NET_VERSION") || "";
-
-const block_unit_time =
-  parseFloat(
-    getQueryVariable("BLOCK_UNIT_TIME") ||
-      localStorage.getItem("BLOCK_UNIT_TIME") ||
-      "",
-  ) ||
-  (net_version === "testnet" && 10e3);
-
-const testnet_flag = document.createElement("div");
-testnet_flag.id = "testnetFlag";
-testnet_flag.innerHTML = `TESTNET`;
-const SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
+import * as IFM from "ifmchain-ibt";
 
 @Injectable()
 export class AppSettingProvider extends CommonService {
-  static APP_VERSION = window["APP_VERSION"];
-  private static _SERVER_URL = "";
-  static get SERVER_URL() {
-    return this._SERVER_URL;
-  }
-  static set SERVER_URL(v: string) {
-    AppUrl.SERVER_URL = v;
-    this._SERVER_URL = v;
-  }
-  // static SERVER_URL = "http://47.104.142.234:6062";
-  static SEED_DATE = SEED_DATE;
-  static seedDateTimestamp = Math.floor(
-    Date.UTC(
-      SEED_DATE[0],
-      SEED_DATE[1],
-      SEED_DATE[2],
-      SEED_DATE[3],
-      SEED_DATE[4],
-      SEED_DATE[5],
-      SEED_DATE[6],
-    ) / 1000,
-  );
-  static seedDate: Date = new Date(AppSettingProvider.seedDateTimestamp * 1000);
-  static timezoneoffset = -AppSettingProvider.seedDate.getTimezoneOffset() * 60;
-  // static SERVER_URL = "http://test1.ifmchain.org:6062";
-  static SERVER_TIMEOUT = 1000;
-  static NET_VERSION = net_version || "mainnet";
-  static BLOCK_UNIT_TIME = block_unit_time || 128e3;
-  get BLOCK_UNIT_TIME() {
-    return AppSettingProvider.BLOCK_UNIT_TIME;
-  }
-  static IFMJS = IFM(AppSettingProvider.NET_VERSION);
-  static HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
+  static readonly APP_VERSION = baseConfig.APP_VERSION;
+  static readonly SERVER_URL = baseConfig.SERVER_URL;
+  static readonly SEED_DATE = baseConfig.SEED_DATE;
+  static readonly seedDateTimestamp = baseConfig.seedDateTimestamp;
+  static readonly seedDate = baseConfig.seedDate;
+  static readonly timezoneoffset = baseConfig.timezoneoffset;
+  static readonly SERVER_TIMEOUT = baseConfig.SERVER_TIMEOUT;
+  static readonly NET_VERSION = baseConfig.NET_VERSION;
+  static readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
+  static readonly IFMJS = IFM(AppSettingProvider.NET_VERSION);
+  static readonly HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,
     AppSettingProvider.SERVER_TIMEOUT,
   );
+  static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
+  static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
+
   APP_URL(path: string) {
     return new AppUrl(path);
   }
 
-  // 动态获取
-  static get LATEST_APP_VERSION_URL() {
-    return (
-      getQueryVariable("LATEST_APP_VERSION_URL") ||
-      localStorage.getItem("LATEST_APP_VERSION_URL") ||
-      "https://www.ifmchain.com/api/app/version/latest"
-    );
-  }
-  static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,
     public user: UserInfoProvider,
@@ -333,7 +293,7 @@ export class AppSettingProvider extends CommonService {
       setTranDur("0ms"); // 确保下面计算出来的值是正确的
       const bound_rect = testnet_flag.getBoundingClientRect(); //reflow
       setTran(pre_flag_transform);
-      FLP_Tool.raf(() => {
+      afCtrl.raf(() => {
         setTranDur(null);
         setTran((pre_flag_transform = `scale(${55 / bound_rect.width})`));
       });
@@ -502,57 +462,25 @@ export class AppSettingProvider extends CommonService {
     sync_progress_height: 0,
     /**当前是否在验证区块*/
     sync_is_verifying_block: false,
+    /**累计APP使用时长*/
+    acc_app_usage_duration: 0,
   };
 }
+
+export const testnet_flag = document.createElement("div");
+testnet_flag.id = "testnetFlag";
+testnet_flag.innerHTML = `TESTNET`;
+/*显示测试网络flag*/
+const HIDE_FLAG = getQueryVariable("HIDE_FLAG");
 if (
-  (AppSettingProvider.NET_VERSION === "testnet" &&
-    localStorage.getItem("HIDE_FLAG") !== "1") ||
-  localStorage.getItem("HIDE_FLAG") === "-1" // 强制显示flag
+  (baseConfig.NET_VERSION === "testnet" && HIDE_FLAG !== "1") ||
+  HIDE_FLAG === "-1" // 强制显示flag
 ) {
   const testnet_flag_wrapper = document.createElement("div");
   testnet_flag_wrapper.appendChild(testnet_flag);
   testnet_flag_wrapper.className = "testnet-flag";
   document.body.appendChild(testnet_flag_wrapper);
 }
-function getQueryVariable(variable) {
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split("=");
-    if (decodeURIComponent(pair[0]) == variable) {
-      return decodeURIComponent(pair[1]);
-    }
-  }
-}
-
-const server_host =
-  getQueryVariable("SERVER_HOST") || localStorage.getItem("SERVER_HOST") || "";
-if (location.hostname === "dev-bnlc.bnqkl.cn") {
-  AppSettingProvider.SERVER_URL = "http://dev-bnlc.bnqkl.cn:40001/api/v1/bngj/";
-} else if (server_host.startsWith("HOME")) {
-  let home_ip = location.hostname;
-  if (server_host.startsWith("HOME:")) {
-    home_ip = server_host.replace("HOME:", "").trim();
-  }
-  AppSettingProvider.SERVER_URL = `http://${home_ip}:40001/api/v1/bngj/`;
-} else if (location.hostname === "wzx-bnlc.bnqkl.cn" || server_host === "WZX") {
-  AppSettingProvider.SERVER_URL = "http://192.168.16.216:40001/api/v1/bngj/";
-} else if (server_host.startsWith("FULL:")) {
-  AppSettingProvider.SERVER_URL = server_host.replace("FULL:", "").trim();
-} else {
-  AppSettingProvider.SERVER_URL = "http://mainnet.ifmchain.org";
-}
-
-const server_url = localStorage.getItem("SERVER_URL");
-if (server_url) {
-  AppSettingProvider.SERVER_URL = server_url;
-}
-
-console.log(
-  "%cSERVER_URL:",
-  "font-size:2em;color:green;background-color:#DDD",
-  AppSettingProvider.SERVER_URL,
-);
 
 /**
  * 基于token的AsyncBehaviorSubjuet类型的属性/方法生成器

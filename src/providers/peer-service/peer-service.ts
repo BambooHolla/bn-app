@@ -8,25 +8,23 @@ import { AppSettingProvider, AppUrl } from "../app-setting/app-setting";
 import { BlockServiceProvider } from "../block-service/block-service";
 import * as IFM from "ifmchain-ibt";
 import { CommonService } from "../commonService";
+import { Mdb } from "../mdb";
 import * as TYPE from "./peer.types";
 export * from "./peer.types";
 const PEERS = [
-  // "http://mainnet.ifmchain.org",
-  "http://35.194.161.10:19002",
-  "http://35.194.129.80:19002",
-  "http://35.194.234.159:19002",
-  "http://35.185.142.124:19002",
+  { host: "http://mainnet.ifmchain.org", level: TYPE.PEER_LEVEL.TRUST },
 ];
 
 @Injectable()
 export class PeerServiceProvider extends CommonService {
+  peerDb = new Mdb<TYPE.LocalPeerModel>("peers");
   static DEFAULT_TIMEOUT = 2000;
   ifmJs: any;
   peer: any;
   peerList?: any[] = [];
   constructor(
     public http: HttpClient,
-    public storage: Storage,
+    // public storage: Storage,
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public blockService: BlockServiceProvider,
@@ -66,7 +64,7 @@ export class PeerServiceProvider extends CommonService {
         if (a.height !== b.height) {
           return b.height - a.height; // 高度从高到低
         }
-        return a.during - b.during; //延迟从低到高
+        return a.delay - b.delay; //延迟从低到高
       });
     }
 
@@ -78,9 +76,9 @@ export class PeerServiceProvider extends CommonService {
           this.emit("peer-ping-start", peer);
           const data = await this.fetch
             .timeout(PeerServiceProvider.DEFAULT_TIMEOUT)
-            .get<{ height: number }>(peer.full_url + this.PING_URL.path);
+            .get<{ height: number }>(peer.origin + this.PING_URL.path);
           const endTimestamp = new Date().getTime();
-          peer.during = endTimestamp - startTimestamp;
+          peer.delay = endTimestamp - startTimestamp;
           peer.height = data.height;
 
           peersArray.push(peer);
@@ -101,7 +99,7 @@ export class PeerServiceProvider extends CommonService {
     //对列表进行排序，根据高度进行排序，再根据速度进行筛选
     sortPeers();
 
-    await this.storage.set("peers", peers);
+    await this.peerDb.insertMany(peers);
 
     return peersArray;
   }
@@ -116,30 +114,30 @@ export class PeerServiceProvider extends CommonService {
     const peers = await this.getPeersLocal();
     //当不存在本地已保存的节点IP时
     //根据配置文件获取节点，再获取每一个节点的所有节点列表
-    if (!peers || peers.length === 0) {
-      let configPeers = PEERS;
-      //异步执行异步的循环
-      const peers_list = await Promise.all(
-        configPeers.map(async peer_url => {
-          let data = await this.fetch.get<{ peers: TYPE.PeerModel[] }>(
-            peer_url + this.PEERS_URL.path,
-          );
-          return data.peers.map(peer => {
-            return {
-              ...peer,
-              full_url: "http://" + peer.ip + ":" + peer.port,
-            } as TYPE.LocalPeerModel;
-          });
-        }),
-      );
-      const peer_list = peers_list.reduce(
-        (res, peers) => res.concat(peers),
-        [],
-      );
-      return peer_list;
-    } else {
-      return peers;
-    }
+
+    const peer_list = await Promise.all(
+      peers.map(async peer_info => {
+        const next_level = TYPE.getNextPeerLevel(peer_info.level);
+        const { peers: sec_peers } = await this.fetch.get<{
+          peers: TYPE.PeerModel[];
+        }>(peer_info.origin + this.PEERS_URL.path);
+        return sec_peers.map(sec_peer_info => {
+          const sec_peer: TYPE.LocalPeerModel = {
+            ...sec_peer_info,
+            origin: "http://" + sec_peer_info.ip + ":" + sec_peer_info.port,
+            level: next_level,
+            delay: -1,
+            acc_use_duration: 0,
+            latest_verify_fail_time: 0,
+            acc_verify_total_times: 0,
+            acc_verify_success_times: 0,
+            create_time: Date.now(),
+          };
+          return sec_peer;
+        });
+      }),
+    );
+    return peer_list.reduce((res, peers) => res.concat(peers), []);
   }
 
   /**
@@ -147,61 +145,37 @@ export class PeerServiceProvider extends CommonService {
    * @param peerList
    */
   async getAllPeersFromPeerList(peerList) {
-    let peers: string[] = [];
+    const all_peers: string[] = [];
     await Promise.all(
-      peerList.map(async peer => {
+      peerList.map(async peer_host_info => {
+        let peer_host = "";
         let data: any;
-        if (peer.hasOwnProperty("ip")) {
-          await this.fetch
-            .get<{ peers: TYPE.PeerModel[] }>(
-              this.PEERS_URL.disposableServerUrl(
-                "http://" + peer.ip + ":" + peer.port,
-              ),
-            )
-            .then(res => {
-              if (res.peers) {
-                for (var i of res.peers) {
-                  if (i.state == 2) {
-                    peers.unshift(i.ip + ":" + i.port);
-                  } else if (i.state == 1) {
-                    peers.push(i.ip + ":" + i.port);
-                  }
-                }
-              }
-            })
-            .catch();
+        if ("ip" in peer_host_info) {
+          peer_host =
+            "http://" +
+            peer_host_info.ip +
+            (peer_host_info.port ? ":" + peer_host_info.port : "");
+        } else if (typeof peer_host_info == "string") {
+          peer_host = peer_host_info;
         }
-        if (typeof peer == "string") {
-          await this.fetch
-            .get<{ peers: any[] }>(this.PEERS_URL.disposableServerUrl(peer))
-            .then(res => {
-              if (res.peers) {
-                for (var i of res.peers) {
-                  if (i.state == 2) {
-                    peers.unshift(i.ip + ":" + i.port);
-                  } else if (i.state == 1) {
-                    peers.push(i.ip + ":" + i.port);
-                  }
-                }
-              }
-            })
-            .catch();
+        if (!peer_host) {
+          return;
         }
+        const { peers } = await this.fetch.get<{ peers: TYPE.PeerModel[] }>(
+          this.PEERS_URL.disposableServerUrl(peer_host),
+        );
 
-        // debugger
-        // if(data.peers) {
-        //   for (var i of data.peers) {
-        //     if(i.state == 2) {
-        //       peers.unshift(i.ip + ':' + i.port);
-        //     }else if(i.state == 1) {
-        //       peers.push( i.ip + ':' + i.port);
-        //     }
-        //   }
-        // }
+        for (var i = 0, peer: typeof peers[0]; (peer = peers[i]); i += 1) {
+          if (peer.state == 2) {
+            all_peers.unshift(peer.ip + ":" + peer.port);
+          } else if (peer.state == 1) {
+            all_peers.push(peer.ip + ":" + peer.port);
+          }
+        }
       }),
     );
 
-    return peers;
+    return all_peers;
   }
 
   /**
@@ -233,7 +207,12 @@ export class PeerServiceProvider extends CommonService {
    * 从未保存过时返回空数组
    */
   async getPeersLocal() {
-    return ((await this.storage.get("peers")) as TYPE.LocalPeerModel[]) || [];
+    return (
+      ((await this.peerDb.find(
+        {},
+        { sort: { node_quality: -1 } },
+      )) as TYPE.LocalPeerModel[]) || []
+    );
   }
 
   /**

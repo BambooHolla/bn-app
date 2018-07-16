@@ -92,7 +92,7 @@ export class LoginServiceProvider extends FLP_Tool {
       return;
     }
     const res = await this.fetch
-      .forceNetwork(navigator.onLine)
+      .forceNetwork(this.fetch.onLine)
       .get<any>(this.SEARCH_ACCOUNT_URL, {
         search: {
           address: userinfo.address,

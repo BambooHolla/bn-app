@@ -1,4 +1,3 @@
-import { Storage } from "@ionic/storage";
 import { Device } from "@ionic-native/device";
 import { Injectable } from "@angular/core";
 import { Http, Headers, RequestOptionsArgs } from "@angular/http";
@@ -14,7 +13,8 @@ import {
   HTTP_Method,
 } from "../db-cache/db-cache";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
-import io from "socket.io-client";
+// import socketio from "socket.io-client";
+import { getSocketIOInstance, baseConfig } from "../../bnqkl-framework/helper";
 
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
@@ -91,35 +91,14 @@ export class AppFetchProvider extends EventEmitter {
     });
   }
   ServerResError = ServerResError;
-  get io_url_path() {
-    return AppSettingProvider.SERVER_URL + "/web";
-  }
-  // 是否在线，一开始默认为联网状态
-  private _onLine = navigator.onLine;
-  get onLine() {
-    return this._onLine;
-  }
-  private _io?: SocketIOClient.Socket;
+  webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
   get io() {
-    if (!this._io) {
-      this._io = io(this.io_url_path, {
-        transports: ["websocket"],
-      });
-      this._io.on("connect", () => {
-        this._onLine = true;
-        this.emit("ononline");
-      });
-      this._io.on("disconnect", () => {
-        this._onLine = false;
-        this.emit("onoffline");
-      });
-      this._io.on("connect_error", () => {
-        this._onLine = false;
-        this.emit("onoffline");
-      });
-    }
-    return this._io;
+    return this.webio.io;
   }
+  get onLine() {
+    return this.webio.onLine;
+  }
+
   wsHttp: any = {};
   async ioEmitAsync<T>(path, body) {
     return this._handlePromise(
@@ -136,7 +115,6 @@ export class AppFetchProvider extends EventEmitter {
   constructor(
     public http: Http,
     public appSetting: AppSettingProvider,
-    public storage: Storage,
     public translateService: TranslateService,
     public dbCache: DbCacheProvider,
     public device: Device,
@@ -166,6 +144,12 @@ export class AppFetchProvider extends EventEmitter {
       this.wsHttp[method] = (url: string, body, options) => {
         return wsHttpReq(method, url, body);
       };
+    });
+    // 根据web的线路情况来绑定在线情况
+    ["ononline", "onoffline"].forEach(bind_io_ename => {
+      this.webio.on(bind_io_ename, (...args) => {
+        this.emit(bind_io_ename, ...args);
+      });
     });
   }
 

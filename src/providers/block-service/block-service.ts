@@ -122,7 +122,7 @@ export class BlockServiceProvider extends FLP_Tool {
         if (Number.isFinite(limit) && blocks.length == limit) {
           return { reqs: [], cache };
         }
-        if (navigator.onLine) {
+        if (this.fetch.onLine) {
           return { reqs: [request_opts], cache };
         } else {
           return { reqs: [], cache };
@@ -358,7 +358,7 @@ export class BlockServiceProvider extends FLP_Tool {
     download_worker.postMessage({
       NET_VERSION: AppSettingProvider.NET_VERSION,
       cmd: "syncBlockChain",
-      webio_path: this.fetch.io_url_path,
+      webio_path: this.fetch.webio.io_url_path,
       max_end_height,
       req_id,
     });
@@ -442,7 +442,7 @@ export class BlockServiceProvider extends FLP_Tool {
     download_worker.postMessage({
       NET_VERSION: AppSettingProvider.NET_VERSION,
       cmd: "download",
-      webio_path: this.fetch.io_url_path,
+      webio_path: this.fetch.webio.io_url_path,
       startHeight,
       endHeight,
       max_end_height,

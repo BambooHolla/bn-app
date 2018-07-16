@@ -28,9 +28,6 @@ import {
   VoucherServiceProvider,
   ExchangeStatus,
 } from "../../providers/voucher-service/voucher-service";
-import {
-  AppFetchProvider
-} from "../../providers/app-fetch/app-fetch";
 
 function generateRollOutLog(len = 20, from = Date.now()) {
   return Array.from(Array(len)).map(_ => {
@@ -51,7 +48,6 @@ export class TabPayPage extends FirstLevelPage {
     public transactionService: TransactionServiceProvider,
     public voucherService: VoucherServiceProvider,
     public cdRef: ChangeDetectorRef, // public network: Network
-    public fetch:AppFetchProvider
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
@@ -107,7 +103,7 @@ export class TabPayPage extends FirstLevelPage {
       );
     }
     // todo: check voucher is my
-    if (this.fetch.onLine) {
+    if (this.webio.onLine) {
       await this.putThirdTransaction(tran);
     } else {
       await this.showReceiptToVoucher(tran);
@@ -240,7 +236,7 @@ export class TabPayPage extends FirstLevelPage {
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
     });
-    let online = this.fetch.onLine;
+    let online = this.webio.onLine;
     if (online) {
       try {
         const { transfer } = await this._submit(

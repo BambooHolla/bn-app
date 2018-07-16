@@ -14,7 +14,14 @@ import {
   LoadingOptions,
 } from "ionic-angular";
 import { PromiseOut } from "./PromiseExtends";
-import { is_dev, tryRegisterGlobal, global } from "./helper";
+import {
+  is_dev,
+  tryRegisterGlobal,
+  global,
+  getSocketIOInstance,
+  afCtrl,
+  baseConfig
+} from "./helper";
 export { is_dev, tryRegisterGlobal, global };
 import { getErrorFromAsyncerror, isErrorFromAsyncerror } from "./const";
 
@@ -36,7 +43,17 @@ export class FLP_Tool {
 
   _event?: EventEmitter;
   get event() {
-    return this._event || (this._event = new EventEmitter());
+    if (!this._event) {
+      const event = new EventEmitter();
+      this._event = event;
+      // 根据web的线路情况来绑定在线情况
+      ["ononline", "onoffline"].forEach(bind_io_ename => {
+        this.webio.on(bind_io_ename, (...args) => {
+          event.emit(bind_io_ename, ...args);
+        });
+      });
+    }
+    return this._event;
   }
   tryEmit(eventanme, ...args) {
     if (this._event) {
@@ -82,16 +99,20 @@ export class FLP_Tool {
   static get isInCordova() {
     return window["cordova"] && !(window["cordova"] instanceof HTMLElement);
   }
+  static webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+  get webio() {
+    return FLP_Tool.webio;
+  }
   static netWorkConnection() {
-    if (navigator.onLine) {
+    if (this.webio.onLine) {
       return Promise.resolve();
     }
     return new Promise<void>(cb => {
       const once = () => {
         cb();
-        window.removeEventListener("ononline", once);
+        this.webio.off("ononline", once);
       };
-      window.addEventListener("ononline", once);
+      this.webio.on("ononline", once);
     });
   }
   netWorkConnection = FLP_Tool.netWorkConnection;
@@ -452,64 +473,10 @@ export class FLP_Tool {
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
   static removeProtoArray = removeProtoArray;
-  static _raf_id_acc = 0;
-  static _raf_map = {};
-  private static _raf_register(callback) {
-    FLP_Tool._raf_map[++FLP_Tool._raf_id_acc] = callback;
-    if (FLP_Tool._cur_raf_id === null) {
-      FLP_Tool._cur_raf_id = FLP_Tool.native_raf(t => {
-        const raf_map = FLP_Tool._raf_map;
-        FLP_Tool._raf_map = {};
-        FLP_Tool._cur_raf_id = null;
-        for (var _id in raf_map) {
-          const cb = raf_map[_id];
-          try {
-            cb(t);
-          } catch (err) {
-            console.error(err);
-          }
-        }
-      });
-    }
-    return FLP_Tool._raf_id_acc;
-  }
-  private static _raf_unregister(id) {
-    delete FLP_Tool._raf_map[id];
-    var has_size = false;
-    for (var _k in FLP_Tool._raf_map) {
-      has_size = true;
-      break;
-    }
-    if (has_size && FLP_Tool._cur_raf_id !== null) {
-      FLP_Tool.native_unraf(FLP_Tool._cur_raf_id);
-      FLP_Tool._cur_raf_id = null;
-    }
-  }
-  private static _cur_raf_id: number | null = null;
-  static native_raf(callback) {
-    const raf = (
-      window["__zone_symbol__requestAnimationFrame"] ||
-      window["webkitRequestAnimationFrame"]
-    ).bind(window);
-    this.native_raf = raf;
-    return raf(callback);
-  }
-  static native_unraf(rafId) {
-    const caf = (
-      window["__zone_symbol__cancelAnimationFrame"] ||
-      window["webkitCancelAnimationFrame"]
-    ).bind(window);
-    this.native_unraf = caf;
-    return caf(rafId);
-  }
 
-  static raf(callback) {
-    return FLP_Tool._raf_register(callback);
-  }
+  static raf: typeof afCtrl.raf = afCtrl.raf.bind(afCtrl);
   raf = FLP_Tool.raf;
-  static caf(rafId) {
-    return FLP_Tool._raf_unregister(rafId);
-  }
+  static caf: typeof afCtrl.caf = afCtrl.caf.bind(afCtrl);
   caf = FLP_Tool.caf;
 }
 

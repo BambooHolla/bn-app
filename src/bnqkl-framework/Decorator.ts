@@ -25,6 +25,7 @@ import {
 } from "./FLP_Tool";
 export { formatAndTranslateMessage, translateMessage };
 import { AbortError, PromiseOut } from "./PromiseExtends";
+import {afCtrl} from './helper'
 
 function getTranslateSync(key: string | string[], interpolateParams?: Object) {
   return window["translate"].instant(key, interpolateParams);
@@ -154,7 +155,7 @@ export function asyncErrorWrapGenerator(
                     ERROR_LAYER_MAP.set(p_key, p);
                     p.present();
                     p.onDidDismiss(() => {
-                      FLP_Tool.raf(() => {
+                      afCtrl.raf(() => {
                         ERROR_LAYER_MAP.delete(p_key);
                       });
                     });
@@ -312,7 +313,7 @@ export function asyncLoadingWrapGenerator(
         loading.present();
         const checkLoadingPageRef = () => {
           if (!loading.pageRef()) {
-            return FLP_Tool.raf(checkLoadingPageRef);
+            return afCtrl.raf(checkLoadingPageRef);
           }
           if (
             this.content instanceof Content &&
@@ -323,7 +324,7 @@ export function asyncLoadingWrapGenerator(
             console.log(loadingEle, this.content._hdrHeight);
           }
         };
-        FLP_Tool.raf(checkLoadingPageRef);
+        afCtrl.raf(checkLoadingPageRef);
       };
       const loading_present = (...args) => {
         if (id_info) {

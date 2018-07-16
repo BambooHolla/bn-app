@@ -301,18 +301,16 @@ export class BlockChainDownloader extends EventEmitter {
   async syncFullBlockchain(/*range_list:Range[],*/ max_end_height: number) {
     const sync_id = ++this._sync_id_acc;
     const rangeHelper = new RangeHelper(1, max_end_height - 1);
-    let emited_first_verifier = false;
-    this.emit("start-verifier", { ranges: rangeHelper.ranges });
-    for await (var _ranges of this.verifier.useableLocalBlocksFinder()) {
-      for (var _range of _ranges) {
-        if(emited_first_verifier===false&&_range.start===1){
-          emited_first_verifier = true;
-          this.emit("do-verifier-from-1");
+    // 因为现在区块是从1开始下载，所以必然要有1，才需要进行校验，否则直接从头下载到尾
+    if (await this.blockDb.has({ height: 1 })) {
+      this.emit("start-verifier", { ranges: rangeHelper.ranges });
+      for await (var _ranges of this.verifier.useableLocalBlocksFinder()) {
+        for (var _range of _ranges) {
+          rangeHelper.split(_range.start, _range.end);
         }
-        rangeHelper.split(_range.start, _range.end);
       }
+      this.emit("end-verifier", { ranges: rangeHelper.ranges });
     }
-    this.emit("end-verifier", { ranges: rangeHelper.ranges });
     this.emit("start-sync", {});
     console.log("download ranges:", rangeHelper.ranges);
     for (var _range of rangeHelper.ranges) {
@@ -326,7 +324,7 @@ export class BlockChainDownloader extends EventEmitter {
       );
     }
     this.emit("end-sync", {});
-    /** TODO: 
+    /** TODO:
      * 在已经确保区块链已经完整的情况下，再次运行 useableLocalBlocksFinder，
      * 拿出不是1~max_end_height的数据片，进行删除，因为那些是冗余数据
      */

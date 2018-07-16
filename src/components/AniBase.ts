@@ -1,6 +1,7 @@
 import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
 import { tryRegisterGlobal, FLP_Tool } from "../bnqkl-framework/FLP_Tool";
+import { afCtrl } from "../bnqkl-framework/helper";
 import * as FontFaceObserver from "fontfaceobserver";
 export const ifmicon_font_ready = new FontFaceObserver("ifmicon").load();
 
@@ -12,7 +13,7 @@ function _tick(time) {
     this.update(time);
     // Listener side effects may have modified ticker state.
     if (this.started && this._requestId === null && this._head.next) {
-      this._requestId = FLP_Tool.raf(() => this._tick());
+      this._requestId = afCtrl.raf(() => this._tick());
     }
   }
 }
@@ -21,12 +22,12 @@ PIXI.ticker.Ticker.prototype["_requestIfNeeded"] = function _requestIfNeeded() {
   if (this._requestId === null && this._head.next) {
     // ensure callbacks get correct delta
     this.lastTime = performance.now();
-    this._requestId = FLP_Tool.raf(() => this._tick());
+    this._requestId = afCtrl.raf(() => this._tick());
   }
 };
 PIXI.ticker.Ticker.prototype["_cancelIfNeeded"] = function _cancelIfNeeded() {
   if (this._requestId !== null) {
-    FLP_Tool.caf(this._requestId);
+    afCtrl.caf(this._requestId);
     this._requestId = null;
   }
 };
@@ -532,9 +533,9 @@ export const Easing = {
     }
     return (
       a *
-      Math.pow(2, -10 * (k -= 1)) *
-      Math.sin(((k - s) * (2 * Math.PI)) / p) *
-      0.5 +
+        Math.pow(2, -10 * (k -= 1)) *
+        Math.sin(((k - s) * (2 * Math.PI)) / p) *
+        0.5 +
       1
     );
   },

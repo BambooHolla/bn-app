@@ -13,6 +13,7 @@ import {
 import { AniBase, ifmicon_font_ready } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { afCtrl } from "../../bnqkl-framework/helper";
 import * as PIXI from "pixi.js";
 import * as PIXI_Filters from "pixi-filters";
 import { TranslateService } from "@ngx-translate/core";
@@ -1068,14 +1069,14 @@ class BlockCard extends PIXI.Graphics {
       if (this._cache_as_bitmap_ti) {
         return;
       } else {
-        this._cache_as_bitmap_ti = FLP_Tool.raf(() => {
+        this._cache_as_bitmap_ti = afCtrl.raf(() => {
           this._cache_as_bitmap_ti = undefined;
           this.cacheAsBitmap = true;
         });
       }
     } else {
       if (this._cache_as_bitmap_ti) {
-        FLP_Tool.caf(this._cache_as_bitmap_ti);
+        afCtrl.caf(this._cache_as_bitmap_ti);
         this._cache_as_bitmap_ti = undefined;
       }
       this.cacheAsBitmap = false;

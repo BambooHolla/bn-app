@@ -58,7 +58,6 @@ export class TabChainPage extends FirstLevelPage {
 
     this.blockService.event.on("EXPECTBLOCK:CHANGED", expect_block => {
       this.unconfirm_block = expect_block;
-      this.markForCheck();
     });
     // this.registerViewEvent(this)
   }
@@ -70,12 +69,11 @@ export class TabChainPage extends FirstLevelPage {
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
-  unconfirm_block?: UnconfirmBlockModel;
+  @TabChainPage.markForCheck unconfirm_block?: UnconfirmBlockModel;
   // 在应用启动的时候就需要进行一次数据加载
   @TabChainPage.onInit
   async initUnconfirmBlock() {
     await this.loadUnconfirmBlock();
-    this.markForCheck();
   }
   async loadUnconfirmBlock() {
     const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
@@ -90,16 +88,14 @@ export class TabChainPage extends FirstLevelPage {
 
   @ViewChild("fixedHeader") fixedHeader!: ElementRef;
   @ViewChild(ChainListComponent) chainList!: ChainListComponent;
-  chain_list_view_able = false;
+  @TabChainPage.markForCheck chain_list_view_able = false;
   @TabChainPage.onInit
   checkChainListViewAble() {
     if (!(this.chain_list_view_able = this.chainList.renderer_started)) {
       this.chainList.once("renderer-started", () => {
         this.chain_list_view_able = true;
-        this.markForCheck();
       });
     }
-    this.markForCheck();
   }
 
   @TabChainPage.didEnter
@@ -107,7 +103,6 @@ export class TabChainPage extends FirstLevelPage {
     this.chainList.list_padding_top = this.chainList.pt(
       this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/,
     );
-    this.markForCheck();
   }
 
   pullToTop() {
@@ -151,9 +146,9 @@ export class TabChainPage extends FirstLevelPage {
   }
 
   /*下载进度的相关属性*/
-  is_show_sync_loading = false;
-  sync_progress_blocks = 0;
-  sync_is_verifying_block = false;
+  @TabChainPage.markForCheck is_show_sync_loading = false;
+  @TabChainPage.markForCheck sync_progress_blocks = 0;
+  @TabChainPage.markForCheck sync_is_verifying_block = false;
 
   @TabChainPage.onInit
   bindSyncInfo() {
@@ -163,7 +158,6 @@ export class TabChainPage extends FirstLevelPage {
       "changed@share_settings.is_syncing_blocks",
       () => {
         this.is_show_sync_loading = this.appSetting.share_settings.is_syncing_blocks;
-        this.markForCheck();
       },
       true,
     );
@@ -173,7 +167,6 @@ export class TabChainPage extends FirstLevelPage {
       "changed@share_settings.sync_is_verifying_block",
       () => {
         this.sync_is_verifying_block = this.appSetting.share_settings.sync_is_verifying_block;
-        this.markForCheck();
       },
       true,
     );
@@ -183,7 +176,6 @@ export class TabChainPage extends FirstLevelPage {
       "changed@share_settings.sync_progress_blocks",
       () => {
         this.sync_progress_blocks = this.appSetting.share_settings.sync_progress_blocks;
-        this.markForCheck();
       },
       true,
     );
@@ -204,27 +196,34 @@ export class TabChainPage extends FirstLevelPage {
       );
       this._download_task = task;
       // this._download_worker = worker;
-      const onmessage = e => {
+      const onmessage = async e => {
         const msg = e.data;
         // console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
+          // 在第一次同意同步区块链的时候，要显示同步窗口
+          const firstAutoOpenChainSyncDetail = () => {
+            if (!this.appSetting.share_settings.is_agree_to_sync_blockchain) {
+              this.appSetting.share_settings.is_agree_to_sync_blockchain = true;
+              this.openChainSyncDetail();
+            }
+          };
           switch (msg.type) {
-            // 校验开始，显示同步loading
+            // 校验开始，显示协议，并显示 sync-detail
             case "start-verifier":
-              if (!this.appSetting.share_settings.is_agree_to_sync_blockchain) {
-                this.appSetting.share_settings.is_agree_to_sync_blockchain = true;
-                this.openChainSyncDetail();
-              }
-              break;
-            case "do-verifier-from-1":
               if (!this.appSetting.settings.is_known_verifier_will_heat_up) {
                 this.appSetting.settings.is_known_verifier_will_heat_up = true;
-                this.waitTipDialogConfirm(
+                await this.waitTipDialogConfirm(
                   "@@VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP",
                 ).then(v => {
                   this.appSetting.settings.is_known_verifier_will_heat_up = v;
                 });
               }
+              // 显示 sync-detail
+              firstAutoOpenChainSyncDetail();
+              break;
+            // 下载开始，显示 sync-detail
+            case "start-download":
+              firstAutoOpenChainSyncDetail();
               break;
             case "error":
               this.showErrorDialog(
@@ -260,7 +259,6 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.addEvent("HEIGHT:CHANGED")
   async watchHeightChange(height) {
     await this.loadUnconfirmBlock();
-    this.markForCheck();
   }
 
   @ViewChild("progressCircle", { read: ElementRef })

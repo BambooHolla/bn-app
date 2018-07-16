@@ -62,7 +62,7 @@ export class ContactServiceProvider {
           following: [],
           success: true,
         };
-        if (navigator.onLine) {
+        if (this.fetch.onLine) {
           // 默认联网获取
           return { reqs: [request_opts], cache };
         }
