@@ -343,7 +343,7 @@ export class TabVotePage extends FirstLevelPage {
       this.blockService.round_end_time &&
       this.page_status === VotePage.Countdown
     ) {
-      // 一次性赋值，只需要赋值一次
+      // 初始化赋值，区块高度变动的时候会进行校准
       this._countdown_round_end_time = this.blockService.round_end_time;
       this.effect_countdown.autoStartAnimation();
     }
@@ -714,8 +714,10 @@ export class TabVotePage extends FirstLevelPage {
         this.chain_mesh.forceRenderOneFrame();
       }, 1000);
     }
-    // 会更新 blockService.round_end_time
-    this.markForCheck();
+    if (this.page_status === VotePage.Countdown) {
+      // 更新 blockService.round_end_time
+      this._countdown_round_end_time = this.blockService.round_end_time;
+    }
   }
 
   private get _pre_ani_round() {

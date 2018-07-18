@@ -30,6 +30,7 @@ import { MinServiceProvider } from "../providers/min-service/min-service";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
 import { UserInfoProvider } from "../providers/user-info/user-info";
+import { PeerServiceProvider } from "../providers/peer-service/peer-service";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { global } from "../bnqkl-framework/helper";
@@ -86,6 +87,7 @@ export class MyApp implements OnInit {
     public toastCtrl: ToastController,
     public modalController: ModalController,
     public userInfo: UserInfoProvider,
+    public peerService: PeerServiceProvider,
     public faio: FingerprintAIO,
     public androidPermissions: AndroidPermissions,
   ) {
@@ -105,6 +107,7 @@ export class MyApp implements OnInit {
     global["appSetting"] = appSetting;
     global["appFetch"] = appFetch;
     global["minService"] = minService;
+    global["peerService"] = peerService;
     global["myapp"] = this;
     config.setTransition("common-transition", CommonTransition);
     config.setTransition("custom-dialog-pop-in", CustomDialogPopIn);

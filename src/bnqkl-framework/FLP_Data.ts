@@ -79,4 +79,25 @@ export class FLP_Data extends FLP_Form {
       setTimeout(this.refreshShowList.bind(this), 1000);
     }
   }
+
+  mixArrayByUnshift<T>(
+    target_list: T[],
+    sub_list: T[],
+    opts: {
+      mix_key: string;
+    },
+  ) {
+    const first_ele = target_list[0];
+    if (!first_ele) {
+      return target_list.concat(sub_list);
+    }
+    const end_index = sub_list.findIndex(
+      item => item[opts.mix_key] === first_ele[opts.mix_key],
+    );
+    if (end_index === -1) {
+      return sub_list.concat(target_list);
+    } else {
+      return sub_list.slice(0, end_index).concat(target_list);
+    }
+  }
 }

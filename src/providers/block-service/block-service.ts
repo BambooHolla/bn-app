@@ -28,6 +28,7 @@ import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
+import { AppUrl } from "../../bnqkl-framework/helper";
 import { getJsonObjectByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
 import {
   DbCacheProvider,
@@ -56,6 +57,11 @@ export class BlockServiceProvider extends FLP_Tool {
 
   private _blockDb_inited = new PromisePro();
   blockDb: Mdb<TYPE.BlockModel>;
+
+  oneTimeUrl(app_url: AppUrl, server_url: string) {
+    app_url.disposableServerUrl(server_url);
+    return this;
+  }
 
   constructor(
     public http: HttpClient,
@@ -306,7 +312,7 @@ export class BlockServiceProvider extends FLP_Tool {
       this.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
       this.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
       console.log(
-        "%c区块更新",
+        `%c区块更新 ${new Date().toLocaleString()}`,
         "color:green;background-color:#eee;font-size:1.2rem",
       );
 

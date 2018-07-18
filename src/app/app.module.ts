@@ -183,7 +183,7 @@ const heightLevelModules = [
       autoFocusAssist: false,
       statusbarPadding: true,
       swipeBackEnabled: false,
-      preloadModules: true,
+      preloadModules: false,
       // tabsHideOnSubPages: true,// 这个有BUG，不要用。
     }),
     ComponentsModule,

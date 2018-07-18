@@ -20,6 +20,7 @@ import {
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
+import { getQueryVariable } from "../../bnqkl-framework/helper";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
 import {
   BlockServiceProvider,
@@ -119,7 +120,7 @@ export class TabChainPage extends FirstLevelPage {
   // })
   @TabChainPage.onInit
   async checkBlockchainComplete() {
-    if (localStorage.getItem("AUTO_DOWNLOAD_BLOCKCHAINE") === "disabled") {
+    if (getQueryVariable("AUTO_DOWNLOAD_BLOCKCHAINE") === "disabled") {
       return;
     }
     await this.netWorkConnection();

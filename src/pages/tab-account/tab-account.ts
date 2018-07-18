@@ -29,7 +29,7 @@ export class TabAccountPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
     this.registerViewEvent(this.userInfo, "changed", () => {
-      this.cdRef.markForCheck();
+      this.markForCheck();
     });
     fetch.on("ononline", () => {
       this.checkAndroidUpdate();
@@ -71,11 +71,10 @@ export class TabAccountPage extends FirstLevelPage {
       .present();
   }
 
-  voucher_total_amount = 0;
+  @TabAccountPage.markForCheck voucher_total_amount = 0;
   @TabAccountPage.willEnter
   async initVoucherData() {
     this.voucher_total_amount = await this.voucherService.getTotalAmount();
-    this.cdRef.markForCheck();
   }
 
   @TabAccountPage.onInit

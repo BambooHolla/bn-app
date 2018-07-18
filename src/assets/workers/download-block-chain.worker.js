@@ -10573,7 +10573,7 @@ if ('undefined' !== typeof module) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.sleep = exports.DelayPromise = exports.PromisePro = exports.AbortError = exports.PromiseOut = undefined;
+exports.ParallelPool = exports.sleep = exports.DelayPromise = exports.PromisePro = exports.AbortError = exports.PromiseOut = undefined;
 exports.autoAbort = autoAbort;
 
 var _eventemitter = require("eventemitter3");
@@ -10581,6 +10581,75 @@ var _eventemitter = require("eventemitter3");
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : new P(function (resolve) {
+                resolve(result.value);
+            }).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __rest = undefined && undefined.__rest || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function") for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0) t[p[i]] = s[p[i]];
+    return t;
+};
+var __await = undefined && undefined.__await || function (v) {
+    return this instanceof __await ? (this.v = v, this) : new __await(v);
+};
+var __asyncGenerator = undefined && undefined.__asyncGenerator || function (thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []),
+        i,
+        q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () {
+        return this;
+    }, i;
+    function verb(n) {
+        if (g[n]) i[n] = function (v) {
+            return new Promise(function (a, b) {
+                q.push([n, v, a, b]) > 1 || resume(n, v);
+            });
+        };
+    }
+    function resume(n, v) {
+        try {
+            step(g[n](v));
+        } catch (e) {
+            settle(q[0][3], e);
+        }
+    }
+    function step(r) {
+        r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);
+    }
+    function fulfill(value) {
+        resume("next", value);
+    }
+    function reject(value) {
+        resume("throw", value);
+    }
+    function settle(f, v) {
+        if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]);
+    }
+};
 
 /**
  * 将resolve和reject暴露出来
@@ -10712,6 +10781,83 @@ exports.DelayPromise = DelayPromise;
 const sleep = exports.sleep = ms => {
     return new Promise(cb => setTimeout(cb, ms));
 };
+class ParallelPool {
+    constructor(max_parallel_num = 2) {
+        this.max_parallel_num = max_parallel_num;
+        this._tasks = [];
+        this._tasks_executor = [];
+    }
+    addTaskExecutor(executor, opts = {}) {
+        this._tasks_executor.push(executor);
+        if (opts.auto_run) {
+            return this.waitNext();
+        }
+    }
+    get is_done() {
+        return this._tasks.length === 0 && this._tasks_executor.length === 0;
+    }
+    get has_next() {
+        return this._tasks.length > 0 || this._tasks_executor.length > 0;
+    }
+    get is_full() {
+        return this._tasks.length >= this.max_parallel_num;
+    }
+    waitNext() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.has_next) {
+                while (!this.is_full) {
+                    const executor = this._tasks_executor.shift();
+                    if (!executor) {
+                        break;
+                    }
+                    const task = executor();
+                    const task_auto_rm = task /*finally*/
+                    .then(res => {
+                        return { assets: res, finally_rm };
+                    }).catch(err => {
+                        return { error: err, finally_rm };
+                    });
+                    const finally_rm = () => {
+                        const i = this._tasks.indexOf(task_auto_rm);
+                        if (i !== -1) {
+                            this._tasks.splice(i, 1);
+                        }
+                    };
+                    this._tasks.push(task_auto_rm);
+                }
+                const result = yield Promise.race(this._tasks);
+                const { finally_rm } = result,
+                      res = __rest(result, ["finally_rm"]);
+                finally_rm(); // 移除这个要返回的
+                return res;
+            }
+        });
+    }
+    yieldResults(opts) {
+        return __asyncGenerator(this, arguments, function* yieldResults_1() {
+            if (opts.skip_when_no_full && this._tasks.length + this._tasks_executor.length < this.max_parallel_num) {
+                return yield __await(void 0);
+            }
+            let yield_num = typeof opts.yield_num === "number" ? opts.yield_num | 0 : Infinity;
+            while (this.has_next) {
+                if (yield_num === 0) {
+                    break;
+                }
+                yield_num -= 1;
+                const task_result = yield __await(this.waitNext());
+                if (task_result) {
+                    if ("assets" in task_result) {
+                        yield yield __await(task_result.assets);
+                    } else if (opts.ignore_error) {
+                        // console.error(task_result.error);
+                        throw task_result.error;
+                    }
+                }
+            }
+        });
+    }
+}
+exports.ParallelPool = ParallelPool;
 },{"eventemitter3":46}],35:[function(require,module,exports) {
 "use strict";
 

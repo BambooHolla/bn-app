@@ -55,8 +55,10 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     // 重置分页
     income_log_list_config.page = 1;
     const list = await this._getIncomeLogData();
-    this.income_log_list = list;
-    this.cdRef.markForCheck();
+    this.income_log_list = this.mixArrayByUnshift(this.income_log_list, list, {
+      mix_key: "height",
+    });
+    this.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
     VoteIncomeLogsPage.getTranslate("LOAD_MORE_VOTE_INCOME_LIST_ERROR"),
@@ -68,7 +70,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     income_log_list_config.page += 1;
     const list = await this._getIncomeLogData();
     this.income_log_list.push(...list);
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
   private async _getIncomeLogData() {
     const { income_log_list_config } = this;
@@ -84,5 +86,9 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     } finally {
       income_log_list_config.loading = false;
     }
+  }
+
+  routeToBlockDetail(log: BenefitModel) {
+    this.routeTo("chain-block-detail", { height: log.height });
   }
 }

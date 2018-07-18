@@ -6,7 +6,11 @@ export type PeerModel = {
   state: number;
   sharePort: number;
 };
-export type LocalPeerModel = PeerModel & {
+export type LocalPeerModel = {
+  height: number;
+  ip: string;
+  p2pPort: number;
+  webPort: number;
   origin: string;
   delay: number;
   level: PEER_LEVEL;

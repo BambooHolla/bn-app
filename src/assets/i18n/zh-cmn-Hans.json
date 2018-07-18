@@ -758,6 +758,7 @@
   "Invalid passphrase": "登录密码错误",
   "CONTACT_ALREADY_EXISTS": "联系人已经存在",
   "TIME OUT": "网络异常",
+  "RESPONSE ERROR":"响应异常"
 
   "//": "OVER"
 }

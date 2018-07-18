@@ -33,6 +33,7 @@ export class AppSettingProvider extends CommonService {
   static readonly SERVER_TIMEOUT = baseConfig.SERVER_TIMEOUT;
   static readonly NET_VERSION = baseConfig.NET_VERSION;
   static readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
+  readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
   static readonly IFMJS = IFM(AppSettingProvider.NET_VERSION);
   static readonly HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,
@@ -422,7 +423,7 @@ export class AppSettingProvider extends CommonService {
     /**贡献的流量*/
     contribution_flow: 0,
     /**隐藏账户金额信息*/
-    can_view_amount: false,
+    can_view_amount: true,
     /**是否显示过 初次转账提醒*/
     _is_show_first_transfer_tip: false,
     /**是否显示过 区块详情*/

@@ -15,7 +15,7 @@
     <div class="common-item" *ngIf="income_log_list.length==0 && !income_log_list_config.loading">
       <i>无可用数据</i>
     </div>
-    <div class="common-item" *ngFor="let log of income_log_list">
+    <div class="common-item" *ngFor="let log of income_log_list" (click)="routeToBlockDetail(log)">
       <div class="left">
         <div class="time-ago">
           {{log.timestamp|timestamp|amLocale:localName|amTimeAgo}}
