@@ -13,6 +13,7 @@ import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
 import { checkUpdate } from "./checkUpdate";
 import { VoucherServiceProvider } from "../../providers/voucher-service/voucher-service";
+import { Subscription } from "rxjs/Subscription";
 
 @Component({
   selector: "page-tab-account",
@@ -35,6 +36,39 @@ export class TabAccountPage extends FirstLevelPage {
       this.checkAndroidUpdate();
     });
   }
+  /*监听账户余额增加 */
+  // @TabAccountPage.autoUnsubscribe({ ignore_did_leve: true })
+  // private _user_balance_grow_up_sub?: Subscription;
+  // @TabAccountPage.onInit
+  // watchUserBalanceGrowUp() {
+  //   const per_balances_map = new Map();
+  //   this._user_balance_grow_up_sub = this.appSetting.user_token.subscribe(
+  //     async () => {
+  //       const user = this.appSetting.getUserToken();
+  //       if (!this.userInfo.is_from_network) {
+  //         per_balances_map.delete(user.address);
+  //         return;
+  //       }
+  //       if (per_balances_map.has(user.address)) {
+  //         const pre_balance: string = per_balances_map.get(user.address);
+  //         const cur_balance: string = user.balance;
+  //         // if(cur_balance!==pre_balance&&)
+  //       }
+  //       per_balances_map.set(user.address, user.balance);
+  //     },
+  //   );
+  // }
+  @TabAccountPage.didEnter
+  isShowMiningIncomeNotice() {
+    if (!this.appSetting.settings._is_first_balance_grow_up_notice) {
+      this.appSetting.settings._is_first_balance_grow_up_notice = true;
+      this.waitTipDialogConfirm("@@SHOW_INCOME_IBT_NOTICE_TIP", {
+        true_text: "@@YES_I_NEED",
+      }).then(res => {
+        this.appSetting.settings.mining_income_notice = res;
+      });
+    }
+  }
 
   get ibt() {
     return this.userInfo.balance;
@@ -48,6 +82,11 @@ export class TabAccountPage extends FirstLevelPage {
   app_version_info?: LATEST_VERSION_INFO;
 
   async openSharePanel() {
+    if (!this.appSetting.settings._is_fisrt_show_share_app) {
+      this.appSetting.settings._is_fisrt_show_share_app = await this.waitTipDialogConfirm(
+        "@@SHARE_APP_TIP",
+      );
+    }
     var message = await this.getTranslate("WELCOME_TO_DOWNLOAD_IBT_APP");
     var web_link = "https://www.ifmchain.com/downloadv2.0.html";
     var image_url;

@@ -244,8 +244,8 @@ export class TabPayPage extends FirstLevelPage {
           pay_pwd,
           this.formData.transfer_fee,
         );
-        this.resetFormData();
         await this.showTransferReceipt(transfer);
+        this.resetFormData();
       } catch (err) {
         console.error("online but peer no work", err);
         online = false;
@@ -253,6 +253,12 @@ export class TabPayPage extends FirstLevelPage {
     }
 
     if (!online) {
+      if (!this.appSetting.settings._is_first_show_offline_pay) {
+        if (!(await this.waitTipDialogConfirm("@@OFFLINE_TRANFER_TIP"))) {
+          return;
+        }
+        this.appSetting.settings._is_first_show_offline_pay = true;
+      }
       // 离线凭证
       const {
         transfer_address,
@@ -269,6 +275,7 @@ export class TabPayPage extends FirstLevelPage {
       const { transaction } = await this.transactionService.createTransaction(
         txData,
       );
+      this.resetFormData();
       this.routeTo("pay-offline-receipt", { transaction });
     }
   }

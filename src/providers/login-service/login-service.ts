@@ -98,6 +98,7 @@ export class LoginServiceProvider extends FLP_Tool {
           address: userinfo.address,
         },
       });
+    this.user.is_from_network = true;
     Object.assign(userinfo, res.account);
     this.appSetting.setUserToken(userinfo);
   }
@@ -176,6 +177,8 @@ export class LoginServiceProvider extends FLP_Tool {
       {
         // 以Token的形式保存用户登录信息，用于自动登录
         const { password, savePwd, ...safe_data } = loginObj;
+        // 初始的数据并不是来自网络
+        this.user.is_from_network = true;
         this.appSetting.setUserToken(loginObj);
         return safe_data;
       }

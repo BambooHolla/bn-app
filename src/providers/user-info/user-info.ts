@@ -41,6 +41,8 @@ export class UserInfoProvider extends EventEmitter {
     super();
   }
   TA_address = "";
+  /*数据是否来自网络*/
+  is_from_network = false;
   initUserInfo(userInfo) {
     if (!userInfo) {
       userInfo = {};

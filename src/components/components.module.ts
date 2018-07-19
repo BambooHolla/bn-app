@@ -22,6 +22,7 @@ import { OfflineTransactionTicketComponent } from "./offline-transaction-ticket/
 import { ChainListComponent } from "./chain-list/chain-list";
 import { VoteExpectedProfitsComponent } from './vote-expected-profits/vote-expected-profits';
 import { SyncProgressSpinnerComponent } from './sync-progress-spinner/sync-progress-spinner';
+import { PeerRadarScanningComponent } from './peer-radar-scanning/peer-radar-scanning';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { SyncProgressSpinnerComponent } from './sync-progress-spinner/sync-progr
     ChainListComponent,
     VoteExpectedProfitsComponent,
     SyncProgressSpinnerComponent,
+    PeerRadarScanningComponent,
   ],
   imports: [],
   exports: [
@@ -74,6 +76,7 @@ import { SyncProgressSpinnerComponent } from './sync-progress-spinner/sync-progr
     ChainListComponent,
     VoteExpectedProfitsComponent,
     SyncProgressSpinnerComponent,
+    PeerRadarScanningComponent,
   ],
 })
 export class ComponentsModule {}

@@ -438,6 +438,14 @@ export class AppSettingProvider extends CommonService {
     _is_first_show_send_business_cooperation: false,
     /*是否显示过 用户服务的提示*/
     _is_first_show_send_user_service: false,
+    /*是否显示过 分享APP的提示*/
+    _is_fisrt_show_share_app: false,
+    /*是否显示过 使用离线支付的提示*/
+    _is_first_show_offline_pay: false,
+    /*是否显示过 将离线收益放入钱包的提示*/
+    _is_first_put_into_voucher: false,
+    /*是否显示过 IBT增加的提示*/
+    _is_first_balance_grow_up_notice: false,
   };
   /*多个账户之间共享的数据*/
   share_settings = {
