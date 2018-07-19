@@ -22,21 +22,16 @@
         </div>
       </div>
       <div class="table-list">
-        <div class="row" *ngFor="let node of nodes" (click)="selectNode(node)" [class.link-able]="node.ping>0">
+        <div class="row" *ngFor="let node of peer_list" (click)="selectNode(node)" [class.link-able]="node.delay>0">
           <div class="item-ip">{{hideIp(node.ip)}}</div>
           <div class="item-height">{{node.height}}</div>
           <div class="item-ping">
-            <ng-container *ngIf="node.ping>0;else loadingPing">
-              {{node.ping|number:'1.0-0'}}ms
-            </ng-container>
-            <ng-template #loadingPing>
-              <ali-icon class="ani-rotate-45deg" name="ifm-loading"></ali-icon>
-            </ng-template>
+            {{node.delay|number:'1.0-0'}}ms
           </div>
           <div class="item-linked-number">{{node.linked_number}}</div>
           <div class="item-select">
             <button class="radio-button">
-              <input type="radio" name="select-peer-node" [disabled]="!node.ping>0" [value]="node.id" [(ngModel)]="formData.selected_node_id" />
+              <input type="radio" name="select-peer-node" [disabled]="!node.delay>0" [value]="node.origin" [(ngModel)]="formData.selected_node_id" />
               <span class="checked"></span>
             </button>
           </div>

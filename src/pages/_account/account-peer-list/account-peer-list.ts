@@ -4,7 +4,7 @@ import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import {
   PeerServiceProvider,
-  PeerModel,
+  LocalPeerModel,
 } from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-peer-list" })
@@ -21,14 +21,14 @@ export class AccountPeerListPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
-  cur_peer_list?: PeerModel[];
+  cur_peer_list: LocalPeerModel[] = [];
   @AccountPeerListPage.willEnter
   async initPeerList() {
-    await this.peerService.sortPeers(peer_list => {
-      this.cur_peer_list = peer_list.map(peer => ({
-        ...peer,
-        linked_number: (Math.random() * 50) | 0,
-      }));
-    });
+    for await (var _pi of this.peerService.searchAndCheckPeers()) {
+      if ("peer" in _pi) {
+        const checked_peer_info = _pi;
+        this.cur_peer_list.push(checked_peer_info.peer);
+      }
+    }
   }
 }

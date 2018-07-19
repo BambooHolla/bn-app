@@ -4,7 +4,8 @@ import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import {
   PeerServiceProvider,
-  PeerModel,
+  LocalPeerModel,
+  PEER_LEVEL,
 } from "../../providers/peer-service/peer-service";
 import { NetworkInterface } from "@ionic-native/network-interface";
 
@@ -22,42 +23,61 @@ export class ScanNodesPage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
-  // @ViewChild(ChainMeshComponent) cmesh: ChainMeshComponent;
 
-  // @ScanNodesPage.didEnter
-  // initEarchPos() {
-  //   this.cmesh.startAnimation();
-  //   // this.earth.camera.position.y = -10 * this.earth.devicePixelRatio;
-  //   // this.earth.camera.position.z /= 1.6;
-  // }
-
-  nodes: any[] = [];
+  peer_list: LocalPeerModel[] = [];
+  peer_searcher?: ReturnType<
+    typeof PeerServiceProvider.prototype.searchAndCheckPeers
+  >;
   @ScanNodesPage.willEnter
   async scanNodes() {
-    const peer_url_list = await this.peerService.getAllPeers();
-    const add_nodes = () => {
-      const peer_url = peer_url_list.pop();
-      if (!peer_url) {
-        this.gotoLinkNodes();
-        return;
+    this.peer_searcher = this.peerService.searchAndCheckPeers({
+      manual_check_peers: true, // 手动控制检查节点：先关闭节点检查，全力搜索节点，等够了，在开始节点检查
+    });
+    const levelMap: any = {};
+    // 开始请求节点延迟信息
+    for await (var _r of this.peer_searcher) {
+      if ("height" in _r) {
+        this._calcPeerPos(_r);
+        this.peer_list.push(_r);
+        levelMap[_r.level] = (levelMap[_r.level] | 0) + 1;
+        if (this.isEnableStartCheckPeers(levelMap)) {
+          break;
+        }
+      } else if ("search_done" in _r) {
+        break;
       }
-      const ran_deg = Math.PI * 2 * Math.random();
-      const ran_len = (Math.random() * 100 - 50) * 0.9 + 10;
+    }
+    // this.gotoLinkNodes();
+  }
 
-      this.nodes.push({
-        peer_url,
-        _pos_top: Math.sin(ran_deg) * ran_len + 50,
-        _pos_left: Math.cos(ran_deg) * ran_len + 50,
-      });
-      setTimeout(add_nodes, Math.random() * 500);
-    };
-    add_nodes();
+  /*根据服务的IP算出坐标*/
+  private _calcPeerPos(peer: LocalPeerModel) {
+    // peer._pos_top
+    const ipinfo = peer.ip.split(".");
+    const deg =
+      (((parseInt(ipinfo[0]) << 8) + parseInt(ipinfo[1])) / 0xffff) *
+      Math.PI *
+      2;
+    const dis = ((parseInt(ipinfo[2]) << 8) + parseInt(ipinfo[3])) / 0xffff;
+    const cxy = [Math.cos(deg) * dis, Math.sin(deg) * dis];
+    peer["_pos_left"] = ((cxy[0] + 1) / 2) * 100;
+    peer["_pos_top"] = ((cxy[1] + 1) / 2) * 100;
+  }
+
+  /*判断是否可以开始检查节点了*/
+  isEnableStartCheckPeers(levelMap: any) {
+    return (
+      levelMap[PEER_LEVEL.SEC_TRUST] >= 4 || levelMap[PEER_LEVEL.OTHER] >= 57
+    );
   }
 
   gotoLinkNodes() {
     return this.routeTo(
       "link-node",
-      { nodes: this.nodes },
+      {
+        peer_searcher: this.peer_searcher,
+        peer_list: this.peer_list,
+      },
       {
         animation: "wp-transition",
       },

@@ -1,96 +1,71 @@
-import { Component } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { MainPage } from "../pages";
 import {
   PeerServiceProvider,
-  PeerModel,
+  LocalPeerModel,
 } from "../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "link-node" })
 @Component({
   selector: "page-link-node",
   templateUrl: "link-node.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkNodePage extends FirstLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public peerService: PeerServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
   }
-  nodes!: any[];
+  peer_list: LocalPeerModel[] = [];
+  peer_searcher!: ReturnType<
+    typeof PeerServiceProvider.prototype.searchAndCheckPeers
+  >;
   // peer_list:PeerModel[]
   @LinkNodePage.willEnter
   async getNodes() {
-    // 开始请求节点延迟信息
-    this.peerService.sortPeers();
-    const peer_list = await this.peerService.getAllPeers();
-    this.nodes = peer_list.map(peer => {
-      const { port, ip } = peer;
-      const node_info = {
-        loading: true,
-        ping: -1,
-        ip,
-        port,
-        height: -1,
-        linked_number: -1,
-      };
-      this.peerService.once("peer-ping-success:" + peer, peer_detail => {
-        node_info.loading = false;
-        node_info.height = peer_detail.height;
-        node_info.ping = peer_detail.ping;
-        node_info.linked_number = (Math.random() * Math.random() * 1000) | 0;
-      });
-      this.peerService.on("peer-ping-error:" + peer, err => {
-        node_info.loading = false;
-      });
-      return node_info;
-    });
-    // this.nodes = this.navParams.get("nodes");
-    // if (!this.nodes || this.nodes.length == 0) {
-    //   return this.routeTo("scan-nodes", undefined, {
-    //     animation: "wp-transition",
-    //   });
-    // }
-    // var _auto_link_started = false;
-    // this.nodes.forEach(node => {
-    //   if (Math.random() > 0.3) {
-    //     // 模拟ping成功
-    //     const ping = Math.random() * 200;
-    //     const run_ping = () => {
-    //       var diff = Math.random() * 10;
-    //       const start_time = performance.now();
-    //       setTimeout(() => {
-    //         const end_time = performance.now();
-    //         node.ping = end_time - start_time;
-    //         // 两秒后自动选择并连接节点
-    //         if (!_auto_link_started) {
-    //           _auto_link_started = true;
-    //           setTimeout(() => {
-    //             this.timeoutAutoLinkFastetNode();
-    //           }, 2000);
-    //         }
-    //         setTimeout(() => {
-    //           run_ping();
-    //         }, 5000);
-    //       }, ping + diff);
-    //     };
-    //     setTimeout(() => {
-    //       run_ping();
-    //     }, 5000 * Math.random());
-    //   }
-    // });
+    const peer_searcher = this.navParams.get("peer_searcher"); // 搜索器
+    const peer_list = this.navParams.get("peer_list"); // 已经搜索到的节点
+    if (!peer_searcher) {
+      return this.navCtrl.goToRoot({});
+    }
+    this.peer_searcher = peer_searcher;
+    this.peer_list = peer_list;
+    const peer_list_map = new Map<string, LocalPeerModel>();
+    this.peer_list.forEach(p => peer_list_map.set(p.origin, p));
+    this.markForCheck();
+    // 开始执行节点检查
+    this.peer_searcher.next(true);
+    for await (var _pi of this.peer_searcher) {
+      if ("peer" in _pi) {
+        const checked_peer_info = _pi;
+        const peer = peer_list_map.get(checked_peer_info.peer.origin);
+        if (!peer) {
+          this.peer_list.push(checked_peer_info.peer);
+        } else if (peer !== checked_peer_info.peer) {
+          Object.assign(peer, checked_peer_info.peer);
+        }
+        this.markForCheck();
+      }
+    }
   }
 
   formData = {
-    selected_node_id: null,
+    selected_node_id: "",
   };
-  selectNode(node) {
-    if (node.ping > 0) {
-      this.formData.selected_node_id = node.id;
+  selectNode(node: LocalPeerModel) {
+    if (node.delay > 0) {
+      this.formData.selected_node_id = node.origin;
     }
   }
   hideIp(ipv4) {
@@ -105,18 +80,18 @@ export class LinkNodePage extends FirstLevelPage {
     if (this.formData.selected_node_id) {
       return;
     }
-    const fastet_node = this.nodes
-      .filter(node => node.ping > 0)
-      .sort((a, b) => a.ping - b.ping)[0];
+    const fastet_node = this.peer_list
+      .filter(node => node.delay > 0)
+      .sort((a, b) => a.delay - b.delay)[0];
     if (fastet_node) {
-      this.formData.selected_node_id = fastet_node.id;
+      this.formData.selected_node_id = fastet_node.origin;
       this.linkNode(fastet_node);
     }
   }
 
   linkSelectedNode() {
-    const selected_node = this.nodes.find(
-      node => node.id === this.formData.selected_node_id,
+    const selected_node = this.peer_list.find(
+      node => node.origin === this.formData.selected_node_id,
     );
     if (selected_node) {
       this.linkNode(selected_node);

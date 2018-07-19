@@ -16,12 +16,12 @@
         <div class="scan-bar"></div>
       </div>
       <div class="peer-list">
-        <div class="peer-node" *ngFor="let node of nodes" [style.top]="node._pos_top+'%'" [style.left]="node._pos_left+'%'">
+        <div class="peer-node" *ngFor="let node of peer_list" [style.top]="node._pos_top+'%'" [style.left]="node._pos_left+'%'">
         </div>
       </div>
     </div>
-    <div class="info" [hidden]="!nodes.length">
-      {{'ALREADY_SEARCHED' | translate}}{{nodes.length}}{{'NODES' | translate}}
+    <div class="info" [hidden]="!peer_list.length">
+      {{'ALREADY_SEARCHED_#NUM#_PEERS' | translate:({num:peer_list.length})}}
     </div>
   </div>
 </ion-content>

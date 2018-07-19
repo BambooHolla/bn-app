@@ -57,25 +57,35 @@ export class PeerServiceProvider extends CommonService {
   mathPeers(peers: TYPE.LocalPeerModel[]) {}
 
   /*搜索节点并返回节点检查信息*/
-  async *searchAndCheckPeers() {
+  async *searchAndCheckPeers(opts: { manual_check_peers?: boolean } = {}) {
     const checked_peer_infos: PromiseType<
       ReturnType<typeof PeerServiceProvider.prototype._checkPeer>
     >[] = [];
     const parallel_pool = new ParallelPool<typeof checked_peer_infos[0]>(2);
 
+    let is_start_to_check = !opts.manual_check_peers;
     // 开始搜索节点
     for await (var _p of this.searchPeers(this.peerList)) {
       const peer = _p;
+      if (!is_start_to_check) {
+        is_start_to_check = yield peer;
+      }
+      parallel_pool.addTaskExecutor(() => this._checkPeer(peer));
 
       console.log("peer", peer);
-      parallel_pool.addTaskExecutor(() => this._checkPeer(peer));
-      yield* parallel_pool.yieldResults({
-        ignore_error: true,
-        skip_when_no_full: true,
-        yield_num: 1,
-      });
+      if (is_start_to_check) {
+        yield* parallel_pool.yieldResults({
+          ignore_error: true,
+          skip_when_no_full: true,
+          yield_num: 1,
+        });
+      }
     }
     console.log("all task add, yield infos");
+    // 等待用户开启请求
+    while (!is_start_to_check) {
+      is_start_to_check = yield { search_done: true };
+    }
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
@@ -99,20 +109,22 @@ export class PeerServiceProvider extends CommonService {
 
   /*搜索节点*/
   async *searchPeers(
-    enter_port_peers = this.peerList, //TYPE.LocalPeerModel[],
-    collection_peers = new Map<string, TYPE.LocalPeerModel>(),
-    parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(2),
+    enter_port_peers = this.peerList, // 初始的节点
+    collection_peers = new Map<string, TYPE.LocalPeerModel>(), // 节点去重用的表
+    parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(2), // 1. 并行池，可以同时执行2个任务
   ): AsyncIterableIterator<TYPE.LocalPeerModel> {
-    const self = this;
+    const self = this; // Generator function 无法与箭头函数混用，所以这里的this必须主动声明在外部。
+    /*递归搜索代码片段*/
     const recursiveSearch = async function*(skip_when_no_full?: boolean) {
       for await (var _ps of parallel_pool.yieldResults({
-        ignore_error: true,
-        skip_when_no_full,
+        ignore_error: true, // 忽略错误（忽略不可用的节点）
+        skip_when_no_full, // 在池子不填满的情况下是否返回
       })) {
         const peers = _ps;
         for (var _p of peers) {
           const peer = _p;
           yield peer;
+          // 递归搜索
           yield* self.searchPeers([peer], collection_peers, parallel_pool);
         }
       }
@@ -120,6 +132,7 @@ export class PeerServiceProvider extends CommonService {
 
     for (var _ep of enter_port_peers) {
       const enter_port_peer = _ep;
+      // 向并行池中添加任务
       parallel_pool.addTaskExecutor(() =>
         this._searchPeers(enter_port_peer, collection_peers),
       );
@@ -146,6 +159,7 @@ export class PeerServiceProvider extends CommonService {
           return;
         }
         const sec_peer: TYPE.LocalPeerModel = {
+          web_channel_link_num: 0,
           ip: sec_peer_info.ip,
           height: sec_peer_info.height,
           p2pPort: sec_peer_info.port,

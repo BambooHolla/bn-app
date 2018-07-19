@@ -228,7 +228,7 @@ export class ParallelPool<T = any> {
     let yield_num =
       typeof opts.yield_num === "number" ? opts.yield_num | 0 : Infinity;
     while (this.has_next) {
-      if (yield_num === 0) {
+      if (yield_num <= 0) {
         break;
       }
       yield_num -= 1;

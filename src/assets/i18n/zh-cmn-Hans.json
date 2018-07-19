@@ -266,6 +266,10 @@
   "SYNC_DISABLED": "不同步",
   "CALCING_SYNC_DELAY_TIME": "计算中",
 
+  "//":"chain-service-market",
+  "CHAIN-SERVICE-MARKET":"服务市场",
+  "RECENTLY_USED_SERVICE": "最近使用的服务",
+
   "//": "chain-reward-detail",
   "CHAIN-REWARD-DETAIL": "区块奖励来源与分配",
   "TOTAL_REWARDS_OF_BLOCK": "区块奖励总数",
@@ -535,8 +539,7 @@
   "CANCEL": "取消",
 
   "//": "scan-nodes",
-  "ALREADY_SEARCHED": "已扫描到",
-  "NODES": "个节点",
+  "ALREADY_SEARCHED_#NUM#_PEERS": "已扫描到{{num}}个节点",
 
   "//": "pwd-input",
   "PAY_PASSPHRASE": "支付密码",
