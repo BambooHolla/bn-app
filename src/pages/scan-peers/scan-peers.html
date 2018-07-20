@@ -1,0 +1,18 @@
+<ion-header>
+  <!--   <ion-navbar>
+    <ion-title>{{'scan-peers'|translate}}</ion-title>
+  </ion-navbar> -->
+</ion-header>
+<ion-content>
+  <div class="bg-wrapper">
+    <!-- <chain-mesh id="bg" [auto-start]="true"></chain-mesh> -->
+  </div>
+  <div class="scan-panel">
+    <div class="radar-wrapper">
+      <peer-radar-scanning [peer-list]="peer_host_list"></peer-radar-scanning>
+    </div>
+    <div class="info" [hidden]="!peer_list.length">
+      {{'ALREADY_SEARCHED_#NUM#_PEERS' | translate:({num:peer_list.length})}}
+    </div>
+  </div>
+</ion-content>

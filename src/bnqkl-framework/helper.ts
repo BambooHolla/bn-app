@@ -1,3 +1,4 @@
+export * from "./BlizzardHash";
 export const is_dev = (() => {
 	const test_fun = function DEV_WITH_FULL_NAME() {};
 	return test_fun.name === "DEV_WITH_FULL_NAME";
@@ -202,7 +203,7 @@ export const baseConfig = new class BaseConfig {
 	NET_VERSION = getQueryVariable("NET_VERSION") || "mainnet";
 	BLOCK_UNIT_TIME =
 		parseFloat(getQueryVariable("BLOCK_UNIT_TIME") || "") || 128e3;
-	
+
 	get LATEST_APP_VERSION_URL() {
 		return (
 			getQueryVariable("LATEST_APP_VERSION_URL") ||
