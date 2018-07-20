@@ -1,3 +1,14 @@
+// 修复高版本的编译，原生Promise对象被重写的问题
+if (
+  typeof Symbol === "function" &&
+  Symbol["hasInstance"] &&
+  Promise.name !== "Promise"
+) {
+  Object.defineProperty(Promise, Symbol["hasInstance"], {
+    value: ins =>
+      ins && typeof ins.then === "function" && typeof ins.catch === "function",
+  });
+}
 import { Component, ViewChild, OnInit, Renderer2 } from "@angular/core";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Clipboard } from "@ionic-native/clipboard";
@@ -22,7 +33,12 @@ import {
 } from "ionic-angular";
 
 import { AndroidPermissions } from "@ionic-native/android-permissions";
-import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
+import {
+  FirstRunPage,
+  ScanPeersPage,
+  LoginPage,
+  MainPage,
+} from "../pages/pages";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../providers/app-fetch/app-fetch";
@@ -146,6 +162,11 @@ export class MyApp implements OnInit {
       if (!localStorage.getItem("HIDE_WELCOME")) {
         await this.openPage(FirstRunPage);
         return null;
+      }
+      if (!sessionStorage.getItem("LINK_PEER")) {
+        await this.openPage(ScanPeersPage);
+        return null;
+        // return ScanPeersPage
       }
       const user_token = appSetting.getUserToken();
       if (user_token && user_token.password) {
@@ -282,7 +303,10 @@ export class MyApp implements OnInit {
   async openPage(page: string, force = false, loading_content?: string | null) {
     this.tryInPage = page;
     if (!force) {
-      if (this.currentPage == FirstRunPage) {
+      if (
+        this.currentPage == FirstRunPage ||
+        this.currentPage == ScanPeersPage
+      ) {
         return;
       }
     }

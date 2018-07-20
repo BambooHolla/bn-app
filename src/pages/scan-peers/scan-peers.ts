@@ -7,6 +7,7 @@ import {
 } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
+import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import {
 	PeerServiceProvider,
@@ -40,25 +41,37 @@ export class ScanPeersPage extends FirstLevelPage {
 	>;
 	@ScanPeersPage.willEnter
 	async scanNodes() {
+		// 至少要在这个界面上扫描3秒
+		const min_time_lock = sleep(3000);
+
 		this.peer_searcher = this.peerService.searchAndCheckPeers({
 			manual_check_peers: true, // 手动控制检查节点：先关闭节点检查，全力搜索节点，等够了，在开始节点检查
 		});
 		const levelMap: any = {};
 		// 开始请求节点延迟信息
-		for await (var _r of this.peer_searcher) {
-			if ("height" in _r) {
-				// this._calcPeerPos(_r);
-				this.peer_list.push(_r);
+		do {
+			// 这里不能用for await，否则下面break的时候，会导致迭代器中断
+			const peer_searcher_iter = await this.peer_searcher.next();
+			if (peer_searcher_iter.done) {
+				break;
+			}
+			const peer_searcher_res = peer_searcher_iter.value;
+			if ("height" in peer_searcher_res) {
+				// this._calcPeerPos(peer_searcher_res);
+				this.peer_list.push(peer_searcher_res);
 				this.markForCheck();
-				levelMap[_r.level] = (levelMap[_r.level] | 0) + 1;
+				levelMap[peer_searcher_res.level] =
+					(levelMap[peer_searcher_res.level] | 0) + 1;
 				if (this.isEnableStartCheckPeers(levelMap)) {
 					break;
 				}
-			} else if ("search_done" in _r) {
+			} else if ("search_done" in peer_searcher_res) {
 				break;
 			}
-		}
-		// this.gotoLinkNodes();
+		} while (true);
+
+		await min_time_lock;
+		this.gotoLinkNodes();
 	}
 	/*判断是否可以开始检查节点了*/
 	isEnableStartCheckPeers(levelMap: any) {

@@ -46,7 +46,6 @@ export type LocalPeerModel = {
   /*节点累计 最后检验失败的时间*/ latest_verify_fail_time: number;
   /*节点累计 校验次数*/ acc_verify_total_times: number;
   /*节点累计 校验成功次数*/ acc_verify_success_times: number;
-  /*节点创建的时间*/ create_time: number;
 };
 
 export enum PEER_LEVEL {

@@ -5,6 +5,7 @@ import {
 } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
+import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { MainPage } from "../pages";
 import {
@@ -44,10 +45,14 @@ export class LinkNodePage extends FirstLevelPage {
     const peer_list_map = new Map<string, LocalPeerModel>();
     this.peer_list.forEach(p => peer_list_map.set(p.origin, p));
     this.markForCheck();
-    // 开始执行节点检查
-    this.peer_searcher.next(true);
+    // 使用搜索器继续搜索并开始执行节点检查
+    console.log("使用搜索器继续搜索并开始执行节点检查");
+    const peer_searcher_res = await this.peer_searcher.next(true);
+    console.log("peer_searcher_res", peer_searcher_res);
     for await (var _pi of this.peer_searcher) {
+      console.log("PI", _pi);
       if ("peer" in _pi) {
+        // 如果节点可用
         const checked_peer_info = _pi;
         const peer = peer_list_map.get(checked_peer_info.peer.origin);
         if (!peer) {
@@ -100,12 +105,17 @@ export class LinkNodePage extends FirstLevelPage {
 
   @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
-  async linkNode(node) {
-    await new Promise(cb => setTimeout(cb, 600 * Math.random() + 200));
-    if (Math.random() > 0.5) {
-      this.routeTo(MainPage);
-    } else {
-      throw new Error("节点连接失败");
-    }
+  async linkNode(peer: LocalPeerModel) {
+    await sleep(200);
+    localStorage.setItem("SERVER_URL", peer.origin);
+    sessionStorage.setItem("LINK_PEER", "true");
+    location.hash = "";
+    location.reload();
+    // await new Promise(cb => setTimeout(cb, 600 * Math.random() + 200));
+    // if (Math.random() > 0.5) {
+    //   this.routeTo(MainPage);
+    // } else {
+    //   throw new Error("节点连接失败");
+    // }
   }
 }

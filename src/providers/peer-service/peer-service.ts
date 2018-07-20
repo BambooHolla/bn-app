@@ -16,12 +16,38 @@ import { CommonService } from "../commonService";
 import { Mdb } from "../mdb";
 import * as TYPE from "./peer.types";
 export * from "./peer.types";
-const PEERS = [
-  // { origin: "http://mainnet.ifmchain.org", level: TYPE.PEER_LEVEL.TRUST },
-  { origin: "http://35.194.161.10:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
-  { origin: "http://35.194.129.80:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
-  { origin: "http://35.194.234.159:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
-  { origin: "http://35.185.142.124:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
+const PEERS: TYPE.LocalPeerModel[] = [
+  {
+    origin: "http://mainnet.ifmchain.org",
+    level: TYPE.PEER_LEVEL.TRUST,
+    web_channel_link_num: 0,
+    ip: "mainnet.ifmchain.org",
+    height: 0,
+    p2pPort: -1,
+    webPort: 80,
+    delay: -1,
+    acc_use_duration: 0,
+    latest_verify_fail_time: 0,
+    acc_verify_total_times: 0,
+    acc_verify_success_times: 0,
+  },
+  {
+    origin: "http://35.194.161.10:19002",
+    level: TYPE.PEER_LEVEL.SEC_TRUST,
+    web_channel_link_num: 0,
+    ip: "35.194.161.10",
+    height: 0,
+    p2pPort: 19000,
+    webPort: 19002,
+    delay: -1,
+    acc_use_duration: 0,
+    latest_verify_fail_time: 0,
+    acc_verify_total_times: 0,
+    acc_verify_success_times: 0,
+  },
+  // { origin: "http://35.194.129.80:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
+  // { origin: "http://35.194.234.159:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
+  // { origin: "http://35.185.142.124:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
 ];
 
 @Injectable()
@@ -57,12 +83,17 @@ export class PeerServiceProvider extends CommonService {
   mathPeers(peers: TYPE.LocalPeerModel[]) {}
 
   /*搜索节点并返回节点检查信息*/
-  async *searchAndCheckPeers(opts: { manual_check_peers?: boolean } = {}) {
+  async *searchAndCheckPeers(
+    opts: {
+      /*是否手动检测节点信息*/
+      manual_check_peers?: boolean;
+    } = {},
+  ) {
     const checked_peer_infos: PromiseType<
       ReturnType<typeof PeerServiceProvider.prototype._checkPeer>
     >[] = [];
     const parallel_pool = new ParallelPool<typeof checked_peer_infos[0]>(2);
-
+    /*是否开启检测节点信息*/
     let is_start_to_check = !opts.manual_check_peers;
     // 开始搜索节点
     for await (var _p of this.searchPeers(this.peerList)) {
@@ -72,7 +103,7 @@ export class PeerServiceProvider extends CommonService {
       }
       parallel_pool.addTaskExecutor(() => this._checkPeer(peer));
 
-      console.log("peer", peer);
+      // console.log("peer", peer, is_start_to_check);
       if (is_start_to_check) {
         yield* parallel_pool.yieldResults({
           ignore_error: true,
@@ -81,7 +112,7 @@ export class PeerServiceProvider extends CommonService {
         });
       }
     }
-    console.log("all task add, yield infos");
+    // console.log("all task add, yield infos", is_start_to_check);
     // 等待用户开启请求
     while (!is_start_to_check) {
       is_start_to_check = yield { search_done: true };
@@ -114,6 +145,13 @@ export class PeerServiceProvider extends CommonService {
     parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(2), // 1. 并行池，可以同时执行2个任务
   ): AsyncIterableIterator<TYPE.LocalPeerModel> {
     const self = this; // Generator function 无法与箭头函数混用，所以这里的this必须主动声明在外部。
+    for (var _p of enter_port_peers) {
+      const peer = _p;
+      if (!collection_peers.has(peer.origin)) {
+        collection_peers.set(peer.origin, peer);
+        yield peer;
+      }
+    }
     /*递归搜索代码片段*/
     const recursiveSearch = async function*(skip_when_no_full?: boolean) {
       for await (var _ps of parallel_pool.yieldResults({
@@ -146,9 +184,11 @@ export class PeerServiceProvider extends CommonService {
     enter_port_peer: typeof PeerServiceProvider.prototype.peerList[0],
     collection_peers: Map<string, TYPE.LocalPeerModel>,
   ) {
-    const { peers: sec_peers } = await this.fetch.get<{
-      peers: TYPE.PeerModel[];
-    }>(this.PEERS_URL.disposableServerUrl(enter_port_peer.origin));
+    const { peers: sec_peers } = await this.fetch
+      .get<{
+        peers: TYPE.PeerModel[];
+      }>(this.PEERS_URL.disposableServerUrl(enter_port_peer.origin))
+      .catch(err => ({ peers: [] as TYPE.PeerModel[] }));
     const next_level = TYPE.getNextPeerLevel(enter_port_peer.level);
     const res = [] as TYPE.LocalPeerModel[];
     sec_peers.forEach(sec_peer_info => {
@@ -171,7 +211,6 @@ export class PeerServiceProvider extends CommonService {
           latest_verify_fail_time: 0,
           acc_verify_total_times: 0,
           acc_verify_success_times: 0,
-          create_time: Date.now(),
         };
         collection_peers.set(origin, sec_peer);
         res.push(sec_peer);
