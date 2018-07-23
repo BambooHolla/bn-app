@@ -6,6 +6,7 @@ import {
 	ChangeDetectorRef,
 } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import {
@@ -62,6 +63,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 	sync_delay_time: { value: string; unit: string }[] = [];
 	// 加载区块的数据，如果可能要卡很久，因为区块1可能也是卡死的
 	is_calcing_delay_time = true;
+	@ChainSyncDetailPage.aniNumberProp({ duration: 500, floor: true })
 	sync_progress_height = this.appSetting.share_settings.sync_progress_height;
 	delay_ms = -1;
 	// 同步使用的流量
@@ -134,7 +136,9 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 				this.delay_ms = 0;
 				finished();
 				// 区块链完整后自动关闭界面
-				this.syncInBackground();
+				sleep(500).then(() => {
+					this.syncInBackground();
+				});
 				return;
 			}
 
@@ -320,7 +324,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 		this.finishJob(true, 10);
 	}
 
-	listTrackBy(index){
-		return index
+	listTrackBy(index) {
+		return index;
 	}
 }

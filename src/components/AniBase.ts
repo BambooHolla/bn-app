@@ -1,7 +1,6 @@
 import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
-import { tryRegisterGlobal, FLP_Tool } from "../bnqkl-framework/FLP_Tool";
-import { afCtrl } from "../bnqkl-framework/helper";
+import { afCtrl ,tryRegisterGlobal,} from "../bnqkl-framework/helper";
 import * as FontFaceObserver from "fontfaceobserver";
 export const ifmicon_font_ready = new FontFaceObserver("ifmicon").load();
 
@@ -69,10 +68,10 @@ export class AniBase extends EventEmitter {
   devicePixelRatio = window.devicePixelRatio;
   pt = px => this.devicePixelRatio * px;
   px = pt => pt / this.devicePixelRatio;
-  static raf = FLP_Tool.raf;
-  raf = FLP_Tool.raf;
-  static caf = FLP_Tool.caf;
-  caf = FLP_Tool.caf;
+  static raf: typeof afCtrl.raf = afCtrl.raf.bind(afCtrl);
+  raf = AniBase.raf;
+  static caf: typeof afCtrl.caf = afCtrl.caf.bind(afCtrl);
+  caf = AniBase.caf;
   is_started = false;
   startAnimation() {
     if (this.is_started) {
