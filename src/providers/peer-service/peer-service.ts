@@ -21,37 +21,51 @@ import * as TYPE from "./peer.types";
 export * from "./peer.types";
 const PEERS: TYPE.LocalPeerModel[] = [
   {
-    origin: "http://mainnet.ifmchain.org",
+    origin: "http://192.168.16.146",
     level: TYPE.PEER_LEVEL.TRUST,
     web_channel_link_num: 0,
-    ip: "mainnet.ifmchain.org",
+    ip: "192.168.16.146",
     height: 0,
-    p2pPort: -1,
-    webPort: 80,
+    p2pPort: 19000,
+    webPort: 19002,
     delay: -1,
     acc_use_duration: 0,
     latest_verify_fail_time: 0,
     acc_verify_total_times: 0,
     acc_verify_success_times: 0,
   },
-  ...["35.194.161.10", "35.194.129.80", "35.194.234.159", "35.185.142.124"].map(
-    ip => {
-      return {
-        origin: `http://${ip}:19002`,
-        level: TYPE.PEER_LEVEL.SEC_TRUST,
-        web_channel_link_num: 0,
-        ip,
-        height: 0,
-        p2pPort: 19000,
-        webPort: 19002,
-        delay: -1,
-        acc_use_duration: 0,
-        latest_verify_fail_time: 0,
-        acc_verify_total_times: 0,
-        acc_verify_success_times: 0,
-      };
-    },
-  ),
+  // {
+  //   origin: "http://mainnet.ifmchain.org",
+  //   level: TYPE.PEER_LEVEL.TRUST,
+  //   web_channel_link_num: 0,
+  //   ip: "mainnet.ifmchain.org",
+  //   height: 0,
+  //   p2pPort: -1,
+  //   webPort: 80,
+  //   delay: -1,
+  //   acc_use_duration: 0,
+  //   latest_verify_fail_time: 0,
+  //   acc_verify_total_times: 0,
+  //   acc_verify_success_times: 0,
+  // },
+  // ...["35.194.161.10", "35.194.129.80", "35.194.234.159", "35.185.142.124"].map(
+  //   ip => {
+  //     return {
+  //       origin: `http://${ip}:19002`,
+  //       level: TYPE.PEER_LEVEL.SEC_TRUST,
+  //       web_channel_link_num: 0,
+  //       ip,
+  //       height: 0,
+  //       p2pPort: 19000,
+  //       webPort: 19002,
+  //       delay: -1,
+  //       acc_use_duration: 0,
+  //       latest_verify_fail_time: 0,
+  //       acc_verify_total_times: 0,
+  //       acc_verify_success_times: 0,
+  //     };
+  //   },
+  // ),
 ];
 
 @Injectable()

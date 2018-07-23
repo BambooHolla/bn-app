@@ -81,9 +81,58 @@ export class LinkNodePage extends FirstLevelPage {
         for (var check_item of check_res) {
           acc_random += check_item.rate;
           if (random_select_seed < acc_random) {
-            this.selected_peer = check_item.peer_info_list.sort(
-              (a, b) => b.highest_blocks[0].height - a.highest_blocks[0].height,
-            )[0].peer;
+            const selectable_peer_list = check_item.peer_info_list
+              .sort(
+                (a, b) =>
+                  b.highest_blocks[0].height - a.highest_blocks[0].height,
+              )
+              .filter((p, i, l) => {
+                return (
+                  p.highest_blocks[0].height === l[0].highest_blocks[0].height
+                );
+              });
+
+            const random_select_peer_seed = Math.random();
+            // 算方差
+            const pingjunzhi =
+              selectable_peer_list.reduce((a, p) => a + p.peer.delay, 0) /
+              selectable_peer_list.length;
+            var total_s = 0;
+            var max_s = -Infinity;
+            var min_s = Infinity;
+            const s_list = ([] = selectable_peer_list.map(p => {
+              const s = Math.pow(p.peer.delay - pingjunzhi, 2);
+              total_s += s;
+              max_s = Math.max(max_s, s);
+              min_s = Math.min(min_s, s);
+              return s;
+            }));
+            const mm_s = max_s + min_s;
+            const s_rate_list = s_list
+              .map((s, i) => {
+                return {
+                  rate: (mm_s - s) / total_s,
+                  pi: selectable_peer_list[i],
+                };
+              })
+              .sort((a, b) => {
+                // 概率高的放前面
+                return b.rate - a.rate;
+              });
+            var random_r = Math.random();
+            var acc_r = 0;
+            const selected_s_rate = s_rate_list.find(s_rate => {
+              acc_r += s_rate.rate;
+              return random_r <= acc_r;
+            });
+            if (selected_s_rate) {
+              this.selected_peer = selected_s_rate.pi.peer;
+            }
+
+            // this.selected_peer =
+            //   selectable_peer_list[
+            //     (selectable_peer_list.length * Math.random()) | 0
+            //   ].peer;
             break;
           }
         }
@@ -102,7 +151,7 @@ export class LinkNodePage extends FirstLevelPage {
   can_select_by_myself = false;
   @asyncCtrlGenerator.tttttap()
   @asyncCtrlGenerator.success("能选了")
-  toggleCanSelectByMyself() {
+  async toggleCanSelectByMyself() {
     this.can_select_by_myself = !this.can_select_by_myself;
   }
 
