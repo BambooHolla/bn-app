@@ -5,7 +5,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider, AppUrl } from "../app-setting/app-setting";
-import { BlockServiceProvider } from "../block-service/block-service";
+import {
+  BlockServiceProvider,
+  BlockModel,
+} from "../block-service/block-service";
 import {
   ParallelPool,
   PromiseType,
@@ -31,23 +34,24 @@ const PEERS: TYPE.LocalPeerModel[] = [
     acc_verify_total_times: 0,
     acc_verify_success_times: 0,
   },
-  {
-    origin: "http://35.194.161.10:19002",
-    level: TYPE.PEER_LEVEL.SEC_TRUST,
-    web_channel_link_num: 0,
-    ip: "35.194.161.10",
-    height: 0,
-    p2pPort: 19000,
-    webPort: 19002,
-    delay: -1,
-    acc_use_duration: 0,
-    latest_verify_fail_time: 0,
-    acc_verify_total_times: 0,
-    acc_verify_success_times: 0,
-  },
-  // { origin: "http://35.194.129.80:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
-  // { origin: "http://35.194.234.159:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
-  // { origin: "http://35.185.142.124:19002", level: TYPE.PEER_LEVEL.SEC_TRUST },
+  ...["35.194.161.10", "35.194.129.80", "35.194.234.159", "35.185.142.124"].map(
+    ip => {
+      return {
+        origin: `http://${ip}:19002`,
+        level: TYPE.PEER_LEVEL.SEC_TRUST,
+        web_channel_link_num: 0,
+        ip,
+        height: 0,
+        p2pPort: 19000,
+        webPort: 19002,
+        delay: -1,
+        acc_use_duration: 0,
+        latest_verify_fail_time: 0,
+        acc_verify_total_times: 0,
+        acc_verify_success_times: 0,
+      };
+    },
+  ),
 ];
 
 @Injectable()
@@ -92,7 +96,7 @@ export class PeerServiceProvider extends CommonService {
     const checked_peer_infos: PromiseType<
       ReturnType<typeof PeerServiceProvider.prototype._checkPeer>
     >[] = [];
-    const parallel_pool = new ParallelPool<typeof checked_peer_infos[0]>(2);
+    const parallel_pool = new ParallelPool<typeof checked_peer_infos[0]>(4);
     /*是否开启检测节点信息*/
     let is_start_to_check = !opts.manual_check_peers;
     // 开始搜索节点
@@ -126,14 +130,17 @@ export class PeerServiceProvider extends CommonService {
     // 获取最后的六个区块
     const [highest_blocks, lowest_blocks] = await Promise.all([
       this.blockService
-        .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin)
-        .getBlocks({ orderBy: "height:desc", limit: 6 }),
+        .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
+        .getBlocks({ orderBy: "height:desc", limit: 6 })
+        .then(res => res.blocks),
       this.blockService
-        .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin)
-        .getBlocks({ orderBy: "height:asc", limit: 6 }),
+        .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
+        .getBlocks({ orderBy: "height:asc", limit: 6 })
+        .then(res => res.blocks),
     ]);
 
     const end_time = performance.now();
+    console.log(peer, highest_blocks, lowest_blocks);
     peer.delay = end_time - start_time;
     return { peer, highest_blocks, lowest_blocks };
   }
@@ -142,7 +149,7 @@ export class PeerServiceProvider extends CommonService {
   async *searchPeers(
     enter_port_peers = this.peerList, // 初始的节点
     collection_peers = new Map<string, TYPE.LocalPeerModel>(), // 节点去重用的表
-    parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(2), // 1. 并行池，可以同时执行2个任务
+    parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(4), // 1. 并行池，可以同时执行2个任务
   ): AsyncIterableIterator<TYPE.LocalPeerModel> {
     const self = this; // Generator function 无法与箭头函数混用，所以这里的this必须主动声明在外部。
     for (var _p of enter_port_peers) {
@@ -269,5 +276,122 @@ export class PeerServiceProvider extends CommonService {
     };
 
     return fetch_task.promise;
+  }
+
+  /*计算一组节点的可靠性*/
+  static calcPeers(
+    peer_info_list: {
+      peer: TYPE.LocalPeerModel;
+      highest_blocks: BlockModel[];
+      lowest_blocks: BlockModel[];
+    }[],
+  ) {
+    const peer_info_level_map = new Map<
+      TYPE.PEER_LEVEL,
+      typeof peer_info_list
+    >();
+    peer_info_list.forEach(peer_info => {
+      const list =
+        peer_info_level_map.get(peer_info.peer.level) ||
+        ([] as typeof peer_info_list);
+      list.push(peer_info);
+      peer_info_level_map.set(peer_info.peer.level, list);
+    });
+    /*一组节点与他的可用性*/
+    const res_list: ({
+      rate: number;
+      score: number;
+      level: TYPE.PEER_LEVEL;
+      peer_info_list: typeof peer_info_list;
+    })[] = [];
+    let total_rate_base = 0;
+    peer_info_level_map.forEach((peer_info_list, level) => {
+      const res = PeerServiceProvider._calcLeveledPeerInfoList(
+        peer_info_list,
+        level,
+      );
+      if (res) {
+        let score = 0;
+        if (level === TYPE.PEER_LEVEL.TRUST) {
+          score = 50;
+        }
+        if (level === TYPE.PEER_LEVEL.SEC_TRUST) {
+          score = 20 + (Math.log(peer_info_list.length) - Math.log(4)) * 10;
+        }
+        if (level === TYPE.PEER_LEVEL.OTHER) {
+          score = (Math.log(peer_info_list.length) - Math.log(57)) * 2;
+        }
+        if (score > 0) {
+          total_rate_base += score;
+          res_list.push({
+            score,
+            rate: 0,
+            level,
+            peer_info_list: res,
+          });
+        }
+      }
+    });
+    res_list.map(item => {
+      item.rate = item.score / item.rate;
+    });
+    return res_list;
+    // if(res_list.length)
+  }
+  private static _calcLeveledPeerInfoList(
+    peer_info_list: {
+      peer: TYPE.LocalPeerModel;
+      highest_blocks: BlockModel[];
+      lowest_blocks: BlockModel[];
+    }[],
+    level: TYPE.PEER_LEVEL,
+  ) {
+    let peer_info_list_filtered_list: (typeof peer_info_list) | undefined;
+    if (level === TYPE.PEER_LEVEL.TRUST) {
+      // 绝对信任的节点直接不校验了
+      return peer_info_list;
+    }
+    // 先拜占庭第一个区块是一样的
+    const peer_first_block_map = new Map<string, typeof peer_info_list>();
+    peer_info_list.forEach(peer_info => {
+      const first_block = peer_info.lowest_blocks[0];
+      if (first_block) {
+        const peer_list =
+          peer_first_block_map.get(first_block.id) ||
+          ([] as typeof peer_info_list);
+        peer_list.push(peer_info);
+        peer_first_block_map.set(first_block.id, peer_list);
+      }
+    });
+    for (var f_peer_info_list of [...peer_first_block_map.values()].sort(
+      (a, b) => b.length - a.length,
+    )) {
+      // if (level === TYPE.PEER_LEVEL.SEC_TRUST && f_peer_info_list.length >= 4) {
+      // 拜占庭最后的几个区块
+      const peer_last_block_map = new Map<string, typeof f_peer_info_list>();
+      f_peer_info_list.forEach(peer_info => {
+        peer_info.highest_blocks.forEach(high_block => {
+          const peer_list =
+            peer_last_block_map.get(high_block.id) ||
+            ([] as typeof f_peer_info_list);
+          peer_list.push(peer_info);
+          peer_last_block_map.set(high_block.id, peer_list);
+        });
+      });
+      for (var h_peer_info_list of [...peer_last_block_map.values()].sort(
+        (a, b) => b.length - a.length,
+      )) {
+        if (
+          level === TYPE.PEER_LEVEL.SEC_TRUST &&
+          h_peer_info_list.length >= 4
+        ) {
+          return h_peer_info_list;
+        }
+        if (level === TYPE.PEER_LEVEL.OTHER && h_peer_info_list.length >= 57) {
+          return h_peer_info_list;
+        }
+      }
+      // }
+    }
   }
 }

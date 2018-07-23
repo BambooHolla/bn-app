@@ -4,7 +4,7 @@
 <ion-content>
   <div class="card-wrapper">
     <div class="card-title">
-      <div class="shield-logo" title="{{'SHEILD' | translate}}"></div>
+      <div class="shield-logo" (click)="toggleCanSelectByMyself()" title="{{'SHEILD' | translate}}"></div>
     </div>
     <div class="card-content">
       <div class="row table-head">
@@ -30,19 +30,19 @@
               {{node.delay|number:'1.0-0'}}ms
             </ng-container>
             <ng-template #checkingPeer>
-              <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>.
+              <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
             </ng-template>
           </div>
           <div class="item-linked-number">{{node.linked_number}}</div>
           <div class="item-select">
             <button class="radio-button">
-              <input type="radio" name="select-peer-node" [disabled]="!node.delay>0" [value]="node.origin" [(ngModel)]="formData.selected_node_id" />
+              <input type="radio" name="select-peer-node" [disabled]="!node.delay>0" [value]="node" [(ngModel)]="selected_peer" />
               <span class="checked"></span>
             </button>
           </div>
         </div>
       </div>
-      <button class="submit-button start-link" [disabled]="!formData.selected_node_id" (click)="linkSelectedNode()">立即开始</button>
+      <button class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">立即开始</button>
     </div>
   </div>
 </ion-content>

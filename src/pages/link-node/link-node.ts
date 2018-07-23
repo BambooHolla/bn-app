@@ -35,6 +35,14 @@ export class LinkNodePage extends FirstLevelPage {
   // peer_list:PeerModel[]
   @LinkNodePage.willEnter
   async getNodes() {
+    /*这个界面至少等待3s*/
+    const min_search_time = sleep(3000);
+    min_search_time.then(() => {
+      if (this.selected_peer) {
+        this.linkSelectedNode();
+      }
+    });
+
     const peer_searcher = this.navParams.get("peer_searcher"); // 搜索器
     const peer_list = this.navParams.get("peer_list"); // 已经搜索到的节点
     if (!peer_searcher) {
@@ -49,6 +57,7 @@ export class LinkNodePage extends FirstLevelPage {
     console.log("使用搜索器继续搜索并开始执行节点检查");
     const peer_searcher_res = await this.peer_searcher.next(true);
     console.log("peer_searcher_res", peer_searcher_res);
+    const peer_info_list = [] as any[];
     for await (var _pi of this.peer_searcher) {
       console.log("PI", _pi);
       if ("peer" in _pi) {
@@ -61,16 +70,52 @@ export class LinkNodePage extends FirstLevelPage {
           Object.assign(peer, checked_peer_info.peer);
         }
         this.markForCheck();
+
+        /*拜占庭检测可连接的节点*/
+        peer_info_list.push(checked_peer_info);
+        const check_res = PeerServiceProvider.calcPeers(peer_info_list);
+        console.log("CR", check_res);
+        // 随机进行选择
+        const random_select_seed = Math.random();
+        let acc_random = 0;
+        for (var check_item of check_res) {
+          acc_random += check_item.rate;
+          if (random_select_seed < acc_random) {
+            this.selected_peer = check_item.peer_info_list.sort(
+              (a, b) => b.highest_blocks[0].height - a.highest_blocks[0].height,
+            )[0].peer;
+            break;
+          }
+        }
       }
+    }
+
+    // 已经搜索完了
+    if (!this.selected_peer) {
+      console.warn("没有可信任的节点");
+    } else {
+      await sleep(250);
+      this.linkSelectedNode();
     }
   }
 
-  formData = {
-    selected_node_id: "",
-  };
+  can_select_by_myself = false;
+  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.success("能选了")
+  toggleCanSelectByMyself() {
+    this.can_select_by_myself = !this.can_select_by_myself;
+  }
+
+  // formData = {
+  //   selected_node_id: "",
+  // };
+  @LinkNodePage.markForCheck selected_peer?: LocalPeerModel;
   selectNode(node: LocalPeerModel) {
-    if (node.delay > 0) {
-      this.formData.selected_node_id = node.origin;
+    if (this.can_select_by_myself) {
+      if (node.delay > 0) {
+        this.selected_peer = node;
+        this.markForCheck();
+      }
     }
   }
   hideIp(ipv4) {
@@ -82,24 +127,21 @@ export class LinkNodePage extends FirstLevelPage {
   }
 
   timeoutAutoLinkFastetNode() {
-    if (this.formData.selected_node_id) {
+    if (this.selected_peer) {
       return;
     }
     const fastet_node = this.peer_list
       .filter(node => node.delay > 0)
       .sort((a, b) => a.delay - b.delay)[0];
     if (fastet_node) {
-      this.formData.selected_node_id = fastet_node.origin;
+      this.selected_peer = fastet_node;
       this.linkNode(fastet_node);
     }
   }
 
   linkSelectedNode() {
-    const selected_node = this.peer_list.find(
-      node => node.origin === this.formData.selected_node_id,
-    );
-    if (selected_node) {
-      this.linkNode(selected_node);
+    if (this.selected_peer) {
+      this.linkNode(this.selected_peer);
     }
   }
 

@@ -58,8 +58,9 @@ export class BlockServiceProvider extends FLP_Tool {
   private _blockDb_inited = new PromisePro();
   blockDb: Mdb<TYPE.BlockModel>;
 
-  oneTimeUrl(app_url: AppUrl, server_url: string) {
+  oneTimeUrl(app_url: AppUrl, server_url: string,force_network?:boolean) {
     app_url.disposableServerUrl(server_url);
+    this.fetch.forceNetwork(force_network);
     return this;
   }
 
