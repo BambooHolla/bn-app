@@ -21,7 +21,7 @@ import * as TYPE from "./peer.types";
 export * from "./peer.types";
 const PEERS: TYPE.LocalPeerModel[] = [
   {
-    origin: "http://192.168.16.146",
+    origin: "http://192.168.16.146:19002",
     level: TYPE.PEER_LEVEL.TRUST,
     web_channel_link_num: 0,
     ip: "192.168.16.146",
@@ -134,6 +134,9 @@ export class PeerServiceProvider extends CommonService {
     // 等待用户开启请求
     while (!is_start_to_check) {
       is_start_to_check = yield { search_done: true };
+      if (is_start_to_check) {
+        yield { check_start: true };
+      }
     }
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
@@ -347,7 +350,7 @@ export class PeerServiceProvider extends CommonService {
       }
     });
     res_list.map(item => {
-      item.rate = item.score / item.rate;
+      item.rate = item.score / total_rate_base;
     });
     return res_list;
     // if(res_list.length)

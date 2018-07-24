@@ -111,7 +111,7 @@ export class LinkNodePage extends FirstLevelPage {
             const s_rate_list = s_list
               .map((s, i) => {
                 return {
-                  rate: (mm_s - s) / total_s,
+                  rate: (mm_s - s) / total_s || 1,
                   pi: selectable_peer_list[i],
                 };
               })
