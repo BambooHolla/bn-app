@@ -51,6 +51,7 @@ import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { global } from "../bnqkl-framework/helper";
 import { translateMessage } from "../bnqkl-framework/FLP_Tool";
+import { getQueryVariable } from "../bnqkl-framework/helper";
 
 import { CommonTransition } from "./common.transition";
 import {
@@ -159,6 +160,19 @@ export class MyApp implements OnInit {
     this.initTranslate();
 
     const initPage = (async () => {
+      const lock_page = getQueryVariable("LOCK_PAGE");
+      if (lock_page) {
+        await this.openPage(lock_page);
+        const page_base_name = lock_page
+          .replace(/-([a-z])/g, (...args) => args[1].toUpperCase())
+          .replace(/^([a-z])/, (...args) => args[1].toUpperCase());
+        const pageInstance = window[`instanceOf${page_base_name}Page`];
+        if ((window["ii"] = pageInstance)) {
+          pageInstance.ionViewWillEnter();
+          pageInstance.ionViewDidEnter();
+        }
+        return null;
+      }
       if (!localStorage.getItem("HIDE_WELCOME")) {
         await this.openPage(FirstRunPage);
         return null;
@@ -307,6 +321,10 @@ export class MyApp implements OnInit {
         this.currentPage == FirstRunPage ||
         this.currentPage == ScanPeersPage
       ) {
+        return;
+      }
+      const lock_page = getQueryVariable("LOCK_PAGE");
+      if (lock_page && this.currentPage === lock_page) {
         return;
       }
     }

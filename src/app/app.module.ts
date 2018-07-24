@@ -9,10 +9,10 @@ import {
   NgZone,
 } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-// import {
-//   BrowserAnimationsModule,
-//   NoopAnimationsModule,
-// } from "@angular/platform-browser/animations";
+import {
+  BrowserAnimationsModule,
+  // NoopAnimationsModule,
+} from "@angular/platform-browser/animations";
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner";
 import { Camera } from "@ionic-native/camera";
@@ -35,6 +35,7 @@ import { FingerprintAIO } from "./native/fingerprint-aio";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { MatFormFieldModule, MatInputModule,MatAutocompleteModule } from "@angular/material";
 import {
   IonicErrorHandler,
   IonicModule,
@@ -105,6 +106,7 @@ import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { DbCacheProvider } from "../providers/db-cache/db-cache";
 import { VoucherServiceProvider } from "../providers/voucher-service/voucher-service";
 import { LocalContactProvider } from "../providers/local-contact/local-contact";
+import { AssetsServiceProvider } from "../providers/assets-service/assets-service";
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
@@ -162,7 +164,7 @@ const heightLevelModules = [
   ],
   imports: [
     BrowserModule,
-    // BrowserAnimationsModule,
+    BrowserAnimationsModule,
     // NoopAnimationsModule,
     HttpClientModule,
     HttpModule,
@@ -192,6 +194,9 @@ const heightLevelModules = [
     PipesModule,
     MomentModule,
     VirtualScrollModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: pages,
@@ -243,6 +248,7 @@ const heightLevelModules = [
     DbCacheProvider,
     VoucherServiceProvider,
     LocalContactProvider,
+    AssetsServiceProvider,
   ],
 })
 export class AppModule {}

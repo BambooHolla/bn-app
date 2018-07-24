@@ -170,8 +170,27 @@ export class FLP_Lifecycle extends FLP_Tool
       return;
     }
   }
+  detectChanges(){
+    if (this.cdRef) {
+      let one_lock;
+      this.detectChanges = () => {
+        if (one_lock) {
+          return;
+        }
+        /*microtask，把这个任务放到事件循环的最后面来做，避免重复工作*/
+        one_lock = Promise.resolve().then(() => {
+          one_lock = undefined;
+          this._before_detectChanges();
+          this.cdRef!.detectChanges();
+        });
+      };
+      this.detectChanges();
+      return;
+    }
+  }
   // 钩子函数
   _before_markForCheck() {}
+  _before_detectChanges() {}
 
   static markForCheck(
     target: any,

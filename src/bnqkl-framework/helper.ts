@@ -24,7 +24,16 @@ export function getQueryVariable(variable: string) {
 		}
 	}
 	if (typeof localStorage === "object") {
-		return localStorage.getItem(variable);
+		const res = localStorage.getItem(variable);
+		if (typeof res === "string") {
+			return res;
+		}
+	}
+	if (typeof sessionStorage === "object") {
+		const res = sessionStorage.getItem(variable);
+		if (typeof res === "string") {
+			return res;
+		}
 	}
 }
 

@@ -79,11 +79,10 @@ export class KeyboardAttachDirective {
 
     const contentEle: HTMLElement = this.content.getNativeElement();
     if (contentEle) {
-      const inputEle =
-        contentEle.querySelector("input:focus") ||
-        (contentEle.querySelector("textarea:focus") as HTMLElement);
+      const inputEle = (contentEle.querySelector("input:focus") ||
+        contentEle.querySelector("textarea:focus")) as HTMLElement;
       if (inputEle) {
-        const handleInputEle = inputEle => {
+        const handleInputEle = (inputEle: HTMLElement) => {
           let viewEle = inputEle;
           if (inputEle.dataset.keyboardViewNode) {
             viewEle =
@@ -228,10 +227,26 @@ export class KeyboardAttachDirective {
           }
 
           // InputEle边缘检测，取input对象的parent:ion-input
+          let inputBoundEle: HTMLElement | null | undefined;
+          if (inputEle.classList.contains("mat-input-element")) {
+            inputBoundEle = inputEle!.parentElement!.parentElement!
+              .parentElement!.parentElement as HTMLElement;
+            if (inputBoundEle.tagName !== "MAT-FORM-FIELD") {
+              //Angular Material <mat-form-field>
+              inputBoundEle = null;
+            }
+          }
+          if (!inputBoundEle) {
+            inputBoundEle =
+              inputEle.tagName === "INPUT" ? inputEle.parentElement : inputEle;
+          }
+
           const inputBound = this._getBound(
-            inputEle.tagName === "INPUT" ? inputEle.parentElement : inputEle,
+            inputBoundEle || inputEle,
             view_translateY,
           );
+          if (inputEle.dataset) {
+          }
 
           // 检测底部
           const input_moved_bottom = inputBound.bottom - moveY;
@@ -270,7 +285,7 @@ export class KeyboardAttachDirective {
             console.log(e, this.attachTime);
             if (e.relatedTarget) {
               //如果是直接跳到下一个输入节点，直接绑定下一个节点
-              handleInputEle(e.relatedTarget);
+              handleInputEle(e.relatedTarget as HTMLElement);
             }
             inputEle.removeEventListener("blur", onInputBlur);
           };

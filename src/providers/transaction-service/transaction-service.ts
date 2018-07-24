@@ -18,44 +18,15 @@ export * from "./transaction.types";
 import * as IFM from "ifmchain-ibt";
 import * as promisify from "es6-promisify";
 import { Mdb } from "../mdb";
-
-export enum TransactionTypes {
-  /** 是最基本的转账交易*/
-  SEND = 0,
-  /** “签名”交易*/
-  SIGNATURE = 1,
-  /** 注册为受托人*/
-  DELEGATE = 2,
-  /**投票*/
-  VOTE = 3,
-  /**注册用户别名地址*/
-  USERNAME = 4,
-  /**添加联系人*/
-  FOLLOW = 5,
-  /**注册多重签名帐号*/
-  MULTI = 6,
-  /**侧链应用*/
-  DAPP = 7,
-  /**转入Dapp资金*/
-  IN_TRANSFER = 8,
-  /**转出Dapp资金*/
-  OUT_TRANSFER = 9,
-  /**点赞*/
-  FABULOUS = 10,
-  /**打赏*/
-  GRATUITY = 11,
-  /**发送信息*/
-  SENDMESSAGE = 12,
-  /** 侧链数据存证*/
-  MARK = 13,
-}
+// const { TransactionTypes } = TYPE;
+export * from "./transaction.types";
 
 @Injectable()
 export class TransactionServiceProvider {
   ifmJs = AppSettingProvider.IFMJS;
   transaction: any;
   // block: any;
-  TransactionTypes = TransactionTypes;
+  TransactionTypes = TYPE.TransactionTypes;
   nacl_factory: any;
   Buff: any;
   Crypto: any;
@@ -280,8 +251,8 @@ export class TransactionServiceProvider {
       }
 
       if (
-        (txData.type === TransactionTypes.SEND && !txData.recipientId) ||
-        (txData.type === TransactionTypes.SEND && !txData.amount)
+        (txData.type === this.TransactionTypes.SEND && !txData.recipientId) ||
+        (txData.type === this.TransactionTypes.SEND && !txData.amount)
       ) {
         console.error("tx is send and recipient is null");
         return false;
@@ -359,7 +330,7 @@ export class TransactionServiceProvider {
     page = 1,
     pageSize = 10,
     in_or_out?: "in" | "out" | "or",
-    type?: TransactionTypes,
+    type?: TYPE.TransactionTypes,
   ) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
@@ -394,7 +365,7 @@ export class TransactionServiceProvider {
     offset: number,
     limit: number,
     in_or_out?: "in" | "out" | "or",
-    type?: TransactionTypes,
+    type?: TYPE.TransactionTypes,
     extend_query: any = {},
   ) {
     if (in_or_out !== "or") {
@@ -433,7 +404,7 @@ export class TransactionServiceProvider {
         0,
         this.default_user_in_transactions_pageSize,
         "in",
-        TransactionTypes.SEND,
+        this.TransactionTypes.SEND,
       ),
     );
   }
@@ -447,7 +418,7 @@ export class TransactionServiceProvider {
         0,
         this.default_user_out_transactions_pageSize,
         "out",
-        TransactionTypes.SEND,
+        this.TransactionTypes.SEND,
       ),
     );
   }
@@ -458,7 +429,7 @@ export class TransactionServiceProvider {
     page = 1,
     pageSize = 10,
     in_or_out: "in" | "out",
-    type?: TransactionTypes,
+    type?: TYPE.TransactionTypes,
   ) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
@@ -493,7 +464,7 @@ export class TransactionServiceProvider {
     offset: number,
     limit: number,
     in_or_out: "in" | "out",
-    type?: TransactionTypes,
+    type?: TYPE.TransactionTypes,
   ) {
     const cur_round = this.appSetting.getRound();
     const startHeight = this.appSetting.getRoundStartHeight(cur_round - 1);
@@ -520,7 +491,7 @@ export class TransactionServiceProvider {
         0,
         this.default_user_in_transactions_pageSize,
         "in",
-        TransactionTypes.SEND,
+        this.TransactionTypes.SEND,
       ),
     );
   }
@@ -535,7 +506,7 @@ export class TransactionServiceProvider {
           0,
           this.default_user_out_transactions_pageSize,
           "out",
-          TransactionTypes.SEND,
+          this.TransactionTypes.SEND,
         ),
         // 投票
         this._getUserTransactionsPreRound(
@@ -543,7 +514,7 @@ export class TransactionServiceProvider {
           0,
           this.default_user_out_transactions_pageSize,
           "in",
-          TransactionTypes.VOTE,
+          this.TransactionTypes.VOTE,
         ),
       ]).then(([get_trans, vote_trans]) => {
         return get_trans.concat(vote_trans);

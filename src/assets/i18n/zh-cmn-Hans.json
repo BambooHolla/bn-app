@@ -749,6 +749,28 @@
   "//": "link-node",
   "SHEILD": "盾牌",
 
+  "//": "assets-issuing-assets",
+  "ASSETS-ISSUING-ASSETS": "发行新资产",
+
+  "ASSETS_assetName": "资产名称",
+  "ASSETS_abbreviation": "英文简写",
+  "ASSETS_summary": "资产描述",
+  "ASSETS_expectedRaisedIBTs": "资产置换比例",
+  "ASSETS_originalIssuedAssets": "发行数量",
+  "ASSETS_applyAssetBlockHeight": "资产发起时的区块高度",
+  "ASSETS_expectedIssuedBlockHeight": "计划发行时的区块高度",
+
+  "UPLOAD_LOGO_IMAGE": "上传logo图片",
+  "PLEASE_INPUT_ASSETNAME": "资产名称",
+  "PLEASE_INPUT_ASSETS_ABBREVIATION": "请输入资产英文简写",
+  "PLEASE_BRIEFLY_DESCRIBE_YOUR_ASSETS": "一段话描述您的资产",
+  "PLEASE_ENTER_THE_ASSET_REPLACEMENT_RATIO": "请输入您的置换比例",
+  "PLEASE_INPUT_ISSUED_ASSETS": "发行资产数量",
+  "PLEASE_INPUT_RAISED_IBT": "初始冻结IBT数量",
+  "ISSUED_BLOCK_HEIGHT": "发行高度",
+  "ESTIMATED_TIME":"预计时间",
+  "ISSUED_IMMEDIATELY": "立即发行",
+
   "//": "语言包",
   "LANG_zh-cmn-Hans": "简体中文",
   "LANG_zh-cmn-Hant": "繁体中文",
