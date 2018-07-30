@@ -8,7 +8,10 @@
         </button>
       </div>
       <div class="title">{{'TRANSFER'|translate}}</div>
-      <div class="amount">{{current_transfer?.amount|amountEuler|number:'1.8-8'}}</div>
+      <div class="amount">
+        {{current_transfer?.amount|amountEuler|number:'1.8-8'}}
+        <span class="unit">IBT</span>
+      </div>
       <div class="recipient">
         <span class="label">{{'TRANSCATION_RECIPIENT'|translate}}</span>
         <span [click-to-copy]="current_transfer?.recipientId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSCATION_RECIPIENT'|translate)}">{{current_transfer?.recipientId}}</span>

@@ -21,10 +21,10 @@ import * as TYPE from "./peer.types";
 export * from "./peer.types";
 const PEERS: TYPE.LocalPeerModel[] = [
   {
-    origin: "http://192.168.16.146:19002",
+    origin: "http://localhost:19002",
     level: TYPE.PEER_LEVEL.TRUST,
     web_channel_link_num: 0,
-    ip: "192.168.16.146",
+    ip: "localhost",
     height: 0,
     p2pPort: 19000,
     webPort: 19002,

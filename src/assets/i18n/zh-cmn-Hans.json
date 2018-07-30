@@ -755,10 +755,16 @@
   "ASSETS_assetName": "资产名称",
   "ASSETS_abbreviation": "英文简写",
   "ASSETS_summary": "资产描述",
-  "ASSETS_expectedRaisedIBTs": "资产置换比例",
+  "ASSETS_rate": "置换比例",
+  "ASSETS_expectedRaisedIBTs": "初始冻结IBT数量",
   "ASSETS_originalIssuedAssets": "发行数量",
   "ASSETS_applyAssetBlockHeight": "资产发起时的区块高度",
   "ASSETS_expectedIssuedBlockHeight": "计划发行时的区块高度",
+
+  "//":"assets-assets-market",
+  "ASSETS-ASSETS-MARKET":"资产市场",
+  "NUMBER_OF_HOLDERS": "持有人数",
+  "REMAINING": "剩余",
 
   "UPLOAD_LOGO_IMAGE": "上传logo图片",
   "PLEASE_INPUT_ASSETNAME": "资产名称",

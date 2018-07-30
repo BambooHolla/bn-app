@@ -77,6 +77,8 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 	/*自动补全*/
 	@AssetsIssuingAssetsPage.markForCheck
 	expectedIssuedBlockHeightOptions: number[] = [];
+
+	private _expectedIssuedBlockHeightOptions: number[] = [];
 	@AssetsIssuingAssetsPage.addEventAfterDidEnter("HEIGHT:CHANGED")
 	watchHeightChanged() {
 		const height = this.appSetting.getHeight();
@@ -84,7 +86,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 		const weakly_height =
 			(7 * 24 * 60 * 60 * 1000) / this.appSetting.BLOCK_UNIT_TIME;
 		// 一个季度的时间，3月*4周
-		this.expectedIssuedBlockHeightOptions = Array.from({ length: 12 }).map(
+		this._expectedIssuedBlockHeightOptions = Array.from({ length: 12 }).map(
 			(_, i) => height + weakly_height * (i + 1),
 		);
 
@@ -93,4 +95,31 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 		});
 	}
 	@ViewChild("autoExpectedIssuedBlockHeight") autoHeight!: MatAutocomplete;
+
+	@AssetsIssuingAssetsPage.didEnter
+	init_delaySetHeightOptions() {
+		let show_options_ti;
+		this.event.on("input-status-changed", ({ key: formKey, event: e }) => {
+			if (formKey !== "expectedIssuedBlockHeight") {
+				return;
+			}
+			if (e.type === "focus") {
+				clearTimeout(show_options_ti);
+				show_options_ti = setTimeout(() => {
+					this._delaySetHeightOptions();
+				}, 500);
+			} else if (e.type === "blur") {
+				clearTimeout(show_options_ti);
+				show_options_ti = setTimeout(() => {
+					this._delayUnSetHeightOptions();
+				}, 500);
+			}
+		});
+	}
+	private _delaySetHeightOptions() {
+		this.expectedIssuedBlockHeightOptions = this._expectedIssuedBlockHeightOptions;
+	}
+	private _delayUnSetHeightOptions() {
+		this.expectedIssuedBlockHeightOptions = [];
+	}
 }

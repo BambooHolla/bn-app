@@ -53,7 +53,10 @@
         <!-- <div class="create-time">{{log.create_time|amLocal:localName|amTimeAgo}}</div> -->
         <div class="create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         <div class="address" [innerHTML]="log.recipientId|mask:'@address'"></div>
-        <div class="amount">{{amountViewer(log.amount|amountEuler|number:'1.8-8')}}</div>
+        <div class="amount">
+          {{amountViewer(log.amount|amountEuler|number:'1.8-8')}}
+          <span class="unit">IBT</span>
+        </div>
       </div>
       <div class="empty" *ngIf="!roll_out_config.loading&&roll_out_logs.length==0">
         <i>{{'NO_OUT_COME_RECORED' | translate}}</i>

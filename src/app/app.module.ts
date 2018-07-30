@@ -35,7 +35,14 @@ import { FingerprintAIO } from "./native/fingerprint-aio";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { MatFormFieldModule, MatInputModule,MatAutocompleteModule } from "@angular/material";
+import {
+  MatFormFieldModule,
+  MatInputModule,
+  MatAutocompleteModule,
+  MatMenuModule,
+  MatGridListModule,
+  MatButtonModule,
+} from "@angular/material";
 import {
   IonicErrorHandler,
   IonicModule,
@@ -197,6 +204,9 @@ const heightLevelModules = [
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
+    MatMenuModule,
+    MatGridListModule,
+    MatButtonModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: pages,

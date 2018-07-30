@@ -171,7 +171,7 @@ export class KeyboardAttachDirective {
             }
           }
 
-          const MAX_MOVE_Y = Math.min(
+          const MAX_MOVE_Y = Math.max(
             keyboardHeight,
             viewBound.top - headerHeight,
           );

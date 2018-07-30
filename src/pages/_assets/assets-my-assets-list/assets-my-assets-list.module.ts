@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { IonicPageModule } from "ionic-angular";
-import { AssetsIssuingAssetsPage } from "./assets-issuing-assets";
+import { AssetsMyAssetsListPage } from "./assets-my-assets-list";
 import { ComponentsModule } from "../../../components/components.module";
 import { DirectivesModule } from "../../../directives/directives.module";
 import { PipesModule } from "../../../pipes/pipes.module";
@@ -14,9 +14,9 @@ import {
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [AssetsIssuingAssetsPage],
+	declarations: [AssetsMyAssetsListPage],
 	imports: [
-		IonicPageModule.forChild(AssetsIssuingAssetsPage),
+		IonicPageModule.forChild(AssetsMyAssetsListPage),
 		TranslateModule,
 		DirectivesModule,
 		PipesModule,
@@ -28,4 +28,4 @@ import { MomentModule } from "angular2-moment";
 		MomentModule,
 	],
 })
-export class AssetsIssuingAssetsPageModule {}
+export class AssetsMyAssetsListPageModule {}

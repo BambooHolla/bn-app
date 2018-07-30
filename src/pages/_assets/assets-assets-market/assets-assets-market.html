@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-navbar color="transparent">
+    <ion-title>{{'ASSETS-ASSETS-MARKET'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <mat-grid-list [cols]="card_grid_view_style.cols" [rowHeight]="card_grid_view_style.rowHeight">
+    <mat-grid-tile *ngFor="let item of assets_list" [ngClass]="card_grid_view_style.cssClass">
+      <div class="assets-card-wrapper">
+        <button class="assets-card" mat-button (click)="routeToAssetsDetail(item)"> <!-- mat-button -->
+          <div class="assets-content">
+            <div class="base-info">
+              <div class="assets-logo-shape-wrapper">
+                <div class="assets-logo-shape">
+                  <img [src]="item.logo_url" alt="LOGO">
+                </div>
+              </div>
+              <div class="name">
+                <div class="simple-name">{{item.abbreviation}}</div>
+                <div class="full-name">{{item.assetsName}}</div>
+              </div>
+              <div class="amount">
+                <span class="remaing">{{'REMAINING'|translate}}</span> {{item.originalIssuedAssets|number:'1.0-0'}}
+              </div>
+            </div>
+            <div class="extend-info">
+              <div class="summary">
+                <!-- {{item.summary}} -->
+              </div>
+              <div class="progress-value">80%</div>
+              <div class="recruitment-progress">
+                <div class="progress-inner" [style.width]="80+'%'">
+                  <!--  [data-width]="item.recruitment_progress*100+'%'" -->
+                </div>
+              </div>
+            </div>
+            <div class="footer-info">
+              <div class="holders">
+                {{'NUMBER_OF_HOLDERS'|translate}}:{{item.number_of_holders}}
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+</ion-content>

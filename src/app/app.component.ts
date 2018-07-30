@@ -9,6 +9,9 @@ if (
       ins && typeof ins.then === "function" && typeof ins.catch === "function",
   });
 }
+(<any>Symbol).asyncIterator ||
+  ((<any>Symbol).asyncIterator = Symbol.for("Symbol.asyncIterator"));
+
 import { Component, ViewChild, OnInit, Renderer2 } from "@angular/core";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Clipboard } from "@ionic-native/clipboard";

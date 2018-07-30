@@ -237,7 +237,7 @@ page-tab-pay {
             }
           }
           > .create-time {
-            flex: 1.1;
+            flex: 0.9;
             display: flex;
             align-items: center;
             &::before {
@@ -253,11 +253,19 @@ page-tab-pay {
           > .address {
             flex: 1;
             font-size: 1.3rem;
+            font-family: 'Andale Mono', 'Monaco', 'Courier New';
+            text-align: center;
           }
           > .amount {
             flex: 1;
             font-size: 1.3rem;
             text-align: right;
+            display: flex;
+            /* justify-content: flex-end; */
+            text-align: right;
+            >.unit{
+              width: 3em;
+            }
           }
         }
         .empty {
