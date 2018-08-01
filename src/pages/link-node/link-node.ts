@@ -100,7 +100,7 @@ export class LinkNodePage extends FirstLevelPage {
         // 随机进行选择
         const random_select_seed = Math.random();
 
-        // console.log("CR", check_res, random_select_seed);
+        console.log("CR", check_res, random_select_seed);
         let acc_random = 0;
         for (var check_item of check_res) {
           acc_random += check_item.rate;

@@ -28,6 +28,7 @@
   "NONE": "无",
   "SHOW_INCOME_IBT_NOTICE_TIP": "您是否需要在每次收到IBT通知？",
   "YES_I_NEED": "需要",
+  "CREATION_NODE": "创世节点",
 
   "//": "fingerprint-optional",
   "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN": "账户登录校验",
