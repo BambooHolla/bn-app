@@ -23,6 +23,8 @@ import { ChainListComponent } from "./chain-list/chain-list";
 import { VoteExpectedProfitsComponent } from './vote-expected-profits/vote-expected-profits';
 import { SyncProgressSpinnerComponent } from './sync-progress-spinner/sync-progress-spinner';
 import { PeerRadarScanningComponent } from './peer-radar-scanning/peer-radar-scanning';
+import { SemicircularProgressBarComponent } from './semicircular-progress-bar/semicircular-progress-bar';
+import { SimpleSectorComponent } from './simple-sector/simple-sector';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import { PeerRadarScanningComponent } from './peer-radar-scanning/peer-radar-sca
     VoteExpectedProfitsComponent,
     SyncProgressSpinnerComponent,
     PeerRadarScanningComponent,
+    SemicircularProgressBarComponent,
+    SimpleSectorComponent,
   ],
   imports: [],
   exports: [
@@ -77,6 +81,8 @@ import { PeerRadarScanningComponent } from './peer-radar-scanning/peer-radar-sca
     VoteExpectedProfitsComponent,
     SyncProgressSpinnerComponent,
     PeerRadarScanningComponent,
+    SemicircularProgressBarComponent,
+    SimpleSectorComponent,
   ],
 })
 export class ComponentsModule {}

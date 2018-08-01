@@ -333,7 +333,7 @@ export class MyApp implements OnInit {
     }
     return this._openPage(page, loading_content);
   }
-  private async _openPage(page: string, loading_content?: string | null) {
+  async _openPage(page: string, loading_content?: string | null) {
     if (this.currentPage === page || this._currentOpeningPage === page) {
       return;
     }

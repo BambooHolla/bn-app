@@ -1,8 +1,89 @@
 <ion-header>
-  <ion-navbar color="transparent">
-    <ion-title>{{'ASSETS-ASSETS-DETAIL'|translate}}</ion-title>
+  <ion-navbar color="white">
+    <ion-title>{{assets_info?.abbreviation||('ASSETS-ASSETS-DETAIL'|translate)}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
-
+  <div class="base-info">
+    <div class="header-line">
+      <div class="assets-logo-shape-wrapper">
+        <div class="assets-logo-shape">
+          <img [src]="assets_info?.logo_url" alt="LOGO">
+        </div>
+      </div>
+      <div class="right">
+        <div class="name">
+          <div class="simple-name">{{assets_info?.abbreviation}}</div>
+          <!-- <div class="full-name">{{assets_info?.assetsName}}</div> -->
+          <div class="create-time">{{assets_info?.dateCreated|amDateFormat:"YYYY.MM.DD"}}</div>
+          <div class="publish-time"></div>
+        </div>
+        <div class="amount">
+          <div class="remaing-assets">
+            $123
+          </div>
+          <div class="rate">
+            <text-gradient [text]="'1 IBT = '+(assets_info?.rate|number:'1.0-2')+' '+(assets_info?.abbreviation)" from="#ff5a5b" to="#fca178" fontSize="1.6rem" fontWeight="500"></text-gradient>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="detail-info">
+    <div class="card remaing-freeze-amount">
+      <div class="left">
+        <div class="label">
+          <text-gradient [text]="'REMAINING_NUMBER_OF_FREEZES'|translate" from="#ff5a5b" to="#fca178" fontSize="1.4rem" fontWeight="500"></text-gradient>
+        </div>
+        <div class="value">5000 <span class="unit">IBT</span></div>
+      </div>
+      <div class="right">
+        <semicircular-progress-bar [progress]="0.62" class="chart"></semicircular-progress-bar>
+        <div class="chart-info">
+          <div class="value">10000 <span class="unit">IBT</span></div>
+          <div class="label">{{'INITIAL_FREEZE_NUMBER_OF_ISSUES'|translate}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card remaing-publish-amount">
+      <div class="left">
+        <div class="label">{{'REMAINING_NUMBER_OF_ISSUES'|translate}}</div>
+        <div class="value">5000 <span class="unit">MKR</span></div>
+        <div class="init-publish-amount">
+          <div class="label">{{'INITIAL_PUBLICE_NUMBER_OF_ISSUES'|translate}}</div>
+          <div class="value">150000 <span class="unit">MKR</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <simple-sector [progress]="0.75" class="chart"></simple-sector>
+      </div>
+    </div>
+    <div class="card issues-owner-list">
+      <div class="issues-owner-number">
+        <div class="label">{{'NUMBER_OF_ISSUES_OWNER'|translate}}</div>
+        <div class="value">123443</div>
+      </div>
+      <div class="issues-owner-rank-list">
+        <div class="list-title">
+          <ali-icon name="ifm-liebiao"></ali-icon>
+          {{'RANK_OF_ISSUES_OWNER'|translate}}
+        </div>
+        <virtual-scroll #vscroll class="list-container" [items]="owner_list" (update)="viewPortItems = $event" (change)="onOwnerListChange($event)">
+        <!-- <div class="list"> -->
+          <div class="item" *ngFor="let item of viewPortItems;let i = index;trackBy:commonTrackBy('address')">
+            <div class="ranking" [ngClass]="['rank-'+(item._ranking),'rs-'+((item._ranking).toString().length)]">{{item._ranking}}</div>
+            <div class="address" [innerHTML]="item.address|mask:'@address'"></div>
+            <div class="empty-space"></div>
+            <div class="balance">{{item.hodingAssets|amountEuler|number:'1.8-8'}} <span class="unit">{{assets_info.abbreviation}}</span></div>
+          </div>
+        <!-- </div> -->
+        </virtual-scroll>
+      </div>
+    </div>
+  </div>
 </ion-content>
+<ion-footer>
+  <button mat-button class="submit-button">
+    <span class="inner">{{'DESTROY_ASSETS'|translate}}</span>
+  </button>
+</ion-footer>

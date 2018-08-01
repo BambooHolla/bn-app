@@ -761,10 +761,22 @@
   "ASSETS_applyAssetBlockHeight": "资产发起时的区块高度",
   "ASSETS_expectedIssuedBlockHeight": "计划发行时的区块高度",
 
-  "//":"assets-assets-market",
-  "ASSETS-ASSETS-MARKET":"资产市场",
+  "//": "assets-assets-market",
+  "ASSETS-ASSETS-MARKET": "资产市场",
   "NUMBER_OF_HOLDERS": "持有人数",
   "REMAINING": "剩余",
+
+  "//": "assets-assets-detail",
+  "ASSETS-ASSETS-DETAIL": "资产详情",
+  "CREATE_TIME": "创建时间",
+  "PUBLISH_TIME": "发行时间",
+  "REMAINING_NUMBER_OF_FREEZES": "剩余冻结数量",
+  "REMAINING_NUMBER_OF_ISSUES": "剩余发行数量",
+  "INITIAL_PUBLICE_NUMBER_OF_ISSUES": "初始发行数量",
+  "INITIAL_FREEZE_NUMBER_OF_ISSUES": "初始冻结数量",
+  "NUMBER_OF_ISSUES_OWNER":"持有人数",
+  "RANK_OF_ISSUES_OWNER":"持有人数",
+  "DESTROY_ASSETS":"销毁资产",
 
   "UPLOAD_LOGO_IMAGE": "上传logo图片",
   "PLEASE_INPUT_ASSETNAME": "资产名称",
@@ -774,7 +786,7 @@
   "PLEASE_INPUT_ISSUED_ASSETS": "发行资产数量",
   "PLEASE_INPUT_RAISED_IBT": "初始冻结IBT数量",
   "ISSUED_BLOCK_HEIGHT": "发行高度",
-  "ESTIMATED_TIME":"预计时间",
+  "ESTIMATED_TIME": "预计时间",
   "ISSUED_IMMEDIATELY": "立即发行",
 
   "//": "语言包",

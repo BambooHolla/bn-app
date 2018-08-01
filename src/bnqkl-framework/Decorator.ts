@@ -321,7 +321,6 @@ export function asyncLoadingWrapGenerator(
           ) {
             const loadingEle = loading.pageRef().nativeElement;
             loadingEle.style.marginTop = this.content._hdrHeight + "px";
-            console.log(loadingEle, this.content._hdrHeight);
           }
         };
         afCtrl.raf(checkLoadingPageRef);

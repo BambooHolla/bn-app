@@ -88,23 +88,29 @@ page-assets-assets-market {
 					flex-grow: 0;
 					flex-shrink: 0;
 					padding-right: 1.4rem;
+					filter: drop-shadow(0 0.2vw 0.4vw rgba(0, 0, 0, 0.3));
 				}
-				> .name {
+				> .right {
 					flex: 1;
-					font-size: 1.6rem;
-					font-weight: 500;
-				}
-				> .amount {
-					flex: 1;
-					font-size: 2.3rem;
 					display: flex;
-					flex-direction: row;
-					align-items: baseline;
-					justify-content: flex-end;
-					font-weight: bold;
-					.remaing {
-						font-size: 1.24rem;
-						font-weight: normal;
+					align-items: center;
+					justify-content: space-between;
+					flex-wrap: wrap;
+					> .name {
+						font-size: 1.6rem;
+						font-weight: 500;
+					}
+					> .amount {
+						font-size: 2.3rem;
+						display: flex;
+						flex-direction: row;
+						align-items: baseline;
+						justify-content: flex-end;
+						font-weight: bold;
+						.remaing {
+							font-size: 1.24rem;
+							font-weight: normal;
+						}
 					}
 				}
 			}
@@ -153,7 +159,7 @@ page-assets-assets-market {
 				contain: content;
 				color: #999999;
 				font-size: 1rem;
-				padding-bottom: 0.3rem;
+				padding-bottom: 0.5rem;
 				text-align: left;
 				line-height: 1rem;
 			}

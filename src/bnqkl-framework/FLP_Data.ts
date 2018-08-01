@@ -152,4 +152,24 @@ export class FLP_Data extends FLP_Form {
       return sub_list.slice(0, end_index).concat(target_list);
     }
   }
+  mixArrayByPush<T>(
+    target_list: T[],
+    sub_list: T[],
+    opts: {
+      mix_key: string;
+    },
+  ) {
+    const last_ele = target_list[target_list.length - 1];
+    if (!last_ele) {
+      return target_list.concat(sub_list);
+    }
+    const end_index = sub_list.findIndex(
+      item => item[opts.mix_key] === last_ele[opts.mix_key],
+    );
+    if (end_index === -1) {
+      return target_list.concat(sub_list);
+    } else {
+      return target_list.concat(sub_list.slice(end_index + 1));
+    }
+  }
 }

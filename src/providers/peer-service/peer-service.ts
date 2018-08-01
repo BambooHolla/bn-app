@@ -34,6 +34,21 @@ const PEERS: TYPE.LocalPeerModel[] = [
     acc_verify_total_times: 0,
     acc_verify_success_times: 0,
   },
+  {
+    origin: "http://104.199.218.167:19002",
+    level: TYPE.PEER_LEVEL.TRUST,
+    web_channel_link_num: 0,
+    ip: "104.199.218.167",
+    height: 0,
+    p2pPort: 19000,
+    webPort: 19002,
+    delay: -1,
+    acc_use_duration: 0,
+    latest_verify_fail_time: 0,
+    acc_verify_total_times: 0,
+    acc_verify_success_times: 0,
+  },
+
   // {
   //   origin: "http://mainnet.ifmchain.org",
   //   level: TYPE.PEER_LEVEL.TRUST,
@@ -89,6 +104,17 @@ export class PeerServiceProvider extends CommonService {
   readonly PEERS_URL = this.appSetting.APP_URL("/api/peers/");
   readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
   readonly FORGING_ENABLE = this.appSetting.APP_URL("/forging/enable");
+
+  /*获取所有次信任节点*/
+  async getAllSecondTrustPeers() {
+    const trust_peer_list = this.peerList.filter(
+      peer => peer.level === TYPE.PEER_LEVEL.TRUST,
+    );
+    const col = new Map<string, TYPE.LocalPeerModel>();
+    return (await Promise.all(
+      trust_peer_list.map(trust_peer => this._searchPeers(trust_peer, col)),
+    )).reduce((res_list, peer_list) => res_list.concat(peer_list), []);
+  }
 
   async getAllPeers() {
     const all_peers: TYPE.LocalPeerModel[] = [];
@@ -216,7 +242,10 @@ export class PeerServiceProvider extends CommonService {
     const next_level = TYPE.getNextPeerLevel(enter_port_peer.level);
     const res = [] as TYPE.LocalPeerModel[];
     sec_peers.forEach(sec_peer_info => {
-      if (sec_peer_info.state === 1) {
+      if (
+        sec_peer_info.state === 1 &&
+        !sec_peer_info.port.toString().endsWith("04")
+      ) {
         const webPort = sec_peer_info["webPort"] || sec_peer_info.port + 2;
         const origin = "http://" + sec_peer_info.ip + ":" + webPort;
         if (collection_peers.has(origin)) {
@@ -302,7 +331,9 @@ export class PeerServiceProvider extends CommonService {
       highest_blocks: BlockModel[];
       lowest_blocks: BlockModel[];
     }[],
+    all_second_trust_peer_list: TYPE.LocalPeerModel[] = [],
   ) {
+    // const second_peer_num = Math.max(all_second_trust_peer_list.length, 4);
     const peer_info_level_map = new Map<
       TYPE.PEER_LEVEL,
       typeof peer_info_list
@@ -326,6 +357,7 @@ export class PeerServiceProvider extends CommonService {
       const res = PeerServiceProvider._calcLeveledPeerInfoList(
         peer_info_list,
         level,
+        all_second_trust_peer_list,
       );
       if (res) {
         let score = 0;
@@ -362,7 +394,11 @@ export class PeerServiceProvider extends CommonService {
       lowest_blocks: BlockModel[];
     }[],
     level: TYPE.PEER_LEVEL,
+    all_second_trust_peer_list: TYPE.LocalPeerModel[] = [],
   ) {
+    const second_peer_num = Math.max(all_second_trust_peer_list.length, 4);
+    /**拜占庭算法中至少需要的数量*/
+    const min_second_peer_num = Math.floor(second_peer_num / 2) + 1;
     let peer_info_list_filtered_list: (typeof peer_info_list) | undefined;
     if (level === TYPE.PEER_LEVEL.TRUST) {
       // 绝对信任的节点直接不校验了
@@ -400,7 +436,7 @@ export class PeerServiceProvider extends CommonService {
       )) {
         if (
           level === TYPE.PEER_LEVEL.SEC_TRUST &&
-          h_peer_info_list.length >= 4
+          h_peer_info_list.length >= min_second_peer_num
         ) {
           return h_peer_info_list;
         }

@@ -498,7 +498,7 @@ export class FirstLevelPage extends FLP_Data {
         }
       };
     } else {
-      this.fixIOSCacheBug = () => { };
+      this.fixIOSCacheBug = () => {};
     }
     this.fixIOSCacheBug(ele);
   }
@@ -516,7 +516,7 @@ export class FirstLevelPage extends FLP_Data {
           enableBackdropDismiss: true,
           showBackdrop: true,
         },
-    )
+      )
       .present();
   }
 
@@ -596,5 +596,17 @@ export class FirstLevelPage extends FLP_Data {
     this.appSetting.settings.can_view_amount = !this.appSetting.settings
       .can_view_amount;
     this.cdRef && this.cdRef.markForCheck();
+  }
+  static TRACK_BY_CACHE = new Map<string, Function>();
+  /**通用的 angular trackBy 生成器*/
+  commonTrackBy(key: string) {
+    let res = FirstLevelPage.TRACK_BY_CACHE.get(key);
+    if (!res) {
+      res = (index, item) => {
+        return item[key];
+      };
+      FirstLevelPage.TRACK_BY_CACHE.set(key, res);
+    }
+    return res;
   }
 }

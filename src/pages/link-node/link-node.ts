@@ -2,6 +2,7 @@ import {
   Component,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  ElementRef,
 } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
@@ -25,6 +26,7 @@ export class LinkNodePage extends FirstLevelPage {
     public navParams: NavParams,
     public peerService: PeerServiceProvider,
     public cdRef: ChangeDetectorRef,
+    public eleRef: ElementRef,
   ) {
     super(navCtrl, navParams);
   }
@@ -34,6 +36,7 @@ export class LinkNodePage extends FirstLevelPage {
   >;
   // peer_list:PeerModel[]
   @LinkNodePage.willEnter
+  @asyncCtrlGenerator.error()
   async getNodes() {
     /*这个界面至少等待3s*/
     const min_search_time = sleep(3000);
@@ -45,6 +48,9 @@ export class LinkNodePage extends FirstLevelPage {
 
     const peer_searcher = this.navParams.get("peer_searcher"); // 搜索器
     const peer_list = this.navParams.get("peer_list"); // 已经搜索到的节点
+    const all_second_trust_peer_list = this.navParams.get(
+      "all_second_trust_peer_list",
+    ); // 所有的次信任节点
     if (!peer_searcher) {
       return this.navCtrl.goToRoot({});
     }
@@ -56,10 +62,9 @@ export class LinkNodePage extends FirstLevelPage {
     // 使用搜索器继续搜索并开始执行节点检查
     console.log("使用搜索器继续搜索并开始执行节点检查");
     const peer_searcher_res = await this.peer_searcher.next(true);
-    console.log("peer_searcher_res", peer_searcher_res);
+    // console.log("peer_searcher_res", peer_searcher_res);
     const peer_info_list = [] as any[];
     for await (var _pi of this.peer_searcher) {
-      console.log("PI", _pi);
       if ("peer" in _pi) {
         // 如果节点可用
         const checked_peer_info = _pi;
@@ -73,10 +78,13 @@ export class LinkNodePage extends FirstLevelPage {
 
         /*拜占庭检测可连接的节点*/
         peer_info_list.push(checked_peer_info);
-        const check_res = PeerServiceProvider.calcPeers(peer_info_list);
-        console.log("CR", check_res);
+        const check_res = PeerServiceProvider.calcPeers(
+          peer_info_list,
+          all_second_trust_peer_list,
+        );
         // 随机进行选择
         const random_select_seed = Math.random();
+        // console.log("CR", check_res, random_select_seed);
         let acc_random = 0;
         for (var check_item of check_res) {
           acc_random += check_item.rate;
@@ -123,10 +131,12 @@ export class LinkNodePage extends FirstLevelPage {
             var acc_r = 0;
             const selected_s_rate = s_rate_list.find(s_rate => {
               acc_r += s_rate.rate;
+              // console.log("random_r,acc_r", random_r, acc_r);
               return random_r <= acc_r;
             });
             if (selected_s_rate) {
               this.selected_peer = selected_s_rate.pi.peer;
+              this.scrollSelectedPeerIntoView();
             }
 
             // this.selected_peer =
@@ -142,8 +152,9 @@ export class LinkNodePage extends FirstLevelPage {
     // 已经搜索完了
     if (!this.selected_peer) {
       console.warn("没有可信任的节点");
+      throw new Error("没有可信任的节点");
     } else {
-      await sleep(250);
+      await sleep(550);
       this.linkSelectedNode();
     }
   }
@@ -194,19 +205,23 @@ export class LinkNodePage extends FirstLevelPage {
     }
   }
 
+  scrollSelectedPeerIntoView() {
+    const pageEle: HTMLElement = this.eleRef.nativeElement;
+    const selectedPeerEle = pageEle.querySelector("input:checked");
+    if (selectedPeerEle) {
+      selectedPeerEle.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
   @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
-    await sleep(200);
+    /*保存节点*/
+    this.peerService.peerDb.insertMany(this.peer_list);
+    await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
     sessionStorage.setItem("LINK_PEER", "true");
     location.hash = "";
     location.reload();
-    // await new Promise(cb => setTimeout(cb, 600 * Math.random() + 200));
-    // if (Math.random() > 0.5) {
-    //   this.routeTo(MainPage);
-    // } else {
-    //   throw new Error("节点连接失败");
-    // }
   }
 }

@@ -7,7 +7,8 @@
   <mat-grid-list [cols]="card_grid_view_style.cols" [rowHeight]="card_grid_view_style.rowHeight">
     <mat-grid-tile *ngFor="let item of assets_list" [ngClass]="card_grid_view_style.cssClass">
       <div class="assets-card-wrapper">
-        <button class="assets-card" mat-button (click)="routeToAssetsDetail(item)"> <!-- mat-button -->
+        <button class="assets-card" mat-button (click)="routeToAssetsDetail(item)">
+          <!-- mat-button -->
           <div class="assets-content">
             <div class="base-info">
               <div class="assets-logo-shape-wrapper">
@@ -15,12 +16,14 @@
                   <img [src]="item.logo_url" alt="LOGO">
                 </div>
               </div>
-              <div class="name">
-                <div class="simple-name">{{item.abbreviation}}</div>
-                <div class="full-name">{{item.assetsName}}</div>
-              </div>
-              <div class="amount">
-                <span class="remaing">{{'REMAINING'|translate}}</span> {{item.originalIssuedAssets|number:'1.0-0'}}
+              <div class="right">
+                <div class="name">
+                  <div class="simple-name">{{item.abbreviation}}</div>
+                  <div class="full-name">{{item.assetsName}}</div>
+                </div>
+                <div class="amount">
+                  <span class="remaing">{{'REMAINING'|translate}}</span> {{item.originalIssuedAssets|number:'1.0-0'}}
+                </div>
               </div>
             </div>
             <div class="extend-info">

@@ -1,0 +1,7 @@
+<div class="progress-val">
+  {{toFixed(progress*100)}}%
+</div>
+<div class="semicircular-progress-bar-wrapper">
+  <div class="bg-bar semicircular-progress-bar" ></div>
+  <div [style.transform]="'rotate('+(progress*173.6-173.6)+'deg)'" class="progress-bar semicircular-progress-bar" ></div>
+</div>

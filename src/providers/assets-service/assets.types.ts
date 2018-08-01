@@ -24,6 +24,9 @@ export type AssetsModel = {
 	status: ASSETS_STATUS;
 	dateCreated: number;
 };
+export type AssetsModelWithLogoSafeUrl = AssetsModel & {
+	logo: import("@angular/platform-browser").SafeUrl;
+};
 
 export enum ASSETS_STATUS {
 	/**
@@ -39,3 +42,12 @@ export enum ASSETS_STATUS {
 	 */
 	FAILED = 2,
 }
+
+export type AssetsPossessorModel = {
+	hodingAssets: string;
+	destoryAssets: string;
+	abbreviation: string;
+	address: string;
+	assetId: string;
+	publicKey: string;
+};
