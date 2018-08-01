@@ -14,34 +14,42 @@ import {
   PromiseType,
   PromiseOut,
 } from "../../bnqkl-framework/PromiseExtends";
+import { getQueryVariable } from "../../bnqkl-framework/helper";
 import * as IFM from "ifmchain-ibt";
 import { CommonService } from "../commonService";
 import { Mdb } from "../mdb";
 import * as TYPE from "./peer.types";
 export * from "./peer.types";
-const PEERS: TYPE.LocalPeerModel[] = [
+const PEERS: TYPE.LocalPeerModel[] = (() => {
+  try {
+    const PEERS_JSON = getQueryVariable("PEERS");
+    if (PEERS_JSON) {
+      return JSON.parse(PEERS_JSON);
+    }
+  } catch (err) {}
+})() || [
+  // {
+  //   origin: "http://localhost:19002",
+  //   level: TYPE.PEER_LEVEL.TRUST,
+  //   web_channel_link_num: 0,
+  //   ip: "localhost",
+  //   height: 0,
+  //   p2pPort: 19000,
+  //   webPort: 19002,
+  //   delay: -1,
+  //   acc_use_duration: 0,
+  //   latest_verify_fail_time: 0,
+  //   acc_verify_total_times: 0,
+  //   acc_verify_success_times: 0,
+  // },
   {
-    origin: "http://localhost:19002",
+    origin: "http://mainnet.ifmchain.org",
     level: TYPE.PEER_LEVEL.TRUST,
     web_channel_link_num: 0,
-    ip: "localhost",
+    ip: "mainnet.ifmchain.org",
     height: 0,
-    p2pPort: 19000,
-    webPort: 19002,
-    delay: -1,
-    acc_use_duration: 0,
-    latest_verify_fail_time: 0,
-    acc_verify_total_times: 0,
-    acc_verify_success_times: 0,
-  },
-  {
-    origin: "http://104.199.218.167:19002",
-    level: TYPE.PEER_LEVEL.TRUST,
-    web_channel_link_num: 0,
-    ip: "104.199.218.167",
-    height: 0,
-    p2pPort: 19000,
-    webPort: 19002,
+    p2pPort: 9000,
+    webPort: 9002,
     delay: -1,
     acc_use_duration: 0,
     latest_verify_fail_time: 0,

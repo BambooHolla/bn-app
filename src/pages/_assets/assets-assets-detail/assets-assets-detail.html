@@ -69,21 +69,26 @@
           {{'RANK_OF_ISSUES_OWNER'|translate}}
         </div>
         <virtual-scroll #vscroll class="list-container" [items]="owner_list" (update)="viewPortItems = $event" (change)="onOwnerListChange($event)">
-        <!-- <div class="list"> -->
+          <!-- <div class="list"> -->
           <div class="item" *ngFor="let item of viewPortItems;let i = index;trackBy:commonTrackBy('address')">
-            <div class="ranking" [ngClass]="['rank-'+(item._ranking),'rs-'+((item._ranking).toString().length)]">{{item._ranking}}</div>
+            <div class="ranking">
+              <div class="inner" [ngClass]="['rank-'+(item._ranking),'rs-'+((item._ranking).toString().length)]">{{item._ranking}}</div>
+            </div>
             <div class="address" [innerHTML]="item.address|mask:'@address'"></div>
             <div class="empty-space"></div>
             <div class="balance">{{item.hodingAssets|amountEuler|number:'1.8-8'}} <span class="unit">{{assets_info.abbreviation}}</span></div>
           </div>
-        <!-- </div> -->
+          <!-- </div> -->
         </virtual-scroll>
       </div>
     </div>
   </div>
+  <div class="footer-bar">
+    <!-- <button mat-button class="submit-button">
+      <span class="inner">{{'DESTROY_ASSETS'|translate}}</span>
+    </button> -->
+    <button mat-button class="submit-button destroy">
+      <text-gradient [text]="'DESTROY_ASSETS'|translate" from="#3ecdeb" to="#3ce6d7" fontSize="1.9rem" fontWeight="500"></text-gradient>
+    </button>
+  </div>
 </ion-content>
-<ion-footer>
-  <button mat-button class="submit-button">
-    <span class="inner">{{'DESTROY_ASSETS'|translate}}</span>
-  </button>
-</ion-footer>

@@ -217,7 +217,9 @@ export class LinkNodePage extends FirstLevelPage {
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
     /*保存节点*/
-    this.peerService.peerDb.insertMany(this.peer_list);
+    await this.peerService.peerDb
+      .insertMany(this.peer_list)
+      .catch(console.error);
     await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
     sessionStorage.setItem("LINK_PEER", "true");

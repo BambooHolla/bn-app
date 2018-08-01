@@ -194,7 +194,7 @@ page-assets-assets-detail {
 			padding: 0;
 			display: flex;
 			flex-direction: column;
-			margin-bottom: 2rem;
+			margin-bottom: 1rem;
 			> .issues-owner-number {
 				flex-grow: 0;
 				flex-shrink: 0;
@@ -249,50 +249,53 @@ page-assets-assets-detail {
 					> .ranking {
 						flex-grow: 0;
 						flex-shrink: 0;
-						height: 1.8rem;
-						width: 1.8rem;
-						margin-right: 2rem;
-						border: 0.55px solid currentcolor;
-						border-radius: 50%;
-						text-align: center;
-						line-height: 1.95rem;
-						&.rs-1 {
-							font-size: 1.5rem;
-						}
-						&.rs-2 {
+						width: 3.8rem;
+						display: flex;
+						align-items: center;
+						justify-content: flex-start;
+						.inner {
+							height: 1.8rem;
 							font-size: 1.3rem;
-						}
-						&.rs-3 {
-							height: 2rem;
-							width: 2rem;
-							font-size: 1rem;
-							transform: scale(0.9);
-						}
-						&.rs-4 {
-							height: 2.2rem;
-							width: 2.2rem;
-							font-size: 1rem;
-							transform: scale(0.9);
-						}
-						&.rank-1,
-						&.rank-2,
-						&.rank-3 {
-							border: none;
-							color: transparent;
-							height: 3rem;
-							background-size: contain;
-							background-position: center;
-							background-repeat: no-repeat;
+							border-radius: 50%;
 							text-align: center;
-						}
-						&.rank-1 {
-							background-image: url("../assets/imgs/assets/assets-rank-1.png");
-						}
-						&.rank-2 {
-							background-image: url("../assets/imgs/assets/assets-rank-2.png");
-						}
-						&.rank-3 {
-							background-image: url("../assets/imgs/assets/assets-rank-3.png");
+							line-height: 1.95rem;
+							&.rs-1 {
+								font-size: 1.5rem;
+								border: 0.55px solid currentcolor;
+								width: 1.8rem;
+							}
+							&.rs-2 {
+								font-size: 1.3rem;
+								border: 0.55px solid currentcolor;
+								width: 1.8rem;
+							}
+							/* &.rs-3 {
+								height: 2rem;
+								width: 2rem;
+								font-size: 1rem;
+								transform: scale(0.9);
+								border: 0.55px solid currentcolor;
+							} */
+							&.rank-1,
+							&.rank-2,
+							&.rank-3 {
+								color: transparent;
+								width: 2rem;
+								height: 3rem;
+								background-size: contain;
+								background-position: center;
+								background-repeat: no-repeat;
+								text-align: center;
+							}
+							&.rank-1 {
+								background-image: url("../assets/imgs/assets/assets-rank-1.png");
+							}
+							&.rank-2 {
+								background-image: url("../assets/imgs/assets/assets-rank-2.png");
+							}
+							&.rank-3 {
+								background-image: url("../assets/imgs/assets/assets-rank-3.png");
+							}
 						}
 					}
 					> .address {
@@ -305,6 +308,36 @@ page-assets-assets-detail {
 					> .balance {
 						flex-grow: 0;
 						flex-shrink: 0;
+					}
+				}
+			}
+		}
+	}
+	.scroll-content {
+		.footer-bar {
+			/* position: fixed; */
+			position: relative;
+			bottom: 0;
+			width: 100%;
+			left: 0;
+			padding: 0rem 0 1.2rem 0;
+			/* backdrop-filter: blur(2px); */
+			filter: drop-shadow(-0.4rem -0.4rem 1rem #e0e0e0);
+			z-index: 3;
+			> button {
+				margin: 0 auto;
+				&.destroy {
+					background: #fff;
+					.inner {
+						-webkit-background-clip: text;
+						background-clip: text;
+						color: transparent;
+						font-weight: bolder;
+						background: linear-gradient(
+							to right,
+							#3ecdeb 0%,
+							#3ce6d7 100%
+						);
 					}
 				}
 			}
