@@ -381,7 +381,7 @@ export function asyncLoadingWrapGenerator(
           run_loading_present(true);
           this.event.on("didEnter", run_loading_present);
         } else {
-          debugger;
+          // debugger;
         }
       } else {
         console.warn("loading修饰器请与FirstLevelPage或者其子类搭配使用最佳");

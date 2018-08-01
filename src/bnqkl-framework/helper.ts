@@ -181,7 +181,7 @@ export class AppUrl {
 /*项目启动的基本环境变量配置参数*/
 const SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
 
-export const baseConfig = new class BaseConfig {
+export const baseConfig = new class BaseConfig extends EventEmitter {
 	APP_VERSION = global["APP_VERSION"];
 	private _SERVER_URL =
 		getQueryVariable("SERVER_URL") || "http://mainnet.ifmchain.org";
@@ -191,6 +191,7 @@ export const baseConfig = new class BaseConfig {
 	set SERVER_URL(v: string) {
 		AppUrl.SERVER_URL = v;
 		this._SERVER_URL = v;
+		this.emitConfigChanged();
 	}
 	//  SERVER_URL = "http://47.104.142.234:6062";
 	SEED_DATE = SEED_DATE;
@@ -220,6 +221,17 @@ export const baseConfig = new class BaseConfig {
 		);
 	}
 	SETTING_KEY_PERFIX = "SETTING@";
+
+	private _emit_config_changed_lock?: Promise<void>;
+	emitConfigChanged() {
+		if (this._emit_config_changed_lock) {
+			return;
+		}
+		this._emit_config_changed_lock = Promise.resolve().then(() => {
+			this.emit("config-changed");
+			this._emit_config_changed_lock = undefined;
+		});
+	}
 }();
 
 console.log(

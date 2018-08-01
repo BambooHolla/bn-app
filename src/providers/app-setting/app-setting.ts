@@ -25,7 +25,7 @@ import * as IFM from "ifmchain-ibt";
 @Injectable()
 export class AppSettingProvider extends CommonService {
   static readonly APP_VERSION = baseConfig.APP_VERSION;
-  static readonly SERVER_URL = baseConfig.SERVER_URL;
+  static SERVER_URL = baseConfig.SERVER_URL;
   static readonly SEED_DATE = baseConfig.SEED_DATE;
   static readonly seedDateTimestamp = baseConfig.seedDateTimestamp;
   static readonly seedDate = baseConfig.seedDate;
@@ -87,9 +87,7 @@ export class AppSettingProvider extends CommonService {
           this.user.address &&
           `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
             AppSettingProvider.NET_VERSION
-          }|${
-            AppSettingProvider.BLOCK_UNIT_TIME
-          }`//${AppSettingProvider.SERVER_URL}|
+          }|${AppSettingProvider.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
         );
       };
       const getUserSettings = () => {
@@ -154,9 +152,7 @@ export class AppSettingProvider extends CommonService {
       const get_share_settings_key = () => {
         return `SHARE:${AppSettingProvider.SETTING_KEY_PERFIX}:${
           AppSettingProvider.NET_VERSION
-        }|${
-          AppSettingProvider.BLOCK_UNIT_TIME
-        }`//${AppSettingProvider.SERVER_URL}|;
+        }|${AppSettingProvider.BLOCK_UNIT_TIME}`; //${AppSettingProvider.SERVER_URL}|;
       };
       const shareSettingCtrl = (() => {
         const settings_key = get_share_settings_key();

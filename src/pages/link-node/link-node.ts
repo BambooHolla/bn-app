@@ -8,11 +8,18 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { baseConfig, getSocketIOInstance } from "../../bnqkl-framework/helper";
 import { MainPage } from "../pages";
 import {
   PeerServiceProvider,
   LocalPeerModel,
 } from "../../providers/peer-service/peer-service";
+import { BlockServiceProvider } from "../../providers/block-service/block-service";
+import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
+import * as IFM from "ifmchain-ibt";
+import { MyApp } from "../../app/app.component";
 
 @IonicPage({ name: "link-node" })
 @Component({
@@ -27,6 +34,9 @@ export class LinkNodePage extends FirstLevelPage {
     public peerService: PeerServiceProvider,
     public cdRef: ChangeDetectorRef,
     public eleRef: ElementRef,
+    public blockService: BlockServiceProvider,
+    public appFetch: AppFetchProvider,
+    public myapp: MyApp,
   ) {
     super(navCtrl, navParams);
   }
@@ -240,11 +250,33 @@ export class LinkNodePage extends FirstLevelPage {
       .catch(console.error);
     await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
-    localStorage.setItem("BLOCK_UNIT_TIME", `${peer.netInterval * 1000}`);
+    const BLOCK_UNIT_TIME = peer.netInterval * 1000;
+    localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
     localStorage.setItem("NET_VERSION", peer.netVersion);
     sessionStorage.setItem("LINK_PEER", "true");
     this.peerService.useablePeers(this.useable_peers);
-    location.hash = "";
-    location.reload();
+    // location.hash = "";
+    // location.reload();
+
+    if (
+      baseConfig.NET_VERSION !== peer.netVersion ||
+      AppSettingProvider.BLOCK_UNIT_TIME != baseConfig.BLOCK_UNIT_TIME
+    ) {
+      location.hash = "";
+      location.reload();
+      return;
+    }
+    // 只支持url动态重载
+    if (baseConfig.SERVER_URL !== peer.origin) {
+      baseConfig.SERVER_URL = peer.origin;
+      AppSettingProvider.SERVER_URL = baseConfig.SERVER_URL;
+      // 重新初始化io
+      this.blockService.io.disconnect();
+      delete this.blockService["_io"];
+      this.blockService.bindIOBlockChange();
+      FLP_Tool.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+      this.appFetch.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+    }
+    this.myapp.openPage(this.myapp.tryInPage, true);
   }
 }

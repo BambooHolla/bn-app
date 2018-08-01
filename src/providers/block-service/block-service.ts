@@ -28,7 +28,7 @@ import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
-import { AppUrl } from "../../bnqkl-framework/helper";
+import { AppUrl, baseConfig } from "../../bnqkl-framework/helper";
 import { getJsonObjectByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
 import {
   DbCacheProvider,
@@ -58,7 +58,7 @@ export class BlockServiceProvider extends FLP_Tool {
   private _blockDb_inited = new PromisePro();
   blockDb: Mdb<TYPE.BlockModel>;
 
-  oneTimeUrl(app_url: AppUrl, server_url: string,force_network?:boolean) {
+  oneTimeUrl(app_url: AppUrl, server_url: string, force_network?: boolean) {
     app_url.disposableServerUrl(server_url);
     this.fetch.forceNetwork(force_network);
     return this;
@@ -305,7 +305,7 @@ export class BlockServiceProvider extends FLP_Tool {
     // 更新高度
     this.appSetting.setHeight(last_block.height);
   }
-  private async _listenGetAndSetHeight() {
+  bindIOBlockChange() {
     this.io.on("blocks/change", async data => {
       // 计算流量大小
       const flow =
@@ -326,6 +326,9 @@ export class BlockServiceProvider extends FLP_Tool {
         this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
       });
     });
+  }
+  private async _listenGetAndSetHeight() {
+    this.bindIOBlockChange();
     this.fetch.on("ononline", () => {
       // 联网的时候，更新一下区块
       this._updateHeight();
