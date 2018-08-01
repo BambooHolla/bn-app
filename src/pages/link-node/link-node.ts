@@ -238,11 +238,11 @@ export class LinkNodePage extends FirstLevelPage {
     await this.peerService.peerDb
       .insertMany(this.peer_list)
       .catch(console.error);
-    await sleep(500);
-    localStorage.setItem("SERVER_URL", peer.origin);
-    sessionStorage.setItem("LINK_PEER", "true");
-    this.peerService.useablePeers(this.useable_peers);
-    location.hash = "";
-    location.reload();
+    // await sleep(500);
+    // localStorage.setItem("SERVER_URL", peer.origin);
+    // sessionStorage.setItem("LINK_PEER", "true");
+    // this.peerService.useablePeers(this.useable_peers);
+    // location.hash = "";
+    // location.reload();
   }
 }

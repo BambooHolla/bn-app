@@ -87,9 +87,9 @@ export class AppSettingProvider extends CommonService {
           this.user.address &&
           `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
             AppSettingProvider.NET_VERSION
-          }|${AppSettingProvider.SERVER_URL}|${
+          }|${
             AppSettingProvider.BLOCK_UNIT_TIME
-          }`
+          }`//${AppSettingProvider.SERVER_URL}|
         );
       };
       const getUserSettings = () => {
@@ -154,9 +154,9 @@ export class AppSettingProvider extends CommonService {
       const get_share_settings_key = () => {
         return `SHARE:${AppSettingProvider.SETTING_KEY_PERFIX}:${
           AppSettingProvider.NET_VERSION
-        }|${AppSettingProvider.SERVER_URL}|${
+        }|${
           AppSettingProvider.BLOCK_UNIT_TIME
-        }`;
+        }`//${AppSettingProvider.SERVER_URL}|;
       };
       const shareSettingCtrl = (() => {
         const settings_key = get_share_settings_key();

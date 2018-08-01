@@ -13,7 +13,10 @@ export type LocalPeerModel = {
   webPort: number;
   origin: string;
   delay: number;
-  web_channel_link_num: number;
+  webChannelLinkNum: number;
+  netVersion: string;
+  netInterval: number;
+  type: number;
   level: PEER_LEVEL;
   /* # 节点品质算法
    * 1. 节点连接失败的时候并不直接影响节点的品质，因为要考虑网络问题就是不稳定的情况

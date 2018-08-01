@@ -45,7 +45,9 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
   {
     origin: "http://mainnet.ifmchain.org",
     level: TYPE.PEER_LEVEL.TRUST,
-    web_channel_link_num: 0,
+    webChannelLinkNum: 0,
+    netVersion: "mainnet",
+    netInterval: 128,
     ip: "mainnet.ifmchain.org",
     height: 0,
     p2pPort: 9000,
@@ -55,7 +57,7 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
     latest_verify_fail_time: 0,
     acc_verify_total_times: 0,
     acc_verify_success_times: 0,
-  },
+  } as TYPE.LocalPeerModel,
 
   // {
   //   origin: "http://mainnet.ifmchain.org",

@@ -33,7 +33,7 @@
               <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
             </ng-template>
           </div>
-          <div class="item-linked-number">{{node.linked_number}}</div>
+          <div class="item-linked-number">{{node.webChannelLinkNum}}</div>
           <div class="item-select">
             <button class="radio-button">
               <input type="radio" name="select-peer-node" [disabled]="!node.delay>0" [value]="node" [(ngModel)]="selected_peer" />
@@ -42,6 +42,9 @@
           </div>
         </div>
       </div>
+      <div class="scan-light-line left"></div>
+      <div class="scan-light-line center"></div>
+      <div class="scan-light-line right"></div>
       <button class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">立即开始</button>
     </div>
   </div>

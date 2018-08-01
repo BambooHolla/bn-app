@@ -5,6 +5,7 @@ import {
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 } from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -35,6 +36,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 		public cdRef: ChangeDetectorRef,
 		public viewCtrl: ViewController,
 		public blockService: BlockServiceProvider,
+		public domSanitizer: DomSanitizer,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
@@ -136,15 +138,12 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 		inputEle.onchange = e => {
 			if (inputEle.files && inputEle.files[0]) {
 				this.formData.logo = URL.createObjectURL(inputEle.files[0]);
+				this.markForCheck();
 			} else {
 				console.log("没有选择文件，代码不应该运行到这里");
 			}
 		};
 	}
-	/**logo格式化成统一的大小*/
-	format
 	/**提交数字资产表单*/
-	submit() {
-
-	}
+	submit() {}
 }
