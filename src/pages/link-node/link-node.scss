@@ -182,7 +182,7 @@ page-link-node {
     animation-duration: 3s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
-    mix-blend-mode: multiply;
+    /* mix-blend-mode: multiply; */
     @keyframes left-scan-top-to-bottom {
       0% {
         opacity: 0;
