@@ -1,10 +1,15 @@
 export type PeerModel = {
   ip: string;
   port: number;
+  webPort: number;
   height: number;
   health: number;
   state: number;
   sharePort: number;
+  webChannelLinkNum: number;
+  netVersion: string;
+  netInterval: number;
+  type: number;
 };
 export type LocalPeerModel = {
   height: number;

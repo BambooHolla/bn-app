@@ -258,13 +258,13 @@ export class PeerServiceProvider extends CommonService {
         sec_peer_info.state === 1 &&
         !sec_peer_info.port.toString().endsWith("04")
       ) {
-        const webPort = sec_peer_info["webPort"] || sec_peer_info.port + 2;
+        const webPort = sec_peer_info.webPort || sec_peer_info.port + 2;
         const origin = "http://" + sec_peer_info.ip + ":" + webPort;
         if (collection_peers.has(origin)) {
           return;
         }
         const sec_peer: TYPE.LocalPeerModel = {
-          web_channel_link_num: 0,
+          webChannelLinkNum: 0,
           ip: sec_peer_info.ip,
           height: sec_peer_info.height,
           p2pPort: sec_peer_info.port,
@@ -276,6 +276,9 @@ export class PeerServiceProvider extends CommonService {
           latest_verify_fail_time: 0,
           acc_verify_total_times: 0,
           acc_verify_success_times: 0,
+          netVersion: sec_peer_info.netVersion,
+          netInterval: sec_peer_info.netInterval,
+          type: sec_peer_info.type,
         };
         collection_peers.set(origin, sec_peer);
         res.push(sec_peer);
