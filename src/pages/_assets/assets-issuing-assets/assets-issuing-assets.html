@@ -4,10 +4,17 @@
   </ion-navbar>
 </ion-header>
 <ion-content #content>
-  <div id="new_assets_form" class="common-form  new-assets-form">
+  <div id="new_assets_form" class="common-form new-assets-form">
     <div class="logo-wrapper">
       <div class="assets-logo-shape-wrapper">
-        <div class="assets-logo-shape logo-uploader"></div>
+        <button mat-button class="assets-logo-shape logo-uploader" (click)="pickAssetsLogo()">
+          <ng-container *ngIf="!formData.logo;else showLogo">
+            <ali-icon name="ifm-zengjia"></ali-icon>
+          </ng-container>
+          <ng-template #showLogo>
+            <img [src]="formData.logo" alt="LOGO">
+          </ng-template>
+        </button>
       </div>
       <div class="label">{{'UPLOAD_LOGO_IMAGE'|translate}}</div>
     </div>
@@ -33,7 +40,7 @@
         1 IBT =
       </div>
       <div class="center">
-      	{{(formData.originalIssuedAssets/formData.expectedRaisedIBTs)|number:1.0-4}} {{formData.assetName}}
+        {{(formData.originalIssuedAssets/formData.expectedRaisedIBTs)|number:1.0-4}} {{formData.assetName}}
       </div>
       <!-- <mat-form-field>
         <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'ASSETS_rate'|translate" [ngModel]="formData.rate|number:1.0-4" set-input-status="rate" disabled>

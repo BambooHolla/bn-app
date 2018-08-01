@@ -245,7 +245,9 @@ export class PeerServiceProvider extends CommonService {
     const { peers: sec_peers } = await this.fetch
       .get<{
         peers: TYPE.PeerModel[];
-      }>(this.PEERS_URL.disposableServerUrl(enter_port_peer.origin))
+      }>(this.PEERS_URL.disposableServerUrl(enter_port_peer.origin), {
+        search: { type: 0 /*只搜索web节点*/ },
+      })
       .catch(err => ({ peers: [] as TYPE.PeerModel[] }));
     const next_level = TYPE.getNextPeerLevel(enter_port_peer.level);
     const res = [] as TYPE.LocalPeerModel[];
@@ -453,6 +455,21 @@ export class PeerServiceProvider extends CommonService {
         }
       }
       // }
+    }
+  }
+  /**保存或者读取校验完成的可用节点*/
+  useablePeers(useable_peers?: TYPE.LocalPeerModel[]) {
+    if (useable_peers) {
+      sessionStorage.setItem("USEABLE_PEERS", JSON.stringify(useable_peers));
+      return useable_peers;
+    } else {
+      try {
+        const useable_peers_json = sessionStorage.getItem("USEABLE_PEERS");
+        if (useable_peers_json) {
+          return JSON.parse(useable_peers_json) as TYPE.LocalPeerModel[];
+        }
+      } catch (err) {}
+      return [];
     }
   }
 }

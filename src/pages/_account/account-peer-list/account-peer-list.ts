@@ -24,11 +24,12 @@ export class AccountPeerListPage extends SecondLevelPage {
   cur_peer_list: LocalPeerModel[] = [];
   @AccountPeerListPage.willEnter
   async initPeerList() {
-    for await (var _pi of this.peerService.searchAndCheckPeers()) {
-      if ("peer" in _pi) {
-        const checked_peer_info = _pi;
-        this.cur_peer_list.push(checked_peer_info.peer);
-      }
-    }
+    this.cur_peer_list = this.peerService.useablePeers();
+    // for await (var _pi of this.peerService.searchAndCheckPeers()) {
+    //   if ("peer" in _pi) {
+    //     const checked_peer_info = _pi;
+    //     this.cur_peer_list.push(checked_peer_info.peer);
+    //   }
+    // }
   }
 }

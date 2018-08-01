@@ -10,6 +10,7 @@ import {
 	MatInputModule,
 	MatAutocompleteModule,
 	MatMenuModule,
+	MatButtonModule,
 } from "@angular/material";
 import { MomentModule } from "angular2-moment";
 
@@ -25,6 +26,7 @@ import { MomentModule } from "angular2-moment";
 		MatInputModule,
 		MatAutocompleteModule,
 		MatMenuModule,
+		MatButtonModule,
 		MomentModule,
 	],
 })

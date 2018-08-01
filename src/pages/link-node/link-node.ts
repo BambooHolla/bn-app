@@ -31,6 +31,7 @@ export class LinkNodePage extends FirstLevelPage {
     super(navCtrl, navParams);
   }
   peer_list: LocalPeerModel[] = [];
+  useable_peers: LocalPeerModel[] = [];
   peer_searcher!: ReturnType<
     typeof PeerServiceProvider.prototype.searchAndCheckPeers
   >;
@@ -38,6 +39,9 @@ export class LinkNodePage extends FirstLevelPage {
   @LinkNodePage.willEnter
   @asyncCtrlGenerator.error()
   async getNodes() {
+    var calc_res_list:
+      | ReturnType<typeof PeerServiceProvider.calcPeers>
+      | undefined;
     /*这个界面至少等待3s*/
     const min_search_time = sleep(3000);
     min_search_time.then(() => {
@@ -82,8 +86,10 @@ export class LinkNodePage extends FirstLevelPage {
           peer_info_list,
           all_second_trust_peer_list,
         );
+        calc_res_list = check_res;
         // 随机进行选择
         const random_select_seed = Math.random();
+
         // console.log("CR", check_res, random_select_seed);
         let acc_random = 0;
         for (var check_item of check_res) {
@@ -155,6 +161,7 @@ export class LinkNodePage extends FirstLevelPage {
       throw new Error("没有可信任的节点");
     } else {
       await sleep(550);
+      calc_res_list && this.storeUseablePeers(calc_res_list);
       this.linkSelectedNode();
     }
   }
@@ -213,6 +220,17 @@ export class LinkNodePage extends FirstLevelPage {
     }
   }
 
+  storeUseablePeers(
+    calc_res_list: ReturnType<typeof PeerServiceProvider.calcPeers>,
+  ) {
+    this.useable_peers = [];
+    calc_res_list.forEach(check_item => {
+      check_item.peer_info_list.forEach(peer_info => {
+        this.useable_peers.push(peer_info.peer);
+      });
+    });
+  }
+
   @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
@@ -223,6 +241,7 @@ export class LinkNodePage extends FirstLevelPage {
     await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
     sessionStorage.setItem("LINK_PEER", "true");
+    this.peerService.useablePeers(this.useable_peers);
     location.hash = "";
     location.reload();
   }

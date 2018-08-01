@@ -1,6 +1,6 @@
 import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
-import { afCtrl ,tryRegisterGlobal,} from "../bnqkl-framework/helper";
+import { afCtrl, tryRegisterGlobal } from "../bnqkl-framework/helper";
 import * as FontFaceObserver from "fontfaceobserver";
 export const ifmicon_font_ready = new FontFaceObserver("ifmicon").load();
 
@@ -574,3 +574,56 @@ export const Easing = {
     return Easing.Bounce_Out(k * 2 - 1) * 0.5 + 0.5;
   },
 };
+
+const format_canvas = document.createElement("canvas");
+export async function formatImage(
+  url: string, //|HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap,
+  opts: {
+    format: string /* = "image/png"*/;
+    max_width: number;
+    max_height: number;
+    target_encode: string /*base64,blob*/;
+    encoderOptions?: number /*jpeg格式的质量*/;
+    onlyBase64Content?: boolean /*是否只返回base64的内容，没有前缀“data:image/png;base64,”的那种*/;
+  },
+) {
+  format_canvas.width = opts.max_width;
+  format_canvas.height = opts.max_width;
+  const ctx = format_canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("not support 2d canvas");
+  }
+  // if(typeof img ==="string"){
+  const img = new Image();
+  await new Promise((resolve, reject) => {
+    img.src = url;
+    img.onload = resolve;
+    img.onerror = reject;
+  });
+  /*宽高比例*/
+  const img_rate = img.width / img.height;
+  if (img.width > opts.max_width) {
+    img.width = opts.max_width;
+    img.height = opts.max_width / img_rate;
+  }
+  if (img.height > opts.max_height) {
+    img.height = opts.max_height;
+    img.width = opts.max_height * img_rate;
+  }
+  ctx.drawImage(img, 0, 0);
+  if (opts.target_encode === "blob") {
+    return await new Promise((resolve, reject) => {
+      format_canvas.toBlob(( res) => {
+        if (res) {
+          resolve(res);
+        } else {
+          reject(new Error('format '));
+        }
+      },opts.target_encode, opts.encoderOptions);
+    });
+  } else if (opts.target_encode === "base64") {
+    return format_canvas.toDataURL(opts.target_encode, opts.encoderOptions);
+  } else {
+    throw new TypeError(`unknown target encode: ${opts.target_encode}`);
+  }
+}

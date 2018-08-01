@@ -40,10 +40,10 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 	}
 	formData: {
 		rate?: number;
-		assetName: "";
-		logo: "";
-		abbreviation: "";
-		summary: "";
+		assetName: string;
+		logo: string;
+		abbreviation: string;
+		summary: string;
 		originalIssuedAssets?: number;
 		expectedRaisedIBTs?: number;
 		expectedIssuedBlockHeight?: number;
@@ -121,5 +121,30 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 	}
 	private _delayUnSetHeightOptions() {
 		this.expectedIssuedBlockHeightOptions = [];
+	}
+	/**选择资产logo图片*/
+	pickAssetsLogo() {
+		const inputEle = document.createElement("input");
+		inputEle.type = "file";
+		inputEle.accept = "image/*";
+		const clickEvent = new MouseEvent("click", {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+		});
+		inputEle.dispatchEvent(clickEvent);
+		inputEle.onchange = e => {
+			if (inputEle.files && inputEle.files[0]) {
+				this.formData.logo = URL.createObjectURL(inputEle.files[0]);
+			} else {
+				console.log("没有选择文件，代码不应该运行到这里");
+			}
+		};
+	}
+	/**logo格式化成统一的大小*/
+	format
+	/**提交数字资产表单*/
+	submit() {
+
 	}
 }
