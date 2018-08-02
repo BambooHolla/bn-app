@@ -116,6 +116,8 @@ export class TransactionServiceProvider {
       //侧链数据存证
       case this.TransactionTypes.MARK:
         return "marks/tx";
+      case this.TransactionTypes.ISSUE_ASSET:
+        return "assets/tx/issuedAsset";
     }
   }
 

@@ -576,6 +576,7 @@ export const Easing = {
 };
 
 const format_canvas = document.createElement("canvas");
+
 export async function formatImage(
   url: string, //|HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap,
   opts: {
@@ -612,17 +613,30 @@ export async function formatImage(
   }
   ctx.drawImage(img, 0, 0);
   if (opts.target_encode === "blob") {
-    return await new Promise((resolve, reject) => {
-      format_canvas.toBlob(( res) => {
-        if (res) {
-          resolve(res);
-        } else {
-          reject(new Error('format '));
-        }
-      },opts.target_encode, opts.encoderOptions);
+    return await new Promise<Blob>((resolve, reject) => {
+      format_canvas.toBlob(
+        res => {
+          if (res) {
+            resolve(res);
+          } else {
+            reject(new Error("format "));
+          }
+        },
+        opts.target_encode,
+        opts.encoderOptions,
+      );
     });
   } else if (opts.target_encode === "base64") {
-    return format_canvas.toDataURL(opts.target_encode, opts.encoderOptions);
+    const base64str = format_canvas.toDataURL(
+      opts.target_encode,
+      opts.encoderOptions,
+    );
+    if (!opts.onlyBase64Content) {
+      return base64str;
+    }
+    const perfix_index = base64str.indexOf(",");
+    const base64ctn = base64str.substr(perfix_index + 1);
+    return base64ctn;
   } else {
     throw new TypeError(`unknown target encode: ${opts.target_encode}`);
   }

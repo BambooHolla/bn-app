@@ -14,5 +14,8 @@
     <div class="info" [hidden]="!peer_list.length">
       {{'ALREADY_SEARCHED_#NUM#_PEERS' | translate:({num:peer_list.length})}}
     </div>
+    <div class="info" [hidden]="peer_list.length">
+      {{'SCANING_PEERS' | translate}}
+    </div>
   </div>
 </ion-content>

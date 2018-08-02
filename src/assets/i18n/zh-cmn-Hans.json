@@ -26,7 +26,7 @@
   "NEED_INPUT_#FORM_KEY#": "请填写“{{form_key}}”",
   "COZY_TIPS": "温馨提示",
   "NONE": "无",
-  "SHOW_INCOME_IBT_NOTICE_TIP": "您是否需要在每次收到IBT通知？",
+  "SHOW_INCOME_IBT_NOTICE_TIP": "您是否需要在每次收到IBT时通知？",
   "YES_I_NEED": "需要",
   "CREATION_NODE": "创世节点",
 
@@ -131,7 +131,7 @@
   "PEER_LIST": "网络节点",
   "MY_TRANSACTION": "我的交易",
   "VOUCHER_WALLET": "离线权益",
-  "MINER_LIST": "矿工列表",
+  "MINER_LIST": "锻块矿工",
   "SHARE_APP": "我要分享",
   "ABOUT_IBT": "关于IBT",
   "GET_LATEST_APP_VERSION_INFO_ERROR": "获取最新版本应用信息失败",
@@ -386,15 +386,15 @@
   "SET_ACCOUNT_USERNAME": "设置用户名",
 
   "//": "account-miner-list",
-  "ACCOUNT-MINER-LIST": "矿工列表",
+  "ACCOUNT-MINER-LIST": "锻块矿工",
   "CUR_MINTER_RANK_RANKING": "当前矿工排名",
   "CAN_MINTER_RANK_RANKING": "候选矿工排名",
   "SERVERING_PEER_LIST": "正在服务的节点",
-  "LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR": "获取矿工列表与节点出错",
+  "LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR": "获取锻块矿工与节点出错",
 
   "//": "account-miner-scroll-list",
-  "ACCOUNT-MINER-SCROLL-LIST": "矿工列表",
-  "LOAD_ALL_MINER_LIST_ERROR": "获取所有矿工列表出错",
+  "ACCOUNT-MINER-SCROLL-LIST": "锻块矿工",
+  "LOAD_ALL_MINER_LIST_ERROR": "获取所有锻块矿工出错",
 
   "//": "vote-delegate-detail",
   "VOTE-DELEGATE-DETAIL": "委托人",
@@ -549,6 +549,7 @@
 
   "//": "scan-nodes",
   "ALREADY_SEARCHED_#NUM#_PEERS": "已扫描到{{num}}个节点",
+  "SCANING_PEERS": "正在扫描",
 
   "//": "pwd-input",
   "PAY_PASSPHRASE": "支付密码",
@@ -634,7 +635,7 @@
   "LOADING_MORE_UNCONFIRM_TRANSACTION_LIST": "加载更多未确认交易列表中……",
 
   "//": "account-peer-list",
-  "ACCOUNT-PEER-LIST": "节点列表",
+  "ACCOUNT-PEER-LIST": "网络节点",
 
   "//": "account-scan-add-contact",
   "SCAN-QR-CODE": "扫一扫",
@@ -752,7 +753,6 @@
 
   "//": "assets-issuing-assets",
   "ASSETS-ISSUING-ASSETS": "发行新资产",
-
   "ASSETS_assetName": "资产名称",
   "ASSETS_abbreviation": "英文简写",
   "ASSETS_summary": "资产描述",
@@ -761,6 +761,14 @@
   "ASSETS_originalIssuedAssets": "发行数量",
   "ASSETS_applyAssetBlockHeight": "资产发起时的区块高度",
   "ASSETS_expectedIssuedBlockHeight": "计划发行时的区块高度",
+  "ABBREVIATION_TOO_SHORT": "英文简写太短",
+  "ABBREVIATION_TOO_LONG": "英文简写太长",
+  "RATE_TOO_SMALL": "置换比例太小",
+  "RATE_TOO_LARGE": "置换比例太大",
+  "ORIGINALISSUEDASSETS_RANGE_ERROR": "发行资产数量有误",
+  "EXPECTEDRAISEDIBTS_RANGE_ERROR": "计划募集的IBT数量有误",
+  "EXPECTEDISSUEDBLOCKHEIGHT_RANGE_ERROR": "发行高度过低",
+  "PLEASE_PICK_AN_IMAGE_AS_ASSETS_LOGO": "请选择一张图片作为资产LOGO",
 
   "//": "assets-assets-market",
   "ASSETS-ASSETS-MARKET": "资产市场",
@@ -775,9 +783,9 @@
   "REMAINING_NUMBER_OF_ISSUES": "剩余发行数量",
   "INITIAL_PUBLICE_NUMBER_OF_ISSUES": "初始发行数量",
   "INITIAL_FREEZE_NUMBER_OF_ISSUES": "初始冻结数量",
-  "NUMBER_OF_ISSUES_OWNER":"持有人数",
-  "RANK_OF_ISSUES_OWNER":"持有人数",
-  "DESTROY_ASSETS":"销毁资产",
+  "NUMBER_OF_ISSUES_OWNER": "持有人数",
+  "RANK_OF_ISSUES_OWNER": "持有人数",
+  "DESTROY_ASSETS": "销毁资产",
 
   "UPLOAD_LOGO_IMAGE": "上传logo图片",
   "PLEASE_INPUT_ASSETNAME": "资产名称",
@@ -785,9 +793,9 @@
   "PLEASE_BRIEFLY_DESCRIBE_YOUR_ASSETS": "一段话描述您的资产",
   "PLEASE_ENTER_THE_ASSET_REPLACEMENT_RATIO": "请输入您的置换比例",
   "PLEASE_INPUT_ISSUED_ASSETS": "发行资产数量",
-  "PLEASE_INPUT_RAISED_IBT": "初始冻结IBT数量",
+  "PLEASE_INPUT_RAISED_IBT": "计划募集的IBT数量",
   "ISSUED_BLOCK_HEIGHT": "发行高度",
-  "ESTIMATED_TIME": "预计时间",
+  "ESTIMATED_TIME": "预计发行时间",
   "ISSUED_IMMEDIATELY": "立即发行",
 
   "//": "语言包",

@@ -20,7 +20,9 @@ import {
 	BlockServiceProvider,
 	SingleBlockModel,
 } from "../../../providers/block-service/block-service";
+import { AssetsServiceProvider } from "../../../providers/assets-service/assets-service";
 import { MatAutocomplete } from "@angular/material";
+import { formatImage } from "../../../components/AniBase";
 
 @IonicPage({ name: "assets-issuing-assets" })
 @Component({
@@ -37,29 +39,120 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 		public viewCtrl: ViewController,
 		public blockService: BlockServiceProvider,
 		public domSanitizer: DomSanitizer,
+		public assetsService: AssetsServiceProvider,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
 	formData: {
 		rate?: number;
-		assetName: string;
+		// assetName: string;
 		logo: string;
 		abbreviation: string;
-		summary: string;
+		// summary: string;
 		originalIssuedAssets?: number;
 		expectedRaisedIBTs?: number;
 		expectedIssuedBlockHeight?: number;
 	} = {
 		rate: undefined,
-		assetName: "",
+		// assetName: "",
 		logo: "",
 		abbreviation: "",
-		summary: "",
+		// summary: "",
 		originalIssuedAssets: undefined,
 		expectedRaisedIBTs: undefined,
 		expectedIssuedBlockHeight: undefined,
 	};
+	ignore_keys = ["logo"];
 	summary_maxlength = 200;
+
+	// 表单校验
+	@AssetsIssuingAssetsPage.setErrorTo("errors", "abbreviation", [
+		"TOO_SHORT",
+		"TOO_LONG",
+	])
+	check_abbreviation() {
+		const res: any = {};
+		const { abbreviation } = this.formData;
+		if (abbreviation) {
+			if (abbreviation.length < 3) {
+				res.TOO_SHORT = "ABBREVIATION_TOO_SHORT";
+			} else if (abbreviation.length > 5) {
+				res.TOO_LONG = "ABBREVIATION_TOO_LONG";
+			}
+		}
+		return res;
+	}
+	@AssetsIssuingAssetsPage.setErrorTo("errors", "rate", [
+		"TOO_SMALL",
+		"TOO_LARGE",
+	])
+	check_rate() {
+		const res: any = {};
+		const { rate } = this.formData;
+		if (rate) {
+			if (rate < 0.0002) {
+				res.TOO_SMALL = "RATE_TOO_SMALL";
+			} else if (rate > 5000) {
+				res.TOO_LARGE = "RATE_TOO_LARGE";
+			}
+		}
+		return res;
+	}
+	/**计算比例*/
+	calcRate() {
+		const { expectedRaisedIBTs, originalIssuedAssets } = this.formData;
+		if (
+			typeof expectedRaisedIBTs !== "number" ||
+			typeof originalIssuedAssets !== "number"
+		) {
+			return;
+		}
+		this.formData.rate =
+			originalIssuedAssets /
+			(parseFloat(this.userInfo.balance) / 1e8 + expectedRaisedIBTs);
+	}
+	@AssetsIssuingAssetsPage.setErrorTo("errors", "originalIssuedAssets", [
+		"WRONG_RANGE",
+	])
+	check_originalIssuedAssets() {
+		const res: any = {};
+		const { originalIssuedAssets } = this.formData;
+		if (originalIssuedAssets) {
+			if (originalIssuedAssets <= 0) {
+				res.WRONG_RANGE = "ORIGINALISSUEDASSETS_RANGE_ERROR";
+			}
+		}
+		// this.calcRate();
+		return res;
+	}
+	@AssetsIssuingAssetsPage.setErrorTo("errors", "expectedRaisedIBTs", [
+		"WRONG_RANGE",
+	])
+	check_expectedRaisedIBTs() {
+		const res: any = {};
+		const { expectedRaisedIBTs } = this.formData;
+		if (expectedRaisedIBTs) {
+			if (expectedRaisedIBTs <= 0) {
+				res.WRONG_RANGE = "EXPECTEDRAISEDIBTS_RANGE_ERROR";
+			}
+		}
+		// this.calcRate();
+		return res;
+	}
+	@AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedBlockHeight", [
+		"WRONG_RANGE",
+	])
+	check_expectedIssuedBlockHeight() {
+		const res: any = {};
+		const { expectedIssuedBlockHeight } = this.formData;
+		if (expectedIssuedBlockHeight) {
+			if (expectedIssuedBlockHeight <= this.appSetting.getHeight()) {
+				res.WRONG_RANGE = "EXPECTEDISSUEDBLOCKHEIGHT_RANGE_ERROR";
+			}
+		}
+		// this.calcRate();
+		return res;
+	}
 
 	private _blockHeightTime_Lock_map = new Map<number, Promise<number>>();
 
@@ -95,6 +188,8 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 		this.blockService.lastBlock.getPromise().then(b => {
 			this.lastBlock = b;
 		});
+		// 校验范围
+		this.check_expectedIssuedBlockHeight();
 	}
 	@ViewChild("autoExpectedIssuedBlockHeight") autoHeight!: MatAutocomplete;
 
@@ -144,6 +239,43 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 			}
 		};
 	}
+
+	private _cache_logo_base64 = ["", ""];
 	/**提交数字资产表单*/
-	submit() {}
+	@asyncCtrlGenerator.single()
+	@asyncCtrlGenerator.error()
+	async submit() {
+		const { formData, _cache_logo_base64 } = this;
+		if (!formData.logo) {
+			await this.showWarningDialog(
+				await this.translateMessage(
+					"@@PLEASE_PICK_AN_IMAGE_AS_ASSETS_LOGO",
+				),
+			);
+			return;
+		}
+		if (_cache_logo_base64[0] !== formData.logo) {
+			_cache_logo_base64[0] = formData.logo;
+			_cache_logo_base64[1] = await this.assetsService.imageUrlToJpegBase64(
+				formData.logo,
+				true,
+			);
+		}
+		const { custom_fee, password } = await this.getUserPassword({
+			custom_fee: true,
+		});
+
+		this.assetsService.addAssets(
+			{
+				rate: formData.rate as number,
+				logo: _cache_logo_base64[1],
+				abbreviation: formData.abbreviation,
+				originalIssuedAssets: formData.originalIssuedAssets as number,
+				expectedRaisedIBTs: formData.expectedRaisedIBTs as number,
+				expectedIssuedBlockHeight: formData.expectedIssuedBlockHeight as number,
+			},
+			custom_fee,
+			password,
+		);
+	}
 }

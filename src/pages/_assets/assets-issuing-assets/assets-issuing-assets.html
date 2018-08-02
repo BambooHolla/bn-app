@@ -18,48 +18,74 @@
       </div>
       <div class="label">{{'UPLOAD_LOGO_IMAGE'|translate}}</div>
     </div>
-    <div class="mat-container assetName">
+    <!-- <div class="mat-container assetName">
       <mat-form-field>
         <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETNAME'|translate" [(ngModel)]="formData.assetName" set-input-status="assetName">
       </mat-form-field>
-    </div>
+    </div> -->
     <div class="mat-container abbreviation">
       <mat-form-field>
-        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETS_ABBREVIATION'|translate" [(ngModel)]="formData.abbreviation" set-input-status="abbreviation">
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETS_ABBREVIATION'|translate" minlength="3" maxlength="5" [(ngModel)]="formData.abbreviation" set-input-status="abbreviation">
+        <mat-error *ngIf="errors?.abbreviation?.TOO_SHORT">
+          {{errors.abbreviation.TOO_SHORT|translate}}
+        </mat-error>
+        <mat-error *ngIf="errors?.abbreviation?.TOO_LONG">
+          {{errors.abbreviation.TOO_LONG|translate}}
+        </mat-error>
       </mat-form-field>
     </div>
-    <div class="mat-container summary">
+    <!-- <div class="mat-container summary">
       <mat-form-field>
         <textarea matInput [placeholder]="'PLEASE_BRIEFLY_DESCRIBE_YOUR_ASSETS'|translate" [(ngModel)]="formData.summary" set-input-status="summary" [maxlength]="summary_maxlength">
         </textarea>
         <mat-hint align="end">{{formData.summary?.length || 0}}/{{summary_maxlength}}</mat-hint>
       </mat-form-field>
-    </div>
+    </div> -->
     <div class="mat-container rate">
       <div class="left">
         1 IBT =
       </div>
-      <div class="center">
-        {{(formData.originalIssuedAssets/formData.expectedRaisedIBTs)|number:1.0-4}} {{formData.assetName}}
-      </div>
-      <!-- <mat-form-field>
-        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'ASSETS_rate'|translate" [ngModel]="formData.rate|number:1.0-4" set-input-status="rate" disabled>
-      </mat-form-field> -->
+      <!-- <div class="center">
+        <ng-container *ngIf="formData.rate;else rateValue">
+          <span class="placeholder">{{formData.rate|number:'1.0-4'}}</span>
+        </ng-container>
+        <ng-template #rateValue>
+          {{'ASSETS_rate'|translate}}
+        </ng-template>
+      </div> -->
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'ASSETS_rate'|translate" type="number" [(ngModel)]="formData.rate" set-input-status="rate">
+        <mat-error *ngIf="errors?.rate?.RATE_TOO_SMALL">
+          {{errors.rate.RATE_TOO_SMALL|translate}}
+        </mat-error>
+        <mat-error *ngIf="errors?.rate?.RATE_TOO_LARGE">
+          {{errors.rate.RATE_TOO_LARGE|translate}}
+        </mat-error>
+      </mat-form-field>
     </div>
     <div class="mat-container originalIssuedAssets">
       <mat-form-field>
         <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'ASSETS_originalIssuedAssets'|translate" type="number" [(ngModel)]="formData.originalIssuedAssets" set-input-status="originalIssuedAssets">
+        <mat-error *ngIf="errors?.originalIssuedAssets?.RATE_TOO_LARGE">
+          {{errors.originalIssuedAssets.WRONG_RANGE|translate}}
+        </mat-error>
       </mat-form-field>
     </div>
     <div class="mat-container expectedRaisedIBTs">
       <mat-form-field>
         <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_RAISED_IBT'|translate" type="number" [(ngModel)]="formData.expectedRaisedIBTs" set-input-status="expectedRaisedIBTs">
+        <mat-error *ngIf="errors?.expectedRaisedIBTs?.WRONG_RANGE">
+          {{errors.expectedRaisedIBTs.WRONG_RANGE|translate}}
+        </mat-error>
       </mat-form-field>
     </div>
     <div class="mat-container expectedIssuedBlockHeight">
       <mat-form-field>
         <span matPrefix class="prefix-info">{{'ISSUED_BLOCK_HEIGHT'|translate}}</span>
         <input data-keyboard-view-position="top" data-keyboard-move-node="new_assets_form" matInput [(ngModel)]="formData.expectedIssuedBlockHeight" set-input-status="expectedIssuedBlockHeight" type="number" [matAutocomplete]="autoExpectedIssuedBlockHeight">
+        <mat-error *ngIf="errors?.expectedIssuedBlockHeight?.WRONG_RANGE">
+          {{errors.expectedIssuedBlockHeight.WRONG_RANGE|translate}}
+        </mat-error>
         <mat-autocomplete class="expectedIssuedBlockHeight-autocomplete" #autoExpectedIssuedBlockHeight="matAutocomplete">
           <mat-option *ngFor="let option of expectedIssuedBlockHeightOptions" [value]="option">
             <div class="left">
@@ -72,12 +98,15 @@
             </div>
           </mat-option>
         </mat-autocomplete>
-        <mat-hint align="end" *ngIf="formData.expectedIssuedBlockHeight">{{'ESTIMATED_TIME'|translate}} : {{blockHeightTime()|amDateFormat:"YYYY-MM-DD HH:mm:ss"}}</mat-hint>
+        <mat-hint align="end" *ngIf="formData.expectedIssuedBlockHeight">
+          <ali-icon name="ifm-dialog-success"></ali-icon>
+          {{'ESTIMATED_TIME'|translate}} : {{blockHeightTime()|amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
+        </mat-hint>
       </mat-form-field>
     </div>
   </div>
   <div class="footer">
-    <button class="submit-button">{{'ISSUED_IMMEDIATELY'|translate}}</button>
+    <button mat-button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'ISSUED_IMMEDIATELY'|translate}}</button>
   </div>
 </ion-content>
 <ion-footer [keyboardAttach]="content"></ion-footer>

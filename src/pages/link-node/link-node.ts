@@ -167,8 +167,10 @@ export class LinkNodePage extends FirstLevelPage {
 
     // 已经搜索完了
     if (!this.selected_peer) {
-      console.warn("没有可信任的节点");
-      throw new Error("没有可信任的节点");
+      // console.warn("没有可信任的节点");
+      // throw new Error("没有可信任的节点");
+      // 切换手动选择
+      this.toggleCanSelectByMyself();
     } else {
       await sleep(550);
       calc_res_list && this.storeUseablePeers(calc_res_list);
@@ -241,14 +243,14 @@ export class LinkNodePage extends FirstLevelPage {
     });
   }
 
-  @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
+  // @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
     /*保存节点*/
     await this.peerService.peerDb
       .insertMany(this.peer_list)
       .catch(console.error);
-    await sleep(500);
+    // await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
     const BLOCK_UNIT_TIME = peer.netInterval * 1000;
     localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);

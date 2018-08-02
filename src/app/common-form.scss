@@ -81,7 +81,7 @@
       caret-color: #666;
     }
     .mat-form-field-ripple {
-      background-color: #666;
+      background-color: #999;
     }
     .mat-form-field-underline {
       background-color: rgba(#999999, 0.2);
@@ -91,7 +91,7 @@
     }
     > .mat-focused {
       .mat-form-field-label {
-        color: #666;
+        color: #999;
       }
     }
   }
@@ -140,6 +140,9 @@ button.submit-button {
   &.disabled {
     filter: none;
     opacity: 0.6;
+  }
+  &.mat-button[disabled][disabled]{
+    color: #FFF;
   }
 }
 .platform-ios {

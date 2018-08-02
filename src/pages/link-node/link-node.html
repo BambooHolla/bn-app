@@ -45,7 +45,7 @@
       <div class="scan-light-line left"></div>
       <div class="scan-light-line center"></div>
       <div class="scan-light-line right"></div>
-      <button class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">立即开始</button>
+      <button [hidden]="!can_select_by_myself" class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">立即开始</button>
     </div>
   </div>
 </ion-content>
