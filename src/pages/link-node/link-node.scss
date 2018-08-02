@@ -137,6 +137,44 @@ page-link-node {
           &.link-able {
             background-color: #fff;
           }
+          &.selected {
+            position: relative;
+            &::after {
+              content: " ";
+              position: absolute;
+              width: 4rem;
+              height: 4rem;
+              image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED  */
+              image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+              image-rendering: pixelated; /* Chrome */
+              image-rendering: optimize-contrast; /* CSS3 Proposed                  */
+              background-image: url("../assets/imgs/peers/shield-light-line.png");
+              background-size: 100% 100%;
+              animation-iteration-count: infinite;
+              animation-timing-function: ease-in-out;
+              animation-duration: 3s;
+              animation-name: selected-peer-lantern;
+              left: -2rem;
+              top: -2rem;
+              @keyframes selected-peer-lantern {
+                0% {
+                  transform: translate(0.2vw, 0.2vw);
+                }
+                40% {
+                  transform: translate(91.8vw, 0.2vw);
+                }
+                50% {
+                  transform: translate(91.8vw, 9.4vw);
+                }
+                90% {
+                  transform: translate(0.2vw, 9.4vw);
+                }
+                100% {
+                  transform: translate(0.2vw, 0.2vw);
+                }
+              }
+            }
+          }
         }
       }
       .start-link {
@@ -170,7 +208,7 @@ page-link-node {
       }
     }
   }
-  .scan-light-line-wrapper{
+  .scan-light-line-wrapper {
     position: absolute;
     z-index: 10;
     top: 0;
@@ -179,7 +217,100 @@ page-link-node {
     height: 100%;
     pointer-events: none;
   }
+  .shield-light-line-wrapper {
+    transform: scale(0.2);
+    .shield-light-line {
+      animation-timing-function: linear;
+      background-image: url("../assets/imgs/peers/shield-light-line.png");
+      animation-duration: 6s;
+      background-size: contain;
+      background-position: center;
+  /*     width: 92vw;
+      height: 92vw; */
+
+      @keyframes left-shield-light-line {
+        0% {
+          opacity: 0;
+          transform: translate(0, 3rem) scale(1, 1);
+        }
+        4.5% {
+          transform: translate(-6rem, 8rem) scale(1.2, 1.1);
+        }
+        9% {
+          transform: translate(-13rem, 9rem) scale(1.4, 1.4);
+        }
+        22.5% {
+          opacity: 1;
+          transform: translate(-13rem, 16rem) scale(2, 2);
+        }
+        30% {
+          transform: translate(-11rem, 23rem) scale(2, 2);
+        }
+        36.5% {
+          transform: translate(-7rem, 29rem) scale(2, 2);
+        }
+        42.5% {
+          transform: translate(-1rem, 33rem) scale(2, 2);
+        }
+        60% {
+          opacity: 0;
+          transform: translate(0rem, 34rem) scale(2, 2);
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes right-shield-light-line {
+        0% {
+          opacity: 0;
+          transform: translate(0, 3rem) scale(1, 1);
+        }
+        4.5% {
+          transform: translate(6rem, 8rem) scale(1.2, 1.2);
+        }
+        9% {
+          transform: translate(13rem, 9rem) scale(1.4, 1.4);
+        }
+        22.5% {
+          opacity: 1;
+          transform: translate(13rem, 16rem) scale(2, 2);
+        }
+        30% {
+          transform: translate(11rem, 23rem) scale(2, 2);
+        }
+        36.5% {
+          transform: translate(7rem, 29rem) scale(2, 2);
+        }
+        42.5% {
+          transform: translate(1rem, 33rem) scale(2, 2);
+        }
+        60% {
+          transform: translate(0rem, 34rem) scale(1, 1);
+          opacity: 0;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+      &.left {
+        animation-name: left-shield-light-line;
+      }
+      &.right {
+        animation-name: right-shield-light-line;
+      }
+    }
+  }
   .scan-light-line {
+    animation-duration: 6s;
+    background-image: url("../assets/imgs/peers/scan-light-line.png");
+  }
+  .scan-light-line,
+  .shield-light-line {
+    image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED  */
+    image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+    image-rendering: pixelated; /* Chrome */
+    image-rendering: optimize-contrast; /* CSS3 Proposed                  */
+    -ms-interpolation-mode: nearest-neighbor;
     position: absolute;
     opacity: 1;
     transition-duration: 500ms;
@@ -188,26 +319,31 @@ page-link-node {
     left: 0;
     width: 100%;
     height: 8rem;
-    background-image: url("../assets/imgs/peers/scan-light-line.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     pointer-events: none;
-    animation-duration: 3s;
     animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
     /* mix-blend-mode: multiply; */
     @keyframes left-scan-top-to-bottom {
       0% {
         opacity: 0;
-        transform: translate(0, 13.3vw) scale(1, 0.5);
       }
-      30% {
-        transform: translate(-50%, 23.3vw) scale(1, 1);
+      40% {
+        opacity: 0;
+        transform: translate(0, 9.3vw) scale(0.5, 0.5);
       }
       50% {
+        opacity: 0.3;
+        transform: translate(0, 9.3vw) scale(1, 0.5);
+      }
+      65% {
+        transform: translate(-50%, 23.3vw) scale(1, 1);
+      }
+      75% {
         opacity: 1;
       }
-      80% {
+      90% {
         opacity: 0.4;
       }
       100% {
@@ -218,14 +354,21 @@ page-link-node {
     @keyframes center-scan-top-to-bottom {
       0% {
         opacity: 0;
-        transform: translate(0, 13.3vw) scale(1, 0.5);
       }
-      30% {
-        transform: translate(0%, 23.3vw) scale(1, 1);
+      40% {
+        opacity: 0;
+        transform: translate(0, 9.3vw) scale(0.5, 0.5);
       }
       50% {
+        opacity: 0.3;
+        transform: translate(0, 9.3vw) scale(1, 0.5);
       }
-      80% {
+      65% {
+        transform: translate(0%, 23.3vw) scale(1, 1);
+      }
+      75% {
+      }
+      90% {
         opacity: 1;
       }
       100% {
@@ -236,16 +379,23 @@ page-link-node {
     @keyframes right-scan-top-to-bottom {
       0% {
         opacity: 0;
-        transform: translate(0, 13.3vw) scale(1, 0.5);
       }
-      30% {
+      40% {
+        opacity: 0;
+        transform: translate(0, 9.3vw) scale(0.5, 0.5);
+      }
+      50% {
+        opacity: 0.3;
+        transform: translate(0, 9.3vw) scale(1, 0.5);
+      }
+      65% {
         transform: translate(50%, 23.3vw) scale(1, 1);
         opacity: 0.6;
       }
-      50% {
+      75% {
         opacity: 1;
       }
-      80% {
+      90% {
         opacity: 0.4;
       }
       100% {
@@ -264,9 +414,9 @@ page-link-node {
       animation-name: right-scan-top-to-bottom;
     }
   }
-  .scaning-finish{
-    .scan-light-line-wrapper{
-      opacity: 0!important;
+  .scaning-finish {
+    .scan-light-line-wrapper {
+      opacity: 0 !important;
     }
   }
 }

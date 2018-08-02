@@ -18,7 +18,7 @@ import {
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
-import { AniBase } from "../../components/AniBase";
+import { AniBase, Easing } from "../../components/AniBase";
 import * as IFM from "ifmchain-ibt";
 import { MyApp } from "../../app/app.component";
 
@@ -236,7 +236,8 @@ export class LinkNodePage extends FirstLevelPage {
     // if (selectedPeerEle) {
     //   selectedPeerEle.scrollIntoView({ behavior: "smooth", block: "center" });
     // }
-    this.selected_peer && this.scrollIntoView(this.selected_peer);
+    this.selected_peer &&
+      this.scrollIntoView(this.selected_peer, 1200, Easing.Quadratic_Out);
   }
 
   storeUseablePeers(
@@ -263,8 +264,8 @@ export class LinkNodePage extends FirstLevelPage {
       .catch(console.error);
     // await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
-    const BLOCK_UNIT_TIME = peer.netInterval * 1000;
-    localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
+    const BLOCK_UNIT_TIME = peer.netInterval * 1000 || 128000;
+    localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME || "mainnet"}`);
     localStorage.setItem("NET_VERSION", peer.netVersion);
     sessionStorage.setItem("LINK_PEER", "true");
     this.peerService.useablePeers(this.useable_peers);
@@ -296,7 +297,7 @@ export class LinkNodePage extends FirstLevelPage {
   private _scroll_peer?: Function;
   private _scroll_abort?: Function;
   /**滚动到指定节点对应的DOM元素*/
-  scrollIntoView(peer: LocalPeerModel) {
+  scrollIntoView(peer: LocalPeerModel, ani_time = 250, easing?) {
     const ele = document.querySelector(
       `[data-origin="${peer.origin}"]`,
     ) as HTMLElement;
@@ -310,7 +311,7 @@ export class LinkNodePage extends FirstLevelPage {
         parentEle.offsetTop -
         parentEle.clientHeight / 2 +
         ele.clientHeight;
-      AniBase.animateNumber(parentEle.scrollTop, scrollToTop, 250)(
+      AniBase.animateNumber(parentEle.scrollTop, scrollToTop, ani_time, easing)(
         (v, abort) => {
           parentEle.scrollTop = v;
           this._scroll_abort = abort;
