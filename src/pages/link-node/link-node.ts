@@ -243,7 +243,8 @@ export class LinkNodePage extends FirstLevelPage {
     });
   }
 
-  // @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
+  @asyncCtrlGenerator.single()
+  @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
     /*保存节点*/
@@ -279,6 +280,6 @@ export class LinkNodePage extends FirstLevelPage {
       FLP_Tool.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
       this.appFetch.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
     }
-    this.myapp.openPage(this.myapp.tryInPage, true);
+    return this.myapp.openPage(this.myapp.tryInPage, true);
   }
 }
