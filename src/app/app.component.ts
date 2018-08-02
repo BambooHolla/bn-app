@@ -320,7 +320,7 @@ export class MyApp implements OnInit {
   async openPage(
     page: string,
     force = false,
-    loading_content?: string | false,
+    loading_content?: string | null | false,
   ) {
     this.tryInPage = page;
     if (!force) {
@@ -337,7 +337,7 @@ export class MyApp implements OnInit {
     }
     return this._openPage(page, loading_content);
   }
-  async _openPage(page: string, loading_content?: string | false) {
+  async _openPage(page: string, loading_content?: string | null | false) {
     if (this.currentPage === page || this._currentOpeningPage === page) {
       return;
     }
