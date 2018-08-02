@@ -317,7 +317,11 @@ export class MyApp implements OnInit {
   currentPage: any;
   _currentOpeningPage: any; // 前置对象 锁
   tryInPage: any;
-  async openPage(page: string, force = false, loading_content?: string | null) {
+  async openPage(
+    page: string,
+    force = false,
+    loading_content?: string | false,
+  ) {
     this.tryInPage = page;
     if (!force) {
       if (
@@ -333,7 +337,7 @@ export class MyApp implements OnInit {
     }
     return this._openPage(page, loading_content);
   }
-  async _openPage(page: string, loading_content?: string | null) {
+  async _openPage(page: string, loading_content?: string | false) {
     if (this.currentPage === page || this._currentOpeningPage === page) {
       return;
     }
@@ -354,12 +358,14 @@ export class MyApp implements OnInit {
 
       this.currentPage = page;
       const loading_opts: LoadingOptions = { cssClass: "logo-loading" };
-      const loadinger = loading_content
-        ? this.loadingCtrl.create({
-            content: loading_content || "",
-            ...loading_opts,
-          })
-        : this.loadingCtrl.create(loading_opts);
+      let loadinger =
+        loading_content !== false &&
+        (loading_content
+          ? this.loadingCtrl.create({
+              content: loading_content || "",
+              ...loading_opts,
+            })
+          : this.loadingCtrl.create(loading_opts));
       await (loadinger && loadinger.present());
       try {
         if (this.nav) {

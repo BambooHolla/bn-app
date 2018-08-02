@@ -116,8 +116,15 @@ export class TransactionServiceProvider {
       //侧链数据存证
       case this.TransactionTypes.MARK:
         return "marks/tx";
+      //申请数字资产
       case this.TransactionTypes.ISSUE_ASSET:
         return "assets/tx/issuedAsset";
+      //销毁数字资产
+      case this.TransactionTypes.DESTORY_ASSET:
+        return "assets/tx/destoryAsset";
+      //数字资产转账
+      case this.TransactionTypes.TRANSFER_ASSET:
+        return "assets/tx";
     }
   }
 

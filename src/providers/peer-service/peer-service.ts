@@ -9,6 +9,7 @@ import {
   BlockServiceProvider,
   BlockModel,
 } from "../block-service/block-service";
+import { MinServiceProvider } from "../min-service/min-service";
 import {
   ParallelPool,
   PromiseType,
@@ -105,6 +106,7 @@ export class PeerServiceProvider extends CommonService {
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public blockService: BlockServiceProvider,
+    public minService: MinServiceProvider,
   ) {
     super();
   }
@@ -178,24 +180,37 @@ export class PeerServiceProvider extends CommonService {
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
   /*获取节点检查信息*/
-  private async _checkPeer(peer: TYPE.LocalPeerModel) {
+  async _checkPeer(peer: TYPE.LocalPeerModel) {
     const start_time = performance.now();
     // 获取最后的六个区块
-    const [highest_blocks, lowest_blocks] = await Promise.all([
+    const [highest_blocks, lowest_blocks, web_link_num] = await Promise.all([
       this.blockService
         .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
         .getBlocks({ orderBy: "height:desc", limit: 6 })
-        .then(res => res.blocks),
+        .then(res => {
+          peer.height = res.blocks[0].height;
+          return res.blocks;
+        }),
       this.blockService
         .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
         .getBlocks({ orderBy: "height:asc", limit: 6 })
         .then(res => res.blocks),
+      // this.minService
+      //   .oneTimeUrl(this.minService.SYSTEM_WEBSOCKETLINKNUM, peer.origin, true)
+      //   .getWebsocketLinkNum()
+      //   .then(res => {
+      //     const end_time = performance.now();
+      //     peer.delay = end_time - start_time;
+      //     peer.webChannelLinkNum = res;
+      //     return res;
+      //   }),
+      1
     ]);
 
     const end_time = performance.now();
-    console.log(peer, highest_blocks, lowest_blocks);
     peer.delay = end_time - start_time;
-    return { peer, highest_blocks, lowest_blocks };
+    console.log(peer, highest_blocks, lowest_blocks);
+    return { peer, highest_blocks, lowest_blocks, web_link_num };
   }
 
   /*搜索节点*/
@@ -345,6 +360,7 @@ export class PeerServiceProvider extends CommonService {
       peer: TYPE.LocalPeerModel;
       highest_blocks: BlockModel[];
       lowest_blocks: BlockModel[];
+      web_link_num: number;
     }[],
     all_second_trust_peer_list: TYPE.LocalPeerModel[] = [],
   ) {
@@ -407,6 +423,7 @@ export class PeerServiceProvider extends CommonService {
       peer: TYPE.LocalPeerModel;
       highest_blocks: BlockModel[];
       lowest_blocks: BlockModel[];
+      web_link_num: number;
     }[],
     level: TYPE.PEER_LEVEL,
     all_second_trust_peer_list: TYPE.LocalPeerModel[] = [],

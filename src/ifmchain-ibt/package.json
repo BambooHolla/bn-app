@@ -1,0 +1,66 @@
+{
+  "_args": [
+    [
+      "ifmchain-ibt@0.0.9",
+      "/mnt/c/Users/gaube/Documents/ifm/ifm-app-v2"
+    ]
+  ],
+  "_from": "ifmchain-ibt@0.0.9",
+  "_id": "ifmchain-ibt@0.0.9",
+  "_inBundle": false,
+  "_integrity": "sha512-d+ozziWiCSyIjACwgYDiMuNADw27LzOG5EpUiaTP2d8CnRMyQ5EjHHRBB/JNbvHgfPQDyApqFz3IW3buC9vV5Q==",
+  "_location": "/ifmchain-ibt",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "ifmchain-ibt@0.0.9",
+    "name": "ifmchain-ibt",
+    "escapedName": "ifmchain-ibt",
+    "rawSpec": "0.0.9",
+    "saveSpec": null,
+    "fetchSpec": "0.0.9"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ifmchain-ibt/-/ifmchain-ibt-0.0.9.tgz",
+  "_spec": "0.0.9",
+  "_where": "/mnt/c/Users/gaube/Documents/ifm/ifm-app-v2",
+  "author": {
+    "name": "bngj"
+  },
+  "dependencies": {
+    "bitcore-mnemonic": "^1.2.5",
+    "buffer-to-uint8array": "^1.1.0",
+    "bytebuffer": "^5.0.1",
+    "crypto": "0.0.3",
+    "crypto-browserify": "^3.12.0",
+    "debug": "^2.6.8",
+    "elliptic": "^6.4.0",
+    "js-nacl": "^1.2.2",
+    "node-fetch": "^1.7.3",
+    "winston": "^2.3.1",
+    "xhr2": "^0.1.4",
+    "xmlhttprequest": "^1.8.0",
+    "z-schema": "^3.18.2"
+  },
+  "description": "a fornt-end package of ifmchain",
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "mocha": "^3.4.2",
+    "should": "^11.2.1"
+  },
+  "keywords": [
+    "ifmchain",
+    "blockchain",
+    "ibt"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "ifmchain-ibt",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.9"
+}

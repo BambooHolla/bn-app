@@ -41,8 +41,9 @@ export class MinServiceProvider extends FLP_Tool {
     list: TYPE.DelegateModel[];
     round: number;
   };
-  oneTimeUrl(app_url: AppUrl, server_url: string) {
+  oneTimeUrl(app_url: AppUrl, server_url: string, force_network?: boolean) {
     app_url.disposableServerUrl(server_url);
+    this.fetch.forceNetwork(force_network);
     return this;
   }
   constructor(
@@ -133,6 +134,9 @@ export class MinServiceProvider extends FLP_Tool {
   readonly ALL_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
   readonly TOTAL_VOTE = this.appSetting.APP_URL("/api/delegates/getTotalVote");
   readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
+  readonly SYSTEM_WEBSOCKETLINKNUM = this.appSetting.APP_URL(
+    "/api/system/websocketLink",
+  );
 
   getTotalVote() {
     return this.fetch
@@ -557,9 +561,14 @@ export class MinServiceProvider extends FLP_Tool {
     return data;
   }
 
-  async shutdownSystem() {
-    const data = await this.fetch.get(this.SYSTEM_SHUTDOWN);
-    return data;
+  shutdownSystem() {
+    return this.fetch.get(this.SYSTEM_SHUTDOWN);
+  }
+
+  getWebsocketLinkNum() {
+    return this.fetch
+      .get<{ webChannelLinkNum: number }>(this.SYSTEM_WEBSOCKETLINKNUM)
+      .then(res => res.webChannelLinkNum);
   }
 
   /**

@@ -6,7 +6,7 @@ import {
 } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
-import { sleep } from "../../bnqkl-framework/PromiseExtends";
+import { sleep, PromiseType } from "../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { baseConfig, getSocketIOInstance } from "../../bnqkl-framework/helper";
@@ -18,6 +18,7 @@ import {
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
+import { AniBase } from "../../components/AniBase";
 import * as IFM from "ifmchain-ibt";
 import { MyApp } from "../../app/app.component";
 
@@ -77,11 +78,16 @@ export class LinkNodePage extends FirstLevelPage {
     console.log("使用搜索器继续搜索并开始执行节点检查");
     const peer_searcher_res = await this.peer_searcher.next(true);
     // console.log("peer_searcher_res", peer_searcher_res);
-    const peer_info_list = [] as any[];
+    const peer_info_list = [] as PromiseType<
+      ReturnType<typeof PeerServiceProvider.prototype._checkPeer>
+    >[];
     for await (var _pi of this.peer_searcher) {
       if ("peer" in _pi) {
         // 如果节点可用
         const checked_peer_info = _pi;
+        // 滚动到这个节点
+        this.scrollIntoView(checked_peer_info.peer);
+        await sleep(100);
         const peer = peer_list_map.get(checked_peer_info.peer.origin);
         if (!peer) {
           this.peer_list.push(checked_peer_info.peer);
@@ -165,6 +171,7 @@ export class LinkNodePage extends FirstLevelPage {
       }
     }
 
+    this.is_scaning_finish = true;
     // 已经搜索完了
     if (!this.selected_peer) {
       // console.warn("没有可信任的节点");
@@ -172,7 +179,6 @@ export class LinkNodePage extends FirstLevelPage {
       // 切换手动选择
       this.toggleCanSelectByMyself();
     } else {
-      await sleep(550);
       calc_res_list && this.storeUseablePeers(calc_res_list);
       this.linkSelectedNode();
     }
@@ -225,11 +231,12 @@ export class LinkNodePage extends FirstLevelPage {
   }
 
   scrollSelectedPeerIntoView() {
-    const pageEle: HTMLElement = this.eleRef.nativeElement;
-    const selectedPeerEle = pageEle.querySelector("input:checked");
-    if (selectedPeerEle) {
-      selectedPeerEle.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+    // const pageEle: HTMLElement = this.eleRef.nativeElement;
+    // const selectedPeerEle = pageEle.querySelector("input:checked");
+    // if (selectedPeerEle) {
+    //   selectedPeerEle.scrollIntoView({ behavior: "smooth", block: "center" });
+    // }
+    this.selected_peer && this.scrollIntoView(this.selected_peer);
   }
 
   storeUseablePeers(
@@ -243,10 +250,13 @@ export class LinkNodePage extends FirstLevelPage {
     });
   }
 
+  is_scaning_finish = false;
+
   @asyncCtrlGenerator.single()
   @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
+    return;
     /*保存节点*/
     await this.peerService.peerDb
       .insertMany(this.peer_list)
@@ -280,6 +290,35 @@ export class LinkNodePage extends FirstLevelPage {
       FLP_Tool.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
       this.appFetch.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
     }
-    return this.myapp.openPage(this.myapp.tryInPage, true);
+    return this.myapp.openPage(this.myapp.tryInPage, true, false);
+  }
+
+  private _scroll_peer?: Function;
+  private _scroll_abort?: Function;
+  /**滚动到指定节点对应的DOM元素*/
+  scrollIntoView(peer: LocalPeerModel) {
+    const ele = document.querySelector(
+      `[data-origin="${peer.origin}"]`,
+    ) as HTMLElement;
+    if (ele) {
+      if (this._scroll_abort) {
+        this._scroll_abort();
+      }
+      const parentEle = ele.parentElement as HTMLElement;
+      const scrollToTop =
+        ele.offsetTop -
+        parentEle.offsetTop -
+        parentEle.clientHeight / 2 +
+        ele.clientHeight;
+      AniBase.animateNumber(parentEle.scrollTop, scrollToTop, 250)(
+        (v, abort) => {
+          parentEle.scrollTop = v;
+          this._scroll_abort = abort;
+        },
+        () => {
+          this._scroll_abort = undefined;
+        },
+      );
+    }
   }
 }

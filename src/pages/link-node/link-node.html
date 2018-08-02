@@ -6,7 +6,7 @@
     <div class="card-title">
       <div class="shield-logo" (click)="toggleCanSelectByMyself()" title="{{'SHEILD' | translate}}"></div>
     </div>
-    <div class="card-content">
+    <div class="card-content" [class.scaning-finish]="is_scaning_finish">
       <div class="row table-head">
         <div class="item-ip">
           <ali-icon name="ifm-account"></ali-icon>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="table-list">
-        <div class="row" *ngFor="let node of peer_list" (click)="selectNode(node)" [class.link-able]="node.delay>0">
+        <div class="row" *ngFor="let node of peer_list" (click)="selectNode(node)" [class.link-able]="node.delay>0" [class.selected]="selected_peer==node" [attr.data-origin]="node.origin">
           <div class="item-ip" [innerHTML]="node.ip|mask:'@ip'"></div>
           <div class="item-height">{{node.height}}</div>
           <div class="item-ping">
@@ -42,9 +42,11 @@
           </div>
         </div>
       </div>
-      <div class="scan-light-line left"></div>
-      <div class="scan-light-line center"></div>
-      <div class="scan-light-line right"></div>
+      <div class="scan-light-line-wrapper">
+        <div class="scan-light-line left"></div>
+        <div class="scan-light-line center"></div>
+        <div class="scan-light-line right"></div>
+      </div>
       <button [hidden]="!can_select_by_myself" class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">立即开始</button>
     </div>
   </div>

@@ -745,8 +745,8 @@
   "SEARCH_PLACEHOLDER": "搜索项目列表",
 
   "//": "link-node-page",
-  "LINKING_PEER_NODE": "节点连接中",
-  "LINK_PEER_NODE_ERROR": "节点连接失败",
+  "LINKING_PEER_NODE": "节点同步中",
+  "LINK_PEER_NODE_ERROR": "节点同步失败",
 
   "//": "link-node",
   "SHEILD": "盾牌",
