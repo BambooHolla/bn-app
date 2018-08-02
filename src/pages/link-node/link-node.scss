@@ -140,6 +140,7 @@ page-link-node {
           &.selected {
             position: relative;
             &::after {
+              opacity: 0.6;
               content: " ";
               position: absolute;
               width: 4rem;
@@ -234,23 +235,23 @@ page-link-node {
           transform: translate(0, 3rem) scale(1, 1);
         }
         4.5% {
-          transform: translate(-6rem, 8rem) scale(1.2, 1.1);
+          transform: translate(-6rem, 8rem) scale(2, 2);
         }
         9% {
-          transform: translate(-13rem, 9rem) scale(1.4, 1.4);
+          transform: translate(-13rem, 9rem) scale(4, 4);
         }
         22.5% {
           opacity: 1;
-          transform: translate(-13rem, 16rem) scale(2, 2);
+          transform: translate(-13rem, 16rem) scale(3, 3);
         }
         30% {
           transform: translate(-11rem, 23rem) scale(2, 2);
         }
         36.5% {
-          transform: translate(-7rem, 29rem) scale(2, 2);
+          transform: translate(-7rem, 29rem) scale(1, 1);
         }
         42.5% {
-          transform: translate(-1rem, 33rem) scale(2, 2);
+          transform: translate(-1rem, 33rem) scale(1.5, 1.5);
         }
         60% {
           opacity: 0;
@@ -266,23 +267,23 @@ page-link-node {
           transform: translate(0, 3rem) scale(1, 1);
         }
         4.5% {
-          transform: translate(6rem, 8rem) scale(1.2, 1.2);
+          transform: translate(6rem, 8rem) scale(2, 2);
         }
         9% {
-          transform: translate(13rem, 9rem) scale(1.4, 1.4);
+          transform: translate(13rem, 9rem) scale(4, 4);
         }
         22.5% {
           opacity: 1;
-          transform: translate(13rem, 16rem) scale(2, 2);
+          transform: translate(13rem, 16rem) scale(3, 3);
         }
         30% {
           transform: translate(11rem, 23rem) scale(2, 2);
         }
         36.5% {
-          transform: translate(7rem, 29rem) scale(2, 2);
+          transform: translate(7rem, 29rem) scale(1, 1);
         }
         42.5% {
-          transform: translate(1rem, 33rem) scale(2, 2);
+          transform: translate(1rem, 33rem) scale(1.5, 1.5);
         }
         60% {
           transform: translate(0rem, 34rem) scale(1, 1);

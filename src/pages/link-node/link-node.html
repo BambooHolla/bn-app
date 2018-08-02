@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="table-list">
-        <div class="row" *ngFor="let node of peer_list" (click)="selectNode(node)" [class.link-able]="node.delay>0" [class.selected]="selected_peer==node" [attr.data-origin]="node.origin">
+        <div class="row" *ngFor="let node of peer_list" (click)="selectNode(node)" [class.link-able]="node.delay>0" [class.selected]="selected_peer==node&&is_scaning_finish" [attr.data-origin]="node.origin">
           <div class="item-ip" [innerHTML]="node.ip|mask:'@ip'"></div>
           <div class="item-height">{{node.height}}</div>
           <div class="item-ping">
