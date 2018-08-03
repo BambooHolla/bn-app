@@ -272,6 +272,7 @@ export class LinkNodePage extends FirstLevelPage {
   @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
+    return
     /*保存节点*/
     await Promise.all(
       this.peer_list.map(async peer => {

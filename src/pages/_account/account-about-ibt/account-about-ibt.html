@@ -50,6 +50,8 @@
       </div>
     </div>
 
+    <div class="ee-line"></div>
+
     <div class="flag-line"><div class="flag">IFMCHAIN发布</div></div>
     <div class="news-item" *ngFor="let news of video_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
@@ -77,6 +79,8 @@
         </ng-container>
       </div>
     </div>
+
+    <div class="ee-line"></div>
 
     <div class="flag-line"><div class="flag">IFMCHAIN获奖</div></div>
     <div class="news-item" *ngFor="let news of award_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
