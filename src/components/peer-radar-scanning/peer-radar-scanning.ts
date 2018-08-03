@@ -70,7 +70,7 @@ export class PeerRadarScanningComponent extends AniBase {
 	set peer_list(v) {
 		this._peer_list = v;
 		const { R } = this;
-		if (R) {
+		if (R && this.scanner.scale.x === 1) {
 			this.drawPeerPoints(R * 0.03, R);
 		}
 	}
@@ -87,7 +87,7 @@ export class PeerRadarScanningComponent extends AniBase {
 		const base_x = Math.cos(deg);
 		const base_y = Math.sin(deg);
 
-		return [base_x * py, base_y * py];
+		return [base_x * py, base_y * py, deg];
 	}
 
 	peer_points_container = new PIXI.Container();
@@ -172,6 +172,10 @@ export class PeerRadarScanningComponent extends AniBase {
 						p * (this.line_normal_speed - this.line_init_speed) +
 						this.line_init_speed;
 					scanner.scale.set(p, p);
+					if (p === 1) {
+						// 进行初始化绘制点
+						this.peer_list = this.peer_list;
+					}
 				}
 				scanner.rotation = p * Math.PI * 4 + last_line.rotation;
 			};
@@ -185,8 +189,6 @@ export class PeerRadarScanningComponent extends AniBase {
 		follow_last_line();
 
 		this.init_peer_points_container(stage, R);
-		// 进行初始化绘制
-		this.peer_list = this.peer_list;
 	}
 
 	init_line(
@@ -359,6 +361,7 @@ export class PeerRadarScanningComponent extends AniBase {
 	drawPeerPoints(r: number, R: number) {
 		const { peer_points_container, peer_list } = this;
 		const peer_list_set = new Set<string>(peer_list);
+		const PI2 = Math.PI * 2;
 
 		const rms: PIXI.DisplayObject[] = [];
 		peer_points_container.children.forEach(peer_container => {
@@ -367,31 +370,75 @@ export class PeerRadarScanningComponent extends AniBase {
 			if (peer_list_set.has(peer_info)) {
 				return peer_list_set.delete(peer_info);
 			}
-			// 多余的点，准备移除
-			if (peer_list_set.size === 0) {
-				return rms.push(peer_container);
-			}
-			// 复用存在的点
-			const peer = peer_list_set.values().next().value;
-			peer_container[PEER_POS_SYMBOL] = peer;
-			const [x, y] = this._calcPeerPosXY(peer);
-			peer_container.x = R * x + R;
-			peer_container.y = R * y + R;
+			// // 多余的点，准备移除
+			// if (peer_list_set.size === 0) {
+			// 	return rms.push(peer_container);
+			// }
+			// // 复用存在的点
+			// const peer = peer_list_set.values().next().value;
+			// peer_container[PEER_POS_SYMBOL] = peer;
+			// const [x, y] = this._calcPeerPosXY(peer);
+			// peer_container.x = R * x + R;
+			// peer_container.y = R * y + R;
+
+			// 直接删除不匹配的点
+			rms.push(peer_container);
 		});
 		// 补足缺少的点
 		peer_list_set.forEach(peer => {
-			const [x, y] = this._calcPeerPosXY(peer);
+			const [x, y, deg] = this._calcPeerPosXY(peer);
 			const peer_container = new PIXI.Graphics();
 			peer_container[PEER_POS_SYMBOL] = peer;
 			peer_container.beginFill(0xffffff);
-			peer_container.drawCircle(r, r, r);
+			peer_container.drawCircle(0, 0, r);
 			peer_container.endFill();
 			peer_container.x = R * x + R;
 			peer_container.y = R * y + R;
+			// const ani_loop = () => {
+			const min_size = 0.5;
+			const max_size = 1 + Math.random() * 0.5;
+			const diff_size = max_size - min_size;
+
+			/**point rotation*/
+			const pr = (deg - Math.PI / 2 + PI2 + PI2) % PI2;
+			let init_acc_sr = this.scanner.rotation % PI2;
+			if (init_acc_sr > pr) {
+				init_acc_sr -= PI2;
+			}
+			let is_show = false;
+			let pre_sr = this.scanner.rotation;
+			peer_container.visible = false; // 默认先不显示
+			const ani_loop = () => {
+				const cur_sr = this.scanner.rotation;
+				const dif_sr = cur_sr - pre_sr;
+				init_acc_sr += dif_sr;
+				if (!is_show) {
+					// 第一次超过这个点的时候就开始显示
+					if ((is_show = init_acc_sr >= pr)) {
+						peer_container.visible = true;
+					}
+				}
+				if (is_show) {
+					const p = ((init_acc_sr - pr) % PI2) / PI2;
+					peer_container.scale.set(
+						min_size + Easing.Quadratic_InOut(1 - p) * diff_size,
+					);
+					peer_container.alpha = 1 - p;
+				}
+				pre_sr = cur_sr;
+			};
+			this.addLoop(ani_loop);
+			peer_container[Symbol.for("ani_loop_abort")] = () => {
+				this.removeLoop(ani_loop);
+			};
 			peer_points_container.addChild(peer_container);
 		});
 		// 移除多余的点
 		rms.forEach(peer_container => {
+			const abort = peer_container[Symbol.for("ani_loop_abort")];
+			if (typeof abort === "function") {
+				abort();
+			}
 			peer_points_container.removeChild(peer_container);
 			peer_container.destroy();
 		});

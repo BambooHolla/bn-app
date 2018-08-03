@@ -62,7 +62,6 @@ export class ScanPeersPage extends FirstLevelPage {
 			}
 			const peer_searcher_res = peer_searcher_iter.value;
 			if ("height" in peer_searcher_res) {
-				// console.log(peer_searcher_res);
 				// this._calcPeerPos(peer_searcher_res);
 				this.peer_list.push(peer_searcher_res);
 				this.markForCheck();
@@ -82,7 +81,7 @@ export class ScanPeersPage extends FirstLevelPage {
 		} while (true);
 
 		await min_time_lock;
-		this.gotoLinkNodes();
+		// this.gotoLinkNodes();
 	}
 	/*判断是否可以开始检查节点了*/
 	isEnableStartCheckPeers(

@@ -257,7 +257,6 @@ export class LinkNodePage extends FirstLevelPage {
   @asyncCtrlGenerator.loading(LinkNodePage.getTranslate("LINKING_PEER_NODE"))
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
-    return;
     /*保存节点*/
     await this.peerService.peerDb
       .insertMany(this.peer_list)
@@ -265,8 +264,8 @@ export class LinkNodePage extends FirstLevelPage {
     // await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
     const BLOCK_UNIT_TIME = peer.netInterval * 1000 || 128000;
-    localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME || "mainnet"}`);
-    localStorage.setItem("NET_VERSION", peer.netVersion);
+    localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
+    localStorage.setItem("NET_VERSION", peer.netVersion || "mainnet");
     sessionStorage.setItem("LINK_PEER", "true");
     this.peerService.useablePeers(this.useable_peers);
     // location.hash = "";
