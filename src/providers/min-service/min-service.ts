@@ -406,8 +406,11 @@ export class MinServiceProvider extends FLP_Tool {
   }
   private _vote_error(err) {
     this.vote_status_detail = err;
-    // TODO:
-    // 当前矿工拒绝接收投票，请稍后再试或使用其它节点。
+
+    // FIXME: 临时操作，这个应该是后端的错误信息
+    if (err && err.message === "移动端挖矿升级中，敬请期待") {
+      err.message = "当前矿工拒绝接收投票，请稍后再试或使用其它节点";
+    }
     const has_handler = this.tryEmit("vote-error", err);
     this.vote_status.next(false);
     if (!has_handler) {

@@ -74,6 +74,7 @@ export class TabAccountPage extends FirstLevelPage {
           "@@AFTER_SHOW_INCOME_IBT_NOTICE_TIP",
           {
             true_text: "@@OK_I_KNOWN",
+            false_text: "@@NO_NOTICE_ME",
           },
         );
       }

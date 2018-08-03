@@ -15,7 +15,10 @@ import {
   PeerServiceProvider,
   LocalPeerModel,
 } from "../../providers/peer-service/peer-service";
-import { BlockServiceProvider } from "../../providers/block-service/block-service";
+import {
+  BlockServiceProvider,
+  BlockModel,
+} from "../../providers/block-service/block-service";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { AniBase, Easing } from "../../components/AniBase";
@@ -41,8 +44,10 @@ export class LinkNodePage extends FirstLevelPage {
   ) {
     super(navCtrl, navParams);
   }
-  peer_list: LocalPeerModel[] = [];
-  useable_peers: LocalPeerModel[] = [];
+  @LinkNodePage.markForCheck use_offline_mode = false;
+  @LinkNodePage.markForCheck peer_list: LocalPeerModel[] = [];
+  @LinkNodePage.markForCheck useable_peers: LocalPeerModel[] = [];
+
   peer_searcher!: ReturnType<
     typeof PeerServiceProvider.prototype.searchAndCheckPeers
   >;
@@ -96,6 +101,9 @@ export class LinkNodePage extends FirstLevelPage {
         }
         this.markForCheck();
 
+        if (checked_peer_info.peer.disabled) {
+          continue;
+        }
         /*拜占庭检测可连接的节点*/
         peer_info_list.push(checked_peer_info);
         const check_res = PeerServiceProvider.calcPeers(
@@ -158,6 +166,8 @@ export class LinkNodePage extends FirstLevelPage {
             });
             if (selected_s_rate) {
               this.selected_peer = selected_s_rate.pi.peer;
+              this.selected_peer_highest_blocks =
+                selected_s_rate.pi.highest_blocks;
               this.scrollSelectedPeerIntoView();
             }
 
@@ -176,15 +186,19 @@ export class LinkNodePage extends FirstLevelPage {
     if (!this.selected_peer) {
       // console.warn("没有可信任的节点");
       // throw new Error("没有可信任的节点");
-      // 切换手动选择
-      this.toggleCanSelectByMyself();
+      if (peer_info_list.length) {
+        // 切换手动选择
+        this.toggleCanSelectByMyself();
+      } else {
+        this.use_offline_mode = true;
+      }
     } else {
       calc_res_list && this.storeUseablePeers(calc_res_list);
       this.linkSelectedNode();
     }
   }
 
-  can_select_by_myself = false;
+  @LinkNodePage.markForCheck can_select_by_myself = false;
   @asyncCtrlGenerator.tttttap()
   @asyncCtrlGenerator.success("能选了")
   async toggleCanSelectByMyself() {
@@ -195,6 +209,7 @@ export class LinkNodePage extends FirstLevelPage {
   //   selected_node_id: "",
   // };
   @LinkNodePage.markForCheck selected_peer?: LocalPeerModel;
+  selected_peer_highest_blocks: BlockModel[] = [];
   selectNode(node: LocalPeerModel) {
     if (this.can_select_by_myself) {
       if (node.delay > 0) {
@@ -265,6 +280,14 @@ export class LinkNodePage extends FirstLevelPage {
         }
       }),
     );
+    /*保存最高区块信息*/
+    await Promise.all(
+      this.selected_peer_highest_blocks.map(async block => {
+        if (!(await this.blockService.blockDb.has({ id: block.id }))) {
+          this.blockService.blockDb.insert(block).catch(console.error);
+        }
+      }),
+    );
 
     // await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
@@ -298,6 +321,10 @@ export class LinkNodePage extends FirstLevelPage {
       FLP_Tool.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
       this.appFetch.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
     }
+    return this.myapp.openPage(this.myapp.tryInPage, true, false);
+  }
+
+  useAppWithOffLineMode() {
     return this.myapp.openPage(this.myapp.tryInPage, true, false);
   }
 

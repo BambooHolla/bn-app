@@ -160,22 +160,26 @@ export class PeerServiceProvider extends CommonService {
         .then(res => res.blocks),
       this._getPeerWebsocketLinkNum(peer),
     ];
-    const start_time = performance.now();
-    await Promise.race(tasks as any);
-    const end_time = performance.now();
-    peer.delay = end_time - start_time;
 
-    const [highest_blocks, lowest_blocks, web_link_num] = await Promise.all(
-      tasks as any,
-    );
+    let highest_blocks: BlockModel[] = [];
+    let lowest_blocks: BlockModel[] = [];
+    let web_link_num: number = 0;
+    try {
+      const start_time = performance.now();
+      await Promise.race(tasks as any);
+      const end_time = performance.now();
+      peer.delay = end_time - start_time;
+
+      [highest_blocks, lowest_blocks, web_link_num] = await Promise.all<any>(
+        tasks as any,
+      );
+      delete peer.disabled;
+    } catch (err) {
+      peer.disabled = true;
+    }
 
     console.log(peer, highest_blocks, lowest_blocks);
-    return { peer, highest_blocks, lowest_blocks, web_link_num } as {
-      peer: typeof peer;
-      highest_blocks: BlockModel[];
-      lowest_blocks: BlockModel[];
-      web_link_num: number;
-    };
+    return { peer, highest_blocks, lowest_blocks, web_link_num };
   }
 
   /*搜索节点*/

@@ -51,7 +51,8 @@
         <div class="scan-light-line center"></div>
         <div class="scan-light-line right"></div>
       </div>
-      <button [hidden]="!can_select_by_myself" class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">立即开始</button>
+      <button *ngIf="can_select_by_myself" class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">{{'START_NOW'|translate}}</button>
+      <button *ngIf="use_offline_mode" class="submit-button start-link" (click)="useAppWithOffLineMode()">{{'START_WITH_OFFLINE'|translate}}</button>
     </div>
   </div>
 </ion-content>

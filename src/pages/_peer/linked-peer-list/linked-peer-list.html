@@ -9,21 +9,19 @@
       <div class="item ip">
         <ali-icon name="ifm-ip"></ali-icon>
       </div>
-      <div class="item height">
-        <ali-icon name="ifm-resize-height"></ali-icon>
+      <div class="item delay">
+        <ali-icon name="ifm-delay"></ali-icon>
       </div>
-      <div class="item ping">
+      <div class="item acc-flow">
         <ali-icon name="ifm-xiazai"></ali-icon>
       </div>
-      <div class="item linked-duration">
+      <div class="item acc-use-duraction">
         <ali-icon name="ifm-shichang"></ali-icon>
-      </div>
-      <div class="item system-type">
       </div>
     </div>
     <div class="row common-item" *ngFor="let peer of using_peer_list">
       <div class="item ip" [innerHTML]="(peer.ip|mask:'@ip')+':'+peer.p2pPort"></div>
-      <div class="item height">{{peer.height}}</div>
+      <div class="item delay">{{peer.delay}}</div>
       <div class="item acc-flow">{{peer.acc_flow|bytes}}</div>
       <div class="item acc-use-duraction">{{peer.acc_use_duration|amDuration:'seconds'}}</div>
     </div>
