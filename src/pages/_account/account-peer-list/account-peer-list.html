@@ -4,14 +4,10 @@
   </ion-navbar>
 </ion-header>
 
-
 <ion-content >
 <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E7%BD%91%E7%BB%9C%E8%8A%82%E7%82%B9%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
 
   <div class="common-list cur-peer-list">
-    <div class="header">
-      <div class="title">{{'SERVERING_PEER_LIST'|translate}}</div>
-    </div>
     <div class="row table-head">
       <div class="item ip">
         <ali-icon name="ifm-account"></ali-icon>
@@ -25,12 +21,17 @@
       <div class="item linked-number">
         <ali-icon name="ifm-wallet2"></ali-icon>
       </div>
+      <div class="item system-type">
+      </div>
     </div>
-    <div class="row common-item" *ngFor="let peer of cur_peer_list">
-      <div class="item ip" [innerHTML]="peer.ip|mask:'@ip'"></div>
+    <div class="row common-item" [class.disabled]="peer.disabled" *ngFor="let peer of cur_peer_list">
+      <div class="item ip" [innerHTML]="(peer.ip|mask:'@ip')+':'+peer.p2pPort"></div>
       <div class="item height">{{peer.height}}</div>
       <div class="item delay">{{peer.delay|number:'1.0-0'}}ms</div>
       <div class="item linked-number">{{peer.webChannelLinkNum}}</div>
+      <div class="item system-type">
+        <ali-icon [name]="peerService.getSystemTypeIcon(peer.platform)"></ali-icon>
+      </div>
     </div>
   </div>
 </ion-content>

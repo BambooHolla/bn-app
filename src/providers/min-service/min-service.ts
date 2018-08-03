@@ -406,6 +406,8 @@ export class MinServiceProvider extends FLP_Tool {
   }
   private _vote_error(err) {
     this.vote_status_detail = err;
+    // TODO:
+    // 当前矿工拒绝接收投票，请稍后再试或使用其它节点。
     const has_handler = this.tryEmit("vote-error", err);
     this.vote_status.next(false);
     if (!has_handler) {

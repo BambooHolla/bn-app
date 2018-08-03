@@ -5,16 +5,15 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider, AppUrl } from "../app-setting/app-setting";
-import {
-  BlockServiceProvider,
-  BlockModel,
-} from "../block-service/block-service";
+import { BlockModel, BlockResModel } from "../block-service/block.types";
+type BlockServiceProvider = import("../block-service/block-service").BlockServiceProvider;
 import { MinServiceProvider } from "../min-service/min-service";
 import {
   ParallelPool,
   PromiseType,
   PromiseOut,
 } from "../../bnqkl-framework/PromiseExtends";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { getQueryVariable } from "../../bnqkl-framework/helper";
 import * as IFM from "ifmchain-ibt";
 import { CommonService } from "../commonService";
@@ -29,20 +28,6 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
     }
   } catch (err) {}
 })() || [
-  // {
-  //   origin: "http://localhost:19002",
-  //   level: TYPE.PEER_LEVEL.TRUST,
-  //   web_channel_link_num: 0,
-  //   ip: "localhost",
-  //   height: 0,
-  //   p2pPort: 19000,
-  //   webPort: 19002,
-  //   delay: -1,
-  //   acc_use_duration: 0,
-  //   latest_verify_fail_time: 0,
-  //   acc_verify_total_times: 0,
-  //   acc_verify_success_times: 0,
-  // },
   {
     origin: "http://mainnet.ifmchain.org",
     level: TYPE.PEER_LEVEL.TRUST,
@@ -59,39 +44,6 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
     acc_verify_total_times: 0,
     acc_verify_success_times: 0,
   } as TYPE.LocalPeerModel,
-
-  // {
-  //   origin: "http://mainnet.ifmchain.org",
-  //   level: TYPE.PEER_LEVEL.TRUST,
-  //   web_channel_link_num: 0,
-  //   ip: "mainnet.ifmchain.org",
-  //   height: 0,
-  //   p2pPort: -1,
-  //   webPort: 80,
-  //   delay: -1,
-  //   acc_use_duration: 0,
-  //   latest_verify_fail_time: 0,
-  //   acc_verify_total_times: 0,
-  //   acc_verify_success_times: 0,
-  // },
-  // ...["35.194.161.10", "35.194.129.80", "35.194.234.159", "35.185.142.124"].map(
-  //   ip => {
-  //     return {
-  //       origin: `http://${ip}:19002`,
-  //       level: TYPE.PEER_LEVEL.SEC_TRUST,
-  //       web_channel_link_num: 0,
-  //       ip,
-  //       height: 0,
-  //       p2pPort: 19000,
-  //       webPort: 19002,
-  //       delay: -1,
-  //       acc_use_duration: 0,
-  //       latest_verify_fail_time: 0,
-  //       acc_verify_total_times: 0,
-  //       acc_verify_success_times: 0,
-  //     };
-  //   },
-  // ),
 ];
 
 @Injectable()
@@ -105,11 +57,11 @@ export class PeerServiceProvider extends CommonService {
     // public storage: Storage,
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
-    public blockService: BlockServiceProvider,
     public minService: MinServiceProvider,
   ) {
     super();
   }
+  @FLP_Tool.FromGlobal blockService!: BlockServiceProvider;
 
   readonly PEER_SYNC = this.appSetting.APP_URL("/api/loader/status/sync");
   readonly PING_URL = this.appSetting.APP_URL("/api/blocks/getHeight");
@@ -218,7 +170,12 @@ export class PeerServiceProvider extends CommonService {
     );
 
     console.log(peer, highest_blocks, lowest_blocks);
-    return { peer, highest_blocks, lowest_blocks, web_link_num };
+    return { peer, highest_blocks, lowest_blocks, web_link_num } as {
+      peer: typeof peer;
+      highest_blocks: BlockModel[];
+      lowest_blocks: BlockModel[];
+      web_link_num: number;
+    };
   }
 
   /*搜索节点*/
@@ -521,13 +478,16 @@ export class PeerServiceProvider extends CommonService {
     >[] = [];
     const parallel_pool = new ParallelPool<typeof fetch_peer_infos[0]>(4);
     for (var i = 0; i < useablePeers.length; i += 1) {
-      let peer = useablePeers[i]
+      let peer = useablePeers[i];
       parallel_pool.addTaskExecutor(() => this.fetchPeersInfo(peer));
     }
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
   private async fetchPeersInfo(peer: TYPE.LocalPeerModel) {
+    const common_cache_handler = () => {
+      peer.disabled = true;
+    };
     const get_platform_task = this.fetch
       .get<any>(
         this.oneTimeUrl(this.SYSTEM_RUNTIME, peer.origin, true).SYSTEM_RUNTIME,
@@ -537,13 +497,64 @@ export class PeerServiceProvider extends CommonService {
         return runtime;
       });
     const get_linknum_task = this._getPeerWebsocketLinkNum(peer);
-    const tasks = [get_platform_task, get_linknum_task];
+    const get_lastblock_task = this.blockService
+      .oneTimeUrl(this.blockService.GET_LAST_BLOCK_URL, peer.origin, true)
+      .getLastBlock()
+      .then(lastBlock => {
+        peer.height = lastBlock.height;
+        return lastBlock;
+      });
+    const tasks = [get_platform_task, get_linknum_task, get_lastblock_task];
 
-    const start_time = performance.now();
-    await Promise.race(tasks as any);
-    peer.delay = performance.now() - start_time;
+    let runtime;
+    let web_link_num;
+    try {
+      const start_time = performance.now();
+      await Promise.race(tasks as any);
+      peer.delay = performance.now() - start_time;
 
-    const [runtime, web_link_num] = await Promise.all(tasks as any);
-    return { peer, runtime, web_link_num };
+      [runtime, web_link_num] = await Promise.all(tasks as any);
+      delete peer.disabled;
+    } catch (err) {
+      peer.disabled = true;
+    }
+    return { peer, runtime, web_link_num } as {
+      peer: typeof peer;
+      runtime: any;
+      web_link_num: number;
+    };
+  }
+
+  private _update_peer_flow_lock = new Map<
+    string,
+    { acc_flow: number; lock: Promise<void> }
+  >();
+  async updatePeerFlow(origin: string, flow: number) {
+    let lock_info = this._update_peer_flow_lock.get(origin);
+    if (!lock_info) {
+      const li = {
+        acc_flow: 0,
+        lock: this._updatePeerFlow(origin, flow).then(() => {
+          // 解锁并合并更新
+          this._update_peer_flow_lock.delete(origin);
+          if (li.acc_flow) {
+            this.updatePeerFlow(origin, li.acc_flow);
+          }
+        }),
+      };
+      lock_info = li;
+    } else {
+      lock_info.acc_flow += flow;
+    }
+  }
+
+  private async _updatePeerFlow(origin: string, flow: number) {
+    const peer = await this.peerDb.findOne({ origin });
+    if (!peer) {
+      console.error(new Error(`找不到本地节点信息: ${origin}`));
+      return;
+    }
+    peer.acc_flow = (peer.acc_flow || 0) + flow;
+    await this.peerDb.update({ origin }, peer);
   }
 }

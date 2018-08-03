@@ -653,6 +653,9 @@
   "PARSE_PICTURE_QRCODE": "解析图片二维码",
   "QRCODE_PICTURE_PARSE_ERROR": "二维码图片解析失败",
 
+  "//": "linked-peer-list",
+  "LINKED-PEER-LIST": "已连接节点",
+
   "//": "settings-lang",
   "SETTINGS-LANG": "语言设置",
 

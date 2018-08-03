@@ -12,6 +12,7 @@ export type PeerModel = {
   type: number;
 };
 export type LocalPeerModel = {
+  disabled?: boolean;
   height: number;
   ip: string;
   p2pPort: number;
@@ -23,6 +24,7 @@ export type LocalPeerModel = {
   netInterval: number;
   type: number;
   platform?: string;
+  acc_flow?: number;
   level: PEER_LEVEL;
   /* # 节点品质算法
    * 1. 节点连接失败的时候并不直接影响节点的品质，因为要考虑网络问题就是不稳定的情况

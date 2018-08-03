@@ -37,6 +37,7 @@ import {
 } from "../db-cache/db-cache";
 import { Mdb } from "../mdb";
 import io from "socket.io-client";
+type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
 tryRegisterGlobal("socketio", io);
 
 export * from "./block.types";
@@ -207,6 +208,9 @@ export class BlockServiceProvider extends FLP_Tool {
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
   }
+
+  @FLP_Tool.FromGlobal peerService!: PeerServiceProvider;
+
   /// TODO: 弃用
   readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
     "/api/blocks/getLastBlock",
@@ -312,6 +316,9 @@ export class BlockServiceProvider extends FLP_Tool {
         getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
       this.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
       this.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
+      /*更新数据库中的流量使用信息*/
+      this.peerService.updatePeerFlow(AppSettingProvider.SERVER_URL, flow);
+
       console.log(
         `%c区块更新 ${new Date().toLocaleString()}`,
         "color:green;background-color:#eee;font-size:1.2rem",
@@ -408,8 +415,15 @@ export class BlockServiceProvider extends FLP_Tool {
               msg.data.cursorHeight;
             break;
           case "use-flow":
-            this.appSetting.share_settings.sync_data_flow +=
-              (+msg.data.up || 0) + (+msg.data.down || 0);
+            {
+              let flow = (+msg.data.up || 0) + (+msg.data.down || 0);
+              this.appSetting.share_settings.sync_data_flow += flow;
+              /*更新数据库中的流量使用信息*/
+              this.peerService.updatePeerFlow(
+                AppSettingProvider.SERVER_URL,
+                flow,
+              );
+            }
             break;
           case "progress":
             // console.log("下载中", task_name, msg.data);
