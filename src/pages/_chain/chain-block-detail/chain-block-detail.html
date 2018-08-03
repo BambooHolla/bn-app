@@ -143,10 +143,10 @@
             </ng-container>
           </div>
           <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
-            {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+            {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}<span class="unit">IBT</span>
           </div>
           <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
-            - {{tran?.fee|amountEuler|number:"1.8-8"}}
+            - {{tran?.fee|amountEuler|number:"1.8-8"}}<span class="unit">IBT</span>
           </div>
         </div>
       </div>

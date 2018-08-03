@@ -311,6 +311,11 @@ page-chain-block-detail {
         .amount {
           color: #505050;
           font-weight: 500;
+          .unit{
+            font-size: 1.1rem;
+            padding-left: 0.5rem;
+            font-weight: lighter;
+          }
         }
       }
       > .empty-list {
