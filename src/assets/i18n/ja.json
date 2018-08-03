@@ -512,7 +512,7 @@
   "YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW":
     "振込手数料は設定されていません。今すぐ設定してください。",
   "FIRST_TRANSFER_TIP":
-    "ロールアウト操作がローカルから正常に転送されたことを確認した後、通常、ブロックチェーンネットワーク上で確認されます。 ただし、ネットワーク上のデータがまだ合意されていない場合がありますが、他のノードは転送トランザクションを受け付けません。この時点で転送は成功せず、失敗の通知は表示されません。 。 \\\"My\\\" - \\\"My Transaction\\\" - \\\"Confirmed Transaction\\\"を介して取引のステータスを確認することができます。",
+    "ロールアウト操作がローカルから正常に転送されたことを確認した後、通常、ブロックチェーンネットワーク上で確認されます。 ただし、ネットワーク上のデータがまだ合意されていない場合がありますが、他のノードは転送トランザクションを受け付けません。この時点で転送は成功せず、失敗の通知は表示されません。 。 \\\\\\\"My\\\\\\\" - \\\\\\\"My Transaction\\\\\\\" - \\\\\\\"Confirmed Transaction\\\\\\\"を介して取引のステータスを確認することができます。",
   "TRANSFER_SUBMIT_ERROR": "振り込みの提出エラー",
   "SUBMIT_TRANSFER_TITLE": "振り込み取引を提出します。",
   "TRANSFER_SUBMITING": "振り込み提出中",
@@ -577,6 +577,7 @@
   "TAKE_PICTURE_FROM_MEDIA_STREAM": "カメラでQRコードをスキャン",
   "PARSE_PICTURE_QRCODE": "QRコードを解析",
   "QRCODE_PICTURE_PARSE_ERROR": "QRコードの解析が失敗しました",
+  "//": "linked-peer-list",
   "//": "settings-lang",
   "SETTINGS-LANG": "言語の設定",
   "//": "account-settings",
@@ -653,6 +654,7 @@
   "LINK_PEER_NODE_ERROR": "ノード接続エラー",
   "//": "link-node",
   "SHEILD": "シールド",
+  "START_NOW": "サインイン",
   "//": "assets-issuing-assets",
   "//": "assets-assets-market",
   "//": "assets-assets-detail",

@@ -472,6 +472,7 @@
   "PARSE_PICTURE_QRCODE": "QR-Code des Bilds analysieren",
   "QRCODE_PICTURE_PARSE_ERROR":
     "Das QR-Code-Bild konnte nicht analysiert werden",
+  "//": "linked-peer-list",
   "//": "settings-lang",
   "SETTINGS-LANG": "Spracheinstellungen",
   "//": "account-settings",
@@ -549,6 +550,7 @@
   "LINK_PEER_NODE_ERROR": "Knotenverbindung fehlgeschlagen",
   "//": "link-node",
   "SHEILD": "Schild",
+  "START_NOW": "Fang jetzt an",
   "//": "assets-issuing-assets",
   "//": "assets-assets-market",
   "//": "assets-assets-detail",

@@ -479,6 +479,7 @@
   "PARSE_PICTURE_QRCODE": "Parse image Codice QR",
   "QRCODE_PICTURE_PARSE_ERROR":
     "Impossibile analizzare l'immagine del codice QR",
+  "//": "linked-peer-list",
   "//": "settings-lang",
   "SETTINGS-LANG": "Impostazioni della lingua",
   "//": "account-settings",
@@ -556,6 +557,7 @@
   "LINK_PEER_NODE_ERROR": "Connessione nodo fallita",
   "//": "link-node",
   "SHEILD": "scudo",
+  "START_NOW": "Inizia ora",
   "//": "assets-issuing-assets",
   "//": "assets-assets-market",
   "//": "assets-assets-detail",

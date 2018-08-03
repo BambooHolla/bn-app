@@ -24,16 +24,39 @@
       <div class="table-list">
         <div class="row" *ngFor="let node of peer_list" (click)="selectNode(node)" [class.link-able]="node.delay>0" [class.selected]="selected_peer==node&&is_scaning_finish" [attr.data-origin]="node.origin">
           <div class="item-ip" [innerHTML]="node.ip|mask:'@ip'"></div>
-          <div class="item-height">{{node.height}}</div>
-          <div class="item-ping">
-            <ng-container *ngIf="node.delay>=0;else checkingPeer">
-              {{node.delay|number:'1.0-0'}}ms
+          <ng-container *ngIf="node.disabled">
+            <div class="item-height">??</div>
+            <div class="item-ping">??</div>
+            <div class="item-linked-number">??</div>
+          </ng-container>
+          <ng-container *ngIf="!node.disabled">
+            <ng-container *ngIf="node.delay>=0;else checkingPeerInfo">
+              <div class="item-height">
+                <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+              </div>
+              <div class="item-ping">
+                <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+              </div>
+              <div class="item-linked-number">
+                <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+              </div>
             </ng-container>
-            <ng-template #checkingPeer>
-              <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+            <ng-template #checkingPeerInfo>
+              <div class="item-height">{{node.height}}</div>
+              <div class="item-ping">{{node.delay|number:'1.0-0'}}ms</div>
+              <div class="item-linked-number">{{node.webChannelLinkNum}}</div>
             </ng-template>
-          </div>
-          <div class="item-linked-number">{{node.webChannelLinkNum}}</div>
+            <div class="item-height">{{node.height}}</div>
+            <div class="item-ping">
+              <ng-container *ngIf="node.delay>=0;else checkingPeer">
+                {{node.delay|number:'1.0-0'}}ms
+              </ng-container>
+              <ng-template #checkingPeer>
+                <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+              </ng-template>
+            </div>
+            <div class="item-linked-number">{{node.webChannelLinkNum}}</div>
+          </ng-container>
           <div class="item-select">
             <button class="radio-button">
               <input type="radio" name="select-peer-node" [disabled]="!node.delay>0" [value]="node" [(ngModel)]="selected_peer" />
