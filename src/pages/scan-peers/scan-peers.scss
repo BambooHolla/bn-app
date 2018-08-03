@@ -1,5 +1,8 @@
 page-scan-peers {
 	> .content {
+		> .scroll-content {
+			overflow: hidden;
+		}
 		background: linear-gradient(
 			to bottom,
 			#ea423e 0%,
@@ -20,7 +23,7 @@ page-scan-peers {
 			animation-duration: 280s * 2;
 			animation-iteration-count: infinite;
 			 */
-			 opacity: 0.4;
+			opacity: 0.4;
 		}
 	}
 	.scan-panel {

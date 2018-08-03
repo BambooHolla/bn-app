@@ -20,6 +20,7 @@ export class FLP_Lifecycle extends FLP_Tool
   instance_id = ++uuid;
   cname = this.constructor.name;
   PAGE_LEVEL = 1;
+  PAGE_STATUS_ENUM = PAGE_STATUS;
   PAGE_STATUS = PAGE_STATUS.UNLOAD;
 
   /** 注册视图层相关的事件

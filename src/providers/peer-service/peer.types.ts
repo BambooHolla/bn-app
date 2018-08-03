@@ -22,6 +22,7 @@ export type LocalPeerModel = {
   netVersion: string;
   netInterval: number;
   type: number;
+  platform?: string;
   level: PEER_LEVEL;
   /* # 节点品质算法
    * 1. 节点连接失败的时候并不直接影响节点的品质，因为要考虑网络问题就是不稳定的情况

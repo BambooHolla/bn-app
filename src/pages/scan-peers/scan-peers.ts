@@ -81,7 +81,7 @@ export class ScanPeersPage extends FirstLevelPage {
 		} while (true);
 
 		await min_time_lock;
-		// this.gotoLinkNodes();
+		this.gotoLinkNodes();
 	}
 	/*判断是否可以开始检查节点了*/
 	isEnableStartCheckPeers(

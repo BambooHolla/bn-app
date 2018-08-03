@@ -1,5 +1,6 @@
 import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
+import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import {
@@ -25,11 +26,20 @@ export class AccountPeerListPage extends SecondLevelPage {
   @AccountPeerListPage.willEnter
   async initPeerList() {
     this.cur_peer_list = this.peerService.useablePeers();
-    // for await (var _pi of this.peerService.searchAndCheckPeers()) {
-    //   if ("peer" in _pi) {
-    //     const checked_peer_info = _pi;
-    //     this.cur_peer_list.push(checked_peer_info.peer);
-    //   }
-    // }
+    // 更新节点信息
+    return this.loopUpdatePeerList();
+  }
+  async loopUpdatePeerList() {
+    const min_wait_time = sleep(5000); // 至少每5秒要更新一次数据
+    for await (var _pi of this.peerService.updateUseablePeersInfo(
+      this.cur_peer_list,
+    )) {
+      if (this.PAGE_STATUS <= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
+        break;
+      }
+      this.markForCheck();
+    }
+    await min_wait_time;
+    this.loopUpdatePeerList();
   }
 }

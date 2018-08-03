@@ -116,6 +116,7 @@ export class PeerServiceProvider extends CommonService {
   readonly PEERS_URL = this.appSetting.APP_URL("/api/peers/");
   readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
   readonly FORGING_ENABLE = this.appSetting.APP_URL("/forging/enable");
+  readonly SYSTEM_RUNTIME = this.appSetting.APP_URL(`/api/system/runtime`);
 
   /*获取所有次信任节点*/
   async getAllSecondTrustPeers() {
@@ -179,11 +180,20 @@ export class PeerServiceProvider extends CommonService {
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
+  private _getPeerWebsocketLinkNum(peer: TYPE.LocalPeerModel) {
+    return this.minService
+      .oneTimeUrl(this.minService.SYSTEM_WEBSOCKETLINKNUM, peer.origin, true)
+      .getWebsocketLinkNum()
+      .then(res => {
+        peer.webChannelLinkNum = res;
+        return res;
+      })
+      .catch(() => 0);
+  }
   /*获取节点检查信息*/
   async _checkPeer(peer: TYPE.LocalPeerModel) {
-    const start_time = performance.now();
-    // 获取最后的六个区块
-    const [highest_blocks, lowest_blocks, web_link_num] = await Promise.all([
+    const tasks = [
+      // 获取最后的六个区块
       this.blockService
         .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
         .getBlocks({ orderBy: "height:desc", limit: 6 })
@@ -191,24 +201,22 @@ export class PeerServiceProvider extends CommonService {
           peer.height = res.blocks[0].height;
           return res.blocks;
         }),
+      // 获取最前的六个区块
       this.blockService
         .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
         .getBlocks({ orderBy: "height:asc", limit: 6 })
         .then(res => res.blocks),
-      // this.minService
-      //   .oneTimeUrl(this.minService.SYSTEM_WEBSOCKETLINKNUM, peer.origin, true)
-      //   .getWebsocketLinkNum()
-      //   .then(res => {
-      //     const end_time = performance.now();
-      //     peer.delay = end_time - start_time;
-      //     peer.webChannelLinkNum = res;
-      //     return res;
-      //   }),
-      1
-    ]);
-
+      this._getPeerWebsocketLinkNum(peer),
+    ];
+    const start_time = performance.now();
+    await Promise.race(tasks as any);
     const end_time = performance.now();
     peer.delay = end_time - start_time;
+
+    const [highest_blocks, lowest_blocks, web_link_num] = await Promise.all(
+      tasks as any,
+    );
+
     console.log(peer, highest_blocks, lowest_blocks);
     return { peer, highest_blocks, lowest_blocks, web_link_num };
   }
@@ -493,5 +501,49 @@ export class PeerServiceProvider extends CommonService {
       } catch (err) {}
       return [];
     }
+  }
+  /**获取操作系统对应的图标*/
+  getSystemTypeIcon(platfrom: string) {
+    if (platfrom === "linux") {
+      return "ifm-linux";
+    }
+    if (platfrom === "darwin") {
+      return "ifm-mac";
+    }
+    if (platfrom === "win32") {
+      return "ifm-windows";
+    }
+    return "ifm-unknown-system";
+  }
+  async *updateUseablePeersInfo(useablePeers = this.useablePeers()) {
+    const fetch_peer_infos: PromiseType<
+      ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfo>
+    >[] = [];
+    const parallel_pool = new ParallelPool<typeof fetch_peer_infos[0]>(4);
+    for (var i = 0; i < useablePeers.length; i += 1) {
+      let peer = useablePeers[i]
+      parallel_pool.addTaskExecutor(() => this.fetchPeersInfo(peer));
+    }
+
+    yield* parallel_pool.yieldResults({ ignore_error: true });
+  }
+  private async fetchPeersInfo(peer: TYPE.LocalPeerModel) {
+    const get_platform_task = this.fetch
+      .get<any>(
+        this.oneTimeUrl(this.SYSTEM_RUNTIME, peer.origin, true).SYSTEM_RUNTIME,
+      )
+      .then(runtime => {
+        peer.platform = runtime.data.System.platform;
+        return runtime;
+      });
+    const get_linknum_task = this._getPeerWebsocketLinkNum(peer);
+    const tasks = [get_platform_task, get_linknum_task];
+
+    const start_time = performance.now();
+    await Promise.race(tasks as any);
+    peer.delay = performance.now() - start_time;
+
+    const [runtime, web_link_num] = await Promise.all(tasks as any);
+    return { peer, runtime, web_link_num };
   }
 }

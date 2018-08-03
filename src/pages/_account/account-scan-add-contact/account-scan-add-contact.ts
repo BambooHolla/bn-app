@@ -248,6 +248,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       const m = this.modalCtrl.create(ADD_CONTACT_MODE_MAP[mode], {
         address: res,
         auto_search: true,
+        auto_return: true,
         showCloseButton: true,
       });
       m.present();
