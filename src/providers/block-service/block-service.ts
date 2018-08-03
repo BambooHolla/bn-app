@@ -29,7 +29,10 @@ import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
 import { AppUrl, baseConfig } from "../../bnqkl-framework/helper";
-import { getJsonObjectByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
+import {
+  getJsonObjectByteSize,
+  getUTF8ByteSize,
+} from "../../pages/_settings/settings-cache-manage/calcHelper";
 import {
   DbCacheProvider,
   HTTP_Method,
@@ -292,6 +295,25 @@ export class BlockServiceProvider extends FLP_Tool {
       await this.blockDb
         .insert(this.formatBlockData(last_block))
         .catch(err => console.warn("更新最新区块失败", last_block, err));
+    } else {
+      // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
+      const heighter_blocks = await this.blockDb.find({
+        height: { $gt: last_block },
+      });
+      //整理出一条正确的长链，所用前一个块的id作为key
+      const block_map = new Map<string, TYPE.BlockModel>();
+      heighter_blocks.forEach(lock_block => {
+        block_map.set(lock_block.previousBlock, lock_block);
+      });
+      let pre_block = last_block;
+      do {
+        const next_block = block_map.get(pre_block.id);
+        if (!next_block) {
+          last_block = pre_block;
+          break;
+        }
+        pre_block = next_block;
+      } while (true);
     }
     // 更新轮次计时器
     this.round_end_time = new Date(
@@ -310,6 +332,44 @@ export class BlockServiceProvider extends FLP_Tool {
     this.appSetting.setHeight(last_block.height);
   }
   bindIOBlockChange() {
+    const encoder = this.io.io["encoder"];
+    const ENCODE_SYMBOL = Symbol.for("encode");
+    encoder[ENCODE_SYMBOL] = encoder.encode;
+    const peerService = this.peerService;
+    const self = this;
+    const io_origin = AppSettingProvider.SERVER_URL;
+    // 不改原型链，只针对当前的这个链接对象进行修改
+    encoder.encode = function(obj, callback) {
+      this[ENCODE_SYMBOL](obj, (buffer_list, ...args) => {
+        if (buffer_list instanceof Array) {
+          let acc_flow = 0;
+          buffer_list.forEach(data_item => {
+            if (typeof data_item == "string") {
+              acc_flow += getUTF8ByteSize(data_item);
+            } else if (data_item instanceof ArrayBuffer) {
+              acc_flow += data_item.byteLength;
+            }
+          });
+          if (acc_flow) {
+            // console.log("上行流量", acc_flow);
+            self.peerService.updatePeerFlow(io_origin, acc_flow);
+          }
+        }
+        callback(buffer_list, ...args);
+      });
+    };
+    this.io.io["engine"].on("data", data_item => {
+      let acc_flow = 0;
+      if (typeof data_item == "string") {
+        acc_flow += getUTF8ByteSize(data_item);
+      } else if (data_item instanceof ArrayBuffer) {
+        acc_flow += data_item.byteLength;
+      }
+      if (acc_flow) {
+        // console.log("下行流量", acc_flow);
+        self.peerService.updatePeerFlow(io_origin, acc_flow);
+      }
+    });
     this.io.on("blocks/change", async data => {
       // 计算流量大小
       const flow =
@@ -317,7 +377,7 @@ export class BlockServiceProvider extends FLP_Tool {
       this.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
       this.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
       /*更新数据库中的流量使用信息*/
-      this.peerService.updatePeerFlow(AppSettingProvider.SERVER_URL, flow);
+      this.peerService.updatePeerFlow(io_origin, flow);
 
       console.log(
         `%c区块更新 ${new Date().toLocaleString()}`,
@@ -333,6 +393,14 @@ export class BlockServiceProvider extends FLP_Tool {
         this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
       });
     });
+    const io = this.io;
+    let ti = setInterval(() => {
+      if (io === this.io) {
+        this.peerService.updatePeerDuration(io_origin, 1);
+      } else {
+        clearInterval(ti);
+      }
+    }, 1000);
   }
   private async _listenGetAndSetHeight() {
     this.bindIOBlockChange();
@@ -623,11 +691,32 @@ export class BlockServiceProvider extends FLP_Tool {
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
-  getLastBlock() {
+  async getLastBlock() {
     if (this.fetch.onLine) {
-      return this.fetch
+      let last_block = await this.fetch
         .get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL)
         .then(res => res.block as TYPE.SingleBlockModel);
+      if (await this.blockDb.has({ id: last_block.id })) {
+        // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
+        const heighter_blocks = await this.blockDb.find({
+          height: { $gt: last_block },
+        });
+        //整理出一条正确的长链，所用前一个块的id作为key
+        const block_map = new Map<string, TYPE.BlockModel>();
+        heighter_blocks.forEach(lock_block => {
+          block_map.set(lock_block.previousBlock, lock_block);
+        });
+        let pre_block = last_block;
+        do {
+          const next_block = block_map.get(pre_block.id);
+          if (!next_block) {
+            last_block = pre_block;
+            break;
+          }
+          pre_block = next_block;
+        } while (true);
+      }
+      return last_block;
     } else {
       return this._getLocalLastBlock();
     }

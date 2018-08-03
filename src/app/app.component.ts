@@ -181,8 +181,14 @@ export class MyApp implements OnInit {
         return null;
       }
       if (!sessionStorage.getItem("LINK_PEER")) {
-        await this.openPage(ScanPeersPage);
-        return null;
+        const pre_link_time = parseFloat(
+          localStorage.getItem("LINK_PEER") || "0",
+        );
+        if (Date.now() - pre_link_time >= 8 * 60 * 60 * 1000) {
+          // 上一次检测节点已经超过了8小时，那么进行重新检查
+          await this.openPage(ScanPeersPage);
+          return null;
+        }
         // return ScanPeersPage
       }
       const user_token = appSetting.getUserToken();

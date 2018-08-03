@@ -59,14 +59,25 @@ export class TabAccountPage extends FirstLevelPage {
   //   );
   // }
   @TabAccountPage.didEnter
-  isShowMiningIncomeNotice() {
+  async isShowMiningIncomeNotice() {
     if (!this.appSetting.settings._is_first_balance_grow_up_notice) {
       this.appSetting.settings._is_first_balance_grow_up_notice = true;
-      this.waitTipDialogConfirm("@@SHOW_INCOME_IBT_NOTICE_TIP", {
-        true_text: "@@YES_I_NEED",
-      }).then(res => {
-        this.appSetting.settings.mining_income_notice = res;
-      });
+      let res = await this.waitTipDialogConfirm(
+        "@@SHOW_INCOME_IBT_NOTICE_TIP",
+        {
+          true_text: "@@YES_I_NEED",
+        },
+      );
+      this.appSetting.settings.mining_income_notice = res;
+      if (res) {
+        res = await this.waitTipDialogConfirm(
+          "@@AFTER_SHOW_INCOME_IBT_NOTICE_TIP",
+          {
+            true_text: "@@OK_I_KNOWN",
+          },
+        );
+      }
+      this.appSetting.settings.mining_income_notice = res;
     }
   }
 

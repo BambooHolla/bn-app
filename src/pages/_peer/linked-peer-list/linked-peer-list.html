@@ -24,9 +24,8 @@
     <div class="row common-item" *ngFor="let peer of using_peer_list">
       <div class="item ip" [innerHTML]="(peer.ip|mask:'@ip')+':'+peer.p2pPort"></div>
       <div class="item height">{{peer.height}}</div>
-      <div class="item delay">{{peer.delay|number:'1.0-0'}}ms</div>
-      <div class="item linked-number">{{peer.acc_flow|bytes}}</div>
-      <div class="item system-type">{{peer.acc_use_duration|amDuration}}</div>
+      <div class="item acc-flow">{{peer.acc_flow|bytes}}</div>
+      <div class="item acc-use-duraction">{{peer.acc_use_duration|amDuration:'seconds'}}</div>
     </div>
   </div>
 </ion-content>

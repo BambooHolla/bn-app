@@ -79,25 +79,25 @@ export class AccountMinerListPage extends SecondLevelPage {
     return this.initMinterList();
   }
 
-  @AccountMinerListPage.markForCheck cur_peer_list: LocalPeerModel[] = [];
-  @AccountMinerListPage.willEnter
-  async initPeerList() {
-    this.cur_peer_list = this.peerService.useablePeers();
-    // 更新节点信息
-    return this.loopUpdatePeerList();
-  }
-  async loopUpdatePeerList() {
-    const min_wait_time = sleep(5000); // 至少每5秒要更新一次数据
-    // 更新节点信息
-    for await (var _pi of this.peerService.updateUseablePeersInfo(
-      this.cur_peer_list,
-    )) {
-      if (this.PAGE_STATUS <= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
-        break;
-      }
-      this.markForCheck();
-    }
-    await min_wait_time;
-    this.loopUpdatePeerList();
-  }
+  // @AccountMinerListPage.markForCheck cur_peer_list: LocalPeerModel[] = [];
+  // @AccountMinerListPage.willEnter
+  // async initPeerList() {
+  //   this.cur_peer_list = this.peerService.useablePeers();
+  //   // 更新节点信息
+  //   return this.loopUpdatePeerList();
+  // }
+  // async loopUpdatePeerList() {
+  //   const min_wait_time = sleep(5000); // 至少每5秒要更新一次数据
+  //   // 更新节点信息
+  //   for await (var _pi of this.peerService.updateUseablePeersInfo(
+  //     this.cur_peer_list,
+  //   )) {
+  //     if (this.PAGE_STATUS <= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
+  //       break;
+  //     }
+  //     this.markForCheck();
+  //   }
+  //   await min_wait_time;
+  //   this.loopUpdatePeerList();
+  // }
 }

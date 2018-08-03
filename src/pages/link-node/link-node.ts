@@ -258,9 +258,14 @@ export class LinkNodePage extends FirstLevelPage {
   @asyncCtrlGenerator.error(LinkNodePage.getTranslate("LINK_PEER_NODE_ERROR"))
   async linkNode(peer: LocalPeerModel) {
     /*保存节点*/
-    await this.peerService.peerDb
-      .insertMany(this.peer_list)
-      .catch(console.error);
+    await Promise.all(
+      this.peer_list.map(async peer => {
+        if (!(await this.peerService.peerDb.has({ origin: peer.origin }))) {
+          this.peerService.peerDb.insert(peer).catch(console.error);
+        }
+      }),
+    );
+
     // await sleep(500);
     localStorage.setItem("SERVER_URL", peer.origin);
     const BLOCK_UNIT_TIME = peer.netInterval * 1000 || 128000;
@@ -268,6 +273,9 @@ export class LinkNodePage extends FirstLevelPage {
     localStorage.setItem("NET_VERSION", peer.netVersion || "mainnet");
     sessionStorage.setItem("LINK_PEER", "true");
     this.peerService.useablePeers(this.useable_peers);
+
+    // 保存这次检测完成的时间，为了避免过度频繁的检测
+    localStorage.setItem("LINK_PEER", Date.now().toString());
     // location.hash = "";
     // location.reload();
 

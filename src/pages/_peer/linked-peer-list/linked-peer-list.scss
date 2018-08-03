@@ -1,3 +1,37 @@
 page-linked-peer-list {
-
+  .linkd-peer-list {
+    margin-top: 1rem;
+    > .header {
+      background-color: #fff;
+      color: #4e4e4e;
+      height: 4rem;
+      padding-left: 1.8rem;
+      display: flex;
+      align-items: center;
+    }
+    > .row {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      color: #7b7b7b;
+      justify-content: space-around;
+      padding: 0;
+      > .item {
+        flex: 1;
+        text-align: center;
+        &.ip {
+          // padding-left: 1.6rem;
+          flex: 2;
+        }
+  
+      }
+    }
+    > .table-head {
+      font-size: 1.9rem;
+      // height: 2.6rem;
+      background-color: transparent;
+      padding-top: 0.8rem;
+      padding-bottom: 1.2rem;
+    }
+  }
 }

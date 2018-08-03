@@ -555,6 +555,17 @@ export class PeerServiceProvider extends CommonService {
       return;
     }
     peer.acc_flow = (peer.acc_flow || 0) + flow;
-    await this.peerDb.update({ origin }, peer);
+    await this.peerDb.update({ _id: peer["_id"] }, peer);
+  }
+
+  /**更新节点使用时间*/
+  async updatePeerDuration(origin: string, acc_duration: number) {
+    const peer = await this.peerDb.findOne({ origin });
+    if (!peer) {
+      console.error(new Error(`找不到本地节点信息: ${origin}`));
+      return;
+    }
+    peer.acc_use_duration += acc_duration;
+    await this.peerDb.update({ _id: peer["_id"] }, peer);
   }
 }
