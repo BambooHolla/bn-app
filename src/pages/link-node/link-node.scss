@@ -52,13 +52,14 @@ page-link-node {
       align-items: center;
       justify-content: center;
       > .shield-logo {
+        transform: translate(0.1rem, 0);
         width: 5.3rem;
         height: 100%;
         background-image: url(../assets/imgs/peers/shield.png);
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        filter: drop-shadow(-0.6rem 0 0.8rem rgba(0, 0, 0, 0.3));
+        filter: drop-shadow(-0.6rem 0 0.8rem rgba(#FFF, 0.3));
       }
     }
     .card-content {

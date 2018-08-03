@@ -1,6 +1,6 @@
 {
   "name": "ifm-app-v2",
-  "version": "3.2.8",
+  "version": "3.2.9",
   "author": "BNQKL Team",
   "homepage": "http://mainnet.ifmchain.org/",
   "private": true,
@@ -71,7 +71,7 @@
     "cordova-plugin-file-opener2": "^2.0.19",
     "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-fingerprint-aio-gaubee": "^1.4.1",
-    "cordova-plugin-ionic-keyboard": "^2.1.2",
+    "ionic-plugin-keyboard": "^2.2.1",
     "cordova-plugin-ionic-webview": "^1.1.16",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-media-capture": "^3.0.1",
@@ -96,6 +96,7 @@
     "hammerjs": "^2.0.8",
     "ifmchain-ibt": "0.0.9",
     "ionic-angular": "^3.9.2",
+    "ionic-plugin-keyboard": "^2.2.1",
     "ionicons": "3.0.0",
     "js-nacl": "^1.2.2",
     "kjua": "^0.1.2",
@@ -179,7 +180,7 @@
       "cordova-plugin-networkinterface": {},
       "cordova-plugin-network-information": {},
       "cordova-plugin-themeablebrowser": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "ionic-plugin-keyboard": {}
     },
     "platforms": [
       "ios",
