@@ -224,7 +224,7 @@ page-link-node {
     .shield-light-line {
       animation-timing-function: linear;
       background-image: url("../assets/imgs/peers/shield-light-line.png");
-      animation-duration: 6s;
+      animation-duration: 3s;
       background-size: contain;
       background-position: center;
   /*     width: 92vw;
@@ -303,7 +303,7 @@ page-link-node {
     }
   }
   .scan-light-line {
-    animation-duration: 6s;
+    animation-duration: 3s;
     background-image: url("../assets/imgs/peers/scan-light-line.png");
   }
   .scan-light-line,
@@ -339,14 +339,18 @@ page-link-node {
         opacity: 0.3;
         transform: translate(0, 9.3vw) scale(1, 0.5);
       }
-      65% {
+      53% {
         transform: translate(-50%, 23.3vw) scale(1, 1);
       }
-      75% {
+      55% {
         opacity: 1;
       }
-      90% {
+      58% {
         opacity: 0.4;
+      }
+      60% {
+        opacity: 0;
+        transform: translate(-50%, 80vh) scale(1);
       }
       100% {
         opacity: 0;
