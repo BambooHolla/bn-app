@@ -15,7 +15,6 @@ import {
 } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { getQueryVariable } from "../../bnqkl-framework/helper";
-import * as IFM from "ifmchain-ibt";
 import { CommonService } from "../commonService";
 import { Mdb } from "../mdb";
 import * as TYPE from "./peer.types";
@@ -276,10 +275,7 @@ export class PeerServiceProvider extends CommonService {
    * 从未保存过时返回空数组
    */
   async getPeersLocal() {
-    const peers = (await this.peerDb.find(
-      {},
-      { sort: { node_quality: -1 } },
-    )) as TYPE.LocalPeerModel[];
+    const peers = (await this.peerDb.find({})) as TYPE.LocalPeerModel[];
     return peers.length ? peers : PEERS;
   }
 

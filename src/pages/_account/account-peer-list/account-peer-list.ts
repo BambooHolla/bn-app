@@ -25,7 +25,7 @@ export class AccountPeerListPage extends SecondLevelPage {
   cur_peer_list: LocalPeerModel[] = [];
   @AccountPeerListPage.willEnter
   async initPeerList() {
-    this.cur_peer_list = this.peerService.useablePeers();
+    this.cur_peer_list = await this.peerService.getPeersLocal();
     if (sessionStorage.getItem("STOP_UPDATE_PEER_LIST") !== "true") {
       sessionStorage.setItem("STOP_UPDATE_PEER_LIST", "true");
       // 更新节点信息

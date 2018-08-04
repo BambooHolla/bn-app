@@ -19,7 +19,6 @@ import {
   TransactionTypes,
 } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
-import * as IFM from "ifmchain-ibt";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
 import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../../src/bnqkl-framework/Decorator";

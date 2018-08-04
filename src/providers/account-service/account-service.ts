@@ -15,7 +15,6 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./account.types";
 export * from "./account.types";
 import { Observable, BehaviorSubject } from "rxjs";
-import * as IFM from "ifmchain-ibt";
 import { Mdb } from "../mdb";
 import { DbCacheProvider } from "../db-cache/db-cache";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";

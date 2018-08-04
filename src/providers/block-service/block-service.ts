@@ -23,7 +23,6 @@ import {
 } from "../app-setting/app-setting";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
-import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";

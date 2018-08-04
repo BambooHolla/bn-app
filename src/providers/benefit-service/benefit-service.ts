@@ -24,7 +24,6 @@ import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./benefit.types";
 export * from "./benefit.types";
-import * as IFM from "ifmchain-ibt";
 import {
   PromiseOut,
   PromisePro,

@@ -94,14 +94,14 @@ function createTransaction(body, cb) {
 
         //添加支付密码
         if (data.secondKeypair && data.type != 1) {
-            trs.signSignature = tx.sign(data.secondKeypair, trs);
+            trs.signSignature = tx.secondsign(data.secondKeypair, trs);
         }
 
         //修改支付密码
-        // if (data.newSecondKeypair && data.type === 1) {
-        //     trs.signSignature = tx.sign(data.secondKeypair, trs);
-        //     trs.newSignSignature = tx.sign(data.newSecondKeypair, trs);
-        // }
+        if (data.newSecondKeypair && data.type === 1) {
+            trs.signSignature = tx.secondsign(data.secondKeypair, trs);
+            trs.newSignSignature = tx.secondsign(data.newSecondKeypair, trs);
+        }
 
         //添加交易的 id
         trs.id = tx.getId(trs);

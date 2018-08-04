@@ -15,7 +15,6 @@ import { UserInfoProvider } from "../user-info/user-info";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
-import * as IFM from "ifmchain-ibt";
 import * as promisify from "es6-promisify";
 import { Mdb } from "../mdb";
 // const { TransactionTypes } = TYPE;

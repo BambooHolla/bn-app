@@ -20,7 +20,7 @@ import {
 import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
 export { AppUrl };
-import * as IFM from "ifmchain-ibt";
+import * as IFM from "../../ifmchain-ibt";
 
 @Injectable()
 export class AppSettingProvider extends CommonService {

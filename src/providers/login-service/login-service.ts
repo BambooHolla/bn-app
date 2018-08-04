@@ -19,7 +19,6 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
-import * as IFM from "ifmchain-ibt";
 
 export type UserModel = {
   name: string;
@@ -48,7 +47,7 @@ export class LoginServiceProvider extends FLP_Tool {
       // console.log("USER TOKEN:", val);
       return !!val;
     });
-    this.ifmJs = IFM(AppSettingProvider.NET_VERSION);
+    this.ifmJs = AppSettingProvider.IFMJS;
     //用于生成随机语句
     this.Mnemonic = this.ifmJs.Mnemonic;
 

@@ -18,7 +18,6 @@ import {
 } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import { DbCacheProvider } from "../db-cache/db-cache";
-import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./contact.types";
 export * from "./contact.types";
 import pinyin from "tiny-pinyin";

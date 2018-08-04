@@ -103,6 +103,19 @@ var Transaction = function () {
         //多重签名账户组获取 hash 签名
 
     }, {
+        key: 'secondsign',
+        value: function secondsign(keypair, trs) {
+            if (!trs.signature) {
+                throw Error('Transaction signature is require');
+            }
+            var bytes = this.getBytes(trs, true, true);
+            var hash = crypto.createHash('sha256').update(bytes).digest();
+            var secondSignature = null;
+            secondSignature = keypair.sign(hash).toHex();
+            
+            return secondSignature;
+        }
+    }, {
         key: 'multisign',
         value: function multisign(keypair, trs) {
             var bytes = this.getBytes(trs, true, true);
