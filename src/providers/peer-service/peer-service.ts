@@ -474,17 +474,17 @@ export class PeerServiceProvider extends CommonService {
   }
   async *updateUseablePeersInfo(useablePeers = this.useablePeers()) {
     const fetch_peer_infos: PromiseType<
-      ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfo>
+      ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfoAndUpdate>
     >[] = [];
     const parallel_pool = new ParallelPool<typeof fetch_peer_infos[0]>(4);
     for (var i = 0; i < useablePeers.length; i += 1) {
       let peer = useablePeers[i];
-      parallel_pool.addTaskExecutor(() => this.fetchPeersInfo(peer));
+      parallel_pool.addTaskExecutor(() => this.fetchPeersInfoAndUpdate(peer));
     }
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
-  private async fetchPeersInfo(peer: TYPE.LocalPeerModel) {
+  private async fetchPeersInfoAndUpdate(peer: TYPE.LocalPeerModel) {
     const common_cache_handler = () => {
       peer.disabled = true;
     };
@@ -518,6 +518,17 @@ export class PeerServiceProvider extends CommonService {
     } catch (err) {
       peer.disabled = true;
     }
+
+    const cur_peer_data = await this.peerDb.findOne({ origin: peer.origin });
+    if (cur_peer_data) {
+      cur_peer_data.disabled = peer.disabled;
+      cur_peer_data.delay = peer.delay;
+      cur_peer_data.height = peer.height;
+      cur_peer_data.platform = peer.platform;
+      peer = cur_peer_data;
+      await this.peerDb.update({ _id: peer["_id"] }, peer);
+    }
+
     return { peer, runtime, web_link_num } as {
       peer: typeof peer;
       runtime: any;

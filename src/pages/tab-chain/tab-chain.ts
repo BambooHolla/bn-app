@@ -110,6 +110,10 @@ export class TabChainPage extends FirstLevelPage {
     this.chainList.setListViewPosY(0, 1000);
   }
 
+  updateBlocks(){
+    // TODO: 校验区块的过程中，可能发现错误的区块，而这些区块可能已经被渲染到屏幕上了，需要有一个更新机制来让其获取最新的区块
+  }
+
   // async checkBlockchainCompleteWithNetworkCheck() {
   //   await this.netWorkConnection();
   //   return this.checkBlockchainComplete();
