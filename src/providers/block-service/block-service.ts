@@ -461,6 +461,7 @@ export class BlockServiceProvider extends FLP_Tool {
             this.appSetting.share_settings.sync_is_verifying_block = false;
             break;
           case "start-sync":
+            this.appSetting.share_settings.is_syncing_blocks = true;
             this.appSetting.share_settings.sync_progress_height = 1;
             console.log("开始同步", task_name);
             break;
