@@ -238,18 +238,18 @@ export class TabPayPage extends FirstLevelPage {
     });
     let online = this.webio.onLine;
     if (online) {
-      try {
-        const { transfer } = await this._submit(
-          password,
-          pay_pwd,
-          this.formData.transfer_fee,
-        );
-        await this.showTransferReceipt(transfer);
-        this.resetFormData();
-      } catch (err) {
-        console.error("online but peer no work", err);
-        online = false;
-      }
+      // try {
+      const { transfer } = await this._submit(
+        password,
+        pay_pwd,
+        this.formData.transfer_fee,
+      );
+      await this.showTransferReceipt(transfer);
+      this.resetFormData();
+      // } catch (err) {
+      //   console.error("online but peer no work", err);
+      //   online = false;
+      // }
     }
 
     if (!online) {
