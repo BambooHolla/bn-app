@@ -22,7 +22,7 @@ export class ShareAppPanelPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    public socialSharing: SocialSharing,
+    public socialSharing: SocialSharing
   ) {
     super(navCtrl, navParams);
   }
@@ -59,18 +59,18 @@ export class ShareAppPanelPage extends FirstLevelPage {
         await this.socialSharing.shareViaTwitter(
           this.share_message,
           this.share_image_url,
-          this.share_link,
+          this.share_link
         );
       } else if (via.title === "FACEBOOK") {
         await this.socialSharing.shareViaFacebook(
           this.share_message,
           this.share_image_url,
-          this.share_link,
+          this.share_link
         );
       } else if (via.title === "INSTAGRAM") {
         await this.socialSharing.shareViaInstagram(
           this.share_message + " " + this.share_link,
-          this.share_image_url,
+          this.share_image_url
         );
       } else if (via.title === "MORE") {
         await this.shareMore();
@@ -86,7 +86,7 @@ export class ShareAppPanelPage extends FirstLevelPage {
       this.share_message,
       undefined,
       this.share_image_url,
-      this.share_link,
+      this.share_link
     );
   }
   closeModal() {

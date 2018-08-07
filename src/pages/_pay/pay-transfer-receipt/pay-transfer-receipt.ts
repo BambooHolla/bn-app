@@ -36,7 +36,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
     public screenshot: Screenshot,
     public socialSharing: SocialSharing,
     public viewCtrl: ViewController,
-    public blockService: BlockServiceProvider,
+    public blockService: BlockServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -67,7 +67,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
     const transfer = this.current_transfer as TransactionModel;
     if (transfer.blockId) {
       this.confirmed_timestamp = (await this.blockService.getBlockById(
-        transfer.blockId,
+        transfer.blockId
       )).timestamp;
     } else {
       const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
@@ -83,10 +83,10 @@ export class PayTransferReceiptPage extends SecondLevelPage {
   expected_confirmation_time = 0;
 
   @asyncCtrlGenerator.loading(() =>
-    PayTransferReceiptPage.getTranslate("GENERATING_CAPTURE"),
+    PayTransferReceiptPage.getTranslate("GENERATING_CAPTURE")
   )
   @asyncCtrlGenerator.success(() =>
-    PayTransferReceiptPage.getTranslate("CAPTURE_GENERATE_SUCCESS"),
+    PayTransferReceiptPage.getTranslate("CAPTURE_GENERATE_SUCCESS")
   )
   async capture() {
     this.is_screenshotting = true;
@@ -122,7 +122,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
     const share_res = await this.socialSharing.share(
       undefined,
       undefined,
-      this.capture_uri,
+      this.capture_uri
     );
     console.log(share_res);
   }

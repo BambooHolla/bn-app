@@ -5,11 +5,11 @@ import { ComponentsModule } from "../../components/components.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [ScanPeersPage],
-	imports: [
-		IonicPageModule.forChild(ScanPeersPage),
-		ComponentsModule,
-		TranslateModule,
-	],
+  declarations: [ScanPeersPage],
+  imports: [
+    IonicPageModule.forChild(ScanPeersPage),
+    ComponentsModule,
+    TranslateModule,
+  ],
 })
 export class ScanPeersPageModule {}

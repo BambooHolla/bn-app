@@ -39,7 +39,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     public blockService: BlockServiceProvider,
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer,
-    public peerService: PeerServiceProvider,
+    public peerService: PeerServiceProvider
   ) {
     super(navCtrl, navParams);
   }
@@ -128,7 +128,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     return this.formData.pwd;
   }
   @asyncCtrlGenerator.error(() =>
-    SignInAndSignUpPage.getTranslate("LOGIN_ERROR"),
+    SignInAndSignUpPage.getTranslate("LOGIN_ERROR")
   )
   // @asyncCtrlGenerator.loading("@@LOGINNG")
   async doLogin() {
@@ -157,7 +157,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       this.toastCtrl
         .create({
           message: this.getTranslateSync(
-            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD",
+            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"
           ),
           duration: 2000,
         })
@@ -166,7 +166,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     }
     const result = await this.loginService.doLogin(
       this.formData.pwd.trim(),
-      this.formData.remember_pwd,
+      this.formData.remember_pwd
     );
     if (result) {
       // this.routeTo("scan-nodes");
@@ -215,7 +215,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       this.toastCtrl
         .create({
           message: this.getTranslateSync(
-            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD",
+            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"
           ),
           duration: 2000,
         })

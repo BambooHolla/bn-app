@@ -19,7 +19,7 @@ export class AccountInfoPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public viewCtrl: ViewController,
+    public viewCtrl: ViewController
   ) {
     super(navCtrl, navParams, true, tabs);
   }

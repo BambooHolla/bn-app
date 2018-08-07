@@ -83,7 +83,7 @@ export class PromisePro<T> extends PromiseOut<T> {
 export function autoAbort(
   target,
   name: string,
-  descriptor: PropertyDescriptor,
+  descriptor: PropertyDescriptor
 ) {
   const fun = descriptor.value;
   let _lock: PromisePro<any> | undefined;
@@ -107,8 +107,8 @@ export class DelayPromise<T> extends Promise<T> {
   constructor(
     executor: (
       resolve: (value?: T | PromiseLike<T>) => void,
-      reject: (reason?: any) => void,
-    ) => void,
+      reject: (reason?: any) => void
+    ) => void
   ) {
     var _resolve: any;
     var _reject: any;
@@ -160,15 +160,15 @@ export class ParallelPool<T = any> {
   private _tasks_executor: (() => Promise<T>)[] = [];
   addTaskExecutor(
     executor: () => Promise<T>,
-    opts: { auto_run: true },
+    opts: { auto_run: true }
   ): ReturnType<typeof ParallelPool.prototype.waitNext>;
   addTaskExecutor(
     executor: () => Promise<T>,
-    opts?: { auto_run?: false },
+    opts?: { auto_run?: false }
   ): undefined;
   addTaskExecutor(
     executor: () => Promise<T>,
-    opts: { auto_run?: boolean } = {},
+    opts: { auto_run?: boolean } = {}
   ) {
     this._tasks_executor.push(executor);
     if (opts.auto_run) {

@@ -42,11 +42,11 @@ export class TransactionServiceProvider {
     public translateService: TranslateService,
     public alertController: AlertController,
     public fetch: AppFetchProvider,
-    public user: UserInfoProvider,
+    public user: UserInfoProvider
   ) {
     tryRegisterGlobal("transactionService", this);
     this.transaction = this.ifmJs.Api(
-      AppSettingProvider.HTTP_PROVIDER,
+      AppSettingProvider.HTTP_PROVIDER
     ).transaction;
     // this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
     this.nacl_factory = this.ifmJs.nacl_factory;
@@ -59,17 +59,17 @@ export class TransactionServiceProvider {
   }
 
   readonly UNCONFIRMED = this.appSetting.APP_URL(
-    "/api/transactions/unconfirmed",
+    "/api/transactions/unconfirmed"
   );
   readonly GET_TRANSACTIONS_BY_ID = this.appSetting.APP_URL(
-    "/api/transactions/get",
+    "/api/transactions/get"
   );
   readonly GET_TIMESTAMP = this.appSetting.APP_URL(
-    "/api/transactions/getslottime",
+    "/api/transactions/getslottime"
   );
   readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions/");
   readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL(
-    "/api/transactions/query",
+    "/api/transactions/query"
   );
 
   getTransactionLink(type) {
@@ -139,7 +139,7 @@ export class TransactionServiceProvider {
         search: {
           id: id,
         },
-      },
+      }
     );
 
     return data.transaction;
@@ -181,7 +181,7 @@ export class TransactionServiceProvider {
       let is_second_true = this.verifySecondPassphrase(secondPwd);
       if (!is_second_true) {
         throw this.fetch.ServerResError.getI18nError(
-          "Second passphrase verified error",
+          "Second passphrase verified error"
         );
       }
     }
@@ -194,7 +194,7 @@ export class TransactionServiceProvider {
     }
     //获取url，获取类型
     let transactionUrl = this.appSetting.APP_URL(
-      "/api/" + this.getTransactionLink(txData.type),
+      "/api/" + this.getTransactionLink(txData.type)
     );
 
     // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
@@ -215,7 +215,7 @@ export class TransactionServiceProvider {
         } catch (err) {
           reject(err);
         }
-      },
+      }
     );
 
     return { transactionUrl, transaction };
@@ -228,7 +228,7 @@ export class TransactionServiceProvider {
    */
   async putTransaction(txData) {
     const { transactionUrl, transaction } = await this.createTransaction(
-      txData,
+      txData
     );
     if (await this.unTxDb.findOne(transaction)) {
       // 重复交易不发送
@@ -239,16 +239,16 @@ export class TransactionServiceProvider {
     });
     return this.fetch.put<TYPE.putTransactionReturn>(
       transactionUrl,
-      transaction,
+      transaction
     );
   }
   async putThirdTransaction(transaction: TYPE.TransactionModel) {
     let transactionUrl = this.appSetting.APP_URL(
-      "/api/" + this.getTransactionLink(transaction.type),
+      "/api/" + this.getTransactionLink(transaction.type)
     );
     return this.fetch.put<TYPE.putTransactionReturn>(
       transactionUrl,
-      transaction,
+      transaction
     );
   }
 
@@ -293,7 +293,7 @@ export class TransactionServiceProvider {
     try {
       var secondPublic = this.formatSecondPassphrase(
         this.user.publicKey,
-        secondPassphrase,
+        secondPassphrase
       );
     } catch (err) {
       return false;
@@ -349,7 +349,7 @@ export class TransactionServiceProvider {
     page = 1,
     pageSize = 10,
     in_or_out?: "in" | "out" | "or",
-    type?: TYPE.TransactionTypes,
+    type?: TYPE.TransactionTypes
   ) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
@@ -385,7 +385,7 @@ export class TransactionServiceProvider {
     limit: number,
     in_or_out?: "in" | "out" | "or",
     type?: TYPE.TransactionTypes,
-    extend_query: any = {},
+    extend_query: any = {}
   ) {
     if (in_or_out !== "or") {
       const data = await this.getTransactions({
@@ -407,7 +407,7 @@ export class TransactionServiceProvider {
           timestamp: -1,
         },
         offset,
-        limit,
+        limit
       );
       return data.transactions;
     }
@@ -423,8 +423,8 @@ export class TransactionServiceProvider {
         0,
         this.default_user_in_transactions_pageSize,
         "in",
-        this.TransactionTypes.SEND,
-      ),
+        this.TransactionTypes.SEND
+      )
     );
   }
   default_user_out_transactions_pageSize = 10;
@@ -437,8 +437,8 @@ export class TransactionServiceProvider {
         0,
         this.default_user_out_transactions_pageSize,
         "out",
-        this.TransactionTypes.SEND,
-      ),
+        this.TransactionTypes.SEND
+      )
     );
   }
 
@@ -448,7 +448,7 @@ export class TransactionServiceProvider {
     page = 1,
     pageSize = 10,
     in_or_out: "in" | "out",
-    type?: TYPE.TransactionTypes,
+    type?: TYPE.TransactionTypes
   ) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
@@ -483,7 +483,7 @@ export class TransactionServiceProvider {
     offset: number,
     limit: number,
     in_or_out: "in" | "out",
-    type?: TYPE.TransactionTypes,
+    type?: TYPE.TransactionTypes
   ) {
     const cur_round = this.appSetting.getRound();
     const startHeight = this.appSetting.getRoundStartHeight(cur_round - 1);
@@ -496,7 +496,7 @@ export class TransactionServiceProvider {
       type,
       {
         startHeight,
-      },
+      }
     );
 
     return transactions.filter(tran => tran.height <= endHeight);
@@ -510,8 +510,8 @@ export class TransactionServiceProvider {
         0,
         this.default_user_in_transactions_pageSize,
         "in",
-        this.TransactionTypes.SEND,
-      ),
+        this.TransactionTypes.SEND
+      )
     );
   }
   myOutTransactionsPreRound!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
@@ -525,7 +525,7 @@ export class TransactionServiceProvider {
           0,
           this.default_user_out_transactions_pageSize,
           "out",
-          this.TransactionTypes.SEND,
+          this.TransactionTypes.SEND
         ),
         // 投票
         this._getUserTransactionsPreRound(
@@ -533,11 +533,11 @@ export class TransactionServiceProvider {
           0,
           this.default_user_out_transactions_pageSize,
           "in",
-          this.TransactionTypes.VOTE,
+          this.TransactionTypes.VOTE
         ),
       ]).then(([get_trans, vote_trans]) => {
         return get_trans.concat(vote_trans);
-      }),
+      })
     );
   }
 
@@ -551,7 +551,7 @@ export class TransactionServiceProvider {
       this.GET_TRANSACTIONS,
       {
         search: query,
-      },
+      }
     );
 
     return data;
@@ -566,7 +566,7 @@ export class TransactionServiceProvider {
           limit,
           offset,
         },
-      },
+      }
     );
   }
 
@@ -604,7 +604,7 @@ export class TransactionServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
     password: string,
     secondSecret?: string,
-    publicKey = this.user.publicKey,
+    publicKey = this.user.publicKey
   ) {
     amount = parseFloat(amount);
     if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
@@ -638,14 +638,14 @@ export class TransactionServiceProvider {
     amount,
     fee = parseFloat(this.appSetting.settings.default_fee),
     password,
-    secondSecret,
+    secondSecret
   ) {
     const txData = this.createTxData(
       recipientId,
       amount,
       fee,
       password,
-      secondSecret,
+      secondSecret
     );
 
     const responseData = await this.putTransaction(txData);

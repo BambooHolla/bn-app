@@ -5,7 +5,7 @@ import { versionToNumber } from "../version-update-dialog/version-update-dialog"
 import { ModalController } from "ionic-angular";
 export async function getLatestVersionInfo(
   fetch: AppFetchProvider,
-  lang: string,
+  lang: string
 ) {
   if (!navigator.onLine) {
     return;
@@ -18,7 +18,7 @@ export async function getLatestVersionInfo(
         ua: navigator.userAgent,
         t: Date.now(),
       },
-    },
+    }
   );
 }
 export async function checkUpdate(
@@ -30,7 +30,7 @@ export async function checkUpdate(
     modalCtrl?: ModalController;
     onNoNeedUpdate?: (info: LATEST_VERSION_INFO) => any;
   },
-  open_update_dialog = true,
+  open_update_dialog = true
 ) {
   const app_version_info = await getLatestVersionInfo(fetch, opts.lang);
   if (!app_version_info) {
@@ -61,7 +61,7 @@ export async function checkUpdate(
             {
               enterAnimation: "custom-dialog-pop-in",
               leaveAnimation: "custom-dialog-pop-out",
-            },
+            }
           )
           .present();
       }

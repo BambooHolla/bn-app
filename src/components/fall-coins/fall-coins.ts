@@ -106,8 +106,8 @@ export class FallCoinsComponent extends AniBase {
         frames.push(
           new PIXI.Texture(
             baseTexture,
-            new PIXI.Rectangle(0, u_height * i, u_width, u_height),
-          ),
+            new PIXI.Rectangle(0, u_height * i, u_width, u_height)
+          )
         );
       }
       frames_list.push(frames);
@@ -142,7 +142,7 @@ export class FallCoinsComponent extends AniBase {
     var ani_uuid_adder = 0;
 
     const auto_fall_down = (
-      target_line_index = (Math.random() * useable_lines.length) | 0,
+      target_line_index = (Math.random() * useable_lines.length) | 0
     ) => {
       // if (t / 200 <= progress_coins.length) {
       //   return;

@@ -23,7 +23,7 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
   constructor(
     public minService: MinServiceProvider,
     public appSetting: AppSettingProvider,
-    cdRef: ChangeDetectorRef,
+    cdRef: ChangeDetectorRef
   ) {
     super(cdRef);
   }
@@ -77,7 +77,7 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
     try {
       const list = await this.minService.getRankList(
         page,
-        this.page_info.pageSize,
+        this.page_info.pageSize
       );
       this.page_info.page = page;
       this.pre_round_rank_blist.push(...list);
@@ -103,7 +103,7 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
 
   async routeToDelegate(rank_item: RankModel) {
     const vote = await this.minService.getDelegateInfoByAddress(
-      rank_item.address,
+      rank_item.address
     );
     this.emit("routeTo", "vote-delegate-detail", { delegate_info: vote });
   }

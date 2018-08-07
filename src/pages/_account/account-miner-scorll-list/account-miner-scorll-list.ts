@@ -30,7 +30,7 @@ export class AccountMinerScorllListPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public minService: MinServiceProvider,
     public peerService: PeerServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -60,7 +60,7 @@ export class AccountMinerScorllListPage extends SecondLevelPage {
   }
   @AccountMinerScorllListPage.addEvent("ROUND:CHANGED")
   @asyncCtrlGenerator.error(() =>
-    AccountMinerScorllListPage.getTranslate("LOAD_ALL_MINER_LIST_ERROR"),
+    AccountMinerScorllListPage.getTranslate("LOAD_ALL_MINER_LIST_ERROR")
   )
   @asyncCtrlGenerator.retry()
   async watchRoundChange(height) {

@@ -88,7 +88,7 @@ export class CommonTransition extends PageTransition {
     const opts = this.opts;
 
     this.duration(
-      opts.duration && isPresent(opts.duration) ? opts.duration : DURATION,
+      opts.duration && isPresent(opts.duration) ? opts.duration : DURATION
     );
     this.easing(opts.easing && isPresent(opts.easing) ? opts.easing : EASING);
 
@@ -102,12 +102,12 @@ export class CommonTransition extends PageTransition {
       // entering content
       const enteringContent = new Animation(
         plt,
-        getPageContentRef(enteringView),
+        getPageContentRef(enteringView)
       );
       enteringContent.element(
         enteringPageEle.querySelectorAll(
-          "ion-header > *:not(ion-navbar),ion-footer > *",
-        ),
+          "ion-header > *:not(ion-navbar),ion-footer > *"
+        )
       );
       this.add(enteringContent);
 
@@ -126,7 +126,7 @@ export class CommonTransition extends PageTransition {
       if (enteringHasNavbar) {
         // entering page has a navbar
         const enteringNavbarEle = enteringPageEle.querySelector(
-          "ion-navbar",
+          "ion-navbar"
         ) as HTMLElement;
 
         const enteringNavBar = new Animation(plt, enteringNavbarEle);
@@ -134,19 +134,19 @@ export class CommonTransition extends PageTransition {
 
         const enteringTitle = new Animation(
           plt,
-          enteringNavbarEle.querySelector("ion-title"),
+          enteringNavbarEle.querySelector("ion-title")
         );
         const enteringNavbarItems = new Animation(
           plt,
-          enteringNavbarEle.querySelectorAll("ion-buttons,[menuToggle]"),
+          enteringNavbarEle.querySelectorAll("ion-buttons,[menuToggle]")
         );
         const enteringNavbarBg = new Animation(
           plt,
-          enteringNavbarEle.querySelector(".toolbar-background"),
+          enteringNavbarEle.querySelector(".toolbar-background")
         );
         const enteringBackButton = new Animation(
           plt,
-          enteringNavbarEle.querySelector(".back-button"),
+          enteringNavbarEle.querySelector(".back-button")
         );
         enteringNavBar
           .add(enteringTitle)
@@ -184,12 +184,12 @@ export class CommonTransition extends PageTransition {
 
             const enteringBackBtnText = new Animation(
               plt,
-              enteringNavbarEle.querySelector(".back-button-text"),
+              enteringNavbarEle.querySelector(".back-button-text")
             );
             enteringBackBtnText.fromTo(
               TRANSLATEX,
               plt.isRTL ? "-100px" : "100px",
-              "0px",
+              "0px"
             );
             enteringNavBar.add(enteringBackBtnText);
           } else {
@@ -207,8 +207,8 @@ export class CommonTransition extends PageTransition {
       const leavingContent = new Animation(plt, getPageContentRef(leavingView));
       leavingContent.element(
         leavingPageEle.querySelectorAll(
-          "ion-header > *:not(ion-navbar),ion-footer > *",
-        ),
+          "ion-header > *:not(ion-navbar),ion-footer > *"
+        )
       );
       this.add(leavingContent);
 
@@ -228,25 +228,25 @@ export class CommonTransition extends PageTransition {
       if (leavingHasNavbar) {
         // leaving page has a navbar
         const leavingNavbarEle: Element = leavingPageEle.querySelector(
-          "ion-navbar",
+          "ion-navbar"
         ) as HTMLElement;
 
         const leavingNavBar = new Animation(plt, leavingNavbarEle);
         const leavingTitle = new Animation(
           plt,
-          leavingNavbarEle.querySelector("ion-title"),
+          leavingNavbarEle.querySelector("ion-title")
         );
         const leavingNavbarItems = new Animation(
           plt,
-          leavingNavbarEle.querySelectorAll("ion-buttons,[menuToggle]"),
+          leavingNavbarEle.querySelectorAll("ion-buttons,[menuToggle]")
         );
         const leavingNavbarBg = new Animation(
           plt,
-          leavingNavbarEle.querySelector(".toolbar-background"),
+          leavingNavbarEle.querySelector(".toolbar-background")
         );
         const leavingBackButton = new Animation(
           plt,
-          leavingNavbarEle.querySelector(".back-button"),
+          leavingNavbarEle.querySelector(".back-button")
         );
 
         leavingNavBar
@@ -273,12 +273,12 @@ export class CommonTransition extends PageTransition {
 
           let leavingBackBtnText = new Animation(
             plt,
-            leavingNavbarEle.querySelector(".back-button-text"),
+            leavingNavbarEle.querySelector(".back-button-text")
           );
           leavingBackBtnText.fromTo(
             TRANSLATEX,
             CENTER,
-            (plt.isRTL ? -300 : 300) + "px",
+            (plt.isRTL ? -300 : 300) + "px"
           );
           leavingNavBar.add(leavingBackBtnText);
         } else {

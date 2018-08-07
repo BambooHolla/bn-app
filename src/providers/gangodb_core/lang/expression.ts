@@ -107,7 +107,7 @@ class Operator {
 
 class FnOp<T = any> extends Operator {
   constructor(
-    public fn /* : (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T */,
+    public fn /* : (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T */
   ) {
     super();
   }

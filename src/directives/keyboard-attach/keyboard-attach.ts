@@ -49,7 +49,7 @@ export class KeyboardAttachDirective {
   constructor(
     private elementRef: ElementRef,
     private platform: Platform,
-    private keyboard: Keyboard,
+    private keyboard: Keyboard
   ) {
     if (this.platform.is("cordova")) {
       // && this.platform.is('ios')
@@ -87,7 +87,7 @@ export class KeyboardAttachDirective {
           if (inputEle.dataset.keyboardViewNode) {
             viewEle =
               (contentEle.querySelector(
-                "#" + inputEle.dataset.keyboardViewNode,
+                "#" + inputEle.dataset.keyboardViewNode
               ) as HTMLElement) || viewEle;
           }
           /**
@@ -117,7 +117,7 @@ export class KeyboardAttachDirective {
               break;
             default:
               throw new Error(
-                "Unkonw 'keyboardViewPosition' value:" + viewPosition,
+                "Unkonw 'keyboardViewPosition' value:" + viewPosition
               );
           }
           /**
@@ -144,7 +144,7 @@ export class KeyboardAttachDirective {
             viewEle.style.transform.indexOf("translateY") !== -1
           ) {
             const translateYMatch = viewEle.style.transform.match(
-              /translateY\(([-\d]+?)px\)/,
+              /translateY\(([-\d]+?)px\)/
             );
             if (translateYMatch && translateYMatch[1]) {
               view_translateY = parseFloat(translateYMatch[1]) || 0;
@@ -158,7 +158,7 @@ export class KeyboardAttachDirective {
           const isIgnoreHeader = this._booleanParse(
             inputEle.dataset.keyboardIgnoreIonHeader ||
               viewEle.dataset.keyboardIgnoreIonHeader ||
-              false,
+              false
           );
           if (!isIgnoreHeader) {
             const headerEle =
@@ -173,7 +173,7 @@ export class KeyboardAttachDirective {
 
           const MAX_MOVE_Y = Math.max(
             keyboardHeight,
-            viewBound.top - headerHeight,
+            viewBound.top - headerHeight
           );
           const VIEW_HEIGHT = window.innerHeight - keyboardHeight;
           const MIN_MOVE_Y = viewBound.bottom - VIEW_HEIGHT;
@@ -243,7 +243,7 @@ export class KeyboardAttachDirective {
 
           const inputBound = this._getBound(
             inputBoundEle || inputEle,
-            view_translateY,
+            view_translateY
           );
           if (inputEle.dataset) {
           }
@@ -353,7 +353,7 @@ export class KeyboardAttachDirective {
   private _setElementPosition(
     keyboardHeight,
     moveY: number,
-    moveNode: HTMLElement = this.content.getNativeElement(),
+    moveNode: HTMLElement = this.content.getNativeElement()
   ) {
     this._setTranslateY(this.elementRef.nativeElement, keyboardHeight);
     this._setTranslateY(moveNode, moveY);

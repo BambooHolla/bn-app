@@ -32,7 +32,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
     public minService: MinServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -96,7 +96,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     const old_producedblocks = this.delegate_info.producedblocks;
     if (this.current_info_height !== this.appSetting.getHeight()) {
       this.delegate_info = await this.minService.getDelegateInfo(
-        this.delegate_info.publicKey,
+        this.delegate_info.publicKey
       );
     }
     const new_producedblocks = this.delegate_info.producedblocks;
@@ -121,7 +121,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
       const forgin_blocks_info = await this.blockService.getForgingByPage(
         (this.delegate_info as DelegateModel).publicKey,
         page_info.page,
-        page_info.pageSize,
+        page_info.pageSize
       );
       page_info.hasMore =
         forgin_blocks_info.blocks.length === page_info.pageSize;

@@ -88,7 +88,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
       if (this.devicePixelRatio !== 1) {
         fontSize = fontSize.replace(
           fontSize_num + "",
-          (fontSize_num *= this.devicePixelRatio) + "",
+          (fontSize_num *= this.devicePixelRatio) + ""
         );
       }
       font = font.replace(new RegExp(style_fontSize, "g"), fontSize);
@@ -109,7 +109,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     const canvas_base_height = canvas.height + 2 * padding_height;
     canvas.height = Math.max(
       canvas_base_height,
-      height * this.devicePixelRatio,
+      height * this.devicePixelRatio
     );
     canvas.width += 2 * padding_width;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -117,7 +117,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     const [x0, y0, x1, y1] = TextGradientComponent.formatDirection(
       canvas.width,
       canvas.height,
-      direction,
+      direction
     );
     const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
     const stops = this.stops;
@@ -138,7 +138,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
           bound.left,
           bound.top,
           bound.width,
-          bound.height,
+          bound.height
         );
         canvas.width = bound.width;
         canvas.height = bound.height;
@@ -171,7 +171,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     y0 = 0,
     x1 = 1,
     y1 = 1,
-    stops = [[0, "#FFF"], [1, "#000"]],
+    stops = [[0, "#FFF"], [1, "#000"]]
   ) {
     const canvas = document.createElement("canvas");
 

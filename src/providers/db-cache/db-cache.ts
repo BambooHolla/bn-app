@@ -20,18 +20,18 @@ export interface installApiCache<T, R = any> {
   // 一个请求可以被拆分成多个请求，并返回数据库中查出来的数据
   beforeService: (
     db: Mdb<T>,
-    request_opts: RequestOptions,
+    request_opts: RequestOptions
   ) => Promise<{ reqs: RequestOptions[]; cache: R }>;
   // 多个请求返回后合并成一个请求
   afterService(
-    req_res_list: RequestOptionsWithResult<R>[],
+    req_res_list: RequestOptionsWithResult<R>[]
   ): Promise<R | undefined | null> | R | undefined | null;
   // 将合并后的数据再放入数据库中，并返回最终结果
   dbHandle: (
     store: Mdb<T>,
     min_data: R | undefined | null,
     beforeService_cache: R,
-    request_opts: RequestOptions,
+    request_opts: RequestOptions
   ) => Promise<R>;
 }
 export interface installApiCacheOptions<T, R> {
@@ -45,7 +45,7 @@ export class DbCacheProvider {
   installDatabase<T>(
     dbname: string,
     indexs: any[],
-    cb = (err, db: Mdb<T>) => {},
+    cb = (err, db: Mdb<T>) => {}
   ) {
     var res = this.dbMap.get(dbname);
     if (!res) {
@@ -54,7 +54,7 @@ export class DbCacheProvider {
       Promise.all(
         indexs.map(indexOpts => {
           return mdb.createIndex(indexOpts);
-        }),
+        })
       ).then(() => cb(null, mdb), err => cb(err, mdb));
       return mdb;
     } else {
@@ -70,7 +70,7 @@ export class DbCacheProvider {
     url: installApiCache<T, R>["url"],
     beforeService: installApiCache<T, R>["beforeService"],
     afterService: installApiCache<T, R>["afterService"],
-    dbHandle: installApiCache<T, R>["dbHandle"],
+    dbHandle: installApiCache<T, R>["dbHandle"]
   ) {
     this.cache_api_map.set(`${method.toLowerCase()}:${url.path}`, {
       dbname,
@@ -87,15 +87,15 @@ export class DbCacheProvider {
     _old_list: T[] | undefined,
     db: Mdb<T>,
     db_query: any,
-    unique_key: string,
+    unique_key: string
   ) {
     const old_list =
       _old_list instanceof Array ? _old_list : await db.find(db_query);
     const old_unique_map = new Map<string, T>(
-      old_list.map(c => [c[unique_key], c] as [string, T]),
+      old_list.map(c => [c[unique_key], c] as [string, T])
     );
     const res_unique_map = new Map<string, T>(
-      newest_list.map(c => [c[unique_key], c] as [string, T]),
+      newest_list.map(c => [c[unique_key], c] as [string, T])
     );
     /// 需要更新的ITEM
     const update_following: T[] = [];
@@ -121,8 +121,8 @@ export class DbCacheProvider {
     if (update_following.length) {
       await Promise.all(
         update_following.map(c =>
-          db.update({ ...db_query, [unique_key]: c[unique_key] }, c),
-        ),
+          db.update({ ...db_query, [unique_key]: c[unique_key] }, c)
+        )
       );
     }
     /// 插入新的ITEM
@@ -134,13 +134,13 @@ export class DbCacheProvider {
     await db.insertMany(new_following);
     /// 删除不在列表中的ITEM
     const del_following = old_list.filter(
-      c => !res_unique_map.has(c[unique_key]),
+      c => !res_unique_map.has(c[unique_key])
     );
     if (del_following.length) {
       await Promise.all(
         del_following.map(c =>
-          db.remove({ ...db_query, [unique_key]: c[unique_key] }),
-        ),
+          db.remove({ ...db_query, [unique_key]: c[unique_key] })
+        )
       );
     }
     return {

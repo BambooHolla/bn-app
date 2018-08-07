@@ -1,12 +1,12 @@
 var inTransfer = {
-    object: true,
-    properties: {
-        dappId: {
-            type: "string",
-            minLength: 1
-        }
+  object: true,
+  properties: {
+    dappId: {
+      type: "string",
+      minLength: 1,
     },
-    required: ["dappId"]
-}
+  },
+  required: ["dappId"],
+};
 
 module.exports = inTransfer;

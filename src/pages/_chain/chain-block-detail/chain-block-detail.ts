@@ -30,7 +30,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
-    public minService: MinServiceProvider,
+    public minService: MinServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -49,7 +49,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       !this.appSetting.settings._is_show_first_block_remark
     ) {
       this.appSetting.settings._is_show_first_block_remark = await this.waitTipDialogConfirm(
-        "@@FIRST_VIEW_BLOCK_REMARK_TIP",
+        "@@FIRST_VIEW_BLOCK_REMARK_TIP"
       );
     }
     this.show_all_remark = !this.show_all_remark;
@@ -115,13 +115,13 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       this.block_info.height !== 1 /*创世块账户不是受托人*/
     ) {
       this.delegate_info = await this.minService.getDelegateInfo(
-        this.block_info.generatorPublicKey,
+        this.block_info.generatorPublicKey
       );
     }
   }
 
   @asyncCtrlGenerator.error(() =>
-    ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
+    ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR")
   )
   // @asyncCtrlGenerator.loading(() =>
   //   ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"), undefined, {
@@ -146,7 +146,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       const transaction_list = await this.blockService.getTransactionsInBlock(
         block_info.id,
         tran_list_config.page,
-        tran_list_config.pageSize,
+        tran_list_config.pageSize
       );
       tran_list_config.has_more =
         transaction_list.length === tran_list_config.pageSize;

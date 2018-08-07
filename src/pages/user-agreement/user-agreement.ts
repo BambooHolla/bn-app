@@ -54,7 +54,7 @@ export class UserAgreementPage extends FirstLevelPage {
     if (!this._body) {
       this._body =
         (document.querySelector("page-user-agreement .pdf") as HTMLElement)
-          .textContent || "";
+          .innerHTML;
     }
     // const clickEvent = new MouseEvent("click", {
     // 	view: window,
@@ -70,7 +70,7 @@ export class UserAgreementPage extends FirstLevelPage {
     }
     this.emailComposer.open({
       // to: 'max@mustermann.de',
-      cc: "erika@mustermann.de",
+      // cc: "service@ifmchain.com",
       // bcc: ['john@doe.com', 'jane@doe.com'],
       attachments: [],
       subject: this._subject,

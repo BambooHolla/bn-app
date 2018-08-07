@@ -19,7 +19,7 @@ export class DappBillPage extends SecondLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    @Optional() public tabs: TabsPage,
+    @Optional() public tabs: TabsPage
   ) {
     super(navCtrl, navParams, true, tabs);
   }

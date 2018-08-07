@@ -35,7 +35,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public transactionService: TransactionServiceProvider,
+    public transactionService: TransactionServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -64,8 +64,8 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.error(() =>
     AccountMyTransactionListPage.getTranslate(
-      "LOAD_MORE_CONFIRMED_TRANSACTION_LIST_ERROR",
-    ),
+      "LOAD_MORE_CONFIRMED_TRANSACTION_LIST_ERROR"
+    )
   )
   async loadMoreConfirmedTransactionList() {
     const { confirmed_transaction_config } = this;
@@ -84,7 +84,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
         this.userInfo.address,
         confirmed_transaction_config.page,
         confirmed_transaction_config.pageSize,
-        "or",
+        "or"
       );
       confirmed_transaction_config.has_more =
         list.length >= confirmed_transaction_config.pageSize;
@@ -116,8 +116,8 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.error(() =>
     AccountMyTransactionListPage.getTranslate(
-      "LOAD_MORE_UNCONFIRM_TRANSACTION_LIST_ERROR",
-    ),
+      "LOAD_MORE_UNCONFIRM_TRANSACTION_LIST_ERROR"
+    )
   )
   async loadMoreUnconfirmTransactionList() {
     const { unconfirm_transaction_config } = this;
@@ -134,7 +134,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
     try {
       const list = await this.transactionService.getUnconfirmed(
         unconfirm_transaction_config.page,
-        unconfirm_transaction_config.pageSize,
+        unconfirm_transaction_config.pageSize
       );
       unconfirm_transaction_config.has_more =
         list.length >= unconfirm_transaction_config.pageSize;
@@ -148,8 +148,8 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
   @AccountMyTransactionListPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(() =>
     AccountMyTransactionListPage.getTranslate(
-      "UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK",
-    ),
+      "UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK"
+    )
   )
   @asyncCtrlGenerator.retry()
   watchHeightChanged() {

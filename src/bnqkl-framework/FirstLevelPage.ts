@@ -19,7 +19,7 @@ import { AniBase, Easing } from "../components/AniBase";
 export class FirstLevelPage extends FLP_Data {
   constructor(
     public navCtrl: NavController,
-    public navParams: NavParams, // @Inject(AlertController) alertCtrl: AlertController,
+    public navParams: NavParams // @Inject(AlertController) alertCtrl: AlertController,
   ) {
     super(navCtrl, navParams);
   }
@@ -108,7 +108,7 @@ export class FirstLevelPage extends FLP_Data {
       if (distance) {
         this._watch_scroll_content_max_scrollTop = Math.max(
           this._watch_scroll_content_max_scrollTop,
-          distance,
+          distance
         );
       }
       return;
@@ -150,7 +150,7 @@ export class FirstLevelPage extends FLP_Data {
         }
         this.content.setScrollElementStyle(
           "-webkit-overflow-scrolling",
-          overflowScrolling,
+          overflowScrolling
         );
 
         const now = performance.now();
@@ -259,7 +259,7 @@ export class FirstLevelPage extends FLP_Data {
         }
         this.header.setElementStyle(
           "box-shadow",
-          `0 0 ${blur_rem}rem rgba(${cur_color})`,
+          `0 0 ${blur_rem}rem rgba(${cur_color})`
         );
       } else {
         (this.header.setElementStyle as any)("box-shadow", null);
@@ -297,7 +297,7 @@ export class FirstLevelPage extends FLP_Data {
             .offsetHeight;
 
           const navbar_ele = header_ele.querySelector(
-            "ion-navbar",
+            "ion-navbar"
           ) as HTMLElement | null;
           const _navbar_ani_height =
             navbar_ele && navbar_ele.getAttribute("navbar-ani-height");
@@ -307,7 +307,7 @@ export class FirstLevelPage extends FLP_Data {
               : navbar_ele && navbar_ele.offsetHeight) || 0;
           const cTop = this.content._cTop;
           const _header_ani_height = header_ele.getAttribute(
-            "header-ani-height",
+            "header-ani-height"
           );
           const header_height =
             (_header_ani_height
@@ -317,7 +317,7 @@ export class FirstLevelPage extends FLP_Data {
           this._watch_scroll_content_intime(distance);
 
           const ani_total_second = parseFloat(
-            header_style.animationDuration || "0s",
+            header_style.animationDuration || "0s"
           );
           this._header_progress_ani_data = {
             header_ele,
@@ -333,7 +333,7 @@ export class FirstLevelPage extends FLP_Data {
           };
           this.content.setScrollElementStyle(
             "height",
-            `${scroll_content_height + distance}px`,
+            `${scroll_content_height + distance}px`
           );
         }
         const {
@@ -400,7 +400,7 @@ export class FirstLevelPage extends FLP_Data {
             AniBase.animateNumber(
               this._header_progress_ani_data.ani_v || 0,
               _to === 1 ? _to - 0.00001 : _to,
-              this._progress_ani_duration,
+              this._progress_ani_duration
             )(
               (v, abort) => {
                 this._header_progress_ani_data.ani_v = v;
@@ -414,12 +414,12 @@ export class FirstLevelPage extends FLP_Data {
                 this.header &&
                   this.setElementAnimateDelay(
                     this.header.getNativeElement(),
-                    cur_dealy,
+                    cur_dealy
                   );
               },
               () => {
                 this._header_progress_ani_data.abort = null;
-              },
+              }
             );
           }
         } else {
@@ -430,13 +430,13 @@ export class FirstLevelPage extends FLP_Data {
           }
           this.setElementAnimateDelay(
             this.header.getNativeElement(),
-            cur_dealy,
+            cur_dealy
           );
         }
 
         this.content.setScrollElementStyle(
           "transform",
-          `translateY(${-scrollTop}px)`,
+          `translateY(${-scrollTop}px)`
         );
         /* IONIC的content组件使用contentTop来判定是否更新marginTop，由于header高度变动.
          * 我们使用translateY来模拟marginTop变动
@@ -451,7 +451,7 @@ export class FirstLevelPage extends FLP_Data {
     });
   }
   _fuck_ios_bug_placeholder_ele = document.createComment(
-    this.cname + " header placeholder",
+    this.cname + " header placeholder"
   );
 
   private _android_sticky_placeholder_wm = new WeakMap();
@@ -515,7 +515,7 @@ export class FirstLevelPage extends FLP_Data {
         {
           enableBackdropDismiss: true,
           showBackdrop: true,
-        },
+        }
       )
       .present();
   }
@@ -541,7 +541,7 @@ export class FirstLevelPage extends FLP_Data {
         this.dispatchEvent(
           "HEIGHT:CHANGED",
           this.appSetting.getHeight(),
-          is_first,
+          is_first
         );
       }
     });
@@ -553,7 +553,7 @@ export class FirstLevelPage extends FLP_Data {
         this._last_height = height;
         this.dispatchEvent("HEIGHT:CHANGED", height, is_first);
         is_first = false;
-      },
+      }
     );
   }
   /**通用的轮次监控*/
@@ -570,7 +570,7 @@ export class FirstLevelPage extends FLP_Data {
         this.dispatchEvent(
           "ROUND:CHANGED",
           this.appSetting.getRound(),
-          is_first,
+          is_first
         );
       }
     });

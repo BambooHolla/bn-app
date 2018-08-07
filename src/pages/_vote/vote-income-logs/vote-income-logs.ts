@@ -29,7 +29,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -48,7 +48,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
   };
   // @VoteIncomeLogsPage.willEnter
   @asyncCtrlGenerator.error(() =>
-    VoteIncomeLogsPage.getTranslate("LOAD_VOTE_INCOME_LIST_ERROR"),
+    VoteIncomeLogsPage.getTranslate("LOAD_VOTE_INCOME_LIST_ERROR")
   )
   async loadIncomeLogList() {
     const { income_log_list_config } = this;
@@ -61,7 +61,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     this.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
-    VoteIncomeLogsPage.getTranslate("LOAD_MORE_VOTE_INCOME_LIST_ERROR"),
+    VoteIncomeLogsPage.getTranslate("LOAD_MORE_VOTE_INCOME_LIST_ERROR")
   )
   async loadMoreIncomeLogList() {
     await new Promise(cb => setTimeout(cb, 1000));
@@ -78,7 +78,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     try {
       const list = await this.benefitService.getBenefitsByPage(
         income_log_list_config.page,
-        income_log_list_config.pageSize,
+        income_log_list_config.pageSize
       );
       income_log_list_config.hasMore =
         list.length >= income_log_list_config.pageSize;

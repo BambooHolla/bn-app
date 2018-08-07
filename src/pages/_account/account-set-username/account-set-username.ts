@@ -15,7 +15,7 @@ export class AccountSetUsernamePage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public accountService: AccountServiceProvider,
+    public accountService: AccountServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -53,13 +53,13 @@ export class AccountSetUsernamePage extends SecondLevelPage {
   }
 
   @asyncCtrlGenerator.error(() =>
-    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_ERROR"),
+    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_ERROR")
   )
   @asyncCtrlGenerator.loading(() =>
-    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMITING"),
+    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMITING")
   )
   @asyncCtrlGenerator.success(() =>
-    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_SUCCESS"),
+    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_SUCCESS")
   )
   async _submit(password: string, custom_fee?: number) {
     return this.accountService

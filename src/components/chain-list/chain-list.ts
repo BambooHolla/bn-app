@@ -153,7 +153,7 @@ export class ChainListComponent extends AniBase {
         this.renderer_height,
         this.max_chain_height * this.item_height +
           this.list_padding_top +
-          this.list_padding_bottom,
+          this.list_padding_bottom
       );
       if (
         this._isInTouch() === false &&
@@ -446,7 +446,7 @@ export class ChainListComponent extends AniBase {
   /*计算出目前在视野中的blockModel以及对应的坐标*/
   private _calcInViewBlockItems(
     y = this._getListViewY(),
-    force_render?: boolean,
+    force_render?: boolean
   ) {
     const {
       item_height,
@@ -461,7 +461,7 @@ export class ChainListComponent extends AniBase {
     const abs_y = -y;
     /// 需要跳过的blocks
     const skip_chain_num = Math.floor(
-      Math.max(abs_y - list_padding_top, 0) / item_height,
+      Math.max(abs_y - list_padding_top, 0) / item_height
     );
     const skip_y = list_padding_top + skip_chain_num * item_height;
     const view_end_y = abs_y + renderer_height;
@@ -516,7 +516,7 @@ export class ChainListComponent extends AniBase {
       // console.log("add to cg cache", chain_height);
       this._addUserableBlockCard(
         chain_height,
-        list_cache[chain_height].cardView,
+        list_cache[chain_height].cardView
       );
     }
 
@@ -562,7 +562,7 @@ export class ChainListComponent extends AniBase {
         _useable_gold_blockcard = new GoldBlockCard(
           this.item_width,
           this.item_height,
-          height,
+          height
         );
         this._init_block_card_bind(_useable_gold_blockcard);
         this._useable_gold_blockcard = _useable_gold_blockcard;
@@ -683,7 +683,7 @@ class BlockCard extends PIXI.Graphics {
     public W: number,
     public H: number,
     chain_height: number,
-    block?: BlockModel | Promise<BlockModel>,
+    block?: BlockModel | Promise<BlockModel>
   ) {
     super();
     // console.log("NNNNNN");
@@ -889,7 +889,7 @@ class BlockCard extends PIXI.Graphics {
   view_block_detail_label = new PIXI.Text("", this.style_footer_label);
   view_block_detail_label_icon = new PIXI.Text(
     "",
-    this.style_footer_label_icon,
+    this.style_footer_label_icon
   );
 
   drawLabels() {
@@ -960,7 +960,7 @@ class BlockCard extends PIXI.Graphics {
   private _checkRegisterDrawBlockModel = () => false;
   updateBlockModel(
     height: number,
-    block: BlockModel | Promise<BlockModel> | undefined,
+    block: BlockModel | Promise<BlockModel> | undefined
   ) {
     let no_same_height = height !== this.chain_height;
     if (no_same_height) {

@@ -23,7 +23,7 @@ export class CustomDialogPage extends FirstLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public viewCtrl: ViewController,
+    public viewCtrl: ViewController
   ) {
     super(navCtrl, navParams);
   }

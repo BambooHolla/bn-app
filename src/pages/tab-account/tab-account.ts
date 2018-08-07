@@ -26,7 +26,7 @@ export class TabAccountPage extends FirstLevelPage {
     public navParams: NavParams,
     public fetch: AppFetchProvider,
     public cdRef: ChangeDetectorRef,
-    public voucherService: VoucherServiceProvider,
+    public voucherService: VoucherServiceProvider
   ) {
     super(navCtrl, navParams);
     this.registerViewEvent(this.userInfo, "changed", () => {
@@ -66,7 +66,7 @@ export class TabAccountPage extends FirstLevelPage {
         "@@SHOW_INCOME_IBT_NOTICE_TIP",
         {
           true_text: "@@YES_I_NEED",
-        },
+        }
       );
       this.appSetting.settings.mining_income_notice = res;
       if (res) {
@@ -75,7 +75,7 @@ export class TabAccountPage extends FirstLevelPage {
           {
             true_text: "@@OK_I_KNOWN",
             false_text: "@@NO_NOTICE_ME",
-          },
+          }
         );
       }
       this.appSetting.settings.mining_income_notice = res;
@@ -96,7 +96,7 @@ export class TabAccountPage extends FirstLevelPage {
   async openSharePanel() {
     if (!this.appSetting.settings._is_fisrt_show_share_app) {
       this.appSetting.settings._is_fisrt_show_share_app = await this.waitTipDialogConfirm(
-        "@@SHARE_APP_TIP",
+        "@@SHARE_APP_TIP"
       );
     }
     var message = await this.getTranslate("WELCOME_TO_DOWNLOAD_IBT_APP");
@@ -117,7 +117,7 @@ export class TabAccountPage extends FirstLevelPage {
         {
           enterAnimation: "custom-dialog-pop-in",
           leaveAnimation: "custom-dialog-pop-out",
-        },
+        }
       )
       .present();
   }
@@ -140,14 +140,14 @@ export class TabAccountPage extends FirstLevelPage {
         lang: this.translate.currentLang,
         modalCtrl: this.modalCtrl,
       },
-      this.appSetting.settings.auto_update_app /*用来判定是否打开升级的对话框*/,
+      this.appSetting.settings.auto_update_app /*用来判定是否打开升级的对话框*/
     );
   }
   /*跳转到我的本地的关注并显示提示*/
   async routeToMyContacts() {
     if (!this.appSetting.settings._is_show_first_local_contacts_tip) {
       this.appSetting.settings._is_show_first_local_contacts_tip = await this.waitTipDialogConfirm(
-        "@@MY_LOCAL_CONTACTS_TIP",
+        "@@MY_LOCAL_CONTACTS_TIP"
       );
     }
     return this.routeTo("account-my-local-contacts");

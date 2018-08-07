@@ -31,7 +31,7 @@ export class FLP_Lifecycle extends FLP_Tool
     emitter: EventEmitter,
     evetname: string,
     handle: Function,
-    is_run_when_bind?: boolean,
+    is_run_when_bind?: boolean
   ) {
     let should_emit: any = null;
     const proxy_handle = (...args) => {
@@ -76,7 +76,7 @@ export class FLP_Lifecycle extends FLP_Tool
     emitter: EventEmitter,
     evetname: string,
     description?: string,
-    get_args?: Function | any[],
+    get_args?: Function | any[]
   ) {
     const emit = () => {
       if (get_args instanceof Function) {
@@ -171,7 +171,7 @@ export class FLP_Lifecycle extends FLP_Tool
       return;
     }
   }
-  detectChanges(){
+  detectChanges() {
     if (this.cdRef) {
       let one_lock;
       this.detectChanges = () => {
@@ -196,7 +196,7 @@ export class FLP_Lifecycle extends FLP_Tool
   static markForCheck(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     if (!descriptor) {
       let val;
@@ -274,19 +274,19 @@ export class FLP_Lifecycle extends FLP_Tool
   dispatchEvent(
     fire_event_name: "HEIGHT:CHANGED",
     height: number,
-    is_init: boolean,
+    is_init: boolean
   ): void;
   dispatchEvent(
     fire_event_name: "ROUND:CHANGED",
     height: number,
-    is_init: boolean,
+    is_init: boolean
   ): void;
   dispatchEvent(fire_event_name: string, ...args: any[]) {
     console.group(
       `%cdispatchEvent %cfire_event_name %c${this.cname}`,
       "color:blue;",
       "color:inherit;",
-      "color:green;",
+      "color:green;"
     );
     for (var { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
@@ -313,7 +313,7 @@ export class FLP_Lifecycle extends FLP_Tool
   static afterContentInit(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     FLP_Tool.addProtoArray(target, "afterContentInit", name);
     return descriptor;
@@ -356,7 +356,7 @@ export class FLP_Lifecycle extends FLP_Tool
     return function(
       target: any,
       handle_name: string,
-      descriptor?: PropertyDescriptor,
+      descriptor?: PropertyDescriptor
     ) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
       return descriptor;
@@ -367,7 +367,7 @@ export class FLP_Lifecycle extends FLP_Tool
     return function(
       target: any,
       handle_name: string,
-      descriptor?: PropertyDescriptor,
+      descriptor?: PropertyDescriptor
     ) {
       if (!target[after_did_enter]) {
         // 只执行一次

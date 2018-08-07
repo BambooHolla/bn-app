@@ -22,7 +22,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public fetch: AppFetchProvider,
+    public fetch: AppFetchProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -52,7 +52,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
   ]);
   formatPeerList(peer_list: PEER_INFO[]): PEER_INFO_WITH_VERSION[] {
     return peer_list.map(peer =>
-      Object.assign(peer, { net_version: this.peerToNetVersion(peer) }),
+      Object.assign(peer, { net_version: this.peerToNetVersion(peer) })
     );
   }
   peer_list: PEER_INFO_WITH_VERSION[] = [];
@@ -72,7 +72,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     // 在从网络上下载最新的配置并缓存
     const config = await getLatestVersionInfo(
       this.fetch,
-      this.translate.currentLang,
+      this.translate.currentLang
     );
     if (config && config.peer_list) {
       this.peer_list = this.formatPeerList(config.peer_list);
@@ -145,7 +145,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
             .split(".")
             .map((add, i) => footer_adds[i] || add);
           ls_json = `{"LATEST_APP_VERSION_URL": "http://${adds.join(
-            ".",
+            "."
           )}:8180/api/app/version/latest"}`;
         }
         const ls = JSON.parse(ls_json);

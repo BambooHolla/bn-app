@@ -1,1 +1,1 @@
-export type NumberLong = number ;
+export type NumberLong = number;

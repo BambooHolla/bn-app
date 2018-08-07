@@ -18,7 +18,7 @@ export class BytesPipe implements PipeTransform {
     input: any,
     decimal: number = 0,
     from: ByteUnit = "B",
-    to?: ByteUnit,
+    to?: ByteUnit
   ): any {
     if (
       !(
@@ -43,7 +43,7 @@ export class BytesPipe implements PipeTransform {
 
       const result = toDecimal(
         BytesPipe.calculateResult(format, bytes),
-        decimal,
+        decimal
       );
 
       return BytesPipe.formatResult(result, to);
@@ -54,7 +54,7 @@ export class BytesPipe implements PipeTransform {
       if (bytes < format.max) {
         const result = toDecimal(
           BytesPipe.calculateResult(format, bytes),
-          decimal,
+          decimal
         );
 
         return BytesPipe.formatResult(result, key);
@@ -65,7 +65,7 @@ export class BytesPipe implements PipeTransform {
     input: any,
     decimal: number = 0,
     from: ByteUnit = "B",
-    to?: ByteUnit,
+    to?: ByteUnit
   ) {
     return BytesPipe.transform(input, decimal, from, to);
   }
@@ -76,7 +76,7 @@ export class BytesPipe implements PipeTransform {
 
   static calculateResult(
     format: { max: number; prev?: ByteUnit },
-    bytes: number,
+    bytes: number
   ) {
     const prev = format.prev ? BytesPipe.formats[format.prev] : undefined;
     return prev ? bytes / prev.max : bytes;

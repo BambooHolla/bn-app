@@ -51,7 +51,7 @@ page-share-app-panel {
             display: flex;
             flex-direction: column;
             align-items: center;
-            &.disabled{
+            &.disabled {
               filter: grayscale(1);
               opacity: 0.8;
             }

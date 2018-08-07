@@ -28,7 +28,7 @@ export class PaySelectMyContactsPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public accountService: AccountServiceProvider,
     public contactService: ContactServiceProvider,
-    public viewCtrl: ViewController,
+    public viewCtrl: ViewController
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -52,13 +52,13 @@ export class PaySelectMyContactsPage extends SecondLevelPage {
         this.isArrayDiff(
           this.confirmed_contact_list,
           confirmed_contact_list,
-          contact_parser,
+          contact_parser
         )
       ) {
         this.confirmed_contact_list = confirmed_contact_list;
         // 将已有的联系人进行分组
         const grouped_contact = this.contactService.contactGroup(
-          confirmed_contact_list,
+          confirmed_contact_list
         );
         this.my_contact_list = grouped_contact;
       }
@@ -80,7 +80,7 @@ export class PaySelectMyContactsPage extends SecondLevelPage {
 
   @PaySelectMyContactsPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(
-    "更新联系人列表失败，重试次数过多，已停止重试，请检测网络",
+    "更新联系人列表失败，重试次数过多，已停止重试，请检测网络"
   )
   @asyncCtrlGenerator.retry()
   watchHeightChanged() {

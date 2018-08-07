@@ -30,7 +30,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
     public networkInterface: NetworkInterface,
     public appFetch: AppFetchProvider,
     public peerService: PeerServiceProvider,
-    public transactionService: TransactionServiceProvider,
+    public transactionService: TransactionServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -38,7 +38,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
   readonly SYSTEM_RUNTIME = this.appSetting.APP_URL(`/api/system/runtime`);
   readonly SYSTEM_CONFIG = this.appSetting.APP_URL(`/api/system/systemConfig`);
   readonly DELEGATE_SYSTEMKEY = this.appSetting.APP_URL(
-    `/api/delegates/systemKey`,
+    `/api/delegates/systemKey`
   );
 
   peer_list: ExtendsSystemRuntime[] = [];
@@ -76,7 +76,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 
       const node = await PeerServiceProvider.fetchPeerPortInfo(
         ip,
-        scan_port,
+        scan_port
       ).catch(() => null);
       if (!node) {
         return;
@@ -310,11 +310,11 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
 
     const web_port_info = await PeerServiceProvider.fetchPeerPortInfo(
       ip,
-      formated_port,
+      formated_port
     ).catch(err =>
       Promise.reject(
-        new Error(this.getTranslateSync("CUSTOM_PEER_IS_UNAVAILABLE")),
-      ),
+        new Error(this.getTranslateSync("CUSTOM_PEER_IS_UNAVAILABLE"))
+      )
     );
 
     const new_peer = {
@@ -329,7 +329,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
   addPeerList(new_peer: ExtendsSystemRuntime, insert_to_begin?: boolean) {
     if (
       this.peer_list.some(
-        peer => peer.port === new_peer.port && peer.ip === new_peer.ip,
+        peer => peer.port === new_peer.port && peer.ip === new_peer.ip
       )
     ) {
       return;
@@ -364,21 +364,21 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
     /// 校验
     if (formData.publicKey) {
       const keypair = this.transactionService.keypairService.create(
-        formData.delegate_pwd,
+        formData.delegate_pwd
       );
       if (formData.publicKey !== keypair.publicKey.toString("hex")) {
         // 这台设备已经存在了，校验公钥是否匹配
         throw new Error(
           this.getTranslateSync(
-            "THE_DELEGATE'S_PASSPHRASE_DOES_NOT_MATCH_THE_EXISTING_PUBLICKEY",
-          ),
+            "THE_DELEGATE'S_PASSPHRASE_DOES_NOT_MATCH_THE_EXISTING_PUBLICKEY"
+          )
         );
       }
     } else {
       this.peerService
         .oneTimeUrl(
           this.peerService.FORGING_ENABLE,
-          `http://${formData.ip}:${formData.webPort}`,
+          `http://${formData.ip}:${formData.webPort}`
         )
         // 设置委托人
         .setDelegateToMiningMachine(formData.delegate_pwd);
@@ -393,7 +393,7 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
     const new_mac = this.formData;
     // 去重使用当前配置作为最新
     my_mining_machine = my_mining_machine.filter(
-      mac => !(mac.ip === new_mac.ip && mac.port === new_mac.port),
+      mac => !(mac.ip === new_mac.ip && mac.port === new_mac.port)
     );
     my_mining_machine.unshift(new_mac);
     this.appSetting.settings.my_mining_machine = my_mining_machine;

@@ -9,7 +9,7 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { MyApp } from "../../app/app.component";
-import {ScanPeersPage} from '../../pages/pages'
+import { ScanPeersPage } from "../../pages/pages";
 
 export interface SlideItem {
   class: string;
@@ -32,7 +32,7 @@ export class TutorialPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public menu: MenuController,
-    public myapp: MyApp,
+    public myapp: MyApp
   ) {
     super(navCtrl, navParams);
     this.dir = this.platform.dir();

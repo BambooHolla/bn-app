@@ -47,7 +47,7 @@ export class TabPayPage extends FirstLevelPage {
     // public transfer: TransferProvider,
     public transactionService: TransactionServiceProvider,
     public voucherService: VoucherServiceProvider,
-    public cdRef: ChangeDetectorRef, // public network: Network
+    public cdRef: ChangeDetectorRef // public network: Network
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
@@ -88,7 +88,7 @@ export class TabPayPage extends FirstLevelPage {
   tryResetTransferFee() {
     if (this.formData.transfer_fee === 0) {
       this.formData.transfer_fee = parseFloat(
-        this.appSetting.settings.default_fee,
+        this.appSetting.settings.default_fee
       );
     }
   }
@@ -98,8 +98,8 @@ export class TabPayPage extends FirstLevelPage {
     if (tran.recipientId !== this.userInfo.address) {
       throw new Error(
         this.getTranslateSync(
-          "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT",
-        ),
+          "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT"
+        )
       );
     }
     // todo: check voucher is my
@@ -120,8 +120,8 @@ export class TabPayPage extends FirstLevelPage {
       // 已经存在了，不重复操作
       throw new Error(
         this.getTranslateSync(
-          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET",
-        ),
+          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET"
+        )
       );
     } else {
       await this.transactionService.putThirdTransaction(tran);
@@ -148,7 +148,7 @@ export class TabPayPage extends FirstLevelPage {
           cssClass: "transfer-receipt-modal",
           showBackdrop: true,
           enableBackdropDismiss: false,
-        },
+        }
       )
       .present();
   }
@@ -242,7 +242,7 @@ export class TabPayPage extends FirstLevelPage {
       const { transfer } = await this._submit(
         password,
         pay_pwd,
-        this.formData.transfer_fee,
+        this.formData.transfer_fee
       );
       await this.showTransferReceipt(transfer);
       this.resetFormData();
@@ -270,10 +270,10 @@ export class TabPayPage extends FirstLevelPage {
         transfer_amount,
         this.formData.transfer_fee,
         password,
-        pay_pwd,
+        pay_pwd
       );
       const { transaction } = await this.transactionService.createTransaction(
-        txData,
+        txData
       );
       this.resetFormData();
       this.routeTo("pay-offline-receipt", { transaction });
@@ -311,7 +311,7 @@ export class TabPayPage extends FirstLevelPage {
           cssClass: "transfer-receipt-modal",
           showBackdrop: true,
           enableBackdropDismiss: false,
-        },
+        }
       )
       .present();
   }
@@ -322,13 +322,13 @@ export class TabPayPage extends FirstLevelPage {
     this.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"),
+    TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR")
   )
   @asyncCtrlGenerator.loading(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMITING"),
+    TabPayPage.getTranslate("TRANSFER_SUBMITING")
   )
   @asyncCtrlGenerator.success(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS"),
+    TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS")
   )
   _submit(password: string, pay_pwd?: string, custom_fee?: number) {
     const { transfer_address, transfer_amount, transfer_mark } = this.formData;
@@ -337,7 +337,7 @@ export class TabPayPage extends FirstLevelPage {
       transfer_amount,
       custom_fee,
       password,
-      pay_pwd,
+      pay_pwd
     );
   }
 
@@ -382,7 +382,7 @@ export class TabPayPage extends FirstLevelPage {
         roll_out_config.page,
         roll_out_config.pageSize,
         "out",
-        TransactionTypes.SEND,
+        TransactionTypes.SEND
       );
       roll_out_config.has_more = list.length >= roll_out_config.pageSize;
       return list;
@@ -393,7 +393,7 @@ export class TabPayPage extends FirstLevelPage {
 
   @TabPayPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(() =>
-    TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR"),
+    TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR")
   )
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {

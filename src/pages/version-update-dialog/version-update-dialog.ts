@@ -64,7 +64,7 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
     public file: File,
     public fileOpener: FileOpener,
     public sanitizer: DomSanitizer,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams);
   }
@@ -83,7 +83,7 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
         () => {
           this.fileTransfer && this.fileTransfer.abort();
           this.viewCtrl.dismiss();
-        },
+        }
       );
     } else {
       this.viewCtrl.dismiss();
@@ -120,16 +120,16 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       // fileTransfer.
 
       this.download_progress = this.sanitizer.bypassSecurityTrustStyle(
-        "--progress:0%",
+        "--progress:0%"
       );
       this.fileTransfer.onProgress(e => {
         this.download_progress = this.sanitizer.bypassSecurityTrustStyle(
-          `--progress:${(e.loaded / e.total) * 100}%`,
+          `--progress:${(e.loaded / e.total) * 100}%`
         );
       });
       const entry = await this.fileTransfer.download(
         apk_url,
-        this.file.dataDirectory + filename,
+        this.file.dataDirectory + filename
       );
       this.fileTransfer = undefined;
       this.isDownloading = false;
@@ -137,7 +137,7 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       console.log("download complete: " + entry.toURL());
       await this.fileOpener.open(
         entry.toURL(),
-        "application/vnd.android.package-archive",
+        "application/vnd.android.package-archive"
       );
     } finally {
       this.isDownloading = false;

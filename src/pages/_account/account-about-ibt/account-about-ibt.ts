@@ -31,7 +31,7 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     public viewCtrl: ViewController,
     public newsService: NewsProvider,
     public sanitizer: DomSanitizer,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
     // this.auto_header_shadow_when_scroll_down = true;
@@ -72,7 +72,7 @@ export class AccountAboutIbtPage extends SecondLevelPage {
   private async _tipThenSendEmail(
     e: MouseEvent,
     tip: string,
-    setting_key: string,
+    setting_key: string
   ) {
     let res = this.appSetting.settings[setting_key];
     if (!res) {
@@ -94,14 +94,14 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     return this._tipThenSendEmail(
       e,
       "@@BUSINESS_COOPERATION_TIP",
-      "_is_first_show_send_business_cooperation",
+      "_is_first_show_send_business_cooperation"
     );
   }
   doUserService(e: MouseEvent) {
     return this._tipThenSendEmail(
       e,
       "@@USER_SERVICE_TIP",
-      "_is_first_show_send_user_service",
+      "_is_first_show_send_user_service"
     );
   }
 }

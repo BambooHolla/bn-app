@@ -35,7 +35,7 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     // public accountService: AccountServiceProvider,
     public localContact: LocalContactProvider,
     public viewCtrl: ViewController,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
     this.event.on("job-finished", ({ id, data }) => {

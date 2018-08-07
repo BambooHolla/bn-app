@@ -52,7 +52,7 @@ export default class Db extends EventEmitter {
   constructor(
     private _name: string,
     private _version?: number,
-    config: any = {},
+    config: any = {}
   ) {
     super();
     this._initGetConn();

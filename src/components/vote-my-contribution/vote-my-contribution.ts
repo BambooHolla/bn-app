@@ -30,18 +30,18 @@ export class VoteMyContributionComponent extends VoteExtendsPanelComponent
   constructor(cdRef: ChangeDetectorRef) {
     super(cdRef);
     this.watch_detal_tran_num_changed = this.watch_detal_tran_num_changed.bind(
-      this,
+      this
     );
     this.watch_contribution_flow_changed = this.watch_contribution_flow_changed.bind(
-      this,
+      this
     );
     this.appSetting.on(
       "changed@setting.detal_tran_num",
-      this.watch_detal_tran_num_changed,
+      this.watch_detal_tran_num_changed
     );
     this.appSetting.on(
       "changed@setting.contribution_flow",
-      this.watch_contribution_flow_changed,
+      this.watch_contribution_flow_changed
     );
   }
   watch_detal_tran_num_changed(new_v) {
@@ -58,11 +58,11 @@ export class VoteMyContributionComponent extends VoteExtendsPanelComponent
 
     this.appSetting.off(
       "changed@setting.detal_tran_num",
-      this.watch_detal_tran_num_changed,
+      this.watch_detal_tran_num_changed
     );
     this.appSetting.off(
       "changed@setting.contribution_flow",
-      this.watch_contribution_flow_changed,
+      this.watch_contribution_flow_changed
     );
   }
 

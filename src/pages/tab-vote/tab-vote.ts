@@ -85,7 +85,7 @@ export class TabVotePage extends FirstLevelPage {
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
     public blockService: BlockServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams);
 
@@ -100,7 +100,7 @@ export class TabVotePage extends FirstLevelPage {
           // 启动倒计时界面
           console.log(
             "%c已经投票，倒计时等待结果",
-            "font-size:3em;color:green;",
+            "font-size:3em;color:green;"
           );
           return err;
         }
@@ -174,7 +174,7 @@ export class TabVotePage extends FirstLevelPage {
 
     this.setBgTransparent(
       this.page_status === VotePage.Bootstrap ||
-        this.page_status === VotePage.Countdown,
+        this.page_status === VotePage.Countdown
     );
   }
   @TabVotePage.willLeave
@@ -257,13 +257,13 @@ export class TabVotePage extends FirstLevelPage {
                 satellite_css.setProgress(
                   diff_time / BLOCK_UNIT_TIME,
                   0,
-                  "ease-in-out",
+                  "ease-in-out"
                 );
               }
               satellite_css.setProgress(
                 1,
                 BLOCK_UNIT_TIME - diff_time + 2000 /*动画预留时间*/,
-                "linear",
+                "linear"
               );
             }
           });
@@ -376,7 +376,7 @@ export class TabVotePage extends FirstLevelPage {
     this._doChainMeshPropAni(
       earth_config,
       _earth_enabled_config,
-      VotePage.VoteDetail,
+      VotePage.VoteDetail
     );
   }
 
@@ -385,7 +385,7 @@ export class TabVotePage extends FirstLevelPage {
   private _doChainMeshPropAni(
     from_config: typeof TabVotePage.prototype.earth_config,
     to_config: typeof TabVotePage.prototype.earth_config,
-    to_page_status: VotePage,
+    to_page_status: VotePage
   ) {
     /*初始化新的动画控制权*/
     if (this._chain_mesh_ctrl) {
@@ -456,7 +456,7 @@ export class TabVotePage extends FirstLevelPage {
     opts: {
       is_force_stop_chain_mesh?: boolean;
       is_keep_mining_person_sound?: boolean;
-    } = {},
+    } = {}
   ) {
     this.countdown.stopAnimation();
 
@@ -475,7 +475,7 @@ export class TabVotePage extends FirstLevelPage {
       this._doChainMeshPropAni(
         earth_config,
         _earth_disabled_config,
-        VotePage.Bootstrap,
+        VotePage.Bootstrap
       );
     }
   }
@@ -528,7 +528,7 @@ export class TabVotePage extends FirstLevelPage {
   soundControlOnEnter() {
     // 如果不是挖矿详情页面，音效就要打开
     this.benefitService.togglePlaySound(
-      this.page_status !== VotePage.VoteDetail,
+      this.page_status !== VotePage.VoteDetail
     );
   }
   @TabVotePage.didLeave
@@ -625,7 +625,7 @@ export class TabVotePage extends FirstLevelPage {
 
   /** 开启挖矿*/
   @asyncCtrlGenerator.error(() =>
-    TabVotePage.getTranslate("START_AUTO_VOTE_ERROR"),
+    TabVotePage.getTranslate("START_AUTO_VOTE_ERROR")
   )
   async startMin() {
     if (this.min_starting) {
@@ -634,7 +634,7 @@ export class TabVotePage extends FirstLevelPage {
     if (!this.appSetting.settings._is_show_first_mining_tip) {
       this.appSetting.settings._is_show_first_mining_tip = await this.waitTipDialogConfirm(
         "@@FIRST_MINGING_TIP",
-        { cancel_with_error: true },
+        { cancel_with_error: true }
       );
     }
     this._user_agree_auto_mining_in_background = true;
@@ -645,7 +645,7 @@ export class TabVotePage extends FirstLevelPage {
           .create({
             title: this.translate.instant("DEFAULT_FEE_NOT_SETTED"),
             message: this.translate.instant(
-              "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE",
+              "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE"
             ),
             buttons: [
               this.translate.instant("NO"),
@@ -678,7 +678,7 @@ export class TabVotePage extends FirstLevelPage {
       this.appSetting.settings.background_mining = true;
       await this.minService.autoVote(
         this.appSetting.getRound(),
-        "tab-vote-page",
+        "tab-vote-page"
       );
       // this.routeToVoteDetail();
     } catch (err) {
@@ -691,7 +691,7 @@ export class TabVotePage extends FirstLevelPage {
   }
   /** 关闭挖矿*/
   @asyncCtrlGenerator.error(() =>
-    TabVotePage.getTranslate("STOP_AUTO_VOTE_ERROR"),
+    TabVotePage.getTranslate("STOP_AUTO_VOTE_ERROR")
   )
   async stopMin() {
     this.minService.stopVote();

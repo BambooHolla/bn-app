@@ -54,7 +54,7 @@ export class MinServiceProvider extends FLP_Tool {
     public accountService: AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
     public userInfo: UserInfoProvider,
-    public loginService: LoginServiceProvider,
+    public loginService: LoginServiceProvider
   ) {
     super();
     this.ifmJs = AppSettingProvider.IFMJS;
@@ -85,7 +85,7 @@ export class MinServiceProvider extends FLP_Tool {
           const perRoundPwdInfo = await this.getPerRoundPwdInfo();
           if (perRoundPwdInfo) {
             await this.refreshPerRoundPwdInfo(
-              "@@AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT",
+              "@@AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT"
             );
           }
         } catch (err) {
@@ -99,32 +99,32 @@ export class MinServiceProvider extends FLP_Tool {
   /*已经投票的委托人*/
   private voted_delegates_db = new Mdb<TYPE.DelegateModel>(
     "voted_delegate",
-    true,
+    true
   );
 
   private _auto_vote_sub?: Subscription;
 
   readonly ROUND_TIME = this.appSetting.APP_URL("/api/delegates/roundTime");
   readonly VOTE_URL = this.appSetting.APP_URL(
-    "/api/accounts/randomAccessDelegates",
+    "/api/accounts/randomAccessDelegates"
   );
   readonly VOTE_FOR_ME = this.appSetting.APP_URL(
-    "/api/accounts/voteForDelegate",
+    "/api/accounts/voteForDelegate"
   );
   readonly FORGE_STATUS = this.appSetting.APP_URL(
-    "/api/delegates/forging/status",
+    "/api/delegates/forging/status"
   );
   readonly FORGE_ENABLE = this.appSetting.APP_URL(
-    "/api/delegates/forging/enable",
+    "/api/delegates/forging/enable"
   );
   readonly FORGE_DISABLE = this.appSetting.APP_URL(
-    "/api/delegates/forging/disable",
+    "/api/delegates/forging/disable"
   );
   readonly UN_VOTE_DELEGATES = this.appSetting.APP_URL(
-    "/api/delegates/allowVotingDelegates",
+    "/api/delegates/allowVotingDelegates"
   );
   readonly VOTED_DELEGATES = this.appSetting.APP_URL(
-    "/api/delegates/alreadyVotingDelegates",
+    "/api/delegates/alreadyVotingDelegates"
   );
   readonly SYSTEM_SHUTDOWN = this.appSetting.APP_URL("/api/system/shutdown");
   readonly MINERS = this.appSetting.APP_URL("/api/delegates/");
@@ -134,7 +134,7 @@ export class MinServiceProvider extends FLP_Tool {
   readonly TOTAL_VOTE = this.appSetting.APP_URL("/api/delegates/getTotalVote");
   readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
   readonly SYSTEM_WEBSOCKETLINKNUM = this.appSetting.APP_URL(
-    "/api/system/websocketLink",
+    "/api/system/websocketLink"
   );
 
   getTotalVote() {
@@ -178,7 +178,7 @@ export class MinServiceProvider extends FLP_Tool {
   async getVoteAbleDelegates(
     skip: number,
     limit: number,
-    address = this.userInfo.address,
+    address = this.userInfo.address
   ) {
     const data = await this.fetch.get<{
       delegates: TYPE.DelegateModel[];
@@ -199,7 +199,7 @@ export class MinServiceProvider extends FLP_Tool {
   async getVotedDelegates(
     skip: number,
     limit: number,
-    address = this.userInfo.address,
+    address = this.userInfo.address
   ) {
     const data = await this.fetch.get<{
       delegates: TYPE.DelegateModel[];
@@ -225,7 +225,7 @@ export class MinServiceProvider extends FLP_Tool {
     secret: string,
     secondSecret?: string,
     fee = this.appSetting.settings.default_fee.toString(),
-    publicKey = this.userInfo.publicKey,
+    publicKey = this.userInfo.publicKey
   ) {
     if (voteable_delegates.length === 0) {
       return;
@@ -270,7 +270,7 @@ export class MinServiceProvider extends FLP_Tool {
             secret,
             secondSecret,
             (Math.ceil(minFee * 1e8) / 1e8).toFixed(8),
-            publicKey,
+            publicKey
           );
         }
       }
@@ -303,7 +303,7 @@ export class MinServiceProvider extends FLP_Tool {
     // 自动投票，自进行自动投57人，超过了就不投了
     const voted_delegate_list = await this.voted_delegates_db.find(
       {},
-      { limit: 57 },
+      { limit: 57 }
     );
     if (voted_delegate_list.length >= 57) {
       if ("tab-vote-page" !== from) {
@@ -364,7 +364,7 @@ export class MinServiceProvider extends FLP_Tool {
           this,
           {
             title: input_dialog_title,
-          },
+          }
         );
         pre_round_pwd_info.cache_key = cache_key;
         this._pre_round_pwd_info = pre_round_pwd_info;
@@ -392,7 +392,7 @@ export class MinServiceProvider extends FLP_Tool {
     voteable_delegates: TYPE.DelegateModel[],
     round = this.appSetting.getRound(),
     userPWD: { password: string; pay_pwd?: string },
-    from_page?: FLP_Form,
+    from_page?: FLP_Form
   ) {
     await this._vote(voteable_delegates, userPWD.password, userPWD.pay_pwd)
       .then(this._vote_success.bind(this))
@@ -461,8 +461,8 @@ export class MinServiceProvider extends FLP_Tool {
   voteForMe_Executor(promise_pro) {
     return promise_pro.follow(
       this._getVotersForMe(1, this.default_rank_list_pageSize).then(
-        data => data.voters,
-      ),
+        data => data.voters
+      )
     );
   }
 
@@ -509,7 +509,7 @@ export class MinServiceProvider extends FLP_Tool {
    */
   async getAllMinersOutside(
     page = 1,
-    limit = 10,
+    limit = 10
   ): Promise<TYPE.DelegateModel[]> {
     let query = {
       offset: 57 + (page - 1) * limit,
@@ -537,7 +537,7 @@ export class MinServiceProvider extends FLP_Tool {
    * @returns {Promise<void>}
    */
   async getForgeStaus(
-    publicKey = this.userInfo.userInfo.publicKey,
+    publicKey = this.userInfo.userInfo.publicKey
   ): Promise<boolean> {
     const data = await this.fetch.get<any>(this.FORGE_STATUS, {
       search: {
@@ -560,7 +560,7 @@ export class MinServiceProvider extends FLP_Tool {
       {
         secret,
         publicKey,
-      },
+      }
     );
     return data;
   }
@@ -594,8 +594,8 @@ export class MinServiceProvider extends FLP_Tool {
   myRank_Executor(promise_pro) {
     return promise_pro.follow(
       this.getMyRank(1, 2 /*如果自己是第一名，要确保第三名也拿到*/).then(list =>
-        list.slice(0, 3),
-      ),
+        list.slice(0, 3)
+      )
     );
   }
 
@@ -603,7 +603,7 @@ export class MinServiceProvider extends FLP_Tool {
   async getRankList(
     page = 1,
     pageSize = this.default_rank_list_pageSize,
-    force_get = false,
+    force_get = false
   ): Promise<TYPE.RankModel[]> {
     if (
       page === 1 &&
@@ -634,10 +634,10 @@ export class MinServiceProvider extends FLP_Tool {
       this.myRank.getPromise().then(pre_round_rank_list => {
         if (pre_round_rank_list) {
           return pre_round_rank_list.find(
-            rank_info => rank_info.address == this.userInfo.userInfo.address,
+            rank_info => rank_info.address == this.userInfo.userInfo.address
           );
         }
-      }),
+      })
     );
   }
   /**
@@ -657,7 +657,7 @@ export class MinServiceProvider extends FLP_Tool {
 
     let totalBenefitList = await this.myRank.getPromise();
     const myBenefit = totalBenefitList.find(
-      rank_info => rank_info.address === this.userInfo.address,
+      rank_info => rank_info.address === this.userInfo.address
     );
     if (!myBenefit) {
       return undefined;
@@ -709,7 +709,7 @@ export class MinServiceProvider extends FLP_Tool {
   @HEIGHT_AB_Generator("myDelegateInfo", true)
   myDelegateInfo_Executor(promise_pro) {
     return promise_pro.follow(
-      this.getDelegateInfo(this.userInfo.publicKey).catch(() => null),
+      this.getDelegateInfo(this.userInfo.publicKey).catch(() => null)
     );
   }
 }

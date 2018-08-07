@@ -49,7 +49,7 @@ export class TabChainPage extends FirstLevelPage {
     public viewCtrl: ViewController,
     public r2: Renderer2,
     public cdRef: ChangeDetectorRef,
-    public fetch: AppFetchProvider,
+    public fetch: AppFetchProvider
   ) {
     super(navCtrl, navParams);
     // this.auto_header_shadow_when_scroll_down = true;
@@ -96,7 +96,7 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.didEnter
   initChainListPaddingTop() {
     this.chainList.list_padding_top = this.chainList.pt(
-      this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/,
+      this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/
     );
   }
 
@@ -104,7 +104,7 @@ export class TabChainPage extends FirstLevelPage {
     this.chainList.setListViewPosY(0, 1000);
   }
 
-  updateBlocks(){
+  updateBlocks() {
     // TODO: 校验区块的过程中，可能发现错误的区块，而这些区块可能已经被渲染到屏幕上了，需要有一个更新机制来让其获取最新的区块
   }
 
@@ -158,7 +158,7 @@ export class TabChainPage extends FirstLevelPage {
       () => {
         this.is_show_sync_loading = this.appSetting.share_settings.is_syncing_blocks;
       },
-      true,
+      true
     );
     // 是否在校验区块
     this.registerViewEvent(
@@ -167,7 +167,7 @@ export class TabChainPage extends FirstLevelPage {
       () => {
         this.sync_is_verifying_block = this.appSetting.share_settings.sync_is_verifying_block;
       },
-      true,
+      true
     );
     // 同步区块的进度
     this.registerViewEvent(
@@ -176,7 +176,7 @@ export class TabChainPage extends FirstLevelPage {
       () => {
         this.sync_progress_blocks = this.appSetting.share_settings.sync_progress_blocks;
       },
-      true,
+      true
     );
   }
 
@@ -191,7 +191,7 @@ export class TabChainPage extends FirstLevelPage {
     let cg;
     try {
       const { worker, req_id, task } = this.blockService.syncBlockChain(
-        max_end_height,
+        max_end_height
       );
       this._download_task = task;
       // this._download_worker = worker;
@@ -212,7 +212,7 @@ export class TabChainPage extends FirstLevelPage {
               if (!this.appSetting.settings.is_known_verifier_will_heat_up) {
                 this.appSetting.settings.is_known_verifier_will_heat_up = true;
                 await this.waitTipDialogConfirm(
-                  "@@VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP",
+                  "@@VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP"
                 ).then(v => {
                   this.appSetting.settings.is_known_verifier_will_heat_up = v;
                 });
@@ -228,7 +228,7 @@ export class TabChainPage extends FirstLevelPage {
               this.showErrorDialog(
                 this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"),
                 "",
-                msg.data,
+                msg.data
               );
               break;
           }

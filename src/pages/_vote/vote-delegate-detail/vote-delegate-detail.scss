@@ -147,7 +147,7 @@ page-vote-delegate-detail {
       > .scroll-content {
         border-top: none;
         background-color: #eeeeee;
-        &::after{
+        &::after {
           content: " ";
           width: 100%;
           height: 30vw;
@@ -155,7 +155,7 @@ page-vote-delegate-detail {
           bottom: 0;
           background-image: url("../assets/imgs/net-circle.png");
           background-size: 160vw 160vw;
-          background-position: center top; 
+          background-position: center top;
         }
       }
     }

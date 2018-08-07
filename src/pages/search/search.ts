@@ -21,7 +21,7 @@ export class SearchPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    @Optional() public tabs: TabsPage,
+    @Optional() public tabs: TabsPage
   ) {
     super(navCtrl, navParams, true, tabs);
   }

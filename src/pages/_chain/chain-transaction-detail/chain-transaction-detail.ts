@@ -19,7 +19,7 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public localContact: LocalContactProvider,
+    public localContact: LocalContactProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;

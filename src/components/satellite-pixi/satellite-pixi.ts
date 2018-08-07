@@ -197,7 +197,7 @@ export class SatellitePixiComponent extends AniBase {
     progress: number,
     ani_ms?: number,
     easing = Easing.Linear,
-    immediate?: boolean,
+    immediate?: boolean
   ) {
     if (ani_ms && isFinite(ani_ms) && ani_ms > 0) {
       this._ani_ms = ani_ms;

@@ -1,47 +1,47 @@
 semicircular-progress-bar {
-	display: block;
-	width: 100%;
-	height: 100%;
-	> .progress-val {
-		color: #999;
-		font-size: 1em;
-		text-align: center;
-		font-weight: lighter;
-		transform: scale(0.9);
-		padding-bottom: 0.1em;
-	}
-	> .semicircular-progress-bar-wrapper {
-		width: 100%;
-		/* height: 100%; */
-		display: block;
-		position: relative;
-		padding-bottom: 52.8%;
-		mask-image: url("../assets/imgs/assets/half-rounded-ring-mask-transparent.png");
-		mask-size: contain;
-		mask-repeat: no-repeat;
-		mask-position: top;
-		> .bg-bar.semicircular-progress-bar {
-			background: linear-gradient(left, #83d6f7, #73f5e0);
-		}
-		> .progress-bar.semicircular-progress-bar {
-			background: linear-gradient(left, #ff5a5b, #fca178);
-			transition-duration: 250ms;
-			/* 	animation-iteration-count: infinite;
+  display: block;
+  width: 100%;
+  height: 100%;
+  > .progress-val {
+    color: #999;
+    font-size: 1em;
+    text-align: center;
+    font-weight: lighter;
+    transform: scale(0.9);
+    padding-bottom: 0.1em;
+  }
+  > .semicircular-progress-bar-wrapper {
+    width: 100%;
+    /* height: 100%; */
+    display: block;
+    position: relative;
+    padding-bottom: 52.8%;
+    mask-image: url("../assets/imgs/assets/half-rounded-ring-mask-transparent.png");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: top;
+    > .bg-bar.semicircular-progress-bar {
+      background: linear-gradient(left, #83d6f7, #73f5e0);
+    }
+    > .progress-bar.semicircular-progress-bar {
+      background: linear-gradient(left, #ff5a5b, #fca178);
+      transition-duration: 250ms;
+      /* 	animation-iteration-count: infinite;
 			animation-name: ani-rotate-circle;
 			animation-duration: 2s; */
-		}
-	}
-	.semicircular-progress-bar {
-		display: block;
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		top: 0;
-		left: 0;
-		transform-origin: 50% 94.5%;
-		mask-image: url("../assets/imgs/assets/half-rounded-ring-mask-transparent.png");
-		mask-size: contain;
-		mask-repeat: no-repeat;
-		mask-position: center;
-	}
+    }
+  }
+  .semicircular-progress-bar {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 50% 94.5%;
+    mask-image: url("../assets/imgs/assets/half-rounded-ring-mask-transparent.png");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+  }
 }

@@ -21,7 +21,7 @@ export class AccountNewsDetailPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public viewCtrl: ViewController,
-    public sanitizer: DomSanitizer,
+    public sanitizer: DomSanitizer
   ) {
     super(navCtrl, navParams, true, tabs);
     // this.auto_header_shadow_when_scroll_down = true;

@@ -117,7 +117,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
       const amount_text_max_width = Math.max(
         max_amount_text.width,
         mid_amount_text.width,
-        min_amount_text.width,
+        min_amount_text.width
       );
 
       yAxis.addChild(max_amount_text);
@@ -141,14 +141,14 @@ export class IncomeTrendSimpleChartComponent extends AniBase
       .width;
     const min_x_item_width = new PIXI.Text(
       list[list.length - 1].height + "",
-      text_style,
+      text_style
     ).width;
     const xAxis_line_width =
       xAxis_width - max_x_item_width / 2 - min_x_item_width / 2;
     {
       const maybe_num = Math.min(
         Math.floor(xAxis_line_width / (max_x_item_width * 1.5)),
-        list.length,
+        list.length
       );
 
       for (var len = maybe_num - 1, i = len; i >= 0; i--) {

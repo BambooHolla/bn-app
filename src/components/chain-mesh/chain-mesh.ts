@@ -217,7 +217,7 @@ export class ChainMeshComponent extends AniBase {
         0,
         half_r,
         half_r,
-        half_r,
+        half_r
       );
       for (var stop of stops) {
         gradient.addColorStop(stop[0] as number, stop[1] as string);

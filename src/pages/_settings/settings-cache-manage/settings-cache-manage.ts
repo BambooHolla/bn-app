@@ -20,7 +20,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public storage: Storage,
+    public storage: Storage
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -76,7 +76,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
           const data = await this.storage.get(key);
           cache_size += getUTF8ByteSize(JSON.stringify(data) || "");
           this.calc_progress += 1 / keys.length;
-        }),
+        })
       );
       this.calc_progress = 1;
       calc_promise_out.resolve();
@@ -121,7 +121,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
             const from_color = WaterProgressComponent.toColor(pre_line.color);
             const to_color = WaterProgressComponent.toColor(line.color);
             const res_color = from_color.map(
-              (from_v, i) => (from_v + (to_color[i] - from_v) * scale) | 0,
+              (from_v, i) => (from_v + (to_color[i] - from_v) * scale) | 0
             );
             return {
               ...line,
@@ -157,7 +157,7 @@ export class SettingsCacheManagePage extends SecondLevelPage {
         keys.map(async key => {
           await this.storage.remove(key);
           this.calc_progress -= total_calc_progress / keys.length;
-        }),
+        })
       );
 
       // indexedDB
@@ -254,7 +254,7 @@ const clearDatabase = function(dbName) {
             acc.push(clearTable(db, tableName));
             return acc;
           },
-          [],
+          []
         );
 
         (Promise.all(tableSizeGetters) as any).then(resolve, reject);
@@ -284,7 +284,7 @@ var getDatabaseSize = function(dbName) {
             acc.push(getTableSize(db, tableName));
             return acc;
           },
-          [],
+          []
         );
 
         Promise.all(tableSizeGetters).then(sizes => {

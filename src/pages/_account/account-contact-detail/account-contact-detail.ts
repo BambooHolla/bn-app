@@ -34,7 +34,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     public accountService: AccountServiceProvider,
     public localContact: LocalContactProvider,
     public viewCtrl: ViewController,
-    public transactionService: TransactionServiceProvider,
+    public transactionService: TransactionServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -87,7 +87,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       return;
     }
     const contact: LocalContactModel | undefined = this.navParams.get(
-      "contact",
+      "contact"
     );
     const account: AccountModel | undefined = this.navParams.get("account");
     this.contact = contact || account;
@@ -95,7 +95,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       const account_string: string | undefined = this.navParams.get("address");
       if (account_string) {
         this.contact = await this.accountService.getAccountByAddress(
-          account_string,
+          account_string
         );
       }
     }
@@ -183,7 +183,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
           contact.address,
           transaction_config.page,
           transaction_config.pageSize,
-          "or",
+          "or"
         ))
           // 查询本地联系人
           .map(async trs => {
@@ -219,14 +219,14 @@ export class AccountContactDetailPage extends SecondLevelPage {
                 this.contact_metched_map.set(address, task);
 
                 return await task;
-              }),
+              })
             );
             return {
               ...trs,
               senderNickname: nicknames[0],
               recipientNickname: nicknames[1],
             };
-          }),
+          })
       );
       transaction_config.has_more = list.length >= transaction_config.pageSize;
       return list;
@@ -274,7 +274,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       throw new Error("没有联系人");
     }
     const accountInfo = await this.accountService.getAccountByAddress(
-      this.contact.address,
+      this.contact.address
     );
     this.extend_info = accountInfo;
     this.is_show_extend_info = true;
@@ -318,7 +318,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
   @asyncCtrlGenerator.loading("批量备注中……")
   private async _remarkAllContacts(
     contact: LocalContactModel,
-    base_name: string,
+    base_name: string
   ) {
     await this.tryGetAllTrans();
     const all_tags = await this.localContact.getTags();
@@ -338,7 +338,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
             address,
             nickname: `${base_name}-${address.substr(-4)}`,
           },
-          tags_name,
+          tags_name
         );
         const add_tags_tasks = tags.map(tag => {
           tag.contact_ids.push(_id);

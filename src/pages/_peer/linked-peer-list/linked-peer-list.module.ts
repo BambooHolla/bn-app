@@ -8,14 +8,14 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [LinkedPeerListPage],
-	imports: [
-		IonicPageModule.forChild(LinkedPeerListPage),
-		ComponentsModule,
-		DirectivesModule,
-		PipesModule,
-		TranslateModule,
-		MomentModule,
-	],
+  declarations: [LinkedPeerListPage],
+  imports: [
+    IonicPageModule.forChild(LinkedPeerListPage),
+    ComponentsModule,
+    DirectivesModule,
+    PipesModule,
+    TranslateModule,
+    MomentModule,
+  ],
 })
 export class LinkedPeerListPageModule {}

@@ -53,7 +53,7 @@ export class ListAniDirective
   private _cur_ani_classname;
   setEleAni() {
     this.ele.classList.add(
-      (this._cur_ani_classname = `list-${this.animateName}-ani`),
+      (this._cur_ani_classname = `list-${this.animateName}-ani`)
     );
   }
   delEleAni() {
@@ -74,7 +74,7 @@ export class ListAniDirective
     const observer = (this.observer = new MB(mutations => {
       mutations.forEach(mutation => {
         this.bindEnterAniForNodes(
-          Array.prototype.slice.call(mutation.addedNodes),
+          Array.prototype.slice.call(mutation.addedNodes)
         );
       });
     }));
@@ -126,7 +126,7 @@ export class ListAniDirective
           ele.classList.remove(ani_item_classname);
           ele.style.animationDelay = "";
         },
-        ani_item_classname,
+        ani_item_classname
       );
     });
   }

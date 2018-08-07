@@ -6,12 +6,12 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [AccountMyLocalContactsPage],
-	imports: [
-		IonicPageModule.forChild(AccountMyLocalContactsPage),
-		ComponentsModule,
-		PipesModule,
-		TranslateModule,
-	],
+  declarations: [AccountMyLocalContactsPage],
+  imports: [
+    IonicPageModule.forChild(AccountMyLocalContactsPage),
+    ComponentsModule,
+    PipesModule,
+    TranslateModule,
+  ],
 })
 export class AccountMyLocalContactsPageModule {}

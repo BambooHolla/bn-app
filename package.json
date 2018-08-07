@@ -8,8 +8,7 @@
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
     "lint": "ionic-app-scripts lint",
-    "worker:1":
-      "cd workers/download-block-chain & parcel watch download-block-chain.worker.ts --no-source-maps --no-hmr --out-dir ../../src/assets/workers",
+    "worker:1": "cd workers/download-block-chain & parcel watch download-block-chain.worker.ts --no-source-maps --no-hmr --out-dir ../../src/assets/workers",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
     "format:diff": "node scripts/format.js --from-git-diff",
@@ -145,10 +144,11 @@
     "xlsx": "^0.12.3"
   },
   "description": "IFMchain client app v2",
-  "//pre-commit": ["format:diff"],
+  "//pre-commit": [
+    "format:diff"
+  ],
   "main": "index.js",
-  "repository":
-    "ssh://git@130.211.241.191/home/work/git/repo/mars/ifm-app-v2.git",
+  "repository": "ssh://git@130.211.241.191/home/work/git/repo/mars/ifm-app-v2.git",
   "license": "MIT",
   "cordova": {
     "plugins": {
@@ -165,8 +165,7 @@
       "cordova-plugin-camera": {},
       "cordova-plugin-media-capture": {},
       "cordova-plugin-crosswalk-webview": {
-        "XWALK_COMMANDLINE":
-          "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security --enable-gpu-rasterization",
+        "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect --enable-experimental-web-platform-features --disable-web-security --enable-gpu-rasterization",
         "XWALK_VERSION": "23+",
         "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
         "XWALK_MODE": "embedded",
@@ -185,6 +184,9 @@
       "cordova-plugin-themeablebrowser": {},
       "ionic-plugin-keyboard": {}
     },
-    "platforms": ["ios", "android"]
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }

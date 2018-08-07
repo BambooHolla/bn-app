@@ -18,7 +18,7 @@ export class AccountPeerListPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public peerService: PeerServiceProvider,
+    public peerService: PeerServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -35,7 +35,7 @@ export class AccountPeerListPage extends SecondLevelPage {
   async loopUpdatePeerList() {
     const min_wait_time = sleep(5000); // 至少每5秒要更新一次数据
     for await (var _pi of this.peerService.updateUseablePeersInfo(
-      this.cur_peer_list,
+      this.cur_peer_list
     )) {
       if (this.PAGE_STATUS <= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
         break;

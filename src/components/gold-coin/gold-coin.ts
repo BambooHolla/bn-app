@@ -16,7 +16,7 @@ export class GoldCoinComponent {
   @Input("ani-speed")
   set speed(v) {
     this.style.animationTimingFunction = this.sanitizer.bypassSecurityTrustStyle(
-      `steps(${v * 36})`,
+      `steps(${v * 36})`
     );
     this.style.animationDuration = 1 / v + "s";
     this._speed = v;
@@ -29,7 +29,7 @@ export class GoldCoinComponent {
     animationIterationCount: "infinite",
     animationDuration: "1s",
     animationTimingFunction: this.sanitizer.bypassSecurityTrustStyle(
-      "steps(36)",
+      "steps(36)"
     ),
   };
   constructor(public sanitizer: DomSanitizer) {}

@@ -1,46 +1,46 @@
 simple-sector {
-	.simple-sector-wrapper {
-		width: 100%;
-		padding-bottom: 100%;
-		position: relative;
-		border-radius: 50%;
-		overflow: hidden;
-		> .bg-circle,
-		> .sector-progress {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-		}
-		> .bg-circle {
-			background-color: #fe605e;
-			z-index: 0;
-		}
-		> .sector-progress {
-			mask-image: url("../assets/imgs/assets/half-rect-mask-transparent.png");
-			image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED  */
-			image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
-			image-rendering: pixelated; /* Chrome */
-			image-rendering: optimize-contrast; /* CSS3 Proposed                  */
-			-ms-interpolation-mode: nearest-neighbor;
-			mask-size: 100%;
-			&.left {
-				transform: rotate(0deg);
-			}
-			&.right {
-				transform: rotate(180deg);
-			}
-			> .inner {
-				transition-duration: 250ms;
-				transform-origin: left center;
-				background-color: #41c4ff;
-				position: absolute;
-				left: 50%;
-				width: 50%;
-				height: 100%;
-				top: 0;
-			}
-		}
-	}
+  .simple-sector-wrapper {
+    width: 100%;
+    padding-bottom: 100%;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    > .bg-circle,
+    > .sector-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    > .bg-circle {
+      background-color: #fe605e;
+      z-index: 0;
+    }
+    > .sector-progress {
+      mask-image: url("../assets/imgs/assets/half-rect-mask-transparent.png");
+      image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED  */
+      image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+      image-rendering: pixelated; /* Chrome */
+      image-rendering: optimize-contrast; /* CSS3 Proposed                  */
+      -ms-interpolation-mode: nearest-neighbor;
+      mask-size: 100%;
+      &.left {
+        transform: rotate(0deg);
+      }
+      &.right {
+        transform: rotate(180deg);
+      }
+      > .inner {
+        transition-duration: 250ms;
+        transform-origin: left center;
+        background-color: #41c4ff;
+        position: absolute;
+        left: 50%;
+        width: 50%;
+        height: 100%;
+        top: 0;
+      }
+    }
+  }
 }

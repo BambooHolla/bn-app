@@ -12,11 +12,11 @@ import * as TYPE from "./transfer.types";
 export class TransferProvider {
   constructor(
     public appSetting: AppSettingProvider,
-    public fetch: AppFetchProvider,
+    public fetch: AppFetchProvider
   ) {}
   async getRollOutLogList(
     num = 20,
-    from = new Date(),
+    from = new Date()
   ): Promise<TYPE.RollOutLogModel[]> {
     await new Promise(cb => setTimeout(cb, 300 * Math.random()));
     const from_val = from.valueOf();
@@ -27,7 +27,7 @@ export class TransferProvider {
           .map(_ =>
             Math.random()
               .toString(36)
-              .substr(2),
+              .substr(2)
           )
           .join("")
           .substr(0, 32),
@@ -38,7 +38,7 @@ export class TransferProvider {
   }
   async getReceiveLogList(
     num = 20,
-    from = new Date(),
+    from = new Date()
   ): Promise<TYPE.ReceiveLogModel[]> {
     await new Promise(cb => setTimeout(cb, 300 * Math.random()));
     const from_val = from.valueOf();
@@ -49,7 +49,7 @@ export class TransferProvider {
           .map(_ =>
             Math.random()
               .toString(36)
-              .substr(2),
+              .substr(2)
           )
           .join("")
           .substr(0, 32),

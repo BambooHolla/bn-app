@@ -6,12 +6,12 @@ import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [AccountAddLocalContactPage],
-	imports: [
-		IonicPageModule.forChild(AccountAddLocalContactPage),
-		ComponentsModule,
-		DirectivesModule,
-		TranslateModule,
-	],
+  declarations: [AccountAddLocalContactPage],
+  imports: [
+    IonicPageModule.forChild(AccountAddLocalContactPage),
+    ComponentsModule,
+    DirectivesModule,
+    TranslateModule,
+  ],
 })
 export class AccountAddLocalContactPageModule {}

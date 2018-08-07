@@ -77,7 +77,6 @@ page-assets-issuing-assets {
       opacity: 0.5;
     }
   }
-
   .new-assets-form {
     width: 76%;
     margin: 0 auto;
@@ -93,8 +92,7 @@ page-assets-issuing-assets {
         height: 27.8vw;
         margin-top: 5rem;
         .mat-button {
-          padding: 0;
-          /* .mat-button-wrapper{
+          padding: 0; /* .mat-button-wrapper{
             object-fit: cover;
           } */
         }
@@ -141,8 +139,7 @@ page-assets-issuing-assets {
       /* justify-content: center; */
       .left {
         padding-right: 1rem;
-        min-width: 6rem;
-        // text-align: center;
+        min-width: 6rem; // text-align: center;
         color: #666;
         font-size: 1.5rem;
       }
@@ -154,7 +151,7 @@ page-assets-issuing-assets {
         margin-bottom: 2rem;
         border-bottom: 1px solid rgba(153, 153, 153, 0.2);
         color: #999;
-        .placeholder{
+        .placeholder {
           color: rgba(0, 0, 0, 0.54);
         }
       }
@@ -182,7 +179,6 @@ page-assets-issuing-assets {
     }
   }
 }
-
 .expectedIssuedBlockHeight-autocomplete {
   mat-option {
     .mat-option-text {

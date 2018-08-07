@@ -48,7 +48,7 @@ export class TabsPage extends FLP_Lifecycle {
     public fetch: AppFetchProvider,
     public r2: Renderer2,
     public elRef: ElementRef,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super();
     translateService
@@ -138,10 +138,10 @@ export class TabsPage extends FLP_Lifecycle {
       tabPage => {
         tabPage.event.on(
           "tabs:setBgTransparent",
-          this.setBgTransparent.bind(this),
+          this.setBgTransparent.bind(this)
         );
         tabPage.event.on("tabs:hideTabs", this.hideTabs.bind(this));
-      },
+      }
     );
     // 初始化QueryList对象
     this.pageItemQueryList = (this.elRef

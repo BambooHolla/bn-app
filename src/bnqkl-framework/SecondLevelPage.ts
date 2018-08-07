@@ -8,7 +8,7 @@ export class SecondLevelPage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private _autoHiddenTabs: boolean = true,
-    public tabs?: TabsPage,
+    public tabs?: TabsPage
   ) {
     super(navCtrl, navParams);
   }

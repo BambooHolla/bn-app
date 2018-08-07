@@ -6,12 +6,12 @@ import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [ChainRewardDetailPage],
-	imports: [
-		IonicPageModule.forChild(ChainRewardDetailPage),
-		TranslateModule,
-		DirectivesModule,
-		ComponentsModule,
-	],
+  declarations: [ChainRewardDetailPage],
+  imports: [
+    IonicPageModule.forChild(ChainRewardDetailPage),
+    TranslateModule,
+    DirectivesModule,
+    ComponentsModule,
+  ],
 })
 export class ChainRewardDetailPageModule {}

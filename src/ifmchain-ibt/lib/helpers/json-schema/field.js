@@ -1,6 +1,6 @@
-const util = require('util');
+const util = require("util");
 
-const Field = require('../validator').prototype.Field;
+const Field = require("../validator").prototype.Field;
 
 /**
  * Json结构字段
@@ -9,9 +9,9 @@ const Field = require('../validator').prototype.Field;
  * @extends Field
  * */
 class JsonSchemaField extends Field {
-    constructor(validator, path, value, rule, thisArg) {
-        super(validator, path, value, rule, thisArg)
-    }
+  constructor(validator, path, value, rule, thisArg) {
+    super(validator, path, value, rule, thisArg);
+  }
 }
 
 module.exports = JsonSchemaField;

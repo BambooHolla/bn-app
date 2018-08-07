@@ -41,7 +41,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
     // public accountService: AccountServiceProvider,
     public localContact: LocalContactProvider,
     public viewCtrl: ViewController,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -57,7 +57,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
   @AccountRemarkContactTagsPage.willEnter
   async initData() {
     const contact: LocalContactModel | undefined = this.navParams.get(
-      "contact",
+      "contact"
     );
     if (!contact) {
       return this.navCtrl.goToRoot({});
@@ -67,7 +67,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
     this.used_tags = contact.tags.map(name => ({ name }));
     this.all_tags = await this.localContact.getTags();
     this.used_tags = this.all_tags.filter(
-      t => contact.tags.indexOf(t.name) !== -1,
+      t => contact.tags.indexOf(t.name) !== -1
     );
     this.markForCheck();
   }

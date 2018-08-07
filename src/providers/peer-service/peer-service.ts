@@ -56,7 +56,7 @@ export class PeerServiceProvider extends CommonService {
     // public storage: Storage,
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
-    public minService: MinServiceProvider,
+    public minService: MinServiceProvider
   ) {
     super();
   }
@@ -72,11 +72,11 @@ export class PeerServiceProvider extends CommonService {
   /*获取所有次信任节点*/
   async getAllSecondTrustPeers() {
     const trust_peer_list = this.peerList.filter(
-      peer => peer.level === TYPE.PEER_LEVEL.TRUST,
+      peer => peer.level === TYPE.PEER_LEVEL.TRUST
     );
     const col = new Map<string, TYPE.LocalPeerModel>();
     return (await Promise.all(
-      trust_peer_list.map(trust_peer => this._searchPeers(trust_peer, col)),
+      trust_peer_list.map(trust_peer => this._searchPeers(trust_peer, col))
     )).reduce((res_list, peer_list) => res_list.concat(peer_list), []);
   }
 
@@ -95,7 +95,7 @@ export class PeerServiceProvider extends CommonService {
     opts: {
       /*是否手动检测节点信息*/
       manual_check_peers?: boolean;
-    } = {},
+    } = {}
   ) {
     const checked_peer_infos: PromiseType<
       ReturnType<typeof PeerServiceProvider.prototype._checkPeer>
@@ -170,7 +170,7 @@ export class PeerServiceProvider extends CommonService {
       peer.delay = end_time - start_time;
 
       [highest_blocks, lowest_blocks, web_link_num] = await Promise.all<any>(
-        tasks as any,
+        tasks as any
       );
       delete peer.disabled;
     } catch (err) {
@@ -185,7 +185,7 @@ export class PeerServiceProvider extends CommonService {
   async *searchPeers(
     enter_port_peers = this.peerList, // 初始的节点
     collection_peers = new Map<string, TYPE.LocalPeerModel>(), // 节点去重用的表
-    parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(4), // 1. 并行池，可以同时执行2个任务
+    parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(4) // 1. 并行池，可以同时执行2个任务
   ): AsyncIterableIterator<TYPE.LocalPeerModel> {
     const self = this; // Generator function 无法与箭头函数混用，所以这里的this必须主动声明在外部。
     for (var _p of enter_port_peers) {
@@ -215,7 +215,7 @@ export class PeerServiceProvider extends CommonService {
       const enter_port_peer = _ep;
       // 向并行池中添加任务
       parallel_pool.addTaskExecutor(() =>
-        this._searchPeers(enter_port_peer, collection_peers),
+        this._searchPeers(enter_port_peer, collection_peers)
       );
       yield* recursiveSearch(true);
     }
@@ -225,7 +225,7 @@ export class PeerServiceProvider extends CommonService {
   /*获取指定节点的子节点*/
   private async _searchPeers(
     enter_port_peer: typeof PeerServiceProvider.prototype.peerList[0],
-    collection_peers: Map<string, TYPE.LocalPeerModel>,
+    collection_peers: Map<string, TYPE.LocalPeerModel>
   ) {
     const { peers: sec_peers } = await this.fetch
       .get<{
@@ -295,7 +295,7 @@ export class PeerServiceProvider extends CommonService {
     const xhr = new XMLHttpRequest();
     xhr.open(
       "GET",
-      `http://${ip}:${port}/api/${AppUrl.BACKEND_VERSION}system/portInfo`,
+      `http://${ip}:${port}/api/${AppUrl.BACKEND_VERSION}system/portInfo`
     );
     xhr.send();
     setTimeout(() => {
@@ -327,7 +327,7 @@ export class PeerServiceProvider extends CommonService {
       lowest_blocks: BlockModel[];
       web_link_num: number;
     }[],
-    all_second_trust_peer_list: TYPE.LocalPeerModel[] = [],
+    all_second_trust_peer_list: TYPE.LocalPeerModel[] = []
   ) {
     // const second_peer_num = Math.max(all_second_trust_peer_list.length, 4);
     const peer_info_level_map = new Map<
@@ -353,7 +353,7 @@ export class PeerServiceProvider extends CommonService {
       const res = PeerServiceProvider._calcLeveledPeerInfoList(
         peer_info_list,
         level,
-        all_second_trust_peer_list,
+        all_second_trust_peer_list
       );
       if (res) {
         let score = 0;
@@ -391,7 +391,7 @@ export class PeerServiceProvider extends CommonService {
       web_link_num: number;
     }[],
     level: TYPE.PEER_LEVEL,
-    all_second_trust_peer_list: TYPE.LocalPeerModel[] = [],
+    all_second_trust_peer_list: TYPE.LocalPeerModel[] = []
   ) {
     const second_peer_num = Math.max(all_second_trust_peer_list.length, 4);
     /**拜占庭算法中至少需要的数量*/
@@ -414,7 +414,7 @@ export class PeerServiceProvider extends CommonService {
       }
     });
     for (var f_peer_info_list of [...peer_first_block_map.values()].sort(
-      (a, b) => b.length - a.length,
+      (a, b) => b.length - a.length
     )) {
       // if (level === TYPE.PEER_LEVEL.SEC_TRUST && f_peer_info_list.length >= 4) {
       // 拜占庭最后的几个区块
@@ -429,7 +429,7 @@ export class PeerServiceProvider extends CommonService {
         });
       });
       for (var h_peer_info_list of [...peer_last_block_map.values()].sort(
-        (a, b) => b.length - a.length,
+        (a, b) => b.length - a.length
       )) {
         if (
           level === TYPE.PEER_LEVEL.SEC_TRUST &&
@@ -490,7 +490,7 @@ export class PeerServiceProvider extends CommonService {
     };
     const get_platform_task = this.fetch
       .get<any>(
-        this.oneTimeUrl(this.SYSTEM_RUNTIME, peer.origin, true).SYSTEM_RUNTIME,
+        this.oneTimeUrl(this.SYSTEM_RUNTIME, peer.origin, true).SYSTEM_RUNTIME
       )
       .then(runtime => {
         peer.platform = runtime.data.System.platform;

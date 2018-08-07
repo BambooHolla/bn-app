@@ -44,7 +44,7 @@ export class AccountServiceProvider {
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
-    public dbCache: DbCacheProvider,
+    public dbCache: DbCacheProvider
   ) {
     // this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     // this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
@@ -97,7 +97,7 @@ export class AccountServiceProvider {
             if (
               (await db.update(
                 { address: new_account.address },
-                new_account,
+                new_account
               )) === 0
             ) {
               await db.insert(new_account);
@@ -106,17 +106,17 @@ export class AccountServiceProvider {
             return mix_res;
           }
           return cache;
-        },
+        }
       );
     });
   }
 
   readonly GET_USER = this.appSetting.APP_URL("/api/accounts/");
   readonly GET_USER_BY_USERNAME = this.appSetting.APP_URL(
-    "/api/accounts/username/get",
+    "/api/accounts/username/get"
   );
   readonly GET_ACCOUNT_PROFITS = this.appSetting.APP_URL(
-    "/api/accounts/accountProfits",
+    "/api/accounts/accountProfits"
   );
 
   /**上轮是否有投票*/
@@ -127,7 +127,7 @@ export class AccountServiceProvider {
       senderId: address,
       startHeight: Math.max(
         this.appSetting.getRoundStartHeight(cur_round - 1),
-        1,
+        1
       ),
       limit: 1,
       orderBy: "height:esc", // 取height最小的
@@ -167,7 +167,7 @@ export class AccountServiceProvider {
       this.GET_USER_BY_USERNAME,
       {
         search: { username },
-      },
+      }
     );
 
     return data.account;
@@ -192,17 +192,17 @@ export class AccountServiceProvider {
     newUsername: string,
     secret: string,
     secondSecret?: string,
-    fee = parseFloat(this.appSetting.settings.default_fee),
+    fee = parseFloat(this.appSetting.settings.default_fee)
   ) {
     if (!!this.user.userInfo.username) {
       throw this.fetch.ServerResError.getI18nError(
-        "account already has username",
+        "account already has username"
       );
     }
     let is_existed = await this.checkUsernameExisted(newUsername);
     if (!is_existed) {
       throw this.fetch.ServerResError.getI18nError(
-        "this username has already exist",
+        "this username has already exist"
       );
     }
     let accountData: any = {
@@ -252,7 +252,7 @@ export class AccountServiceProvider {
           address,
           orderBy: "round:desc",
         },
-      },
+      }
     );
   }
 
@@ -266,7 +266,7 @@ export class AccountServiceProvider {
     newSecondSecret: string,
     oldSecondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee),
-    publicKey = this.user.publicKey,
+    publicKey = this.user.publicKey
   ) {
     let txData = {
       type: this.TransactionTypes.SIGNATURE,

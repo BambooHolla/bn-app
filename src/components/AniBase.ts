@@ -207,7 +207,7 @@ export class AniBase extends EventEmitter {
   static createLinearGradient(
     x1 = 300,
     y1 = 0,
-    stops = [[0, "#FFF"], [1, "#000"]],
+    stops = [[0, "#FFF"], [1, "#000"]]
   ) {
     var canvas = document.createElement("canvas");
     const size = Math.max(x1, y1);
@@ -256,7 +256,7 @@ export class AniBase extends EventEmitter {
     from: number,
     to: number,
     duration: number,
-    easing_function = Easing.Linear,
+    easing_function = Easing.Linear
   ) {
     const diff = to - from;
     let frame_id;
@@ -265,7 +265,7 @@ export class AniBase extends EventEmitter {
     };
     return (
       cb: (v: number, abort: () => void) => void | boolean,
-      after_finished?: () => void,
+      after_finished?: () => void
     ) => {
       const start_time = performance.now();
       const ani = () => {
@@ -306,18 +306,18 @@ export class AniBase extends EventEmitter {
     from: number | string,
     to: number | string,
     duration: number,
-    easing_function = Easing.Linear,
+    easing_function = Easing.Linear
   ) {
     const from_color = AniBase.toColor(from);
     const to_color = AniBase.toColor(to);
     const diff_color = from_color.map((from_v, i) => to_color[i] - from_v);
     return (
       cb: (v: number[], abort: () => void) => void | boolean,
-      after_finished?: () => void,
+      after_finished?: () => void
     ) => {
       AniBase.animateNumber(0, 1, duration, easing_function)((p, abort) => {
         const cur_color = from_color.map(
-          (from_v, i) => (from_v + diff_color[i] * p) | 0,
+          (from_v, i) => (from_v + diff_color[i] * p) | 0
         );
         return cb(cur_color, abort);
       }, after_finished);
@@ -589,7 +589,7 @@ export async function formatImage(
     target_encode: string /*base64,blob*/;
     encoderOptions?: number /*jpeg格式的质量*/;
     onlyBase64Content?: boolean /*是否只返回base64的内容，没有前缀“data:image/png;base64,”的那种*/;
-  },
+  }
 ) {
   format_canvas.width = opts.view_width;
   format_canvas.height = opts.view_width;
@@ -661,13 +661,13 @@ export async function formatImage(
           }
         },
         opts.target_encode,
-        opts.encoderOptions,
+        opts.encoderOptions
       );
     });
   } else if (opts.target_encode === "base64") {
     const base64str = format_canvas.toDataURL(
       opts.target_encode,
-      opts.encoderOptions,
+      opts.encoderOptions
     );
     if (!opts.onlyBase64Content) {
       return base64str;

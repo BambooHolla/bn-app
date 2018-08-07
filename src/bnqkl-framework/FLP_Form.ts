@@ -36,7 +36,7 @@ export class FLP_Form extends FLP_Route {
     extends_opts: {
       check_when_empty?: boolean;
       formData_key?: string;
-    } = {},
+    } = {}
   ) {
     const formData_key = extends_opts.formData_key || "formData";
     return (target: any, name: string, descriptor: PropertyDescriptor) => {
@@ -174,7 +174,7 @@ export class FLP_Form extends FLP_Route {
     () => FLP_Form.getTranslate("PAY_INPUT_ERROR"),
     undefined,
     undefined,
-    true,
+    true
   )
   async getUserPassword(
     opts: {
@@ -182,7 +182,7 @@ export class FLP_Form extends FLP_Route {
       custom_fee?: boolean;
       /**是否一定要输入主密码*/
       force_require_password?: boolean;
-    } = {},
+    } = {}
   ): Promise<{
     password: string;
     have_password?: boolean;
@@ -232,7 +232,7 @@ export class FLP_Form extends FLP_Route {
             enableBackdropDismiss: true,
             cssClass: "fee-input-modal",
             showBackdrop: true,
-          },
+          }
         );
         model.present();
         model.onDidDismiss(data => {
@@ -244,7 +244,7 @@ export class FLP_Form extends FLP_Route {
               resolve({ custom_fee: current_fee }); //返回默认值
             } else {
               console.warn(
-                new Error(this.getTranslateSync("FEE_INPUT_CANCEL")),
+                new Error(this.getTranslateSync("FEE_INPUT_CANCEL"))
               );
               reject(getErrorFromAsyncerror(false));
             }
@@ -283,7 +283,7 @@ export class FLP_Form extends FLP_Route {
         ) {
           return this.getTranslateSync("NEED_INPUT_#FORM_KEY#", {
             form_key: await translateMessage(
-              this.formDataKeyI18nMap[form_key] || form_key,
+              this.formDataKeyI18nMap[form_key] || form_key
             ),
           });
         }

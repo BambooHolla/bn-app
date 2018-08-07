@@ -26,7 +26,6 @@ $candy-app-theme: mat-light-theme(
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($candy-app-theme);
-
 html,
 body {
   font-size: 2.5vw;
@@ -97,18 +96,7 @@ body {
     -webkit-background-clip: text !important;
     background-clip: text !important;
   }
-  // .ifmicon {
-  //    // background-image: inherit;
-  //  &::before {
-  //    // background-image: inherit;
-  //    -webkit-background-clip: text !important;
-  //    background-clip: text !important;
-  //    // -webkit-text-fill-color: transparent;
-  //    color: transparent !important;
-  //  }
-  // }
 }
-
 // $toolbar-ios-height: 1.8rem;
 $navbar-height: 60px;
 ion-loading {
@@ -134,20 +122,9 @@ ion-loading {
     }
   }
 }
-// ion-navbar,
-// ion-title {
-//   padding-top: 18px !important;
-// }
-// @supports(padding: #{'max(0px)'}) {
-//     ion-navbar,
-//     ion-title {
-//       padding-top: #{'max(18px, env(safe-area-inset-top)) !important'};
-//       padding-bottom: 1rem;
-//     }
-// }
+
 ion-navbar.toolbar-ios {
-  // min-height: $navbar-height;
-  // padding: 0 1.1rem;
+  // min-height: $navbar-height; // padding: 0 1.1rem;
   .back-button {
     width: 3rem;
     transform: translateX(1.6vw);
@@ -182,11 +159,6 @@ ion-navbar.toolbar-ios {
     }
   }
 }
-// @supports(padding: #{'max(0px)'}) {
-//     ion-navbar.toolbar-ios{
-//       min-height: $navbar-height + 10px;
-//     }
-// }
 
 ion-content {
   > .scroll-content {
@@ -197,7 +169,6 @@ ion-content {
     }
   }
 }
-
 @keyframes rotate-with-clock {
   0% {
     transform: rotate(0deg);
@@ -214,12 +185,10 @@ ion-content {
     transform: rotate(-360deg);
   }
 }
-
 @font-face {
   font-family: monospace;
   src: local("Menlo");
 }
-
 .follow-parent-ani {
   animation-duration: inherit;
   animation-timing-function: inherit;
@@ -229,20 +198,17 @@ ion-content {
   animation-play-state: inherit;
   animation-direction: inherit;
 }
-
 .common-gradient {
   > .button-inner {
     background: linear-gradient(bottom, #61ebde 0%, #44cfeb 100%) !important;
     @extend .clip-text;
   }
 }
-
 .disable-scroll .ion-page {
   pointer-events: all !important;
   -ms-touch-action: all !important;
   touch-action: all !important;
 }
-
 #ion-diagnostics-toast {
   opacity: 0.88;
   pointer-events: none;
@@ -250,7 +216,6 @@ ion-content {
     pointer-events: none !important;
   }
 }
-
 ion-loading.logo-loading {
   .loading-wrapper {
     background: transparent;
@@ -258,10 +223,7 @@ ion-loading.logo-loading {
     flex-direction: column;
     padding: 0;
     > .loading-spinner {
-      background-image: url("../assets/icon/loading-logo.png");
-      // width: 16vw;
-      // height: 21vw;
-      // background-size: 600%;
+      background-image: url("../assets/icon/loading-logo.png"); // width: 16vw; // height: 21vw; // background-size: 600%;
       // background-repeat: no-repeat;
       // background-position: center 45%;
       width: 16vw;
@@ -292,7 +254,6 @@ ion-loading.logo-loading {
     }
   }
 }
-
 @-webkit-keyframes fadeDownUp {
   0% {
     transform: translate3d(0, -20%, 0);
@@ -304,7 +265,6 @@ ion-loading.logo-loading {
     transform: translate3d(0, -20%, 0);
   }
 }
-
 ion-loading.blockchain-loading {
   .loading-wrapper {
     background: transparent;

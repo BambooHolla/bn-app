@@ -18,8 +18,7 @@ page-link-node {
       /* animation-name: rotate-bg3;
       animation-timing-function: linear;
       animation-duration: 280s * 2;
-      animation-iteration-count: infinite;
-       */
+      animation-iteration-count: infinite; */
       opacity: 0.4;
     }
     > .scroll-content {
@@ -36,7 +35,6 @@ page-link-node {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-
     .card-title {
       flex-grow: 0;
       flex-shrink: 0;
@@ -59,7 +57,7 @@ page-link-node {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        filter: drop-shadow(-0.6rem 0 0.8rem rgba(#FFF, 0.3));
+        filter: drop-shadow(-0.6rem 0 0.8rem rgba(#fff, 0.3));
       }
     }
     .card-content {
@@ -146,10 +144,12 @@ page-link-node {
               position: absolute;
               width: 4rem;
               height: 4rem;
-              image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED  */
+              image-rendering: optimizeSpeed;
+              /* STOP SMOOTHING, GIVE ME SPEED */
               image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
-              image-rendering: pixelated; /* Chrome */
-              image-rendering: optimize-contrast; /* CSS3 Proposed                  */
+              image-rendering: pixelated;
+              /* Chrome */
+              image-rendering: optimize-contrast; /* CSS3 Proposed */
               background-image: url("../assets/imgs/peers/shield-light-line.png");
               background-size: 100% 100%;
               animation-iteration-count: infinite;
@@ -227,9 +227,8 @@ page-link-node {
       animation-duration: 3s;
       background-size: contain;
       background-position: center;
-  /*     width: 92vw;
+      /* width: 92vw;
       height: 92vw; */
-
       @keyframes left-shield-light-line {
         0% {
           opacity: 0;
@@ -308,10 +307,10 @@ page-link-node {
   }
   .scan-light-line,
   .shield-light-line {
-    image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED  */
+    image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED */
     image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
     image-rendering: pixelated; /* Chrome */
-    image-rendering: optimize-contrast; /* CSS3 Proposed                  */
+    image-rendering: optimize-contrast; /* CSS3 Proposed */
     -ms-interpolation-mode: nearest-neighbor;
     position: absolute;
     opacity: 1;

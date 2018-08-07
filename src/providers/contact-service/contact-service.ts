@@ -44,7 +44,7 @@ export class ContactServiceProvider {
     public accountService: AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
-    public dbCache: DbCacheProvider,
+    public dbCache: DbCacheProvider
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.addressCheck = this.ifmJs.addressCheck;
@@ -90,7 +90,7 @@ export class ContactServiceProvider {
               undefined,
               db,
               { owner_publicKey },
-              "address",
+              "address"
             );
           }
           // const res_followers = mix_res.followers;
@@ -109,7 +109,7 @@ export class ContactServiceProvider {
           return mix_res;
         }
         return cache;
-      },
+      }
     );
   }
   contactModelDiffParser(contact: TYPE.ContactModel) {
@@ -234,7 +234,7 @@ export class ContactServiceProvider {
     address_or_username: string,
     secondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee),
-    type: "+" | "-" = "+",
+    type: "+" | "-" = "+"
   ) {
     if (!address_or_username) {
       throw new Error("Parameters cannot find address or username");
@@ -242,7 +242,7 @@ export class ContactServiceProvider {
 
     if (!this.addressCheck.isAddress(address_or_username)) {
       let userAddress = await this.accountService.getAccountByUsername(
-        address_or_username,
+        address_or_username
       );
       address_or_username = userAddress.address;
     }
@@ -300,7 +300,7 @@ export class ContactServiceProvider {
     contact_list.forEach(my_contact => {
       try {
         const word = pinyin.convertToPinyin(
-          (my_contact.username || my_contact.address)[0],
+          (my_contact.username || my_contact.address)[0]
         );
         if (!word) {
           unkown_letter.list.push(my_contact);

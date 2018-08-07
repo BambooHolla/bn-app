@@ -74,10 +74,10 @@ export class BuddhaGlowComponent extends AniBase {
     const gradientTexture_list: PIXI.Texture[] = [];
     colors.forEach(color_num => {
       gradientTexture_list.push(
-        BuddhaGlowComponent.getRadialGradientTexture(color_num),
+        BuddhaGlowComponent.getRadialGradientTexture(color_num)
       );
       gradientTexture_list.push(
-        BuddhaGlowComponent.getLinearGradientTexture(color_num),
+        BuddhaGlowComponent.getLinearGradientTexture(color_num)
       );
     });
     const wh_size = Math.min(renderer.width, renderer.height);
@@ -88,7 +88,7 @@ export class BuddhaGlowComponent extends AniBase {
         [0.8, "rgba(255,255,255,1)"],
         [0.95, "rgba(255,255,255,0)"],
         [1, "rgba(255,255,255,0)"],
-      ],
+      ]
     );
     // document.body.appendChild(circle_mesh_canvas);
     const circle_mesh_texture = PIXI.Texture.fromCanvas(circle_mesh_canvas);
@@ -104,7 +104,7 @@ export class BuddhaGlowComponent extends AniBase {
     lightsContainer.addChild(baseLightContainer);
     for (var i = 0; i < num1; i++) {
       const sp = new PIXI.Sprite(
-        gradientTexture_list[i % gradientTexture_list.length],
+        gradientTexture_list[i % gradientTexture_list.length]
       );
       const progress = i / (num1 - 1);
 
@@ -124,7 +124,7 @@ export class BuddhaGlowComponent extends AniBase {
     lightsContainer.addChild(dynLightContainer);
     for (var i = 0; i < num2; i++) {
       const sp = new PIXI.Sprite(
-        gradientTexture_list[i % gradientTexture_list.length],
+        gradientTexture_list[i % gradientTexture_list.length]
       );
       const progress = i / (num2 - 1);
 
@@ -183,7 +183,7 @@ export class BuddhaGlowComponent extends AniBase {
       .map(v => parseInt(v, 16));
     const gradient_r_canvas = BuddhaGlowComponent.createRadialGradient(
       window.innerWidth,
-      [[1, `rgba(${RGB},1)`], [0, `rgba(${RGB},0)`]],
+      [[1, `rgba(${RGB},1)`], [0, `rgba(${RGB},0)`]]
     );
 
     const texture = PIXI.Texture.fromCanvas(gradient_r_canvas);
@@ -206,7 +206,7 @@ export class BuddhaGlowComponent extends AniBase {
     const gradient_l_canvas = BuddhaGlowComponent.createLinearGradient(
       0,
       window.innerWidth,
-      [[0, `rgba(${RGB},1)`], [1, `rgba(${RGB},0)`]],
+      [[0, `rgba(${RGB},1)`], [1, `rgba(${RGB},0)`]]
     );
 
     const texture = PIXI.Texture.fromCanvas(gradient_l_canvas);

@@ -8,14 +8,14 @@ import { TranslateModule } from "@ngx-translate/core";
 import { MomentModule } from "angular2-moment";
 
 @NgModule({
-	declarations: [AccountContactDetailPage],
-	imports: [
-		IonicPageModule.forChild(AccountContactDetailPage),
-		ComponentsModule,
-		PipesModule,
-		DirectivesModule,
-		TranslateModule,
-		MomentModule,
-	],
+  declarations: [AccountContactDetailPage],
+  imports: [
+    IonicPageModule.forChild(AccountContactDetailPage),
+    ComponentsModule,
+    PipesModule,
+    DirectivesModule,
+    TranslateModule,
+    MomentModule,
+  ],
 })
 export class AccountContactDetailPageModule {}

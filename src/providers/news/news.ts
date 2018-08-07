@@ -22,7 +22,8 @@ export class NewsProvider {
         type: "simple-html",
         author: "凤凰新闻",
         publish_time: "2018-07-12",
-        cover_image_url:"http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
+        cover_image_url:
+          "http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -90,7 +91,8 @@ export class NewsProvider {
         type: "simple-html",
         author: "凤凰新闻",
         publish_time: "2018-06-29",
-        cover_image_url:"http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
+        cover_image_url:
+          "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -155,7 +157,8 @@ export class NewsProvider {
         type: "simple-html",
         author: "凤凰新闻",
         publish_time: "2018-07-07",
-        cover_image_url:"http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
+        cover_image_url:
+          "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -225,7 +228,8 @@ export class NewsProvider {
         type: "simple-html",
         author: "中国创投",
         publish_time: "2018-06-13",
-        cover_image_url:"http://n.sinaimg.cn/sinacn18/791/w500h291/20180611/dccb-hcufqih1147455.jpg",
+        cover_image_url:
+          "http://n.sinaimg.cn/sinacn18/791/w500h291/20180611/dccb-hcufqih1147455.jpg",
         contents: [
           {
             type: "p",
@@ -270,7 +274,8 @@ export class NewsProvider {
         type: "simple-html",
         author: "凤凰新闻",
         publish_time: "2018-05-07",
-        cover_image_url:"http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
+        cover_image_url:
+          "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
         contents: [
           {
             type: "blockquote",
@@ -493,10 +498,10 @@ export class NewsProvider {
         author: "腾讯视频",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
-          "assets/video/IFMChain移动公有链正式发布.mp4",
+          "assets/video/IFMChain移动公有链正式发布.mp4"
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "assets/video/IFMChain移动公有链正式发布.jpg",
+          "assets/video/IFMChain移动公有链正式发布.jpg"
         ),
       },
       {
@@ -505,10 +510,10 @@ export class NewsProvider {
         author: "乐透社",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.mp4",
+          "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.mp4"
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.jpg",
+          "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.jpg"
         ),
       },
       {
@@ -517,10 +522,10 @@ export class NewsProvider {
         author: "第一视频",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.mp4",
+          "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.mp4"
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.jpg",
+          "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.jpg"
         ),
       },
       {
@@ -529,10 +534,10 @@ export class NewsProvider {
         author: "新奇视频",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.mp4",
+          "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.mp4"
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.jpg",
+          "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.jpg"
         ),
       },
       {

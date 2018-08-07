@@ -13,15 +13,15 @@ export class CustomDialogPopIn extends Transition {
     const backdrop = new Animation(this.plt, backdropEle);
     const wrapper = new Animation(
       this.plt,
-      ele.querySelector(".modal-wrapper"),
+      ele.querySelector(".modal-wrapper")
     );
     const content = new Animation(
       this.plt,
-      ele.querySelector(".scroll-content"),
+      ele.querySelector(".scroll-content")
     );
     const dialog_wrapper = new Animation(
       this.plt,
-      ele.querySelector(".dialog-wrapper"),
+      ele.querySelector(".dialog-wrapper")
     );
 
     wrapper.beforeStyles({ opacity: 1, transform: "none" });
@@ -46,11 +46,11 @@ export class CustomDialogPopOut extends Transition {
     const backdrop = new Animation(this.plt, ele.querySelector("ion-backdrop"));
     const content = new Animation(
       this.plt,
-      ele.querySelector(".scroll-content"),
+      ele.querySelector(".scroll-content")
     );
     const dialog_wrapper = new Animation(
       this.plt,
-      ele.querySelector(".dialog-wrapper"),
+      ele.querySelector(".dialog-wrapper")
     );
 
     content.fromTo("opacity", 0.99, 0);

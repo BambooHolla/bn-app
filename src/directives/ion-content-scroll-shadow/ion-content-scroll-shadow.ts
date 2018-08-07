@@ -53,7 +53,7 @@ export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
 
     this._r2.appendChild(
       this.content.getElementRef().nativeElement,
-      shadow_box_ele,
+      shadow_box_ele
     );
 
     this._sub = this.content.ionScroll.subscribe(() => {
@@ -85,7 +85,7 @@ export class IonContentScrollShadowDirective implements OnInit, OnDestroy {
       this._r2.setStyle(
         shadow_box_ele,
         "box-shadow",
-        `${shadow_style} rgba(${cur_color})`,
+        `${shadow_style} rgba(${cur_color})`
       );
 
       // this.content.setElementStyle(

@@ -44,11 +44,10 @@ vote-pre-round-income-ranking {
       justify-content: center;
       align-items: center;
       margin: 0.6rem;
-
     }
 
-    &.ranking-l-3{
-      >.ranking-val{
+    &.ranking-l-3 {
+      > .ranking-val {
         transform: scaleX(0.8);
       }
     }

@@ -37,7 +37,7 @@ export class AppSettingProvider extends CommonService {
   static readonly IFMJS = IFM(AppSettingProvider.NET_VERSION);
   static readonly HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,
-    AppSettingProvider.SERVER_TIMEOUT,
+    AppSettingProvider.SERVER_TIMEOUT
   );
   static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
   static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
@@ -49,7 +49,7 @@ export class AppSettingProvider extends CommonService {
   constructor(
     public http: Http,
     public user: UserInfoProvider,
-    public translate: TranslateService,
+    public translate: TranslateService
   ) {
     super();
     console.log("Hello AppSettingProvider Provider");
@@ -106,7 +106,7 @@ export class AppSettingProvider extends CommonService {
           if (should_write_in) {
             localStorage.setItem(
               settings_key,
-              JSON.stringify((settings = { ...default_settings })),
+              JSON.stringify((settings = { ...default_settings }))
             );
           }
         }
@@ -211,7 +211,7 @@ export class AppSettingProvider extends CommonService {
     {
       this.on(
         "changed@setting.power_saving_mode",
-        is_save => (this.settings.animation_switch = !is_save),
+        is_save => (this.settings.animation_switch = !is_save)
       );
     }
 
@@ -264,7 +264,7 @@ export class AppSettingProvider extends CommonService {
       console.log(
         "%c新用户登录，配置重新生效",
         "color:purple;font-size:1.6em;",
-        cur_setting,
+        cur_setting
       );
       for (var k in cur_setting) {
         this.settings[k] = cur_setting[k];
@@ -327,7 +327,7 @@ export class AppSettingProvider extends CommonService {
       obj = JSON.stringify(obj);
     } else {
       throw new TypeError(
-        "user token must be an object:{address,password,balance,fee}",
+        "user token must be an object:{address,password,balance,fee}"
       );
     }
     localStorage.setItem(this.USER_TOKEN_STORE_KEY, obj);
@@ -501,14 +501,14 @@ export function TB_AB_Generator(
   need_token = true,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
-  },
+  }
 ) {
   return (target, name, descriptor) => {
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
       let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from }),
+        Object.assign({}, expiry_time_opts, { from })
       );
       const do_refresh = () => {
         if (_v) {
@@ -525,7 +525,7 @@ export function TB_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
         );
         do_refresh();
       } else {
@@ -541,7 +541,7 @@ export function TB_AB_Generator(
             throw new Error(
               `${
                 this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              } 需要注入依赖： (appSetting)AppSettingProvider`
             );
           }
           (this.appSetting as AppSettingProvider).account_address
@@ -579,14 +579,14 @@ export function HEIGHT_AB_Generator(
   need_token = false,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
-  },
+  }
 ) {
   return (target, name, descriptor) => {
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
       let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from }),
+        Object.assign({}, expiry_time_opts, { from })
       );
       const do_refresh = () => {
         if (_v) {
@@ -603,7 +603,7 @@ export function HEIGHT_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
         );
         do_refresh();
       } else {
@@ -620,7 +620,7 @@ export function HEIGHT_AB_Generator(
             throw new Error(
               `${
                 this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              } 需要注入依赖： (appSetting)AppSettingProvider`
             );
           }
           const runner = height_or_token => {
@@ -659,14 +659,14 @@ export function ROUND_AB_Generator(
   need_token = false,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
-  },
+  }
 ) {
   return (target, name, descriptor) => {
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
       let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from }),
+        Object.assign({}, expiry_time_opts, { from })
       );
       const do_refresh = () => {
         if (_v) {
@@ -683,7 +683,7 @@ export function ROUND_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
         );
         do_refresh();
       } else {
@@ -700,7 +700,7 @@ export function ROUND_AB_Generator(
             throw new Error(
               `${
                 this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              } 需要注入依赖： (appSetting)AppSettingProvider`
             );
           }
           const runner = height_or_token => {

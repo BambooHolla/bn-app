@@ -109,7 +109,7 @@ export class MyApp implements OnInit {
     public userInfo: UserInfoProvider,
     public peerService: PeerServiceProvider,
     public faio: FingerprintAIO,
-    public androidPermissions: AndroidPermissions,
+    public androidPermissions: AndroidPermissions
   ) {
     global["ac"] = this;
     global["clipboard"] = clipboard;
@@ -182,7 +182,7 @@ export class MyApp implements OnInit {
       }
       if (!sessionStorage.getItem("LINK_PEER")) {
         const pre_link_time = parseFloat(
-          localStorage.getItem("LINK_PEER") || "0",
+          localStorage.getItem("LINK_PEER") || "0"
         );
         if (Date.now() - pre_link_time >= 8 * 60 * 60 * 1000) {
           // 上一次检测节点已经超过了8小时，那么进行重新检查
@@ -326,7 +326,7 @@ export class MyApp implements OnInit {
   async openPage(
     page: string,
     force = false,
-    loading_content?: string | null | false,
+    loading_content?: string | null | false
   ) {
     this.tryInPage = page;
     if (!force) {
@@ -351,7 +351,7 @@ export class MyApp implements OnInit {
       this._currentOpeningPage = page;
       console.log(
         `%c Open Page:[${page}] and set as root`,
-        "font-size:1.2rem;color:yellow;",
+        "font-size:1.2rem;color:yellow;"
       );
       if (page === MainPage) {
         if (!(await this.showFAIO(FAIO_CHECK.Login))) {
@@ -419,15 +419,15 @@ export class MyApp implements OnInit {
               console.log("Has permission?", result.hasPermission);
               if (!result.hasPermission) {
                 return this.androidPermissions.requestPermission(
-                  this.androidPermissions.PERMISSION.USE_FINGERPRINT,
+                  this.androidPermissions.PERMISSION.USE_FINGERPRINT
                 );
               }
               return result;
             },
             err =>
               this.androidPermissions.requestPermission(
-                this.androidPermissions.PERMISSION.USE_FINGERPRINT,
-              ),
+                this.androidPermissions.PERMISSION.USE_FINGERPRINT
+              )
           );
         this.has_finger_permission = permission && permission.hasPermission;
       }
@@ -449,7 +449,7 @@ export class MyApp implements OnInit {
         ? this.getTranslateSync(
             support_info === "face"
               ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME_WITH_FACE"
-              : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME",
+              : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME"
           )
         : this.getTranslateSync("IOS_CANCEL_AGAIN_WILL_LOGINOUT");
     try {
@@ -466,18 +466,18 @@ export class MyApp implements OnInit {
         fingerprint_use_backup: this.getTranslateSync("FINGERPRINT_USE_BACKUP"),
         fingerprint_ok: this.getTranslateSync("FINGERPRINT_OK"),
         fingerprint_description: this.getTranslateSync(
-          "FINGERPRINT_DESCRIPTION",
+          "FINGERPRINT_DESCRIPTION"
         ),
         fingerprint_hint: this.getTranslateSync("FINGERPRINT_HINT"),
         fingerprint_not_recognized: this.getTranslateSync(
-          "FINGERPRINT_NOT_RECOGNIZED",
+          "FINGERPRINT_NOT_RECOGNIZED"
         ),
         fingerprint_success: this.getTranslateSync("FINGERPRINT_SUCCESS"),
         new_fingerprint_enrolled_description: this.getTranslateSync(
-          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION",
+          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION"
         ),
         secure_lock_screen_required: this.getTranslateSync(
-          "SECURE_LOCK_SCREEN_REQUIRED",
+          "SECURE_LOCK_SCREEN_REQUIRED"
         ),
       });
       if (res.withPassword === true) {
@@ -503,7 +503,7 @@ export class MyApp implements OnInit {
       const dialog_title = this.getTranslateSync(
         support_info === "face"
           ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN_WITH_FACE"
-          : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN",
+          : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN"
       );
       const res = await this.faio.show({
         clientId: this.userInfo.address + "@LOGIN",
@@ -513,24 +513,24 @@ export class MyApp implements OnInit {
         localizedReason: dialog_title,
         fingerprint_auth_dialog_title: dialog_title,
         fingerprint_cancel: this.getTranslateSync(
-          "FINGERPRINT_CANCEL_USER_OTHER_ACCOUNT",
+          "FINGERPRINT_CANCEL_USER_OTHER_ACCOUNT"
         ),
 
         fingerprint_use_backup: this.getTranslateSync("FINGERPRINT_USE_BACKUP"),
         fingerprint_ok: this.getTranslateSync("FINGERPRINT_OK"),
         fingerprint_description: this.getTranslateSync(
-          "FINGERPRINT_DESCRIPTION",
+          "FINGERPRINT_DESCRIPTION"
         ),
         fingerprint_hint: this.getTranslateSync("FINGERPRINT_HINT"),
         fingerprint_not_recognized: this.getTranslateSync(
-          "FINGERPRINT_NOT_RECOGNIZED",
+          "FINGERPRINT_NOT_RECOGNIZED"
         ),
         fingerprint_success: this.getTranslateSync("FINGERPRINT_SUCCESS"),
         new_fingerprint_enrolled_description: this.getTranslateSync(
-          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION",
+          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION"
         ),
         secure_lock_screen_required: this.getTranslateSync(
-          "SECURE_LOCK_SCREEN_REQUIRED",
+          "SECURE_LOCK_SCREEN_REQUIRED"
         ),
       });
       if (res.withPassword === true) {
@@ -560,7 +560,7 @@ function onresize() {
   ]}</p>`;
   MyApp.WINDOW_MAX_HEIGHT = Math.max(
     MyApp.WINDOW_MAX_HEIGHT,
-    global.innerHeight,
+    global.innerHeight
   );
 }
 onresize();

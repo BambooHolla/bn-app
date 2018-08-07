@@ -91,11 +91,11 @@ export class Mdb<T> {
       sort?;
       skip?: number;
       projection?;
-    } = {},
+    } = {}
   ) {
     cursor_operators["limit"] = 1;
     return this.find(query, cursor_operators).then(
-      res => res[0] as T | undefined,
+      res => res[0] as T | undefined
     );
   }
   find(
@@ -105,7 +105,7 @@ export class Mdb<T> {
       skip?: number;
       limit?: number;
       projection?;
-    },
+    }
   ) {
     return new Promise<T[]>((resolve, reject) => {
       const cursor = this.db.find(query);

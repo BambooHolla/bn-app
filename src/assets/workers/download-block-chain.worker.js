@@ -10582,8 +10582,30 @@ var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : new P(function (resolve) {
+                resolve(result.value);
+            }).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __rest = undefined && undefined.__rest || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0) t[p] = s[p];
@@ -10781,37 +10803,35 @@ class ParallelPool {
         return this._tasks.length >= this.max_parallel_num;
     }
     waitNext() {
-        var _this = this;
-
-        return _asyncToGenerator(function* () {
-            if (_this.has_next) {
-                while (!_this.is_full) {
-                    const executor = _this._tasks_executor.shift();
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.has_next) {
+                while (!this.is_full) {
+                    const executor = this._tasks_executor.shift();
                     if (!executor) {
                         break;
                     }
                     const task = executor();
                     const task_auto_rm = task /*finally*/
-                    .then(function (res) {
+                    .then(res => {
                         return { assets: res, finally_rm };
-                    }).catch(function (err) {
+                    }).catch(err => {
                         return { error: err, finally_rm };
                     });
-                    const finally_rm = function () {
-                        const i = _this._tasks.indexOf(task_auto_rm);
+                    const finally_rm = () => {
+                        const i = this._tasks.indexOf(task_auto_rm);
                         if (i !== -1) {
-                            _this._tasks.splice(i, 1);
+                            this._tasks.splice(i, 1);
                         }
                     };
-                    _this._tasks.push(task_auto_rm);
+                    this._tasks.push(task_auto_rm);
                 }
-                const result = yield Promise.race(_this._tasks);
+                const result = yield Promise.race(this._tasks);
                 const { finally_rm } = result,
                       res = __rest(result, ["finally_rm"]);
                 finally_rm(); // 移除这个要返回的
                 return res;
             }
-        })();
+        });
     }
     yieldResults(opts) {
         return __asyncGenerator(this, arguments, function* yieldResults_1() {
@@ -11687,7 +11707,7 @@ class BlockChainDownloader extends eventemitter3_1.default {
     }
 }
 exports.BlockChainDownloader = BlockChainDownloader;
-},{"../../src/shareProto":32,"eventemitter3":36,"../../src/bnqkl-framework/PromiseExtends":33,"./blockchain-verifier":34,"./helper":35}],1643:[function(require,module,exports) {
+},{"../../src/shareProto":32,"eventemitter3":36,"../../src/bnqkl-framework/PromiseExtends":33,"./blockchain-verifier":34,"./helper":35}],4595:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11738,7 +11758,7 @@ BlizzardHash.hashRange = Object.freeze({
     max: 2147483647,
     dis: Math.pow(2, 32)
 });
-},{}],1617:[function(require,module,exports) {
+},{}],4494:[function(require,module,exports) {
 
 "use strict";
 
@@ -11976,7 +11996,7 @@ const baseConfig = exports.baseConfig = new class BaseConfig extends _eventemitt
     }
 }();
 console.log("%cSERVER_URL:", "font-size:2em;color:green;background-color:#DDD", baseConfig.SERVER_URL);
-},{"./BlizzardHash":1643,"socket.io-client":12,"eventemitter3":36}],621:[function(require,module,exports) {
+},{"./BlizzardHash":4595,"socket.io-client":12,"eventemitter3":36}],621:[function(require,module,exports) {
 "use strict";
 
 // eslint-disable-next-line no-empty-function
@@ -17306,7 +17326,7 @@ var global = arguments[3];
       }).call(this, e("lYpoI2"), "undefined" != typeof self ? self : "undefined" != typeof window ? window : {}, e("buffer").Buffer, arguments[3], arguments[4], arguments[5], arguments[6], "/node_modules/ieee754/index.js", "/node_modules/ieee754");
     }, { buffer: 3, lYpoI2: 10 }] }, {}, [1])(1);
 });
-},{}],2035:[function(require,module,exports) {
+},{}],4598:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17488,14 +17508,14 @@ const hashify = exports.hashify = value => {
     return (0, _objectHash2.default)(value);
 };
 const getIDBError = exports.getIDBError = e => Error(e.target.error.message);
-},{"deepmerge":380,"clone":379,"object-hash":381}],2320:[function(require,module,exports) {
+},{"deepmerge":380,"clone":379,"object-hash":381}],4827:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = Symbol("missing");
-},{}],2175:[function(require,module,exports) {
+},{}],4779:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17536,7 +17556,7 @@ class Fields {
     }
 }
 exports.default = Fields;
-},{"memoizee":263,"../util":2035,"./missing_symbol":2320}],2146:[function(require,module,exports) {
+},{"memoizee":263,"../util":4598,"./missing_symbol":4827}],4715:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17565,7 +17585,7 @@ function filter(next, pred) {
         })();
     };
 }
-},{"./lang/fields":2175}],2150:[function(require,module,exports) {
+},{"./lang/fields":4779}],4719:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17640,7 +17660,7 @@ function sort(_next, spec) {
     };
     return cb => next(cb);
 }
-},{"./util":2035}],2321:[function(require,module,exports) {
+},{"./util":4598}],5016:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17656,7 +17676,7 @@ class Path {
     }
 }
 exports.default = Path;
-},{"../util":2035}],2173:[function(require,module,exports) {
+},{"../util":4598}],2173:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18121,7 +18141,7 @@ const build = exports.build = expr => {
     }
     return new Conjunction(args);
 };
-},{"../util":2035,"./missing_symbol":2320,"./path":2321,"./fields":2175}],2145:[function(require,module,exports) {
+},{"../util":4598,"./missing_symbol":4827,"./path":5016,"./fields":4779}],4714:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18436,7 +18456,7 @@ exports.default = cur => {
     }
     return addPipelineStages(config, next);
 };
-},{"deepmerge":380,"./util":2035,"./filter":2146,"./sort":2150,"./lang/filter":2173}],2174:[function(require,module,exports) {
+},{"deepmerge":380,"./util":4598,"./filter":4715,"./sort":4719,"./lang/filter":2173}],4780:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18779,7 +18799,7 @@ exports.default = expr => {
         has_refs: !!paths.length
     };
 };
-},{"../util":2035,"./missing_symbol":2320,"./path":2321}],2147:[function(require,module,exports) {
+},{"../util":4598,"./missing_symbol":4827,"./path":5016}],4716:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18891,7 +18911,7 @@ function project(_next, spec) {
     };
     return next;
 }
-},{"./util":2035,"./lang/expression":2174,"./lang/fields":2175}],2148:[function(require,module,exports) {
+},{"./util":4598,"./lang/expression":4780,"./lang/fields":4779}],4717:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19184,7 +19204,7 @@ exports.default = (_next, spec) => {
     };
     return cb => next(cb);
 };
-},{"memoizee":263,"./util":2035,"./lang/expression":2174,"./lang/fields":2175}],2149:[function(require,module,exports) {
+},{"memoizee":263,"./util":4598,"./lang/expression":4780,"./lang/fields":4779}],4718:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19228,7 +19248,7 @@ exports.default = (_next, path) => {
     };
     return cb => next(cb);
 };
-},{"./util":2035}],2151:[function(require,module,exports) {
+},{"./util":4598}],4720:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19250,7 +19270,7 @@ function skip(_next, num) {
     };
     return next;
 }
-},{}],2152:[function(require,module,exports) {
+},{}],4721:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19268,7 +19288,7 @@ function limit(_next, num) {
     };
     return next;
 }
-},{}],2119:[function(require,module,exports) {
+},{}],4676:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19538,7 +19558,7 @@ class Cursor extends _eventemitter.EventEmitter {
     }
 }
 exports.default = Cursor;
-},{"eventemitter3":36,"q":261,"./create_next_fn":2145,"./filter":2146,"./project":2147,"./group":2148,"./unwind":2149,"./sort":2150,"./skip":2151,"./limit":2152}],2120:[function(require,module,exports) {
+},{"eventemitter3":36,"q":261,"./create_next_fn":4714,"./filter":4715,"./project":4716,"./group":4717,"./unwind":4718,"./sort":4719,"./skip":4720,"./limit":4721}],4677:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19583,7 +19603,7 @@ exports.default = (col, pipeline) => {
     }
     return cur;
 };
-},{"./util":2035,"./cursor":2119}],2121:[function(require,module,exports) {
+},{"./util":4598,"./cursor":4676}],4678:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19729,7 +19749,7 @@ exports.default = (cur, spec, cb) => {
         });
     })();
 };
-},{"./util":2035}],2122:[function(require,module,exports) {
+},{"./util":4598}],4679:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19753,7 +19773,7 @@ function remove(cur, cb) {
         });
     })();
 }
-},{"./util":2035}],2036:[function(require,module,exports) {
+},{"./util":4598}],4599:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19784,7 +19804,30 @@ var _remove2 = _interopRequireDefault(_remove);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) {
+            try {
+                step(generator.next(value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function rejected(value) {
+            try {
+                step(generator["throw"](value));
+            } catch (e) {
+                reject(e);
+            }
+        }
+        function step(result) {
+            result.done ? resolve(result.value) : new P(function (resolve) {
+                resolve(result.value);
+            }).then(fulfilled, rejected);
+        }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
 /** Class representing a collection. */
 class Collection {
@@ -19894,48 +19937,34 @@ class Collection {
      * });
      */
     insert(docs, cb) {
-        var _this = this;
-
-        return _asyncToGenerator(function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             if (!Array.isArray(docs)) {
                 docs = [docs];
             }
             const deferred = _q2.default.defer();
-            _this._db.conn.then((() => {
-                var _ref = _asyncToGenerator(function* (idb) {
-                    let trans;
-                    const name = _this._name;
-                    try {
-                        trans = idb.transaction([name], "readwrite");
-                    } catch (error) {
-                        return deferred.reject(error);
-                    }
-                    trans.oncomplete = function () {
-                        return deferred.resolve();
-                    };
-                    trans.onerror = function (e) {
-                        return deferred.reject((0, _util.getIDBError)(e));
-                    };
-                    const store = trans.objectStore(name);
-                    for (var _doc of docs) {
-                        const doc = _doc;
-                        yield new Promise(function (resolve, reject) {
-                            _this._validate(doc);
-                            const req = store.add(doc);
-                            req.onsuccess = resolve;
-                        }).catch(function (e) {
-                            return deferred.reject((0, _util.getIDBError)(e));
-                        });
-                    }
-                });
-
-                return function (_x) {
-                    return _ref.apply(this, arguments);
-                };
-            })(), cb);
+            this._db.conn.then(idb => __awaiter(this, void 0, void 0, function* () {
+                let trans;
+                const name = this._name;
+                try {
+                    trans = idb.transaction([name], "readwrite");
+                } catch (error) {
+                    return deferred.reject(error);
+                }
+                trans.oncomplete = () => deferred.resolve();
+                trans.onerror = e => deferred.reject((0, _util.getIDBError)(e));
+                const store = trans.objectStore(name);
+                for (var _doc of docs) {
+                    const doc = _doc;
+                    yield new Promise((resolve, reject) => {
+                        this._validate(doc);
+                        const req = store.add(doc);
+                        req.onsuccess = resolve;
+                    }).catch(e => deferred.reject((0, _util.getIDBError)(e)));
+                }
+            }), cb);
             deferred.promise.nodeify(cb);
             return deferred.promise;
-        })();
+        });
     }
     _modify(fn, expr, cb) {
         const deferred = _q2.default.defer();
@@ -19987,7 +20016,7 @@ class Collection {
     }
 }
 exports.default = Collection;
-},{"q":261,"./util":2035,"./cursor":2119,"./aggregate":2120,"./update":2121,"./remove":2122}],1618:[function(require,module,exports) {
+},{"q":261,"./util":4598,"./cursor":4676,"./aggregate":4677,"./update":4678,"./remove":4679}],4495:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20281,7 +20310,7 @@ class Db extends _eventemitter2.default {
     }
 }
 exports.default = Db;
-},{"eventemitter3":36,"memoizee":263,"q":261,"./util":2035,"./collection":2036}],5:[function(require,module,exports) {
+},{"eventemitter3":36,"memoizee":263,"q":261,"./util":4598,"./collection":4599}],5:[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20420,7 +20449,7 @@ class Mdb {
     }
 }
 exports.Mdb = Mdb;
-},{"../bnqkl-framework/helper":1617,"./gangodb_core/db":1618}],195:[function(require,module,exports) {
+},{"../bnqkl-framework/helper":4494,"./gangodb_core/db":4495}],195:[function(require,module,exports) {
 module.exports = {
     "NET_VERSION": {
         "mainnet": "mainnet",
@@ -20441,229 +20470,226 @@ module.exports = {
         "goldnet": 1514390400000
     }
 };
-},{}],196:[function(require,module,exports) {
+},{}],4602:[function(require,module,exports) {
 const testnetInterval = 10;
 const mainnetInterval = 128;
 const goldnetInterval = 128;
 
 const constants = {
-    testnet: {
-        maxAmount: "100000000",
-        blockHeaderLength: 248,
-        addressLength: 208,
-        maxAddressesLength: 208 * 128,
-        maxClientConnections: 100,
-        numberLength: 100000000,
-        feeStartVolume: 10000 * 100000000,
-        feeStart: 1,
-        maxRequests: 10000 * 12,
-        requestLength: 104,
-        signatureLength: 196,
-        maxSignaturesLength: 196 * 256,
-        maxConfirmations: 77 * 100,
-        confirmationLength: 77,
+  testnet: {
+    maxAmount: "100000000",
+    blockHeaderLength: 248,
+    addressLength: 208,
+    maxAddressesLength: 208 * 128,
+    maxClientConnections: 100,
+    numberLength: 100000000,
+    feeStartVolume: 10000 * 100000000,
+    feeStart: 1,
+    maxRequests: 10000 * 12,
+    requestLength: 104,
+    signatureLength: 196,
+    maxSignaturesLength: 196 * 256,
+    maxConfirmations: 77 * 100,
+    confirmationLength: 77,
 
-        // maxPayloadLength: Math.floor(config.networkAverageBandwidth / 2 / 7 * 150 * 1024 * 1024),
-        maxPayloadLength: 8 * 1024 * 1024,
-        maxPeers: 56,
-        fixedPoint: Math.pow(10, 8),
-        totalAmount: "30000000000000000",
+    // maxPayloadLength: Math.floor(config.networkAverageBandwidth / 2 / 7 * 150 * 1024 * 1024),
+    maxPayloadLength: 8 * 1024 * 1024,
+    maxPeers: 56,
+    fixedPoint: Math.pow(10, 8),
+    totalAmount: "30000000000000000",
 
-        minTransactionFee: "1",
-        maxTransactionFee: "30000000000000000",
+    minTransactionFee: "1",
+    maxTransactionFee: "30000000000000000",
 
-        autoForgingCount: 50,
-        maxVoteCount: 57,
-        delegates: 57,
-        broadcastQuantity: 15, //每次广播的节点数量
-        maxTimeDifference: testnetInterval, //节点时间最大差值
+    autoForgingCount: 50,
+    maxVoteCount: 57,
+    delegates: 57,
+    broadcastQuantity: 15, //每次广播的节点数量
+    maxTimeDifference: testnetInterval, //节点时间最大差值
 
-        enableSaveRewardDetails: true,
+    enableSaveRewardDetails: true,
 
-        slots: {
-            interval: testnetInterval
-        },
-
-        rewards: {
-            distance: 15750000,
-            offset: 6,
-            votePercent: 0.5, //投票奖励所占比例
-            forgingPercent: 0.5 //打块奖励所占比例
-        },
-        maxTxsPerBlock: 500,
-        maxSharedTxs: 100,
-        maxUnconfirmedTransaction: 1080,
-        maxBlockSync: 570, //同步的最大块数
-        maxAckTimeout: 10000,
-        consensus: {
-            defaultVotes: 6
-        },
-
-        generateTotalAmount: "21386718763225451"
+    slots: {
+      interval: testnetInterval
     },
 
-    mainnet: {
-        maxAmount: "100000000",
-        blockHeaderLength: 248,
-        addressLength: 208,
-        maxAddressesLength: 208 * 128,
-        maxClientConnections: 100,
-        numberLength: 100000000,
-        feeStartVolume: 10000 * 100000000,
-        feeStart: 1,
-        maxRequests: 10000 * 12,
-        requestLength: 104,
-        signatureLength: 196,
-        maxSignaturesLength: 196 * 256,
-        maxConfirmations: 77 * 100,
-        confirmationLength: 77,
-
-        maxPayloadLength: 8 * 1024 * 1024,
-        maxPeers: 56,
-        fixedPoint: Math.pow(10, 8),
-        totalAmount: "30000000000000000",
-
-        minTransactionFee: "1", // unit: yaobi
-        maxTransactionFee: "30000000000000000", // unit: yaobi
-
-        autoForgingCount: 50,
-        maxVoteCount: 57,
-        delegates: 57,
-        broadcastQuantity: 15, //每次广播的节点数量
-        maxTimeDifference: mainnetInterval, // max time difference allowed between peers
-        enableSaveRewardDetails: true,
-        slots: {
-            interval: mainnetInterval //打块时间间隔
-        },
-        rewards: {
-            distance: 1230469, //每4年产生的块数量
-            offset: 6,
-            votePercent: 0.5, //投票奖励所占比例
-            forgingPercent: 0.5 //打块奖励所占比例
-        },
-        maxTxsPerBlock: 3456,
-        maxSharedTxs: 100,
-        maxUnconfirmedTransaction: 1080,
-        maxBlockSync: 570, //同步的最大块数
-        maxAckTimeout: 10000,
-        consensus: {
-            defaultVotes: 6
-        },
-
-        generateTotalAmount: "21386718763225451"
-
+    rewards: {
+      distance: 15750000,
+      offset: 6,
+      votePercent: 0.5, //投票奖励所占比例
+      forgingPercent: 0.5 //打块奖励所占比例
     },
-    goldnet: {
-        maxAmount: "100000000",
-        blockHeaderLength: 248,
-        addressLength: 208,
-        maxAddressesLength: 208 * 128,
-        maxClientConnections: 100,
-        numberLength: 100000000,
-        feeStartVolume: 10000 * 100000000,
-        feeStart: 1,
-        maxRequests: 10000 * 12,
-        requestLength: 104,
-        signatureLength: 196,
-        maxSignaturesLength: 196 * 256,
-        maxConfirmations: 77 * 100,
-        confirmationLength: 77,
+    maxTxsPerBlock: 500,
+    maxSharedTxs: 100,
+    maxUnconfirmedTransaction: 1080,
+    maxBlockSync: 570, //同步的最大块数
+    maxAckTimeout: 10000,
+    consensus: {
+      defaultVotes: 6
+    },
 
-        maxPayloadLength: 8 * 1024 * 1024,
-        fixedPoint: Math.pow(10, 8),
-        totalAmount: "30000000000000000",
+    generateTotalAmount: "21386718763225451"
+  },
 
-        minTransactionFee: "1",
-        maxTransactionFee: "30000000000000000",
+  mainnet: {
+    maxAmount: "100000000",
+    blockHeaderLength: 248,
+    addressLength: 208,
+    maxAddressesLength: 208 * 128,
+    maxClientConnections: 100,
+    numberLength: 100000000,
+    feeStartVolume: 10000 * 100000000,
+    feeStart: 1,
+    maxRequests: 10000 * 12,
+    requestLength: 104,
+    signatureLength: 196,
+    maxSignaturesLength: 196 * 256,
+    maxConfirmations: 77 * 100,
+    confirmationLength: 77,
 
-        autoForgingCount: 50,
-        maxVoteCount: 57,
-        delegates: 57,
-        broadcastQuantity: 15, //每次广播的节点数量
-        maxTimeDifference: goldnetInterval, // max time difference allowed between peers
-        enableSaveRewardDetails: true,
-        slots: {
-            interval: goldnetInterval //打块时间间隔
-        },
-        rewards: {
-            distance: 3691407, //每15年产生的块数量
-            offset: 6,
-            votePercent: 0.5, //投票奖励所占比例
-            forgingPercent: 0.5 //打块奖励所占比例
-        },
-        maxTxsPerBlock: 500,
-        maxSharedTxs: 100,
-        maxUnconfirmedTransaction: 1080,
-        maxBlockSync: 570, //同步的最大块数
-        maxAckTimeout: 10000,
-        consensus: {
-            defaultVotes: 6
-        },
-        generateTotalAmount: "4160156292756701"
-    }
+    maxPayloadLength: 8 * 1024 * 1024,
+    maxPeers: 56,
+    fixedPoint: Math.pow(10, 8),
+    totalAmount: "30000000000000000",
+
+    minTransactionFee: "1", // unit: yaobi
+    maxTransactionFee: "30000000000000000", // unit: yaobi
+
+    autoForgingCount: 50,
+    maxVoteCount: 57,
+    delegates: 57,
+    broadcastQuantity: 15, //每次广播的节点数量
+    maxTimeDifference: mainnetInterval, // max time difference allowed between peers
+    enableSaveRewardDetails: true,
+    slots: {
+      interval: mainnetInterval //打块时间间隔
+    },
+    rewards: {
+      distance: 1230469, //每4年产生的块数量
+      offset: 6,
+      votePercent: 0.5, //投票奖励所占比例
+      forgingPercent: 0.5 //打块奖励所占比例
+    },
+    maxTxsPerBlock: 3456,
+    maxSharedTxs: 100,
+    maxUnconfirmedTransaction: 1080,
+    maxBlockSync: 570, //同步的最大块数
+    maxAckTimeout: 10000,
+    consensus: {
+      defaultVotes: 6
+    },
+
+    generateTotalAmount: "21386718763225451"
+  },
+  goldnet: {
+    maxAmount: "100000000",
+    blockHeaderLength: 248,
+    addressLength: 208,
+    maxAddressesLength: 208 * 128,
+    maxClientConnections: 100,
+    numberLength: 100000000,
+    feeStartVolume: 10000 * 100000000,
+    feeStart: 1,
+    maxRequests: 10000 * 12,
+    requestLength: 104,
+    signatureLength: 196,
+    maxSignaturesLength: 196 * 256,
+    maxConfirmations: 77 * 100,
+    confirmationLength: 77,
+
+    maxPayloadLength: 8 * 1024 * 1024,
+    fixedPoint: Math.pow(10, 8),
+    totalAmount: "30000000000000000",
+
+    minTransactionFee: "1",
+    maxTransactionFee: "30000000000000000",
+
+    autoForgingCount: 50,
+    maxVoteCount: 57,
+    delegates: 57,
+    broadcastQuantity: 15, //每次广播的节点数量
+    maxTimeDifference: goldnetInterval, // max time difference allowed between peers
+    enableSaveRewardDetails: true,
+    slots: {
+      interval: goldnetInterval //打块时间间隔
+    },
+    rewards: {
+      distance: 3691407, //每15年产生的块数量
+      offset: 6,
+      votePercent: 0.5, //投票奖励所占比例
+      forgingPercent: 0.5 //打块奖励所占比例
+    },
+    maxTxsPerBlock: 500,
+    maxSharedTxs: 100,
+    maxUnconfirmedTransaction: 1080,
+    maxBlockSync: 570, //同步的最大块数
+    maxAckTimeout: 10000,
+    consensus: {
+      defaultVotes: 6
+    },
+    generateTotalAmount: "4160156292756701"
+  }
 };
 
 module.exports = constants;
-},{}],95:[function(require,module,exports) {
+},{}],4435:[function(require,module,exports) {
 var configFactoryJson = require("./configFactory.json");
 var _constants = require("./constants.js");
 
 var configFactory = {
-    NET_VERSION: "mainnet", //default testnet
-    getNET_VERSION: function () {
+  NET_VERSION: "mainnet", //default testnet
+  getNET_VERSION: function () {
+    var NET_VERSION_MAP = configFactoryJson.NET_VERSION;
 
-        var NET_VERSION_MAP = configFactoryJson.NET_VERSION;
-
-        var NET_VERSION = NET_VERSION_MAP[this.NET_VERSION];
-        //checkout the NET_VERSION is exsit
-        if (NET_VERSION) {
-            return NET_VERSION;
-        } else {
-            throw "cannot find NET_VERSION";
-        }
-    },
-    setNET_VERSION: function (netVerison) {
-
-        var NET_VERSION_MAP = configFactoryJson.NET_VERSION;
-        //checkout the NET_VERSION is exsit
-        if (NET_VERSION_MAP[netVerison]) {
-            this.NET_VERSION = netVerison;
-        } else {
-            throw "cannot find your NET_VERSION";
-        }
-    },
-    getInitials: function () {
-        var initialsMap = configFactoryJson.initials;
-        var initials = initialsMap[configFactory.NET_VERSION];
-        if (initials) {
-            return initials;
-        } else {
-            throw "cannot find initials";
-        }
-    },
-    getBeginEpochTime: function () {
-        var beginUTCMap = configFactoryJson.beginUTC;
-        var beginUTC = beginUTCMap[configFactory.NET_VERSION];
-        var beginEpochTime = new Date(beginUTC);
-
-        if (beginEpochTime) {
-            return beginEpochTime;
-        } else {
-            throw "cannot find beginEpochTime";
-        }
-    },
-    getConstants: function () {
-        var constants = _constants[configFactory.NET_VERSION];
-        if (constants) {
-            return constants;
-        } else {
-            throw "cannot find constants";
-        }
+    var NET_VERSION = NET_VERSION_MAP[this.NET_VERSION];
+    //checkout the NET_VERSION is exsit
+    if (NET_VERSION) {
+      return NET_VERSION;
+    } else {
+      throw "cannot find NET_VERSION";
     }
+  },
+  setNET_VERSION: function (netVerison) {
+    var NET_VERSION_MAP = configFactoryJson.NET_VERSION;
+    //checkout the NET_VERSION is exsit
+    if (NET_VERSION_MAP[netVerison]) {
+      this.NET_VERSION = netVerison;
+    } else {
+      throw "cannot find your NET_VERSION";
+    }
+  },
+  getInitials: function () {
+    var initialsMap = configFactoryJson.initials;
+    var initials = initialsMap[configFactory.NET_VERSION];
+    if (initials) {
+      return initials;
+    } else {
+      throw "cannot find initials";
+    }
+  },
+  getBeginEpochTime: function () {
+    var beginUTCMap = configFactoryJson.beginUTC;
+    var beginUTC = beginUTCMap[configFactory.NET_VERSION];
+    var beginEpochTime = new Date(beginUTC);
+
+    if (beginEpochTime) {
+      return beginEpochTime;
+    } else {
+      throw "cannot find beginEpochTime";
+    }
+  },
+  getConstants: function () {
+    var constants = _constants[configFactory.NET_VERSION];
+    if (constants) {
+      return constants;
+    } else {
+      throw "cannot find constants";
+    }
+  }
 };
 
 module.exports = configFactory;
-},{"./configFactory.json":195,"./constants.js":196}],413:[function(require,module,exports) {
+},{"./configFactory.json":195,"./constants.js":4602}],413:[function(require,module,exports) {
 // Number.isFinite polyfill
 // http://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.isfinite
 if (typeof Number.isFinite !== "function") {
@@ -50134,7 +50160,7 @@ var objectKeys = Object.keys || function (obj) {
   return keys;
 };
 
-},{"util/":487}],2323:[function(require,module,exports) {
+},{"util/":487}],5057:[function(require,module,exports) {
 
 // base-x encoding
 // Forked from https://github.com/cryptocoinjs/bs58
@@ -50154,12 +50180,12 @@ module.exports = function base(ALPHABET) {
   for (var z = 0; z < ALPHABET.length; z++) {
     var x = ALPHABET.charAt(z);
 
-    if (ALPHABET_MAP[x] !== undefined) throw new TypeError(x + ' is ambiguous');
+    if (ALPHABET_MAP[x] !== undefined) throw new TypeError(x + " is ambiguous");
     ALPHABET_MAP[x] = z;
   }
 
   function encode(source) {
-    if (source.length === 0) return '';
+    if (source.length === 0) return "";
 
     var digits = [0];
     for (var i = 0; i < source.length; ++i) {
@@ -50175,7 +50201,7 @@ module.exports = function base(ALPHABET) {
       }
     }
 
-    var string = '';
+    var string = "";
 
     // deal with leading zeros
     for (var k = 0; source[k] === 0 && k < source.length - 1; ++k) string += ALPHABET[0];
@@ -50217,7 +50243,7 @@ module.exports = function base(ALPHABET) {
     var buffer = decodeUnsafe(string);
     if (buffer) return buffer;
 
-    throw new Error('Non-base' + BASE + ' character');
+    throw new Error("Non-base" + BASE + " character");
   }
 
   return {
@@ -50226,23 +50252,23 @@ module.exports = function base(ALPHABET) {
     decode: decode
   };
 };
-},{"buffer/":120}],2322:[function(require,module,exports) {
-var basex = require('./base-x.js');
-var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+},{"buffer/":120}],5056:[function(require,module,exports) {
+var basex = require("./base-x.js");
+var ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 module.exports = basex(ALPHABET);
-},{"./base-x.js":2323}],2022:[function(require,module,exports) {
+},{"./base-x.js":5057}],4600:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
-'use strict';
+"use strict";
 
-var assert = require('assert');
-var crypto = require('crypto');
-var base58 = require('./bs58.js');
+var assert = require("assert");
+var crypto = require("crypto");
+var base58 = require("./bs58.js");
 
 // SHA256(SHA256(buffer))
 function sha256x2(buffer) {
-  var tmp = crypto.createHash('sha256').update(buffer).digest();
-  return crypto.createHash('sha256').update(tmp).digest();
+  var tmp = crypto.createHash("sha256").update(buffer).digest();
+  return crypto.createHash("sha256").update(tmp).digest();
 }
 
 // Encode a buffer as a base58-check encoded string
@@ -50272,7 +50298,7 @@ function decodeUnsafe(string) {
 function decode(string) {
   var buffer = base58.decode(string);
   var payload = decodeRaw(buffer);
-  if (!payload) throw new Error('Invalid checksum');
+  if (!payload) throw new Error("Invalid checksum");
   return payload;
 }
 
@@ -50281,24 +50307,23 @@ module.exports = {
   decode: decode,
   decodeUnsafe: decodeUnsafe
 };
-},{"assert":372,"crypto":100,"./bs58.js":2322,"buffer":120}],93:[function(require,module,exports) {
+},{"assert":372,"crypto":100,"./bs58.js":5056,"buffer":120}],4444:[function(require,module,exports) {
 
-'use strict';
+"use strict";
 
 /**
  * Created by XR <xr@bnqkl.cn> on 2017/6/30.
  */
 
-var crypto = require('crypto');
-var base58check = require('./base58check');
+var crypto = require("crypto");
+var base58check = require("./base58check");
 var Buffer = require("buffer/").Buffer;
-var configFactory = require('./configFactory');
+var configFactory = require("./configFactory");
 var NORMAL_PREFIX = configFactory.getInitials();
 
 var Address = function () {
   this.isAddress = function isAddress(address) {
-
-    if (typeof address !== 'string') {
+    if (typeof address !== "string") {
       return false;
     }
 
@@ -50316,26 +50341,25 @@ var Address = function () {
 
     return true;
   }, this.generateBase58CheckAddress = function generateBase58CheckAddress(publicKey) {
-
-    if (typeof publicKey === 'string') {
-      publicKey = Buffer.from(publicKey, 'hex');
+    if (typeof publicKey === "string") {
+      publicKey = Buffer.from(publicKey, "hex");
     }
 
-    var h1 = crypto.createHash('sha256').update(publicKey).digest();
-    var h2 = crypto.createHash('ripemd160').update(h1).digest();
+    var h1 = crypto.createHash("sha256").update(publicKey).digest();
+    var h2 = crypto.createHash("ripemd160").update(h1).digest();
     var address = NORMAL_PREFIX + base58check.encode(h2);
     return address;
   };
 };
 module.exports = new Address();
-},{"crypto":100,"./base58check":2022,"buffer/":120,"./configFactory":95}],197:[function(require,module,exports) {
+},{"crypto":100,"./base58check":4600,"buffer/":120,"./configFactory":4435}],4594:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
-'use strict';
+"use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-    return typeof obj;
+  return typeof obj;
 } : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
 /* bignumber.js v1.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
@@ -50364,12 +50388,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
  * MAX_EXP, and the argument to toFixed, toPrecision and toExponential, beyond
  * which an exception is thrown (if ERRORS is true).
  */
-var MAX = 1E9,
+var MAX = 1e9,
 
 // 0 to 1e+9
 
 // Limit of magnitude of exponent argument to toPower.
-MAX_POWER = 1E6,
+MAX_POWER = 1e6,
 
 // 1 to 1e+6
 
@@ -50379,18 +50403,18 @@ DECIMAL_PLACES = 20,
 // 0 to MAX
 
 /*
- * The rounding mode used when rounding to the above decimal places, and when
- * using toFixed, toPrecision and toExponential, and round (default value).
- * UP         0 Away from zero.
- * DOWN       1 Towards zero.
- * CEIL       2 Towards +Infinity.
- * FLOOR      3 Towards -Infinity.
- * HALF_UP    4 Towards nearest neighbour. If equidistant, up.
- * HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
- * HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
- * HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
- * HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
- */
+* The rounding mode used when rounding to the above decimal places, and when
+* using toFixed, toPrecision and toExponential, and round (default value).
+* UP         0 Away from zero.
+* DOWN       1 Towards zero.
+* CEIL       2 Towards +Infinity.
+* FLOOR      3 Towards -Infinity.
+* HALF_UP    4 Towards nearest neighbour. If equidistant, up.
+* HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
+* HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
+* HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
+* HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
+*/
 ROUNDING_MODE = 4,
 
 // 0 to 8
@@ -50435,17 +50459,16 @@ parse = parseInt,
 /***********************************************************************************/
 
 P = BigNumber.prototype,
-    DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',
+    DIGITS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_",
     outOfRange = void 0,
     id = 0,
     isValid = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
     trim = String.prototype.trim || function () {
-    return this.replace(/^\s+|\s+$/g, '');
+  return this.replace(/^\s+|\s+$/g, "");
 },
     ONE = BigNumber(1);
 
 // CONSTRUCTOR
-
 
 /*
  * The exported function.
@@ -50455,224 +50478,203 @@ P = BigNumber.prototype,
  * [b] {number} The base of n. Integer, 2 to 64 inclusive.
  */
 function BigNumber(n, b) {
-    var e = void 0,
-        i = void 0,
-        isNum = void 0,
-        digits = void 0,
-        valid = void 0,
-        orig = void 0,
-        x = this;
+  var e = void 0,
+      i = void 0,
+      isNum = void 0,
+      digits = void 0,
+      valid = void 0,
+      orig = void 0,
+      x = this;
 
-    // Enable constructor usage without new.
-    if (!(x instanceof BigNumber)) {
-        return new BigNumber(n, b);
-    }
+  // Enable constructor usage without new.
+  if (!(x instanceof BigNumber)) {
+    return new BigNumber(n, b);
+  }
 
-    // Duplicate.
-    if (n instanceof BigNumber) {
-        id = 0;
-
-        // e is undefined.
-        if (b !== e) {
-            n += '';
-        } else {
-            x['s'] = n['s'];
-            x['e'] = n['e'];
-            x['c'] = (n = n['c']) ? n.slice() : n;
-            return;
-        }
-    }
-
-    // If number, check if minus zero.
-    if (typeof n != 'string') {
-        n = (isNum = typeof n == 'number' || Object.prototype.toString.call(n) == '[object Number]') && n === 0 && 1 / n < 0 ? '-0' : n + '';
-    }
-
-    orig = n;
-
-    if (b === e && isValid.test(n)) {
-
-        // Determine sign.
-        x['s'] = n.charAt(0) == '-' ? (n = n.slice(1), -1) : 1;
-
-        // Either n is not a valid BigNumber or a base has been specified.
-    } else {
-
-        // Enable exponential notation to be used with base 10 argument.
-        // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
-        if (b == 10) {
-
-            return setMode(n, DECIMAL_PLACES, ROUNDING_MODE);
-        }
-
-        n = trim.call(n).replace(/^\+(?!-)/, '');
-
-        x['s'] = n.charAt(0) == '-' ? (n = n.replace(/^-(?!-)/, ''), -1) : 1;
-
-        if (b != null) {
-
-            if ((b == (b | 0) || !ERRORS) && !(outOfRange = !(b >= 2 && b < 65))) {
-
-                digits = '[' + DIGITS.slice(0, b = b | 0) + ']+';
-
-                // Before non-decimal number validity test and base conversion
-                // remove the `.` from e.g. '1.', and replace e.g. '.1' with '0.1'.
-                n = n.replace(/\.$/, '').replace(/^\./, '0.');
-
-                // Any number in exponential form will fail due to the e+/-.
-                if (valid = new RegExp('^' + digits + '(?:\\.' + digits + ')?$', b < 37 ? 'i' : '').test(n)) {
-
-                    if (isNum) {
-
-                        if (n.replace(/^0\.0*|\./, '').length > 15) {
-
-                            // 'new BigNumber() number type has more than 15 significant digits: {n}'
-                            ifExceptionsThrow(orig, 0);
-                        }
-
-                        // Prevent later check for length on converted number.
-                        isNum = !isNum;
-                    }
-                    n = convert(n, 10, b, x['s']);
-                } else if (n != 'Infinity' && n != 'NaN') {
-
-                    // 'new BigNumber() not a base {b} number: {n}'
-                    ifExceptionsThrow(orig, 1, b);
-                    n = 'NaN';
-                }
-            } else {
-
-                // 'new BigNumber() base not an integer: {b}'
-                // 'new BigNumber() base out of range: {b}'
-                ifExceptionsThrow(b, 2);
-
-                // Ignore base.
-                valid = isValid.test(n);
-            }
-        } else {
-            valid = isValid.test(n);
-        }
-
-        if (!valid) {
-
-            // Infinity/NaN
-            x['c'] = x['e'] = null;
-
-            // NaN
-            if (n != 'Infinity') {
-
-                // No exception on NaN.
-                if (n != 'NaN') {
-
-                    // 'new BigNumber() not a number: {n}'
-                    ifExceptionsThrow(orig, 3);
-                }
-                x['s'] = null;
-            }
-            id = 0;
-
-            return;
-        }
-    }
-
-    // Decimal point?
-    if ((e = n.indexOf('.')) > -1) {
-        n = n.replace('.', '');
-    }
-
-    // Exponential form?
-    if ((i = n.search(/e/i)) > 0) {
-
-        // Determine exponent.
-        if (e < 0) {
-            e = i;
-        }
-        e += +n.slice(i + 1);
-        n = n.substring(0, i);
-    } else if (e < 0) {
-
-        // Integer.
-        e = n.length;
-    }
-
-    // Determine leading zeros.
-    for (i = 0; n.charAt(i) == '0'; i++) {}
-
-    b = n.length;
-
-    // Disallow numbers with over 15 significant digits if number type.
-    if (isNum && b > 15 && n.slice(i).length > 15) {
-
-        // 'new BigNumber() number type has more than 15 significant digits: {n}'
-        ifExceptionsThrow(orig, 0);
-    }
+  // Duplicate.
+  if (n instanceof BigNumber) {
     id = 0;
 
-    // Overflow?
-    if ((e -= i + 1) > MAX_EXP) {
-
-        // Infinity.
-        x['c'] = x['e'] = null;
-
-        // Zero or underflow?
-    } else if (i == b || e < MIN_EXP) {
-
-        // Zero.
-        x['c'] = [x['e'] = 0];
+    // e is undefined.
+    if (b !== e) {
+      n += "";
     } else {
-
-        // Determine trailing zeros.
-        for (; n.charAt(--b) == '0';) {}
-
-        x['e'] = e;
-        x['c'] = [];
-
-        // Convert string to array of digits (without leading and trailing zeros).
-        for (e = 0; i <= b; x['c'][e++] = +n.charAt(i++)) {}
+      x["s"] = n["s"];
+      x["e"] = n["e"];
+      x["c"] = (n = n["c"]) ? n.slice() : n;
+      return;
     }
+  }
+
+  // If number, check if minus zero.
+  if (typeof n != "string") {
+    n = (isNum = typeof n == "number" || Object.prototype.toString.call(n) == "[object Number]") && n === 0 && 1 / n < 0 ? "-0" : n + "";
+  }
+
+  orig = n;
+
+  if (b === e && isValid.test(n)) {
+    // Determine sign.
+    x["s"] = n.charAt(0) == "-" ? (n = n.slice(1), -1) : 1;
+
+    // Either n is not a valid BigNumber or a base has been specified.
+  } else {
+    // Enable exponential notation to be used with base 10 argument.
+    // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
+    if (b == 10) {
+      return setMode(n, DECIMAL_PLACES, ROUNDING_MODE);
+    }
+
+    n = trim.call(n).replace(/^\+(?!-)/, "");
+
+    x["s"] = n.charAt(0) == "-" ? (n = n.replace(/^-(?!-)/, ""), -1) : 1;
+
+    if (b != null) {
+      if ((b == (b | 0) || !ERRORS) && !(outOfRange = !(b >= 2 && b < 65))) {
+        digits = "[" + DIGITS.slice(0, b = b | 0) + "]+";
+
+        // Before non-decimal number validity test and base conversion
+        // remove the `.` from e.g. '1.', and replace e.g. '.1' with '0.1'.
+        n = n.replace(/\.$/, "").replace(/^\./, "0.");
+
+        // Any number in exponential form will fail due to the e+/-.
+        if (valid = new RegExp("^" + digits + "(?:\\." + digits + ")?$", b < 37 ? "i" : "").test(n)) {
+          if (isNum) {
+            if (n.replace(/^0\.0*|\./, "").length > 15) {
+              // 'new BigNumber() number type has more than 15 significant digits: {n}'
+              ifExceptionsThrow(orig, 0);
+            }
+
+            // Prevent later check for length on converted number.
+            isNum = !isNum;
+          }
+          n = convert(n, 10, b, x["s"]);
+        } else if (n != "Infinity" && n != "NaN") {
+          // 'new BigNumber() not a base {b} number: {n}'
+          ifExceptionsThrow(orig, 1, b);
+          n = "NaN";
+        }
+      } else {
+        // 'new BigNumber() base not an integer: {b}'
+        // 'new BigNumber() base out of range: {b}'
+        ifExceptionsThrow(b, 2);
+
+        // Ignore base.
+        valid = isValid.test(n);
+      }
+    } else {
+      valid = isValid.test(n);
+    }
+
+    if (!valid) {
+      // Infinity/NaN
+      x["c"] = x["e"] = null;
+
+      // NaN
+      if (n != "Infinity") {
+        // No exception on NaN.
+        if (n != "NaN") {
+          // 'new BigNumber() not a number: {n}'
+          ifExceptionsThrow(orig, 3);
+        }
+        x["s"] = null;
+      }
+      id = 0;
+
+      return;
+    }
+  }
+
+  // Decimal point?
+  if ((e = n.indexOf(".")) > -1) {
+    n = n.replace(".", "");
+  }
+
+  // Exponential form?
+  if ((i = n.search(/e/i)) > 0) {
+    // Determine exponent.
+    if (e < 0) {
+      e = i;
+    }
+    e += +n.slice(i + 1);
+    n = n.substring(0, i);
+  } else if (e < 0) {
+    // Integer.
+    e = n.length;
+  }
+
+  // Determine leading zeros.
+  for (i = 0; n.charAt(i) == "0"; i++) {}
+
+  b = n.length;
+
+  // Disallow numbers with over 15 significant digits if number type.
+  if (isNum && b > 15 && n.slice(i).length > 15) {
+    // 'new BigNumber() number type has more than 15 significant digits: {n}'
+    ifExceptionsThrow(orig, 0);
+  }
+  id = 0;
+
+  // Overflow?
+  if ((e -= i + 1) > MAX_EXP) {
+    // Infinity.
+    x["c"] = x["e"] = null;
+
+    // Zero or underflow?
+  } else if (i == b || e < MIN_EXP) {
+    // Zero.
+    x["c"] = [x["e"] = 0];
+  } else {
+    // Determine trailing zeros.
+    for (; n.charAt(--b) == "0";) {}
+
+    x["e"] = e;
+    x["c"] = [];
+
+    // Convert string to array of digits (without leading and trailing zeros).
+    for (e = 0; i <= b; x["c"][e++] = +n.charAt(i++)) {}
+  }
 }
 
 // CONSTRUCTOR PROPERTIES/METHODS
 
-
-BigNumber['ROUND_UP'] = 0;
-BigNumber['ROUND_DOWN'] = 1;
-BigNumber['ROUND_CEIL'] = 2;
-BigNumber['ROUND_FLOOR'] = 3;
-BigNumber['ROUND_HALF_UP'] = 4;
-BigNumber['ROUND_HALF_DOWN'] = 5;
-BigNumber['ROUND_HALF_EVEN'] = 6;
-BigNumber['ROUND_HALF_CEIL'] = 7;
-BigNumber['ROUND_HALF_FLOOR'] = 8;
+BigNumber["ROUND_UP"] = 0;
+BigNumber["ROUND_DOWN"] = 1;
+BigNumber["ROUND_CEIL"] = 2;
+BigNumber["ROUND_FLOOR"] = 3;
+BigNumber["ROUND_HALF_UP"] = 4;
+BigNumber["ROUND_HALF_DOWN"] = 5;
+BigNumber["ROUND_HALF_EVEN"] = 6;
+BigNumber["ROUND_HALF_CEIL"] = 7;
+BigNumber["ROUND_HALF_FLOOR"] = 8;
 
 /*
  * Create an instance from a Buffer
  */
-BigNumber['fromBuffer'] = function (buf, opts) {
+BigNumber["fromBuffer"] = function (buf, opts) {
+  if (!opts) opts = {};
 
-    if (!opts) opts = {};
+  var endian = { 1: "big", "-1": "little" }[opts.endian] || opts.endian || "big";
 
-    var endian = { 1: 'big', '-1': 'little' }[opts.endian] || opts.endian || 'big';
+  var size = opts.size === "auto" ? Math.ceil(buf.length) : opts.size || 1;
 
-    var size = opts.size === 'auto' ? Math.ceil(buf.length) : opts.size || 1;
+  if (buf.length % size !== 0) {
+    throw new RangeError("Buffer length (" + buf.length + ")" + " must be a multiple of size (" + size + ")");
+  }
 
-    if (buf.length % size !== 0) {
-        throw new RangeError('Buffer length (' + buf.length + ')' + ' must be a multiple of size (' + size + ')');
+  var hex = [];
+  for (var i = 0; i < buf.length; i += size) {
+    var chunk = [];
+    for (var j = 0; j < size; j++) {
+      chunk.push(buf[i + (endian === "big" ? j : size - j - 1)]);
     }
 
-    var hex = [];
-    for (var i = 0; i < buf.length; i += size) {
-        var chunk = [];
-        for (var j = 0; j < size; j++) {
-            chunk.push(buf[i + (endian === 'big' ? j : size - j - 1)]);
-        }
+    hex.push(chunk.map(function (c) {
+      return (c < 16 ? "0" : "") + c.toString(16);
+    }).join(""));
+  }
 
-        hex.push(chunk.map(function (c) {
-            return (c < 16 ? '0' : '') + c.toString(16);
-        }).join(''));
-    }
-
-    return BigNumber(hex.join(''), 16);
+  return BigNumber(hex.join(""), 16);
 };
 
 /*
@@ -50689,348 +50691,320 @@ BigNumber['fromBuffer'] = function (buf, opts) {
  *
  * Return an object with the properties current values.
  */
-BigNumber['config'] = function () {
-    var v = void 0,
-        p = void 0,
-        i = 0,
-        r = {},
-        a = arguments,
-        o = a[0],
-        c = 'config',
-        inRange = function inRange(n, lo, hi) {
-        return !((outOfRange = n < lo || n > hi) || parse(n) != n && n !== 0);
-    },
-        has = o && (typeof o === 'undefined' ? 'undefined' : _typeof(o)) == 'object' ? function () {
-        if (o.hasOwnProperty(p)) return (v = o[p]) != null;
-    } : function () {
-        if (a.length > i) return (v = a[i++]) != null;
-    };
+BigNumber["config"] = function () {
+  var v = void 0,
+      p = void 0,
+      i = 0,
+      r = {},
+      a = arguments,
+      o = a[0],
+      c = "config",
+      inRange = function inRange(n, lo, hi) {
+    return !((outOfRange = n < lo || n > hi) || parse(n) != n && n !== 0);
+  },
+      has = o && (typeof o === "undefined" ? "undefined" : _typeof(o)) == "object" ? function () {
+    if (o.hasOwnProperty(p)) return (v = o[p]) != null;
+  } : function () {
+    if (a.length > i) return (v = a[i++]) != null;
+  };
 
-    // [DECIMAL_PLACES] {number} Integer, 0 to MAX inclusive.
-    if (has(p = 'DECIMAL_PLACES')) {
-
-        if (inRange(v, 0, MAX)) {
-            DECIMAL_PLACES = v | 0;
-        } else {
-
-            // 'config() DECIMAL_PLACES not an integer: {v}'
-            // 'config() DECIMAL_PLACES out of range: {v}'
-            ifExceptionsThrow(v, p, c);
-        }
+  // [DECIMAL_PLACES] {number} Integer, 0 to MAX inclusive.
+  if (has(p = "DECIMAL_PLACES")) {
+    if (inRange(v, 0, MAX)) {
+      DECIMAL_PLACES = v | 0;
+    } else {
+      // 'config() DECIMAL_PLACES not an integer: {v}'
+      // 'config() DECIMAL_PLACES out of range: {v}'
+      ifExceptionsThrow(v, p, c);
     }
-    r[p] = DECIMAL_PLACES;
+  }
+  r[p] = DECIMAL_PLACES;
 
-    // [ROUNDING_MODE] {number} Integer, 0 to 8 inclusive.
-    if (has(p = 'ROUNDING_MODE')) {
-
-        if (inRange(v, 0, 8)) {
-            ROUNDING_MODE = v | 0;
-        } else {
-
-            // 'config() ROUNDING_MODE not an integer: {v}'
-            // 'config() ROUNDING_MODE out of range: {v}'
-            ifExceptionsThrow(v, p, c);
-        }
+  // [ROUNDING_MODE] {number} Integer, 0 to 8 inclusive.
+  if (has(p = "ROUNDING_MODE")) {
+    if (inRange(v, 0, 8)) {
+      ROUNDING_MODE = v | 0;
+    } else {
+      // 'config() ROUNDING_MODE not an integer: {v}'
+      // 'config() ROUNDING_MODE out of range: {v}'
+      ifExceptionsThrow(v, p, c);
     }
-    r[p] = ROUNDING_MODE;
+  }
+  r[p] = ROUNDING_MODE;
 
-    /*
+  /*
      * [EXPONENTIAL_AT] {number|number[]} Integer, -MAX to MAX inclusive or
      * [ integer -MAX to 0 inclusive, 0 to MAX inclusive ].
      */
-    if (has(p = 'EXPONENTIAL_AT')) {
-
-        if (inRange(v, -MAX, MAX)) {
-            TO_EXP_NEG = -(TO_EXP_POS = ~~(v < 0 ? -v : +v));
-        } else if (!outOfRange && v && inRange(v[0], -MAX, 0) && inRange(v[1], 0, MAX)) {
-            TO_EXP_NEG = ~~v[0];
-            TO_EXP_POS = ~~v[1];
-        } else {
-
-            // 'config() EXPONENTIAL_AT not an integer or not [integer, integer]: {v}'
-            // 'config() EXPONENTIAL_AT out of range or not [negative, positive: {v}'
-            ifExceptionsThrow(v, p, c, 1);
-        }
+  if (has(p = "EXPONENTIAL_AT")) {
+    if (inRange(v, -MAX, MAX)) {
+      TO_EXP_NEG = -(TO_EXP_POS = ~~(v < 0 ? -v : +v));
+    } else if (!outOfRange && v && inRange(v[0], -MAX, 0) && inRange(v[1], 0, MAX)) {
+      TO_EXP_NEG = ~~v[0];
+      TO_EXP_POS = ~~v[1];
+    } else {
+      // 'config() EXPONENTIAL_AT not an integer or not [integer, integer]: {v}'
+      // 'config() EXPONENTIAL_AT out of range or not [negative, positive: {v}'
+      ifExceptionsThrow(v, p, c, 1);
     }
-    r[p] = [TO_EXP_NEG, TO_EXP_POS];
+  }
+  r[p] = [TO_EXP_NEG, TO_EXP_POS];
 
-    /*
+  /*
      * [RANGE][ {number|number[]} Non-zero integer, -MAX to MAX inclusive or
      * [ integer -MAX to -1 inclusive, integer 1 to MAX inclusive ].
      */
-    if (has(p = 'RANGE')) {
-
-        if (inRange(v, -MAX, MAX) && ~~v) {
-            MIN_EXP = -(MAX_EXP = ~~(v < 0 ? -v : +v));
-        } else if (!outOfRange && v && inRange(v[0], -MAX, -1) && inRange(v[1], 1, MAX)) {
-            MIN_EXP = ~~v[0], MAX_EXP = ~~v[1];
-        } else {
-
-            // 'config() RANGE not a non-zero integer or not [integer, integer]: {v}'
-            // 'config() RANGE out of range or not [negative, positive: {v}'
-            ifExceptionsThrow(v, p, c, 1, 1);
-        }
+  if (has(p = "RANGE")) {
+    if (inRange(v, -MAX, MAX) && ~~v) {
+      MIN_EXP = -(MAX_EXP = ~~(v < 0 ? -v : +v));
+    } else if (!outOfRange && v && inRange(v[0], -MAX, -1) && inRange(v[1], 1, MAX)) {
+      MIN_EXP = ~~v[0], MAX_EXP = ~~v[1];
+    } else {
+      // 'config() RANGE not a non-zero integer or not [integer, integer]: {v}'
+      // 'config() RANGE out of range or not [negative, positive: {v}'
+      ifExceptionsThrow(v, p, c, 1, 1);
     }
-    r[p] = [MIN_EXP, MAX_EXP];
+  }
+  r[p] = [MIN_EXP, MAX_EXP];
 
-    // [ERRORS] {boolean|number} true, false, 1 or 0.
-    if (has(p = 'ERRORS')) {
-
-        if (v === !!v || v === 1 || v === 0) {
-            parse = (outOfRange = id = 0, ERRORS = !!v) ? parseInt : parseFloat;
-        } else {
-
-            // 'config() ERRORS not a boolean or binary digit: {v}'
-            ifExceptionsThrow(v, p, c, 0, 0, 1);
-        }
+  // [ERRORS] {boolean|number} true, false, 1 or 0.
+  if (has(p = "ERRORS")) {
+    if (v === !!v || v === 1 || v === 0) {
+      parse = (outOfRange = id = 0, ERRORS = !!v) ? parseInt : parseFloat;
+    } else {
+      // 'config() ERRORS not a boolean or binary digit: {v}'
+      ifExceptionsThrow(v, p, c, 0, 0, 1);
     }
-    r[p] = ERRORS;
+  }
+  r[p] = ERRORS;
 
-    return r;
+  return r;
 };
 
 // privated FUNCTIONS
 
-
 // Assemble error messages. Throw BigNumber Errors.
 function ifExceptionsThrow(arg, i, j, isArray, isRange, isErrors) {
+  if (ERRORS) {
+    var error = void 0,
+        method = ["new BigNumber", "cmp", "div", "eq", "gt", "gte", "lt", "lte", "minus", "mod", "plus", "times", "toFr"][id ? id < 0 ? -id : id : 1 / id < 0 ? 1 : 0] + "()",
+        message = outOfRange ? " out of range" : " not a" + (isRange ? " non-zero" : "n") + " integer";
 
-    if (ERRORS) {
-        var error = void 0,
-            method = ['new BigNumber', 'cmp', 'div', 'eq', 'gt', 'gte', 'lt', 'lte', 'minus', 'mod', 'plus', 'times', 'toFr'][id ? id < 0 ? -id : id : 1 / id < 0 ? 1 : 0] + '()',
-            message = outOfRange ? ' out of range' : ' not a' + (isRange ? ' non-zero' : 'n') + ' integer';
+    message = ([method + " number type has more than 15 significant digits", method + " not a base " + j + " number", method + " base" + message, method + " not a number"][i] || j + "() " + i + (isErrors ? " not a boolean or binary digit" : message + (isArray ? " or not [" + (outOfRange ? " negative, positive" : " integer, integer") + " ]" : ""))) + ": " + arg;
 
-        message = ([method + ' number type has more than 15 significant digits', method + ' not a base ' + j + ' number', method + ' base' + message, method + ' not a number'][i] || j + '() ' + i + (isErrors ? ' not a boolean or binary digit' : message + (isArray ? ' or not [' + (outOfRange ? ' negative, positive' : ' integer, integer') + ' ]' : ''))) + ': ' + arg;
+    outOfRange = id = 0;
+    error = new Error(message);
+    error["name"] = "BigNumber Error";
 
-        outOfRange = id = 0;
-        error = new Error(message);
-        error['name'] = 'BigNumber Error';
-
-        throw error;
-    }
+    throw error;
+  }
 }
 
 /*
  * Convert a numeric string of baseIn to a numeric string of baseOut.
  */
 function convert(nStr, baseOut, baseIn, sign) {
-    var e = void 0,
-        dvs = void 0,
-        dvd = void 0,
-        nArr = void 0,
-        fracArr = void 0,
-        fracBN = void 0;
+  var e = void 0,
+      dvs = void 0,
+      dvd = void 0,
+      nArr = void 0,
+      fracArr = void 0,
+      fracBN = void 0;
 
-    // Convert string of base bIn to an array of numbers of baseOut.
-    // Eg. strToArr('255', 10) where baseOut is 16, returns [15, 15].
-    // Eg. strToArr('ff', 16)  where baseOut is 10, returns [2, 5, 5].
-    function strToArr(str, bIn) {
-        var j = void 0,
-            i = 0,
-            strL = str.length,
-            arrL = void 0,
-            arr = [0];
+  // Convert string of base bIn to an array of numbers of baseOut.
+  // Eg. strToArr('255', 10) where baseOut is 16, returns [15, 15].
+  // Eg. strToArr('ff', 16)  where baseOut is 10, returns [2, 5, 5].
+  function strToArr(str, bIn) {
+    var j = void 0,
+        i = 0,
+        strL = str.length,
+        arrL = void 0,
+        arr = [0];
 
-        for (bIn = bIn || baseIn; i < strL; i++) {
+    for (bIn = bIn || baseIn; i < strL; i++) {
+      for (arrL = arr.length, j = 0; j < arrL; arr[j] *= bIn, j++) {}
 
-            for (arrL = arr.length, j = 0; j < arrL; arr[j] *= bIn, j++) {}
-
-            for (arr[0] += DIGITS.indexOf(str.charAt(i)), j = 0; j < arr.length; j++) {
-
-                if (arr[j] > baseOut - 1) {
-
-                    if (arr[j + 1] == null) {
-                        arr[j + 1] = 0;
-                    }
-                    arr[j + 1] += arr[j] / baseOut ^ 0;
-                    arr[j] %= baseOut;
-                }
-            }
+      for (arr[0] += DIGITS.indexOf(str.charAt(i)), j = 0; j < arr.length; j++) {
+        if (arr[j] > baseOut - 1) {
+          if (arr[j + 1] == null) {
+            arr[j + 1] = 0;
+          }
+          arr[j + 1] += arr[j] / baseOut ^ 0;
+          arr[j] %= baseOut;
         }
-
-        return arr.reverse();
+      }
     }
 
-    // Convert array to string.
-    // E.g. arrToStr( [9, 10, 11] ) becomes '9ab' (in bases above 11).
-    function arrToStr(arr) {
-        var i = 0,
-            arrL = arr.length,
-            str = '';
+    return arr.reverse();
+  }
 
-        for (; i < arrL; str += DIGITS.charAt(arr[i++])) {}
+  // Convert array to string.
+  // E.g. arrToStr( [9, 10, 11] ) becomes '9ab' (in bases above 11).
+  function arrToStr(arr) {
+    var i = 0,
+        arrL = arr.length,
+        str = "";
 
-        return str;
-    }
+    for (; i < arrL; str += DIGITS.charAt(arr[i++])) {}
 
-    if (baseIn < 37) {
-        nStr = nStr.toLowerCase();
-    }
+    return str;
+  }
 
-    /*
+  if (baseIn < 37) {
+    nStr = nStr.toLowerCase();
+  }
+
+  /*
      * If non-integer convert integer part and fraction part separately.
      * Convert the fraction part as if it is an integer than use division to
      * reduce it down again to a value less than one.
      */
-    if ((e = nStr.indexOf('.')) > -1) {
-
-        /*
+  if ((e = nStr.indexOf(".")) > -1) {
+    /*
          * Calculate the power to which to raise the base to get the number
          * to divide the fraction part by after it has been converted as an
          * integer to the required base.
          */
-        e = nStr.length - e - 1;
+    e = nStr.length - e - 1;
 
-        // Use toFixed to avoid possible exponential notation.
-        dvs = strToArr(new BigNumber(baseIn)['pow'](e)['toF'](), 10);
+    // Use toFixed to avoid possible exponential notation.
+    dvs = strToArr(new BigNumber(baseIn)["pow"](e)["toF"](), 10);
 
-        nArr = nStr.split('.');
+    nArr = nStr.split(".");
 
-        // Convert the base of the fraction part (as integer).
-        dvd = strToArr(nArr[1]);
+    // Convert the base of the fraction part (as integer).
+    dvd = strToArr(nArr[1]);
 
-        // Convert the base of the integer part.
-        nArr = strToArr(nArr[0]);
+    // Convert the base of the integer part.
+    nArr = strToArr(nArr[0]);
 
-        // Result will be a BigNumber with a value less than 1.
-        fracBN = divide(dvd, dvs, dvd.length - dvs.length, sign, baseOut,
-        // Is least significant digit of integer part an odd number?
-        nArr[nArr.length - 1] & 1);
+    // Result will be a BigNumber with a value less than 1.
+    fracBN = divide(dvd, dvs, dvd.length - dvs.length, sign, baseOut,
+    // Is least significant digit of integer part an odd number?
+    nArr[nArr.length - 1] & 1);
 
-        fracArr = fracBN['c'];
+    fracArr = fracBN["c"];
 
-        // e can be <= 0  ( if e == 0, fracArr is [0] or [1] ).
-        if (e = fracBN['e']) {
+    // e can be <= 0  ( if e == 0, fracArr is [0] or [1] ).
+    if (e = fracBN["e"]) {
+      // Append zeros according to the exponent of the result.
+      for (; ++e; fracArr.unshift(0)) {}
 
-            // Append zeros according to the exponent of the result.
-            for (; ++e; fracArr.unshift(0)) {}
+      // Append the fraction part to the converted integer part.
+      nStr = arrToStr(nArr) + "." + arrToStr(fracArr);
 
-            // Append the fraction part to the converted integer part.
-            nStr = arrToStr(nArr) + '.' + arrToStr(fracArr);
+      // fracArr is [1].
+      // Fraction digits rounded up, so increment last digit of integer part.
+    } else if (fracArr[0]) {
+      if (nArr[e = nArr.length - 1] < baseOut - 1) {
+        ++nArr[e];
+        nStr = arrToStr(nArr);
+      } else {
+        nStr = new BigNumber(arrToStr(nArr), baseOut)["plus"](ONE)["toS"](baseOut);
+      }
 
-            // fracArr is [1].
-            // Fraction digits rounded up, so increment last digit of integer part.
-        } else if (fracArr[0]) {
-
-            if (nArr[e = nArr.length - 1] < baseOut - 1) {
-                ++nArr[e];
-                nStr = arrToStr(nArr);
-            } else {
-                nStr = new BigNumber(arrToStr(nArr), baseOut)['plus'](ONE)['toS'](baseOut);
-            }
-
-            // fracArr is [0]. No fraction digits.
-        } else {
-            nStr = arrToStr(nArr);
-        }
+      // fracArr is [0]. No fraction digits.
     } else {
-
-        // Simple integer. Convert base.
-        nStr = arrToStr(strToArr(nStr));
+      nStr = arrToStr(nArr);
     }
+  } else {
+    // Simple integer. Convert base.
+    nStr = arrToStr(strToArr(nStr));
+  }
 
-    return nStr;
+  return nStr;
 }
 
 // Perform division in the specified base. Called by div and convert.
 function divide(dvd, dvs, exp, s, base, isOdd) {
-    var dvsL = void 0,
-        dvsT = void 0,
-        next = void 0,
-        cmp = void 0,
-        remI = void 0,
-        dvsZ = dvs.slice(),
-        dvdI = dvsL = dvs.length,
-        dvdL = dvd.length,
-        rem = dvd.slice(0, dvsL),
-        remL = rem.length,
-        quo = new BigNumber(ONE),
-        qc = quo['c'] = [],
-        qi = 0,
-        dig = DECIMAL_PLACES + (quo['e'] = exp) + 1;
+  var dvsL = void 0,
+      dvsT = void 0,
+      next = void 0,
+      cmp = void 0,
+      remI = void 0,
+      dvsZ = dvs.slice(),
+      dvdI = dvsL = dvs.length,
+      dvdL = dvd.length,
+      rem = dvd.slice(0, dvsL),
+      remL = rem.length,
+      quo = new BigNumber(ONE),
+      qc = quo["c"] = [],
+      qi = 0,
+      dig = DECIMAL_PLACES + (quo["e"] = exp) + 1;
 
-    quo['s'] = s;
-    s = dig < 0 ? 0 : dig;
+  quo["s"] = s;
+  s = dig < 0 ? 0 : dig;
 
-    // Add zeros to make remainder as long as divisor.
-    for (; remL++ < dvsL; rem.push(0)) {}
+  // Add zeros to make remainder as long as divisor.
+  for (; remL++ < dvsL; rem.push(0)) {}
 
-    // Create version of divisor with leading zero.
-    dvsZ.unshift(0);
+  // Create version of divisor with leading zero.
+  dvsZ.unshift(0);
 
-    do {
-
-        // 'next' is how many times the divisor goes into the current remainder.
-        for (next = 0; next < base; next++) {
-
-            // Compare divisor and remainder.
-            if (dvsL != (remL = rem.length)) {
-                cmp = dvsL > remL ? 1 : -1;
-            } else {
-                for (remI = -1, cmp = 0; ++remI < dvsL;) {
-
-                    if (dvs[remI] != rem[remI]) {
-                        cmp = dvs[remI] > rem[remI] ? 1 : -1;
-                        break;
-                    }
-                }
-            }
-
-            // Subtract divisor from remainder (if divisor < remainder).
-            if (cmp < 0) {
-
-                // Remainder cannot be more than one digit longer than divisor.
-                // Equalise lengths using divisor with extra leading zero?
-                for (dvsT = remL == dvsL ? dvs : dvsZ; remL;) {
-
-                    if (rem[--remL] < dvsT[remL]) {
-
-                        for (remI = remL; remI && !rem[--remI]; rem[remI] = base - 1) {}
-                        --rem[remI];
-                        rem[remL] += base;
-                    }
-                    rem[remL] -= dvsT[remL];
-                }
-                for (; !rem[0]; rem.shift()) {}
-            } else {
-                break;
-            }
+  do {
+    // 'next' is how many times the divisor goes into the current remainder.
+    for (next = 0; next < base; next++) {
+      // Compare divisor and remainder.
+      if (dvsL != (remL = rem.length)) {
+        cmp = dvsL > remL ? 1 : -1;
+      } else {
+        for (remI = -1, cmp = 0; ++remI < dvsL;) {
+          if (dvs[remI] != rem[remI]) {
+            cmp = dvs[remI] > rem[remI] ? 1 : -1;
+            break;
+          }
         }
+      }
 
-        // Add the 'next' digit to the result array.
-        qc[qi++] = cmp ? next : ++next;
-
-        // Update the remainder.
-        rem[0] && cmp ? rem[remL] = dvd[dvdI] || 0 : rem = [dvd[dvdI]];
-    } while ((dvdI++ < dvdL || rem[0] != null) && s--);
-
-    // Leading zero? Do not remove if result is simply zero (qi == 1).
-    if (!qc[0] && qi != 1) {
-
-        // There can't be more than one zero.
-        --quo['e'];
-        qc.shift();
+      // Subtract divisor from remainder (if divisor < remainder).
+      if (cmp < 0) {
+        // Remainder cannot be more than one digit longer than divisor.
+        // Equalise lengths using divisor with extra leading zero?
+        for (dvsT = remL == dvsL ? dvs : dvsZ; remL;) {
+          if (rem[--remL] < dvsT[remL]) {
+            for (remI = remL; remI && !rem[--remI]; rem[remI] = base - 1) {}
+            --rem[remI];
+            rem[remL] += base;
+          }
+          rem[remL] -= dvsT[remL];
+        }
+        for (; !rem[0]; rem.shift()) {}
+      } else {
+        break;
+      }
     }
 
-    // Round?
-    if (qi > dig) {
-        rnd(quo, DECIMAL_PLACES, base, isOdd, rem[0] != null);
-    }
+    // Add the 'next' digit to the result array.
+    qc[qi++] = cmp ? next : ++next;
 
-    // Overflow?
-    if (quo['e'] > MAX_EXP) {
+    // Update the remainder.
+    rem[0] && cmp ? rem[remL] = dvd[dvdI] || 0 : rem = [dvd[dvdI]];
+  } while ((dvdI++ < dvdL || rem[0] != null) && s--);
 
-        // Infinity.
-        quo['c'] = quo['e'] = null;
+  // Leading zero? Do not remove if result is simply zero (qi == 1).
+  if (!qc[0] && qi != 1) {
+    // There can't be more than one zero.
+    --quo["e"];
+    qc.shift();
+  }
 
-        // Underflow?
-    } else if (quo['e'] < MIN_EXP) {
+  // Round?
+  if (qi > dig) {
+    rnd(quo, DECIMAL_PLACES, base, isOdd, rem[0] != null);
+  }
 
-        // Zero.
-        quo['c'] = [quo['e'] = 0];
-    }
+  // Overflow?
+  if (quo["e"] > MAX_EXP) {
+    // Infinity.
+    quo["c"] = quo["e"] = null;
 
-    return quo;
+    // Underflow?
+  } else if (quo["e"] < MIN_EXP) {
+    // Zero.
+    quo["c"] = [quo["e"] = 0];
+  }
+
+  return quo;
 }
 
 /*
@@ -51042,157 +51016,145 @@ function divide(dvd, dvs, exp, s, base, isOdd) {
  * rounded up.
  */
 function format(n, d, exp) {
+  // Initially, i is the number of decimal places required.
+  var i = d - (n = new BigNumber(n))["e"],
+      c = n["c"];
 
-    // Initially, i is the number of decimal places required.
-    var i = d - (n = new BigNumber(n))['e'],
-        c = n['c'];
+  // +-Infinity or NaN?
+  if (!c) {
+    return n["toS"]();
+  }
 
-    // +-Infinity or NaN?
-    if (!c) {
-        return n['toS']();
-    }
+  // Round?
+  if (c.length > ++d) {
+    rnd(n, i, 10);
+  }
 
-    // Round?
-    if (c.length > ++d) {
-        rnd(n, i, 10);
-    }
+  // Recalculate d if toFixed as n['e'] may have changed if value rounded up.
+  i = c[0] == 0 ? i + 1 : exp ? d : n["e"] + i + 1;
 
-    // Recalculate d if toFixed as n['e'] may have changed if value rounded up.
-    i = c[0] == 0 ? i + 1 : exp ? d : n['e'] + i + 1;
+  // Append zeros?
+  for (; c.length < i; c.push(0)) {}
+  i = n["e"];
 
-    // Append zeros?
-    for (; c.length < i; c.push(0)) {}
-    i = n['e'];
-
-    /*
+  /*
      * toPrecision returns exponential notation if the number of significant
      * digits specified is less than the number of digits necessary to
      * represent the integer part of the value in normal notation.
      */
-    return exp == 1 || exp == 2 && (--d < i || i <= TO_EXP_NEG)
-
-    // Exponential notation.
-    ? (n['s'] < 0 && c[0] ? '-' : '') + (c.length > 1 ? (c.splice(1, 0, '.'), c.join('')) : c[0]) + (i < 0 ? 'e' : 'e+') + i
-
-    // Normal notation.
-    : n['toS']();
+  return exp == 1 || exp == 2 && (--d < i || i <= TO_EXP_NEG) ? // Exponential notation.
+  (n["s"] < 0 && c[0] ? "-" : "") + (c.length > 1 ? (c.splice(1, 0, "."), c.join("")) : c[0]) + (i < 0 ? "e" : "e+") + i : // Normal notation.
+  n["toS"]();
 }
 
 // Round if necessary.
 // Called by divide, format, setMode and sqrt.
 function rnd(x, dp, base, isOdd, r) {
-    var xc = x['c'],
-        isNeg = x['s'] < 0,
-        half = base / 2,
-        i = x['e'] + dp + 1,
+  var xc = x["c"],
+      isNeg = x["s"] < 0,
+      half = base / 2,
+      i = x["e"] + dp + 1,
 
+  // 'next' is the digit after the digit that may be rounded up.
+  next = xc[i],
 
-    // 'next' is the digit after the digit that may be rounded up.
-    next = xc[i],
+  /*
+   * 'more' is whether there are digits after 'next'.
+   * E.g.
+   * 0.005 (e = -3) to be rounded to 0 decimal places (dp = 0) gives i = -2
+   * The 'next' digit is zero, and there ARE 'more' digits after it.
+   * 0.5 (e = -1) dp = 0 gives i = 0
+   * The 'next' digit is 5 and there are no 'more' digits after it.
+   */
+  more = r || i < 0 || xc[i + 1] != null;
 
+  r = ROUNDING_MODE < 4 ? (next != null || more) && (ROUNDING_MODE == 0 || ROUNDING_MODE == 2 && !isNeg || ROUNDING_MODE == 3 && isNeg) : next > half || next == half && (ROUNDING_MODE == 4 || more ||
+  /*
+  * isOdd is used in base conversion and refers to the least significant
+  * digit of the integer part of the value to be converted. The fraction
+  * part is rounded by this method separately from the integer part.
+  */
+  ROUNDING_MODE == 6 && (xc[i - 1] & 1 || !dp && isOdd) || ROUNDING_MODE == 7 && !isNeg || ROUNDING_MODE == 8 && isNeg);
 
-    /*
-     * 'more' is whether there are digits after 'next'.
-     * E.g.
-     * 0.005 (e = -3) to be rounded to 0 decimal places (dp = 0) gives i = -2
-     * The 'next' digit is zero, and there ARE 'more' digits after it.
-     * 0.5 (e = -1) dp = 0 gives i = 0
-     * The 'next' digit is 5 and there are no 'more' digits after it.
-     */
-    more = r || i < 0 || xc[i + 1] != null;
+  if (i < 1 || !xc[0]) {
+    xc.length = 0;
+    xc.push(0);
 
-    r = ROUNDING_MODE < 4 ? (next != null || more) && (ROUNDING_MODE == 0 || ROUNDING_MODE == 2 && !isNeg || ROUNDING_MODE == 3 && isNeg) : next > half || next == half && (ROUNDING_MODE == 4 || more ||
-
-    /*
-     * isOdd is used in base conversion and refers to the least significant
-     * digit of the integer part of the value to be converted. The fraction
-     * part is rounded by this method separately from the integer part.
-     */
-    ROUNDING_MODE == 6 && (xc[i - 1] & 1 || !dp && isOdd) || ROUNDING_MODE == 7 && !isNeg || ROUNDING_MODE == 8 && isNeg);
-
-    if (i < 1 || !xc[0]) {
-        xc.length = 0;
-        xc.push(0);
-
-        if (r) {
-
-            // 1, 0.1, 0.01, 0.001, 0.0001 etc.
-            xc[0] = 1;
-            x['e'] = -dp;
-        } else {
-
-            // Zero.
-            x['e'] = 0;
-        }
-
-        return x;
-    }
-
-    // Remove any digits after the required decimal places.
-    xc.length = i--;
-
-    // Round up?
     if (r) {
-
-        // Rounding up may mean the previous digit has to be rounded up and so on.
-        for (--base; ++xc[i] > base;) {
-            xc[i] = 0;
-
-            if (!i--) {
-                ++x['e'];
-                xc.unshift(1);
-            }
-        }
+      // 1, 0.1, 0.01, 0.001, 0.0001 etc.
+      xc[0] = 1;
+      x["e"] = -dp;
+    } else {
+      // Zero.
+      x["e"] = 0;
     }
-
-    // Remove trailing zeros.
-    for (i = xc.length; !xc[--i]; xc.pop()) {}
 
     return x;
+  }
+
+  // Remove any digits after the required decimal places.
+  xc.length = i--;
+
+  // Round up?
+  if (r) {
+    // Rounding up may mean the previous digit has to be rounded up and so on.
+    for (--base; ++xc[i] > base;) {
+      xc[i] = 0;
+
+      if (!i--) {
+        ++x["e"];
+        xc.unshift(1);
+      }
+    }
+  }
+
+  // Remove trailing zeros.
+  for (i = xc.length; !xc[--i]; xc.pop()) {}
+
+  return x;
 }
 
 // Round after setting the appropriate rounding mode.
 // Handles ceil, floor and round.
 function setMode(x, dp, rm) {
-    var r = ROUNDING_MODE;
+  var r = ROUNDING_MODE;
 
-    ROUNDING_MODE = rm;
-    x = new BigNumber(x);
-    x['c'] && rnd(x, dp, 10);
-    ROUNDING_MODE = r;
+  ROUNDING_MODE = rm;
+  x = new BigNumber(x);
+  x["c"] && rnd(x, dp, 10);
+  ROUNDING_MODE = r;
 
-    return x;
+  return x;
 }
 
 // PROTOTYPE/INSTANCE METHODS
 
-
 /*
  * Return a new BigNumber whose value is the absolute value of this BigNumber.
  */
-P['abs'] = P['absoluteValue'] = function () {
-    var x = new BigNumber(this);
+P["abs"] = P["absoluteValue"] = function () {
+  var x = new BigNumber(this);
 
-    if (x['s'] < 0) {
-        x['s'] = 1;
-    }
+  if (x["s"] < 0) {
+    x["s"] = 1;
+  }
 
-    return x;
+  return x;
 };
 
 /*
  * Return the bit length of the number.
  */
-P['bitLength'] = function () {
-    return this.toString(2).length;
+P["bitLength"] = function () {
+  return this.toString(2).length;
 };
 
 /*
  * Return a new BigNumber whose value is the value of this BigNumber
  * rounded to a whole number in the direction of Infinity.
  */
-P['ceil'] = function () {
-    return setMode(this, 0, 2);
+P["ceil"] = function () {
+  return setMode(this, 0, 2);
 };
 
 /*
@@ -51202,52 +51164,51 @@ P['ceil'] = function () {
  * 0 if they have the same value,
  * or null if the value of either is NaN.
  */
-P['comparedTo'] = P['cmp'] = function (y, b) {
-    var a = void 0,
-        x = this,
-        xc = x['c'],
-        yc = (id = -id, y = new BigNumber(y, b))['c'],
-        i = x['s'],
-        j = y['s'],
-        k = x['e'],
-        l = y['e'];
+P["comparedTo"] = P["cmp"] = function (y, b) {
+  var a = void 0,
+      x = this,
+      xc = x["c"],
+      yc = (id = -id, y = new BigNumber(y, b))["c"],
+      i = x["s"],
+      j = y["s"],
+      k = x["e"],
+      l = y["e"];
 
-    // Either NaN?
-    if (!i || !j) {
-        return null;
+  // Either NaN?
+  if (!i || !j) {
+    return null;
+  }
+
+  a = xc && !xc[0], b = yc && !yc[0];
+
+  // Either zero?
+  if (a || b) {
+    return a ? b ? 0 : -j : i;
+  }
+
+  // Signs differ?
+  if (i != j) {
+    return i;
+  }
+
+  // Either Infinity?
+  if (a = i < 0, b = k == l, !xc || !yc) {
+    return b ? 0 : !xc ^ a ? 1 : -1;
+  }
+
+  // Compare exponents.
+  if (!b) {
+    return k > l ^ a ? 1 : -1;
+  }
+
+  // Compare digit by digit.
+  for (i = -1, j = (k = xc.length) < (l = yc.length) ? k : l; ++i < j;) {
+    if (xc[i] != yc[i]) {
+      return xc[i] > yc[i] ^ a ? 1 : -1;
     }
-
-    a = xc && !xc[0], b = yc && !yc[0];
-
-    // Either zero?
-    if (a || b) {
-        return a ? b ? 0 : -j : i;
-    }
-
-    // Signs differ?
-    if (i != j) {
-        return i;
-    }
-
-    // Either Infinity?
-    if (a = i < 0, b = k == l, !xc || !yc) {
-        return b ? 0 : !xc ^ a ? 1 : -1;
-    }
-
-    // Compare exponents.
-    if (!b) {
-        return k > l ^ a ? 1 : -1;
-    }
-
-    // Compare digit by digit.
-    for (i = -1, j = (k = xc.length) < (l = yc.length) ? k : l; ++i < j;) {
-
-        if (xc[i] != yc[i]) {
-            return xc[i] > yc[i] ^ a ? 1 : -1;
-        }
-    }
-    // Compare lengths.
-    return k == l ? 0 : k > l ^ a ? 1 : -1;
+  }
+  // Compare lengths.
+  return k == l ? 0 : k > l ^ a ? 1 : -1;
 };
 
 /*
@@ -51271,120 +51232,109 @@ P['comparedTo'] = P['cmp'] = function (y, b) {
  * divided by the value of BigNumber(y, b), rounded according to
  * DECIMAL_PLACES and ROUNDING_MODE.
  */
-P['dividedBy'] = P['div'] = function (y, b) {
-    var xc = this['c'],
-        xe = this['e'],
-        xs = this['s'],
-        yc = (id = 2, y = new BigNumber(y, b))['c'],
-        ye = y['e'],
-        ys = y['s'],
-        s = xs == ys ? 1 : -1;
+P["dividedBy"] = P["div"] = function (y, b) {
+  var xc = this["c"],
+      xe = this["e"],
+      xs = this["s"],
+      yc = (id = 2, y = new BigNumber(y, b))["c"],
+      ye = y["e"],
+      ys = y["s"],
+      s = xs == ys ? 1 : -1;
 
-    // Either NaN/Infinity/0?
-    return !xe && (!xc || !xc[0]) || !ye && (!yc || !yc[0])
-
-    // Either NaN?
-    ? new BigNumber(!xs || !ys || (
-
-    // Both 0 or both Infinity?
-    xc ? yc && xc[0] == yc[0] : !yc)
-
-    // Return NaN.
-    ? NaN
-
-    // x is 0 or y is Infinity?
-    : xc && xc[0] == 0 || !yc
-
-    // Return +-0.
-    ? s * 0
-
-    // y is 0. Return +-Infinity.
-    : s / 0) : divide(xc, yc, xe - ye, s, 10);
+  // Either NaN/Infinity/0?
+  return !xe && (!xc || !xc[0]) || !ye && (!yc || !yc[0]) ? // Either NaN?
+  new BigNumber(!xs || !ys || (
+  // Both 0 or both Infinity?
+  xc ? yc && xc[0] == yc[0] : !yc) ? // Return NaN.
+  NaN : // x is 0 or y is Infinity?
+  xc && xc[0] == 0 || !yc ? // Return +-0.
+  s * 0 : // y is 0. Return +-Infinity.
+  s / 0) : divide(xc, yc, xe - ye, s, 10);
 };
 
 /*
  * Return true if the value of this BigNumber is equal to the value of
  * BigNumber(n, b), otherwise returns false.
  */
-P['equals'] = P['eq'] = function (n, b) {
-    id = 3;
-    return this['cmp'](n, b) === 0;
+P["equals"] = P["eq"] = function (n, b) {
+  id = 3;
+  return this["cmp"](n, b) === 0;
 };
 
 /*
  * Return a new BigNumber whose value is the value of this BigNumber
  * rounded to a whole number in the direction of -Infinity.
  */
-P['floor'] = function () {
-    return setMode(this, 0, 3);
+P["floor"] = function () {
+  return setMode(this, 0, 3);
 };
 
 /*
  * Return true if the value of this BigNumber is greater than the value of
  * BigNumber(n, b), otherwise returns false.
  */
-P['greaterThan'] = P['gt'] = function (n, b) {
-    id = 4;
-    return this['cmp'](n, b) > 0;
+P["greaterThan"] = P["gt"] = function (n, b) {
+  id = 4;
+  return this["cmp"](n, b) > 0;
 };
 
 /*
  * Return true if the value of this BigNumber is greater than or equal to
  * the value of BigNumber(n, b), otherwise returns false.
  */
-P['greaterThanOrEqualTo'] = P['gte'] = function (n, b) {
-    id = 5;
-    return (b = this['cmp'](n, b)) == 1 || b === 0;
+P["greaterThanOrEqualTo"] = P["gte"] = function (n, b) {
+  id = 5;
+  return (b = this["cmp"](n, b)) == 1 || b === 0;
 };
 
 /*
  * Return true if the value of this BigNumber is a finite number, otherwise
  * returns false.
  */
-P['isFinite'] = P['isF'] = function () {
-    return !!this['c'];
+P["isFinite"] = P["isF"] = function () {
+  return !!this["c"];
 };
 
 /*
  * Return true if the value of this BigNumber is NaN, otherwise returns
  * false.
  */
-P['isNaN'] = function () {
-    return !this['s'];
+P["isNaN"] = function () {
+  return !this["s"];
 };
 
 /*
  * Return true if the value of this BigNumber is negative, otherwise
  * returns false.
  */
-P['isNegative'] = P['isNeg'] = function () {
-    return this['s'] < 0;
+P["isNegative"] = P["isNeg"] = function () {
+  return this["s"] < 0;
 };
 
 /*
  * Return true if the value of this BigNumber is 0 or -0, otherwise returns
  * false.
  */
-P['isZero'] = P['isZ'] = function () {
-    return !!this['c'] && this['c'][0] == 0;
+P["isZero"] = P["isZ"] = function () {
+  return !!this["c"] && this["c"][0] == 0;
 };
 
 /*
  * Return true if the value of this BigNumber is less than the value of
  * BigNumber(n, b), otherwise returns false.
  */
-P['lessThan'] = P['lt'] = function (n, b) {
-    id = 6;
-    return this['cmp'](n, b) < 0;
+P["lessThan"] = P["lt"] = function (n, b) {
+  id = 6;
+  return this["cmp"](n, b) < 0;
 };
 
 /*
  * Return true if the value of this BigNumber is less than or equal to the
  * value of BigNumber(n, b), otherwise returns false.
  */
-P['lessThanOrEqualTo'] = P['lte'] = P['le'] = function (n, b) {
-    id = 7;
-    return (b = this['cmp'](n, b)) == -1 || b === 0;
+P["lessThanOrEqualTo"] = P["lte"] = P["le"] = function (n, b) {
+  id = 7;
+  return (b = this["cmp"](n, b)) == -1 || b === 0;
 };
 
 /*
@@ -51407,128 +51357,116 @@ P['lessThanOrEqualTo'] = P['lte'] = P['le'] = function (n, b) {
  * Return a new BigNumber whose value is the value of this BigNumber minus
  * the value of BigNumber(y, b).
  */
-P['minus'] = P['sub'] = function (y, b) {
-    var d = void 0,
-        i = void 0,
-        j = void 0,
-        xLTy = void 0,
-        x = this,
-        a = x['s'];
+P["minus"] = P["sub"] = function (y, b) {
+  var d = void 0,
+      i = void 0,
+      j = void 0,
+      xLTy = void 0,
+      x = this,
+      a = x["s"];
 
-    b = (id = 8, y = new BigNumber(y, b))['s'];
+  b = (id = 8, y = new BigNumber(y, b))["s"];
 
-    // Either NaN?
-    if (!a || !b) {
-        return new BigNumber(NaN);
+  // Either NaN?
+  if (!a || !b) {
+    return new BigNumber(NaN);
+  }
+
+  // Signs differ?
+  if (a != b) {
+    return y["s"] = -b, x["plus"](y);
+  }
+
+  var xc = x["c"],
+      xe = x["e"],
+      yc = y["c"],
+      ye = y["e"];
+
+  if (!xe || !ye) {
+    // Either Infinity?
+    if (!xc || !yc) {
+      return xc ? (y["s"] = -b, y) : new BigNumber(yc ? x : NaN);
     }
 
-    // Signs differ?
-    if (a != b) {
-        return y['s'] = -b, x['plus'](y);
+    // Either zero?
+    if (!xc[0] || !yc[0]) {
+      // y is non-zero?
+      return yc[0] ? (y["s"] = -b, y) : // x is non-zero?
+      new BigNumber(xc[0] ? x : // Both are zero.
+      // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
+      ROUNDING_MODE == 3 ? -0 : 0);
     }
+  }
 
-    var xc = x['c'],
-        xe = x['e'],
-        yc = y['c'],
-        ye = y['e'];
+  // Determine which is the bigger number.
+  // Prepend zeros to equalise exponents.
+  if (xc = xc.slice(), a = xe - ye) {
+    d = (xLTy = a < 0) ? (a = -a, xc) : (ye = xe, yc);
 
-    if (!xe || !ye) {
+    for (d.reverse(), b = a; b--; d.push(0)) {}
+    d.reverse();
+  } else {
+    // Exponents equal. Check digit by digit.
+    j = ((xLTy = xc.length < yc.length) ? xc : yc).length;
 
-        // Either Infinity?
-        if (!xc || !yc) {
-            return xc ? (y['s'] = -b, y) : new BigNumber(yc ? x : NaN);
-        }
-
-        // Either zero?
-        if (!xc[0] || !yc[0]) {
-
-            // y is non-zero?
-            return yc[0] ? (y['s'] = -b, y
-
-            // x is non-zero?
-            ) : new BigNumber(xc[0] ? x
-
-            // Both are zero.
-            // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
-            : ROUNDING_MODE == 3 ? -0 : 0);
-        }
+    for (a = b = 0; b < j; b++) {
+      if (xc[b] != yc[b]) {
+        xLTy = xc[b] < yc[b];
+        break;
+      }
     }
+  }
 
-    // Determine which is the bigger number.
-    // Prepend zeros to equalise exponents.
-    if (xc = xc.slice(), a = xe - ye) {
-        d = (xLTy = a < 0) ? (a = -a, xc) : (ye = xe, yc);
+  // x < y? Point xc to the array of the bigger number.
+  if (xLTy) {
+    d = xc, xc = yc, yc = d;
+    y["s"] = -y["s"];
+  }
 
-        for (d.reverse(), b = a; b--; d.push(0)) {}
-        d.reverse();
-    } else {
-
-        // Exponents equal. Check digit by digit.
-        j = ((xLTy = xc.length < yc.length) ? xc : yc).length;
-
-        for (a = b = 0; b < j; b++) {
-
-            if (xc[b] != yc[b]) {
-                xLTy = xc[b] < yc[b];
-                break;
-            }
-        }
-    }
-
-    // x < y? Point xc to the array of the bigger number.
-    if (xLTy) {
-        d = xc, xc = yc, yc = d;
-        y['s'] = -y['s'];
-    }
-
-    /*
+  /*
      * Append zeros to xc if shorter. No need to add zeros to yc if shorter
      * as subtraction only needs to start at yc.length.
      */
-    if ((b = -((j = xc.length) - yc.length)) > 0) {
+  if ((b = -((j = xc.length) - yc.length)) > 0) {
+    for (; b--; xc[j++] = 0) {}
+  }
 
-        for (; b--; xc[j++] = 0) {}
+  // Subtract yc from xc.
+  for (b = yc.length; b > a;) {
+    if (xc[--b] < yc[b]) {
+      for (i = b; i && !xc[--i]; xc[i] = 9) {}
+      --xc[i];
+      xc[b] += 10;
     }
+    xc[b] -= yc[b];
+  }
 
-    // Subtract yc from xc.
-    for (b = yc.length; b > a;) {
+  // Remove trailing zeros.
+  for (; xc[--j] == 0; xc.pop()) {}
 
-        if (xc[--b] < yc[b]) {
+  // Remove leading zeros and adjust exponent accordingly.
+  for (; xc[0] == 0; xc.shift(), --ye) {}
 
-            for (i = b; i && !xc[--i]; xc[i] = 9) {}
-            --xc[i];
-            xc[b] += 10;
-        }
-        xc[b] -= yc[b];
-    }
-
-    // Remove trailing zeros.
-    for (; xc[--j] == 0; xc.pop()) {}
-
-    // Remove leading zeros and adjust exponent accordingly.
-    for (; xc[0] == 0; xc.shift(), --ye) {}
-
-    /*
+  /*
      * No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
      * when neither x or y are Infinity.
      */
 
-    // Underflow?
-    if (ye < MIN_EXP || !xc[0]) {
-
-        /*
+  // Underflow?
+  if (ye < MIN_EXP || !xc[0]) {
+    /*
          * Following IEEE 754 (2008) 6.3,
          * n - n = +0  but  n - n = -0 when rounding towards -Infinity.
          */
-        if (!xc[0]) {
-            y['s'] = ROUNDING_MODE == 3 ? -1 : 1;
-        }
-
-        // Result is zero.
-        xc = [ye = 0];
+    if (!xc[0]) {
+      y["s"] = ROUNDING_MODE == 3 ? -1 : 1;
     }
 
-    return y['c'] = xc, y['e'] = ye, y;
+    // Result is zero.
+    xc = [ye = 0];
+  }
+
+  return y["c"] = xc, y["e"] = ye, y;
 };
 
 /*
@@ -51545,35 +51483,35 @@ P['minus'] = P['sub'] = function (y, b) {
  * Return a new BigNumber whose value is the value of this BigNumber modulo
  * the value of BigNumber(y, b).
  */
-P['modulo'] = P['mod'] = function (y, b) {
-    var x = this,
-        xc = x['c'],
-        yc = (id = 9, y = new BigNumber(y, b))['c'],
-        i = x['s'],
-        j = y['s'];
+P["modulo"] = P["mod"] = function (y, b) {
+  var x = this,
+      xc = x["c"],
+      yc = (id = 9, y = new BigNumber(y, b))["c"],
+      i = x["s"],
+      j = y["s"];
 
-    // Is x or y NaN, or y zero?
-    b = !i || !j || yc && !yc[0];
+  // Is x or y NaN, or y zero?
+  b = !i || !j || yc && !yc[0];
 
-    if (b || xc && !xc[0]) {
-        return new BigNumber(b ? NaN : x);
-    }
+  if (b || xc && !xc[0]) {
+    return new BigNumber(b ? NaN : x);
+  }
 
-    x['s'] = y['s'] = 1;
-    b = y['cmp'](x) == 1;
-    x['s'] = i, y['s'] = j;
+  x["s"] = y["s"] = 1;
+  b = y["cmp"](x) == 1;
+  x["s"] = i, y["s"] = j;
 
-    return b ? new BigNumber(x) : (i = DECIMAL_PLACES, j = ROUNDING_MODE, DECIMAL_PLACES = 0, ROUNDING_MODE = 1, x = x['div'](y), DECIMAL_PLACES = i, ROUNDING_MODE = j, this['minus'](x['times'](y)));
+  return b ? new BigNumber(x) : (i = DECIMAL_PLACES, j = ROUNDING_MODE, DECIMAL_PLACES = 0, ROUNDING_MODE = 1, x = x["div"](y), DECIMAL_PLACES = i, ROUNDING_MODE = j, this["minus"](x["times"](y)));
 };
 
 /*
  * Return a new BigNumber whose value is the value of this BigNumber
  * negated, i.e. multiplied by -1.
  */
-P['negated'] = P['neg'] = function () {
-    var x = new BigNumber(this);
+P["negated"] = P["neg"] = function () {
+  var x = new BigNumber(this);
 
-    return x['s'] = -x['s'] || null, x;
+  return x["s"] = -x["s"] || null, x;
 };
 
 /*
@@ -51596,88 +51534,80 @@ P['negated'] = P['neg'] = function () {
  * Return a new BigNumber whose value is the value of this BigNumber plus
  * the value of BigNumber(y, b).
  */
-P['plus'] = P['add'] = function (y, b) {
-    var d = void 0,
-        x = this,
-        a = x['s'];
+P["plus"] = P["add"] = function (y, b) {
+  var d = void 0,
+      x = this,
+      a = x["s"];
 
-    b = (id = 10, y = new BigNumber(y, b))['s'];
+  b = (id = 10, y = new BigNumber(y, b))["s"];
 
-    // Either NaN?
-    if (!a || !b) {
-        return new BigNumber(NaN);
+  // Either NaN?
+  if (!a || !b) {
+    return new BigNumber(NaN);
+  }
+
+  // Signs differ?
+  if (a != b) {
+    return y["s"] = -b, x["minus"](y);
+  }
+
+  var xe = x["e"],
+      xc = x["c"],
+      ye = y["e"],
+      yc = y["c"];
+
+  if (!xe || !ye) {
+    // Either Infinity?
+    if (!xc || !yc) {
+      // Return +-Infinity.
+      return new BigNumber(a / 0);
     }
 
-    // Signs differ?
-    if (a != b) {
-        return y['s'] = -b, x['minus'](y);
+    // Either zero?
+    if (!xc[0] || !yc[0]) {
+      // y is non-zero?
+      return yc[0] ? y : // x is non-zero?
+      new BigNumber(xc[0] ? x : // Both are zero. Return zero.
+      a * 0);
     }
+  }
 
-    var xe = x['e'],
-        xc = x['c'],
-        ye = y['e'],
-        yc = y['c'];
+  // Prepend zeros to equalise exponents.
+  // Note: Faster to use reverse then do unshifts.
+  if (xc = xc.slice(), a = xe - ye) {
+    d = a > 0 ? (ye = xe, yc) : (a = -a, xc);
 
-    if (!xe || !ye) {
+    for (d.reverse(); a--; d.push(0)) {}
+    d.reverse();
+  }
 
-        // Either Infinity?
-        if (!xc || !yc) {
+  // Point xc to the longer array.
+  if (xc.length - yc.length < 0) {
+    d = yc, yc = xc, xc = d;
+  }
 
-            // Return +-Infinity.
-            return new BigNumber(a / 0);
-        }
-
-        // Either zero?
-        if (!xc[0] || !yc[0]) {
-
-            // y is non-zero?
-            return yc[0] ? y
-
-            // x is non-zero?
-            : new BigNumber(xc[0] ? x
-
-            // Both are zero. Return zero.
-            : a * 0);
-        }
-    }
-
-    // Prepend zeros to equalise exponents.
-    // Note: Faster to use reverse then do unshifts.
-    if (xc = xc.slice(), a = xe - ye) {
-        d = a > 0 ? (ye = xe, yc) : (a = -a, xc);
-
-        for (d.reverse(); a--; d.push(0)) {}
-        d.reverse();
-    }
-
-    // Point xc to the longer array.
-    if (xc.length - yc.length < 0) {
-        d = yc, yc = xc, xc = d;
-    }
-
-    /*
+  /*
      * Only start adding at yc.length - 1 as the
      * further digits of xc can be left as they are.
      */
-    for (a = yc.length, b = 0; a; b = (xc[--a] = xc[a] + yc[a] + b) / 10 ^ 0, xc[a] %= 10) {}
+  for (a = yc.length, b = 0; a; b = (xc[--a] = xc[a] + yc[a] + b) / 10 ^ 0, xc[a] %= 10) {}
 
-    // No need to check for zero, as +x + +y != 0 && -x + -y != 0
+  // No need to check for zero, as +x + +y != 0 && -x + -y != 0
 
-    if (b) {
-        xc.unshift(b);
+  if (b) {
+    xc.unshift(b);
 
-        // Overflow? (MAX_EXP + 1 possible)
-        if (++ye > MAX_EXP) {
-
-            // Infinity.
-            xc = ye = null;
-        }
+    // Overflow? (MAX_EXP + 1 possible)
+    if (++ye > MAX_EXP) {
+      // Infinity.
+      xc = ye = null;
     }
+  }
 
-    // Remove trailing zeros.
-    for (a = xc.length; xc[--a] == 0; xc.pop()) {}
+  // Remove trailing zeros.
+  for (a = xc.length; xc[--a] == 0; xc.pop()) {}
 
-    return y['c'] = xc, y['e'] = ye, y;
+  return y["c"] = xc, y["e"] = ye, y;
 };
 
 /*
@@ -51687,50 +51617,44 @@ P['plus'] = P['add'] = function (y, b) {
  *
  * e {number} Integer, -MAX_POWER to MAX_POWER inclusive.
  */
-P['toPower'] = P['pow'] = function (e) {
+P["toPower"] = P["pow"] = function (e) {
+  // e to integer, avoiding NaN or Infinity becoming 0.
+  var i = e * 0 == 0 ? e | 0 : e,
+      x = new BigNumber(this),
+      y = new BigNumber(ONE);
 
-    // e to integer, avoiding NaN or Infinity becoming 0.
-    var i = e * 0 == 0 ? e | 0 : e,
-        x = new BigNumber(this),
-        y = new BigNumber(ONE);
+  // Use Math.pow?
+  // Pass +-Infinity for out of range exponents.
+  if (((outOfRange = e < -MAX_POWER || e > MAX_POWER) && (i = e * 1 / 0) ||
+  /*
+  * Any exponent that fails the parse becomes NaN.
+  *
+  * Include 'e !== 0' because on Opera -0 == parseFloat(-0) is false,
+  * despite -0 === parseFloat(-0) && -0 == parseFloat('-0') is true.
+  */
+  parse(e) != e && e !== 0 && !(i = NaN)) &&
+  // 'pow() exponent not an integer: {e}'
+  // 'pow() exponent out of range: {e}'
+  !ifExceptionsThrow(e, "exponent", "pow") ||
+  // Pass zero to Math.pow, as any value to the power zero is 1.
+  !i) {
+    // i is +-Infinity, NaN or 0.
+    return new BigNumber(Math.pow(x["toS"](), i));
+  }
 
-    // Use Math.pow?
-    // Pass +-Infinity for out of range exponents.
-    if (((outOfRange = e < -MAX_POWER || e > MAX_POWER) && (i = e * 1 / 0) ||
-
-    /*
-     * Any exponent that fails the parse becomes NaN.
-     *
-     * Include 'e !== 0' because on Opera -0 == parseFloat(-0) is false,
-     * despite -0 === parseFloat(-0) && -0 == parseFloat('-0') is true.
-     */
-    parse(e) != e && e !== 0 && !(i = NaN)) &&
-
-    // 'pow() exponent not an integer: {e}'
-    // 'pow() exponent out of range: {e}'
-    !ifExceptionsThrow(e, 'exponent', 'pow') ||
-
-    // Pass zero to Math.pow, as any value to the power zero is 1.
-    !i) {
-
-        // i is +-Infinity, NaN or 0.
-        return new BigNumber(Math.pow(x['toS'](), i));
+  for (i = i < 0 ? -i : i;;) {
+    if (i & 1) {
+      y = y["times"](x);
     }
+    i >>= 1;
 
-    for (i = i < 0 ? -i : i;;) {
-
-        if (i & 1) {
-            y = y['times'](x);
-        }
-        i >>= 1;
-
-        if (!i) {
-            break;
-        }
-        x = x['times'](x);
+    if (!i) {
+      break;
     }
+    x = x["times"](x);
+  }
 
-    return e < 0 ? ONE['div'](y) : y;
+  return e < 0 ? ONE["div"](y) : y;
 };
 
 /*
@@ -51740,8 +51664,8 @@ P['toPower'] = P['pow'] = function (e) {
  * m {BigNumber} the value to take the power of
  * n {BigNumber} the value to modulo by
  */
-P['powm'] = function (m, n) {
-    return this.pow(m).mod(n);
+P["powm"] = function (m, n) {
+  return this.pow(m).mod(n);
 };
 
 /*
@@ -51752,24 +51676,20 @@ P['powm'] = function (m, n) {
  * [dp] {number} Integer, 0 to MAX inclusive.
  * [rm] {number} Integer, 0 to 8 inclusive.
  */
-P['round'] = function (dp, rm) {
+P["round"] = function (dp, rm) {
+  dp = dp == null || ((outOfRange = dp < 0 || dp > MAX) || parse(dp) != dp) &&
+  // 'round() decimal places out of range: {dp}'
+  // 'round() decimal places not an integer: {dp}'
+  !ifExceptionsThrow(dp, "decimal places", "round") ? 0 : dp | 0;
 
-    dp = dp == null || ((outOfRange = dp < 0 || dp > MAX) || parse(dp) != dp) &&
+  rm = rm == null || ((outOfRange = rm < 0 || rm > 8) ||
+  // Include '&& rm !== 0' because with Opera -0 == parseFloat(-0) is false.
+  parse(rm) != rm && rm !== 0) &&
+  // 'round() mode not an integer: {rm}'
+  // 'round() mode out of range: {rm}'
+  !ifExceptionsThrow(rm, "mode", "round") ? ROUNDING_MODE : rm | 0;
 
-    // 'round() decimal places out of range: {dp}'
-    // 'round() decimal places not an integer: {dp}'
-    !ifExceptionsThrow(dp, 'decimal places', 'round') ? 0 : dp | 0;
-
-    rm = rm == null || ((outOfRange = rm < 0 || rm > 8) ||
-
-    // Include '&& rm !== 0' because with Opera -0 == parseFloat(-0) is false.
-    parse(rm) != rm && rm !== 0) &&
-
-    // 'round() mode not an integer: {rm}'
-    // 'round() mode out of range: {rm}'
-    !ifExceptionsThrow(rm, 'mode', 'round') ? ROUNDING_MODE : rm | 0;
-
-    return setMode(this, dp, rm);
+  return setMode(this, dp, rm);
 };
 
 /*
@@ -51783,125 +51703,120 @@ P['round'] = function (dp, rm) {
  * Return a new BigNumber whose value is the square root of the value of
  * this BigNumber, rounded according to DECIMAL_PLACES and ROUNDING_MODE.
  */
-P['squareRoot'] = P['sqrt'] = function () {
-    var n = void 0,
-        r = void 0,
-        re = void 0,
-        t = void 0,
-        x = this,
-        c = x['c'],
-        s = x['s'],
-        e = x['e'],
-        dp = DECIMAL_PLACES,
-        rm = ROUNDING_MODE,
-        half = new BigNumber('0.5');
+P["squareRoot"] = P["sqrt"] = function () {
+  var n = void 0,
+      r = void 0,
+      re = void 0,
+      t = void 0,
+      x = this,
+      c = x["c"],
+      s = x["s"],
+      e = x["e"],
+      dp = DECIMAL_PLACES,
+      rm = ROUNDING_MODE,
+      half = new BigNumber("0.5");
 
-    // Negative/NaN/Infinity/zero?
-    if (s !== 1 || !c || !c[0]) {
+  // Negative/NaN/Infinity/zero?
+  if (s !== 1 || !c || !c[0]) {
+    return new BigNumber(!s || s < 0 && (!c || c[0]) ? NaN : c ? x : 1 / 0);
+  }
 
-        return new BigNumber(!s || s < 0 && (!c || c[0]) ? NaN : c ? x : 1 / 0);
-    }
+  // Initial estimate.
+  s = Math.sqrt(x["toS"]());
+  ROUNDING_MODE = 1;
 
-    // Initial estimate.
-    s = Math.sqrt(x['toS']());
-    ROUNDING_MODE = 1;
-
-    /*
+  /*
      Math.sqrt underflow/overflow?
      Pass x to Math.sqrt as integer, then adjust the exponent of the result.
      */
-    if (s == 0 || s == 1 / 0) {
-        n = c.join('');
+  if (s == 0 || s == 1 / 0) {
+    n = c.join("");
 
-        if (!(n.length + e & 1)) {
-            n += '0';
-        }
-        r = new BigNumber(Math.sqrt(n) + '');
-
-        // r may still not be finite.
-        if (!r['c']) {
-            r['c'] = [1];
-        }
-        r['e'] = ((e + 1) / 2 | 0) - (e < 0 || e & 1);
-    } else {
-        r = new BigNumber(n = s.toString());
+    if (!(n.length + e & 1)) {
+      n += "0";
     }
-    re = r['e'];
-    s = re + (DECIMAL_PLACES += 4);
+    r = new BigNumber(Math.sqrt(n) + "");
 
-    if (s < 3) {
-        s = 0;
+    // r may still not be finite.
+    if (!r["c"]) {
+      r["c"] = [1];
     }
-    e = s;
+    r["e"] = ((e + 1) / 2 | 0) - (e < 0 || e & 1);
+  } else {
+    r = new BigNumber(n = s.toString());
+  }
+  re = r["e"];
+  s = re + (DECIMAL_PLACES += 4);
 
-    // Newton-Raphson iteration.
-    for (;;) {
-        t = r;
-        r = half['times'](t['plus'](x['div'](t)));
+  if (s < 3) {
+    s = 0;
+  }
+  e = s;
 
-        if (t['c'].slice(0, s).join('') === r['c'].slice(0, s).join('')) {
-            c = r['c'];
+  // Newton-Raphson iteration.
+  for (;;) {
+    t = r;
+    r = half["times"](t["plus"](x["div"](t)));
 
-            /*
+    if (t["c"].slice(0, s).join("") === r["c"].slice(0, s).join("")) {
+      c = r["c"];
+
+      /*
              The exponent of r may here be one less than the final result
              exponent (re), e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust
              s so the rounding digits are indexed correctly.
              */
-            s = s - (n && r['e'] < re);
+      s = s - (n && r["e"] < re);
 
-            /*
+      /*
              The 4th rounding digit may be in error by -1 so if the 4 rounding
              digits are 9999 or 4999 (i.e. approaching a rounding boundary)
              continue the iteration.
              */
-            if (c[s] == 9 && c[s - 1] == 9 && c[s - 2] == 9 && (c[s - 3] == 9 || n && c[s - 3] == 4)) {
-
-                /*
+      if (c[s] == 9 && c[s - 1] == 9 && c[s - 2] == 9 && (c[s - 3] == 9 || n && c[s - 3] == 4)) {
+        /*
                  If 9999 on first run through, check to see if rounding up
                  gives the exact result as the nines may infinitely repeat.
                  */
-                if (n && c[s - 3] == 9) {
-                    t = r['round'](dp, 0);
+        if (n && c[s - 3] == 9) {
+          t = r["round"](dp, 0);
 
-                    if (t['times'](t)['eq'](x)) {
-                        ROUNDING_MODE = rm;
-                        DECIMAL_PLACES = dp;
+          if (t["times"](t)["eq"](x)) {
+            ROUNDING_MODE = rm;
+            DECIMAL_PLACES = dp;
 
-                        return t;
-                    }
-                }
-                DECIMAL_PLACES += 4;
-                s += 4;
-                n = '';
-            } else {
-
-                /*
+            return t;
+          }
+        }
+        DECIMAL_PLACES += 4;
+        s += 4;
+        n = "";
+      } else {
+        /*
                  If the rounding digits are null, 0000 or 5000, check for an
                  exact result. If not, then there are further digits so
                  increment the 1st rounding digit to ensure correct rounding.
                  */
-                if (!c[e] && !c[e - 1] && !c[e - 2] && (!c[e - 3] || c[e - 3] == 5)) {
+        if (!c[e] && !c[e - 1] && !c[e - 2] && (!c[e - 3] || c[e - 3] == 5)) {
+          // Truncate to the first rounding digit.
+          if (c.length > e - 2) {
+            c.length = e - 2;
+          }
 
-                    // Truncate to the first rounding digit.
-                    if (c.length > e - 2) {
-                        c.length = e - 2;
-                    }
-
-                    if (!r['times'](r)['eq'](x)) {
-
-                        while (c.length < e - 3) {
-                            c.push(0);
-                        }
-                        c[e - 3]++;
-                    }
-                }
-                ROUNDING_MODE = rm;
-                rnd(r, DECIMAL_PLACES = dp, 10);
-
-                return r;
+          if (!r["times"](r)["eq"](x)) {
+            while (c.length < e - 3) {
+              c.push(0);
             }
+            c[e - 3]++;
+          }
         }
+        ROUNDING_MODE = rm;
+        rnd(r, DECIMAL_PLACES = dp, 10);
+
+        return r;
+      }
     }
+  }
 };
 
 /*
@@ -51924,146 +51839,127 @@ P['squareRoot'] = P['sqrt'] = function () {
  * Return a new BigNumber whose value is the value of this BigNumber times
  * the value of BigNumber(y, b).
  */
-P['times'] = P['mul'] = function (y, b) {
-    var c = void 0,
-        x = this,
-        xc = x['c'],
-        yc = (id = 11, y = new BigNumber(y, b))['c'],
-        i = x['e'],
-        j = y['e'],
-        a = x['s'];
+P["times"] = P["mul"] = function (y, b) {
+  var c = void 0,
+      x = this,
+      xc = x["c"],
+      yc = (id = 11, y = new BigNumber(y, b))["c"],
+      i = x["e"],
+      j = y["e"],
+      a = x["s"];
 
-    y['s'] = a == (b = y['s']) ? 1 : -1;
+  y["s"] = a == (b = y["s"]) ? 1 : -1;
 
-    // Either NaN/Infinity/0?
-    if (!i && (!xc || !xc[0]) || !j && (!yc || !yc[0])) {
+  // Either NaN/Infinity/0?
+  if (!i && (!xc || !xc[0]) || !j && (!yc || !yc[0])) {
+    // Either NaN?
+    return new BigNumber(!a || !b ||
+    // x is 0 and y is Infinity  or  y is 0 and x is Infinity?
+    xc && !xc[0] && !yc || yc && !yc[0] && !xc ? // Return NaN.
+    NaN : // Either Infinity?
+    !xc || !yc ? // Return +-Infinity.
+    y["s"] / 0 : // x or y is 0. Return +-0.
+    y["s"] * 0);
+  }
+  y["e"] = i + j;
 
-        // Either NaN?
-        return new BigNumber(!a || !b ||
+  if ((a = xc.length) < (b = yc.length)) {
+    c = xc, xc = yc, yc = c, j = a, a = b, b = j;
+  }
 
-        // x is 0 and y is Infinity  or  y is 0 and x is Infinity?
-        xc && !xc[0] && !yc || yc && !yc[0] && !xc
+  for (j = a + b, c = []; j--; c.push(0)) {}
 
-        // Return NaN.
-        ? NaN
+  // Multiply!
+  for (i = b - 1; i > -1; i--) {
+    for (b = 0, j = a + i; j > i; b = c[j] + yc[i] * xc[j - i - 1] + b, c[j--] = b % 10 | 0, b = b / 10 | 0) {}
 
-        // Either Infinity?
-        : !xc || !yc
-
-        // Return +-Infinity.
-        ? y['s'] / 0
-
-        // x or y is 0. Return +-0.
-        : y['s'] * 0);
+    if (b) {
+      c[j] = (c[j] + b) % 10;
     }
-    y['e'] = i + j;
+  }
 
-    if ((a = xc.length) < (b = yc.length)) {
-        c = xc, xc = yc, yc = c, j = a, a = b, b = j;
-    }
+  b && ++y["e"];
 
-    for (j = a + b, c = []; j--; c.push(0)) {}
+  // Remove any leading zero.
+  !c[0] && c.shift();
 
-    // Multiply!
-    for (i = b - 1; i > -1; i--) {
+  // Remove trailing zeros.
+  for (j = c.length; !c[--j]; c.pop()) {}
 
-        for (b = 0, j = a + i; j > i; b = c[j] + yc[i] * xc[j - i - 1] + b, c[j--] = b % 10 | 0, b = b / 10 | 0) {}
+  // No zero check needed as only x * 0 == 0 etc.
 
-        if (b) {
-            c[j] = (c[j] + b) % 10;
-        }
-    }
+  // Overflow?
+  y["c"] = y["e"] > MAX_EXP ? // Infinity.
+  y["e"] = null : // Underflow?
+  y["e"] < MIN_EXP ? // Zero.
+  [y["e"] = 0] : // Neither.
+  c;
 
-    b && ++y['e'];
-
-    // Remove any leading zero.
-    !c[0] && c.shift();
-
-    // Remove trailing zeros.
-    for (j = c.length; !c[--j]; c.pop()) {}
-
-    // No zero check needed as only x * 0 == 0 etc.
-
-    // Overflow?
-    y['c'] = y['e'] > MAX_EXP
-
-    // Infinity.
-    ? y['e'] = null :
-
-    // Underflow?
-    y['e'] < MIN_EXP
-
-    // Zero.
-    ? [y['e'] = 0]
-
-    // Neither.
-    : c;
-
-    return y;
+  return y;
 };
 
 /*
  * Return a buffer containing the
  */
-P['toBuffer'] = function (opts) {
+P["toBuffer"] = function (opts) {
+  if (typeof opts === "string") {
+    if (opts !== "mpint") return "Unsupported Buffer representation";
 
-    if (typeof opts === 'string') {
-        if (opts !== 'mpint') return 'Unsupported Buffer representation';
+    var abs = this.abs();
+    var _buf = abs.toBuffer({ size: 1, endian: "big" });
+    var _len = _buf.length === 1 && _buf[0] === 0 ? 0 : _buf.length;
+    if (_buf[0] & 0x80) _len++;
 
-        var abs = this.abs();
-        var _buf = abs.toBuffer({ size: 1, endian: 'big' });
-        var _len = _buf.length === 1 && _buf[0] === 0 ? 0 : _buf.length;
-        if (_buf[0] & 0x80) _len++;
+    var ret = new Buffer(4 + _len);
+    if (_len > 0) _buf.copy(ret, 4 + (_buf[0] & 0x80 ? 1 : 0));
+    if (_buf[0] & 0x80) ret[4] = 0;
 
-        var ret = new Buffer(4 + _len);
-        if (_len > 0) _buf.copy(ret, 4 + (_buf[0] & 0x80 ? 1 : 0));
-        if (_buf[0] & 0x80) ret[4] = 0;
+    ret[0] = _len & 0xff << 24;
+    ret[1] = _len & 0xff << 16;
+    ret[2] = _len & 0xff << 8;
+    ret[3] = _len & 0xff << 0;
 
-        ret[0] = _len & 0xff << 24;
-        ret[1] = _len & 0xff << 16;
-        ret[2] = _len & 0xff << 8;
-        ret[3] = _len & 0xff << 0;
-
-        // two's compliment for negative integers:
-        var isNeg = this.lt(0);
-        if (isNeg) {
-            for (var i = 4; i < ret.length; i++) {
-                ret[i] = 0xff - ret[i];
-            }
-        }
-        ret[4] = ret[4] & 0x7f | (isNeg ? 0x80 : 0);
-        if (isNeg) ret[ret.length - 1]++;
-
-        return ret;
+    // two's compliment for negative integers:
+    var isNeg = this.lt(0);
+    if (isNeg) {
+      for (var i = 4; i < ret.length; i++) {
+        ret[i] = 0xff - ret[i];
+      }
     }
+    ret[4] = ret[4] & 0x7f | (isNeg ? 0x80 : 0);
+    if (isNeg) ret[ret.length - 1]++;
 
-    if (!opts) opts = {};
+    return ret;
+  }
 
-    var endian = { 1: 'big', '-1': 'little' }[opts.endian] || opts.endian || 'big';
+  if (!opts) opts = {};
 
-    var hex = this.toString(16);
-    if (hex.charAt(0) === '-') throw new Error('converting negative numbers to Buffers not supported yet');
+  var endian = { 1: "big", "-1": "little" }[opts.endian] || opts.endian || "big";
 
-    var size = opts.size === 'auto' ? Math.ceil(hex.length / 2) : opts.size || 1;
+  var hex = this.toString(16);
+  if (hex.charAt(0) === "-") throw new Error("converting negative numbers to Buffers not supported yet");
 
-    var len = Math.ceil(hex.length / (2 * size)) * size;
-    var buf = new Buffer(len);
+  var size = opts.size === "auto" ? Math.ceil(hex.length / 2) : opts.size || 1;
 
-    // zero-pad the hex string so the chunks are all `size` long
-    while (hex.length < 2 * len) {
-        hex = '0' + hex;
-    }var hx = hex.split(new RegExp('(.{' + 2 * size + '})')).filter(function (s) {
-        return s.length > 0;
-    });
+  var len = Math.ceil(hex.length / (2 * size)) * size;
+  var buf = new Buffer(len);
 
-    hx.forEach(function (chunk, i) {
-        for (var j = 0; j < size; j++) {
-            var ix = i * size + (endian === 'big' ? j : size - j - 1);
-            buf[ix] = parseInt(chunk.slice(j * 2, j * 2 + 2), 16);
-        }
-    });
+  // zero-pad the hex string so the chunks are all `size` long
+  while (hex.length < 2 * len) {
+    hex = "0" + hex;
+  }
+  var hx = hex.split(new RegExp("(.{" + 2 * size + "})")).filter(function (s) {
+    return s.length > 0;
+  });
 
-    return buf;
+  hx.forEach(function (chunk, i) {
+    for (var j = 0; j < size; j++) {
+      var ix = i * size + (endian === "big" ? j : size - j - 1);
+      buf[ix] = parseInt(chunk.slice(j * 2, j * 2 + 2), 16);
+    }
+  });
+
+  return buf;
 };
 
 /*
@@ -52073,19 +51969,16 @@ P['toBuffer'] = function (opts) {
  *
  * [dp] {number} Integer, 0 to MAX inclusive.
  */
-P['toExponential'] = P['toE'] = function (dp) {
-
-    return format(this, (dp == null || ((outOfRange = dp < 0 || dp > MAX) ||
-
-    /*
-     * Include '&& dp !== 0' because with Opera -0 == parseFloat(-0) is
-     * false, despite -0 == parseFloat('-0') && 0 == -0 being true.
-     */
-    parse(dp) != dp && dp !== 0) &&
-
-    // 'toE() decimal places not an integer: {dp}'
-    // 'toE() decimal places out of range: {dp}'
-    !ifExceptionsThrow(dp, 'decimal places', 'toE')) && this['c'] ? this['c'].length - 1 : dp | 0, 1);
+P["toExponential"] = P["toE"] = function (dp) {
+  return format(this, (dp == null || ((outOfRange = dp < 0 || dp > MAX) ||
+  /*
+  * Include '&& dp !== 0' because with Opera -0 == parseFloat(-0) is
+  * false, despite -0 == parseFloat('-0') && 0 == -0 being true.
+  */
+  parse(dp) != dp && dp !== 0) &&
+  // 'toE() decimal places not an integer: {dp}'
+  // 'toE() decimal places out of range: {dp}'
+  !ifExceptionsThrow(dp, "decimal places", "toE")) && this["c"] ? this["c"].length - 1 : dp | 0, 1);
 };
 
 /*
@@ -52098,46 +51991,44 @@ P['toExponential'] = P['toE'] = function (dp) {
  *
  * [dp] {number} Integer, 0 to MAX inclusive.
  */
-P['toFixed'] = P['toF'] = function (dp) {
-    var n = void 0,
-        str = void 0,
-        d = void 0,
-        x = this;
+P["toFixed"] = P["toF"] = function (dp) {
+  var n = void 0,
+      str = void 0,
+      d = void 0,
+      x = this;
 
-    if (!(dp == null || ((outOfRange = dp < 0 || dp > MAX) || parse(dp) != dp && dp !== 0) &&
+  if (!(dp == null || ((outOfRange = dp < 0 || dp > MAX) || parse(dp) != dp && dp !== 0) &&
+  // 'toF() decimal places not an integer: {dp}'
+  // 'toF() decimal places out of range: {dp}'
+  !ifExceptionsThrow(dp, "decimal places", "toF"))) {
+    d = x["e"] + (dp | 0);
+  }
 
-    // 'toF() decimal places not an integer: {dp}'
-    // 'toF() decimal places out of range: {dp}'
-    !ifExceptionsThrow(dp, 'decimal places', 'toF'))) {
-        d = x['e'] + (dp | 0);
+  n = TO_EXP_NEG, dp = TO_EXP_POS;
+  TO_EXP_NEG = -(TO_EXP_POS = 1 / 0);
+
+  // Note: str is initially undefined.
+  if (d == str) {
+    str = x["toS"]();
+  } else {
+    str = format(x, d);
+
+    // (-0).toFixed() is '0', but (-0.1).toFixed() is '-0'.
+    // (-0).toFixed(1) is '0.0', but (-0.01).toFixed(1) is '-0.0'.
+    if (x["s"] < 0 && x["c"]) {
+      // As e.g. -0 toFixed(3), will wrongly be returned as -0.000 from toString.
+      if (!x["c"][0]) {
+        str = str.replace(/^-/, "");
+
+        // As e.g. -0.5 if rounded to -0 will cause toString to omit the minus sign.
+      } else if (str.indexOf("-") < 0) {
+        str = "-" + str;
+      }
     }
+  }
+  TO_EXP_NEG = n, TO_EXP_POS = dp;
 
-    n = TO_EXP_NEG, dp = TO_EXP_POS;
-    TO_EXP_NEG = -(TO_EXP_POS = 1 / 0);
-
-    // Note: str is initially undefined.
-    if (d == str) {
-        str = x['toS']();
-    } else {
-        str = format(x, d);
-
-        // (-0).toFixed() is '0', but (-0.1).toFixed() is '-0'.
-        // (-0).toFixed(1) is '0.0', but (-0.01).toFixed(1) is '-0.0'.
-        if (x['s'] < 0 && x['c']) {
-
-            // As e.g. -0 toFixed(3), will wrongly be returned as -0.000 from toString.
-            if (!x['c'][0]) {
-                str = str.replace(/^-/, '');
-
-                // As e.g. -0.5 if rounded to -0 will cause toString to omit the minus sign.
-            } else if (str.indexOf('-') < 0) {
-                str = '-' + str;
-            }
-        }
-    }
-    TO_EXP_NEG = n, TO_EXP_POS = dp;
-
-    return str;
+  return str;
 };
 
 /*
@@ -52150,86 +52041,80 @@ P['toFixed'] = P['toF'] = function (dp) {
  *
  * [maxD] {number|string|BigNumber} Integer >= 1 and < Infinity.
  */
-P['toFraction'] = P['toFr'] = function (maxD) {
-    var q = void 0,
-        frac = void 0,
-        n0 = void 0,
-        d0 = void 0,
-        d2 = void 0,
-        n = void 0,
-        e = void 0,
-        n1 = d0 = new BigNumber(ONE),
-        d1 = n0 = new BigNumber('0'),
-        x = this,
-        xc = x['c'],
-        exp = MAX_EXP,
-        dp = DECIMAL_PLACES,
-        rm = ROUNDING_MODE,
-        d = new BigNumber(ONE);
+P["toFraction"] = P["toFr"] = function (maxD) {
+  var q = void 0,
+      frac = void 0,
+      n0 = void 0,
+      d0 = void 0,
+      d2 = void 0,
+      n = void 0,
+      e = void 0,
+      n1 = d0 = new BigNumber(ONE),
+      d1 = n0 = new BigNumber("0"),
+      x = this,
+      xc = x["c"],
+      exp = MAX_EXP,
+      dp = DECIMAL_PLACES,
+      rm = ROUNDING_MODE,
+      d = new BigNumber(ONE);
 
-    // NaN, Infinity.
-    if (!xc) {
-        return x['toS']();
+  // NaN, Infinity.
+  if (!xc) {
+    return x["toS"]();
+  }
+
+  e = d["e"] = xc.length - x["e"] - 1;
+
+  // If max denominator is undefined or null...
+  if (maxD == null ||
+  // or NaN...
+  (!(id = 12, n = new BigNumber(maxD))["s"] || (
+  // or less than 1, or Infinity...
+  outOfRange = n["cmp"](n1) < 0 || !n["c"]) ||
+  // or not an integer...
+  ERRORS && n["e"] < n["c"].length - 1) &&
+  // 'toFr() max denominator not an integer: {maxD}'
+  // 'toFr() max denominator out of range: {maxD}'
+  !ifExceptionsThrow(maxD, "max denominator", "toFr") ||
+  // or greater than the maxD needed to specify the value exactly...
+  (maxD = n)["cmp"](d) > 0) {
+    // d is e.g. 10, 100, 1000, 10000... , n1 is 1.
+    maxD = e > 0 ? d : n1;
+  }
+
+  MAX_EXP = 1 / 0;
+  n = new BigNumber(xc.join(""));
+
+  for (DECIMAL_PLACES = 0, ROUNDING_MODE = 1;;) {
+    q = n["div"](d);
+    d2 = d0["plus"](q["times"](d1));
+
+    if (d2["cmp"](maxD) == 1) {
+      break;
     }
 
-    e = d['e'] = xc.length - x['e'] - 1;
+    d0 = d1, d1 = d2;
 
-    // If max denominator is undefined or null...
-    if (maxD == null ||
+    n1 = n0["plus"](q["times"](d2 = n1));
+    n0 = d2;
 
-    // or NaN...
-    (!(id = 12, n = new BigNumber(maxD))['s'] || (
+    d = n["minus"](q["times"](d2 = d));
+    n = d2;
+  }
 
-    // or less than 1, or Infinity...
-    outOfRange = n['cmp'](n1) < 0 || !n['c']) ||
+  d2 = maxD["minus"](d0)["div"](d1);
+  n0 = n0["plus"](d2["times"](n1));
+  d0 = d0["plus"](d2["times"](d1));
 
-    // or not an integer...
-    ERRORS && n['e'] < n['c'].length - 1) &&
+  n0["s"] = n1["s"] = x["s"];
 
-    // 'toFr() max denominator not an integer: {maxD}'
-    // 'toFr() max denominator out of range: {maxD}'
-    !ifExceptionsThrow(maxD, 'max denominator', 'toFr') ||
+  DECIMAL_PLACES = e * 2;
+  ROUNDING_MODE = rm;
 
-    // or greater than the maxD needed to specify the value exactly...
-    (maxD = n)['cmp'](d) > 0) {
+  // Determine which fraction is closer to x, n0 / d0 or n1 / d1?
+  frac = n1["div"](d1)["minus"](x)["abs"]()["cmp"](n0["div"](d0)["minus"](x)["abs"]()) < 1 ? [n1["toS"](), d1["toS"]()] : [n0["toS"](), d0["toS"]()];
 
-        // d is e.g. 10, 100, 1000, 10000... , n1 is 1.
-        maxD = e > 0 ? d : n1;
-    }
-
-    MAX_EXP = 1 / 0;
-    n = new BigNumber(xc.join(''));
-
-    for (DECIMAL_PLACES = 0, ROUNDING_MODE = 1;;) {
-        q = n['div'](d);
-        d2 = d0['plus'](q['times'](d1));
-
-        if (d2['cmp'](maxD) == 1) {
-            break;
-        }
-
-        d0 = d1, d1 = d2;
-
-        n1 = n0['plus'](q['times'](d2 = n1));
-        n0 = d2;
-
-        d = n['minus'](q['times'](d2 = d));
-        n = d2;
-    }
-
-    d2 = maxD['minus'](d0)['div'](d1);
-    n0 = n0['plus'](d2['times'](n1));
-    d0 = d0['plus'](d2['times'](d1));
-
-    n0['s'] = n1['s'] = x['s'];
-
-    DECIMAL_PLACES = e * 2;
-    ROUNDING_MODE = rm;
-
-    // Determine which fraction is closer to x, n0 / d0 or n1 / d1?
-    frac = n1['div'](d1)['minus'](x)['abs']()['cmp'](n0['div'](d0)['minus'](x)['abs']()) < 1 ? [n1['toS'](), d1['toS']()] : [n0['toS'](), d0['toS']()];
-
-    return MAX_EXP = exp, DECIMAL_PLACES = dp, frac;
+  return MAX_EXP = exp, DECIMAL_PLACES = dp, frac;
 };
 
 /*
@@ -52240,18 +52125,16 @@ P['toFraction'] = P['toFr'] = function (maxD) {
  *
  * sd {number} Integer, 1 to MAX inclusive.
  */
-P['toPrecision'] = P['toP'] = function (sd) {
-
-    /*
+P["toPrecision"] = P["toP"] = function (sd) {
+  /*
      * ERRORS true: Throw if sd not undefined, null or an integer in range.
      * ERRORS false: Ignore sd if not a number or not in range.
      * Truncate non-integers.
      */
-    return sd == null || ((outOfRange = sd < 1 || sd > MAX) || parse(sd) != sd) &&
-
-    // 'toP() precision not an integer: {sd}'
-    // 'toP() precision out of range: {sd}'
-    !ifExceptionsThrow(sd, 'precision', 'toP') ? this['toS']() : format(this, --sd | 0, 2);
+  return sd == null || ((outOfRange = sd < 1 || sd > MAX) || parse(sd) != sd) &&
+  // 'toP() precision not an integer: {sd}'
+  // 'toP() precision out of range: {sd}'
+  !ifExceptionsThrow(sd, "precision", "toP") ? this["toS"]() : format(this, --sd | 0, 2);
 };
 
 /*
@@ -52264,82 +52147,77 @@ P['toPrecision'] = P['toP'] = function (sd) {
  *
  * [b] {number} Integer, 2 to 64 inclusive.
  */
-P['toString'] = P['toS'] = function (b) {
-    var u = void 0,
-        str = void 0,
-        strL = void 0,
-        x = this,
-        xe = x['e'];
+P["toString"] = P["toS"] = function (b) {
+  var u = void 0,
+      str = void 0,
+      strL = void 0,
+      x = this,
+      xe = x["e"];
 
-    // Infinity or NaN?
-    if (xe === null) {
-        str = x['s'] ? 'Infinity' : 'NaN';
+  // Infinity or NaN?
+  if (xe === null) {
+    str = x["s"] ? "Infinity" : "NaN";
 
-        // Exponential format?
-    } else if (b === u && (xe <= TO_EXP_NEG || xe >= TO_EXP_POS)) {
-        return format(x, x['c'].length - 1, 1);
+    // Exponential format?
+  } else if (b === u && (xe <= TO_EXP_NEG || xe >= TO_EXP_POS)) {
+    return format(x, x["c"].length - 1, 1);
+  } else {
+    str = x["c"].join("");
+
+    // Negative exponent?
+    if (xe < 0) {
+      // Prepend zeros.
+      for (; ++xe; str = "0" + str) {}
+      str = "0." + str;
+
+      // Positive exponent?
+    } else if (strL = str.length, xe > 0) {
+      if (++xe > strL) {
+        // Append zeros.
+        for (xe -= strL; xe--; str += "0") {}
+      } else if (xe < strL) {
+        str = str.slice(0, xe) + "." + str.slice(xe);
+      }
+
+      // Exponent zero.
     } else {
-        str = x['c'].join('');
+      if (u = str.charAt(0), strL > 1) {
+        str = u + "." + str.slice(1);
 
-        // Negative exponent?
-        if (xe < 0) {
-
-            // Prepend zeros.
-            for (; ++xe; str = '0' + str) {}
-            str = '0.' + str;
-
-            // Positive exponent?
-        } else if (strL = str.length, xe > 0) {
-
-            if (++xe > strL) {
-
-                // Append zeros.
-                for (xe -= strL; xe--; str += '0') {}
-            } else if (xe < strL) {
-                str = str.slice(0, xe) + '.' + str.slice(xe);
-            }
-
-            // Exponent zero.
-        } else {
-            if (u = str.charAt(0), strL > 1) {
-                str = u + '.' + str.slice(1);
-
-                // Avoid '-0'
-            } else if (u == '0') {
-                return u;
-            }
-        }
-
-        if (b != null) {
-
-            if (!(outOfRange = !(b >= 2 && b < 65)) && (b == (b | 0) || !ERRORS)) {
-                str = convert(str, b | 0, 10, x['s']);
-
-                // Avoid '-0'
-                if (str == '0') {
-                    return str;
-                }
-            } else {
-
-                // 'toS() base not an integer: {b}'
-                // 'toS() base out of range: {b}'
-                ifExceptionsThrow(b, 'base', 'toS');
-            }
-        }
+        // Avoid '-0'
+      } else if (u == "0") {
+        return u;
+      }
     }
 
-    return x['s'] < 0 ? '-' + str : str;
+    if (b != null) {
+      if (!(outOfRange = !(b >= 2 && b < 65)) && (b == (b | 0) || !ERRORS)) {
+        str = convert(str, b | 0, 10, x["s"]);
+
+        // Avoid '-0'
+        if (str == "0") {
+          return str;
+        }
+      } else {
+        // 'toS() base not an integer: {b}'
+        // 'toS() base out of range: {b}'
+        ifExceptionsThrow(b, "base", "toS");
+      }
+    }
+  }
+
+  return x["s"] < 0 ? "-" + str : str;
 };
 
-P['toNumber'] = function () {
-    return parseInt(this['toString'](), 10);
+P["toNumber"] = function () {
+  return parseInt(this["toString"](), 10);
 };
 
 /*
  * Return as toString, but do not accept a base argument.
  */
-P['valueOf'] = function () {
-    return this['toS']();
+P["valueOf"] = function () {
+  return this["toS"]();
 };
 
 // Add aliases for BigDecimal methods.
@@ -52351,265 +52229,263 @@ P['valueOf'] = function () {
 //P['compareTo'] = P['cmp'];
 //P['negate'] = P['neg'];
 
-
 // EXPORT
 module.exports = BigNumber;
-},{"buffer":120}],1623:[function(require,module,exports) {
+},{"buffer":120}],4603:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 "use strict";
 
 var ZSchema = require("z-schema");
-var addressHelper = require('./helpers/address');
-var BigNumber = require('./helpers/bignum.js');
-var configFactory = require('./helpers/configFactory');
+var addressHelper = require("./helpers/address");
+var BigNumber = require("./helpers/bignum.js");
+var configFactory = require("./helpers/configFactory");
 var constants = configFactory.getConstants();
 
 ZSchema.registerFormat("hex", function (str) {
-    try {
-        new Buffer(str, "hex");
-    } catch (e) {
-        return false;
-    }
+  try {
+    new Buffer(str, "hex");
+  } catch (e) {
+    return false;
+  }
 
-    return true;
+  return true;
 });
 ZSchema.registerFormat("address", function (str) {
-    return addressHelper.isAddress(str);
+  return addressHelper.isAddress(str);
 });
 
-ZSchema.registerFormat('publicKey', function (str) {
-    if (str.length === 0) {
-        return true;
-    }
-
-    try {
-        var publicKey = new Buffer(str, "hex");
-
-        return publicKey.length == 32;
-    } catch (e) {
-        return false;
-    }
-});
-
-ZSchema.registerFormat('splitarray', function (str) {
-    try {
-        var a = str.split(',');
-        if (a.length > 0 && a.length <= 1000) {
-            return true;
-        } else {
-            return false;
-        }
-    } catch (e) {
-        return false;
-    }
-});
-
-ZSchema.registerFormat('signature', function (str) {
-    if (str.length === 0) {
-        return true;
-    }
-
-    try {
-        var signature = new Buffer(str, "hex");
-        return signature.length == 64;
-    } catch (e) {
-        return false;
-    }
-});
-
-ZSchema.registerFormat('listQuery', function (obj) {
-    obj.limit = 100;
+ZSchema.registerFormat("publicKey", function (str) {
+  if (str.length === 0) {
     return true;
+  }
+
+  try {
+    var publicKey = new Buffer(str, "hex");
+
+    return publicKey.length == 32;
+  } catch (e) {
+    return false;
+  }
 });
 
-ZSchema.registerFormat('listDelegates', function (obj) {
-    obj.limit = 101;
+ZSchema.registerFormat("splitarray", function (str) {
+  try {
+    var a = str.split(",");
+    if (a.length > 0 && a.length <= 1000) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
+});
+
+ZSchema.registerFormat("signature", function (str) {
+  if (str.length === 0) {
     return true;
+  }
+
+  try {
+    var signature = new Buffer(str, "hex");
+    return signature.length == 64;
+  } catch (e) {
+    return false;
+  }
 });
 
-ZSchema.registerFormat('checkInt', function (value) {
-    if (isNaN(value) || parseInt(value) != value || isNaN(parseInt(value, 10))) {
-        return false;
-    }
-
-    value = parseInt(value);
-    return true;
+ZSchema.registerFormat("listQuery", function (obj) {
+  obj.limit = 100;
+  return true;
 });
 
-ZSchema.registerFormat('ip', function (value) {});
-
-ZSchema.registerFormat('contactAsset', function (obj) {
-    if (obj && obj.contact && obj.contact.address) {
-        var testStart = /[\+/\-]/g;
-        var baddress = obj.contact.address;
-        baddress = testStart.test(baddress) ? baddress.substr(1) : baddress;
-
-        return addressHelper.isAddress(baddress);
-    } else {
-        return false;
-    }
+ZSchema.registerFormat("listDelegates", function (obj) {
+  obj.limit = 101;
+  return true;
 });
 
-ZSchema.registerFormat('signatureAsset', function (obj) {
-    if (obj && obj.signature && obj.signature.publicKey) {
-        try {
-            var publicKey = new Buffer(obj.signature.publicKey, "hex");
+ZSchema.registerFormat("checkInt", function (value) {
+  if (isNaN(value) || parseInt(value) != value || isNaN(parseInt(value, 10))) {
+    return false;
+  }
 
-            return publicKey.length == 32;
-        } catch (e) {
-            return false;
-        }
-    } else {
-        return false;
-    }
+  value = parseInt(value);
+  return true;
 });
 
-ZSchema.registerFormat('delegateAsset', function (obj) {
-    if (obj && obj.delegate && obj.delegate.publicKey && obj.delegate.username) {
-        try {
-            var publicKey = new Buffer(obj.delegate.publicKey, "hex");
+ZSchema.registerFormat("ip", function (value) {});
 
-            return publicKey.length == 32;
-        } catch (e) {
-            return false;
-        }
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('usernameAsset', function (obj) {
-    if (obj && obj.username && obj.username.publicKey && obj.username.alias) {
-        try {
-            var publicKey = new Buffer(obj.username.publicKey, "hex");
+ZSchema.registerFormat("contactAsset", function (obj) {
+  if (obj && obj.contact && obj.contact.address) {
+    var testStart = /[\+/\-]/g;
+    var baddress = obj.contact.address;
+    baddress = testStart.test(baddress) ? baddress.substr(1) : baddress;
 
-            return publicKey.length == 32;
-        } catch (e) {
-            return false;
-        }
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('fabulousAsset', function (obj) {
-    if (obj && obj.fabulous && obj.fabulous.address) {
-        return addressHelper.isAddress(obj.fabulous.address);
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('gratuityAsset', function (obj) {
-    if (obj && obj.gratuity && obj.gratuity.address && obj.gratuity.gratuityTime) {
-        return addressHelper.isAddress(obj.gratuity.address);
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('messageAsset', function (obj) {
-    if (obj && obj.message && obj.message.content && obj.message.sendTime) {
-        return true;
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('votesAsset', function (obj) {
-    if (obj && obj.votes && Array.isArray(obj.votes)) {
-        for (var i = 0; i < obj.votes.length; i++) {
-            try {
-                var publicKey = new Buffer(obj.votes[i].substring(1), "hex");
-                if (publicKey.length != 32) {
-                    return false;
-                }
-            } catch (e) {
-                return false;
-            }
-        }
-        return true;
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('markAsset', function (obj) {
-    if (obj && obj.mark && obj.mark.dappId && obj.mark.content && obj.mark.creatorPublicKey) {
-        return true;
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('dappAsset', function (obj) {
-    if (obj && obj.dapp && obj.dapp.name && obj.dapp.description && obj.dapp.icon.length && obj.dapp.coverPicture.length && obj.dapp.developerAddress && obj.dapp.downloadAddress.length && obj.dapp.creatorPublicKey) {
-        return true;
-    } else {
-        return false;
-    }
-});
-ZSchema.registerFormat('multisignatureAsset', function (obj) {
-    if (obj && obj.multisignature && obj.multisignature.min && obj.multisignature.keysgroup && obj.multisignature.lifetime) {
-
-        var min = parseInt(obj.multisignature.min);
-        if (isNaN(min) || min < 1 || min > 16) {
-            return false;
-        }
-        obj.multisignature.min = min;
-
-        var lifetime = parseInt(obj.multisignature.lifetime);
-        if (isNaN(lifetime) || lifetime < 1 || lifetime > 24) {
-            return false;
-        }
-        obj.multisignature.lifetime = lifetime;
-
-        if (!Array.isArray(obj.multisignature.keysgroup) || obj.multisignature.keysgroup.length < 1 || obj.multisignature.keysgroup.length > 10) {
-            return false;
-        }
-        for (var i = 0; i < obj.multisignature.keysgroup.length; i++) {
-            try {
-                var publicKey = new Buffer(obj.multisignature.keysgroup[i].substring(1), "hex");
-                if (publicKey.length != 32) {
-                    return false;
-                }
-            } catch (e) {
-                return false;
-            }
-        }
-
-        return true;
-    } else {
-        return false;
-    }
+    return addressHelper.isAddress(baddress);
+  } else {
+    return false;
+  }
 });
 
-ZSchema.registerFormat('ibtCurrency', function (obj) {
-
+ZSchema.registerFormat("signatureAsset", function (obj) {
+  if (obj && obj.signature && obj.signature.publicKey) {
     try {
-        var bignum = new BigNumber(obj);
+      var publicKey = new Buffer(obj.signature.publicKey, "hex");
 
-        if (bignum.lt(constants.maxTransactionFee) && bignum.gt(0)) {
-            return true;
-        } else {
-            return false;
-        }
+      return publicKey.length == 32;
     } catch (e) {
-        return false;
+      return false;
     }
+  } else {
+    return false;
+  }
 });
 
-ZSchema.registerFormat('issueAsset', function (obj) {
-    if (obj && obj.issueAsset && obj.issueAsset.rate /* && obj.issueAsset.assetName*/ && obj.issueAsset.logo && obj.issueAsset.abbreviation /* && obj.issueAsset.originalFrozenIBT */ && obj.issueAsset.originalIssuedAssets && obj.issueAsset.expectedRaisedIBTs && obj.issueAsset.expectedIssuedBlockHeight) {
-        return true;
+ZSchema.registerFormat("delegateAsset", function (obj) {
+  if (obj && obj.delegate && obj.delegate.publicKey && obj.delegate.username) {
+    try {
+      var publicKey = new Buffer(obj.delegate.publicKey, "hex");
+
+      return publicKey.length == 32;
+    } catch (e) {
+      return false;
+    }
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("usernameAsset", function (obj) {
+  if (obj && obj.username && obj.username.publicKey && obj.username.alias) {
+    try {
+      var publicKey = new Buffer(obj.username.publicKey, "hex");
+
+      return publicKey.length == 32;
+    } catch (e) {
+      return false;
+    }
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("fabulousAsset", function (obj) {
+  if (obj && obj.fabulous && obj.fabulous.address) {
+    return addressHelper.isAddress(obj.fabulous.address);
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("gratuityAsset", function (obj) {
+  if (obj && obj.gratuity && obj.gratuity.address && obj.gratuity.gratuityTime) {
+    return addressHelper.isAddress(obj.gratuity.address);
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("messageAsset", function (obj) {
+  if (obj && obj.message && obj.message.content && obj.message.sendTime) {
+    return true;
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("votesAsset", function (obj) {
+  if (obj && obj.votes && Array.isArray(obj.votes)) {
+    for (var i = 0; i < obj.votes.length; i++) {
+      try {
+        var publicKey = new Buffer(obj.votes[i].substring(1), "hex");
+        if (publicKey.length != 32) {
+          return false;
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("markAsset", function (obj) {
+  if (obj && obj.mark && obj.mark.dappId && obj.mark.content && obj.mark.creatorPublicKey) {
+    return true;
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("dappAsset", function (obj) {
+  if (obj && obj.dapp && obj.dapp.name && obj.dapp.description && obj.dapp.icon.length && obj.dapp.coverPicture.length && obj.dapp.developerAddress && obj.dapp.downloadAddress.length && obj.dapp.creatorPublicKey) {
+    return true;
+  } else {
+    return false;
+  }
+});
+ZSchema.registerFormat("multisignatureAsset", function (obj) {
+  if (obj && obj.multisignature && obj.multisignature.min && obj.multisignature.keysgroup && obj.multisignature.lifetime) {
+    var min = parseInt(obj.multisignature.min);
+    if (isNaN(min) || min < 1 || min > 16) {
+      return false;
+    }
+    obj.multisignature.min = min;
+
+    var lifetime = parseInt(obj.multisignature.lifetime);
+    if (isNaN(lifetime) || lifetime < 1 || lifetime > 24) {
+      return false;
+    }
+    obj.multisignature.lifetime = lifetime;
+
+    if (!Array.isArray(obj.multisignature.keysgroup) || obj.multisignature.keysgroup.length < 1 || obj.multisignature.keysgroup.length > 10) {
+      return false;
+    }
+    for (var i = 0; i < obj.multisignature.keysgroup.length; i++) {
+      try {
+        var publicKey = new Buffer(obj.multisignature.keysgroup[i].substring(1), "hex");
+        if (publicKey.length != 32) {
+          return false;
+        }
+      } catch (e) {
+        return false;
+      }
+    }
+
+    return true;
+  } else {
+    return false;
+  }
+});
+
+ZSchema.registerFormat("ibtCurrency", function (obj) {
+  try {
+    var bignum = new BigNumber(obj);
+
+    if (bignum.lt(constants.maxTransactionFee) && bignum.gt(0)) {
+      return true;
     } else {
-        return false;
+      return false;
     }
+  } catch (e) {
+    return false;
+  }
 });
 
-ZSchema.registerFormat('destoryAsset', function (obj) {
-    if (obj && obj.destoryAsset && obj.destoryAsset.abbreviation /*  && obj.destoryAsset.destoryAssets */) {
-            return true;
-        } else {
-        return false;
-    }
+ZSchema.registerFormat("issueAsset", function (obj) {
+  if (obj && obj.issueAsset && obj.issueAsset.rate /* && obj.issueAsset.assetName*/ && obj.issueAsset.logo && obj.issueAsset.abbreviation /* && obj.issueAsset.originalFrozenIBT */ && obj.issueAsset.originalIssuedAssets && obj.issueAsset.expectedRaisedIBTs && obj.issueAsset.expectedIssuedBlockHeight) {
+    return true;
+  } else {
+    return false;
+  }
+});
+
+ZSchema.registerFormat("destoryAsset", function (obj) {
+  if (obj && obj.destoryAsset && obj.destoryAsset.abbreviation /*  && obj.destoryAsset.destoryAssets */
+  ) {
+      return true;
+    } else {
+    return false;
+  }
 });
 
 module.exports = new ZSchema();
-},{"z-schema":266,"./helpers/address":93,"./helpers/bignum.js":197,"./helpers/configFactory":95,"buffer":120}],282:[function(require,module,exports) {
+},{"z-schema":266,"./helpers/address":4444,"./helpers/bignum.js":4594,"./helpers/configFactory":4435,"buffer":120}],282:[function(require,module,exports) {
 
 var global = arguments[3];
 var process = require("process");
@@ -53984,76 +53860,76 @@ function formatReturnValue(bn, enc, len) {
 	}
 }
 
-},{"elliptic":245,"bn.js":244,"buffer":120}],200:[function(require,module,exports) {
+},{"elliptic":245,"bn.js":244,"buffer":120}],4578:[function(require,module,exports) {
 module.exports = {
-    /**
-    * SEND:是最基本的转账交易
-     */
-    SEND: 0,
-    /**
-    * SIGNATURE:“签名”交易
-     */
-    SIGNATURE: 1,
-    /**
-    * DELEGATE:注册为受托人
-     */
-    DELEGATE: 2,
-    /**
-    * VOTE:投票
-     */
-    VOTE: 3,
-    /**
-    * USERNAME:注册用户别名地址
-     */
-    USERNAME: 4,
-    /**
-    * FOLLOW:添加联系人
-     */
-    FOLLOW: 5,
-    /**
-    * MULTI:注册多重签名帐号
-     */
-    MULTI: 6,
-    /**
-    * DAPP:侧链应用
-     */
-    DAPP: 7,
-    /**
-    * IN_TRANSFER:转入Dapp资金
-     */
-    IN_TRANSFER: 8,
-    /**
-    * OUT_TRANSFER:转出Dapp资金
-     */
-    OUT_TRANSFER: 9,
-    /**
-    * FABULOUS:点赞
-     */
-    FABULOUS: 10,
-    /**
-    * GRATUITY：打赏
-     */
-    GRATUITY: 11,
-    /**
-    * SENDMESSAGE: 发送信息
-     */
-    SENDMESSAGE: 12,
-    /**
-     * MARK: 侧链数据存证
-     */
-    MARK: 13,
-    /**
-     * ISSUE_ASSET: 发行数字资产
-     */
-    ISSUE_ASSET: 14,
-    /**
-     * DESTORY_ASSET: 销毁数字资产
-     */
-    DESTORY_ASSET: 15,
-    /**
-     * TRANSFER_ASSET: 数字资产转账
-     */
-    TRANSFER_ASSET: 16
+  /**
+   * SEND:是最基本的转账交易
+   */
+  SEND: 0,
+  /**
+   * SIGNATURE:“签名”交易
+   */
+  SIGNATURE: 1,
+  /**
+   * DELEGATE:注册为受托人
+   */
+  DELEGATE: 2,
+  /**
+   * VOTE:投票
+   */
+  VOTE: 3,
+  /**
+   * USERNAME:注册用户别名地址
+   */
+  USERNAME: 4,
+  /**
+   * FOLLOW:添加联系人
+   */
+  FOLLOW: 5,
+  /**
+   * MULTI:注册多重签名帐号
+   */
+  MULTI: 6,
+  /**
+   * DAPP:侧链应用
+   */
+  DAPP: 7,
+  /**
+   * IN_TRANSFER:转入Dapp资金
+   */
+  IN_TRANSFER: 8,
+  /**
+   * OUT_TRANSFER:转出Dapp资金
+   */
+  OUT_TRANSFER: 9,
+  /**
+   * FABULOUS:点赞
+   */
+  FABULOUS: 10,
+  /**
+   * GRATUITY：打赏
+   */
+  GRATUITY: 11,
+  /**
+   * SENDMESSAGE: 发送信息
+   */
+  SENDMESSAGE: 12,
+  /**
+   * MARK: 侧链数据存证
+   */
+  MARK: 13,
+  /**
+   * ISSUE_ASSET: 发行数字资产
+   */
+  ISSUE_ASSET: 14,
+  /**
+   * DESTORY_ASSET: 销毁数字资产
+   */
+  DESTORY_ASSET: 15,
+  /**
+   * TRANSFER_ASSET: 数字资产转账
+   */
+  TRANSFER_ASSET: 16
 };
 },{}],229:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
@@ -58649,10 +58525,10 @@ var global = arguments[3];
 
     return ByteBuffer;
 });
-},{"long":369}],199:[function(require,module,exports) {
-'use strict';
+},{"long":369}],4581:[function(require,module,exports) {
+"use strict";
 
-var configFactory = require('./configFactory');
+var configFactory = require("./configFactory");
 var constants = configFactory.getConstants();
 
 /**
@@ -58662,154 +58538,154 @@ var constants = configFactory.getConstants();
  */
 
 function beginEpochTime() {
-    return configFactory.getBeginEpochTime();
+  return configFactory.getBeginEpochTime();
 }
 
 function getEpochTime(time) {
-    if (time === undefined) {
-        time = new Date().getTime();
-    }
-    var d = beginEpochTime();
-    var t = d.getTime();
-    return Math.floor((time - t) / 1000);
+  if (time === undefined) {
+    time = new Date().getTime();
+  }
+  var d = beginEpochTime();
+  var t = d.getTime();
+  return Math.floor((time - t) / 1000);
 }
 
 module.exports = {
-    getTime: function getTime(time) {
-        return getEpochTime(time);
-    },
-    getRealTime: function getRealTime(epochTime) {
-        if (epochTime === undefined) {
-            epochTime = this.getTime();
-        }
-        var d = beginEpochTime();
-        var t = Math.floor(d.getTime() / 1000) * 1000;
-        return t + epochTime * 1000;
-    },
-    getSlotNumber: function getSlotNumber(epochTime) {
-        if (epochTime === undefined) {
-            epochTime = this.getTime();
-        }
-        return Math.floor(epochTime / constants.slots.interval);
-    },
-    getSlotTime: function getSlotTime(slot) {
-        return slot * constants.slots.interval;
-    },
-    getNextSlot: function getNextSlot() {
-        var slot = this.getSlotNumber();
-
-        return slot + 1;
-    },
-    getLastSlot: function getLastSlot(nextSlot) {
-        return nextSlot + constants.delegates;
+  getTime: function getTime(time) {
+    return getEpochTime(time);
+  },
+  getRealTime: function getRealTime(epochTime) {
+    if (epochTime === undefined) {
+      epochTime = this.getTime();
     }
+    var d = beginEpochTime();
+    var t = Math.floor(d.getTime() / 1000) * 1000;
+    return t + epochTime * 1000;
+  },
+  getSlotNumber: function getSlotNumber(epochTime) {
+    if (epochTime === undefined) {
+      epochTime = this.getTime();
+    }
+    return Math.floor(epochTime / constants.slots.interval);
+  },
+  getSlotTime: function getSlotTime(slot) {
+    return slot * constants.slots.interval;
+  },
+  getNextSlot: function getNextSlot() {
+    var slot = this.getSlotNumber();
+
+    return slot + 1;
+  },
+  getLastSlot: function getLastSlot(nextSlot) {
+    return nextSlot + constants.delegates;
+  }
 };
-},{"./configFactory":95}],271:[function(require,module,exports) {
-'use strict';
+},{"./configFactory":4435}],4781:[function(require,module,exports) {
+"use strict";
 
 module.exports = {
-	reverse: function reverse(diff) {
-		var copyDiff = diff.slice();
-		for (var i = 0; i < copyDiff.length; i++) {
-			var math = copyDiff[i][0] == '-' ? '+' : '-';
-			copyDiff[i] = math + copyDiff[i].slice(1);
-		}
-		return copyDiff;
-	},
-	merge: function merge(source, diff) {
-		var res = source ? source.slice() : [];
+  reverse: function reverse(diff) {
+    var copyDiff = diff.slice();
+    for (var i = 0; i < copyDiff.length; i++) {
+      var math = copyDiff[i][0] == "-" ? "+" : "-";
+      copyDiff[i] = math + copyDiff[i].slice(1);
+    }
+    return copyDiff;
+  },
+  merge: function merge(source, diff) {
+    var res = source ? source.slice() : [];
 
-		for (var i = 0; i < diff.length; i++) {
-			var math = diff[i][0];
-			var publicKey = diff[i].slice(1);
+    for (var i = 0; i < diff.length; i++) {
+      var math = diff[i][0];
+      var publicKey = diff[i].slice(1);
 
-			if (math == "+") {
-				res = res || [];
+      if (math == "+") {
+        res = res || [];
 
-				var index = -1;
-				if (res) {
-					index = res.indexOf(publicKey);
-				}
-				if (index != -1) {
-					return false;
-				}
-
-				res.push(publicKey);
-			}
-			if (math == "-") {
-				var _index = -1;
-				if (res) {
-					_index = res.indexOf(publicKey);
-				}
-				if (_index == -1) {
-					return false;
-				}
-				res.splice(_index, 1);
-				if (!res.length) {
-					res = null;
-				}
-			}
-		}
-		return res;
-	}
-};
-},{}],2325:[function(require,module,exports) {
-var contact = {
-    type: "object",
-    properties: {
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string"
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "contactAsset"
+        var index = -1;
+        if (res) {
+          index = res.indexOf(publicKey);
         }
+        if (index != -1) {
+          return false;
+        }
+
+        res.push(publicKey);
+      }
+      if (math == "-") {
+        var _index = -1;
+        if (res) {
+          _index = res.indexOf(publicKey);
+        }
+        if (_index == -1) {
+          return false;
+        }
+        res.splice(_index, 1);
+        if (!res.length) {
+          res = null;
+        }
+      }
+    }
+    return res;
+  }
+};
+},{}],4962:[function(require,module,exports) {
+var contact = {
+  type: "object",
+  properties: {
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "asset"]
+    secondSecret: {
+      type: "string"
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "contactAsset"
+    }
+  },
+  required: ["secret", "fee", "asset"]
 };
 
 module.exports = contact;
-},{}],207:[function(require,module,exports) {
+},{}],5028:[function(require,module,exports) {
 
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 /**
@@ -58837,308 +58713,308 @@ var modules = void 0,
  * */
 
 var Contact = function () {
-    /**
-     * 初始化联系人
-     *
-     * @constructor
-     * */
-    function Contact() {
-        _classCallCheck(this, Contact);
+  /**
+   * 初始化联系人
+   *
+   * @constructor
+   * */
+  function Contact() {
+    _classCallCheck(this, Contact);
+  }
+  // self = mod;
+  // shared = share;
+  // library = scope;
+
+  /**
+   * 创建类型为添加联系人的交易
+   *
+   * @param {Object} data 联系人信息
+   * @param {Object} trs 交易信息
+   * @private
+   * @return {Object} 交易信息
+   * */
+
+  _createClass(Contact, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+
+      trs.asset.contact = {
+        address: data.asset.contact.address
+      };
+
+      return trs;
     }
-    // self = mod;
-    // shared = share;
-    // library = scope;
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, contactSchema, cb);
+    }
 
     /**
-     * 创建类型为添加联系人的交易
+     * 计算费用
      *
-     * @param {Object} data 联系人信息
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {number}
+     * */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 1 * constants.fixedPoint;
+    }
+
+    /**
+     * 核对联系人
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 核对后执行的函数
+     * @private
+     * @return {Function(Function,string)} 异步延时处理函数
+     * */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (!trs.asset.contact) {
+        // return setImmediate(cb, {
+        //     message: "Invalid transaction asset",
+        //     trs: 'trs id: ' + trs.id
+        // });
+        return cb({
+          message: "Invalid transaction asset",
+          trs: "trs id: " + trs.id
+        });
+      }
+
+      if (!trs.asset.contact.address) {
+        // return setImmediate(cb, {
+        //     message: "Invalid transaction asset",
+        //     trs: 'trs id: ' + trs.id
+        // });
+        return cb({
+          message: "Invalid transaction asset",
+          trs: "trs id: " + trs.id
+        });
+      }
+
+      // let isAddress = /^[\+|\-][0-9]+[L|l]$/g;
+      // if (!isAddress.test(trs.asset.contact.address.toLowerCase())) {
+      //     return setImmediate(cb, `Contact is not an address: ${trs.asset.contact.address}`);
+      // }
+
+      var testStart = /[\+/\-]/g;
+      var baddress = trs.asset.contact.address;
+      baddress = testStart.test(baddress) ? baddress.substr(1) : baddress;
+
+      if (!addressHelper.isAddress(baddress)) {
+        // return setImmediate(cb, {
+        //     message: "Contact is not an address",
+        //     trs: 'address: ' + trs.asset.contact.address
+        // });
+        return cb({
+          message: "Contact is not an address",
+          trs: "address: " + trs.asset.contact.address
+        });
+      }
+
+      if (trs.amount !== 0) {
+        // return setImmediate(cb, {
+        //     message: "Invalid amount",
+        //     trs: 'trs id: ' + trs.id
+        // });
+        return cb({
+          message: "Invalid amount",
+          trs: "trs id: " + trs.id
+        });
+      }
+
+      if (trs.recipientId) {
+        // return setImmediate(cb, {
+        //     message: "Invalid recipient",
+        //     trs: 'trs id: ' + trs.id
+        // });
+        return cb({
+          message: "Invalid recipient",
+          trs: "trs id: " + trs.id
+        });
+      }
+
+      // setImmediate(cb, null, trs);
+      cb(null, trs);
+
+      // self.checkContacts(trs.senderPublicKey, [trs.asset.contact.address], function (err) {
+      //     if (err) {
+      //         return setImmediate(cb, "Account is already a contact");
+      //     }
+      //     setImmediate(cb, err, trs);
+      // });
+    }
+
+    /**
+     * 处理交易
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 处理函数
+     * @private
+     * @return {Function(Function,null,Object)} 异步延时处理函数
+     * */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      // setImmediate(cb, null, trs);
+      cb(null, trs);
+    }
+
+    /**
+     * urf-8字符编码
+     *
+     * @param {Object} trs 交易信息
+     * @private
+     * @return
+     * */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      var bb = null;
+      var contactAddress = new Buffer(trs.asset.contact.address, "utf8");
+
+      bb = new ByteBuffer(contactAddress.length, true);
+      for (var i = 0; i < contactAddress.length; i++) {
+        bb.writeByte(contactAddress[i]);
+      }
+
+      bb.flip();
+
+      // return bb.toBuffer()
+      return Buffer.from(bb.toString("hex"), "hex");
+    }
+
+    /**
+     * 检查联系人格式
+     *
      * @param {Object} trs 交易信息
      * @private
      * @return {Object} 交易信息
      * */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      var report = library.scheme.validate(trs.asset.contact, {
+        type: "object",
+        properties: {
+          address: {
+            type: "string",
+            minLength: 1
+          }
+        },
+        required: ["address"]
+      });
 
-    _createClass(Contact, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
+      if (!report) {
+        throw Error("Incorrect address in contact transaction: " + library.scheme.getLastError());
+      }
 
-            trs.asset.contact = {
-                address: data.asset.contact.address
-            };
+      return trs;
+    }
 
-            return trs;
+    /**
+     * 验证发送人是否有多重签名帐号,是否签名
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {boolean} 验证结果
+     * */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, contactSchema, cb);
-        }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         * 计算费用
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {number}
-         * */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 1 * constants.fixedPoint;
-        }
-
-        /**
-         * 核对联系人
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 核对后执行的函数
-         * @private
-         * @return {Function(Function,string)} 异步延时处理函数
-         * */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            if (!trs.asset.contact) {
-                // return setImmediate(cb, {
-                //     message: "Invalid transaction asset",
-                //     trs: 'trs id: ' + trs.id
-                // });
-                return cb({
-                    message: "Invalid transaction asset",
-                    trs: "trs id: " + trs.id
-                });
-            }
-
-            if (!trs.asset.contact.address) {
-                // return setImmediate(cb, {
-                //     message: "Invalid transaction asset",
-                //     trs: 'trs id: ' + trs.id
-                // });
-                return cb({
-                    message: "Invalid transaction asset",
-                    trs: "trs id: " + trs.id
-                });
-            }
-
-            // let isAddress = /^[\+|\-][0-9]+[L|l]$/g;
-            // if (!isAddress.test(trs.asset.contact.address.toLowerCase())) {
-            //     return setImmediate(cb, `Contact is not an address: ${trs.asset.contact.address}`);
-            // }
-
-            var testStart = /[\+/\-]/g;
-            var baddress = trs.asset.contact.address;
-            baddress = testStart.test(baddress) ? baddress.substr(1) : baddress;
-
-            if (!addressHelper.isAddress(baddress)) {
-                // return setImmediate(cb, {
-                //     message: "Contact is not an address",
-                //     trs: 'address: ' + trs.asset.contact.address
-                // });
-                return cb({
-                    message: "Contact is not an address",
-                    trs: "address: " + trs.asset.contact.address
-                });
-            }
-
-            if (trs.amount !== 0) {
-                // return setImmediate(cb, {
-                //     message: "Invalid amount",
-                //     trs: 'trs id: ' + trs.id
-                // });
-                return cb({
-                    message: "Invalid amount",
-                    trs: "trs id: " + trs.id
-                });
-            }
-
-            if (trs.recipientId) {
-                // return setImmediate(cb, {
-                //     message: "Invalid recipient",
-                //     trs: 'trs id: ' + trs.id
-                // });
-                return cb({
-                    message: "Invalid recipient",
-                    trs: "trs id: " + trs.id
-                });
-            }
-
-            // setImmediate(cb, null, trs);
-            cb(null, trs);
-
-            // self.checkContacts(trs.senderPublicKey, [trs.asset.contact.address], function (err) {
-            //     if (err) {
-            //         return setImmediate(cb, "Account is already a contact");
-            //     }
-            //     setImmediate(cb, err, trs);
-            // });
-        }
-
-        /**
-         * 处理交易
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 处理函数
-         * @private
-         * @return {Function(Function,null,Object)} 异步延时处理函数
-         * */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            // setImmediate(cb, null, trs);
-            cb(null, trs);
-        }
-
-        /**
-         * urf-8字符编码
-         *
-         * @param {Object} trs 交易信息
-         * @private
-         * @return
-         * */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            var bb = null;
-            var contactAddress = new Buffer(trs.asset.contact.address, "utf8");
-
-            bb = new ByteBuffer(contactAddress.length, true);
-            for (var i = 0; i < contactAddress.length; i++) {
-                bb.writeByte(contactAddress[i]);
-            }
-
-            bb.flip();
-
-            // return bb.toBuffer()
-            return Buffer.from(bb.toString("hex"), "hex");
-        }
-
-        /**
-         * 检查联系人格式
-         *
-         * @param {Object} trs 交易信息
-         * @private
-         * @return {Object} 交易信息
-         * */
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            var report = library.scheme.validate(trs.asset.contact, {
-                type: "object",
-                properties: {
-                    address: {
-                        type: "string",
-                        minLength: 1
-                    }
-                },
-                required: ["address"]
-            });
-
-            if (!report) {
-                throw Error("Incorrect address in contact transaction: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         * 验证发送人是否有多重签名帐号,是否签名
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {boolean} 验证结果
-         * */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return Contact;
+  return Contact;
 }();
 
 module.exports = Contact;
-},{"../helpers/configFactory":95,"../helpers/diff.js":271,"bytebuffer":230,"../helpers/address.js":93,"../validator":1623,"buffer/":120,"./schema/contact.js":2325}],292:[function(require,module,exports) {
+},{"../helpers/configFactory":4435,"../helpers/diff.js":4781,"bytebuffer":230,"../helpers/address.js":4444,"../validator":4603,"buffer/":120,"./schema/contact.js":4962}],4654:[function(require,module,exports) {
 module.exports = {
-	Common: 0,
-	Business: 1,
-	Catalogs: 2,
-	Education: 3,
-	Entertainment: 4,
-	Multimedia: 5,
-	Networking: 6,
-	Utilities: 7,
-	Games: 8
+  Common: 0,
+  Business: 1,
+  Catalogs: 2,
+  Education: 3,
+  Entertainment: 4,
+  Multimedia: 5,
+  Networking: 6,
+  Utilities: 7,
+  Games: 8
 };
-},{}],293:[function(require,module,exports) {
+},{}],5054:[function(require,module,exports) {
 var dapp = {
-    type: "object",
-    properties: {
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string"
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "dappAsset"
-        }
+  type: "object",
+  properties: {
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "asset"]
+    secondSecret: {
+      type: "string"
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "dappAsset"
+    }
+  },
+  required: ["secret", "fee", "asset"]
 };
 
 module.exports = dapp;
-},{}],2299:[function(require,module,exports) {
+},{}],4583:[function(require,module,exports) {
 
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 /**
@@ -59165,7 +59041,7 @@ var shared = void 0;
  * 是否经过ASCLL编码
  * */
 function isASCII(str, extended) {
-    return (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(str);
+  return (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(str);
 }
 
 /**
@@ -59175,451 +59051,451 @@ function isASCII(str, extended) {
  * */
 
 var DApp = function () {
-    /**
-     * 初始化Dapp商品
-     *
-     * @constructor
-     * */
-    function DApp() {
-        _classCallCheck(this, DApp);
+  /**
+   * 初始化Dapp商品
+   *
+   * @constructor
+   * */
+  function DApp() {
+    _classCallCheck(this, DApp);
+  }
+  // mod = _mod;
+  // shared = _shared;
+  // privated = mod.__private;
+  // library = _library;
+
+  /**
+   * 创建类型为侧链应用的交易
+   *
+   * @param {Object} data dapp商品信息
+   * @param {Object} trs 交易信息
+   * @private
+   * @return {Object} 交易信息
+   * */
+
+  _createClass(DApp, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+
+      trs.asset.dapp = {
+        category: data.asset.dapp.category,
+        name: data.asset.dapp.name,
+        description: data.asset.dapp.description,
+        certificate: data.asset.dapp.certificate,
+        tags: data.asset.dapp.tags || "",
+        icon: data.asset.dapp.icon.toString(),
+        coverPicture: data.asset.dapp.coverPicture.toString(),
+        developerAddress: data.asset.dapp.developerAddress.toString(),
+        downloadAddress: data.asset.dapp.downloadAddress,
+        state: 0,
+        creatorPublicKey: data.asset.dapp.creatorPublicKey || ""
+      };
+
+      return trs;
     }
-    // mod = _mod;
-    // shared = _shared;
-    // privated = mod.__private;
-    // library = _library;
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, dappSchema, cb);
+    }
 
     /**
-     * 创建类型为侧链应用的交易
+     * 计算费用
      *
-     * @param {Object} data dapp商品信息
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {number}
+     * */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 500 * constants.fixedPoint;
+    }
+
+    /**
+     * 核对dapp商品信息
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 核对后执行的函数
+     * @private
+     * @return {Function(Function,string)} 异步延时处理函数
+     * */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (trs.recipientId) {
+        // return setImmediate(cb, {
+        //     message: "Invalid recipient"
+        // });
+        return cb({
+          message: "Invalid recipient"
+        });
+      }
+
+      if (trs.amount != 0) {
+        // return setImmediate(cb, {
+        //     message: "Invalid transaction amount"
+        // });
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      //判断公钥是否合法
+      if (trs.asset.dapp.creatorPublicKey.length != 64 || !new Buffer(trs.asset.dapp.creatorPublicKey, "hex").length) {
+        return cb({
+          message: "Invalid creatorPublicKey"
+        });
+      }
+
+      if (trs.asset.dapp.category != 0 && !trs.asset.dapp.category) {
+        // return setImmediate(cb, {
+        //     message: "Invalid dapp category"
+        // });
+        return cb({
+          message: "Invalid dapp category"
+        });
+      }
+
+      if (trs.asset.dapp.state != 0) {
+        return cb({
+          message: "Invalid dapp state"
+        });
+      }
+
+      var foundCategory = false;
+      for (var i in dappCategory) {
+        if (dappCategory[i] == trs.asset.dapp.category) {
+          foundCategory = true;
+          break;
+        }
+      }
+
+      if (!foundCategory) {
+        // return setImmediate(cb, {
+        //     message: "Unknown dapp category"
+        // });
+        return cb({
+          message: "Unknown dapp category"
+        });
+      }
+
+      if (trs.asset.dapp.icon.split(",").length != 2) {
+        return cb({
+          message: "Need and only need choose one Dapp icon"
+        });
+      }
+
+      if (trs.asset.dapp.coverPicture.split(",").length < 2) {
+        return cb({
+          message: "Please choose at least one Dapp cover"
+        });
+      }
+
+      if (trs.asset.dapp.downloadAddress.split(";").length < 1) {
+        return cb({
+          message: "Please fill in at least one type of installation package address"
+        });
+      }
+
+      if (!trs.asset.dapp.certificate) {
+        return cb({
+          message: "You must upload your dapp's digital certificate"
+        });
+      }
+
+      // if (trs.asset.dapp.git) {
+      //     if (!/^(https:\/\/github\.com\/|git\@github\.com\:)(.+)(\.git)$/.test(trs.asset.dapp.git)) {
+      //         // return setImmediate(cb, "Invalid github repository link");
+      //         return cb({
+      //             message: "Invalid github repository link"
+      //         });
+      //     }
+      // }
+
+      if (!trs.asset.dapp.name || trs.asset.dapp.name.trim().length == 0 || trs.asset.dapp.name.trim() != trs.asset.dapp.name) {
+        // return setImmediate(cb, "Missing dapp name");
+        return cb({
+          message: "Missing dapp name"
+        });
+      }
+
+      if (trs.asset.dapp.name.length > 32) {
+        // return setImmediate(cb, "Dapp name is too long. Maximum is 32 characters");
+        return cb({
+          message: "Dapp name is too long. Maximum is 32 characters"
+        });
+      }
+
+      if (trs.asset.dapp.description && trs.asset.dapp.description.length > 160) {
+        // return setImmediate(cb, "Dapp description is too long. Maximum is 160 characters");
+        return cb({
+          message: "Dapp description is too long. Maximum is 160 characters"
+        });
+      }
+
+      if (trs.asset.dapp.tags && trs.asset.dapp.tags.length > 160) {
+        // return setImmediate(cb, "Dapp has too many tags. Maximum is 160");
+        return cb({
+          message: "Dapp has too many tags. Maximum is 160"
+        });
+      }
+
+      if (trs.asset.dapp.tags) {
+        var tags = trs.asset.dapp.tags.split(",");
+
+        tags = tags.map(function (tag) {
+          return tag.trim();
+        }).sort();
+
+        for (var _i = 0; _i < tags.length - 1; _i++) {
+          if (tags[_i + 1] == tags[_i]) {
+            // return setImmediate(cb, 'Encountered duplicate tags: ' + tags[_i]);
+            return cb({
+              message: "Encountered duplicate tags",
+              details: "tags: " + tags[_i]
+            });
+          }
+        }
+      }
+
+      // setImmediate(cb);
+      cb();
+    }
+
+    /**
+     * 处理交易
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 处理函数
+     * @private
+     * @return {Function(Function,null,Object)} 异步延时处理函数
+     * */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      // setImmediate(cb, null, trs);
+      cb(null, trs);
+    }
+
+    /**
+     * urf-8字符编码
+     *
      * @param {Object} trs 交易信息
      * @private
-     * @return {Object} 交易信息
+     * @return
      * */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      var buf = void 0;
+      buf = new Buffer([]);
+      var nameBuf = new Buffer(trs.asset.dapp.name, "utf8");
+      buf = Buffer.concat([buf, nameBuf]);
 
-    _createClass(DApp, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
+      if (trs.asset.dapp.description) {
+        var descriptionBuf = new Buffer(trs.asset.dapp.description, "utf8");
+        buf = Buffer.concat([buf, descriptionBuf]);
+      }
 
-            trs.asset.dapp = {
-                category: data.asset.dapp.category,
-                name: data.asset.dapp.name,
-                description: data.asset.dapp.description,
-                certificate: data.asset.dapp.certificate,
-                tags: data.asset.dapp.tags || "",
-                icon: data.asset.dapp.icon.toString(),
-                coverPicture: data.asset.dapp.coverPicture.toString(),
-                developerAddress: data.asset.dapp.developerAddress.toString(),
-                downloadAddress: data.asset.dapp.downloadAddress,
-                state: 0,
-                creatorPublicKey: data.asset.dapp.creatorPublicKey || ""
-            };
+      if (trs.asset.dapp.tags) {
+        var tagsBuf = new Buffer(trs.asset.dapp.tags, "utf8");
+        buf = Buffer.concat([buf, tagsBuf]);
+      }
 
-            return trs;
+      if (trs.asset.dapp.certificate) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.certificate.toString(), "utf8")]);
+      }
+
+      if (trs.asset.dapp.icon) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.icon.toString(), "utf8")]);
+      }
+
+      if (trs.asset.dapp.coverPicture) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.coverPicture.toString(), "utf8")]);
+      }
+
+      if (trs.asset.dapp.downloadAddress) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.downloadAddress.toString(), "utf8")]);
+      }
+
+      if (trs.asset.dapp.developerAddress) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.developerAddress, "utf8")]);
+      }
+
+      if (trs.asset.dapp.creatorPublicKey) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.creatorPublicKey, "utf8")]);
+      }
+
+      var bb = new ByteBuffer(4 + 4, true);
+      bb.writeInt(trs.asset.dapp.category);
+      bb.writeInt(trs.asset.dapp.state);
+      bb.flip();
+
+      buf = Buffer.concat([buf, Buffer.from(bb.toString("hex"), "hex")]);
+
+      return buf;
+    }
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      for (var i in trs.asset.dapp) {
+        if (trs.asset.dapp[i] === null || typeof trs.asset.dapp[i] === "undefined") {
+          delete trs.asset.dapp[i];
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, dappSchema, cb);
+      }
+
+      var report = library.scheme.validate(trs.asset.dapp, {
+        type: "object",
+        properties: {
+          category: {
+            type: "integer",
+            minimum: 0,
+            maximum: 8
+          },
+          name: {
+            type: "string",
+            minLength: 1,
+            maxLength: 32
+          },
+          description: {
+            type: "string",
+            minLength: 0,
+            maxLength: 160
+          },
+          certificate: {
+            type: "string",
+            minLength: 1
+          },
+          tags: {
+            type: "string",
+            minLength: 0,
+            maxLength: 160
+          },
+          icon: {
+            type: "string",
+            minLength: 1
+          },
+          coverPicture: {
+            type: "string",
+            minLength: 1
+          },
+          downloadAddress: {
+            type: "string",
+            minLength: 1
+          },
+          developerAddress: {
+            type: "string",
+            minLength: 1
+          },
+          state: {
+            type: "integer",
+            minimum: 0,
+            maximum: 1
+          },
+          creatorPublicKey: {
+            type: "string",
+            minLength: 1,
+            maxLength: 64
+          }
+        },
+        required: ["name", "category", "description", "certificate", "tags", "icon", "coverPicture", "downloadAddress", "developerAddress", "state", "creatorPublicKey"]
+      });
+
+      if (!report) {
+        throw Error("Can't verify dapp new transaction, incorrect parameters: " + library.scheme.getLastError());
+      }
+
+      return trs;
+    }
+
+    /**
+     * 验证发送人是否有多重签名帐号,是否签名
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {boolean} 验证结果
+     * */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         * 计算费用
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {number}
-         * */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 500 * constants.fixedPoint;
-        }
-
-        /**
-         * 核对dapp商品信息
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 核对后执行的函数
-         * @private
-         * @return {Function(Function,string)} 异步延时处理函数
-         * */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            if (trs.recipientId) {
-                // return setImmediate(cb, {
-                //     message: "Invalid recipient"
-                // });
-                return cb({
-                    message: "Invalid recipient"
-                });
-            }
-
-            if (trs.amount != 0) {
-                // return setImmediate(cb, {
-                //     message: "Invalid transaction amount"
-                // });
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            //判断公钥是否合法
-            if (trs.asset.dapp.creatorPublicKey.length != 64 || !new Buffer(trs.asset.dapp.creatorPublicKey, "hex").length) {
-                return cb({
-                    message: "Invalid creatorPublicKey"
-                });
-            }
-
-            if (trs.asset.dapp.category != 0 && !trs.asset.dapp.category) {
-                // return setImmediate(cb, {
-                //     message: "Invalid dapp category"
-                // });
-                return cb({
-                    message: "Invalid dapp category"
-                });
-            }
-
-            if (trs.asset.dapp.state != 0) {
-                return cb({
-                    message: "Invalid dapp state"
-                });
-            }
-
-            var foundCategory = false;
-            for (var i in dappCategory) {
-                if (dappCategory[i] == trs.asset.dapp.category) {
-                    foundCategory = true;
-                    break;
-                }
-            }
-
-            if (!foundCategory) {
-                // return setImmediate(cb, {
-                //     message: "Unknown dapp category"
-                // });
-                return cb({
-                    message: "Unknown dapp category"
-                });
-            }
-
-            if (trs.asset.dapp.icon.split(",").length != 2) {
-                return cb({
-                    message: "Need and only need choose one Dapp icon"
-                });
-            }
-
-            if (trs.asset.dapp.coverPicture.split(",").length < 2) {
-                return cb({
-                    message: "Please choose at least one Dapp cover"
-                });
-            }
-
-            if (trs.asset.dapp.downloadAddress.split(";").length < 1) {
-                return cb({
-                    message: "Please fill in at least one type of installation package address"
-                });
-            }
-
-            if (!trs.asset.dapp.certificate) {
-                return cb({
-                    message: "You must upload your dapp's digital certificate"
-                });
-            }
-
-            // if (trs.asset.dapp.git) {
-            //     if (!/^(https:\/\/github\.com\/|git\@github\.com\:)(.+)(\.git)$/.test(trs.asset.dapp.git)) {
-            //         // return setImmediate(cb, "Invalid github repository link");
-            //         return cb({
-            //             message: "Invalid github repository link"
-            //         });
-            //     }
-            // }
-
-            if (!trs.asset.dapp.name || trs.asset.dapp.name.trim().length == 0 || trs.asset.dapp.name.trim() != trs.asset.dapp.name) {
-                // return setImmediate(cb, "Missing dapp name");
-                return cb({
-                    message: "Missing dapp name"
-                });
-            }
-
-            if (trs.asset.dapp.name.length > 32) {
-                // return setImmediate(cb, "Dapp name is too long. Maximum is 32 characters");
-                return cb({
-                    message: "Dapp name is too long. Maximum is 32 characters"
-                });
-            }
-
-            if (trs.asset.dapp.description && trs.asset.dapp.description.length > 160) {
-                // return setImmediate(cb, "Dapp description is too long. Maximum is 160 characters");
-                return cb({
-                    message: "Dapp description is too long. Maximum is 160 characters"
-                });
-            }
-
-            if (trs.asset.dapp.tags && trs.asset.dapp.tags.length > 160) {
-                // return setImmediate(cb, "Dapp has too many tags. Maximum is 160");
-                return cb({
-                    message: "Dapp has too many tags. Maximum is 160"
-                });
-            }
-
-            if (trs.asset.dapp.tags) {
-                var tags = trs.asset.dapp.tags.split(",");
-
-                tags = tags.map(function (tag) {
-                    return tag.trim();
-                }).sort();
-
-                for (var _i = 0; _i < tags.length - 1; _i++) {
-                    if (tags[_i + 1] == tags[_i]) {
-                        // return setImmediate(cb, 'Encountered duplicate tags: ' + tags[_i]);
-                        return cb({
-                            message: "Encountered duplicate tags",
-                            details: "tags: " + tags[_i]
-                        });
-                    }
-                }
-            }
-
-            // setImmediate(cb);
-            cb();
-        }
-
-        /**
-         * 处理交易
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 处理函数
-         * @private
-         * @return {Function(Function,null,Object)} 异步延时处理函数
-         * */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            // setImmediate(cb, null, trs);
-            cb(null, trs);
-        }
-
-        /**
-         * urf-8字符编码
-         *
-         * @param {Object} trs 交易信息
-         * @private
-         * @return
-         * */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            var buf = void 0;
-            buf = new Buffer([]);
-            var nameBuf = new Buffer(trs.asset.dapp.name, "utf8");
-            buf = Buffer.concat([buf, nameBuf]);
-
-            if (trs.asset.dapp.description) {
-                var descriptionBuf = new Buffer(trs.asset.dapp.description, "utf8");
-                buf = Buffer.concat([buf, descriptionBuf]);
-            }
-
-            if (trs.asset.dapp.tags) {
-                var tagsBuf = new Buffer(trs.asset.dapp.tags, "utf8");
-                buf = Buffer.concat([buf, tagsBuf]);
-            }
-
-            if (trs.asset.dapp.certificate) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.certificate.toString(), "utf8")]);
-            }
-
-            if (trs.asset.dapp.icon) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.icon.toString(), "utf8")]);
-            }
-
-            if (trs.asset.dapp.coverPicture) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.coverPicture.toString(), "utf8")]);
-            }
-
-            if (trs.asset.dapp.downloadAddress) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.downloadAddress.toString(), "utf8")]);
-            }
-
-            if (trs.asset.dapp.developerAddress) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.developerAddress, "utf8")]);
-            }
-
-            if (trs.asset.dapp.creatorPublicKey) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.dapp.creatorPublicKey, "utf8")]);
-            }
-
-            var bb = new ByteBuffer(4 + 4, true);
-            bb.writeInt(trs.asset.dapp.category);
-            bb.writeInt(trs.asset.dapp.state);
-            bb.flip();
-
-            buf = Buffer.concat([buf, Buffer.from(bb.toString("hex"), "hex")]);
-
-            return buf;
-        }
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            for (var i in trs.asset.dapp) {
-                if (trs.asset.dapp[i] === null || typeof trs.asset.dapp[i] === "undefined") {
-                    delete trs.asset.dapp[i];
-                }
-            }
-
-            var report = library.scheme.validate(trs.asset.dapp, {
-                type: "object",
-                properties: {
-                    category: {
-                        type: "integer",
-                        minimum: 0,
-                        maximum: 8
-                    },
-                    name: {
-                        type: "string",
-                        minLength: 1,
-                        maxLength: 32
-                    },
-                    description: {
-                        type: "string",
-                        minLength: 0,
-                        maxLength: 160
-                    },
-                    certificate: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    tags: {
-                        type: "string",
-                        minLength: 0,
-                        maxLength: 160
-                    },
-                    icon: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    coverPicture: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    downloadAddress: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    developerAddress: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    state: {
-                        type: "integer",
-                        minimum: 0,
-                        maximum: 1
-                    },
-                    creatorPublicKey: {
-                        type: "string",
-                        minLength: 1,
-                        maxLength: 64
-                    }
-                },
-                required: ["name", "category", "description", "certificate", "tags", "icon", "coverPicture", "downloadAddress", "developerAddress", "state", "creatorPublicKey"]
-            });
-
-            if (!report) {
-                throw Error("Can't verify dapp new transaction, incorrect parameters: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         * 验证发送人是否有多重签名帐号,是否签名
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {boolean} 验证结果
-         * */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return DApp;
+  return DApp;
 }();
 
 module.exports = DApp;
-},{"../helpers/configFactory":95,"bytebuffer":230,"../helpers/dappCategory.js":292,"buffer/":120,"../validator":1623,"./schema/dapp.js":293}],2324:[function(require,module,exports) {
+},{"../helpers/configFactory":4435,"bytebuffer":230,"../helpers/dappCategory.js":4654,"buffer/":120,"../validator":4603,"./schema/dapp.js":5054}],4992:[function(require,module,exports) {
 var delegate = {
-    type: "object",
-    properties: {
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string"
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "delegateAsset"
-        }
+  type: "object",
+  properties: {
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "asset"]
+    secondSecret: {
+      type: "string"
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "delegateAsset"
+    }
+  },
+  required: ["secret", "fee", "asset"]
 };
 
 module.exports = delegate;
-},{}],209:[function(require,module,exports) {
+},{}],5030:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 /**
@@ -59642,323 +59518,323 @@ var _module = void 0,
  */
 
 var Delegate = function () {
-    /**
-     *
-     * @param mod
-     * @param lib
-     * @constructor
-     */
-    function Delegate() {
-        _classCallCheck(this, Delegate);
+  /**
+   *
+   * @param mod
+   * @param lib
+   * @constructor
+   */
+  function Delegate() {
+    _classCallCheck(this, Delegate);
+  }
+  // _module = mod;
+  // library = lib;
+
+  /**
+   * 创建类型为注册受托人的交易
+   *
+   * @param {Object} data 受托人信息
+   * @param {Object} trs 交易信息
+   * @private
+   * @return {Object} 交易信息
+   */
+
+  _createClass(Delegate, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+      trs.asset.delegate = {
+        username: data.asset.delegate.username,
+        publicKey: data.asset.delegate.publicKey
+      };
+
+      return trs;
     }
-    // _module = mod;
-    // library = lib;
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, delegateSchema, cb);
+    }
 
     /**
-     * 创建类型为注册受托人的交易
+     * 计算费用
      *
-     * @param {Object} data 受托人信息
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {number}
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 100 * constants.fixedPoint;
+    }
+
+    /**
+     * 核对受托人
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 核对后执行的函数
+     * @private
+     * @return {Function(Function,string)} 异步延时处理函数
+     */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      //let modules = _module.getModules();
+      if (trs.recipientId) {
+        // return setImmediate(cb, {
+        //     message: "Invalid recipient"
+        // });
+        return cb({
+          message: "Invalid recipient"
+        });
+      }
+
+      if (trs.amount !== 0) {
+        // return setImmediate(cb, {
+        //     message: "Invalid transaction amount"
+        // });
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      if (!sender.username) {
+        if (!trs.asset.delegate.username) {
+          // return setImmediate(cb, {
+          //     message: "Invalid transaction asset"
+          // });
+          return cb({
+            message: "Invalid transaction asset"
+          });
+        }
+
+        var allowSymbols = /^[A-Za-z0-9_\-\u4e00-\u9fa5]{1,20}$/g;
+        if (!allowSymbols.test(trs.asset.delegate.username.toLowerCase())) {
+          // return setImmediate(cb, {
+          //     message: "User names can only be 1～20 digits, letters, underscores, and Chinese"
+          // });
+          return cb({
+            message: "User names can only be 1～20 digits, letters, underscores, and Chinese"
+          });
+        }
+
+        // let isAddress = /^[0-9]+[L|l]$/g;
+        // if (isAddress.test(trs.asset.delegate.username)) {
+        //     return setImmediate(cb, "Username cannot be a potential address");
+        // }
+
+        if (addressHelper.isAddress(trs.asset.delegate.username)) {
+          // return setImmediate(cb, {
+          //     message: "Username can not be a potential address"
+          // });
+          return cb({
+            message: "Username can not be a potential address"
+          });
+        }
+
+        if (trs.asset.delegate.username.length < 1) {
+          // return setImmediate(cb, {
+          //     message: "Username is too short. Minimum is 1 character"
+          // });
+          return cb({
+            message: "Username is too short. Minimum is 1 character"
+          });
+        }
+
+        if (trs.asset.delegate.username.length > 20) {
+          // return setImmediate(cb, {
+          //     message: "Username is too long. Maximum is 20 characters"
+          // });
+          return cb({
+            message: "Username is too long. Maximum is 20 characters"
+          });
+        }
+      } else {
+        if (trs.asset.delegate.username && trs.asset.delegate.username != sender.username) {
+          return cb({
+            message: "Account already has a username"
+          });
+        }
+      }
+
+      if (sender.isDelegate) {
+        return cb({
+          message: "Account is already a delegate"
+        });
+      }
+
+      if (sender.username) {
+        return cb(null, trs);
+      }
+
+      cb(null, trs);
+
+      // modules.accounts.getAccount({
+      //     username: trs.asset.delegate.username
+      // }, function (err, account) {
+      //     if (err) {
+      //         return cb(err);
+      //     }
+
+      //     if (account) {
+      //         return cb("Username already exists");
+      //     }
+
+      //     cb(null, trs);
+      // });
+    }
+
+    /**
+     * 处理交易
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 处理函数
+     * @private
+     * @return {Function(Function,null,Object)} 异步延时处理函数
+     */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      // setImmediate(cb, null, trs);
+      cb(null, trs);
+    }
+
+    /**
+     * utf-8字符编码
+     *
+     * @param {Object} trs 交易信息
+     * @private
+     * @return
+     */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      if (!trs.asset.delegate.username) {
+        return null;
+      }
+      var buf = void 0;
+      buf = new Buffer(trs.asset.delegate.username, "utf8");
+
+      return buf;
+    }
+
+    /**
+     * 检查受托人格式
+     *
      * @param {Object} trs 交易信息
      * @private
      * @return {Object} 交易信息
      */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      var report = library.scheme.validate(trs.asset.delegate, {
+        type: "object",
+        properties: {
+          publicKey: {
+            type: "string",
+            format: "publicKey"
+          }
+        },
+        required: ["publicKey"]
+      });
 
-    _createClass(Delegate, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
-            trs.asset.delegate = {
-                username: data.asset.delegate.username,
-                publicKey: data.asset.delegate.publicKey
-            };
+      if (!report) {
+        throw Error("Can't verify delegate transaction, incorrect parameters: " + library.scheme.getLastError());
+      }
 
-            return trs;
+      return trs;
+    }
+
+    /**
+     * 验证发送人是否有多重签名帐号,是否签名
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {boolean} 验证结果
+     */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, delegateSchema, cb);
-        }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         * 计算费用
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {number}
-         */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 100 * constants.fixedPoint;
-        }
-
-        /**
-         * 核对受托人
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 核对后执行的函数
-         * @private
-         * @return {Function(Function,string)} 异步延时处理函数
-         */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            //let modules = _module.getModules();
-            if (trs.recipientId) {
-                // return setImmediate(cb, {
-                //     message: "Invalid recipient"
-                // });
-                return cb({
-                    message: "Invalid recipient"
-                });
-            }
-
-            if (trs.amount !== 0) {
-                // return setImmediate(cb, {
-                //     message: "Invalid transaction amount"
-                // });
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            if (!sender.username) {
-                if (!trs.asset.delegate.username) {
-                    // return setImmediate(cb, {
-                    //     message: "Invalid transaction asset"
-                    // });
-                    return cb({
-                        message: "Invalid transaction asset"
-                    });
-                }
-
-                var allowSymbols = /^[A-Za-z0-9_\-\u4e00-\u9fa5]{1,20}$/g;
-                if (!allowSymbols.test(trs.asset.delegate.username.toLowerCase())) {
-                    // return setImmediate(cb, {
-                    //     message: "User names can only be 1～20 digits, letters, underscores, and Chinese"
-                    // });
-                    return cb({
-                        message: "User names can only be 1～20 digits, letters, underscores, and Chinese"
-                    });
-                }
-
-                // let isAddress = /^[0-9]+[L|l]$/g;
-                // if (isAddress.test(trs.asset.delegate.username)) {
-                //     return setImmediate(cb, "Username cannot be a potential address");
-                // }
-
-                if (addressHelper.isAddress(trs.asset.delegate.username)) {
-                    // return setImmediate(cb, {
-                    //     message: "Username can not be a potential address"
-                    // });
-                    return cb({
-                        message: "Username can not be a potential address"
-                    });
-                }
-
-                if (trs.asset.delegate.username.length < 1) {
-                    // return setImmediate(cb, {
-                    //     message: "Username is too short. Minimum is 1 character"
-                    // });
-                    return cb({
-                        message: "Username is too short. Minimum is 1 character"
-                    });
-                }
-
-                if (trs.asset.delegate.username.length > 20) {
-                    // return setImmediate(cb, {
-                    //     message: "Username is too long. Maximum is 20 characters"
-                    // });
-                    return cb({
-                        message: "Username is too long. Maximum is 20 characters"
-                    });
-                }
-            } else {
-                if (trs.asset.delegate.username && trs.asset.delegate.username != sender.username) {
-                    return cb({
-                        message: "Account already has a username"
-                    });
-                }
-            }
-
-            if (sender.isDelegate) {
-                return cb({
-                    message: "Account is already a delegate"
-                });
-            }
-
-            if (sender.username) {
-                return cb(null, trs);
-            }
-
-            cb(null, trs);
-
-            // modules.accounts.getAccount({
-            //     username: trs.asset.delegate.username
-            // }, function (err, account) {
-            //     if (err) {
-            //         return cb(err);
-            //     }
-
-            //     if (account) {
-            //         return cb("Username already exists");
-            //     }
-
-            //     cb(null, trs);
-            // });
-        }
-
-        /**
-         * 处理交易
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 处理函数
-         * @private
-         * @return {Function(Function,null,Object)} 异步延时处理函数
-         */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            // setImmediate(cb, null, trs);
-            cb(null, trs);
-        }
-
-        /**
-         * utf-8字符编码
-         *
-         * @param {Object} trs 交易信息
-         * @private
-         * @return
-         */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            if (!trs.asset.delegate.username) {
-                return null;
-            }
-            var buf = void 0;
-            buf = new Buffer(trs.asset.delegate.username, "utf8");
-
-            return buf;
-        }
-
-        /**
-         * 检查受托人格式
-         *
-         * @param {Object} trs 交易信息
-         * @private
-         * @return {Object} 交易信息
-         */
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            var report = library.scheme.validate(trs.asset.delegate, {
-                type: "object",
-                properties: {
-                    publicKey: {
-                        type: "string",
-                        format: "publicKey"
-                    }
-                },
-                required: ["publicKey"]
-            });
-
-            if (!report) {
-                throw Error("Can't verify delegate transaction, incorrect parameters: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         * 验证发送人是否有多重签名帐号,是否签名
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {boolean} 验证结果
-         */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return Delegate;
+  return Delegate;
 }();
 
 module.exports = Delegate;
-},{"../helpers/configFactory":95,"../helpers/address.js":93,"../validator":1623,"./schema/delegate.js":2324,"buffer":120}],267:[function(require,module,exports) {
+},{"../helpers/configFactory":4435,"../helpers/address.js":4444,"../validator":4603,"./schema/delegate.js":4992,"buffer":120}],4805:[function(require,module,exports) {
 var signature = {
-    type: "object",
-    properties: {
-        //支付账户的登录密码
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string",
-            minLength: 1
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "signatureAsset"
-        }
+  type: "object",
+  properties: {
+    //支付账户的登录密码
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "secondSecret", "fee", "asset"]
+    secondSecret: {
+      type: "string",
+      minLength: 1
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "signatureAsset"
+    }
+  },
+  required: ["secret", "secondSecret", "fee", "asset"]
 };
 
 module.exports = signature;
-},{}],210:[function(require,module,exports) {
+},{}],4585:[function(require,module,exports) {
 
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 /**
@@ -59979,225 +59855,232 @@ var signatureSchema = require("./schema/signature.js");
  */
 
 var Signature = function () {
-    function Signature() {
-        _classCallCheck(this, Signature);
+  function Signature() {
+    _classCallCheck(this, Signature);
+  }
+
+  /**
+   *
+   * @param data
+   * @param trs
+   */
+
+  _createClass(Signature, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+      trs.asset.signature = {
+        // publicKey: data.newSecondKeypair ? data.newSecondKeypair.publicKey.toString('hex'): data.secondKeypair.publicKey.toString('hex')
+        publicKey: data.secondKeypair.publicKey.toString("hex")
+      };
+
+      return trs;
+    }
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, signatureSchema, cb);
     }
 
     /**
      *
-     * @param data
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 5 * constants.fixedPoint;
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (!trs.asset.signature) {
+        return cb({
+          message: "Invalid transaction asset"
+        });
+      }
+
+      if (trs.amount != 0) {
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      try {
+        if (!trs.asset.signature.publicKey || new Buffer(trs.asset.signature.publicKey, "hex").length != 32) {
+          return cb({
+            message: "Invalid signature length"
+          });
+        }
+      } catch (e) {
+        return cb({
+          message: "Invalid signature hex"
+        });
+      }
+      cb(null, trs);
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      cb(null, trs);
+    }
+
+    /**
+     *
      * @param trs
      */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      var bb = void 0;
+      bb = new ByteBuffer(32, true);
+      var publicKeyBuffer = new Buffer(trs.asset.signature.publicKey, "hex");
 
-    _createClass(Signature, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
-            trs.asset.signature = {
-                // publicKey: data.newSecondKeypair ? data.newSecondKeypair.publicKey.toString('hex'): data.secondKeypair.publicKey.toString('hex')
-                publicKey: data.secondKeypair.publicKey.toString("hex")
-            };
+      for (var i = 0; i < publicKeyBuffer.length; i++) {
+        bb.writeByte(publicKeyBuffer[i]);
+      }
 
-            return trs;
+      bb.flip();
+
+      return Buffer.from(bb.toString("hex"), "hex");
+    }
+
+    /**
+     *
+     * @param trs
+     */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      var report = library.scheme.validate(trs.asset.signature, {
+        object: true,
+        properties: {
+          publicKey: {
+            type: "string",
+            format: "publicKey"
+          }
+        },
+        required: ["publicKey"]
+      });
+
+      if (!report) {
+        throw Error("Can't parse signature: " + library.scheme.getLastError());
+      }
+
+      return trs;
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, signatureSchema, cb);
-        }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 5 * constants.fixedPoint;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            if (!trs.asset.signature) {
-                return cb({
-                    message: "Invalid transaction asset"
-                });
-            }
-
-            if (trs.amount != 0) {
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            try {
-                if (!trs.asset.signature.publicKey || new Buffer(trs.asset.signature.publicKey, "hex").length != 32) {
-                    return cb({
-                        message: "Invalid signature length"
-                    });
-                }
-            } catch (e) {
-                return cb({
-                    message: "Invalid signature hex"
-                });
-            }
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            var bb = void 0;
-            bb = new ByteBuffer(32, true);
-            var publicKeyBuffer = new Buffer(trs.asset.signature.publicKey, "hex");
-
-            for (var i = 0; i < publicKeyBuffer.length; i++) {
-                bb.writeByte(publicKeyBuffer[i]);
-            }
-
-            bb.flip();
-
-            return Buffer.from(bb.toString("hex"), "hex");
-        }
-
-        /**
-         *
-         * @param trs
-         */
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            var report = library.scheme.validate(trs.asset.signature, {
-                object: true,
-                properties: {
-                    publicKey: {
-                        type: "string",
-                        format: "publicKey"
-                    }
-                },
-                required: ["publicKey"]
-            });
-
-            if (!report) {
-                throw Error("Can't parse signature: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return Signature;
+  return Signature;
 }();
 
 module.exports = Signature;
-},{"bytebuffer":230,"../helpers/configFactory":95,"../validator":1623,"buffer/":120,"./schema/signature.js":267}],270:[function(require,module,exports) {
+},{"bytebuffer":230,"../helpers/configFactory":4435,"../validator":4603,"buffer/":120,"./schema/signature.js":4805}],4804:[function(require,module,exports) {
 var transfer = {
-    type: "object",
-    properties: {
-        //支付账户的登录密码
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        //支付账户的金额
-        amount: {
-            type: 'string',
-            format: 'ibtCurrency'
-            // minimum: 1
-            //maximum: constants.totalAmount
-        },
-        //接受方账户
-        recipientId: {
-            type: "string",
-            format: "address"
-        },
-        recipientUsername: {
-            type: "string"
-        },
-        //支付账户的公钥
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        //支付账户的支付密码
-        secondSecret: {
-            type: "string",
-            minLength: 1,
-            maxLength: 100
-        },
-        //多重签名账户的公钥
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        }
+  type: "object",
+  properties: {
+    //支付账户的登录密码
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "amount", "recipientId", "fee"]
+    //支付账户的金额
+    amount: {
+      type: "string",
+      format: "ibtCurrency"
+      // minimum: 1
+      //maximum: constants.totalAmount
+    },
+    //接受方账户
+    recipientId: {
+      type: "string",
+      format: "address"
+    },
+    recipientUsername: {
+      type: "string"
+    },
+    //支付账户的公钥
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    //支付账户的支付密码
+    secondSecret: {
+      type: "string",
+      minLength: 1,
+      maxLength: 100
+    },
+    //多重签名账户的公钥
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    }
+  },
+  required: ["secret", "amount", "recipientId", "fee"]
 };
 
 module.exports = transfer;
-},{}],211:[function(require,module,exports) {
-'use strict';
+},{}],4586:[function(require,module,exports) {
+"use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-    };
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 /**
@@ -60205,22 +60088,21 @@ function _classCallCheck(instance, Constructor) {
  */
 
 //let _module, library;
-var configFactory = require('../helpers/configFactory');
+var configFactory = require("../helpers/configFactory");
 var constants = configFactory.getConstants();
-var addressHelper = require('../helpers/address.js');
-var Validator = require('../validator');
-var BigNumber = require('../helpers/bignum.js');
-var TransferSchema = require('./schema/transfer.js');
+var addressHelper = require("../helpers/address.js");
+var Validator = require("../validator");
+var BigNumber = require("../helpers/bignum.js");
+var TransferSchema = require("./schema/transfer.js");
 
 function accMul(arg1, arg2) {
+  arg1 = arg1.toString();
+  arg2 = arg2.toString();
 
-    arg1 = arg1.toString();
-    arg2 = arg2.toString();
+  var x = new BigNumber(arg1);
+  var y = new BigNumber(arg2);
 
-    var x = new BigNumber(arg1);
-    var y = new BigNumber(arg2);
-
-    return x.times(y).toString();
+  return x.times(y).toString();
 }
 
 /**
@@ -60230,202 +60112,195 @@ function accMul(arg1, arg2) {
  */
 
 var Transfer = function () {
+  /**
+   *
+   * @param mod
+   * @param lib
+   * @constructor
+   */
+  function Transfer() {
+    _classCallCheck(this, Transfer);
+  }
+  //mod, lib
+  //_module = mod;
+  //library = lib;
 
-    /**
-     *
-     * @param mod
-     * @param lib
-     * @constructor
-     */
-    function Transfer() {
-        _classCallCheck(this, Transfer);
+  /**
+   *
+   * @param data
+   * @param trs
+   */
+
+  _createClass(Transfer, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = data.recipientId;
+      trs.recipientUsername = data.recipientUsername;
+      trs.amount = accMul(data.amount, 100000000);
+
+      return trs;
     }
-    //mod, lib
-    //_module = mod;
-    //library = lib;
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, TransferSchema, cb);
+    }
 
     /**
      *
-     * @param data
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return library.logic.block.calculateFee();
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      // let isAddress = /^[0-9]+[L|l]$/g;
+      // if (!isAddress.test(trs.recipientId.toLowerCase())) {
+      //     return cb("Invalid recipient");
+      // }
+
+      if (!addressHelper.isAddress(trs.recipientId)) {
+        return cb({
+          message: "Invalid recipient"
+        });
+      }
+
+      if (trs.amount <= 0) {
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      cb(null, trs);
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      // setImmediate(cb, null, trs);
+      cb(null, trs);
+    }
+
+    /**
+     *
      * @param trs
      */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      return null;
+    }
 
-    _createClass(Transfer, [{
-        key: 'create',
-        value: function create(data, trs) {
-            trs.recipientId = data.recipientId;
-            trs.recipientUsername = data.recipientUsername;
-            trs.amount = accMul(data.amount, 100000000);
+    /**
+     *
+     * @param trs
+     */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      delete trs.blockId;
+      return trs;
+    }
 
-            return trs;
-        }
-    }, {
-        key: 'validateInput',
-        value: function validateInput(data, cb) {
-            Validator.validate(data, TransferSchema, cb);
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-
-    }, {
-        key: 'calculateFee',
-        value: function calculateFee(trs, sender) {
-            return library.logic.block.calculateFee();
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-
-    }, {
-        key: 'verify',
-        value: function verify(trs, sender, cb) {
-            // let isAddress = /^[0-9]+[L|l]$/g;
-            // if (!isAddress.test(trs.recipientId.toLowerCase())) {
-            //     return cb("Invalid recipient");
-            // }
-
-            if (!addressHelper.isAddress(trs.recipientId)) {
-                return cb({
-                    message: "Invalid recipient"
-                });
-            }
-
-            if (trs.amount <= 0) {
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            cb(null, trs);
+    /**
+     *
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
 
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-    }, {
-        key: 'process',
-        value: function process(trs, sender, cb) {
-            // setImmediate(cb, null, trs);
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         */
-
-    }, {
-        key: 'getBytes',
-        value: function getBytes(trs) {
-            return null;
-        }
-
-        /**
-         *
-         * @param trs
-         */
-
-    }, {
-        key: 'objectNormalize',
-        value: function objectNormalize(trs) {
-            delete trs.blockId;
-            return trs;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-
-    }, {
-        key: 'ready',
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return Transfer;
+  return Transfer;
 }();
 
 module.exports = Transfer;
-},{"../helpers/configFactory":95,"../helpers/address.js":93,"../validator":1623,"../helpers/bignum.js":197,"./schema/transfer.js":270}],2327:[function(require,module,exports) {
+},{"../helpers/configFactory":4435,"../helpers/address.js":4444,"../validator":4603,"../helpers/bignum.js":4594,"./schema/transfer.js":4804}],5017:[function(require,module,exports) {
 var username = {
-    type: "object",
-    properties: {
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string"
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "usernameAsset"
-        }
+  type: "object",
+  properties: {
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "asset"]
+    secondSecret: {
+      type: "string"
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "usernameAsset"
+    }
+  },
+  required: ["secret", "fee", "asset"]
 };
 
 module.exports = username;
-},{}],212:[function(require,module,exports) {
+},{}],5033:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 /**
@@ -60448,304 +60323,304 @@ var modules = void 0,
  */
 
 var Username = function () {
+  /**
+   * 创建用户名称
+   * @param data
+   * @param trs
+   * @returns {*}
+   */
+  function Username(mod, share, scope) {
+    _classCallCheck(this, Username);
+
+    self = mod;
+    shared = share;
+    library = scope;
+  }
+
+  _createClass(Username, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+      trs.asset.username = {
+        alias: data.asset.username.alias,
+        publicKey: data.asset.username.publicKey
+      };
+
+      return trs;
+    }
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, usernameSchema, cb);
+    }
+
     /**
-     * 创建用户名称
-     * @param data
+     * 计算所需费用
+     * @param trs
+     * @param sender
+     * @returns {number}
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 100 * constants.fixedPoint;
+    }
+  }, {
+    key: "verify",
+
+    /**
+     * 验证交易是否合法
+     * @param trs
+     * @param sender
+     * @param cb
+     * @returns {*}
+     */
+    value: function verify(trs, sender, cb) {
+      if (trs.recipientId) {
+        // return setImmediate(cb, {
+        //     message: "Invalid recipient"
+        // });
+        return cb({
+          message: "Invalid recipient"
+        });
+      }
+
+      if (trs.amount !== 0) {
+        // return setImmediate(cb, {
+        //     message: "Invalid transaction amount"
+        // });
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      if (!trs.asset.username.alias) {
+        // return setImmediate(cb, {
+        //     message: "Invalid transaction asset"
+        // });
+        return cb({
+          message: "Invalid transaction asset"
+        });
+      }
+
+      // let allowSymbols = /^[a-z0-9!@$&_.]+$/g;
+      // if (!allowSymbols.test(trs.asset.username.alias.toLowerCase())) {
+      //     return setImmediate(cb, "Username must only contain alphanumeric characters (with the exception of !@$&_)");
+      // }
+      var allowSymbols = /^[A-Za-z0-9_\-\u4e00-\u9fa5]{1,20}$/g;
+      if (!allowSymbols.test(trs.asset.username.alias.toLowerCase())) {
+        // return setImmediate(cb, "User names can only be 1～20 digits, letters, underscores, and Chinese");
+        return cb({
+          message: "User names can only be 1～20 digits, letters, underscores, and Chinese"
+        });
+      }
+
+      // let isAddress = /^[0-9]+[L|l]$/g;
+      // if (isAddress.test(trs.asset.username.alias.toLowerCase())) {
+      //     return setImmediate(cb, "Username cannot be a potential address");
+      // }
+
+      if (addressHelper.isAddress(trs.asset.username.alias)) {
+        // return setImmediate(cb, {
+        //     message: "Username cannot be a potential address"
+        // });
+        return cb({
+          message: "Username cannot be a potential address"
+        });
+      }
+
+      if (trs.asset.username.alias.length === 0 || trs.asset.username.alias.length > 20) {
+        // return setImmediate(cb, {
+        //     message: "Invalid username length. Must be between 1 to 20 characters"
+        // });
+        return cb({
+          message: "Invalid username length. Must be between 1 to 20 characters"
+        });
+      }
+
+      cb(null, trs);
+
+      // self.getAccount({
+      //     $or: {
+      //         username: trs.asset.username.alias,
+      //         u_username: trs.asset.username.alias
+      //     }
+      // }, function (err, account) {
+      //     if (err) {
+      //         return cb(err);
+      //     }
+      //     if (account && account.username == trs.asset.username.alias) {
+      //         return cb("Username already exists");
+      //     }
+      //     if (sender.username && sender.username != trs.asset.username.alias) {
+      //         return cb("Invalid username. Does not match transaction asset");
+      //     }
+      //     if (sender.u_username && sender.u_username != trs.asset.username.alias) {
+      //         return cb("Account already has a username");
+      //     }
+
+      //     cb(null, trs);
+      // });
+    }
+  }, {
+    key: "process",
+
+    /**
+     * 处理请求
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+    value: function process(trs, sender, cb) {
+      // setImmediate(cb, null, trs);
+      cb(null, trs);
+    }
+  }, {
+    key: "getBytes",
+
+    /**
+     *
+     * @param trs
+     * @returns {Buffer}
+     */
+    value: function getBytes(trs) {
+      var buf = void 0;
+      buf = new Buffer(trs.asset.username.alias, "utf8");
+
+      return buf;
+    }
+  }, {
+    key: "apply",
+
+    /**
+     *
+     * @param trs
+     * @param block
+     * @param sender
+     * @param cb
+     */
+    value: function apply(trs, block, sender, cb) {
+      self.setAccountAndGet({
+        address: sender.address,
+        u_username: null,
+        username: trs.asset.username.alias,
+        nameexist: 1,
+        u_nameexist: 0
+      }, cb);
+    }
+  }, {
+    key: "objectNormalize",
+
+    /**
+     *
      * @param trs
      * @returns {*}
      */
-    function Username(mod, share, scope) {
-        _classCallCheck(this, Username);
+    value: function objectNormalize(trs) {
+      var report = library.scheme.validate(trs.asset.username, {
+        type: "object",
+        properties: {
+          alias: {
+            type: "string",
+            minLength: 1,
+            maxLength: 20
+          },
+          publicKey: {
+            type: "string",
+            format: "publicKey"
+          }
+        },
+        required: ["alias", "publicKey"]
+      });
 
-        self = mod;
-        shared = share;
-        library = scope;
+      if (!report) {
+        throw Error(library.scheme.getLastError());
+      }
+
+      return trs;
     }
+  }, {
+    key: "ready",
 
-    _createClass(Username, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
-            trs.asset.username = {
-                alias: data.asset.username.alias,
-                publicKey: data.asset.username.publicKey
-            };
-
-            return trs;
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @returns {boolean}
+     */
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, usernameSchema, cb);
-        }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         * 计算所需费用
-         * @param trs
-         * @param sender
-         * @returns {number}
-         */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 100 * constants.fixedPoint;
-        }
-    }, {
-        key: "verify",
-
-        /**
-         * 验证交易是否合法
-         * @param trs
-         * @param sender
-         * @param cb
-         * @returns {*}
-         */
-        value: function verify(trs, sender, cb) {
-            if (trs.recipientId) {
-                // return setImmediate(cb, {
-                //     message: "Invalid recipient"
-                // });
-                return cb({
-                    message: "Invalid recipient"
-                });
-            }
-
-            if (trs.amount !== 0) {
-                // return setImmediate(cb, {
-                //     message: "Invalid transaction amount"
-                // });
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            if (!trs.asset.username.alias) {
-                // return setImmediate(cb, {
-                //     message: "Invalid transaction asset"
-                // });
-                return cb({
-                    message: "Invalid transaction asset"
-                });
-            }
-
-            // let allowSymbols = /^[a-z0-9!@$&_.]+$/g;
-            // if (!allowSymbols.test(trs.asset.username.alias.toLowerCase())) {
-            //     return setImmediate(cb, "Username must only contain alphanumeric characters (with the exception of !@$&_)");
-            // }
-            var allowSymbols = /^[A-Za-z0-9_\-\u4e00-\u9fa5]{1,20}$/g;
-            if (!allowSymbols.test(trs.asset.username.alias.toLowerCase())) {
-                // return setImmediate(cb, "User names can only be 1～20 digits, letters, underscores, and Chinese");
-                return cb({
-                    message: "User names can only be 1～20 digits, letters, underscores, and Chinese"
-                });
-            }
-
-            // let isAddress = /^[0-9]+[L|l]$/g;
-            // if (isAddress.test(trs.asset.username.alias.toLowerCase())) {
-            //     return setImmediate(cb, "Username cannot be a potential address");
-            // }
-
-            if (addressHelper.isAddress(trs.asset.username.alias)) {
-                // return setImmediate(cb, {
-                //     message: "Username cannot be a potential address"
-                // });
-                return cb({
-                    message: "Username cannot be a potential address"
-                });
-            }
-
-            if (trs.asset.username.alias.length === 0 || trs.asset.username.alias.length > 20) {
-                // return setImmediate(cb, {
-                //     message: "Invalid username length. Must be between 1 to 20 characters"
-                // });
-                return cb({
-                    message: "Invalid username length. Must be between 1 to 20 characters"
-                });
-            }
-
-            cb(null, trs);
-
-            // self.getAccount({
-            //     $or: {
-            //         username: trs.asset.username.alias,
-            //         u_username: trs.asset.username.alias
-            //     }
-            // }, function (err, account) {
-            //     if (err) {
-            //         return cb(err);
-            //     }
-            //     if (account && account.username == trs.asset.username.alias) {
-            //         return cb("Username already exists");
-            //     }
-            //     if (sender.username && sender.username != trs.asset.username.alias) {
-            //         return cb("Invalid username. Does not match transaction asset");
-            //     }
-            //     if (sender.u_username && sender.u_username != trs.asset.username.alias) {
-            //         return cb("Account already has a username");
-            //     }
-
-            //     cb(null, trs);
-            // });
-        }
-    }, {
-        key: "process",
-
-        /**
-         * 处理请求
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-        value: function process(trs, sender, cb) {
-            // setImmediate(cb, null, trs);
-            cb(null, trs);
-        }
-    }, {
-        key: "getBytes",
-
-        /**
-         *
-         * @param trs
-         * @returns {Buffer}
-         */
-        value: function getBytes(trs) {
-            var buf = void 0;
-            buf = new Buffer(trs.asset.username.alias, "utf8");
-
-            return buf;
-        }
-    }, {
-        key: "apply",
-
-        /**
-         *
-         * @param trs
-         * @param block
-         * @param sender
-         * @param cb
-         */
-        value: function apply(trs, block, sender, cb) {
-            self.setAccountAndGet({
-                address: sender.address,
-                u_username: null,
-                username: trs.asset.username.alias,
-                nameexist: 1,
-                u_nameexist: 0
-            }, cb);
-        }
-    }, {
-        key: "objectNormalize",
-
-        /**
-         *
-         * @param trs
-         * @returns {*}
-         */
-        value: function objectNormalize(trs) {
-            var report = library.scheme.validate(trs.asset.username, {
-                type: "object",
-                properties: {
-                    alias: {
-                        type: "string",
-                        minLength: 1,
-                        maxLength: 20
-                    },
-                    publicKey: {
-                        type: "string",
-                        format: "publicKey"
-                    }
-                },
-                required: ["alias", "publicKey"]
-            });
-
-            if (!report) {
-                throw Error(library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-    }, {
-        key: "ready",
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @returns {boolean}
-         */
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return Username;
+  return Username;
 }();
 
 module.exports = Username;
-},{"../helpers/configFactory":95,"../helpers/address.js":93,"../validator":1623,"./schema/username":2327,"buffer":120}],272:[function(require,module,exports) {
+},{"../helpers/configFactory":4435,"../helpers/address.js":4444,"../validator":4603,"./schema/username":5017,"buffer":120}],4783:[function(require,module,exports) {
 var vote = {
-    type: "object",
-    properties: {
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string"
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "votesAsset"
-        }
+  type: "object",
+  properties: {
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "asset"]
+    secondSecret: {
+      type: "string"
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "votesAsset"
+    }
+  },
+  required: ["secret", "fee", "asset"]
 };
 
 module.exports = vote;
-},{}],213:[function(require,module,exports) {
+},{}],4588:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 /**
@@ -60770,184 +60645,184 @@ var modules = void 0,
  */
 
 var Vote = function () {
+  /**
+   *
+   * @param data
+   * @param trs
+   * @returns {*}
+   */
+  function Vote() {
+    _classCallCheck(this, Vote);
+  }
+
+  _createClass(Vote, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = data.senderId;
+      trs.recipientUsername = data.senderUsername;
+      trs.asset.votes = data.asset.votes;
+
+      return trs;
+    }
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, voteSchema, cb);
+    }
+
+    /**
+     * 计算费用
+     * @param trs
+     * @param sender
+     * @returns {number}
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 1 * constants.fixedPoint;
+    }
+
+    /**
+     * 验证投票是否合法
+     * @param trs
+     * @param sender
+     * @param cb
+     * @returns {*}
+     */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (trs.recipientId != trs.senderId) {
+        return cb({
+          message: "Recipient is not identical to sender"
+        });
+      }
+
+      if (!trs.asset.votes || !trs.asset.votes.length) {
+        return cb({ message: "Not enough spare votes available" });
+      }
+
+      if (trs.asset.votes && trs.asset.votes.length > constants.maxVoteCount) {
+        return cb({
+          message: "Voting limited exceeded. Maxmium is " + constants.maxVoteCount + " per transaction"
+        });
+      }
+      cb(null, trs);
+    }
+
     /**
      *
-     * @param data
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      cb(null, trs);
+    }
+
+    /**
+     *
      * @param trs
      * @returns {*}
      */
-    function Vote() {
-        _classCallCheck(this, Vote);
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      var buf = void 0;
+      buf = trs.asset.votes ? new Buffer(trs.asset.votes.join(""), "utf8") : null;
+
+      return buf;
     }
 
-    _createClass(Vote, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = data.senderId;
-            trs.recipientUsername = data.senderUsername;
-            trs.asset.votes = data.asset.votes;
+    /**
+     *
+     * @param trs
+     * @returns {*}
+     */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      var report = library.scheme.validate(trs.asset, {
+        type: "object",
+        properties: {
+          votes: {
+            type: "array",
+            minLength: 1,
+            maxLength: 105,
+            uniqueItems: true
+          }
+        },
+        required: ["votes"]
+      });
 
-            return trs;
+      if (!report) {
+        throw new Error("Incorrect votes in transactions: " + library.scheme.getLastError());
+      }
+
+      return trs;
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @returns {boolean}
+     */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, voteSchema, cb);
-        }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         * 计算费用
-         * @param trs
-         * @param sender
-         * @returns {number}
-         */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 1 * constants.fixedPoint;
-        }
-
-        /**
-         * 验证投票是否合法
-         * @param trs
-         * @param sender
-         * @param cb
-         * @returns {*}
-         */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            if (trs.recipientId != trs.senderId) {
-                return cb({
-                    message: "Recipient is not identical to sender"
-                });
-            }
-
-            if (!trs.asset.votes || !trs.asset.votes.length) {
-                return cb({ message: "Not enough spare votes available" });
-            }
-
-            if (trs.asset.votes && trs.asset.votes.length > constants.maxVoteCount) {
-                return cb({
-                    message: "Voting limited exceeded. Maxmium is " + constants.maxVoteCount + " per transaction"
-                });
-            }
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         * @returns {*}
-         */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            var buf = void 0;
-            buf = trs.asset.votes ? new Buffer(trs.asset.votes.join(""), "utf8") : null;
-
-            return buf;
-        }
-
-        /**
-         *
-         * @param trs
-         * @returns {*}
-         */
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            var report = library.scheme.validate(trs.asset, {
-                type: "object",
-                properties: {
-                    votes: {
-                        type: "array",
-                        minLength: 1,
-                        maxLength: 105,
-                        uniqueItems: true
-                    }
-                },
-                required: ["votes"]
-            });
-
-            if (!report) {
-                throw new Error("Incorrect votes in transactions: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @returns {boolean}
-         */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return Vote;
+  return Vote;
 }();
 
 module.exports = Vote;
-},{"../helpers/configFactory":95,"../helpers/diff.js":271,"util":487,"../validator":1623,"./schema/vote.js":272,"buffer":120}],277:[function(require,module,exports) {
+},{"../helpers/configFactory":4435,"../helpers/diff.js":4781,"util":487,"../validator":4603,"./schema/vote.js":4783,"buffer":120}],4811:[function(require,module,exports) {
 var marks = {
-    type: "object",
-    properties: {
-        //支付账户的登录密码
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string",
-            minLength: 1
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: 'string',
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "markAsset"
-        }
+  type: "object",
+  properties: {
+    //支付账户的登录密码
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "asset"]
+    secondSecret: {
+      type: "string",
+      minLength: 1
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "markAsset"
+    }
+  },
+  required: ["secret", "fee", "asset"]
 };
 
 module.exports = marks;
-},{}],214:[function(require,module,exports) {
+},{}],4589:[function(require,module,exports) {
 
 /**
  * Created by wmc on 17-9-28.
@@ -60955,26 +60830,26 @@ module.exports = marks;
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 var ByteBuffer = require("bytebuffer");
@@ -60994,269 +60869,269 @@ var _module = void 0,
  */
 
 var Mark = function () {
-    /**
-     *
-     * @param mod
-     * @param lib
-     * @constructor
-     */
-    function Mark() {
-        _classCallCheck(this, Mark);
+  /**
+   *
+   * @param mod
+   * @param lib
+   * @constructor
+   */
+  function Mark() {
+    _classCallCheck(this, Mark);
+  }
+  // _module = mod;
+  // library = lib;
+
+  /**
+   *
+   * @param data
+   * @param trs
+   */
+
+  _createClass(Mark, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+      trs.asset.mark = {
+        dappId: data.asset.mark.dappId,
+        content: data.asset.mark.content,
+        creatorPublicKey: data.asset.mark.creatorPublicKey,
+        action: data.asset.mark.action
+      };
+
+      return trs;
     }
-    // _module = mod;
-    // library = lib;
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, marksSchema, cb);
+    }
 
     /**
      *
-     * @param data
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 5 * constants.fixedPoint;
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (!trs.asset.mark) {
+        return cb({
+          message: "Invalid transaction asset"
+        });
+      }
+
+      if (trs.amount != 0) {
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      try {
+        if (!trs.asset.mark.dappId) {
+          return cb({
+            message: "Invalid dapp id"
+          });
+        }
+
+        if (!trs.asset.mark.content) {
+          return cb({
+            message: "Invalid dapp's mark"
+          });
+        }
+
+        if (trs.asset.mark.content.toString().length > 1024) {
+          return cb({
+            message: "dapp mark content too long"
+          });
+        }
+
+        //判断公钥是否合法
+        if (trs.asset.mark.creatorPublicKey.length != 64 || !new Buffer(trs.asset.mark.creatorPublicKey, "hex").length) {
+          return cb({
+            message: "Invalid mark creatorPublicKey"
+          });
+        }
+      } catch (e) {
+        return cb({
+          message: "Invalid mark"
+        });
+      }
+
+      cb(null, trs);
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      cb(null, trs);
+    }
+
+    /**
+     *
      * @param trs
      */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      var buf;
+      buf = new Buffer([]);
 
-    _createClass(Mark, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
-            trs.asset.mark = {
-                dappId: data.asset.mark.dappId,
-                content: data.asset.mark.content,
-                creatorPublicKey: data.asset.mark.creatorPublicKey,
-                action: data.asset.mark.action
-            };
+      var dappIdBuf = new Buffer(trs.asset.mark.dappId, "utf8");
+      buf = Buffer.concat([buf, dappIdBuf]);
 
-            return trs;
+      if (trs.asset.mark.content) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.mark.content, "utf8")]);
+      }
+
+      if (trs.asset.mark.creatorPublicKey) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.mark.creatorPublicKey, "utf8")]);
+      }
+
+      if (trs.asset.mark.action) {
+        buf = Buffer.concat([buf, new Buffer(trs.asset.mark.action, "utf8")]);
+      }
+
+      return buf;
+    }
+
+    /**
+     *
+     * @param trs
+     */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      var report = library.scheme.validate(trs.asset.mark, {
+        object: true,
+        properties: {
+          dappId: {
+            type: "string",
+            minLength: 1
+          },
+          content: {
+            type: "string",
+            minLength: 1
+          },
+          creatorPublicKey: {
+            type: "string",
+            minLength: 1,
+            maxLength: 64
+          },
+          action: {
+            type: "string",
+            minLength: 1
+          }
+        },
+        required: ["dappId", "content", "creatorPublicKey"]
+      });
+
+      if (!report) {
+        throw Error("Can't parse mark: " + library.scheme.getLastError());
+      }
+
+      return trs;
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, marksSchema, cb);
-        }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 5 * constants.fixedPoint;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            if (!trs.asset.mark) {
-                return cb({
-                    message: "Invalid transaction asset"
-                });
-            }
-
-            if (trs.amount != 0) {
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            try {
-                if (!trs.asset.mark.dappId) {
-                    return cb({
-                        message: "Invalid dapp id"
-                    });
-                }
-
-                if (!trs.asset.mark.content) {
-                    return cb({
-                        message: "Invalid dapp's mark"
-                    });
-                }
-
-                if (trs.asset.mark.content.toString().length > 1024) {
-                    return cb({
-                        message: "dapp mark content too long"
-                    });
-                }
-
-                //判断公钥是否合法
-                if (trs.asset.mark.creatorPublicKey.length != 64 || !new Buffer(trs.asset.mark.creatorPublicKey, "hex").length) {
-                    return cb({
-                        message: "Invalid mark creatorPublicKey"
-                    });
-                }
-            } catch (e) {
-                return cb({
-                    message: "Invalid mark"
-                });
-            }
-
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            var buf;
-            buf = new Buffer([]);
-
-            var dappIdBuf = new Buffer(trs.asset.mark.dappId, "utf8");
-            buf = Buffer.concat([buf, dappIdBuf]);
-
-            if (trs.asset.mark.content) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.mark.content, "utf8")]);
-            }
-
-            if (trs.asset.mark.creatorPublicKey) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.mark.creatorPublicKey, "utf8")]);
-            }
-
-            if (trs.asset.mark.action) {
-                buf = Buffer.concat([buf, new Buffer(trs.asset.mark.action, "utf8")]);
-            }
-
-            return buf;
-        }
-
-        /**
-         *
-         * @param trs
-         */
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            var report = library.scheme.validate(trs.asset.mark, {
-                object: true,
-                properties: {
-                    dappId: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    content: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    creatorPublicKey: {
-                        type: "string",
-                        minLength: 1,
-                        maxLength: 64
-                    },
-                    action: {
-                        type: "string",
-                        minLength: 1
-                    }
-                },
-                required: ["dappId", "content", "creatorPublicKey"]
-            });
-
-            if (!report) {
-                throw Error("Can't parse mark: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return Mark;
+  return Mark;
 }();
 
 module.exports = Mark;
-},{"bytebuffer":230,"../helpers/configFactory":95,"../validator":1623,"./schema/marks.js":277,"buffer/":120}],2328:[function(require,module,exports) {
+},{"bytebuffer":230,"../helpers/configFactory":4435,"../validator":4603,"./schema/marks.js":4811,"buffer/":120}],4604:[function(require,module,exports) {
 var issueAssets = {
-    type: "object",
-    properties: {
-        //支付账户的登录密码
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string",
-            minLength: 1
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: "string",
-            format: 'ibtCurrency'
-        },
-        asset: {
-            type: "object",
-            format: "issueAsset"
-        }
+  type: "object",
+  properties: {
+    //支付账户的登录密码
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "asset"]
+    secondSecret: {
+      type: "string",
+      minLength: 1
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    asset: {
+      type: "object",
+      format: "issueAsset"
+    }
+  },
+  required: ["secret", "fee", "asset"]
 };
 
 module.exports = issueAssets;
-},{}],215:[function(require,module,exports) {
+},{}],5036:[function(require,module,exports) {
 
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 var configFactory = require("../helpers/configFactory");
@@ -61271,13 +61146,13 @@ var library = void 0;
 var BigNumber = require("../helpers/bignum.js");
 
 function accMul(arg1, arg2) {
-    arg1 = arg1.toString();
-    arg2 = arg2.toString();
+  arg1 = arg1.toString();
+  arg2 = arg2.toString();
 
-    var x = new BigNumber(arg1);
-    var y = new BigNumber(arg2);
+  var x = new BigNumber(arg1);
+  var y = new BigNumber(arg2);
 
-    return x.times(y).toString();
+  return x.times(y).toString();
 }
 
 /**
@@ -61287,392 +61162,392 @@ function accMul(arg1, arg2) {
  * */
 
 var IssueAssets = function () {
-    /**
-     * 初始化数字资产
-     *
-     * @constructor
-     * */
-    function IssueAssets() {
-        _classCallCheck(this, IssueAssets);
+  /**
+   * 初始化数字资产
+   *
+   * @constructor
+   * */
+  function IssueAssets() {
+    _classCallCheck(this, IssueAssets);
+  }
+
+  /**
+   * 创建类型为发行数字资产的交易
+   *
+   * @param {Object} data assets 信息
+   * @param {Object} trs 交易信息
+   * @private
+   * @return {Object} 交易信息
+   * */
+  _createClass(IssueAssets, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+
+      trs.asset.issueAsset = {
+        address: data.asset.issueAsset.address,
+        publicKey: data.asset.issueAsset.publicKey,
+        rate: data.asset.issueAsset.rate,
+        // assetName: data.asset.issueAsset.assetName,
+        logo: data.asset.issueAsset.logo,
+        abbreviation: data.asset.issueAsset.abbreviation,
+        // summary: data.asset.issueAsset.summary,
+        /* originalFrozenIBT: accMul(data.asset.issueAsset.originalFrozenIBT, 100000000), */
+        originalIssuedAssets: accMul(data.asset.issueAsset.originalIssuedAssets, 100000000),
+        expectedRaisedIBTs: accMul(data.asset.issueAsset.expectedRaisedIBTs, 100000000),
+        expectedIssuedBlockHeight: data.asset.issueAsset.expectedIssuedBlockHeight
+      };
+
+      return trs;
+    }
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, issueAssetsSchema, cb);
     }
 
     /**
-     * 创建类型为发行数字资产的交易
+     * 计算费用
      *
-     * @param {Object} data assets 信息
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {number}
+     * */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return 500 * constants.fixedPoint;
+    }
+
+    /**
+     * 核对dapp商品信息
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 核对后执行的函数
+     * @private
+     * @return {Function(Function,string)} 异步延时处理函数
+     * */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (trs.recipientId) {
+        return cb({
+          message: "Invalid recipient"
+        });
+      }
+
+      if (trs.amount != "0") {
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      if (!(trs.asset && trs.asset.issueAsset)) {
+        return cb({
+          message: "Invalid transaction asset"
+        });
+      }
+
+      if (!addressHelper.isAddress(trs.asset.issueAsset.address)) {
+        return cb({
+          message: "Invalid transaction asset"
+        });
+      }
+
+      if (trs.asset.issueAsset.assetName) {
+        if (trs.asset.issueAsset.assetName.length < 3 || trs.asset.issueAsset.assetName.length > 30) {
+          return cb({
+            message: "Invalid username length. Must be between 3 to 30 characters"
+          });
+        }
+      }
+
+      if (trs.asset.issueAsset.abbreviation) {
+        if (trs.asset.issueAsset.abbreviation.length < 3 || trs.asset.issueAsset.abbreviation.length > 5) {
+          return cb({
+            message: "Invalid abbreviation length. Must be between 3 to 5 characters"
+          });
+        }
+      }
+
+      if (trs.asset.issueAsset.summary) {
+        if (trs.asset.issueAsset.summary.length > 100) {
+          return cb({
+            message: "Invalid summary length. Must be less than 100 characters"
+          });
+        }
+      }
+
+      if (!trs.asset.issueAsset.rate) {
+        return cb({
+          message: "Assets original divided rate is required"
+        });
+      }
+
+      if (!trs.asset.issueAsset.logo) {
+        return cb({
+          message: "Assets logo is required"
+        });
+      }
+
+      /* if (!trs.asset.issueAsset.originalFrozenIBT) {
+              return cb({
+                  message: "Assets original frozen IBT is required"
+              })
+          } */
+
+      if (!trs.asset.issueAsset.originalIssuedAssets) {
+        return cb({
+          message: "Assets original issued assets number is required"
+        });
+      }
+
+      if (!trs.asset.issueAsset.expectedRaisedIBTs) {
+        return cb({
+          message: "Assets expected raised ibt number is required"
+        });
+      }
+
+      if (!trs.asset.issueAsset.expectedIssuedBlockHeight) {
+        return cb({
+          message: "Assets expected issued block height is required"
+        });
+      }
+
+      cb();
+    }
+
+    /**
+     * 处理交易
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @param {Function} cb 处理函数
+     * @private
+     * @return {Function(Function,null,Object)} 异步延时处理函数
+     * */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      // setImmediate(cb, null, trs);
+      cb(null, trs);
+    }
+
+    /**
+     * urf-8字符编码
+     *
      * @param {Object} trs 交易信息
      * @private
-     * @return {Object} 交易信息
+     * @return
      * */
-    _createClass(IssueAssets, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      var buf = void 0;
 
-            trs.asset.issueAsset = {
-                address: data.asset.issueAsset.address,
-                publicKey: data.asset.issueAsset.publicKey,
-                rate: data.asset.issueAsset.rate,
-                // assetName: data.asset.issueAsset.assetName,
-                logo: data.asset.issueAsset.logo,
-                abbreviation: data.asset.issueAsset.abbreviation,
-                // summary: data.asset.issueAsset.summary,
-                /* originalFrozenIBT: accMul(data.asset.issueAsset.originalFrozenIBT, 100000000), */
-                originalIssuedAssets: accMul(data.asset.issueAsset.originalIssuedAssets, 100000000),
-                expectedRaisedIBTs: accMul(data.asset.issueAsset.expectedRaisedIBTs, 100000000),
-                expectedIssuedBlockHeight: data.asset.issueAsset.expectedIssuedBlockHeight
-            };
+      buf = Buffer.from([]);
+      if (trs.asset.issueAsset.address) {
+        var addressBuf = Buffer.from(trs.asset.issueAsset.address);
+        buf = Buffer.concat([buf, addressBuf]);
+      }
 
-            return trs;
+      if (trs.asset.issueAsset.publicKey) {
+        var pkBuf = Buffer.from(trs.asset.issueAsset.publicKey);
+        buf = Buffer.concat([buf, pkBuf]);
+      }
+
+      // var nameBuf = Buffer.from(trs.asset.issueAsset.assetName);
+      // buf = Buffer.concat([buf, nameBuf]);
+
+      // var suyBuf = Buffer.from(trs.asset.issueAsset.summary);
+      // buf = Buffer.concat([buf, suyBuf]);
+
+      var logoBuf = Buffer.from(trs.asset.issueAsset.logo);
+      buf = Buffer.concat([buf, logoBuf]);
+
+      var abbrBuf = Buffer.from(trs.asset.issueAsset.abbreviation);
+      buf = Buffer.concat([buf, abbrBuf]);
+
+      // var ofiBuf = Buffer.from(trs.asset.issueAsset.originalFrozenIBT);
+      // buf = Buffer.concat([buf, ofiBuf]);
+
+      var oiaBuf = Buffer.from(trs.asset.issueAsset.originalIssuedAssets);
+      buf = Buffer.concat([buf, oiaBuf]);
+
+      var ribtBuf = Buffer.from(trs.asset.issueAsset.expectedRaisedIBTs);
+      buf = Buffer.concat([buf, ribtBuf]);
+
+      var bb = new ByteBuffer(4 + 4, true);
+      bb.writeInt(trs.asset.issueAsset.rate);
+      bb.writeInt(trs.asset.issueAsset.expectedIssuedBlockHeight);
+      bb.flip();
+
+      buf = Buffer.concat([buf, Buffer.from(bb.toString("hex"), "hex")]);
+
+      return buf;
+    }
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      for (var i in trs.asset.issueAsset) {
+        if (trs.asset.issueAsset[i] === null || typeof trs.asset.issueAsset[i] === "undefined") {
+          delete trs.asset.issueAsset[i];
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, issueAssetsSchema, cb);
+      }
+
+      var report = library.scheme.validate(trs.asset.issueAsset, {
+        type: "object",
+        properties: {
+          address: {
+            type: "string",
+            minLength: 1
+          },
+          publicKey: {
+            type: "string",
+            format: "publicKey"
+          },
+          rate: {
+            type: "integer",
+            minimum: 0
+          },
+          assetName: {
+            type: "string",
+            minLength: 3,
+            maxLength: 30
+          },
+          summary: {
+            type: "string"
+          },
+          logo: {
+            type: "string",
+            minLength: 1
+          },
+          abbreviation: {
+            type: "string",
+            minLength: 3,
+            maxLength: 5
+          },
+          originalFrozenIBT: {
+            type: "string"
+          },
+          originalIssuedAssets: {
+            type: "string"
+          },
+          expectedRaisedIBTs: {
+            type: "string"
+          },
+          expectedIssuedBlockHeight: {
+            type: "integer",
+            minimum: 1
+          },
+          status: {
+            type: "integer",
+            minimum: 0
+          }
+        },
+        required: ["rate",
+        // "assetName",
+        "logo", "abbreviation", "originalIssuedAssets", "expectedRaisedIBTs", "expectedIssuedBlockHeight"]
+      });
+
+      if (!report) {
+        throw Error("Can't verify dapp new transaction, incorrect parameters: " + library.scheme.getLastError());
+      }
+
+      return trs;
+    }
+
+    /**
+     * 验证发送人是否有多重签名帐号,是否签名
+     *
+     * @param {Object} trs 交易信息
+     * @param {Object} sender 发送人
+     * @private
+     * @return {boolean} 验证结果
+     * */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         * 计算费用
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {number}
-         * */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return 500 * constants.fixedPoint;
-        }
-
-        /**
-         * 核对dapp商品信息
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 核对后执行的函数
-         * @private
-         * @return {Function(Function,string)} 异步延时处理函数
-         * */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            if (trs.recipientId) {
-                return cb({
-                    message: "Invalid recipient"
-                });
-            }
-
-            if (trs.amount != "0") {
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            if (!(trs.asset && trs.asset.issueAsset)) {
-                return cb({
-                    message: "Invalid transaction asset"
-                });
-            }
-
-            if (!addressHelper.isAddress(trs.asset.issueAsset.address)) {
-                return cb({
-                    message: "Invalid transaction asset"
-                });
-            }
-
-            if (trs.asset.issueAsset.assetName) {
-                if (trs.asset.issueAsset.assetName.length < 3 || trs.asset.issueAsset.assetName.length > 30) {
-                    return cb({
-                        message: "Invalid username length. Must be between 3 to 30 characters"
-                    });
-                }
-            }
-
-            if (trs.asset.issueAsset.abbreviation) {
-                if (trs.asset.issueAsset.abbreviation.length < 3 || trs.asset.issueAsset.abbreviation.length > 5) {
-                    return cb({
-                        message: "Invalid abbreviation length. Must be between 3 to 5 characters"
-                    });
-                }
-            }
-
-            if (trs.asset.issueAsset.summary) {
-                if (trs.asset.issueAsset.summary.length > 100) {
-                    return cb({
-                        message: "Invalid summary length. Must be less than 100 characters"
-                    });
-                }
-            }
-
-            if (!trs.asset.issueAsset.rate) {
-                return cb({
-                    message: "Assets original divided rate is required"
-                });
-            }
-
-            if (!trs.asset.issueAsset.logo) {
-                return cb({
-                    message: "Assets logo is required"
-                });
-            }
-
-            /* if (!trs.asset.issueAsset.originalFrozenIBT) {
-            return cb({
-                message: "Assets original frozen IBT is required"
-            })
-            } */
-
-            if (!trs.asset.issueAsset.originalIssuedAssets) {
-                return cb({
-                    message: "Assets original issued assets number is required"
-                });
-            }
-
-            if (!trs.asset.issueAsset.expectedRaisedIBTs) {
-                return cb({
-                    message: "Assets expected raised ibt number is required"
-                });
-            }
-
-            if (!trs.asset.issueAsset.expectedIssuedBlockHeight) {
-                return cb({
-                    message: "Assets expected issued block height is required"
-                });
-            }
-
-            cb();
-        }
-
-        /**
-         * 处理交易
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @param {Function} cb 处理函数
-         * @private
-         * @return {Function(Function,null,Object)} 异步延时处理函数
-         * */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            // setImmediate(cb, null, trs);
-            cb(null, trs);
-        }
-
-        /**
-         * urf-8字符编码
-         *
-         * @param {Object} trs 交易信息
-         * @private
-         * @return
-         * */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            var buf = void 0;
-
-            buf = Buffer.from([]);
-            if (trs.asset.issueAsset.address) {
-                var addressBuf = Buffer.from(trs.asset.issueAsset.address);
-                buf = Buffer.concat([buf, addressBuf]);
-            }
-
-            if (trs.asset.issueAsset.publicKey) {
-                var pkBuf = Buffer.from(trs.asset.issueAsset.publicKey);
-                buf = Buffer.concat([buf, pkBuf]);
-            }
-
-            // var nameBuf = Buffer.from(trs.asset.issueAsset.assetName);
-            // buf = Buffer.concat([buf, nameBuf]);
-
-            // var suyBuf = Buffer.from(trs.asset.issueAsset.summary);
-            // buf = Buffer.concat([buf, suyBuf]);
-
-            var logoBuf = Buffer.from(trs.asset.issueAsset.logo);
-            buf = Buffer.concat([buf, logoBuf]);
-
-            var abbrBuf = Buffer.from(trs.asset.issueAsset.abbreviation);
-            buf = Buffer.concat([buf, abbrBuf]);
-
-            // var ofiBuf = Buffer.from(trs.asset.issueAsset.originalFrozenIBT);
-            // buf = Buffer.concat([buf, ofiBuf]);
-
-            var oiaBuf = Buffer.from(trs.asset.issueAsset.originalIssuedAssets);
-            buf = Buffer.concat([buf, oiaBuf]);
-
-            var ribtBuf = Buffer.from(trs.asset.issueAsset.expectedRaisedIBTs);
-            buf = Buffer.concat([buf, ribtBuf]);
-
-            var bb = new ByteBuffer(4 + 4, true);
-            bb.writeInt(trs.asset.issueAsset.rate);
-            bb.writeInt(trs.asset.issueAsset.expectedIssuedBlockHeight);
-            bb.flip();
-
-            buf = Buffer.concat([buf, Buffer.from(bb.toString("hex"), "hex")]);
-
-            return buf;
-        }
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            for (var i in trs.asset.issueAsset) {
-                if (trs.asset.issueAsset[i] === null || typeof trs.asset.issueAsset[i] === "undefined") {
-                    delete trs.asset.issueAsset[i];
-                }
-            }
-
-            var report = library.scheme.validate(trs.asset.issueAsset, {
-                type: "object",
-                properties: {
-                    address: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    publicKey: {
-                        type: "string",
-                        format: "publicKey"
-                    },
-                    rate: {
-                        type: "integer",
-                        minimum: 0
-                    },
-                    assetName: {
-                        type: "string",
-                        minLength: 3,
-                        maxLength: 30
-                    },
-                    summary: {
-                        type: "string"
-                    },
-                    logo: {
-                        type: "string",
-                        minLength: 1
-                    },
-                    abbreviation: {
-                        type: "string",
-                        minLength: 3,
-                        maxLength: 5
-                    },
-                    originalFrozenIBT: {
-                        type: "string"
-                    },
-                    originalIssuedAssets: {
-                        type: "string"
-                    },
-                    expectedRaisedIBTs: {
-                        type: "string"
-                    },
-                    expectedIssuedBlockHeight: {
-                        type: "integer",
-                        minimum: 1
-                    },
-                    status: {
-                        type: "integer",
-                        minimum: 0
-                    }
-                },
-                required: ["rate",
-                // "assetName",
-                "logo", "abbreviation", "originalIssuedAssets", "expectedRaisedIBTs", "expectedIssuedBlockHeight"]
-            });
-
-            if (!report) {
-                throw Error("Can't verify dapp new transaction, incorrect parameters: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         * 验证发送人是否有多重签名帐号,是否签名
-         *
-         * @param {Object} trs 交易信息
-         * @param {Object} sender 发送人
-         * @private
-         * @return {boolean} 验证结果
-         * */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return IssueAssets;
+  return IssueAssets;
 }();
 
 module.exports = IssueAssets;
-},{"../helpers/configFactory":95,"bytebuffer":230,"buffer/":120,"../validator":1623,"../helpers/address.js":93,"./schema/issueAssets.js":2328,"../helpers/bignum.js":197}],2326:[function(require,module,exports) {
+},{"../helpers/configFactory":4435,"bytebuffer":230,"buffer/":120,"../validator":4603,"../helpers/address.js":4444,"./schema/issueAssets.js":4604,"../helpers/bignum.js":4594}],4606:[function(require,module,exports) {
 var destoryAssets = {
-    type: "object",
-    properties: {
-        //支付账户的登录密码
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string",
-            minLength: 1
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: "string",
-            format: 'ibtCurrency'
-        },
-        assetType: {
-            type: "string",
-            minLength: 1
-        },
-        asset: {
-            type: "object",
-            format: "destoryAsset"
-        }
+  type: "object",
+  properties: {
+    //支付账户的登录密码
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "assetType", "asset"]
+    secondSecret: {
+      type: "string",
+      minLength: 1
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    assetType: {
+      type: "string",
+      minLength: 1
+    },
+    asset: {
+      type: "object",
+      format: "destoryAsset"
+    }
+  },
+  required: ["secret", "fee", "assetType", "asset"]
 };
 
 module.exports = destoryAssets;
-},{}],216:[function(require,module,exports) {
+},{}],5037:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 var Validator = require("../validator");
@@ -61680,13 +61555,13 @@ var DestoryAssetsSchema = require("./schema/destoryAssets.js");
 var BigNumber = require("../helpers/bignum.js");
 
 function accMul(arg1, arg2) {
-    arg1 = arg1.toString();
-    arg2 = arg2.toString();
+  arg1 = arg1.toString();
+  arg2 = arg2.toString();
 
-    var x = new BigNumber(arg1);
-    var y = new BigNumber(arg2);
+  var x = new BigNumber(arg1);
+  var y = new BigNumber(arg2);
 
-    return x.times(y).toString();
+  return x.times(y).toString();
 }
 
 /**
@@ -61696,294 +61571,300 @@ function accMul(arg1, arg2) {
  */
 
 var DestoryAssets = function () {
-    /**
-     *
-     * @param mod
-     * @param lib
-     * @constructor
-     */
-    function DestoryAssets() {
-        _classCallCheck(this, DestoryAssets);
+  /**
+   *
+   * @param mod
+   * @param lib
+   * @constructor
+   */
+  function DestoryAssets() {
+    _classCallCheck(this, DestoryAssets);
+  }
+
+  /**
+   *
+   * @param data
+   * @param trs
+   */
+
+  _createClass(DestoryAssets, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = null;
+
+      trs.asset.destoryAsset = {
+        assetsId: data.asset.destoryAsset.assetsId || "",
+        assetName: data.asset.destoryAsset.assetName || "",
+        abbreviation: data.asset.destoryAsset.abbreviation || "" /* ,
+                                                                  destoryAssets: accMul(data.asset.destoryAsset.destoryAssets, 100000000) */
+      };
+
+      return trs;
+    }
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, DestoryAssetsSchema, cb);
     }
 
     /**
      *
-     * @param data
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return library.logic.block.calculateFee();
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (trs.amount != "0") {
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      /* if (new BigNumber(0).gt(trs.asset.destoryAsset.destoryAssets)) {
+              return cb({
+                  message: "Invalid destory assets number"
+              });
+          } */
+
+      if (new BigNumber(0).gt(trs.fee)) {
+        return cb({
+          message: "Invalid transaction fee"
+        });
+      }
+
+      if (!(trs.asset && trs.asset.destoryAsset)) {
+        return cb({
+          message: "Invalid transaction asset"
+        });
+      }
+
+      if (trs.asset.destoryAsset.assetName) {
+        if (trs.asset.destoryAsset.assetName.length < 3 || trs.asset.destoryAsset.assetName.length > 30) {
+          return cb({
+            message: "Invalid username length. Must be between 3 to 30 characters"
+          });
+        }
+      }
+
+      if (trs.asset.destoryAsset.abbreviation) {
+        if (trs.asset.destoryAsset.abbreviation.length < 3 || trs.asset.destoryAsset.abbreviation.length > 5) {
+          return cb({
+            message: "Invalid abbreviation length. Must be between 3 to 5 characters"
+          });
+        }
+      }
+
+      /* if (!trs.asset.destoryAsset.destoryAssets) {
+              return cb({
+                  message: "Destory assets number is required"
+              })
+          } */
+
+      cb(null, trs);
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      cb(null, trs);
+    }
+
+    /**
+     *
      * @param trs
      */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      var buf = void 0;
 
-    _createClass(DestoryAssets, [{
-        key: "create",
-        value: function create(data, trs) {
-            trs.recipientId = null;
+      buf = Buffer.from([]);
+      if (trs.asset.destoryAsset.assetsId) {
+        var idBuf = Buffer.from(trs.asset.destoryAsset.assetsId);
+        buf = Buffer.concat([buf, idBuf]);
+      }
 
-            trs.asset.destoryAsset = {
-                assetsId: data.asset.destoryAsset.assetsId || "",
-                assetName: data.asset.destoryAsset.assetName || "",
-                abbreviation: data.asset.destoryAsset.abbreviation || "" /* ,
-                                                                         destoryAssets: accMul(data.asset.destoryAsset.destoryAssets, 100000000) */
-            };
+      if (trs.asset.destoryAsset.assetName) {
+        var nameBuf = Buffer.from(trs.asset.destoryAsset.assetName);
+        buf = Buffer.concat([buf, nameBuf]);
+      }
 
-            return trs;
+      if (trs.asset.destoryAsset.abbreviation) {
+        var abbrBuf = Buffer.from(trs.asset.destoryAsset.abbreviation);
+        buf = Buffer.concat([buf, abbrBuf]);
+      }
+
+      /* if (trs.asset.destoryAsset.destoryAssets) {
+                      var desAssBuf = Buffer.from(trs.asset.destoryAsset.destoryAssets);
+                      buf = Buffer.concat([buf, desAssBuf]);
+                  } */
+
+      return buf;
+    }
+
+    /**
+     *
+     * @param trs
+     */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      for (var i in trs.asset.destoryAsset) {
+        if (trs.asset.destoryAsset[i] === null || typeof trs.asset.destoryAsset[i] === "undefined") {
+          delete trs.asset.destoryAsset[i];
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            Validator.validate(data, DestoryAssetsSchema, cb);
-        }
+      }
 
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-    }, {
-        key: "calculateFee",
-        value: function calculateFee(trs, sender) {
-            return library.logic.block.calculateFee();
-        }
+      var report = library.scheme.validate(trs.asset.issueAsset, {
+        type: "object",
+        properties: {
+          abbreviation: {
+            type: "string",
+            minLength: 1,
+            maxLength: 64 /* ,
+                                destoryAssets: {
+                                    type: "string",
+                                    minLength: 1
+                                } */
+          } },
+        required: ["abbreviation" /* , "destoryAssets" */]
+      });
 
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, cb) {
-            if (trs.amount != "0") {
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
+      if (!report) {
+        throw Error("Can't verify dapp new transaction, incorrect parameters: " + library.scheme.getLastError());
+      }
 
-            /* if (new BigNumber(0).gt(trs.asset.destoryAsset.destoryAssets)) {
-            return cb({
-                message: "Invalid destory assets number"
-            });
-            } */
+      return trs;
+    }
 
-            if (new BigNumber(0).gt(trs.fee)) {
-                return cb({
-                    message: "Invalid transaction fee"
-                });
-            }
-
-            if (!(trs.asset && trs.asset.destoryAsset)) {
-                return cb({
-                    message: "Invalid transaction asset"
-                });
-            }
-
-            if (trs.asset.destoryAsset.assetName) {
-                if (trs.asset.destoryAsset.assetName.length < 3 || trs.asset.destoryAsset.assetName.length > 30) {
-                    return cb({
-                        message: "Invalid username length. Must be between 3 to 30 characters"
-                    });
-                }
-            }
-
-            if (trs.asset.destoryAsset.abbreviation) {
-                if (trs.asset.destoryAsset.abbreviation.length < 3 || trs.asset.destoryAsset.abbreviation.length > 5) {
-                    return cb({
-                        message: "Invalid abbreviation length. Must be between 3 to 5 characters"
-                    });
-                }
-            }
-
-            /* if (!trs.asset.destoryAsset.destoryAssets) {
-            return cb({
-                message: "Destory assets number is required"
-            })
-            } */
-
-            cb(null, trs);
+    /**
+     *
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
 
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-    }, {
-        key: "process",
-        value: function process(trs, sender, cb) {
-            cb(null, trs);
-        }
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-        /**
-         *
-         * @param trs
-         */
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs) {
-            var buf = void 0;
-
-            buf = Buffer.from([]);
-            if (trs.asset.destoryAsset.assetsId) {
-                var idBuf = Buffer.from(trs.asset.destoryAsset.assetsId);
-                buf = Buffer.concat([buf, idBuf]);
-            }
-
-            if (trs.asset.destoryAsset.assetName) {
-                var nameBuf = Buffer.from(trs.asset.destoryAsset.assetName);
-                buf = Buffer.concat([buf, nameBuf]);
-            }
-
-            if (trs.asset.destoryAsset.abbreviation) {
-                var abbrBuf = Buffer.from(trs.asset.destoryAsset.abbreviation);
-                buf = Buffer.concat([buf, abbrBuf]);
-            }
-
-            /* if (trs.asset.destoryAsset.destoryAssets) {
-                    var desAssBuf = Buffer.from(trs.asset.destoryAsset.destoryAssets);
-                    buf = Buffer.concat([buf, desAssBuf]);
-                } */
-
-            return buf;
-        }
-
-        /**
-         *
-         * @param trs
-         */
-    }, {
-        key: "objectNormalize",
-        value: function objectNormalize(trs) {
-            for (var i in trs.asset.destoryAsset) {
-                if (trs.asset.destoryAsset[i] === null || typeof trs.asset.destoryAsset[i] === "undefined") {
-                    delete trs.asset.destoryAsset[i];
-                }
-            }
-
-            var report = library.scheme.validate(trs.asset.issueAsset, {
-                type: "object",
-                properties: {
-                    abbreviation: {
-                        type: "string",
-                        minLength: 1,
-                        maxLength: 64 /* ,
-                                      destoryAssets: {
-                                      type: "string",
-                                      minLength: 1
-                                      } */
-                    } },
-                required: ["abbreviation" /* , "destoryAssets" */]
-            });
-
-            if (!report) {
-                throw Error("Can't verify dapp new transaction, incorrect parameters: " + library.scheme.getLastError());
-            }
-
-            return trs;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-    }, {
-        key: "ready",
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return DestoryAssets;
+  return DestoryAssets;
 }();
 
 module.exports = DestoryAssets;
-},{"../validator":1623,"./schema/destoryAssets.js":2326,"../helpers/bignum.js":197,"buffer":120}],273:[function(require,module,exports) {
+},{"../validator":4603,"./schema/destoryAssets.js":4606,"../helpers/bignum.js":4594,"buffer":120}],4777:[function(require,module,exports) {
 var transferAssets = {
-    type: "object",
-    properties: {
-        //支付账户的登录密码
-        secret: {
-            type: "string",
-            minLength: 1
-        },
-        secondSecret: {
-            type: "string",
-            minLength: 1
-        },
-        publicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        //支付账户的金额
-        amount: {
-            type: 'string',
-            format: 'ibtCurrency'
-            // minimum: 1
-            //maximum: constants.totalAmount
-        },
-        //接受方账户
-        recipientId: {
-            type: "string",
-            format: "address"
-        },
-        multisigAccountPublicKey: {
-            type: "string",
-            format: "publicKey"
-        },
-        fee: {
-            type: "string",
-            format: 'ibtCurrency'
-        },
-        assetType: {
-            type: "string",
-            minLength: 1
-        }
+  type: "object",
+  properties: {
+    //支付账户的登录密码
+    secret: {
+      type: "string",
+      minLength: 1
     },
-    required: ["secret", "fee", "assetType"]
+    secondSecret: {
+      type: "string",
+      minLength: 1
+    },
+    publicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    //支付账户的金额
+    amount: {
+      type: "string",
+      format: "ibtCurrency"
+      // minimum: 1
+      //maximum: constants.totalAmount
+    },
+    //接受方账户
+    recipientId: {
+      type: "string",
+      format: "address"
+    },
+    multisigAccountPublicKey: {
+      type: "string",
+      format: "publicKey"
+    },
+    fee: {
+      type: "string",
+      format: "ibtCurrency"
+    },
+    assetType: {
+      type: "string",
+      minLength: 1
+    }
+  },
+  required: ["secret", "fee", "assetType"]
 };
 
 module.exports = transferAssets;
-},{}],217:[function(require,module,exports) {
-'use strict';
+},{}],4592:[function(require,module,exports) {
+"use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-    };
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
-var addressHelper = require('../helpers/address.js');
-var Validator = require('../validator');
-var BigNumber = require('../helpers/bignum.js');
-var TransferAssetsSchema = require('./schema/transferAssets.js');
+var addressHelper = require("../helpers/address.js");
+var Validator = require("../validator");
+var BigNumber = require("../helpers/bignum.js");
+var TransferAssetsSchema = require("./schema/transferAssets.js");
 
 function accMul(arg1, arg2) {
+  arg1 = arg1.toString();
+  arg2 = arg2.toString();
 
-    arg1 = arg1.toString();
-    arg2 = arg2.toString();
+  var x = new BigNumber(arg1);
+  var y = new BigNumber(arg2);
 
-    var x = new BigNumber(arg1);
-    var y = new BigNumber(arg2);
-
-    return x.times(y).toString();
+  return x.times(y).toString();
 }
 
 /**
@@ -61993,172 +61874,165 @@ function accMul(arg1, arg2) {
  */
 
 var TransferAssets = function () {
+  /**
+   *
+   * @param mod
+   * @param lib
+   * @constructor
+   */
+  function TransferAssets() {
+    _classCallCheck(this, TransferAssets);
+  }
 
-    /**
-     *
-     * @param mod
-     * @param lib
-     * @constructor
-     */
-    function TransferAssets() {
-        _classCallCheck(this, TransferAssets);
+  /**
+   *
+   * @param data
+   * @param trs
+   */
+
+  _createClass(TransferAssets, [{
+    key: "create",
+    value: function create(data, trs) {
+      trs.recipientId = data.recipientId;
+      trs.recipientUsername = data.recipientUsername;
+      trs.amount = accMul(data.amount, 100000000);
+
+      return trs;
+    }
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      Validator.validate(data, TransferAssetsSchema, cb);
     }
 
     /**
      *
-     * @param data
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "calculateFee",
+    value: function calculateFee(trs, sender) {
+      return library.logic.block.calculateFee();
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, cb) {
+      if (!addressHelper.isAddress(trs.recipientId)) {
+        return cb({
+          message: "Invalid recipient"
+        });
+      }
+
+      if (trs.amount <= 0) {
+        return cb({
+          message: "Invalid transaction amount"
+        });
+      }
+
+      // 必须携带数字资产的英文缩写
+      if (!trs.assetType) {
+        return cb({
+          message: "Assets abbreviation is require"
+        });
+      }
+
+      cb(null, trs);
+    }
+
+    /**
+     *
+     * @param trs
+     * @param sender
+     * @param cb
+     */
+  }, {
+    key: "process",
+    value: function process(trs, sender, cb) {
+      cb(null, trs);
+    }
+
+    /**
+     *
      * @param trs
      */
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs) {
+      return null;
+    }
 
-    _createClass(TransferAssets, [{
-        key: 'create',
-        value: function create(data, trs) {
-            trs.recipientId = data.recipientId;
-            trs.recipientUsername = data.recipientUsername;
-            trs.amount = accMul(data.amount, 100000000);
+    /**
+     *
+     * @param trs
+     */
+  }, {
+    key: "objectNormalize",
+    value: function objectNormalize(trs) {
+      delete trs.blockId;
+      return trs;
+    }
 
-            return trs;
-        }
-    }, {
-        key: 'validateInput',
-        value: function validateInput(data, cb) {
-            Validator.validate(data, TransferAssetsSchema, cb);
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-
-    }, {
-        key: 'calculateFee',
-        value: function calculateFee(trs, sender) {
-            return library.logic.block.calculateFee();
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
-
-    }, {
-        key: 'verify',
-        value: function verify(trs, sender, cb) {
-            if (!addressHelper.isAddress(trs.recipientId)) {
-                return cb({
-                    message: "Invalid recipient"
-                });
-            }
-
-            if (trs.amount <= 0) {
-                return cb({
-                    message: "Invalid transaction amount"
-                });
-            }
-
-            // 必须携带数字资产的英文缩写
-            if (!trs.assetType) {
-                return cb({
-                    message: "Assets abbreviation is require"
-                });
-            }
-
-            cb(null, trs);
+    /**
+     *
+     * @param trs
+     * @param sender
+     */
+  }, {
+    key: "ready",
+    value: function ready(trs, sender) {
+      if (sender.multisignatures.length) {
+        if (!trs.signatures) {
+          return false;
         }
 
-        /**
-         *
-         * @param trs
-         * @param sender
-         * @param cb
-         */
+        return trs.signatures.length >= sender.multimin - 1;
+      } else {
+        return true;
+      }
+    }
+  }]);
 
-    }, {
-        key: 'process',
-        value: function process(trs, sender, cb) {
-            cb(null, trs);
-        }
-
-        /**
-         *
-         * @param trs
-         */
-
-    }, {
-        key: 'getBytes',
-        value: function getBytes(trs) {
-            return null;
-        }
-
-        /**
-         *
-         * @param trs
-         */
-
-    }, {
-        key: 'objectNormalize',
-        value: function objectNormalize(trs) {
-            delete trs.blockId;
-            return trs;
-        }
-
-        /**
-         *
-         * @param trs
-         * @param sender
-         */
-
-    }, {
-        key: 'ready',
-        value: function ready(trs, sender) {
-            if (sender.multisignatures.length) {
-                if (!trs.signatures) {
-                    return false;
-                }
-
-                return trs.signatures.length >= sender.multimin - 1;
-            } else {
-                return true;
-            }
-        }
-    }]);
-
-    return TransferAssets;
+  return TransferAssets;
 }();
 
 module.exports = TransferAssets;
-},{"../helpers/address.js":93,"../validator":1623,"../helpers/bignum.js":197,"./schema/transferAssets.js":273}],194:[function(require,module,exports) {
-var EdDSA = require('elliptic').eddsa;
-var ed = new EdDSA('ed25519');
+},{"../helpers/address.js":4444,"../validator":4603,"../helpers/bignum.js":4594,"./schema/transferAssets.js":4777}],4593:[function(require,module,exports) {
+var EdDSA = require("elliptic").eddsa;
+var ed = new EdDSA("ed25519");
 module.exports = ed;
-},{"elliptic":245}],91:[function(require,module,exports) {
+},{"elliptic":245}],4437:[function(require,module,exports) {
 
 "use strict";
 
 var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];
-            descriptor.enumerable = descriptor.enumerable || false;
-            descriptor.configurable = true;
-            if ("value" in descriptor) descriptor.writable = true;
-            Object.defineProperty(target, descriptor.key, descriptor);
-        }
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
     }
-    return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-    };
+  }
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
 }();
 
 function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
 }
 
 var transactionTypes = require("../helpers/transaction-types");
@@ -62196,563 +62070,559 @@ var BigNumber = require("../helpers/bignum.js");
 var privated = { types: {} };
 
 var Transaction = function () {
-    function Transaction() {
-        _classCallCheck(this, Transaction);
+  function Transaction() {
+    _classCallCheck(this, Transaction);
 
-        this.attachAssetType(transactionTypes.FOLLOW, new Contact());
-        this.attachAssetType(transactionTypes.DAPP, new Dapp());
-        this.attachAssetType(transactionTypes.DELEGATE, new Delegate());
-        // this.attachAssetType(transactionTypes.FABULOUS, new Fabulous());
-        // this.attachAssetType(transactionTypes.GRATUITY, new Gratuity());
-        // this.attachAssetType(transactionTypes.IN_TRANSFER, new InTransfer());
-        // this.attachAssetType(transactionTypes.SENDMESSAGE, new Message());
-        // this.attachAssetType(transactionTypes.MULTI, new Multisignature());
-        // this.attachAssetType(transactionTypes.OUT_TRANSFER, new OutTransfer());
-        this.attachAssetType(transactionTypes.SIGNATURE, new Signature());
-        this.attachAssetType(transactionTypes.SEND, new Transfer());
-        this.attachAssetType(transactionTypes.USERNAME, new Username());
-        this.attachAssetType(transactionTypes.VOTE, new Vote());
-        this.attachAssetType(transactionTypes.MARK, new Mark());
-        this.attachAssetType(transactionTypes.ISSUE_ASSET, new IssueAssets());
-        this.attachAssetType(transactionTypes.DESTORY_ASSET, new DestoryAssets());
-        this.attachAssetType(transactionTypes.TRANSFER_ASSET, new TransferAssets());
-        debug("loaded transaction types");
+    this.attachAssetType(transactionTypes.FOLLOW, new Contact());
+    this.attachAssetType(transactionTypes.DAPP, new Dapp());
+    this.attachAssetType(transactionTypes.DELEGATE, new Delegate());
+    // this.attachAssetType(transactionTypes.FABULOUS, new Fabulous());
+    // this.attachAssetType(transactionTypes.GRATUITY, new Gratuity());
+    // this.attachAssetType(transactionTypes.IN_TRANSFER, new InTransfer());
+    // this.attachAssetType(transactionTypes.SENDMESSAGE, new Message());
+    // this.attachAssetType(transactionTypes.MULTI, new Multisignature());
+    // this.attachAssetType(transactionTypes.OUT_TRANSFER, new OutTransfer());
+    this.attachAssetType(transactionTypes.SIGNATURE, new Signature());
+    this.attachAssetType(transactionTypes.SEND, new Transfer());
+    this.attachAssetType(transactionTypes.USERNAME, new Username());
+    this.attachAssetType(transactionTypes.VOTE, new Vote());
+    this.attachAssetType(transactionTypes.MARK, new Mark());
+    this.attachAssetType(transactionTypes.ISSUE_ASSET, new IssueAssets());
+    this.attachAssetType(transactionTypes.DESTORY_ASSET, new DestoryAssets());
+    this.attachAssetType(transactionTypes.TRANSFER_ASSET, new TransferAssets());
+    debug("loaded transaction types");
+  }
+
+  _createClass(Transaction, [{
+    key: "attachAssetType",
+    value: function attachAssetType(typeId, instance) {
+      if (instance && typeof instance.create == "function" && typeof instance.verify == "function" && typeof instance.getBytes == "function" && typeof instance.validateInput == "function"
+      // && typeof instance.verify == 'function'
+      ) {
+          privated.types[typeId] = instance;
+        } else {
+        throw Error("Invalid instance interface");
+      }
+    }
+  }, {
+    key: "create",
+    value: function create(data, trs) {
+      trs.fee = new BigNumber(trs.fee).times(100000000).toString();
+
+      if (!privated.types[trs.type]) {
+        throw Error("Unknown transaction type " + trs.type);
+      }
+      return privated.types[trs.type].create.call(this, data, trs);
+    }
+  }, {
+    key: "validateInput",
+    value: function validateInput(data, cb) {
+      if (!privated.types[data.type]) {
+        throw Error("Unknown transaction type " + data.type);
+      }
+      privated.types[data.type].validateInput.call(this, data, cb);
     }
 
-    _createClass(Transaction, [{
-        key: "attachAssetType",
-        value: function attachAssetType(typeId, instance) {
-            if (instance && typeof instance.create == "function" && typeof instance.verify == "function" && typeof instance.getBytes == "function" && typeof instance.validateInput == "function"
-            // && typeof instance.verify == 'function'
-            ) {
-                    privated.types[typeId] = instance;
-                } else {
-                throw Error("Invalid instance interface");
-            }
+    //普通账户获取签名 hash 签名
+  }, {
+    key: "sign",
+    value: function sign(keypair, trs) {
+      var hash = this.getHash(trs);
+      var signature = null;
+
+      signature = keypair.sign(hash).toHex();
+
+      return signature;
+    }
+
+    //多重签名账户组获取 hash 签名
+  }, {
+    key: "secondsign",
+    value: function secondsign(keypair, trs) {
+      if (!trs.signature) {
+        throw Error("Transaction signature is require");
+      }
+      var bytes = this.getBytes(trs, true, true);
+      var hash = crypto.createHash("sha256").update(bytes).digest();
+      var secondSignature = null;
+      secondSignature = keypair.sign(hash).toHex();
+
+      return secondSignature;
+    }
+  }, {
+    key: "multisign",
+    value: function multisign(keypair, trs) {
+      var bytes = this.getBytes(trs, true, true);
+      var hash = crypto.createHash("sha256").update(bytes).digest();
+      return ed.Sign(hash, keypair).toString("hex");
+    }
+  }, {
+    key: "getBytes",
+    value: function getBytes(trs, skipSignature, skipSecondSignature) {
+      if (!privated.types[trs.type]) {
+        throw Error("Unknown transaction type " + trs.type);
+      }
+      var bb;
+      var assetBytes = privated.types[trs.type].getBytes.call(this, trs, skipSignature, skipSecondSignature);
+      var assetSize = assetBytes ? assetBytes.length : 0;
+
+      bb = new ByteBuffer(1 + 4 + 32 + 32 + 64 + 20 + 64 + 64 + 20 + assetSize, true);
+      bb.writeByte(trs.type);
+      bb.writeInt(trs.timestamp);
+
+      var senderPublicKeyBuffer = new Buffer(trs.senderPublicKey, "hex");
+      for (var i = 0; i < senderPublicKeyBuffer.length; i++) {
+        bb.writeByte(senderPublicKeyBuffer[i]);
+      }
+
+      if (trs.requesterPublicKey) {
+        var requesterPublicKey = new Buffer(trs.requesterPublicKey, "hex");
+        for (var _i = 0; _i < requesterPublicKey.length; _i++) {
+          bb.writeByte(requesterPublicKey[_i]);
         }
-    }, {
-        key: "create",
-        value: function create(data, trs) {
-            trs.fee = new BigNumber(trs.fee).times(100000000).toString();
+      }
 
-            if (!privated.types[trs.type]) {
-                throw Error("Unknown transaction type " + trs.type);
-            }
-            return privated.types[trs.type].create.call(this, data, trs);
+      if (trs.recipientId) {
+        bb.writeString(trs.recipientId);
+      } else {
+        // FIXME
+        for (var _i2 = 0; _i2 < 64; _i2++) {
+          bb.writeByte(0);
         }
-    }, {
-        key: "validateInput",
-        value: function validateInput(data, cb) {
-            if (!privated.types[data.type]) {
-                throw Error("Unknown transaction type " + data.type);
-            }
-            privated.types[data.type].validateInput.call(this, data, cb);
+      }
+
+      bb.writeString(trs.amount);
+
+      if (assetSize > 0) {
+        for (var _i3 = 0; _i3 < assetSize; _i3++) {
+          bb.writeByte(assetBytes[_i3]);
         }
+      }
 
-        //普通账户获取签名 hash 签名
-    }, {
-        key: "sign",
-        value: function sign(keypair, trs) {
-            var hash = this.getHash(trs);
-            var signature = null;
-
-            signature = keypair.sign(hash).toHex();
-
-            return signature;
+      if (!skipSignature && trs.signature) {
+        var signatureBuffer = new Buffer(trs.signature, "hex");
+        for (var _i4 = 0; _i4 < signatureBuffer.length; _i4++) {
+          bb.writeByte(signatureBuffer[_i4]);
         }
+      }
 
-        //多重签名账户组获取 hash 签名
-    }, {
-        key: "secondsign",
-        value: function secondsign(keypair, trs) {
-            if (!trs.signature) {
-                throw Error("Transaction signature is require");
-            }
-            var bytes = this.getBytes(trs, true, true);
-            var hash = crypto.createHash("sha256").update(bytes).digest();
-            var secondSignature = null;
-            secondSignature = keypair.sign(hash).toHex();
-
-            return secondSignature;
+      if (!skipSecondSignature && trs.signSignature) {
+        var signSignatureBuffer = new Buffer(trs.signSignature, "hex");
+        for (var _i5 = 0; _i5 < signSignatureBuffer.length; _i5++) {
+          bb.writeByte(signSignatureBuffer[_i5]);
         }
-    }, {
-        key: "multisign",
-        value: function multisign(keypair, trs) {
-            var bytes = this.getBytes(trs, true, true);
-            var hash = crypto.createHash("sha256").update(bytes).digest();
-            return ed.Sign(hash, keypair).toString("hex");
-        }
-    }, {
-        key: "getBytes",
-        value: function getBytes(trs, skipSignature, skipSecondSignature) {
-            if (!privated.types[trs.type]) {
-                throw Error("Unknown transaction type " + trs.type);
-            }
-            var bb;
-            var assetBytes = privated.types[trs.type].getBytes.call(this, trs, skipSignature, skipSecondSignature);
-            var assetSize = assetBytes ? assetBytes.length : 0;
+      }
 
-            bb = new ByteBuffer(1 + 4 + 32 + 32 + 64 + 20 + 64 + 64 + 20 + assetSize, true);
-            bb.writeByte(trs.type);
-            bb.writeInt(trs.timestamp);
+      bb.writeString(trs.fee);
 
-            var senderPublicKeyBuffer = new Buffer(trs.senderPublicKey, "hex");
-            for (var i = 0; i < senderPublicKeyBuffer.length; i++) {
-                bb.writeByte(senderPublicKeyBuffer[i]);
-            }
+      bb.flip();
 
-            if (trs.requesterPublicKey) {
-                var requesterPublicKey = new Buffer(trs.requesterPublicKey, "hex");
-                for (var _i = 0; _i < requesterPublicKey.length; _i++) {
-                    bb.writeByte(requesterPublicKey[_i]);
-                }
-            }
+      //XXX: 前端bb.toBuffer()无法正常使用，所以先转成string再由Buffer转换
+      return Buffer.from(bb.toString("hex"), "hex");
+      // return bb.toBuffer();
+    }
 
-            if (trs.recipientId) {
-                bb.writeString(trs.recipientId);
-            } else {
-                // FIXME
-                for (var _i2 = 0; _i2 < 64; _i2++) {
-                    bb.writeByte(0);
-                }
-            }
+    //生成交易的 id
+  }, {
+    key: "getId",
+    value: function getId(trs) {
+      return this.getHash(trs).toString("hex");
+    }
 
-            bb.writeString(trs.amount);
+    //根据交易信息 生成 hash 值
+  }, {
+    key: "getHash",
+    value: function getHash(trs) {
+      return crypto.createHash("sha256").update(this.getBytes(trs)).digest();
+    }
 
-            if (assetSize > 0) {
-                for (var _i3 = 0; _i3 < assetSize; _i3++) {
-                    bb.writeByte(assetBytes[_i3]);
-                }
-            }
+    //inheritance
+    //验证交易信息
+  }, {
+    key: "verify",
+    value: function verify(trs, sender, requester, cb) {
+      if (typeof requester === "function") {
+        cb = requester;
+      }
 
-            if (!skipSignature && trs.signature) {
-                var signatureBuffer = new Buffer(trs.signature, "hex");
-                for (var _i4 = 0; _i4 < signatureBuffer.length; _i4++) {
-                    bb.writeByte(signatureBuffer[_i4]);
-                }
-            }
+      //验证交易类型
+      if (!privated.types[trs.type]) {
+        return setImmediate(cb, {
+          message: "Unknown transaction type",
+          trs: "trs type: " + trs.type
+        });
+      }
 
-            if (!skipSecondSignature && trs.signSignature) {
-                var signSignatureBuffer = new Buffer(trs.signSignature, "hex");
-                for (var _i5 = 0; _i5 < signSignatureBuffer.length; _i5++) {
-                    bb.writeByte(signSignatureBuffer[_i5]);
-                }
-            }
+      // Check sender
+      //验证交易发起人
+      if (!sender) {
+        return setImmediate(cb, {
+          message: "Invalid sender"
+        });
+      }
 
-            bb.writeString(trs.fee);
-
-            bb.flip();
-
-            //XXX: 前端bb.toBuffer()无法正常使用，所以先转成string再由Buffer转换
-            return Buffer.from(bb.toString("hex"), "hex");
-            // return bb.toBuffer();
+      if (trs.requesterPublicKey) {
+        if (sender.multisignatures.indexOf(trs.requesterPublicKey) < 0) {
+          return setImmediate(cb, {
+            message: "Failed to verify signature"
+          });
         }
 
-        //生成交易的 id
-    }, {
-        key: "getId",
-        value: function getId(trs) {
-            return this.getHash(trs).toString("hex");
+        if (sender.publicKey != trs.senderPublicKey) {
+          return setImmediate(cb, {
+            message: "Invalid public key"
+          });
         }
+      }
 
-        //根据交易信息 生成 hash 值
-    }, {
-        key: "getHash",
-        value: function getHash(trs) {
-            return crypto.createHash("sha256").update(this.getBytes(trs)).digest();
+      // Verify signature
+      //验证签名
+      var valid = void 0;
+      try {
+        valid = false;
+
+        if (trs.requesterPublicKey) {
+          valid = this.verifySignature(trs, trs.requesterPublicKey, trs.signature);
+        } else {
+          valid = this.verifySignature(trs, trs.senderPublicKey, trs.signature);
         }
+      } catch (e) {
+        return setImmediate(cb, e.toString());
+      }
 
-        //inheritance
-        //验证交易信息
-    }, {
-        key: "verify",
-        value: function verify(trs, sender, requester, cb) {
-            if (typeof requester === "function") {
-                cb = requester;
+      if (!valid) {
+        return setImmediate(cb, {
+          message: "Failed to verify signature"
+        });
+      }
+
+      // Verify second signature
+      //验证二次签名
+      if (!trs.requesterPublicKey && sender.secondSignature) {
+        try {
+          valid = this.verifySecondSignature(trs, sender.secondPublicKey, trs.signSignature);
+        } catch (e) {
+          return setImmediate(cb, e.toString());
+        }
+        if (!valid) {
+          return setImmediate(cb, {
+            message: "Failed to verify second signature",
+            trs: "trs id: " + trs.id
+          });
+        }
+      } else if (trs.requesterPublicKey && requester.secondSignature) {
+        try {
+          valid = this.verifySecondSignature(trs, requester.secondPublicKey, trs.signSignature);
+        } catch (e) {
+          return setImmediate(cb, e.toString());
+        }
+        if (!valid) {
+          return setImmediate(cb, {
+            message: "Failed to verify second signature",
+            trs: "trs id: " + trs.id
+          });
+        }
+      }
+
+      // Check that signatures unique
+      if (trs.signatures && trs.signatures.length) {
+        var signatures = trs.signatures.reduce(function (p, c) {
+          if (p.indexOf(c) < 0) p.push(c);
+          return p;
+        }, []);
+
+        if (signatures.length != trs.signatures.length) {
+          return setImmediate(cb, {
+            message: "Encountered duplicate signatures"
+          });
+        }
+      }
+
+      var multisignatures = sender.multisignatures || sender.u_multisignatures;
+
+      if (multisignatures.length == 0) {
+        if (trs.asset && trs.asset.multisignature && trs.asset.multisignature.keysgroup) {
+          multisignatures = trs.asset.multisignature.keysgroup.map(function (key) {
+            return key.slice(1);
+          });
+        }
+      }
+
+      if (trs.requesterPublicKey) {
+        multisignatures.push(trs.senderPublicKey);
+      }
+
+      var verify = void 0;
+      if (trs.signatures) {
+        for (var d = 0; d < trs.signatures.length; d++) {
+          var _verify = false;
+
+          for (var s = 0; s < multisignatures.length; s++) {
+            if (trs.requesterPublicKey && multisignatures[s] == trs.requesterPublicKey) {
+              continue;
             }
 
-            //验证交易类型
-            if (!privated.types[trs.type]) {
-                return setImmediate(cb, {
-                    message: "Unknown transaction type",
-                    trs: "trs type: " + trs.type
-                });
+            if (this.verifySignature(trs, multisignatures[s], trs.signatures[d])) {
+              _verify = true;
             }
+          }
 
-            // Check sender
-            //验证交易发起人
-            if (!sender) {
-                return setImmediate(cb, {
-                    message: "Invalid sender"
-                });
-            }
-
-            if (trs.requesterPublicKey) {
-                if (sender.multisignatures.indexOf(trs.requesterPublicKey) < 0) {
-                    return setImmediate(cb, {
-                        message: "Failed to verify signature"
-                    });
-                }
-
-                if (sender.publicKey != trs.senderPublicKey) {
-                    return setImmediate(cb, {
-                        message: "Invalid public key"
-                    });
-                }
-            }
-
-            // Verify signature
-            //验证签名
-            var valid = void 0;
-            try {
-                valid = false;
-
-                if (trs.requesterPublicKey) {
-                    valid = this.verifySignature(trs, trs.requesterPublicKey, trs.signature);
-                } else {
-                    valid = this.verifySignature(trs, trs.senderPublicKey, trs.signature);
-                }
-            } catch (e) {
-                return setImmediate(cb, e.toString());
-            }
-
-            if (!valid) {
-                return setImmediate(cb, {
-                    message: "Failed to verify signature"
-                });
-            }
-
-            // Verify second signature
-            //验证二次签名
-            if (!trs.requesterPublicKey && sender.secondSignature) {
-                try {
-                    valid = this.verifySecondSignature(trs, sender.secondPublicKey, trs.signSignature);
-                } catch (e) {
-                    return setImmediate(cb, e.toString());
-                }
-                if (!valid) {
-                    return setImmediate(cb, {
-                        message: "Failed to verify second signature",
-                        trs: "trs id: " + trs.id
-                    });
-                }
-            } else if (trs.requesterPublicKey && requester.secondSignature) {
-                try {
-                    valid = this.verifySecondSignature(trs, requester.secondPublicKey, trs.signSignature);
-                } catch (e) {
-                    return setImmediate(cb, e.toString());
-                }
-                if (!valid) {
-                    return setImmediate(cb, {
-                        message: "Failed to verify second signature",
-                        trs: "trs id: " + trs.id
-                    });
-                }
-            }
-
-            // Check that signatures unique
-            if (trs.signatures && trs.signatures.length) {
-                var signatures = trs.signatures.reduce(function (p, c) {
-                    if (p.indexOf(c) < 0) p.push(c);
-                    return p;
-                }, []);
-
-                if (signatures.length != trs.signatures.length) {
-                    return setImmediate(cb, {
-                        message: "Encountered duplicate signatures"
-                    });
-                }
-            }
-
-            var multisignatures = sender.multisignatures || sender.u_multisignatures;
-
-            if (multisignatures.length == 0) {
-                if (trs.asset && trs.asset.multisignature && trs.asset.multisignature.keysgroup) {
-                    multisignatures = trs.asset.multisignature.keysgroup.map(function (key) {
-                        return key.slice(1);
-                    });
-                }
-            }
-
-            if (trs.requesterPublicKey) {
-                multisignatures.push(trs.senderPublicKey);
-            }
-
-            var verify = void 0;
-            if (trs.signatures) {
-                for (var d = 0; d < trs.signatures.length; d++) {
-                    var _verify = false;
-
-                    for (var s = 0; s < multisignatures.length; s++) {
-                        if (trs.requesterPublicKey && multisignatures[s] == trs.requesterPublicKey) {
-                            continue;
-                        }
-
-                        if (this.verifySignature(trs, multisignatures[s], trs.signatures[d])) {
-                            _verify = true;
-                        }
-                    }
-
-                    if (!_verify) {
-                        return setImmediate(cb, {
-                            message: "Failed to verify multisignature",
-                            trs: "trs id: " + trs.id
-                        });
-                    }
-                }
-            }
-
-            // Check sender
-            if (trs.senderId != sender.address) {
-                return setImmediate(cb, {
-                    message: "Invalid sender id",
-                    trs: "trs id: " + trs.id
-                });
-            }
-
-            // Calc fee
-            // let fee = privated.types[trs.type].calculateFee.call(this, trs, sender) || false;
-            // if (!fee || trs.fee != fee) {
-            //     return setImmediate(cb, "Invalid transaction type/fee: " + trs.id);
-            // }
-            // Check amount
-            if (trs.amount < 0 || trs.amount > 100000000 * constants.fixedPoint || String(trs.amount).indexOf(".") >= 0 || trs.amount.toString().indexOf("e") >= 0) {
-                return setImmediate(cb, {
-                    message: "Invalid transaction amount",
-                    trs: "trs id: " + trs.id
-                });
-            }
-            // Check timestamp
-            // if (slots.getSlotNumber(trs.timestamp) > slots.getSlotNumber()) {
-            //     return setImmediate(
-            //         cb,
-            //         {
-            //             message: "Invalid transaction timestamp"
-            //         }
-            //     );
-            // }
-
-            // Spec
-            privated.types[trs.type].verify(trs, sender, function (err) {
-                cb(err);
+          if (!_verify) {
+            return setImmediate(cb, {
+              message: "Failed to verify multisignature",
+              trs: "trs id: " + trs.id
             });
+          }
         }
+      }
 
-        //验证交易的签名信息
-    }, {
-        key: "verifySignature",
-        value: function verifySignature(trs, publicKey, signature) {
-            // if (!privated.types[trs.type]) {
-            //     throw Error('Unknown transaction type ' + trs.type);
-            // }
+      // Check sender
+      if (trs.senderId != sender.address) {
+        return setImmediate(cb, {
+          message: "Invalid sender id",
+          trs: "trs id: " + trs.id
+        });
+      }
 
-            if (!signature) return false;
-            var res = void 0;
-            var bytes = this.getBytes(trs, true, true);
-            res = this.verifyBytes(bytes, publicKey, signature);
+      // Calc fee
+      // let fee = privated.types[trs.type].calculateFee.call(this, trs, sender) || false;
+      // if (!fee || trs.fee != fee) {
+      //     return setImmediate(cb, "Invalid transaction type/fee: " + trs.id);
+      // }
+      // Check amount
+      if (trs.amount < 0 || trs.amount > 100000000 * constants.fixedPoint || String(trs.amount).indexOf(".") >= 0 || trs.amount.toString().indexOf("e") >= 0) {
+        return setImmediate(cb, {
+          message: "Invalid transaction amount",
+          trs: "trs id: " + trs.id
+        });
+      }
+      // Check timestamp
+      // if (slots.getSlotNumber(trs.timestamp) > slots.getSlotNumber()) {
+      //     return setImmediate(
+      //         cb,
+      //         {
+      //             message: "Invalid transaction timestamp"
+      //         }
+      //     );
+      // }
 
-            return res;
-        }
+      // Spec
+      privated.types[trs.type].verify(trs, sender, function (err) {
+        cb(err);
+      });
+    }
 
-        //验证交易的 二次签名 （支付密码）
-    }, {
-        key: "verifySecondSignature",
-        value: function verifySecondSignature(trs, publicKey, signature) {
-            // if (!privated.types[trs.type]) {
-            //     throw Error('Unknown transaction type ' + trs.type);
-            // }
+    //验证交易的签名信息
+  }, {
+    key: "verifySignature",
+    value: function verifySignature(trs, publicKey, signature) {
+      // if (!privated.types[trs.type]) {
+      //     throw Error('Unknown transaction type ' + trs.type);
+      // }
 
-            if (!signature) return false;
-            var res = void 0;
-            var bytes = this.getBytes(trs, false, true);
-            res = this.verifyBytes(bytes, publicKey, signature);
+      if (!signature) return false;
+      var res = void 0;
+      var bytes = this.getBytes(trs, true, true);
+      res = this.verifyBytes(bytes, publicKey, signature);
 
-            return res;
-        }
-    }, {
-        key: "verifyBytes",
-        value: function verifyBytes(bytes, publicKey, signature) {
-            var res = void 0;
-            var data2 = new Buffer(bytes.length);
+      return res;
+    }
 
-            for (var i = 0; i < data2.length; i++) {
-                data2[i] = bytes[i];
-            }
+    //验证交易的 二次签名 （支付密码）
+  }, {
+    key: "verifySecondSignature",
+    value: function verifySecondSignature(trs, publicKey, signature) {
+      // if (!privated.types[trs.type]) {
+      //     throw Error('Unknown transaction type ' + trs.type);
+      // }
 
-            var hash = crypto.createHash("sha256").update(data2).digest();
+      if (!signature) return false;
+      var res = void 0;
+      var bytes = this.getBytes(trs, false, true);
+      res = this.verifyBytes(bytes, publicKey, signature);
 
-            key = ed.keyFromPublic(publicKey, "hex");
-            res = key.verify(hash, signature);
+      return res;
+    }
+  }, {
+    key: "verifyBytes",
+    value: function verifyBytes(bytes, publicKey, signature) {
+      var res = void 0;
+      var data2 = new Buffer(bytes.length);
 
-            return res;
-        }
-    }]);
+      for (var i = 0; i < data2.length; i++) {
+        data2[i] = bytes[i];
+      }
 
-    return Transaction;
+      var hash = crypto.createHash("sha256").update(data2).digest();
+
+      key = ed.keyFromPublic(publicKey, "hex");
+      res = key.verify(hash, signature);
+
+      return res;
+    }
+  }]);
+
+  return Transaction;
 }();
 
 module.exports = new Transaction();
-},{"../helpers/transaction-types":200,"crypto":100,"buffer/":120,"buffer-to-uint8array":229,"bytebuffer":230,"../helpers/configFactory":95,"../helpers/slots":199,"./contact":207,"./dapp":2299,"./delegate":209,"./signature":210,"./transfer":211,"./username":212,"./vote":213,"./marks":214,"./issueAssets":215,"./destoryAssets":216,"./transferAssets":217,"debug":77,"../helpers/ed.js":194,"../helpers/bignum.js":197}],90:[function(require,module,exports) {
+},{"../helpers/transaction-types":4578,"crypto":100,"buffer/":120,"buffer-to-uint8array":229,"bytebuffer":230,"../helpers/configFactory":4435,"../helpers/slots":4581,"./contact":5028,"./dapp":4583,"./delegate":5030,"./signature":4585,"./transfer":4586,"./username":5033,"./vote":4588,"./marks":4589,"./issueAssets":5036,"./destoryAssets":5037,"./transferAssets":4592,"debug":77,"../helpers/ed.js":4593,"../helpers/bignum.js":4594}],4436:[function(require,module,exports) {
 
-'use strict';
+"use strict";
 
-var Validator = require('../validator');
-var crypto = require('crypto');
+var Validator = require("../validator");
+var crypto = require("crypto");
 var cryptoBrowserify = require("crypto-browserify");
 // var ed = require('ed25519');
-var Buffer = require('buffer/').Buffer;
-var tx = require('../tx');
-var BigNumber = require('../helpers/bignum.js');
-var addressHelper = require('../helpers/address');
-var slots = require('../helpers/slots');
-var TransactionTypes = require('../helpers/transaction-types');
-var ed = require('../helpers/ed.js');
+var Buffer = require("buffer/").Buffer;
+var tx = require("../tx");
+var BigNumber = require("../helpers/bignum.js");
+var addressHelper = require("../helpers/address");
+var slots = require("../helpers/slots");
+var TransactionTypes = require("../helpers/transaction-types");
+var ed = require("../helpers/ed.js");
 
 function createTransaction(body, cb) {
+  tx.validateInput(body, function (err) {
+    if (err) {
+      var errorMessage = err[0].path.replace(/#\//g, "") + ": " + err[0].message;
 
-    tx.validateInput(body, function (err) {
-        if (err) {
+      return cb({
+        message: errorMessage,
+        success: false
+      });
+    }
 
-            var errorMessage = err[0].path.replace(/#\//g, "") + ": " + err[0].message;
+    //验证密码信息（根据登录密码生成 keypair）
+    var hash = crypto.createHash("sha256").update(body.secret, "utf8").digest();
+    var keypair = ed.keyFromSecret(hash);
 
-            return cb({
-                message: errorMessage,
-                success: false
-            });
-        }
+    keypair.publicKey = Buffer.from(keypair.getPublic());
 
-        //验证密码信息（根据登录密码生成 keypair）
-        var hash = crypto.createHash('sha256').update(body.secret, 'utf8').digest();
-        var keypair = ed.keyFromSecret(hash);
+    if (body.publicKey) {
+      if (keypair.publicKey.toString("hex") != body.publicKey) {
+        return cb({
+          message: "Invalid passphrase"
+        });
+      }
+    }
 
-        keypair.publicKey = Buffer.from(keypair.getPublic());
+    var secondKeypair = null;
+    // var newSecondKeypair = null;
 
-        if (body.publicKey) {
-            if (keypair.publicKey.toString('hex') != body.publicKey) {
-                return cb({
-                    message: "Invalid passphrase"
-                });
-            }
-        }
+    if (body.secondSecret) {
+      secondKeypair = formatSecondSecret(body.publicKey, body.secondSecret);
+    }
 
-        var secondKeypair = null;
-        // var newSecondKeypair = null;
+    // if (body.newSecondSecret) {
+    //     newSecondKeypair = formatSecondSecret(body.publicKey, body.newSecondSecret);
+    // }
 
-        if (body.secondSecret) {
-            secondKeypair = formatSecondSecret(body.publicKey, body.secondSecret);
-        }
+    var senderId = addressHelper.generateBase58CheckAddress(keypair.publicKey.toString("hex"));
 
-        // if (body.newSecondSecret) {
-        //     newSecondKeypair = formatSecondSecret(body.publicKey, body.newSecondSecret);
-        // }
+    var data = {
+      type: body.type,
+      amount: body.amount || "0",
+      senderPublicKey: keypair.publicKey.toString("hex"),
+      senderId: senderId,
+      recipientId: body.recipientId || null,
+      fee: body.fee,
+      recipientUsername: body.recipientUsername || null,
+      keypair: keypair,
+      secondKeypair: secondKeypair,
+      // newSecondKeypair: newSecondKeypair,
+      timestamp: body.timestamp,
+      // remark: body.remark || "",
+      asset: body.asset || {}
+    };
+    if (body.multisigAccountPublicKey) {
+      //多重签名公钥
+      data.senderPublicKey = body.multisigAccountPublicKey;
+      data.senderId = addressHelper.generateBase58CheckAddress(keypair.senderPublicKey.toString("hex"));
+      data.requester = keypair; //多重签名交易发起人
+    }
 
-        var senderId = addressHelper.generateBase58CheckAddress(keypair.publicKey.toString('hex'));
+    var trs = {
+      type: data.type, //交易类型
+      amount: data.amount, //交易接额
+      senderId: data.senderId,
+      senderPublicKey: data.senderPublicKey,
+      requesterPublicKey: data.requester ? data.requester.publicKey.toString("hex") : null,
+      timestamp: data.timestamp, //生成交易时间戳
+      fee: data.fee,
+      // remark: data.remark || '',
+      asset: {}
+    };
 
-        var data = {
-            type: body.type,
-            amount: body.amount || "0",
-            senderPublicKey: keypair.publicKey.toString('hex'),
-            senderId: senderId,
-            recipientId: body.recipientId || null,
-            fee: body.fee,
-            recipientUsername: body.recipientUsername || null,
-            keypair: keypair,
-            secondKeypair: secondKeypair,
-            // newSecondKeypair: newSecondKeypair,
-            timestamp: body.timestamp,
-            // remark: body.remark || "",
-            asset: body.asset || {}
-        };
-        if (body.multisigAccountPublicKey) {
-            //多重签名公钥
-            data.senderPublicKey = body.multisigAccountPublicKey;
-            data.senderId = addressHelper.generateBase58CheckAddress(keypair.senderPublicKey.toString('hex'));
-            data.requester = keypair; //多重签名交易发起人
-        }
+    trs = tx.create(data, trs); //todo:
 
-        var trs = {
-            type: data.type, //交易类型
-            amount: data.amount, //交易接额
-            senderId: data.senderId,
-            senderPublicKey: data.senderPublicKey,
-            requesterPublicKey: data.requester ? data.requester.publicKey.toString('hex') : null,
-            timestamp: data.timestamp, //生成交易时间戳
-            fee: data.fee,
-            // remark: data.remark || '',
-            asset: {}
-        };
+    //添加账户签名(登录密码)
+    trs.signature = tx.sign(data.keypair, trs);
 
-        trs = tx.create(data, trs); //todo:
+    //添加支付密码
+    if (data.secondKeypair && data.type != 1) {
+      trs.signSignature = tx.secondsign(data.secondKeypair, trs);
+    }
 
+    //修改支付密码
+    if (data.newSecondKeypair && data.type === 1) {
+      trs.signSignature = tx.secondsign(data.secondKeypair, trs);
+      trs.newSignSignature = tx.secondsign(data.newSecondKeypair, trs);
+    }
 
-        //添加账户签名(登录密码)
-        trs.signature = tx.sign(data.keypair, trs);
+    //添加交易的 id
+    trs.id = tx.getId(trs);
 
-        //添加支付密码
-        if (data.secondKeypair && data.type != 1) {
-            trs.signSignature = tx.secondsign(data.secondKeypair, trs);
-        }
+    // trs.fee = accMul(data.fee, 100000000);
 
-        //修改支付密码
-        if (data.newSecondKeypair && data.type === 1) {
-            trs.signSignature = tx.secondsign(data.secondKeypair, trs);
-            trs.newSignSignature = tx.secondsign(data.newSecondKeypair, trs);
-        }
+    //计算交易费用
+    // trs.fee = privated.types[trs.type].calculateFee.call(this, trs, data.sender) || false;
 
-        //添加交易的 id
-        trs.id = tx.getId(trs);
-
-        // trs.fee = accMul(data.fee, 100000000);
-
-        //计算交易费用
-        // trs.fee = privated.types[trs.type].calculateFee.call(this, trs, data.sender) || false;
-
-        cb(null, trs);
-    });
-};
+    cb(null, trs);
+  });
+}
 
 // function calc(height) {
 //     return Math.floor(height / constants.delegates) + (height % constants.delegates > 0 ? 1 : 0);
 // }
 
 function formatSecondSecret(publicKey, secondSecret) {
-    var reg = /^[^\s]+$/;
-    if (!reg.test(secondSecret)) {
-        return cb({
-            message: "The Second Passphrase cannot contain spances"
-        });
-    }
+  var reg = /^[^\s]+$/;
+  if (!reg.test(secondSecret)) {
+    return cb({
+      message: "The Second Passphrase cannot contain spances"
+    });
+  }
 
-    var pattern = /^[^\u4e00-\u9fa5]+$/;
-    if (!pattern.test(secondSecret)) {
-        return cb({
-            message: "The Second Passphrase cannot contain Chinese characters"
-        });
-    }
+  var pattern = /^[^\u4e00-\u9fa5]+$/;
+  if (!pattern.test(secondSecret)) {
+    return cb({
+      message: "The Second Passphrase cannot contain Chinese characters"
+    });
+  }
 
-    var md5pass = publicKey.toString().trim() + '-' + crypto.createHash('md5').update(secondSecret.toString().trim()).digest('hex');
-    var secondHash = crypto.createHash('sha256').update(md5pass, 'utf8').digest();
-    var secondKeypair = ed.keyFromSecret(secondHash);
-    secondKeypair.publicKey = Buffer.from(secondKeypair.getPublic());
+  var md5pass = publicKey.toString().trim() + "-" + crypto.createHash("md5").update(secondSecret.toString().trim()).digest("hex");
+  var secondHash = crypto.createHash("sha256").update(md5pass, "utf8").digest();
+  var secondKeypair = ed.keyFromSecret(secondHash);
+  secondKeypair.publicKey = Buffer.from(secondKeypair.getPublic());
 
-    return secondKeypair;
+  return secondKeypair;
 }
 
 function accMul(arg1, arg2) {
+  arg1 = arg1.toString();
+  arg2 = arg2.toString();
 
-    arg1 = arg1.toString();
-    arg2 = arg2.toString();
+  var x = new BigNumber(arg1);
+  var y = new BigNumber(arg2);
 
-    var x = new BigNumber(arg1);
-    var y = new BigNumber(arg2);
-
-    return x.times(y).toString();
+  return x.times(y).toString();
 }
 
 module.exports = {
-    createTransaction: createTransaction
+  createTransaction: createTransaction
 };
-},{"../validator":1623,"crypto":100,"crypto-browserify":100,"buffer/":120,"../tx":91,"../helpers/bignum.js":197,"../helpers/address":93,"../helpers/slots":199,"../helpers/transaction-types":200,"../helpers/ed.js":194}],305:[function(require,module,exports) {
+},{"../validator":4603,"crypto":100,"crypto-browserify":100,"buffer/":120,"../tx":4437,"../helpers/bignum.js":4594,"../helpers/address":4444,"../helpers/slots":4581,"../helpers/transaction-types":4578,"../helpers/ed.js":4593}],305:[function(require,module,exports) {
 module.exports = {
   "_args": [
     [
@@ -94004,120 +93874,120 @@ module.exports = Mnemonic;
 },{"bitcore-lib":231,"unorm":228,"./pbkdf2":218,"./errors":219,"./words":260,"buffer":120}],103:[function(require,module,exports) {
 module.exports = require('./lib/mnemonic');
 
-},{"./lib/mnemonic":166}],92:[function(require,module,exports) {
+},{"./lib/mnemonic":166}],4438:[function(require,module,exports) {
 
-'use strict';
+"use strict";
 
-var Mnemonic = require('bitcore-mnemonic');
-var addressHelper = require('../helpers/address');
-var Validator = require('../validator');
+var Mnemonic = require("bitcore-mnemonic");
+var addressHelper = require("../helpers/address");
+var Validator = require("../validator");
 // var ed = require('ed25519');
 
-var Buffer = require('buffer/').Buffer;
-var crypto = require('crypto');
-var ed = require('../helpers/ed.js');
+var Buffer = require("buffer/").Buffer;
+var crypto = require("crypto");
+var ed = require("../helpers/ed.js");
 
 var Account = function () {
-    /**
-     * 获取新的助记符
-     * @param {*回调函数，空为同步} cb 
-     */
-    this.generateMnemonic = function (cb) {
-        var code = new Mnemonic(Mnemonic.Words.ENGLISH);
-        var secret = code.toString();
-        if (cb && typeof cb == 'function') {
-            cb(null, secret);
-        } else {
-            return secret;
+  /**
+   * 获取新的助记符
+   * @param {*回调函数，空为同步} cb
+   */
+  this.generateMnemonic = function (cb) {
+    var code = new Mnemonic(Mnemonic.Words.ENGLISH);
+    var secret = code.toString();
+    if (cb && typeof cb == "function") {
+      cb(null, secret);
+    } else {
+      return secret;
+    }
+  };
+
+  /**
+   * 根据助记符获得公钥
+   * @param secret
+   * @param cb
+   */
+  this.generatePublicKey = function (body, cb) {
+    //打印一个secret测试使用。
+    // var code = new Mnemonic(Mnemonic.Words.ENGLISH);
+    // console.log(code.toString());
+    //验证secret是否有效
+    Validator.validate(body, {
+      type: "object",
+      properties: {
+        secret: {
+          type: "string",
+          minLength: 1
         }
-    };
-
-    /**
-     * 根据助记符获得公钥
-     * @param secret
-     * @param cb
-     */
-    this.generatePublicKey = function (body, cb) {
-        //打印一个secret测试使用。
-        // var code = new Mnemonic(Mnemonic.Words.ENGLISH);
-        // console.log(code.toString());
-        //验证secret是否有效
-        Validator.validate(body, {
-            type: "object",
-            properties: {
-                secret: {
-                    type: "string",
-                    minLength: 1
-                }
-            },
-            required: ["secret"]
-        }, function (err) {
-            if (err) {
-                return cb(err[0].message);
-            }
-            var secret = body.secret;
-            if (!Mnemonic.isValid(secret.toString())) {
-                return cb({
-                    message: "Invalid secret"
-                });
-            }
-            //验证密码信息（根据登录密码生成 keypair）
-            var hash = crypto.createHash('sha256').update(body.secret, 'utf8').digest();
-            var keypair = ed.keyFromSecret(hash);
-            keypair.publicKey = Buffer.from(keypair.getPublic());
-
-            var data = {
-                publicKey: keypair.publicKey.toString('hex')
-            };
-            cb(null, data);
+      },
+      required: ["secret"]
+    }, function (err) {
+      if (err) {
+        return cb(err[0].message);
+      }
+      var secret = body.secret;
+      if (!Mnemonic.isValid(secret.toString())) {
+        return cb({
+          message: "Invalid secret"
         });
-    };
+      }
+      //验证密码信息（根据登录密码生成 keypair）
+      var hash = crypto.createHash("sha256").update(body.secret, "utf8").digest();
+      var keypair = ed.keyFromSecret(hash);
+      keypair.publicKey = Buffer.from(keypair.getPublic());
+
+      var data = {
+        publicKey: keypair.publicKey.toString("hex")
+      };
+      cb(null, data);
+    });
+  };
 };
 
 module.exports = new Account();
-},{"bitcore-mnemonic":103,"../helpers/address":93,"../validator":1623,"buffer/":120,"crypto":100,"../helpers/ed.js":194}],2215:[function(require,module,exports) {
+},{"bitcore-mnemonic":103,"../helpers/address":4444,"../validator":4603,"buffer/":120,"crypto":100,"../helpers/ed.js":4593}],5055:[function(require,module,exports) {
 var fetch;
 
 if (typeof self !== "undefined" && self.fetch) {
-	// 浏览器模式（兼容worker）
-	fetch = self.fetch;
+  // 浏览器模式（兼容worker）
+  fetch = self.fetch;
 } else if (typeof window !== "undefined" && window.fetch) {
-	// 老浏览器模式
-	// require("whatwg-fetch");
-	fetch = window.fetch;
+  // 老浏览器模式
+  // require("whatwg-fetch");
+  fetch = window.fetch;
 } else {
-	// nodejs
-	fetch = Function(`return require('node-fetch')`)();
+  // nodejs
+  fetch = Function(`return require('node-fetch')`)();
 }
 const rq = {
-	get(url, query) {
-		if (query) {
-			var query_string_list = [];
-			for (var key in query) {
-				query_string_list.push(encodeURIComponent(key) + "=" + encodeURIComponent(query[key]));
-			}
-			if (query_string_list.length) {
-				url += "?" + query_string_list.join("&");
-			}
-		}
-		return fetch(url, {
-			headers: {
-				"Content-Type": "application/json"
-			}
-		}).then(res => res.json());
-	},
-	put(url, body) {
-		return fetch(url, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(body)
-		}).then(res => res.json());
-	}
+  get(url, query) {
+    if (query) {
+      var query_string_list = [];
+      for (var key in query) {
+        query_string_list.push(encodeURIComponent(key) + "=" + encodeURIComponent(query[key]));
+      }
+      if (query_string_list.length) {
+        url += "?" + query_string_list.join("&");
+      }
+    }
+    return fetch(url, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(res => res.json());
+  },
+  put(url, body) {
+    return fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }).then(res => res.json());
+  }
 };
 module.exports = rq;
-},{}],2198:[function(require,module,exports) {
+},{}],4958:[function(require,module,exports) {
 var rq = require("../../helpers/rq");
 var ifmchainTransaction = require("../../transactions/transaction");
 var prefix = "/api";
@@ -94125,7 +93995,7 @@ var baseUrl = null;
 var transactionTypes = require("../../helpers/transaction-types");
 
 var Transaction = function (provider) {
-    baseUrl = provider.host + prefix;
+  baseUrl = provider.host + prefix;
 };
 
 /**
@@ -94134,9 +94004,9 @@ var Transaction = function (provider) {
  * @return {Promise}
  */
 Transaction.prototype.getTransactionById = function (id) {
-    var url = baseUrl + "/transactions/get";
+  var url = baseUrl + "/transactions/get";
 
-    return rq.get(url, { id: id });
+  return rq.get(url, { id: id });
 };
 
 /*
@@ -94144,9 +94014,9 @@ Transaction.prototype.getTransactionById = function (id) {
 *@return {Promise}
 */
 Transaction.prototype.getTimestamp = function () {
-    var url = baseUrl + "/transactions/getslottime";
+  var url = baseUrl + "/transactions/getslottime";
 
-    return rq.get(url);
+  return rq.get(url);
 };
 
 /**
@@ -94155,27 +94025,27 @@ Transaction.prototype.getTimestamp = function () {
  * @param cb
  */
 Transaction.prototype.putTransaction = function (info, cb) {
-    //get timestamp from ifmchain
-    return this.getTimestamp().then(function (data) {
-        if (data.success) {
-            info.timestamp = data.timestamp;
-            return info;
-        } else {
-            throw "get timestamp error";
-        }
-    }).then(function (data) {
-        //create transaction for ifmchain
-        ifmchainTransaction.createTransaction(data, function (err, transaction) {
-            if (err) {
-                err = err.message ? err.message : err;
-                cb(err);
-            } else {
-                return Transaction.prototype._putTransaction(transaction).then(function (data) {
-                    cb(null, data);
-                });
-            }
+  //get timestamp from ifmchain
+  return this.getTimestamp().then(function (data) {
+    if (data.success) {
+      info.timestamp = data.timestamp;
+      return info;
+    } else {
+      throw "get timestamp error";
+    }
+  }).then(function (data) {
+    //create transaction for ifmchain
+    ifmchainTransaction.createTransaction(data, function (err, transaction) {
+      if (err) {
+        err = err.message ? err.message : err;
+        cb(err);
+      } else {
+        return Transaction.prototype._putTransaction(transaction).then(function (data) {
+          cb(null, data);
         });
+      }
     });
+  });
 };
 
 /**
@@ -94184,98 +94054,98 @@ Transaction.prototype.putTransaction = function (info, cb) {
  * @return {Promise}
  */
 Transaction.prototype.getTransactions = function (data) {
-    /**
-     * the propertites of data is all optional
-     *  <String> blockId
-     *  <Number> startHeight
-     * <Number> limit
-     * <Number> type
-     * <PublicKey> senderPublicKey
-     * <PublicKey> ownerPublicKey
-     * <String> ownerAddress
-     * <String> senderId
-     * <PublicKey> senderPublicKey
-     * <String>  senderId
-     * <String> recipientId
-     * <String> senderUsername
-     * <String> recipientUsername
-     * <Float> amount
-     * <Float> fee
-     */
+  /**
+   * the propertites of data is all optional
+   *  <String> blockId
+   *  <Number> startHeight
+   * <Number> limit
+   * <Number> type
+   * <PublicKey> senderPublicKey
+   * <PublicKey> ownerPublicKey
+   * <String> ownerAddress
+   * <String> senderId
+   * <PublicKey> senderPublicKey
+   * <String>  senderId
+   * <String> recipientId
+   * <String> senderUsername
+   * <String> recipientUsername
+   * <Float> amount
+   * <Float> fee
+   */
 
-    var url = baseUrl + "/transactions";
+  var url = baseUrl + "/transactions";
 
-    if (!data) {
-        data = null;
-    }
-    return rq.get(url, data);
+  if (!data) {
+    data = null;
+  }
+  return rq.get(url, data);
 };
 
 Transaction.prototype._putTransaction = function (transaction) {
-    //ddifferent transaction has different name
-    var transactionSuffix = Transaction.prototype.getTransactionName(transaction.type);
-    var url = baseUrl + "/" + transactionSuffix;
-    return rq.put(url, transaction);
+  //ddifferent transaction has different name
+  var transactionSuffix = Transaction.prototype.getTransactionName(transaction.type);
+  var url = baseUrl + "/" + transactionSuffix;
+  return rq.put(url, transaction);
 };
 
 Transaction.prototype.getTransactionName = function (type) {
-    switch (type) {
-        case transactionTypes.SEND:
-            return "transactions/tx";
-        //“签名”交易
-        case transactionTypes.SIGNATURE:
-            return "signatures/tx";
-        //注册为受托人
-        case transactionTypes.DELEGATE:
-            return "delegates/tx";
-        //投票
-        case transactionTypes.VOTE:
-            return "accounts/tx/delegates";
-        //注册用户别名地址
-        case transactionTypes.USERNAME:
-            return "accounts/tx/username";
-        //添加联系人
-        case transactionTypes.FOLLOW:
-            return "contacts/tx";
-        //注册多重签名帐号
-        case transactionTypes.MULTI:
-            return "multisignatures/tx";
-        // 侧链应用
-        case transactionTypes.DAPP:
-            return "dapps/tx";
-        // //转入Dapp资金
-        // case transactionTypes.IN_TRANSFER:
-        //     return "xxxxx"
-        // //转出Dapp资金
-        // case transactionTypes.OUT_TRANSFER:
-        // return "xxxxx"
-        //点赞
-        case transactionTypes.FABULOUS:
-            return "fabulous/tx";
-        //打赏
-        case transactionTypes.GRATUITY:
-            return "gratuities/tx";
-        //发送信息
-        case transactionTypes.SENDMESSAGE:
-            return "messages/tx";
-        //侧链数据存证
-        case transactionTypes.MARK:
-            return "marks/tx";
-        //申请数字资产
-        case transactionTypes.ISSUE_ASSET:
-            return "assets/tx/issuedAsset";
-        //销毁数字资产
-        case transactionTypes.DESTORY_ASSET:
-            return "assets/tx/destoryAsset";
-        //数字资产转账
-        case transactionTypes.TRANSFER_ASSET:
-            return "assets/tx";
-    }
+  switch (type) {
+    case transactionTypes.SEND:
+      return "transactions/tx";
+    //“签名”交易
+    case transactionTypes.SIGNATURE:
+      return "signatures/tx";
+    //注册为受托人
+    case transactionTypes.DELEGATE:
+      return "delegates/tx";
+    //投票
+    case transactionTypes.VOTE:
+      return "accounts/tx/delegates";
+    //注册用户别名地址
+    case transactionTypes.USERNAME:
+      return "accounts/tx/username";
+    //添加联系人
+    case transactionTypes.FOLLOW:
+      return "contacts/tx";
+    //注册多重签名帐号
+    case transactionTypes.MULTI:
+      return "multisignatures/tx";
+    // 侧链应用
+    case transactionTypes.DAPP:
+      return "dapps/tx";
+    // //转入Dapp资金
+    // case transactionTypes.IN_TRANSFER:
+    //     return "xxxxx"
+    // //转出Dapp资金
+    // case transactionTypes.OUT_TRANSFER:
+    // return "xxxxx"
+    //点赞
+    case transactionTypes.FABULOUS:
+      return "fabulous/tx";
+    //打赏
+    case transactionTypes.GRATUITY:
+      return "gratuities/tx";
+    //发送信息
+    case transactionTypes.SENDMESSAGE:
+      return "messages/tx";
+    //侧链数据存证
+    case transactionTypes.MARK:
+      return "marks/tx";
+    //申请数字资产
+    case transactionTypes.ISSUE_ASSET:
+      return "assets/tx/issuedAsset";
+    //销毁数字资产
+    case transactionTypes.DESTORY_ASSET:
+      return "assets/tx/destoryAsset";
+    //数字资产转账
+    case transactionTypes.TRANSFER_ASSET:
+      return "assets/tx";
+  }
 };
 module.exports = Transaction;
-},{"../../helpers/rq":2215,"../../transactions/transaction":90,"../../helpers/transaction-types":200}],223:[function(require,module,exports) {
+},{"../../helpers/rq":5055,"../../transactions/transaction":4436,"../../helpers/transaction-types":4578}],223:[function(require,module,exports) {
 module.exports = XMLHttpRequest;
-},{}],99:[function(require,module,exports) {
+},{}],4443:[function(require,module,exports) {
 var Buffer = require("buffer").Buffer;
 "use strict";
 
@@ -94283,22 +94153,22 @@ var Buffer = require("buffer").Buffer;
 
 var XMLHttpRequest;
 if (typeof self !== "undefined" && self.XMLHttpRequest) {
-    // 浏览器模式（兼容worker）
-    XMLHttpRequest = self.XMLHttpRequest;
+  // 浏览器模式（兼容worker）
+  XMLHttpRequest = self.XMLHttpRequest;
 } else if (typeof window !== "undefined" && window.XMLHttpRequest) {
-    // 老浏览器模式
-    XMLHttpRequest = window.XMLHttpRequest;
+  // 老浏览器模式
+  XMLHttpRequest = window.XMLHttpRequest;
 } else {
-    XMLHttpRequest = Function(`return require('xmlhttprequest').XMLHttpRequest`)();
+  XMLHttpRequest = Function(`return require('xmlhttprequest').XMLHttpRequest`)();
 }
 
 var XHR2 = require("xhr2");
 
 var HttpProvider = function HttpProvider(host, timeout, user, password) {
-    this.host = host || "http://mainnet.ifmchain.org";
-    this.timeout = timeout || 0;
-    this.user = user;
-    this.password = password;
+  this.host = host || "http://mainnet.ifmchain.org";
+  this.timeout = timeout || 0;
+  this.user = user;
+  this.password = password;
 };
 
 /**
@@ -94309,24 +94179,24 @@ var HttpProvider = function HttpProvider(host, timeout, user, password) {
  * @return {XMLHttpRequest} object
  */
 HttpProvider.prototype.prepareRequest = function (async, payload) {
-    var method = payload.method || "POST";
-    var url = this.host + payload.path;
-    var request;
+  var method = payload.method || "POST";
+  var url = this.host + payload.path;
+  var request;
 
-    if (async) {
-        request = new XHR2();
-        request.timeout = this.timeout;
-    } else {
-        request = new XMLHttpRequest();
-    }
+  if (async) {
+    request = new XHR2();
+    request.timeout = this.timeout;
+  } else {
+    request = new XMLHttpRequest();
+  }
 
-    request.open(method, url, async);
-    if (this.user && this.password) {
-        var auth = "Basic " + new Buffer(this.user + ":" + this.password).toString("base64");
-        request.setRequestHeader("Authorization", auth);
-    }
-    request.setRequestHeader("Content-Type", "application/json");
-    return request;
+  request.open(method, url, async);
+  if (this.user && this.password) {
+    var auth = "Basic " + new Buffer(this.user + ":" + this.password).toString("base64");
+    request.setRequestHeader("Authorization", auth);
+  }
+  request.setRequestHeader("Content-Type", "application/json");
+  return request;
 };
 
 /**
@@ -94337,23 +94207,23 @@ HttpProvider.prototype.prepareRequest = function (async, payload) {
  * @return {Object} result
  */
 HttpProvider.prototype.sendSync = function (payload) {
-    var request = this.prepareRequest(false, payload);
+  var request = this.prepareRequest(false, payload);
 
-    try {
-        request.send(JSON.stringify(payload.body));
-    } catch (error) {
-        throw new Error(this.host);
-    }
+  try {
+    request.send(JSON.stringify(payload.body));
+  } catch (error) {
+    throw new Error(this.host);
+  }
 
-    var result = request.responseText;
+  var result = request.responseText;
 
-    try {
-        result = JSON.parse(result);
-    } catch (e) {
-        throw new Error(request.responseText);
-    }
+  try {
+    result = JSON.parse(result);
+  } catch (e) {
+    throw new Error(request.responseText);
+  }
 
-    return result;
+  return result;
 };
 
 /**
@@ -94364,32 +94234,32 @@ HttpProvider.prototype.sendSync = function (payload) {
  * @param {Function} callback triggered on end with (err, result)
  */
 HttpProvider.prototype.send = function (payload, callback) {
-    var request = this.prepareRequest(true, payload);
+  var request = this.prepareRequest(true, payload);
 
-    request.onreadystatechange = function () {
-        if (request.readyState === 4 && request.timeout !== 1) {
-            var result = request.responseText;
-            var error = null;
+  request.onreadystatechange = function () {
+    if (request.readyState === 4 && request.timeout !== 1) {
+      var result = request.responseText;
+      var error = null;
 
-            try {
-                result = JSON.parse(result);
-            } catch (e) {
-                error = new Error(request.responseText);
-            }
+      try {
+        result = JSON.parse(result);
+      } catch (e) {
+        error = new Error(request.responseText);
+      }
 
-            callback(error, result);
-        }
-    };
-
-    request.ontimeout = function () {
-        callback(new Error(this.timeout));
-    };
-
-    try {
-        request.send(JSON.stringify(payload.body));
-    } catch (error) {
-        callback(new Error(this.host));
+      callback(error, result);
     }
+  };
+
+  request.ontimeout = function () {
+    callback(new Error(this.timeout));
+  };
+
+  try {
+    request.send(JSON.stringify(payload.body));
+  } catch (error) {
+    callback(new Error(this.host));
+  }
 };
 
 /**
@@ -94399,23 +94269,23 @@ HttpProvider.prototype.send = function (payload, callback) {
  * @return {Boolean} returns true if request haven't failed. Otherwise false
  */
 HttpProvider.prototype.isConnected = function () {
-    try {
-        var result = this.sendSync({
-            method: "GET",
-            path: "/api/peers/version",
-            body: {}
-        });
-        if (result.success) {
-            return result.success == true;
-        }
-        return false;
-    } catch (e) {
-        return false;
+  try {
+    var result = this.sendSync({
+      method: "GET",
+      path: "/api/peers/version",
+      body: {}
+    });
+    if (result.success) {
+      return result.success == true;
     }
+    return false;
+  } catch (e) {
+    return false;
+  }
 };
 
 module.exports = HttpProvider;
-},{"xhr2":223,"buffer":120}],2199:[function(require,module,exports) {
+},{"xhr2":223,"buffer":120}],4959:[function(require,module,exports) {
 var rq = require("../../helpers/rq");
 
 var prefix = "/api/blocks";
@@ -94423,9 +94293,9 @@ var baseUrl = null;
 var Transaction = require("./transaction");
 
 var Block = function (provider) {
-    baseUrl = provider.host + prefix;
-    //create transactionApi in order to search order information
-    this.transactionApi = new Transaction(provider);
+  baseUrl = provider.host + prefix;
+  //create transactionApi in order to search order information
+  this.transactionApi = new Transaction(provider);
 };
 
 /**
@@ -94433,9 +94303,9 @@ var Block = function (provider) {
  * @return {Promise}
  */
 Block.prototype.getHeight = function (callback) {
-    var url = baseUrl + "/getHeight";
+  var url = baseUrl + "/getHeight";
 
-    return rq.get(url);
+  return rq.get(url);
 };
 
 /**
@@ -94444,24 +94314,24 @@ Block.prototype.getHeight = function (callback) {
  * @return {Promise}
  */
 Block.prototype.getComfirmedNumberByid = function (id) {
-    var that = this;
-    return this.transactionApi.getTransactionById(id).then(function (data) {
-        if (data.success) {
-            var transactionHeight = data.transaction.height;
-            return transactionHeight;
-        } else {
-            throw "get transaction by id error";
-        }
-    }).then(function (transactionHeight) {
-        return that.getHeight().then(function (data) {
-            if (data.success) {
-                var confirmedNumber = data.height - transactionHeight + 1;
-                return confirmedNumber;
-            } else {
-                throw "get block height error";
-            }
-        });
+  var that = this;
+  return this.transactionApi.getTransactionById(id).then(function (data) {
+    if (data.success) {
+      var transactionHeight = data.transaction.height;
+      return transactionHeight;
+    } else {
+      throw "get transaction by id error";
+    }
+  }).then(function (transactionHeight) {
+    return that.getHeight().then(function (data) {
+      if (data.success) {
+        var confirmedNumber = data.height - transactionHeight + 1;
+        return confirmedNumber;
+      } else {
+        throw "get block height error";
+      }
     });
+  });
 };
 
 /**
@@ -94469,18 +94339,18 @@ Block.prototype.getComfirmedNumberByid = function (id) {
  * @return {Promise}
  */
 Block.prototype.getBlockById = function (id) {
-    var url = baseUrl + "/get";
-    return rq.get(url, {
-        id: id
-    });
+  var url = baseUrl + "/get";
+  return rq.get(url, {
+    id: id
+  });
 };
 
 /**
  * get last block
  */
 Block.prototype.getLastBlock = function () {
-    var url = baseUrl + "/getLastBlock";
-    return rq.get(url);
+  var url = baseUrl + "/getLastBlock";
+  return rq.get(url);
 };
 
 /**
@@ -94489,7 +94359,7 @@ Block.prototype.getLastBlock = function () {
  * @return {Promise}
  */
 Block.prototype.getBlocks = function (data) {
-    /**
+  /**
      limit
     orderBy
     offset
@@ -94500,37 +94370,37 @@ Block.prototype.getBlocks = function (data) {
     previousBlock
     height
      */
-    if (!data) {
-        data = null;
-    }
+  if (!data) {
+    data = null;
+  }
 
-    var url = baseUrl;
-    return rq.get(url, data);
+  var url = baseUrl;
+  return rq.get(url, data);
 };
 module.exports = Block;
-},{"../../helpers/rq":2215,"./transaction":2198}],2200:[function(require,module,exports) {
+},{"../../helpers/rq":5055,"./transaction":4958}],4960:[function(require,module,exports) {
 var rq = require("../../helpers/rq");
 
 var prefix = "/api/accounts";
 
 var Account = function (provider) {
-	baseUrl = provider.host + prefix;
+  baseUrl = provider.host + prefix;
 };
 
 Account.prototype.getUserByAddress = function (address) {
-	var url = baseUrl + "?address=" + address;
+  var url = baseUrl + "?address=" + address;
 
-	return rq.get(url);
+  return rq.get(url);
 };
 
 Account.prototype.getUserByUsername = function (username) {
-	var url = baseUrl + "/username/get?username=" + username;
+  var url = baseUrl + "/username/get?username=" + username;
 
-	return rq.get(url);
+  return rq.get(url);
 };
 
 module.exports = Account;
-},{"../../helpers/rq":2215}],2201:[function(require,module,exports) {
+},{"../../helpers/rq":5055}],4961:[function(require,module,exports) {
 var rq = require("../../helpers/rq");
 var ifmchainTransaction = require("../../transactions/transaction");
 var prefix = "/api/peers";
@@ -94539,7 +94409,7 @@ var remotePeer = null;
 var transactionTypes = require("../../helpers/transaction-types");
 
 var Peer = function (provider) {
-    baseUrl = provider.host + prefix;
+  baseUrl = provider.host + prefix;
 };
 
 /**
@@ -94549,81 +94419,81 @@ var Peer = function (provider) {
  * @return {Promise}
  */
 Peer.prototype.getPeer = function (ipStr, port) {
-    if (!ipStr || !port) {
-        throw "please input ip_str and port";
-    }
+  if (!ipStr || !port) {
+    throw "please input ip_str and port";
+  }
 
-    var url = baseUrl + "/get";
-    return rq.get(url, {
-        ip_str: ipStr,
-        port: port
-    });
+  var url = baseUrl + "/get";
+  return rq.get(url, {
+    ip_str: ipStr,
+    port: port
+  });
 };
 
 Peer.prototype.getPeers = function (params) {
-    var url = baseUrl;
-    return rq.get(url, params);
+  var url = baseUrl;
+  return rq.get(url, params);
 };
 
 /**
  * search Peers from internet
  */
 Peer.prototype.searchPeers = function (callback) {
-    if (!callback) {
-        return "searchPeers: lack callback";
-    }
+  if (!callback) {
+    return "searchPeers: lack callback";
+  }
 
-    if (remotePeer) {
-        callback(null, remotePeer);
-    }
-    /**
-     * minimum ip of long: 16777216
-     * maximum ip of long: 3758096383
-     * count: 3741319168
-     */
-    var beginIpOfLong = 16777216 + Math.floor(Math.random() * 3741319168);
+  if (remotePeer) {
+    callback(null, remotePeer);
+  }
+  /**
+   * minimum ip of long: 16777216
+   * maximum ip of long: 3758096383
+   * count: 3741319168
+   */
+  var beginIpOfLong = 16777216 + Math.floor(Math.random() * 3741319168);
 
-    //beginIpOfLong to minimum
-    Peer._searchPeers(beginIpOfLong, 16777216, callback);
-    //beginIpOfLong to maximum
-    Peer._searchPeers(beginIpOfLong, 3758096383, callback);
+  //beginIpOfLong to minimum
+  Peer._searchPeers(beginIpOfLong, 16777216, callback);
+  //beginIpOfLong to maximum
+  Peer._searchPeers(beginIpOfLong, 3758096383, callback);
 };
 
 /**
  * get begin search ip, which is long
  */
 Peer._searchPeers = function (beginIpOfLong, endIpOfLong, callback) {
-    //swap
-    if (beginIpOfLong > endIpOfLong) {
-        var tmp = beginIpOfLong;
-        beginIpOfLong = endIpOfLong;
-        endIpOfLong = tmp;
-    }
-    //send mulitiply http
-    for (var i = beginIpOfLong; i < endIpOfLong; i++) {
-        var ip = Peer.ipFromLong(i);
+  //swap
+  if (beginIpOfLong > endIpOfLong) {
+    var tmp = beginIpOfLong;
+    beginIpOfLong = endIpOfLong;
+    endIpOfLong = tmp;
+  }
+  //send mulitiply http
+  for (var i = beginIpOfLong; i < endIpOfLong; i++) {
+    var ip = Peer.ipFromLong(i);
 
-        var url = baseUrl + "api/peers/version";
-        return rq.get(url).then(function (res) {
-            if (res.hasOwnProperty("success") && res.hasOwnProperty("peers") && res.peers) {
-                if (!remotePeer) {
-                    remotePeer = http.header.ip;
-                    callback(null, remotePeer);
-                } else {
-                    callback(null, remotePeer);
-                }
-                endIpOfLong = -1;
-            }
-        });
-    }
+    var url = baseUrl + "api/peers/version";
+    return rq.get(url).then(function (res) {
+      if (res.hasOwnProperty("success") && res.hasOwnProperty("peers") && res.peers) {
+        if (!remotePeer) {
+          remotePeer = http.header.ip;
+          callback(null, remotePeer);
+        } else {
+          callback(null, remotePeer);
+        }
+        endIpOfLong = -1;
+      }
+    });
+  }
 };
 
 Peer.ipFromLong = function (ipl) {
-    return (ipl >>> 24) + "." + (ipl >> 16 & 255) + "." + (ipl >> 8 & 255) + "." + (ipl & 255);
+  return (ipl >>> 24) + "." + (ipl >> 16 & 255) + "." + (ipl >> 8 & 255) + "." + (ipl & 255);
 };
 
 module.exports = Peer;
-},{"../../helpers/rq":2215,"../../transactions/transaction":90,"../../helpers/transaction-types":200}],96:[function(require,module,exports) {
+},{"../../helpers/rq":5055,"../../transactions/transaction":4436,"../../helpers/transaction-types":4578}],4439:[function(require,module,exports) {
 var Transaction = require("./apis/transaction");
 var HttpProvider = require("./httpprovider");
 var Block = require("./apis/block");
@@ -94631,163 +94501,91 @@ var Account = require("./apis/account");
 var Peer = require("./apis/peer");
 
 function Api(provider) {
-    if (!provider) {
-        provider = new HttpProvider();
-    }
-    return {
-        transaction: new Transaction(provider),
-        block: new Block(provider),
-        account: new Account(provider),
-        peer: new Peer(provider),
-        isConnected: provider.isConnected.bind(provider)
-    };
+  if (!provider) {
+    provider = new HttpProvider();
+  }
+  return {
+    transaction: new Transaction(provider),
+    block: new Block(provider),
+    account: new Account(provider),
+    peer: new Peer(provider),
+    isConnected: provider.isConnected.bind(provider)
+  };
 }
 
 module.exports = Api;
-},{"./apis/transaction":2198,"./httpprovider":99,"./apis/block":2199,"./apis/account":2200,"./apis/peer":2201}],97:[function(require,module,exports) {
-module.exports = {
-  /**
-   * SEND:是最基本的转账交易
-   */
-  SEND: 0,
-  /**
-   * SIGNATURE:“签名”交易
-   */
-  SIGNATURE: 1,
-  /**
-   * DELEGATE:注册为受托人
-   */
-  DELEGATE: 2,
-  /**
-   * VOTE:投票
-   */
-  VOTE: 3,
-  /**
-   * USERNAME:注册用户别名地址
-   */
-  USERNAME: 4,
-  /**
-   * FOLLOW:添加联系人
-   */
-  FOLLOW: 5,
-  /**
-   * MULTI:注册多重签名帐号
-   */
-  MULTI: 6,
-  /**
-   * DAPP:侧链应用
-   */
-  DAPP: 7,
-  /**
-   * IN_TRANSFER:转入Dapp资金
-   */
-  IN_TRANSFER: 8,
-  /**
-   * OUT_TRANSFER:转出Dapp资金
-   */
-  OUT_TRANSFER: 9,
-  /**
-   * FABULOUS:点赞
-   */
-  FABULOUS: 10,
-  /**
-   * GRATUITY：打赏
-   */
-  GRATUITY: 11,
-  /**
-   * SENDMESSAGE: 发送信息
-   */
-  SENDMESSAGE: 12,
-  /**
-   * MARK: 侧链数据存证
-   */
-  MARK: 13,
-  /**
-   * ISSUE_ASSET: 发行数字资产
-   */
-  ISSUE_ASSET: 14,
-  /**
-   * DESTORY_ASSET: 销毁数字资产
-   */
-  DESTORY_ASSET: 15,
-  /**
-   * TRANSFER_ASSET: 数字资产转账
-   */
-  TRANSFER_ASSET: 16
-};
-},{}],98:[function(require,module,exports) {
+},{"./apis/transaction":4958,"./httpprovider":4443,"./apis/block":4959,"./apis/account":4960,"./apis/peer":4961}],4442:[function(require,module,exports) {
 
-'use strict';
+"use strict";
 
-var crypto = require('crypto');
-var ed = require('./ed.js');
+var crypto = require("crypto");
+var ed = require("./ed.js");
 var addressHelper = require("./address");
 var Buffer = require("buffer/").Buffer;
 var Mnemonic = require("bitcore-mnemonic");
 
 var KeypairHelper = function () {
+  /**
+   * generate publickey from secret
+   * @param {String} secret
+   */
+  this.create = function (secret) {
+    //验证密码信息（根据登录密码生成 keypair）
+    var hash = crypto.createHash("sha256").update(secret, "utf8").digest();
+    var keypair = ed.keyFromSecret(hash);
+    keypair.publicKey = Buffer.from(keypair.getPublic());
+    return keypair;
+  }, this.createSecondKeypair = function (publicKey, secondSecret) {
+    //验证密码信息（根据登录密码生成 keypair）
+    var md5pass = publicKey.toString().trim() + "-" + crypto.createHash("md5").update(secondSecret.toString().trim()).digest("hex");
+    var hash = crypto.createHash("sha256").update(md5pass, "utf8").digest();
+    var keypair = ed.keyFromSecret(hash);
+    keypair.publicKey = Buffer.from(keypair.getPublic());
+    return keypair;
+  },
+  /**
+   * generate address from publickey
+   * @param {publicKey} publicKey
+   */
+  this.generateBase58CheckAddress = function (publicKey) {
+    return addressHelper.generateBase58CheckAddress(publicKey);
+  },
+  /**
+   * 生成密码，需要选项、语言和分隔符，默认分隔符 @#@ 和语言 en
+   * @param {*} params
+   * @param {*} lang
+   * @param {*} divide
+   */
+  this.generatePassPhraseWithInfo = function (params, lang, divide) {
+    divide = divide || "@#@";
+    var md5 = crypto.createHash("md5");
+    var sha = crypto.createHash("sha256");
+    var password = "",
+        cryptoOptStr = "";
+    if (Object.keys(params).length > 0) {
+      var optionStr = "";
+      for (var i in params) {
+        optionStr += params[i];
+      }
+      cryptoOptStr = md5.update(optionStr).digest("hex");
+      var reg = /.{4}/g;
+      var cryptoArr = cryptoOptStr.match(reg);
+      cryptoOptStr = cryptoArr.join(" ");
+      cryptoOptStr += divide;
+    }
 
-    /**
-     * generate publickey from secret
-     * @param {String} secret
-     */
-    this.create = function (secret) {
-        //验证密码信息（根据登录密码生成 keypair）
-        var hash = crypto.createHash('sha256').update(secret, 'utf8').digest();
-        var keypair = ed.keyFromSecret(hash);
-        keypair.publicKey = Buffer.from(keypair.getPublic());
-        return keypair;
-    }, this.createSecondKeypair = function (publicKey, secondSecret) {
-        //验证密码信息（根据登录密码生成 keypair）
-        var md5pass = publicKey.toString().trim() + '-' + crypto.createHash('md5').update(secondSecret.toString().trim()).digest('hex');
-        var hash = crypto.createHash('sha256').update(md5pass, 'utf8').digest();
-        var keypair = ed.keyFromSecret(hash);
-        keypair.publicKey = Buffer.from(keypair.getPublic());
-        return keypair;
-    },
-    /**
-     * generate address from publickey
-     * @param {publicKey} publicKey
-     */
-    this.generateBase58CheckAddress = function (publicKey) {
-        return addressHelper.generateBase58CheckAddress(publicKey);
-    },
-    /**
-     * 生成密码，需要选项、语言和分隔符，默认分隔符 @#@ 和语言 en
-     * @param {*} params 
-     * @param {*} lang 
-     * @param {*} divide 
-     */
-    this.generatePassPhraseWithInfo = function (params, lang, divide) {
-        divide = divide || '@#@';
-        var md5 = crypto.createHash('md5');
-        var sha = crypto.createHash('sha256');
-        var password = '',
-            cryptoOptStr = '';
-        if (Object.keys(params).length > 0) {
-            var optionStr = '';
-            for (var i in params) {
-                optionStr += params[i];
-            }
-            cryptoOptStr = md5.update(optionStr).digest('hex');
-            var reg = /.{4}/g;
-            var cryptoArr = cryptoOptStr.match(reg);
-            cryptoOptStr = cryptoArr.join(' ');
-            cryptoOptStr += divide;
-        }
+    if (lang === "cn") {
+      password = new Mnemonic(256, Mnemonic.Words.CHINESE)["phrase"];
+    } else {
+      password = new Mnemonic(256, Mnemonic.Words.ENGLISH)["phrase"];
+    }
 
-        if (lang === 'cn') {
-            password = new Mnemonic(256, Mnemonic.Words.CHINESE)['phrase'];
-        } else {
-            password = new Mnemonic(256, Mnemonic.Words.ENGLISH)['phrase'];
-        }
-
-        return cryptoOptStr + password;
-    }, this.formatSecondPassphrase = function (publicKey, secondSecret) {};
+    return cryptoOptStr + password;
+  }, this.formatSecondPassphrase = function (publicKey, secondSecret) {};
 };
 
 module.exports = new KeypairHelper();
-},{"crypto":100,"./ed.js":194,"./address":93,"buffer/":120,"bitcore-mnemonic":103}],430:[function(require,module,exports) {
+},{"crypto":100,"./ed.js":4593,"./address":4444,"buffer/":120,"bitcore-mnemonic":103}],430:[function(require,module,exports) {
 var process = require("process");
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -95608,43 +95406,41 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 },{"fs":361,"path":430,"crypto":100,"process":165}],29:[function(require,module,exports) {
-
 var configFactory = require("./lib/helpers/configFactory");
 
 var IfmchainJs = function (NET_VERSION) {
-
-    this.getIfmchainJsObject = function () {
-        return {
-            configFactory: require("./lib/helpers/configFactory"),
-            transaction: require("./lib/transactions/transaction.js"),
-            tx: require("./lib/tx/index.js"),
-            account: require("./lib/accounts/account.js"),
-            Api: require("./lib/api/index"),
-            Mnemonic: require('bitcore-mnemonic'), //用于生成随机语句
-            transactionTypes: require('./lib/helpers/transactionType'),
-            keypairHelper: require("./lib/helpers/keypair"),
-            HttpProvider: require("./lib/api/httpprovider"),
-            addressCheck: require("./lib/helpers/address.js"),
-            nacl_factory: require("js-nacl"),
-            Buff: require("buffer/").Buffer,
-            crypto: require("crypto")
-        };
+  this.getIfmchainJsObject = function () {
+    return {
+      configFactory: require("./lib/helpers/configFactory"),
+      transaction: require("./lib/transactions/transaction.js"),
+      tx: require("./lib/tx/index.js"),
+      account: require("./lib/accounts/account.js"),
+      Api: require("./lib/api/index"),
+      Mnemonic: require("bitcore-mnemonic"), //用于生成随机语句
+      transactionTypes: require("./lib/helpers/transactionType"),
+      keypairHelper: require("./lib/helpers/keypair"),
+      HttpProvider: require("./lib/api/httpprovider"),
+      addressCheck: require("./lib/helpers/address.js"),
+      nacl_factory: require("js-nacl"),
+      Buff: require("buffer/").Buffer,
+      crypto: require("crypto")
     };
+  };
 
-    if (NET_VERSION) {
-        //set environment
-        configFactory.setNET_VERSION(NET_VERSION);
-        return this.getIfmchainJsObject();
-    } else if (configFactory.getNET_VERSION()) {
-        //already has environment
-        return this.getIfmchainJsObject();
-    } else {
-        throw "set ifmchainjs environment error";
-    }
+  if (NET_VERSION) {
+    //set environment
+    configFactory.setNET_VERSION(NET_VERSION);
+    return this.getIfmchainJsObject();
+  } else if (configFactory.getNET_VERSION()) {
+    //already has environment
+    return this.getIfmchainJsObject();
+  } else {
+    throw "set ifmchainjs environment error";
+  }
 };
 
 module.exports = IfmchainJs;
-},{"./lib/helpers/configFactory":95,"./lib/transactions/transaction.js":90,"./lib/tx/index.js":91,"./lib/accounts/account.js":92,"./lib/api/index":96,"bitcore-mnemonic":103,"./lib/helpers/transactionType":97,"./lib/helpers/keypair":98,"./lib/api/httpprovider":99,"./lib/helpers/address.js":93,"js-nacl":101,"buffer/":120,"crypto":100}],131:[function(require,module,exports) {
+},{"./lib/helpers/configFactory":4435,"./lib/transactions/transaction.js":4436,"./lib/tx/index.js":4437,"./lib/accounts/account.js":4438,"./lib/api/index":4439,"bitcore-mnemonic":103,"./lib/helpers/transactionType":4578,"./lib/helpers/keypair":4442,"./lib/api/httpprovider":4443,"./lib/helpers/address.js":4444,"js-nacl":101,"buffer/":120,"crypto":100}],131:[function(require,module,exports) {
 exports.f = require('./_wks');
 
 },{"./_wks":56}],50:[function(require,module,exports) {

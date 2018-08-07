@@ -39,7 +39,7 @@ export class ServerResError extends Error {
   static parseErrorMessage(
     code: string | undefined,
     message: string,
-    details?,
+    details?
   ) {
     const CODE_LIST = code ? [code + ""] : [];
     var MESSAGE = message;
@@ -107,7 +107,7 @@ export class AppFetchProvider extends EventEmitter {
           // resolve(res);
           res.success ? resolve(res) : reject(res);
         });
-      }),
+      })
     );
   }
   // private _user_token!: string;
@@ -117,7 +117,7 @@ export class AppFetchProvider extends EventEmitter {
     public appSetting: AppSettingProvider,
     public translateService: TranslateService,
     public dbCache: DbCacheProvider,
-    public device: Device,
+    public device: Device
   ) {
     super();
     tryRegisterGlobal("FETCH", this);
@@ -132,7 +132,7 @@ export class AppFetchProvider extends EventEmitter {
         `${method}${url
           .replace(AppUrl.SERVER_URL, "")
           .replace(AppUrl.BACKEND_VERSION, "")}`,
-        query,
+        query
       );
     };
     ["get", "delete", "head", "options"].forEach(method => {
@@ -174,7 +174,7 @@ export class AppFetchProvider extends EventEmitter {
       throw ServerResError.translateAndParseErrorMessage(
         err_message,
         error_code,
-        details,
+        details
       );
     } else {
       if (data) {
@@ -199,7 +199,7 @@ export class AppFetchProvider extends EventEmitter {
   private _handleUrlAndOptions(
     url: string,
     options: RequestOptionsArgs = {},
-    without_token?: boolean,
+    without_token?: boolean
   ) {
     if (!without_token) {
       const headers = options.headers || (options.headers = new Headers());
@@ -221,14 +221,14 @@ export class AppFetchProvider extends EventEmitter {
     body: any,
     options: RequestOptionsArgs = {},
     without_token?: boolean,
-    timeout_ms = this.timeout_ms,
+    timeout_ms = this.timeout_ms
   ) {
     if (!this.force_network) {
       // 先查找自定义API接口
       const custom_api_config:
         | installApiCache<T>
         | undefined = this.dbCache.cache_api_map.get(
-        `${method}:${AppUrl.getPathName(url)}`,
+        `${method}:${AppUrl.getPathName(url)}`
       );
       if (custom_api_config) {
         const api_service = custom_api_config;
@@ -242,7 +242,7 @@ export class AppFetchProvider extends EventEmitter {
           };
           const { reqs, cache } = await api_service.beforeService(
             db,
-            requestOptions,
+            requestOptions
           );
           if (reqs.length) {
             const mix_data = await Promise.all(
@@ -256,10 +256,10 @@ export class AppFetchProvider extends EventEmitter {
                     body,
                     reqOptions,
                     without_token,
-                    timeout_ms,
+                    timeout_ms
                   ),
                 };
-              }),
+              })
             )
               .then(res_list => api_service.afterService(res_list))
               .catch(err => {
@@ -286,7 +286,7 @@ export class AppFetchProvider extends EventEmitter {
       body,
       options,
       without_token,
-      timeout_ms,
+      timeout_ms
     );
   }
   private _request<T>(
@@ -295,7 +295,7 @@ export class AppFetchProvider extends EventEmitter {
     body: any,
     options: RequestOptionsArgs = {},
     without_token?: boolean,
-    timeout_ms = this.timeout_ms,
+    timeout_ms = this.timeout_ms
   ) {
     const reqInfo = this._handleUrlAndOptions(url, options, without_token);
     const httpAdapter =
@@ -327,7 +327,7 @@ export class AppFetchProvider extends EventEmitter {
           setTimeout(() => {
             // TOOO: 国际化
             reject(new Error("TIME OUT"));
-          }, timeout_ms || 30000),
+          }, timeout_ms || 30000)
         ),
       ]);
     }
@@ -336,55 +336,55 @@ export class AppFetchProvider extends EventEmitter {
   get<T>(
     url: string | AppUrl,
     options: RequestOptionsArgs = {},
-    no_token?: boolean,
+    no_token?: boolean
   ): Promise<T> {
     return this._requestWithApiService(
       "get",
       url.toString(),
       void 0,
       options,
-      no_token,
+      no_token
     );
   }
   post<T>(
     url: string | AppUrl,
     body: any = {},
     options: RequestOptionsArgs = {},
-    no_token?: boolean,
+    no_token?: boolean
   ): Promise<T> {
     return this._requestWithApiService(
       "post",
       url.toString(),
       body,
       options,
-      no_token,
+      no_token
     );
   }
   put<T>(
     url: string | AppUrl,
     body: any = {},
     options: RequestOptionsArgs = {},
-    no_token?: boolean,
+    no_token?: boolean
   ): Promise<T> {
     return this._requestWithApiService(
       "put",
       url.toString(),
       body,
       options,
-      no_token,
+      no_token
     );
   }
   delete<T>(
     url: string | AppUrl,
     options: RequestOptionsArgs = {},
-    no_token?: boolean,
+    no_token?: boolean
   ): Promise<T> {
     return this._requestWithApiService(
       "delete",
       url.toString(),
       void 0,
       options,
-      no_token,
+      no_token
     );
   }
 

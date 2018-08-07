@@ -22,7 +22,7 @@ export class ScrollParentIonContentFirstDirective implements OnInit, OnDestroy {
   ngOnInit() {
     if (!this.parent_content) {
       throw new Error(
-        "scroll-parent-ion-content-first should input parentContent",
+        "scroll-parent-ion-content-first should input parentContent"
       );
     }
     const ele = this.content.getElementRef().nativeElement as HTMLElement;

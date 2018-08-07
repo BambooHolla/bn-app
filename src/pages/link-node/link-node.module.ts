@@ -6,12 +6,12 @@ import { PipesModule } from "../../pipes/pipes.module";
 import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
-	declarations: [LinkNodePage],
-	imports: [
-		IonicPageModule.forChild(LinkNodePage),
-		ComponentsModule,
-		PipesModule,
-		TranslateModule,
-	],
+  declarations: [LinkNodePage],
+  imports: [
+    IonicPageModule.forChild(LinkNodePage),
+    ComponentsModule,
+    PipesModule,
+    TranslateModule,
+  ],
 })
 export class LinkNodePageModule {}

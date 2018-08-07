@@ -40,7 +40,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
   }
   constructor(
     cdRef: ChangeDetectorRef,
-    public accountService: AccountServiceProvider,
+    public accountService: AccountServiceProvider
   ) {
     super(cdRef);
   }
@@ -120,7 +120,7 @@ export class VoteIncomeTrendComponent extends VoteExtendsPanelComponent {
       const data = await this.accountService.getAccountPreRoundProfits(
         this.userInfo.address,
         page_info.page,
-        page_info.pageSize,
+        page_info.pageSize
       );
       page_info.hasMore = data.profits.length === page_info.pageSize;
       return data.profits;

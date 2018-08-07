@@ -8,7 +8,7 @@ export class FLP_Data extends FLP_Form {
     return function(
       target: any,
       name: string,
-      descriptor?: PropertyDescriptor,
+      descriptor?: PropertyDescriptor
     ) {
       if (!descriptor) {
         let cache_data = defaultValue;
@@ -92,7 +92,7 @@ export class FLP_Data extends FLP_Form {
               ani_val,
               target_val,
               opts.duration,
-              opts.easing,
+              opts.easing
             )(
               (v, abort) => {
                 if (opts.floor) {
@@ -104,7 +104,7 @@ export class FLP_Data extends FLP_Form {
               },
               () => {
                 ti_aborter = undefined;
-              },
+              }
             );
           },
         };
@@ -137,14 +137,14 @@ export class FLP_Data extends FLP_Form {
     sub_list: T[],
     opts: {
       mix_key: string;
-    },
+    }
   ) {
     const first_ele = target_list[0];
     if (!first_ele) {
       return target_list.concat(sub_list);
     }
     const end_index = sub_list.findIndex(
-      item => item[opts.mix_key] === first_ele[opts.mix_key],
+      item => item[opts.mix_key] === first_ele[opts.mix_key]
     );
     if (end_index === -1) {
       return sub_list.concat(target_list);
@@ -157,14 +157,14 @@ export class FLP_Data extends FLP_Form {
     sub_list: T[],
     opts: {
       mix_key: string;
-    },
+    }
   ) {
     const last_ele = target_list[target_list.length - 1];
     if (!last_ele) {
       return target_list.concat(sub_list);
     }
     const end_index = sub_list.findIndex(
-      item => item[opts.mix_key] === last_ele[opts.mix_key],
+      item => item[opts.mix_key] === last_ele[opts.mix_key]
     );
     if (end_index === -1) {
       return target_list.concat(sub_list);

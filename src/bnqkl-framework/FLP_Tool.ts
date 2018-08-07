@@ -65,7 +65,7 @@ export class FLP_Tool {
   static translateError(
     target: any,
     name: string,
-    descriptor: PropertyDescriptor,
+    descriptor: PropertyDescriptor
   ) {
     const hidden_prop_name = `-G-${name}-`;
     const source_fun = descriptor.value;
@@ -119,7 +119,7 @@ export class FLP_Tool {
   isArrayDiff<T>(
     source_list: T[],
     target_list: T[],
-    item_parser: (item: T) => string | number,
+    item_parser: (item: T) => string | number
   ) {
     if (source_list.length !== target_list.length) {
       return true;
@@ -132,7 +132,7 @@ export class FLP_Tool {
     message: string,
     ok_handle?: Function,
     cancel_handle?: Function,
-    auto_open = true,
+    auto_open = true
   ) {
     const dialog = this.modalCtrl.create(
       "custom-dialog",
@@ -162,7 +162,7 @@ export class FLP_Tool {
       {
         enterAnimation: "custom-dialog-pop-in",
         leaveAnimation: "custom-dialog-pop-out",
-      },
+      }
     );
     if (auto_open) {
       await dialog.present();
@@ -177,7 +177,7 @@ export class FLP_Tool {
       message?: string;
       buttons?: any[];
     },
-    auto_open = true,
+    auto_open = true
   ) {
     const dialog = this.modalCtrl.create("custom-dialog", data, {
       enterAnimation: "custom-dialog-pop-in",
@@ -221,7 +221,7 @@ export class FLP_Tool {
       cancel_with_error?: boolean;
       false_text?: string;
       true_text?: string;
-    } = {},
+    } = {}
   ) {
     const res = new PromiseOut<boolean>();
     this._showCustomDialog(
@@ -250,7 +250,7 @@ export class FLP_Tool {
           },
         ],
       },
-      true,
+      true
     );
     return res.promise;
   }
@@ -259,7 +259,7 @@ export class FLP_Tool {
     subTitle?: string,
     message?: string,
     buttons?: any[],
-    auto_open = true,
+    auto_open = true
   ) {
     return this._showCustomDialog(
       {
@@ -269,7 +269,7 @@ export class FLP_Tool {
         message,
         buttons,
       },
-      auto_open,
+      auto_open
     );
   }
   async showSuccessDialog(
@@ -277,7 +277,7 @@ export class FLP_Tool {
     subTitle?: string,
     message?: string,
     buttons?: any[],
-    auto_open = true,
+    auto_open = true
   ) {
     return this._showCustomDialog(
       {
@@ -287,7 +287,7 @@ export class FLP_Tool {
         message,
         buttons,
       },
-      auto_open,
+      auto_open
     );
   }
   showErrorDialog(
@@ -295,7 +295,7 @@ export class FLP_Tool {
     subTitle?: string,
     message?: string,
     buttons?: any[],
-    auto_open = true,
+    auto_open = true
   ) {
     return this._showCustomDialog(
       {
@@ -305,7 +305,7 @@ export class FLP_Tool {
         message,
         buttons,
       },
-      auto_open,
+      auto_open
     );
   }
   private _isIOS?: boolean;
@@ -352,7 +352,7 @@ export class FLP_Tool {
 
   private async _showCustomLoadingDialog(
     msg,
-    opts: { auto_open?: boolean } & LoadingOptions,
+    opts: { auto_open?: boolean } & LoadingOptions
   ) {
     const dialog = this.loadingCtrl.create({
       content: await translateMessage(msg),
@@ -389,7 +389,7 @@ export class FLP_Tool {
     var res = num.toFixed(fix_to);
     if (pre_fix) {
       res = ("0".repeat(pre_fix - 1) + res).substr(
-        -Math.max(res.length, fix_to ? fix_to + pre_fix + 1 : pre_fix),
+        -Math.max(res.length, fix_to ? fix_to + pre_fix + 1 : pre_fix)
       );
     }
     return res;
@@ -406,7 +406,7 @@ export class FLP_Tool {
   static FromGlobal(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     if (!descriptor) {
       const hidden_prop_name = `-G-${name}-`;
@@ -426,7 +426,7 @@ export class FLP_Tool {
   static FromNavParams(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     if (!descriptor) {
       const hidden_prop_name = `-P-${name}-`;
@@ -467,7 +467,7 @@ export class FLP_Tool {
   static getTranslateSync(key: string | string[], interpolateParams?: Object) {
     return (window["translate"] as TranslateService).instant(
       key,
-      interpolateParams,
+      interpolateParams
     );
   }
   static getProtoArray = getProtoArray;
@@ -480,9 +480,9 @@ export class FLP_Tool {
   caf = FLP_Tool.caf;
 
   static toDateMS(date_arg) {
-    return (new Date(date_arg)).valueOf();
+    return new Date(date_arg).valueOf();
   }
-  toDateMS = FLP_Tool.toDateMS
+  toDateMS = FLP_Tool.toDateMS;
 }
 
 export function formatAndTranslateMessage(has_error: any, self?: FLP_Tool) {

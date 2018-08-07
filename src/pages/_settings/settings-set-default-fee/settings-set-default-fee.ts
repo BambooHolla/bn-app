@@ -13,7 +13,7 @@ export class SettingsSetDefaultFeePage extends SecondLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    @Optional() public tabs: TabsPage,
+    @Optional() public tabs: TabsPage
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -44,14 +44,14 @@ export class SettingsSetDefaultFeePage extends SecondLevelPage {
     }
   }
   @asyncCtrlGenerator.success(() =>
-    SettingsSetDefaultFeePage.getTranslate("DEFAULT_FEE_SET_SUCCESS"),
+    SettingsSetDefaultFeePage.getTranslate("DEFAULT_FEE_SET_SUCCESS")
   )
   async submit() {
     this.appSetting.settings.default_fee = parseFloat(
-      this.formData.default_fee,
+      this.formData.default_fee
     ).toFixed(8);
     this.appSetting.settings.auto_update_default_fee_max_amount = parseFloat(
-      this.formData.max_fee,
+      this.formData.max_fee
     ).toFixed(8);
     this.finishJob();
   }

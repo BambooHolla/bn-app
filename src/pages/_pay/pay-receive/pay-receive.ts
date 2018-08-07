@@ -31,7 +31,7 @@ export class PayReceivePage extends SecondLevelPage {
     public navParams: NavParams,
     public transactionService: TransactionServiceProvider,
     @Optional() public tabs: TabsPage,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -77,7 +77,7 @@ export class PayReceivePage extends SecondLevelPage {
         receive_config.page,
         receive_config.pageSize,
         "in",
-        TransactionTypes.SEND,
+        TransactionTypes.SEND
       );
       receive_config.has_more = list.length >= receive_config.pageSize;
       return list;
@@ -89,8 +89,8 @@ export class PayReceivePage extends SecondLevelPage {
   @PayReceivePage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(() =>
     PayReceivePage.getTranslate(
-      "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK",
-    ),
+      "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK"
+    )
   )
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {

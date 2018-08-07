@@ -28,7 +28,7 @@ export class LinkedPeerListPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public peerService: PeerServiceProvider,
     public blockService: BlockServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
   }

@@ -24,7 +24,7 @@ export class VoteMiningMachineDetailPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public minService: MinServiceProvider,
+    public minService: MinServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -43,10 +43,10 @@ export class VoteMiningMachineDetailPage extends SecondLevelPage {
       () => {
         const { mac } = this;
         this.appSetting.settings.my_mining_machine = this.appSetting.settings.my_mining_machine.filter(
-          my_mac => !(my_mac.ip === mac.ip && my_mac.port === mac.port),
+          my_mac => !(my_mac.ip === mac.ip && my_mac.port === mac.port)
         );
         this.finishJob(true);
-      },
+      }
     );
   }
   @VoteMiningMachineDetailPage.willEnter
@@ -73,7 +73,7 @@ export class VoteMiningMachineDetailPage extends SecondLevelPage {
         this.mac.memory_usage = memory_usage;
         this.mac.total_memory = total;
         this.mac.used_memory = total - free;
-      },
+      }
     );
     socket.on("connect", () => {
       this.mac.connected = true;
@@ -106,7 +106,7 @@ export class VoteMiningMachineDetailPage extends SecondLevelPage {
     const cur_block_height = this.appSetting.getHeight();
     if (this.current_info_height !== cur_block_height) {
       this.delegate_info = await this.minService.getDelegateInfo(
-        this.mac.publicKey,
+        this.mac.publicKey
       );
       this.current_info_height = cur_block_height;
     }

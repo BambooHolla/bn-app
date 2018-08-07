@@ -38,7 +38,7 @@ export class LoginServiceProvider extends FLP_Tool {
     public alertController: AlertController,
     public translateService: TranslateService,
     public accountService: AccountServiceProvider,
-    public user: UserInfoProvider,
+    public user: UserInfoProvider
   ) {
     super();
     console.group("Hello LoginServiceProvider Provider");
@@ -69,7 +69,7 @@ export class LoginServiceProvider extends FLP_Tool {
     }
     // 高度发生变动的时候，更新用户信息
     this._user_info_refresher = this.appSetting.height.subscribe(
-      this.refreshUserInfo.bind(this),
+      this.refreshUserInfo.bind(this)
     );
   }
   unInstallUserInfoRefresher() {
@@ -82,7 +82,7 @@ export class LoginServiceProvider extends FLP_Tool {
   /** 更新用户信息
    */
   @asyncCtrlGenerator.retry(undefined, err =>
-    console.error("获取用户信息一直失败，需要检查网络", err),
+    console.error("获取用户信息一直失败，需要检查网络", err)
   )
   async refreshUserInfo() {
     await this.netWorkConnection();
@@ -128,7 +128,7 @@ export class LoginServiceProvider extends FLP_Tool {
       const keypair = this.ifmJs.keypairHelper.create(password);
       const publicKey = keypair.publicKey.toString("hex");
       const address = this.ifmJs.addressCheck.generateBase58CheckAddress(
-        publicKey,
+        publicKey
       );
       FLP_Tool.netWorkConnection().then(async () => {
         var fail = true;

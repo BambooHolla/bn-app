@@ -40,7 +40,7 @@ export class LinkNodePage extends FirstLevelPage {
     public eleRef: ElementRef,
     public blockService: BlockServiceProvider,
     public appFetch: AppFetchProvider,
-    public myapp: MyApp,
+    public myapp: MyApp
   ) {
     super(navCtrl, navParams);
   }
@@ -69,7 +69,7 @@ export class LinkNodePage extends FirstLevelPage {
     const peer_searcher = this.navParams.get("peer_searcher"); // 搜索器
     const peer_list = this.navParams.get("peer_list"); // 已经搜索到的节点
     const all_second_trust_peer_list = this.navParams.get(
-      "all_second_trust_peer_list",
+      "all_second_trust_peer_list"
     ); // 所有的次信任节点
     if (!peer_searcher) {
       return this.navCtrl.goToRoot({});
@@ -108,7 +108,7 @@ export class LinkNodePage extends FirstLevelPage {
         peer_info_list.push(checked_peer_info);
         const check_res = PeerServiceProvider.calcPeers(
           peer_info_list,
-          all_second_trust_peer_list,
+          all_second_trust_peer_list
         );
         calc_res_list = check_res;
         // 随机进行选择
@@ -122,7 +122,7 @@ export class LinkNodePage extends FirstLevelPage {
             const selectable_peer_list = check_item.peer_info_list
               .sort(
                 (a, b) =>
-                  b.highest_blocks[0].height - a.highest_blocks[0].height,
+                  b.highest_blocks[0].height - a.highest_blocks[0].height
               )
               .filter((p, i, l) => {
                 return (
@@ -256,7 +256,7 @@ export class LinkNodePage extends FirstLevelPage {
   }
 
   storeUseablePeers(
-    calc_res_list: ReturnType<typeof PeerServiceProvider.calcPeers>,
+    calc_res_list: ReturnType<typeof PeerServiceProvider.calcPeers>
   ) {
     this.useable_peers = [];
     calc_res_list.forEach(check_item => {
@@ -278,7 +278,7 @@ export class LinkNodePage extends FirstLevelPage {
         if (!(await this.peerService.peerDb.has({ origin: peer.origin }))) {
           this.peerService.peerDb.insert(peer).catch(console.error);
         }
-      }),
+      })
     );
     /*保存最高区块信息*/
     await Promise.all(
@@ -286,7 +286,7 @@ export class LinkNodePage extends FirstLevelPage {
         if (!(await this.blockService.blockDb.has({ id: block.id }))) {
           this.blockService.blockDb.insert(block).catch(console.error);
         }
-      }),
+      })
     );
 
     // await sleep(500);
@@ -333,7 +333,7 @@ export class LinkNodePage extends FirstLevelPage {
   /**滚动到指定节点对应的DOM元素*/
   scrollIntoView(peer: LocalPeerModel, ani_time = 250, easing?) {
     const ele = document.querySelector(
-      `[data-origin="${peer.origin}"]`,
+      `[data-origin="${peer.origin}"]`
     ) as HTMLElement;
     if (ele) {
       if (this._scroll_abort) {
@@ -352,7 +352,7 @@ export class LinkNodePage extends FirstLevelPage {
         },
         () => {
           this._scroll_abort = undefined;
-        },
+        }
       );
     }
   }
