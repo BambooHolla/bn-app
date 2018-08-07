@@ -577,19 +577,22 @@ export const Easing = {
 
 const format_canvas = document.createElement("canvas");
 
+/*默认居中裁剪*/
 export async function formatImage(
   url: string, //|HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap,
   opts: {
     format: string /* = "image/png"*/;
-    max_width: number;
-    max_height: number;
+    view_width: number;
+    view_height: number;
+    size: "contain" | "cover";
+    position: string;
     target_encode: string /*base64,blob*/;
     encoderOptions?: number /*jpeg格式的质量*/;
     onlyBase64Content?: boolean /*是否只返回base64的内容，没有前缀“data:image/png;base64,”的那种*/;
   },
 ) {
-  format_canvas.width = opts.max_width;
-  format_canvas.height = opts.max_width;
+  format_canvas.width = opts.view_width;
+  format_canvas.height = opts.view_width;
   const ctx = format_canvas.getContext("2d");
   if (!ctx) {
     throw new Error("not support 2d canvas");
@@ -603,15 +606,50 @@ export async function formatImage(
   });
   /*宽高比例*/
   const img_rate = img.width / img.height;
-  if (img.width > opts.max_width) {
-    img.width = opts.max_width;
-    img.height = opts.max_width / img_rate;
+  const view_rate = opts.view_width / opts.view_height;
+  let dstX = 0;
+  let dstY = 0;
+  if (opts.size === "contain") {
+    if (img.width > opts.view_width) {
+      img.width = opts.view_width;
+      img.height = opts.view_width / img_rate;
+    }
+    if (img.height > opts.view_height) {
+      img.height = opts.view_height;
+      img.width = opts.view_height * img_rate;
+    }
+  } else if (opts.size === "cover") {
+    if (img_rate > view_rate) {
+      // 源图是宽的，保证高度
+      img.height = opts.view_height;
+      img.width = opts.view_height * img_rate;
+    } else if (view_rate === img_rate) {
+      img.width = opts.view_width;
+      img.height = opts.view_height;
+    } else {
+      // view_rate < img_rate 源图是窄的，保证宽度
+      img.width = opts.view_width;
+      img.height = opts.view_width / img_rate;
+    }
   }
-  if (img.height > opts.max_height) {
-    img.height = opts.max_height;
-    img.width = opts.max_height * img_rate;
+
+  const source_position_info = opts.position.split(/[\s]{1,}/);
+  const source_position_info_x = source_position_info[0];
+  const source_position_info_y =
+    source_position_info[1] || source_position_info_x;
+  // 这里目前仅仅支持center，没有支持百分比、left/right/top/bottom等其它语义
+  if (source_position_info_x === "center") {
+    dstX = (opts.view_width - img.width) / 2;
+  } else {
+    console.warn(new Error(`no support position x: ${source_position_info_x}`));
   }
-  ctx.drawImage(img, 0, 0);
+  if (source_position_info_y === "center") {
+    dstY = (opts.view_height - img.height) / 2;
+  } else {
+    console.warn(new Error(`no support position y: ${source_position_info_y}`));
+  }
+
+  ctx.drawImage(img, dstX, dstY, img.width, img.height);
   if (opts.target_encode === "blob") {
     return await new Promise<Blob>((resolve, reject) => {
       format_canvas.toBlob(

@@ -40,7 +40,8 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
 		super(navCtrl, navParams, true, tabs);
 	}
 
-	@AssetsMyAssetsListPage.markForCheck my_assets_list: AssetsModel[] = [];
+	@AssetsMyAssetsListPage.markForCheck
+	my_assets_list: (AssetsModel & { logo_safe_url: SafeUrl })[] = [];
 
 	page_info = {
 		page: 0,
@@ -81,7 +82,14 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
 				limit: page_info.pageSize,
 			});
 			page_info.hasMore = assets_list.length >= page_info.pageSize;
-			return assets_list;
+			return assets_list.map(assets => {
+				return {
+					...assets,
+					logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
+						URL.createObjectURL(assets.logo),
+					),
+				};
+			});
 		} finally {
 			page_info.loading = false;
 		}

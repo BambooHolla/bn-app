@@ -14,7 +14,7 @@
       <div class="left">
         <div class="assets-logo-shape-wrapper">
           <div class="assets-logo-shape">
-            <img [src]="domSanitizer.bypassSecurityTrustUrl(assets.logo)" alt="LOGO"/>
+            <img [src]="assets.logo_safe_url" alt="LOGO"/>
           </div>
         </div>
       </div>

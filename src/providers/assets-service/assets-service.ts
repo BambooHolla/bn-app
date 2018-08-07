@@ -70,10 +70,12 @@ export class AssetsServiceProvider {
 	imageUrlToJpegBase64(url: string, onlyBase64Content: boolean) {
 		return formatImage(url, {
 			format: "image/jpeg",
-			max_width: 512,
-			max_height: 512,
+			view_width: 128,
+			view_height: 128,
+			size: "cover",
+			position: "center",
 			target_encode: "base64",
-			encoderOptions: 1,
+			encoderOptions: 0.8,
 			onlyBase64Content,
 		}) as Promise<string>;
 	}
@@ -101,10 +103,9 @@ export class AssetsServiceProvider {
 		publicKey = this.appSetting.user.publicKey,
 		address = this.appSetting.user.address,
 	) {
-		const txData = {
+		const txData: any = {
 			type: this.transactionService.TransactionTypes.ISSUE_ASSET,
 			secret,
-			secondSecret,
 			publicKey,
 			fee,
 			asset: {
@@ -115,6 +116,9 @@ export class AssetsServiceProvider {
 				},
 			},
 		};
+		if (secondSecret) {
+			txData.secondSecret = secondSecret;
+		}
 		return this.transactionService.putTransaction(txData);
 	}
 }

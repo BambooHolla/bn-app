@@ -269,6 +269,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 				true,
 			);
 		}
+
 		const { custom_fee, password, pay_pwd } = await this.getUserPassword({
 			custom_fee: true,
 		});

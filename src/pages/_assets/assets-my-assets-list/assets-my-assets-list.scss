@@ -1,5 +1,28 @@
 page-assets-my-assets-list {
 	@extend .header-no-border;
 	.my-assets-list {
+		margin-top: 0.2rem;
+		.common-item{
+			height: 8.4rem;
+			border-top: 0.55px solid #eeeeee;
+			.assets-logo-shape-wrapper {
+				width: 6rem;
+				height: 6rem;
+				filter: drop-shadow(0 0 0.4rem rgba(0, 0, 0, 0.2));
+			}
+			.center {
+				padding-left: 1.2rem;
+				color: #333;
+				font-weight: 500;
+				font-size: 1.7rem;
+			}
+			.right {
+				.issued-assets {
+					font-size: 2rem;
+					color: #333;
+					font-weight: 500;
+				}
+			}
+		}
 	}
 }
