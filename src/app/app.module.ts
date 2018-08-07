@@ -32,6 +32,7 @@ import { File } from "@ionic-native/file";
 import { FileOpener } from "@ionic-native/file-opener";
 import { LocalNotifications } from "@ionic-native/local-notifications";
 import { FingerprintAIO } from "./native/fingerprint-aio";
+import { EmailComposer } from "@ionic-native/email-composer";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -133,7 +134,7 @@ export function customDeepLinkConfig(deepLinkConfig) {
   if (deepLinkConfig && deepLinkConfig.links) {
     const static_links_name_set = new Set(static_links.map(link => link.name));
     deepLinkConfig.links = deepLinkConfig.links.filter(
-      link => !static_links_name_set.has(link.name as string),
+      link => !static_links_name_set.has(link.name as string)
     );
     deepLinkConfig.links.push(...static_links);
   }
@@ -230,6 +231,7 @@ const heightLevelModules = [
     FileOpener,
     LocalNotifications,
     FingerprintAIO,
+    EmailComposer,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppFetchProvider,
