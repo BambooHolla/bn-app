@@ -12,7 +12,7 @@
             <ali-icon name="ifm-zengjia"></ali-icon>
           </ng-container>
           <ng-template #showLogo>
-            <img [src]="domSanitizer.bypassSecurityTrustUrl(formData.logo)" alt="LOGO">
+            <img [src]="formData.logo_safe_url" alt="LOGO">
           </ng-template>
         </button>
       </div>

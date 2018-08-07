@@ -5,7 +5,6 @@ import {
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -38,7 +37,6 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 		public cdRef: ChangeDetectorRef,
 		public viewCtrl: ViewController,
 		public blockService: BlockServiceProvider,
-		public domSanitizer: DomSanitizer,
 		public assetsService: AssetsServiceProvider,
 	) {
 		super(navCtrl, navParams, true, tabs);

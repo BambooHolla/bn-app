@@ -28,4 +28,25 @@ export class UserAgreementPage extends FirstLevelPage {
 	agree() {
 		this.viewCtrl.dismiss(true);
 	}
+	private _anode?: HTMLAnchorElement;
+	mailto() {
+		if (!this._anode) {
+			this._anode = document.createElement("a");
+			this._anode.href = `mailto:?subject=${
+				/*encodeURIComponent*/ (document.querySelector(
+					"page-user-agreement .toolbar-title",
+				) as HTMLElement).textContent || ""
+			}&body=${
+				/*encodeURIComponent*/ (document.querySelector(
+					"page-user-agreement .pdf",
+				) as HTMLElement).textContent || ""
+			}`;
+		}
+		const clickEvent = new MouseEvent("click", {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+		});
+		this._anode.dispatchEvent(clickEvent);
+	}
 }

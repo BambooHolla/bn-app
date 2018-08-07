@@ -5,7 +5,6 @@ import {
 	ChangeDetectionStrategy,
 	ChangeDetectorRef,
 } from "@angular/core";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -35,13 +34,12 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
 		public cdRef: ChangeDetectorRef,
 		public viewCtrl: ViewController,
 		public assetsService: AssetsServiceProvider,
-		public domSanitizer: DomSanitizer,
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
 
 	@AssetsMyAssetsListPage.markForCheck
-	my_assets_list: (AssetsModel & { logo_safe_url: SafeUrl })[] = [];
+	my_assets_list: AssetsModelWithLogoSafeUrl[] = [];
 
 	page_info = {
 		page: 0,
@@ -82,14 +80,11 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
 				limit: page_info.pageSize,
 			});
 			page_info.hasMore = assets_list.length >= page_info.pageSize;
-			return assets_list.map(assets => {
-				return {
-					...assets,
-					logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
-						URL.createObjectURL(assets.logo),
-					),
-				};
-			});
+			/*异步查询本地的未确认交易，看是否有销毁信息*/
+			return await this.assetsService.mixDestoryingAssets(
+				this.userInfo.address,
+				assets_list,
+			);
 		} finally {
 			page_info.loading = false;
 		}

@@ -807,6 +807,7 @@
   "NUMBER_OF_ISSUES_OWNER": "持有人数",
   "RANK_OF_ISSUES_OWNER": "持有人数",
   "DESTROY_ASSETS": "销毁资产",
+  "CONFIM_TO_DESTORY_ASSETS": "确定要销毁资产吗？",
 
   "UPLOAD_LOGO_IMAGE": "上传logo图片",
   "PLEASE_INPUT_ASSETNAME": "资产名称",

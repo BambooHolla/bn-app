@@ -1,13 +1,13 @@
 import { tryRegisterGlobal } from "../bnqkl-framework/helper";
 import Db from "./gangodb_core/db";
 import Collection from "./gangodb_core/collection";
-const mdb = new Db("ibt", 14, {
+const mdb = new Db("ibt", 15, {
   blocks: ["height", "id"],
   account: ["address", "publicKey"],
   voted_delegate: true,
   voucher: ["timestamp"],
   contact: ["address", "owner_publicKey"],
-  unconfirm_transaction: ["id"],
+  unconfirm_transaction: ["id", "type", "senderId"],
 
   contact_tags: ["owner_publicKey", "contact_ids:multiEntry"],
   local_contact: true,

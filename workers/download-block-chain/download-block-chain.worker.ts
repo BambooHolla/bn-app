@@ -2,8 +2,8 @@ import "babel-polyfill";
 import socketio from "socket.io-client";
 import { BlockChainDownloader } from "./download-block-chain";
 import { BlockModel } from "./helper";
-import { Mdb } from "../../providers/mdb";
-import IFM from "../../ifmchain-ibt";
+import { Mdb } from "../../src/providers/mdb";
+import IFM from "../../src/ifmchain-ibt";
 import "core-js/modules/es7.symbol.async-iterator";
 
 onmessage = async e => {

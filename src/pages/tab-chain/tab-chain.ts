@@ -34,8 +34,6 @@ import { Subscription } from "rxjs/Subscription";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { ChainListComponent } from "../../components/chain-list/chain-list";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
-// test
-import { BlockchainVerifier } from "../../workers/download-block-chain/blockchain-verifier";
 
 // @IonicPage({ name: "tab-chain" })
 @Component({
@@ -62,10 +60,6 @@ export class TabChainPage extends FirstLevelPage {
     });
     // this.registerViewEvent(this)
   }
-  blockchainVerifier = new BlockchainVerifier(
-    this.fetch.io,
-    this.blockService.blockDb,
-  );
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
 

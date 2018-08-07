@@ -25,7 +25,7 @@ export type AssetsModel = {
 	dateCreated: number;
 };
 export type AssetsModelWithLogoSafeUrl = AssetsModel & {
-	logo: import("@angular/platform-browser").SafeUrl;
+	logo_safe_url: import("@angular/platform-browser").SafeUrl;
 };
 
 export enum ASSETS_STATUS {

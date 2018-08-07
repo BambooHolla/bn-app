@@ -91,14 +91,7 @@ export class AssetsAssetsMarketPage extends SecondLevelPage {
 			// orderBy:"dateCreated:desc"
 		});
 		page_info.hasMore = list.length >= page_info.pageSize;
-		return list.map(item => {
-			return {
-				...item,
-				logo_url: this.domSanitizer.bypassSecurityTrustUrl(
-					URL.createObjectURL(item.logo),
-				),
-			};
-		});
+		return list;
 	}
 	private _handleCardGridViewStyle() {
 		if (this.assets_list.length >= 6) {

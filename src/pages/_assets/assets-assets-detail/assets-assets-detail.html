@@ -8,7 +8,7 @@
     <div class="header-line">
       <div class="assets-logo-shape-wrapper">
         <div class="assets-logo-shape">
-          <img [src]="assets_info?.logo_url" alt="LOGO">
+          <img [src]="assets_info?.logo_safe_url" alt="LOGO">
         </div>
       </div>
       <div class="right">
@@ -87,7 +87,7 @@
     <!-- <button mat-button class="submit-button">
       <span class="inner">{{'DESTROY_ASSETS'|translate}}</span>
     </button> -->
-    <button mat-button class="submit-button destroy">
+    <button mat-button class="submit-button destroy" (click)="confirmToDestoryAssets()">
       <text-gradient [text]="'DESTROY_ASSETS'|translate" from="#3ecdeb" to="#3ce6d7" fontSize="1.9rem" fontWeight="500"></text-gradient>
     </button>
   </div>

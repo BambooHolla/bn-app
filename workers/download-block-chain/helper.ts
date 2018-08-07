@@ -1,7 +1,7 @@
 import {
   BlockModel,
   BlockListResModel,
-} from "../../providers/block-service/block.types";
+} from "../../src/providers/block-service/block.types";
 export { BlockModel, BlockListResModel };
 
 export const buf2hex = (buffer: ArrayBuffer) => {

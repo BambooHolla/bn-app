@@ -1,4 +1,4 @@
-import { Mdb } from "../../providers/mdb";
+import { Mdb } from "../../src/providers/mdb";
 
 import {
 	buf2hex,

@@ -1,7 +1,7 @@
-import shareProto from "../../shareProto";
+import shareProto from "../../src/shareProto";
 import EventEmitter from "eventemitter3";
-import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
-import { Mdb } from "../../providers/mdb";
+import { PromiseOut, sleep } from "../../src/bnqkl-framework/PromiseExtends";
+import { Mdb } from "../../src/providers/mdb";
 import { BlockchainVerifier } from "./blockchain-verifier";
 
 import { buf2hex, BlockModel, RangeHelper } from "./helper";

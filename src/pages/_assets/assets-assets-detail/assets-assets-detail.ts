@@ -42,7 +42,7 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
 	}
 
 	@AssetsAssetsDetailPage.markForCheck
-	assets_info?: AssetsModelWithLogoSafeUrl;
+	assets_info!: AssetsModelWithLogoSafeUrl;
 
 	@AssetsAssetsDetailPage.willEnter
 	initData() {
@@ -129,5 +129,23 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
 	@AssetsAssetsDetailPage.addEvent("HEIGHT:CHANGED")
 	watchHeightChanged() {
 		this.initAssetsOwnerRank();
+	}
+
+	async confirmToDestoryAssets() {
+		await this.showConfirmDialog("@@CONFIM_TO_DESTORY_ASSETS", () => {
+			this.destoryAssets();
+		});
+	}
+	async destoryAssets() {
+		const { custom_fee, password, pay_pwd } = await this.getUserPassword({
+			custom_fee: true,
+		});
+
+		return this.assetsService.destoryAssets(
+			this.assets_info,
+			custom_fee,
+			password,
+			pay_pwd,
+		);
 	}
 }
