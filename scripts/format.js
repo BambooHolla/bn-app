@@ -183,7 +183,9 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
         {
           filter: file_path =>
             file_path.startsWith("src/") &&
-            (file_path.endsWith(".ts") || file_path.endsWith(".js")),
+            (file_path.endsWith(".ts") ||
+              (file_path.indexOf("ifmchain-ibt") !== -1 &&
+                file_path.endsWith(".js"))),
         },
         // 格式化文件
         FormatFile(
@@ -229,7 +231,9 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
           filter: file_path => {
             return (
               file_path.startsWith("src" + path.sep) &&
-              (file_path.endsWith(".ts") || file_path.endsWith(".js"))
+              (file_path.endsWith(".ts") ||
+                (file_path.indexOf("ifmchain-ibt") !== -1 &&
+                  file_path.endsWith(".js")))
             );
           },
         },
