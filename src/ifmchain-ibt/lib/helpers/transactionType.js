@@ -2,27 +2,27 @@ module.exports = {
     /**
      * SEND:是最基本的转账交易
      */
-    SEND : 0,
+    SEND: 0,
     /**
      * SIGNATURE:“签名”交易
      */
-    SIGNATURE : 1,
+    SIGNATURE: 1,
     /**
      * DELEGATE:注册为受托人
      */
-    DELEGATE : 2,
+    DELEGATE: 2,
     /**
      * VOTE:投票
      */
-    VOTE : 3,
+    VOTE: 3,
     /**
      * USERNAME:注册用户别名地址
      */
-    USERNAME : 4,
+    USERNAME: 4,
     /**
      * FOLLOW:添加联系人
      */
-    FOLLOW : 5,
+    FOLLOW: 5,
     /**
      * MULTI:注册多重签名帐号
      */
@@ -66,5 +66,5 @@ module.exports = {
     /**
      * TRANSFER_ASSET: 数字资产转账
      */
-    TRANSFER_ASSET: 16
-}
+    TRANSFER_ASSET: 16,
+};

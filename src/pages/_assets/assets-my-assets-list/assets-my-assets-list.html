@@ -1,18 +1,35 @@
-<!--
-  Generated template for the AssetsMyAssetsListPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>assets-my-assets-list</ion-title>
+  <ion-navbar color="white">
+    <ion-title>{{'ASSETS-MY-ASSETS-LIST'|translate}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="routeTo('assets-issuing-assets',{auto_return:true})">
+        <ali-icon name="ifm-zichanjianshe1"></ali-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-
+<ion-content>
+  <div class="common-list my-assets-list">
+    <div class="common-item" *ngFor="let assets of my_assets_list">
+      <div class="left">
+        <div class="assets-logo-shape-wrapper">
+          <div class="assets-logo-shape">
+            <img [src]="domSanitizer.bypassSecurityTrustUrl(assets.logo)" alt="LOGO"/>
+          </div>
+        </div>
+      </div>
+      <div class="center">
+        {{assets.abbreviation}}
+      </div>
+      <div class="right">
+        <div class="issued-assets">{{assets.originalIssuedAssets|number:'1.0-0'}}</div>
+        <div class="usd">{{assets.usd}}
+          <span class="unit">USD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreMyAssetsList())">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

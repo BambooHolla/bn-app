@@ -25,51 +25,63 @@
   </div>
   <div class="nav-list">
     <common-wave-bg class="bg"></common-wave-bg>
-    <div class="nav-item" (click)="routeToMyContacts()">
-      <ali-icon class="left" name="ifm-guanzhu1"></ali-icon>
-      <div class="title">{{'MY_CONTACTS' | translate}}</div>
-      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
-    </div>
-    <div class="nav-item" (click)="routeTo('account-peer-list')">
-      <ali-icon class="left" name="ifm--target-"></ali-icon>
-      <div class="title">{{'PEER_LIST' | translate}}</div>
-      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
-    </div>
-    <!-- <div class="nav-item">
+    <div class="nav-scroll-container">
+      <!-- <div class="nav-item" (click)="routeTo('assets-assets-market')">
+        <ali-icon class="left" name="ifm-shiliangzhinengduixiang2"></ali-icon>
+        <div class="title">{{'ASSETS_MARKET' | translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      </div> -->
+      <div class="nav-item" (click)="routeTo('assets-my-assets-list')">
+        <ali-icon class="left" name="ifm-shiliangzhinengduixiang3"></ali-icon>
+        <div class="title">{{'MY_ASSETS_LIST' | translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      </div>
+      <div class="nav-item" (click)="routeToMyContacts()">
+        <ali-icon class="left" name="ifm-guanzhu1"></ali-icon>
+        <div class="title">{{'MY_CONTACTS' | translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      </div>
+      <div class="nav-item" (click)="routeTo('account-peer-list')">
+        <ali-icon class="left" name="ifm--target-"></ali-icon>
+        <div class="title">{{'PEER_LIST' | translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      </div>
+      <!-- <div class="nav-item">
       <ali-icon class="left" name="ifm-apps"></ali-icon>
       <div class="title">应用市场</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div> -->
-    <div class="nav-item" (click)="routeTo('account-my-transaction-list')">
-      <ali-icon class="left" name="ifm-tran-history"></ali-icon>
-      <div class="title">{{'MY_TRANSACTION' | translate}}</div>
-      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
-    </div>
-    <div class="nav-item" (click)="routeTo('account-voucher-wallet')">
-      <ali-icon class="left" name="ifm-zhinengpingzheng"></ali-icon>
-      <div class="title">{{'VOUCHER_WALLET' | translate}}</div>
-      <div class="right">
-        <ng-container *ngIf="voucher_total_amount">
-          {{amountViewer(voucher_total_amount|amountEuler|number:'1.8-8')}}
-        </ng-container>
-        <ali-icon name="ifm-arrow-to-right"></ali-icon>
+      <div class="nav-item" (click)="routeTo('account-my-transaction-list')">
+        <ali-icon class="left" name="ifm-tran-history"></ali-icon>
+        <div class="title">{{'MY_TRANSACTION' | translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </div>
-    </div>
-    <!-- <div class="nav-item"></div> -->
-    <div class="nav-item" (click)="routeTo('account-miner-list')">
-      <ali-icon class="left" name="ifm-auction"></ali-icon>
-      <div class="title">{{'MINER_LIST' | translate}}</div>
-      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
-    </div>
-    <div class="nav-item" (click)="openSharePanel()">
-      <ali-icon class="left" name="ifm-share"></ali-icon>
-      <div class="title">{{'SHARE_APP'|translate}}</div>
-      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
-    </div>
-    <div class="nav-item" (click)="routeTo('account-about-ibt')">
-      <ali-icon class="left" name="ifm-about-ibt"></ali-icon>
-      <div class="title">{{'ABOUT_IBT'|translate}}</div>
-      <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      <div class="nav-item" (click)="routeTo('account-voucher-wallet')">
+        <ali-icon class="left" name="ifm-zhinengpingzheng"></ali-icon>
+        <div class="title">{{'VOUCHER_WALLET' | translate}}</div>
+        <div class="right">
+          <ng-container *ngIf="voucher_total_amount">
+            {{amountViewer(voucher_total_amount|amountEuler|number:'1.8-8')}}
+          </ng-container>
+          <ali-icon name="ifm-arrow-to-right"></ali-icon>
+        </div>
+      </div>
+      <!-- <div class="nav-item"></div> -->
+      <div class="nav-item" (click)="routeTo('account-miner-list')">
+        <ali-icon class="left" name="ifm-auction"></ali-icon>
+        <div class="title">{{'MINER_LIST' | translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      </div>
+      <div class="nav-item" (click)="openSharePanel()">
+        <ali-icon class="left" name="ifm-share"></ali-icon>
+        <div class="title">{{'SHARE_APP'|translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      </div>
+      <div class="nav-item" (click)="routeTo('account-about-ibt')">
+        <ali-icon class="left" name="ifm-about-ibt"></ali-icon>
+        <div class="title">{{'ABOUT_IBT'|translate}}</div>
+        <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
+      </div>
     </div>
   </div>
 </ion-content>

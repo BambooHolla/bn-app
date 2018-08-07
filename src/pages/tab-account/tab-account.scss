@@ -110,6 +110,7 @@ page-tab-account {
     position: relative;
     z-index: 2;
     margin-bottom: 15.2121vw;
+    display: flex;
     /* padding-top: 1rem; */
     > .bg {
       position: absolute;
@@ -118,7 +119,11 @@ page-tab-account {
       width: 100%;
       z-index: -1;
     }
-    > .nav-item {
+    > .nav-scroll-container {
+      flex: 1;
+      overflow: auto;
+    }
+    .nav-item {
       border-bottom: 0.55px solid #f6f6f6;
       background-color: #fff;
       padding: 0.6rem 1.8rem;

@@ -6,10 +6,7 @@ import { DirectivesModule } from "../../../directives/directives.module";
 import { PipesModule } from "../../../pipes/pipes.module";
 import { TranslateModule } from "@ngx-translate/core";
 import {
-	MatFormFieldModule,
-	MatInputModule,
-	MatAutocompleteModule,
-	MatMenuModule,
+	MatButtonModule,
 } from "@angular/material";
 import { MomentModule } from "angular2-moment";
 
@@ -21,10 +18,7 @@ import { MomentModule } from "angular2-moment";
 		DirectivesModule,
 		PipesModule,
 		ComponentsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatAutocompleteModule,
-		MatMenuModule,
+		MatButtonModule,
 		MomentModule,
 	],
 })

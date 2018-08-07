@@ -237,7 +237,7 @@ ZSchema.registerFormat('ibtCurrency', function (obj) {
 });
 
 ZSchema.registerFormat('issueAsset', function(obj) {
-    if (obj && obj.issueAsset && obj.issueAsset.rate && obj.issueAsset.assetName && obj.issueAsset.logo && obj.issueAsset.abbreviation /* && obj.issueAsset.originalFrozenIBT */ && obj.issueAsset.originalIssuedAssets && obj.issueAsset.expectedRaisedIBTs && obj.issueAsset.expectedIssuedBlockHeight) {
+    if (obj && obj.issueAsset && obj.issueAsset.rate/* && obj.issueAsset.assetName*/ && obj.issueAsset.logo && obj.issueAsset.abbreviation /* && obj.issueAsset.originalFrozenIBT */ && obj.issueAsset.originalIssuedAssets && obj.issueAsset.expectedRaisedIBTs && obj.issueAsset.expectedIssuedBlockHeight) {
         return true;
     } else {
         return false;

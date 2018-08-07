@@ -20,7 +20,7 @@ import {
   global,
   getSocketIOInstance,
   afCtrl,
-  baseConfig
+  baseConfig,
 } from "./helper";
 export { is_dev, tryRegisterGlobal, global };
 import { getErrorFromAsyncerror, isErrorFromAsyncerror } from "./const";
@@ -478,6 +478,11 @@ export class FLP_Tool {
   raf = FLP_Tool.raf;
   static caf: typeof afCtrl.caf = afCtrl.caf.bind(afCtrl);
   caf = FLP_Tool.caf;
+
+  static toDateMS(date_arg) {
+    return (new Date(date_arg)).valueOf();
+  }
+  toDateMS = FLP_Tool.toDateMS
 }
 
 export function formatAndTranslateMessage(has_error: any, self?: FLP_Tool) {

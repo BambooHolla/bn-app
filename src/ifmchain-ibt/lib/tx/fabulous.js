@@ -166,7 +166,6 @@ var Fabulous = function () {
         key: 'getBytes',
         value: function getBytes(trs) {
             var bb = null;
-            try {
                 var fabulousAddress = new Buffer(trs.asset.fabulous.address, 'utf8');
 
                 bb = new ByteBuffer(fabulousAddress.length, true);
@@ -175,9 +174,7 @@ var Fabulous = function () {
                 }
 
                 bb.flip();
-            } catch (e) {
-                throw Error(e.toString());
-            }
+        
 
             // return bb.toBuffer()
             return Buffer.from(bb.toString('hex'), 'hex');

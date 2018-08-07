@@ -69,6 +69,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 	@AssetsIssuingAssetsPage.setErrorTo("errors", "abbreviation", [
 		"TOO_SHORT",
 		"TOO_LONG",
+		"WRONG_CHAR",
 	])
 	check_abbreviation() {
 		const res: any = {};
@@ -78,6 +79,12 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 				res.TOO_SHORT = "ABBREVIATION_TOO_SHORT";
 			} else if (abbreviation.length > 5) {
 				res.TOO_LONG = "ABBREVIATION_TOO_LONG";
+			}
+			for (var i = 0; i < abbreviation.length; i += 1) {
+				if (!/[a-zA-Z]/.test(abbreviation[i])) {
+					res.WRONG_CHAR = "ABBREVIATION_WRONG_CHAR";
+					break;
+				}
 			}
 		}
 		return res;
@@ -244,6 +251,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 	/**提交数字资产表单*/
 	@asyncCtrlGenerator.single()
 	@asyncCtrlGenerator.error()
+	@asyncCtrlGenerator.success()
 	async submit() {
 		const { formData, _cache_logo_base64 } = this;
 		if (!formData.logo) {
@@ -261,21 +269,24 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 				true,
 			);
 		}
-		const { custom_fee, password } = await this.getUserPassword({
+		const { custom_fee, password, pay_pwd } = await this.getUserPassword({
 			custom_fee: true,
 		});
 
-		this.assetsService.addAssets(
+		await this.assetsService.addAssets(
 			{
 				rate: formData.rate as number,
 				logo: _cache_logo_base64[1],
-				abbreviation: formData.abbreviation,
+				abbreviation: formData.abbreviation.toUpperCase(),
 				originalIssuedAssets: formData.originalIssuedAssets as number,
 				expectedRaisedIBTs: formData.expectedRaisedIBTs as number,
 				expectedIssuedBlockHeight: formData.expectedIssuedBlockHeight as number,
 			},
 			custom_fee,
 			password,
+			pay_pwd,
 		);
+
+		this.finishJob();
 	}
 }

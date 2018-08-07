@@ -129,6 +129,8 @@
     "这里关注的信息仅存储在您的本地设备上，但当您更换设备时或卸载后，关注信息将丢失，建议您将关注信息备份到其它地方，以便重新安装IBT或更换设备时可进行恢复。",
   "PEER_LIST": "网络节点",
   "MY_TRANSACTION": "我的交易",
+  "ASSETS_MARKET": "资产市场",
+  "MY_ASSETS_LIST": "我的资产",
   "VOUCHER_WALLET": "离线权益",
   "MINER_LIST": "锻块矿工",
   "SHARE_APP": "我要分享",
@@ -139,7 +141,7 @@
     "这里将把IBT手机端的下载链接分享到其它社交平台，您的好友可以通过您分享的链接下载并安装IBT。您可以点击“更多”分享到更多的社交平台",
   "SHOW_INCOME_IBT_NOTICE_TIP": "您是否需要在每次收到IBT时通知？",
   "AFTER_SHOW_INCOME_IBT_NOTICE_TIP":
-    "本通知为本机节点监听IFMChain网络获得的通知，如果您关闭了IBT节点将无法接收通知，请知悉。",
+    "本通知为本机节点根据IFMChain网络数据生成的通知，如果您关闭了IBT节点将无法接收通知，请知悉。",
   "NO_NOTICE_ME": "不通知",
 
   "//": "share-app-panel",
@@ -297,6 +299,7 @@
   "TRANSACTION_amount": "交易量",
   "TRANSACTION_fee": "手续费",
   "TRANSACTION_timestamp": "交易时间",
+  "TRANSACTION_dealDateTime": "确认时间",
   "TRANSACTION_dapp": "所属应用",
   "TRANSACTION_mark": "附加数据",
   "TRANSCATION_SENDER": "发送者",
@@ -538,6 +541,12 @@
   "TRAN_TYPE_NAME_12": "发送信息",
   "//": "MARK",
   "TRAN_TYPE_NAME_13": "侧链数据存证",
+  "//": "ISSUE_ASSET",
+  "TRAN_TYPE_NAME_14": "发行数字资产",
+  "//": "DESTORY_ASSET",
+  "TRAN_TYPE_NAME_15": "销毁数字资产",
+  "//": "TRANSFER_ASSET",
+  "TRAN_TYPE_NAME_16": "数字资产转账",
 
   "//": "search",
   "SEARCH_TYPE_ALL": "搜索",
@@ -771,6 +780,7 @@
   "ASSETS_expectedIssuedBlockHeight": "计划发行时的区块高度",
   "ABBREVIATION_TOO_SHORT": "英文简写太短",
   "ABBREVIATION_TOO_LONG": "英文简写太长",
+  "ABBREVIATION_WRONG_CHAR": "英文简写只能使用英文字符",
   "RATE_TOO_SMALL": "置换比例太小",
   "RATE_TOO_LARGE": "置换比例太大",
   "ORIGINALISSUEDASSETS_RANGE_ERROR": "发行资产数量有误",
@@ -782,6 +792,9 @@
   "ASSETS-ASSETS-MARKET": "资产市场",
   "NUMBER_OF_HOLDERS": "持有人数",
   "REMAINING": "剩余",
+
+  "//": "assets-my-assets-list",
+  "ASSETS-MY-ASSETS-LIST": "我的资产",
 
   "//": "assets-assets-detail",
   "ASSETS-ASSETS-DETAIL": "资产详情",

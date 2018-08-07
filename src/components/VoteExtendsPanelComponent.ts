@@ -112,4 +112,6 @@ export class VoteExtendsPanelComponent extends EventEmitter
   async refreshDetailData(): Promise<any> {
     throw new Error("refreshDetailData没有定义");
   }
+
+  toDateMS = FLP_Tool.toDateMS;
 }

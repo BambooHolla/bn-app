@@ -57,6 +57,14 @@
         {{transaction?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD HH:mm:ss"}}
       </div>
     </div>
+    <div class="common-item transfer-time" *ngIf="transaction?.dealDateTime">
+      <div class="left">
+        {{'TRANSACTION_dealDateTime'|translate}}
+      </div>
+      <div class="right">
+        {{toDateMS(transaction.dealDateTime)|amDateFormat:"YYYY.MM.DD HH:mm:ss"}}
+      </div>
+    </div>
     <div class="common-item dapp" *ngIf="transaction?.dapp">
       <div class="left">
         {{'TRANSACTION_dapp'|translate}}

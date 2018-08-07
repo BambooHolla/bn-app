@@ -76,6 +76,7 @@
   > .mat-container {
     mat-form-field {
       width: 100%;
+      overflow: hidden;
     }
     .mat-input-element {
       caret-color: #666;

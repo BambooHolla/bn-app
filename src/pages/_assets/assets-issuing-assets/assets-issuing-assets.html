@@ -26,6 +26,9 @@
     <div class="mat-container abbreviation">
       <mat-form-field>
         <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETS_ABBREVIATION'|translate" minlength="3" maxlength="5" [(ngModel)]="formData.abbreviation" set-input-status="abbreviation">
+        <mat-error *ngIf="errors?.abbreviation?.WRONG_CHAR">
+          {{errors.abbreviation.WRONG_CHAR|translate}}
+        </mat-error>
         <mat-error *ngIf="errors?.abbreviation?.TOO_SHORT">
           {{errors.abbreviation.TOO_SHORT|translate}}
         </mat-error>
@@ -99,7 +102,7 @@
           </mat-option>
         </mat-autocomplete>
         <mat-hint align="end" *ngIf="formData.expectedIssuedBlockHeight">
-          <ali-icon name="ifm-dialog-success"></ali-icon>
+          <ali-icon name="ifm-wancheng"></ali-icon>
           {{'ESTIMATED_TIME'|translate}} : {{blockHeightTime()|amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
         </mat-hint>
       </mat-form-field>

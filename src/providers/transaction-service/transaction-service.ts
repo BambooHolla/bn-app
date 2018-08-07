@@ -203,9 +203,20 @@ export class TransactionServiceProvider {
     //时间戳加入转账对象
     txData.timestamp = timestampRes.timestamp;
     //生成转账        await上层包裹的函数需要async
-    const transaction: TYPE.TransactionModel = await promisify(
-      this.ifmJs.transaction.createTransaction,
-    )(txData);
+    const transaction = await new Promise<TYPE.TransactionModel>(
+      (resolve, reject) => {
+        try {
+          this.ifmJs.transaction.createTransaction(txData, (err, res) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve(res);
+          });
+        } catch (err) {
+          reject(err);
+        }
+      },
+    );
 
     return { transactionUrl, transaction };
   }
