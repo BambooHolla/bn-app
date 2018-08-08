@@ -1,6 +1,29 @@
 page-assets-my-assets-list {
   @extend .header-no-border;
+  .content {
+    > .scroll-content {
+      /* overflow: hidden; */
+      /*       display: flex;
+      flex-direction: column; */
+      > .pink-bg {
+        /* content: " "; */
+        position: fixed;
+        width: 100vw;
+        height: 60vw;
+        bottom: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-size: 200vw 200vw;
+        background-position: center top;
+        background-image: url("../assets/imgs/net-circle-mask.jpg"),
+          linear-gradient(#ff3c00, #ff3c00);
+        background-blend-mode: lighten;
+        opacity: 0.1;
+      }
+    }
+  }
   .my-assets-list {
+    width: 100%;
     margin-top: 0.2rem;
     .common-item {
       height: 8.4rem;

@@ -448,7 +448,7 @@ export class TabPayPage extends FirstLevelPage {
         this.selectable_assets_list = [];
       }
       this.markForCheck();
-      const assets_list = await this.assetsService.getAssetsByAddress(
+      const assets_list = await this.assetsService.getPossessorAssets(
         this.userInfo.address,
         {
           offset: (assets_page_info.page - 1) * assets_page_info.pageSize,

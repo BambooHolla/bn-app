@@ -74,11 +74,13 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
     const { page_info } = this;
     page_info.loading = true;
     try {
-      const assets_list = await this.assetsService.getAssets({
-        address: this.userInfo.address,
-        offset: (page_info.page - 1) * page_info.pageSize,
-        limit: page_info.pageSize,
-      });
+      const assets_list = await this.assetsService.getPossessorAssets(
+        this.userInfo.address,
+        {
+          offset: (page_info.page - 1) * page_info.pageSize,
+          limit: page_info.pageSize,
+        }
+      );
       page_info.hasMore = assets_list.length >= page_info.pageSize;
       /*异步查询本地的未确认交易，看是否有销毁信息*/
       return await this.assetsService.mixDestoryingAssets(

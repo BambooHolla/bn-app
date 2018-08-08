@@ -104,7 +104,7 @@ export class AssetsServiceProvider {
   myAssetsList_Executor(promise_pro) {
     // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
     return promise_pro.follow(
-      this._getAssetsByAddress(this.appSetting.user.address, {
+      this._getPossessorAssets(this.appSetting.user.address, {
         offset: 0,
         limit: this.my_assets_default_pageSize,
         needLogo: 0,
@@ -112,7 +112,7 @@ export class AssetsServiceProvider {
     );
   }
 
-  async getAssetsByAddress(
+  async getPossessorAssets(
     address: string,
     extends_query: { limit?: number; offset?: number } = {}
   ) {
@@ -128,15 +128,16 @@ export class AssetsServiceProvider {
         }
       }
     }
-    return this._getAssetsByAddress(address, extends_query);
+    return this._getPossessorAssets(address, extends_query);
   }
-  async _getAssetsByAddress(address: string, extends_query: object) {
+  async _getPossessorAssets(address: string, extends_query: object) {
     const data = await this.fetch.get<{ assets: TYPE.AssetsModel[] }>(
       this.GET_ASSETS,
       {
         search: {
           address,
           ...extends_query,
+          needLogo: 0,
         },
       }
     );

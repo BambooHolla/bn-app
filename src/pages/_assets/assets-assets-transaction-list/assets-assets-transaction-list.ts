@@ -68,5 +68,13 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 	}
 
 	@asyncCtrlGenerator.error()
-	private _loadAssetsTransactionList() {}
+	private _loadAssetsTransactionList() {
+		// TODO: 查询资产交易
+	}
+
+	private _is_from_child = false;
+	routeToAssetsTransaction(transaction: TransactionModel) {
+		this._is_from_child = true;
+		this.routeTo("chain-transaction-detail", { transaction });
+	}
 }
