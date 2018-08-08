@@ -76,8 +76,14 @@ export class AssetsServiceProvider {
             URL.createObjectURL(logo_blob)
           ),
         } as TYPE.AssetsModelWithLogoSafeUrl;
+      } else {
+        return {
+          ...rest_assets,
+          logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
+            this.getAssetsLogoHttpUrl(assets.abbreviation)
+          ),
+        };
       }
-      return rest_assets;
     });
   }
 
