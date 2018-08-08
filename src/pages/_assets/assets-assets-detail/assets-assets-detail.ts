@@ -17,7 +17,6 @@ import {
 } from "ionic-angular";
 import {
   AssetsServiceProvider,
-  AssetsModel,
   AssetsPossessorModel,
   AssetsModelWithLogoSafeUrl,
 } from "../../../providers/assets-service/assets-service";

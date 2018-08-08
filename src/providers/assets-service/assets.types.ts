@@ -1,15 +1,14 @@
 import { NumberLong } from "../types.helper";
-export type AssetsModel = {
+export type AssetsBaseModel = {
   transactionId: string;
   address: string;
   publicKey: string;
   rate: number;
   /**发行的资产名称(unique)*/
-  assetName: string;
-  logo: Blob;
+  // assetName: string;
   /**英文缩写(unique)*/
   abbreviation: string;
-  summary: string;
+  // summary: string;
   /**初始冻结的 IBT 数量*/
   originalFrozenIBT: NumberLong;
   /**初始发行的资产数量*/
@@ -24,7 +23,10 @@ export type AssetsModel = {
   status: ASSETS_STATUS;
   dateCreated: number;
 };
-export type AssetsModelWithLogoSafeUrl = AssetsModel & {
+export type AssetsModel = AssetsBaseModel & {
+  logo: string;
+};
+export type AssetsModelWithLogoSafeUrl = AssetsBaseModel & {
   logo_safe_url: import("@angular/platform-browser").SafeUrl;
 };
 

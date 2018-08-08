@@ -160,11 +160,18 @@ export class AppUrl {
     );
   }
   constructor(public path: string) {}
-  toString() {
-    return (
+  toString(query?) {
+    const host =
       (this.disposable_server_url || AppUrl.SERVER_URL) +
-      this.path.replace(/^\/api\//, "/api/" + AppUrl.BACKEND_VERSION)
-    );
+      this.path.replace(/^\/api\//, "/api/" + AppUrl.BACKEND_VERSION);
+    if (query) {
+      let querystring = "?";
+      for (var k in query) {
+        querystring += `${k}=${encodeURIComponent(query[k])}`;
+      }
+      return host + querystring;
+    }
+    return host;
   }
   _disposable_server_url?: string;
   get disposable_server_url() {

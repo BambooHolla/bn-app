@@ -17,6 +17,11 @@ import {
   formatAndTranslateMessage,
 } from "../../bnqkl-framework/Decorator";
 import { Subscription } from "rxjs/Subscription";
+import {
+  AssetsServiceProvider,
+  AssetsModelWithLogoSafeUrl,
+} from "../../providers/assets-service/assets-service";
+
 // import { Network } from '@ionic-native/network';
 
 import {
@@ -47,7 +52,8 @@ export class TabPayPage extends FirstLevelPage {
     // public transfer: TransferProvider,
     public transactionService: TransactionServiceProvider,
     public voucherService: VoucherServiceProvider,
-    public cdRef: ChangeDetectorRef // public network: Network
+    public cdRef: ChangeDetectorRef, // public network: Network
+    public assetsService: AssetsServiceProvider
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
@@ -398,5 +404,82 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {
     return this.loadRollOutLogs();
+  }
+
+  /**选中的资产*/
+  readonly ibt_assets = {
+    ...this.assetsService.ibt_assets,
+  };
+  @TabPayPage.markForCheck selected_assets = this.ibt_assets;
+  @TabPayPage.markForCheck
+  selectable_assets_list: AssetsModelWithLogoSafeUrl[] = [];
+  /**资产选择面板是否打开*/
+  @TabPayPage.markForCheck is_assets_select_panel_open = false;
+  assets_page_info = {
+    loading: false,
+    hasMore: true,
+    page: 1,
+    pageSize: 20,
+    cacheHeight: 0,
+  };
+  /**打开、关闭 资产选择面板*/
+  toggleAssetsSelectPanel() {
+    this.is_assets_select_panel_open = !this.is_assets_select_panel_open;
+    if (this.is_assets_select_panel_open) {
+      this._loadSelectableAssetsList();
+    }
+  }
+  @asyncCtrlGenerator.single()
+  @asyncCtrlGenerator.error()
+  private async _loadSelectableAssetsList() {
+    const current_height = this.appSetting.getHeight();
+    const { assets_page_info } = this;
+    let need_reset = false;
+    if (assets_page_info.cacheHeight === current_height) {
+      if (!assets_page_info.hasMore) {
+        return;
+      }
+    } else {
+      need_reset = true;
+    }
+    assets_page_info.loading = true;
+    try {
+      if (need_reset) {
+        this.selectable_assets_list = [];
+      }
+      this.markForCheck();
+      const assets_list = await this.assetsService.getAssetsByAddress(
+        this.userInfo.address,
+        {
+          offset: (assets_page_info.page - 1) * assets_page_info.pageSize,
+          limit: assets_page_info.pageSize,
+        }
+      );
+      assets_page_info.hasMore =
+        assets_list.length >= assets_page_info.pageSize;
+      this.selectable_assets_list.push(...assets_list);
+      assets_page_info.cacheHeight = current_height;
+    } finally {
+      assets_page_info.loading = false;
+      this.markForCheck();
+    }
+  }
+
+  /**监听滚动加载更多*/
+  tryLoadMoreAssetsList($event: Event) {
+    const wrapperEle = $event.srcElement as HTMLElement | null;
+    if (!wrapperEle) {
+      return;
+    }
+    if (
+      wrapperEle.scrollTop +
+        wrapperEle.offsetHeight * 0.4 +
+        wrapperEle.offsetHeight >
+      wrapperEle.scrollHeight
+    ) {
+      if (!this.assets_page_info.loading) {
+        this._loadSelectableAssetsList();
+      }
+    }
   }
 }

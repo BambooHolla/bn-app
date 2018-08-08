@@ -1,5 +1,9 @@
 import { Injectable } from "@angular/core";
-import { AppSettingProvider, AppUrl } from "../app-setting/app-setting";
+import {
+  AppSettingProvider,
+  AppUrl,
+  HEIGHT_AB_Generator,
+} from "../app-setting/app-setting";
 import {
   TransactionServiceProvider,
   TransactionModel,
@@ -9,6 +13,7 @@ import { formatImage } from "../../components/AniBase";
 import * as TYPE from "./assets.types";
 export * from "./assets.types";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
 
 @Injectable()
 export class AssetsServiceProvider {
@@ -30,23 +35,112 @@ export class AssetsServiceProvider {
     "/api/assets/tx/destoryAsset"
   );
   readonly TRANSFER_ASSET = this.appSetting.APP_URL("/api/assets/tx");
+  readonly DOWNLOAD_ASSETS_LOGO = this.appSetting.APP_URL(
+    "/api/assets/downloadAssetsLogo"
+  );
+
+  readonly ibt_assets: TYPE.AssetsModelWithLogoSafeUrl = {
+    transactionId: "",
+    address: "",
+    publicKey: "",
+    rate: 1,
+    /**英文缩写(unique)*/
+    abbreviation: "IBT",
+    /**初始冻结的 IBT 数量*/
+    originalFrozenIBT: 0,
+    /**初始发行的资产数量*/
+    originalIssuedAssets: 0,
+    /**剩余的 IBT 数量*/
+    remainIBT: 0,
+    /**剩余的资产数量*/
+    remainAssets: 0,
+    applyAssetBlockHeight: 0,
+    expectedRaisedIBTs: 0,
+    expectedIssuedBlockHeight: 0,
+    status: TYPE.ASSETS_STATUS.SUCCESS,
+    dateCreated: AppSettingProvider.seedDateTimestamp,
+
+    logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
+      "./assets/imgs/assets/IBT-assets-logo.jpg"
+    ),
+  };
+
+  private _formatAssetsToWithLogoSafeUrl(assets: TYPE.AssetsModel[]) {
+    return assets.map(assets => {
+      const { logo, ...rest_assets } = assets;
+      if (logo) {
+        const logo_blob = this.jpgBase64ToBlob(logo);
+        return {
+          ...rest_assets,
+          logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
+            URL.createObjectURL(logo_blob)
+          ),
+        } as TYPE.AssetsModelWithLogoSafeUrl;
+      }
+      return rest_assets;
+    });
+  }
 
   /**获取资产*/
   async getAssets(query) {
-    const data = await this.fetch.get<{ assets: any[] }>(this.GET_ASSETS, {
-      search: query,
-    });
-    return data.assets.map(assets => {
-      const logo = this.jpgBase64ToBlob(assets.logo);
-      return {
-        ...assets,
-        logo,
-        logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
-          URL.createObjectURL(logo)
-        ),
-      } as TYPE.AssetsModelWithLogoSafeUrl;
-    });
+    const data = await this.fetch.get<{ assets: TYPE.AssetsModel[] }>(
+      this.GET_ASSETS,
+      {
+        search: query,
+      }
+    );
+    return this._formatAssetsToWithLogoSafeUrl(data.assets);
   }
+
+  my_assets_default_pageSize = 20;
+  myAssetsList!: AsyncBehaviorSubject<TYPE.AssetsModelWithLogoSafeUrl[]>;
+  @HEIGHT_AB_Generator("myAssetsList")
+  myAssetsList_Executor(promise_pro) {
+    // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
+    return promise_pro.follow(
+      this._getAssetsByAddress(this.appSetting.user.address, {
+        offset: 0,
+        limit: this.my_assets_default_pageSize,
+        need_logo: 0,
+      })
+    );
+  }
+
+  async getAssetsByAddress(
+    address: string,
+    extends_query: { limit?: number; offset?: number } = {}
+  ) {
+    if (address === this.appSetting.user.address) {
+      if (
+        typeof extends_query.limit === "number" &&
+        typeof extends_query.offset === "number"
+      ) {
+        const end = extends_query.offset + extends_query.limit;
+        if (end <= this.my_assets_default_pageSize) {
+          const my_assets_list = await this.myAssetsList.getPromise();
+          return my_assets_list.slice(extends_query.offset, end);
+        }
+      }
+    }
+    return this._getAssetsByAddress(address, extends_query);
+  }
+  async _getAssetsByAddress(address: string, extends_query: object) {
+    const data = await this.fetch.get<{ assets: TYPE.AssetsModel[] }>(
+      this.GET_ASSETS,
+      {
+        search: {
+          address,
+          ...extends_query,
+        },
+      }
+    );
+    return this._formatAssetsToWithLogoSafeUrl(data.assets);
+  }
+
+  getAssetsLogoHttpUrl(abbreviation: string) {
+    return this.DOWNLOAD_ASSETS_LOGO.toString({ abbreviation });
+  }
+
   /**数字资产的图片必须是jpg*/
   jpgBase64ToBlob(b64Data: string) {
     const contentType = "image/jpg";
@@ -129,7 +223,7 @@ export class AssetsServiceProvider {
 
   /**销毁资产*/
   destoryAssets(
-    assets: TYPE.AssetsModel,
+    assets: TYPE.AssetsBaseModel,
     fee = parseFloat(this.appSetting.settings.default_fee),
     secret: string,
     secondSecret?: string,
@@ -156,7 +250,7 @@ export class AssetsServiceProvider {
   }
 
   /**查询是否在销毁中*/
-  async mixDestoryingAssets<T extends TYPE.AssetsModel>(
+  async mixDestoryingAssets<T extends TYPE.AssetsBaseModel>(
     senderId: string,
     assets_list: T[]
   ) {
