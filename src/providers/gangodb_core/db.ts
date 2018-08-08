@@ -112,16 +112,18 @@ export default class Db extends EventEmitter {
       const new_value = {};
 
       for (var index_path of index_config) {
-        new_value[index_path] = true;
+        const index_key = index_path.split(":", 1)[0];
+        new_value[index_key] = true;
 
-        col._indexes.add(index_path);
+        col._indexes.add(index_key);
       }
 
       config[path] = new_value;
     } else {
       for (var index_keypath in index_config) {
-        if (index_config[index_keypath]) {
-          col._indexes.add(index_keypath);
+        const index_key = index_path.split(":", 1)[0];
+        if (index_config[index_key]) {
+          col._indexes.add(index_key);
         }
       }
 

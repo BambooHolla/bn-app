@@ -11970,7 +11970,7 @@ const baseConfig = exports.baseConfig = new class BaseConfig extends _eventemitt
     constructor() {
         super(...arguments);
         this.APP_VERSION = global["APP_VERSION"];
-        this._SERVER_URL = getQueryVariable("SERVER_URL") || "http://mainnet.ifmchain.org";
+        this._SERVER_URL = "";
         //  SERVER_URL = "http://47.104.142.234:6062";
         this.SEED_DATE = SEED_DATE;
         this.seedDateTimestamp = Math.floor(Date.UTC(SEED_DATE[0], SEED_DATE[1], SEED_DATE[2], SEED_DATE[3], SEED_DATE[4], SEED_DATE[5], SEED_DATE[6]) / 1000);
@@ -12003,6 +12003,7 @@ const baseConfig = exports.baseConfig = new class BaseConfig extends _eventemitt
         });
     }
 }();
+baseConfig.SERVER_URL = getQueryVariable("SERVER_URL") || "http://mainnet.ifmchain.org";
 console.log("%cSERVER_URL:", "font-size:2em;color:green;background-color:#DDD", baseConfig.SERVER_URL);
 },{"./BlizzardHash":117,"socket.io-client":12,"eventemitter3":36}],527:[function(require,module,exports) {
 "use strict";
@@ -20153,14 +20154,16 @@ class Db extends _eventemitter2.default {
         if (Array.isArray(index_config)) {
             const new_value = {};
             for (var index_path of index_config) {
-                new_value[index_path] = true;
-                col._indexes.add(index_path);
+                const index_key = index_path.split(":", 1)[0];
+                new_value[index_key] = true;
+                col._indexes.add(index_key);
             }
             config[path] = new_value;
         } else {
             for (var index_keypath in index_config) {
-                if (index_config[index_keypath]) {
-                    col._indexes.add(index_keypath);
+                const index_key = index_path.split(":", 1)[0];
+                if (index_config[index_key]) {
+                    col._indexes.add(index_key);
                 }
             }
             config[path] = index_config;
@@ -20334,7 +20337,7 @@ var _db2 = _interopRequireDefault(_db);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const mdb = new _db2.default("ibt", 16, {
+const mdb = new _db2.default("ibt", 17, {
     blocks: ["height", "id:unique"],
     account: ["address", "publicKey"],
     voted_delegate: true,

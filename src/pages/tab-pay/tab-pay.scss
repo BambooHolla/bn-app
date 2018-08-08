@@ -413,33 +413,58 @@ page-tab-pay {
     position: fixed;
     width: 100%;
     top: 0;
+    left: 0;
     z-index: 8;
-    opacity: 0.4;
+    opacity: 0;
+    /* transition-duration: 250ms; */
+    pointer-events: none;
+    padding-top: 20.012px;
     padding-top: #{constant(safe-area-inset-top)};
     padding-top: #{env(safe-area-inset-top)};
     &.android {
+      transition-duration: unset;
       .assets-select-panel-wrapper {
+        /* transition-duration: unset; */
         border-radius: 0;
+        box-shadow: unset;
+        backdrop-filter: blur(5px);
+        .assets-select-panel {
+          backdrop-filter: unset;
+        }
       }
+      .android-shadow-fix-layer {
+        box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.2);
+      }
+    }
+    &.ios {
+      /* IOS 动画会导致渲染问题 */
+      transition-duration: unset;
     }
     &.show {
       opacity: 1;
-      .assets-select-panel-wrapper {
+      .assets-select-panel-wrapper,
+      .android-shadow-fix-layer {
         transform: scale(1, 1);
       }
+      .android-shadow-fix-layer{
+        z-index: 9;
+      }
     }
-    .assets-select-panel-wrapper {
-      transform: scale(1, 0);
+    .assets-select-panel-wrapper,
+    .android-shadow-fix-layer {
+      transform: scale(1, 0.5);
       transition-duration: 250ms;
       transform-origin: center top;
       box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.2);
-      position: relative;
+      position: absolute;
       overflow: auto;
-      width: 76%;
+      width: 76vw;
       top: 29rem;
+      left: 0;
       max-height: 20rem;
-      margin: auto;
+      margin: 0 12vw;
       border-radius: 0.5rem;
+      z-index: 10;
       &::after {
         content: " ";
         position: absolute;
@@ -450,6 +475,7 @@ page-tab-pay {
         top: 1rem;
       }
       .assets-select-panel {
+        pointer-events: all;
         background-color: rgba(#fff, 0.2);
         padding-left: 1.1rem;
         padding-right: 0.7rem;

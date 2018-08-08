@@ -793,6 +793,10 @@
   "NUMBER_OF_HOLDERS": "持有人数",
   "REMAINING": "剩余",
 
+  "//": "assets-assets-transaction-list",
+  "ASSETS-ASSETS-TRANSACTION-LIST": "资产交易记录",
+  "RECENT_ASSETS_TRANSACTION_LOGS": "最近交易记录",
+
   "//": "assets-my-assets-list",
   "ASSETS-MY-ASSETS-LIST": "我的资产",
 

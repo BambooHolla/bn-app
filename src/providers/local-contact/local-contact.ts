@@ -9,6 +9,7 @@ import {
 } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
+import { PromiseType } from "../../bnqkl-framework/PromiseExtends";
 
 import pinyin from "tiny-pinyin";
 tryRegisterGlobal("pinyin", pinyin);
@@ -31,6 +32,7 @@ export enum LocalContactGroupMethod {
   /*以上所有*/
   mix,
 }
+export type TransactionWithLoclContactNicknameModel = PromiseType<ReturnType<typeof LocalContactProvider.prototype.formatTransactionWithLoclContactNickname>>
 
 @Injectable()
 export class LocalContactProvider extends EventEmitter {
@@ -60,6 +62,24 @@ export class LocalContactProvider extends EventEmitter {
         address,
       })
       .then(list => list[0] as TYPE.LocalContactModel | undefined);
+  }
+  formatTransactionWithLoclContactNickname(
+    transaction_list: import("../transaction-service/transaction.types").TransactionModel[],
+    owner_publicKey = this.userInfo.publicKey
+  ) {
+    return Promise.all(
+      transaction_list.map(async tra => {
+        const [contact_sender, contact_recipient] = await Promise.all([
+          this.findContact(tra.senderId, owner_publicKey),
+          this.findContact(tra.recipientId, owner_publicKey),
+        ]);
+        return {
+          ...tra,
+          senderNickname: contact_sender && contact_sender.nickname,
+          recipientNickname: contact_recipient && contact_recipient.nickname,
+        };
+      })
+    );
   }
   /*搜索联系人*/
   async searchContact(address_or_username: string) {

@@ -24,7 +24,7 @@ export type AssetsBaseModel = {
   dateCreated: number;
 };
 export type AssetsModel = AssetsBaseModel & {
-  logo: string;
+  logo?: string;
 };
 export type AssetsModelWithLogoSafeUrl = AssetsBaseModel & {
   logo_safe_url: import("@angular/platform-browser").SafeUrl;

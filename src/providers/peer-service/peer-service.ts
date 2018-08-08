@@ -15,6 +15,7 @@ import {
 } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { getQueryVariable } from "../../bnqkl-framework/helper";
+import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { CommonService } from "../commonService";
 import { Mdb } from "../mdb";
 import * as TYPE from "./peer.types";
@@ -444,21 +445,21 @@ export class PeerServiceProvider extends CommonService {
       // }
     }
   }
-  /**保存或者读取校验完成的可用节点*/
-  useablePeers(useable_peers?: TYPE.LocalPeerModel[]) {
-    if (useable_peers) {
-      sessionStorage.setItem("USEABLE_PEERS", JSON.stringify(useable_peers));
-      return useable_peers;
-    } else {
-      try {
-        const useable_peers_json = sessionStorage.getItem("USEABLE_PEERS");
-        if (useable_peers_json) {
-          return JSON.parse(useable_peers_json) as TYPE.LocalPeerModel[];
-        }
-      } catch (err) {}
-      return [];
-    }
-  }
+  // /**保存或者读取校验完成的可用节点*/
+  // useablePeers(useable_peers?: TYPE.LocalPeerModel[]) {
+  //   if (useable_peers) {
+  //     sessionStorage.setItem("USEABLE_PEERS", JSON.stringify(useable_peers));
+  //     return useable_peers;
+  //   } else {
+  //     try {
+  //       const useable_peers_json = sessionStorage.getItem("USEABLE_PEERS");
+  //       if (useable_peers_json) {
+  //         return JSON.parse(useable_peers_json) as TYPE.LocalPeerModel[];
+  //       }
+  //     } catch (err) {}
+  //     return [];
+  //   }
+  // }
   /**获取操作系统对应的图标*/
   getSystemTypeIcon(platfrom: string) {
     if (platfrom === "linux") {
@@ -472,7 +473,7 @@ export class PeerServiceProvider extends CommonService {
     }
     return "ifm-unknown-system";
   }
-  async *updateUseablePeersInfo(useablePeers = this.useablePeers()) {
+  async *updateUseablePeersInfo(useablePeers: TYPE.LocalPeerModel[]) {
     const fetch_peer_infos: PromiseType<
       ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfoAndUpdate>
     >[] = [];
@@ -543,15 +544,18 @@ export class PeerServiceProvider extends CommonService {
   async updatePeerFlow(origin: string, flow: number) {
     let lock_info = this._update_peer_flow_lock.get(origin);
     if (!lock_info) {
+      const interval_task = sleep(1000); //每一秒只能操作一次，不然数据库压力太大
       const li = {
         acc_flow: 0,
-        lock: this._updatePeerFlow(origin, flow).then(() => {
-          // 解锁并合并更新
-          this._update_peer_flow_lock.delete(origin);
-          if (li.acc_flow) {
-            this.updatePeerFlow(origin, li.acc_flow);
-          }
-        }),
+        lock: this._updatePeerFlow(origin, flow)
+          .then(() => interval_task)
+          .then(() => {
+            // 解锁并合并更新
+            this._update_peer_flow_lock.delete(origin);
+            if (li.acc_flow) {
+              this.updatePeerFlow(origin, li.acc_flow);
+            }
+          }),
       };
       lock_info = li;
     } else {

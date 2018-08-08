@@ -19,7 +19,10 @@ import {
   BlockServiceProvider,
   BlockModel,
 } from "../../providers/block-service/block-service";
-import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import {
+  AppSettingProvider,
+  AppUrl,
+} from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { AniBase, Easing } from "../../components/AniBase";
 import * as IFM from "ifmchain-ibt";
@@ -295,7 +298,7 @@ export class LinkNodePage extends FirstLevelPage {
     localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
     localStorage.setItem("NET_VERSION", peer.netVersion || "mainnet");
     sessionStorage.setItem("LINK_PEER", "true");
-    this.peerService.useablePeers(this.useable_peers);
+    // this.peerService.useablePeers(this.useable_peers);
 
     // 保存这次检测完成的时间，为了避免过度频繁的检测
     localStorage.setItem("LINK_PEER", Date.now().toString());

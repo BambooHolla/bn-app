@@ -482,4 +482,9 @@ export class TabPayPage extends FirstLevelPage {
       }
     }
   }
+
+  /**选择某一个资产*/
+  selectAssets(assets:AssetsModelWithLogoSafeUrl){
+    
+  }
 }

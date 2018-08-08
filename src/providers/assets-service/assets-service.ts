@@ -65,7 +65,7 @@ export class AssetsServiceProvider {
     ),
   };
 
-  private _formatAssetsToWithLogoSafeUrl(assets: TYPE.AssetsModel[]) {
+  formatAssetsToWithLogoSafeUrl(assets: TYPE.AssetsModel[]) {
     return assets.map(assets => {
       const { logo, ...rest_assets } = assets;
       if (logo) {
@@ -95,7 +95,7 @@ export class AssetsServiceProvider {
         search: query,
       }
     );
-    return this._formatAssetsToWithLogoSafeUrl(data.assets);
+    return this.formatAssetsToWithLogoSafeUrl(data.assets);
   }
 
   my_assets_default_pageSize = 20;
@@ -107,7 +107,7 @@ export class AssetsServiceProvider {
       this._getAssetsByAddress(this.appSetting.user.address, {
         offset: 0,
         limit: this.my_assets_default_pageSize,
-        need_logo: 0,
+        needLogo: 0,
       })
     );
   }
@@ -140,7 +140,7 @@ export class AssetsServiceProvider {
         },
       }
     );
-    return this._formatAssetsToWithLogoSafeUrl(data.assets);
+    return this.formatAssetsToWithLogoSafeUrl(data.assets);
   }
 
   getAssetsLogoHttpUrl(abbreviation: string) {

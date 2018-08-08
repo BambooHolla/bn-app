@@ -190,8 +190,7 @@ const SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
 
 export const baseConfig = new class BaseConfig extends EventEmitter {
   APP_VERSION = global["APP_VERSION"];
-  private _SERVER_URL =
-    getQueryVariable("SERVER_URL") || "http://mainnet.ifmchain.org";
+  private _SERVER_URL = "";
   get SERVER_URL() {
     return this._SERVER_URL;
   }
@@ -240,6 +239,8 @@ export const baseConfig = new class BaseConfig extends EventEmitter {
     });
   }
 }();
+baseConfig.SERVER_URL =
+  getQueryVariable("SERVER_URL") || "http://mainnet.ifmchain.org";
 
 console.log(
   "%cSERVER_URL:",
