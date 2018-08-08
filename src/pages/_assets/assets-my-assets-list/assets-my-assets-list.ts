@@ -92,8 +92,8 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
 
   private _is_from_child = false;
   /**跳转到资产详情页面*/
-  routeToAssetsDetail(assets: AssetsModel) {
+  routeToAssetsTraList(assets: AssetsModel) {
     this._is_from_child = true;
-    this.routeTo("assets-assets-detail", { assets });
+    this.routeTo("assets-assets-transaction-list", { assets });
   }
 }

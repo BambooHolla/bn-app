@@ -20337,8 +20337,8 @@ var _db2 = _interopRequireDefault(_db);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const mdb = new _db2.default("ibt", 17, {
-    blocks: ["height", "id:unique"],
+const mdb = new _db2.default("ibt", 18, {
+    blocks: ["height", "id"],
     account: ["address", "publicKey"],
     voted_delegate: true,
     voucher: ["timestamp"],
@@ -20346,7 +20346,7 @@ const mdb = new _db2.default("ibt", 17, {
     unconfirm_transaction: ["id", "type", "senderId"],
     contact_tags: ["owner_publicKey", "contact_ids:multiEntry"],
     local_contact: true,
-    peers: ["origin:unique"]
+    peers: ["origin"]
 });
 (0, _helper.tryRegisterGlobal)("mdb", mdb);
 const Promise_allNoArray = async_arr => {

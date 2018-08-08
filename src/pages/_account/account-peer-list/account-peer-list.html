@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="row common-item" [class.disabled]="peer.disabled" *ngFor="let peer of cur_peer_list">
-      <div class="item ip" [innerHTML]="(peer.ip|mask:'@ip')+':'+peer.p2pPort"></div>
+      <div class="item ip" [innerHTML]="peer.ip|mask:'@ip'"></div>
       <div class="item height">{{peer.height}}</div>
       <div class="item delay">{{peer.delay|number:'1.0-0'}}ms</div>
       <div class="item linked-number">{{peer.webChannelLinkNum}}</div>

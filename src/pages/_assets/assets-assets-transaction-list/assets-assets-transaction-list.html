@@ -1,13 +1,59 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="transparent-white">
     <ion-title>{{assets_info?.abbreviation}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="routeTo('assets-assets-detail',{assets:assets_info})">
+        <ali-icon name="ifm-shiliangzhinengduixiang1"></ali-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
-  <ion-buttons end>
-    <button ion-button (click)="routeTo('assets-issuing-assets',{auto_return:true})">
-      <ali-icon name="ifm-shiliangzhinengduixiang1"></ali-icon>
-    </button>
-  </ion-buttons>
 </ion-header>
 <ion-content>
-	
+  <div class="base-info">
+    <div class="assets-logo-shape-wrapper">
+      <div class="assets-logo-shape">
+        <img [src]="assets_info?.logo_safe_url" alt="LOGO">
+      </div>
+    </div>
+    <div class="abbreviation">
+      {{assets_info?.abbreviation}}
+    </div>
+    <div class="balance">
+      <text-gradient [text]="assets_info?.balance|amountEuler|number:'1.8-8'" from="#74f5e1" to="#83d8f6" direction="bottom" fontSize="1.7rem" fontWeight="600"></text-gradient>
+      <div class="usd" hidden>
+        ≈ 666 USD
+      </div>
+    </div>
+  </div>
+  <div class="transaction-logs common-list">
+    <div class="list-title">
+      <ali-icon name="ifm-tran-history"></ali-icon>
+      {{'RECENT_ASSETS_TRANSACTION_LOGS'|translate}}
+      <div class="common-item" *ngFor="let tran of transaction_list;trackBy:commonTrackBy('id')" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
+        <div class="left">
+          <div class="tran-type">
+            {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+          </div>
+          <div class="create-time">
+            <!-- {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}} -->
+            {{(toDateMS(tran.dealDateTime)+timeago_clock)|amLocale:localName|amTimeAgo}}
+          </div>
+        </div>
+        <div class="right">
+          <div class="from-to">
+            <div class="sender" [innerHTML]="(tran.senderNickname||tran.senderUsername)?(tran.senderNickname||tran.senderUsername):(tran.senderId|mask:'@address')"></div>
+            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+              <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+              <div class="recipient" [innerHTML]="(tran.recipientNickname||tran.recipientUsername)?(tran.recipientNickname||tran.recipientUsername):(tran.recipientId|mask:'@address')"></div>
+            </ng-container>
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+            {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
+            - {{tran?.fee|amountEuler|number:"1.8-8"}}
+          </div>
+        </div>
+      </div>
+    </div>
 </ion-content>
