@@ -270,12 +270,12 @@ ZSchema.registerFormat("issueAsset", function(obj) {
   if (
     obj &&
     obj.issueAsset &&
-    obj.issueAsset.rate /* && obj.issueAsset.assetName*/ &&
+    obj.issueAsset.rate &&
     obj.issueAsset.logo &&
-    obj.issueAsset.abbreviation /* && obj.issueAsset.originalFrozenIBT */ &&
-    obj.issueAsset.originalIssuedAssets &&
-    obj.issueAsset.expectedRaisedIBTs &&
-    obj.issueAsset.expectedIssuedBlockHeight
+    obj.issueAsset.abbreviation &&
+    obj.issueAsset.expectedFrozenIBTs &&
+    obj.issueAsset.expectedIssuedAssets &&
+    obj.issueAsset.genesisAddress
   ) {
     return true;
   } else {

@@ -136,22 +136,31 @@ export class FLP_Form extends FLP_Route {
   setInputstatus(formKey: string, e) {
     this.inputstatus[formKey] = e.type;
     if (e.type === "input") {
-      this.checkFormKey(formKey);
+      this.checkFormKey(formKey, e.target);
     }
     this.event.emit("input-status-changed", {
       key: formKey,
       event: e,
     });
   }
-  checkFormKey(formKey: string) {
+  checkFormKey(formKey: string, ele?: HTMLInputElement | HTMLTextAreaElement) {
     if (this._error_checks_col[formKey]) {
+      let err_res: any = {};
       this._error_checks_col[formKey].forEach(fun_key => {
         try {
-          this[fun_key]();
+          err_res = Object.assign(err_res, this[fun_key]());
         } catch (err) {
           console.warn("表单检查出错", fun_key, err);
         }
       });
+      if (ele) {
+        let err_msg = "";
+        if (err_res && Object.keys(err_res).length) {
+          err_msg = JSON.stringify(err_res);
+        }
+        ele.setCustomValidity(err_msg);
+      }
+      return err_res;
     }
   }
 

@@ -8,7 +8,7 @@ export type AssetsBaseModel = {
   // assetName: string;
   /**英文缩写(unique)*/
   abbreviation: string;
-  // summary: string;
+  genesisAddress: string;
   /**初始冻结的 IBT 数量*/
   originalFrozenIBT: NumberLong;
   /**初始发行的资产数量*/
@@ -22,6 +22,7 @@ export type AssetsBaseModel = {
   expectedIssuedBlockHeight: number;
   status: ASSETS_STATUS;
   dateCreated: number;
+  hodingAssets: string;
 };
 export type AssetsModel = AssetsBaseModel & {
   logo?: string;

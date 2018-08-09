@@ -37,6 +37,13 @@ export class UserInfoProvider extends EventEmitter {
   get username() {
     return this._username;
   }
+  private _accountType!: number;
+  get accountType() {
+    return this._accountType;
+  }
+  get isFreezed() {
+    return this._accountType === 1;
+  }
   constructor(public storage: Storage) {
     super();
   }
@@ -48,6 +55,7 @@ export class UserInfoProvider extends EventEmitter {
       userInfo = {};
     }
     this._userInfo = userInfo;
+    this._accountType = userInfo.accountType || 0;
     this._address = userInfo.address;
     this._balance = userInfo.balance;
     this._secondPublicKey = userInfo.secondPublicKey;

@@ -1,7 +1,7 @@
-import { FLP_Form } from "./FLP_Form";
+import { FLP_MatForm } from "./FLP_MatForm";
 import { PAGE_STATUS } from "./const";
 import { AniBase } from "../components/AniBase";
-export class FLP_Data extends FLP_Form {
+export class FLP_Data extends FLP_MatForm {
   /** 定义一个延迟渲染到页面的属性
    */
   static setAfterPageEnter(defaultValue?: any, delay?: number) {

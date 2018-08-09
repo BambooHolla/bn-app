@@ -30,6 +30,9 @@ export class AssetsServiceProvider {
     "/api/assets/returnIBTDetails"
   );
   readonly GET_ASSETS = this.appSetting.APP_URL("/api/assets/");
+  readonly GET_POSSESSOR_ASSETS = this.appSetting.APP_URL(
+    "/api/assets/possessorAssets"
+  );
   readonly ADD_ASSETS = this.appSetting.APP_URL("/api/assets/tx/issuedAsset");
   readonly DESTORY_ASSET = this.appSetting.APP_URL(
     "/api/assets/tx/destoryAsset"
@@ -46,6 +49,7 @@ export class AssetsServiceProvider {
     rate: 1,
     /**英文缩写(unique)*/
     abbreviation: "IBT",
+    genesisAddress: "",
     /**初始冻结的 IBT 数量*/
     originalFrozenIBT: 0,
     /**初始发行的资产数量*/
@@ -114,7 +118,7 @@ export class AssetsServiceProvider {
 
   async getPossessorAssets(
     address: string,
-    extends_query: { limit?: number; offset?: number } = {}
+    extends_query: { limit?: number; offset?: number; [key: string]: any } = {}
   ) {
     if (address === this.appSetting.user.address) {
       if (
@@ -132,7 +136,7 @@ export class AssetsServiceProvider {
   }
   async _getPossessorAssets(address: string, extends_query: object) {
     const data = await this.fetch.get<{ assets: TYPE.AssetsModel[] }>(
-      this.GET_ASSETS,
+      this.GET_POSSESSOR_ASSETS,
       {
         search: {
           address,
@@ -199,8 +203,9 @@ export class AssetsServiceProvider {
       rate: number;
       logo: string;
       abbreviation: string;
-      originalIssuedAssets: number;
-      expectedRaisedIBTs: number;
+      genesisAddress: string;
+      expectedIssuedAssets: number;
+      expectedFrozenIBTs: number;
       expectedIssuedBlockHeight: number;
     },
     fee = parseFloat(this.appSetting.settings.default_fee),

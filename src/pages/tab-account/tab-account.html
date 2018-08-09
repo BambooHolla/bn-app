@@ -1,7 +1,7 @@
 <ion-header>
   <!-- 我的 -->
 </ion-header>
-<ion-content>
+<ion-content [class.freezed]="userInfo.isFreezed">
   <div class="account-header">
     <div class="toolbar">
       <button (click)="routeTo('account-settings')">

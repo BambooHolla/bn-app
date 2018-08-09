@@ -619,6 +619,8 @@
   "TRANSFER_ADDRESS_IS_MALFORMED": "转账地址格式有误",
   "OFFLINE_TRANFER_TIP":
     "当网络没有可用网络时，您依然可以使用IBT进行支付，此时的支付将直接点对点的在双方之间进行。离线支付完成后，需要您将离线权益进行兑现后才能进行使用，在兑现前对方都可以将该离线权益进行删除，从而撤销该笔交易",
+  "NO_ASSETS": "未拥有其它数字资产",
+  "ASSETS_LIST_UPDATE_ERROR": "资产列表更新出错",
 
   "//": "pay-transfer-receipt",
   "TRANSFER": "转账",
@@ -774,8 +776,8 @@
   "ASSETS_abbreviation": "英文简写",
   "ASSETS_summary": "资产描述",
   "ASSETS_rate": "置换比例",
-  "ASSETS_expectedRaisedIBTs": "初始冻结IBT数量",
-  "ASSETS_originalIssuedAssets": "发行数量",
+  "ASSETS_expectedFrozenIBTs": "初始冻结IBT数量",
+  "ASSETS_expectedIssuedAssets": "发行数量",
   "ASSETS_applyAssetBlockHeight": "资产发起时的区块高度",
   "ASSETS_expectedIssuedBlockHeight": "计划发行时的区块高度",
   "ABBREVIATION_TOO_SHORT": "英文简写太短",
@@ -783,10 +785,12 @@
   "ABBREVIATION_WRONG_CHAR": "英文简写只能使用英文字符",
   "RATE_TOO_SMALL": "置换比例太小",
   "RATE_TOO_LARGE": "置换比例太大",
-  "ORIGINALISSUEDASSETS_RANGE_ERROR": "发行资产数量有误",
-  "EXPECTEDRAISEDIBTS_RANGE_ERROR": "计划募集的IBT数量有误",
+  "expectedIssuedAssets_RANGE_ERROR": "发行资产数量有误",
+  "expectedFrozenIBTs_RANGE_ERROR": "计划募集的IBT数量有误",
   "EXPECTEDISSUEDBLOCKHEIGHT_RANGE_ERROR": "发行高度过低",
   "PLEASE_PICK_AN_IMAGE_AS_ASSETS_LOGO": "请选择一张图片作为资产LOGO",
+  "GENESIS_DESTINATION_CAN_NOT_BE_YOURSELF": "资产接收账户不能是发行资产的账户",
+  "GENESIS_ADDRESS_IS_MALFORMED": "资产接收账户有误",
 
   "//": "assets-assets-market",
   "ASSETS-ASSETS-MARKET": "资产市场",
@@ -799,6 +803,8 @@
 
   "//": "assets-my-assets-list",
   "ASSETS-MY-ASSETS-LIST": "我的资产",
+  "MY_ASSETS_LIST_IS_EMPTY": "未拥有数字资产",
+  "LOADING_MY_ASSETS_LIST": "加载拥有的数字资产",
 
   "//": "assets-assets-detail",
   "ASSETS-ASSETS-DETAIL": "资产详情",
@@ -816,6 +822,7 @@
   "UPLOAD_LOGO_IMAGE": "上传logo图片",
   "PLEASE_INPUT_ASSETNAME": "资产名称",
   "PLEASE_INPUT_ASSETS_ABBREVIATION": "请输入资产英文简写",
+  "PLEASE_INPUT_ASSETS_GENESISADDRESS": "请输入生成资产的接受地址",
   "PLEASE_BRIEFLY_DESCRIBE_YOUR_ASSETS": "一段话描述您的资产",
   "PLEASE_ENTER_THE_ASSET_REPLACEMENT_RATIO": "请输入您的置换比例",
   "PLEASE_INPUT_ISSUED_ASSETS": "发行资产数量",

@@ -98,8 +98,8 @@ export class LoginServiceProvider extends FLP_Tool {
         },
       });
     this.user.is_from_network = true;
-    Object.assign(userinfo, res.account);
-    this.appSetting.setUserToken(userinfo);
+    // Object.assign(userinfo, res.account);
+    this.appSetting.setUserToken(res.account);
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
   readonly SEARCH_ACCOUNT_URL = this.appSetting.APP_URL("/api/accounts/");

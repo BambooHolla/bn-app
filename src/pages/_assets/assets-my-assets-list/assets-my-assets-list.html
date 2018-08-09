@@ -29,6 +29,10 @@
       </div>
     </div>
   </div>
+  <div class="empty-list" *ngIf="my_assets_list.length==0&&page_info.loading==false">
+    <img src="assets/imgs/empty-list.png" alt="空列表">
+    <div class="message">{{'MY_ASSETS_LIST_IS_EMPTY'|translate}}</div>
+  </div>
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreMyAssetsList())">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>

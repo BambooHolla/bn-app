@@ -105,7 +105,7 @@ export class SetInputStatusDirective implements OnInit, OnDestroy {
   onInputStatusChanged(change_info) {
     const { key, event }: { key: string; event: any } = change_info;
     if (this.watch_keys.indexOf(key) !== -1 && event.type === "input") {
-      this.form_key && this.page.checkFormKey(this.form_key);
+      this.form_key && this.page.checkFormKey(this.form_key, event.target);
     }
 
     this.page.detectChanges();

@@ -52479,7 +52479,7 @@ ZSchema.registerFormat("ibtCurrency", function (obj) {
 });
 
 ZSchema.registerFormat("issueAsset", function (obj) {
-  if (obj && obj.issueAsset && obj.issueAsset.rate /* && obj.issueAsset.assetName*/ && obj.issueAsset.logo && obj.issueAsset.abbreviation /* && obj.issueAsset.originalFrozenIBT */ && obj.issueAsset.originalIssuedAssets && obj.issueAsset.expectedRaisedIBTs && obj.issueAsset.expectedIssuedBlockHeight) {
+  if (obj && obj.issueAsset && obj.issueAsset.rate && obj.issueAsset.logo && obj.issueAsset.abbreviation && obj.issueAsset.expectedFrozenIBTs && obj.issueAsset.expectedIssuedAssets && obj.issueAsset.genesisAddress) {
     return true;
   } else {
     return false;
@@ -61199,14 +61199,11 @@ var IssueAssets = function () {
         address: data.asset.issueAsset.address,
         publicKey: data.asset.issueAsset.publicKey,
         rate: data.asset.issueAsset.rate,
-        // assetName: data.asset.issueAsset.assetName,
         logo: data.asset.issueAsset.logo,
         abbreviation: data.asset.issueAsset.abbreviation,
-        // summary: data.asset.issueAsset.summary,
-        /* originalFrozenIBT: accMul(data.asset.issueAsset.originalFrozenIBT, 100000000), */
-        originalIssuedAssets: accMul(data.asset.issueAsset.originalIssuedAssets, 100000000),
-        expectedRaisedIBTs: accMul(data.asset.issueAsset.expectedRaisedIBTs, 100000000),
-        expectedIssuedBlockHeight: data.asset.issueAsset.expectedIssuedBlockHeight
+        expectedFrozenIBTs: accMul(data.asset.issueAsset.expectedFrozenIBTs, 100000000),
+        expectedIssuedAssets: accMul(data.asset.issueAsset.expectedIssuedAssets, 100000000),
+        genesisAddress: data.asset.issueAsset.genesisAddress
       };
 
       return trs;
@@ -61309,7 +61306,7 @@ var IssueAssets = function () {
               })
           } */
 
-      if (!trs.asset.issueAsset.originalIssuedAssets) {
+      if (!trs.asset.issueAsset.expectedIssuedAssets) {
         return cb({
           message: "Assets original issued assets number is required"
         });
@@ -61324,6 +61321,12 @@ var IssueAssets = function () {
       if (!trs.asset.issueAsset.expectedIssuedBlockHeight) {
         return cb({
           message: "Assets expected issued block height is required"
+        });
+      }
+
+      if (!addressHelper.isAddress(trs.asset.issueAsset.genesisAddress)) {
+        return cb({
+          message: "Invalid assets genesis address"
         });
       }
 
@@ -61369,30 +61372,23 @@ var IssueAssets = function () {
         buf = Buffer.concat([buf, pkBuf]);
       }
 
-      // var nameBuf = Buffer.from(trs.asset.issueAsset.assetName);
-      // buf = Buffer.concat([buf, nameBuf]);
-
-      // var suyBuf = Buffer.from(trs.asset.issueAsset.summary);
-      // buf = Buffer.concat([buf, suyBuf]);
-
       var logoBuf = Buffer.from(trs.asset.issueAsset.logo);
       buf = Buffer.concat([buf, logoBuf]);
 
       var abbrBuf = Buffer.from(trs.asset.issueAsset.abbreviation);
       buf = Buffer.concat([buf, abbrBuf]);
 
-      // var ofiBuf = Buffer.from(trs.asset.issueAsset.originalFrozenIBT);
-      // buf = Buffer.concat([buf, ofiBuf]);
+      var efiBuf = Buffer.from(trs.asset.issueAsset.expectedFrozenIBTs);
+      buf = Buffer.concat([buf, efiBuf]);
 
-      var oiaBuf = Buffer.from(trs.asset.issueAsset.originalIssuedAssets);
-      buf = Buffer.concat([buf, oiaBuf]);
+      var eiaBuf = Buffer.from(trs.asset.issueAsset.expectedIssuedAssets);
+      buf = Buffer.concat([buf, eiaBuf]);
 
-      var ribtBuf = Buffer.from(trs.asset.issueAsset.expectedRaisedIBTs);
-      buf = Buffer.concat([buf, ribtBuf]);
+      var gasBuf = Buffer.from(trs.asset.issueAsset.genesisAddress);
+      buf = Buffer.concat([buf, gasBuf]);
 
-      var bb = new ByteBuffer(4 + 4, true);
+      var bb = new ByteBuffer(4, true);
       bb.writeInt(trs.asset.issueAsset.rate);
-      bb.writeInt(trs.asset.issueAsset.expectedIssuedBlockHeight);
       bb.flip();
 
       buf = Buffer.concat([buf, Buffer.from(bb.toString("hex"), "hex")]);
@@ -61423,14 +61419,6 @@ var IssueAssets = function () {
             type: "integer",
             minimum: 0
           },
-          assetName: {
-            type: "string",
-            minLength: 3,
-            maxLength: 30
-          },
-          summary: {
-            type: "string"
-          },
           logo: {
             type: "string",
             minLength: 1
@@ -61440,27 +61428,18 @@ var IssueAssets = function () {
             minLength: 3,
             maxLength: 5
           },
-          originalFrozenIBT: {
+          expectedFrozenIBTs: {
             type: "string"
           },
-          originalIssuedAssets: {
+          expectedIssuedAssets: {
             type: "string"
           },
-          expectedRaisedIBTs: {
-            type: "string"
-          },
-          expectedIssuedBlockHeight: {
-            type: "integer",
-            minimum: 1
-          },
-          status: {
-            type: "integer",
-            minimum: 0
+          genesisAddress: {
+            type: "string",
+            minLength: 1
           }
         },
-        required: ["rate",
-        // "assetName",
-        "logo", "abbreviation", "originalIssuedAssets", "expectedRaisedIBTs", "expectedIssuedBlockHeight"]
+        required: ["rate", "logo", "abbreviation", "expectedFrozenIBTs", "expectedIssuedAssets", "genesisAddress"]
       });
 
       if (!report) {

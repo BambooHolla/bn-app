@@ -19,14 +19,14 @@
   <div class="transfer">
     <div class="input-container">
       <ali-icon class="left" name="ifm-account-detail"></ali-icon>
-      <input type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />
-      <button class="right" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
+      <input [disabled]="userInfo.isFreezed" type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />
+      <button [disabled]="userInfo.isFreezed" class="right" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
     </div>
     <div class="input-container">
       <ali-icon class="left" name="ifm-amount"></ali-icon>
-      <input type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" [watch-input-keys]="['transfer_fee']" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
+      <input [disabled]="userInfo.isFreezed" type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" [watch-input-keys]="['transfer_fee']" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
     </div>
     <!-- <div class="input-container">
       <ali-icon class="left" name="ifm-duihua"></ali-icon>
@@ -44,8 +44,8 @@
         </div>
         <div class="right">
           <div class="balance">
-            {{selected_assets.balance|amountEuler|number:'1.8-8'}}
-            <!-- <span class="unit">{{selected_assets.abbreviation}}</span> -->
+            {{amountViewer(selected_assets.hodingAssets|amountEuler|number:'1.8-8')}}
+            <span class="unit">{{selected_assets.abbreviation}}</span>
           </div>
           <div class="panel-arrow">
             <ali-icon class="arrow" name="ifm-arrow-to-right"></ali-icon>
@@ -54,8 +54,8 @@
         </div>
       </div>
     </div>
-    <div class="assets-select-panel-overlayer" [class.show]="is_assets_select_panel_open" [class.android]="isAndroid" [class.ios]="isIOS">
-      <div class="assets-select-panel-wrapper" (scroll)="tryLoadMoreAssetsList($event)">
+    <div class="assets-select-panel-overlayer" [class.show]="is_assets_select_panel_open" [class.android]="isAndroid" [class.ios]="isIOS" (click)="tryCloseAssetsSelectPanel($event)">
+      <div class="assets-select-panel-wrapper"><!-- (scroll)="tryLoadMoreAssetsList($event)" -->
         <div class="assets-select-panel">
           <div class="assets-item" *ngFor="let assets of selectable_assets_list;trackBy:commonTrackBy('abbreviation')" (click)="selectAssets(assets)">
             <div class="left">
@@ -68,10 +68,13 @@
             </div>
             <div class="right">
               <div class="balance">
-                {{assets.balance|amountEuler|number:'1.8-8'}}
+                {{amountViewer(assets.hodingAssets|amountEuler|number:'1.8-8')}}
                 <span class="unit">{{assets.abbreviation}}</span>
               </div>
             </div>
+          </div>
+          <div class="no-assets" *ngIf="selectable_assets_list.length===0&&assets_page_info.loading==false">
+            <i>{{'NO_ASSETS'|translate}}</i>
           </div>
         </div>
       </div>
@@ -85,7 +88,7 @@
     <div class="fee" (click)="setTransferFee()">
       <ali-icon class="left" name="ifm-info"></ali-icon>
       <span class="value">{{formData.transfer_fee|number:'1.8-8'}}</span>
-      <div class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div>
+      <!-- <div class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div> -->
     </div>
     <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()" (un-submit)="helpSubmit($event)">{{'SUBMIT_TRANSFER' | translate}}</button>
   </div>

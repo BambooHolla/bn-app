@@ -1,5 +1,8 @@
 page-tab-account {
   > .content {
+    &.freezed {
+      filter: hue-rotate(180deg);
+    }
     background-color: #f6f6f6;
     > .scroll-content {
       overflow: hidden;

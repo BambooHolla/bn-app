@@ -49,11 +49,19 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
   };
 
   @AssetsMyAssetsListPage.willEnter
-  async initData() {
+  initData() {
     if (this._is_from_child) {
       this._is_from_child = false;
       return;
     }
+    this.initMyAssetsList();
+  }
+
+  @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.loading("@@LOADING_MY_ASSETS_LIST", undefined, {
+    cssClass: "can-tap blockchain-loading",
+  })
+  async initMyAssetsList() {
     this.page_info.page = 1;
     this.my_assets_list = await this._loadMyAssetsList();
   }
@@ -73,6 +81,7 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
   private async _loadMyAssetsList() {
     const { page_info } = this;
     page_info.loading = true;
+    await sleep(1000);
     try {
       const assets_list = await this.assetsService.getPossessorAssets(
         this.userInfo.address,

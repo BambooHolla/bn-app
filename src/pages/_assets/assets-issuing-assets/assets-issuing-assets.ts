@@ -5,6 +5,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -22,6 +23,7 @@ import {
 import { AssetsServiceProvider } from "../../../providers/assets-service/assets-service";
 import { MatAutocomplete } from "@angular/material";
 import { formatImage } from "../../../components/AniBase";
+import { TransactionServiceProvider } from "../../../providers/transaction-service/transaction-service";
 
 @IonicPage({ name: "assets-issuing-assets" })
 @Component({
@@ -37,7 +39,9 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     public cdRef: ChangeDetectorRef,
     public viewCtrl: ViewController,
     public blockService: BlockServiceProvider,
-    public assetsService: AssetsServiceProvider
+    public assetsService: AssetsServiceProvider,
+    public transactionService: TransactionServiceProvider,
+    public domSanitizer: DomSanitizer
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -46,20 +50,22 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     // assetName: string;
     logo: string;
     abbreviation: string;
-    // summary: string;
-    originalIssuedAssets?: number;
-    expectedRaisedIBTs?: number;
+    genesisAddress: string;
+    expectedIssuedAssets?: number;
+    expectedFrozenIBTs?: number;
     expectedIssuedBlockHeight?: number;
   } = {
     rate: undefined,
     // assetName: "",
     logo: "",
     abbreviation: "",
-    // summary: "",
-    originalIssuedAssets: undefined,
-    expectedRaisedIBTs: undefined,
+    genesisAddress: "",
+    expectedIssuedAssets: undefined,
+    expectedFrozenIBTs: undefined,
     expectedIssuedBlockHeight: undefined,
   };
+
+
   ignore_keys = ["logo"];
   summary_maxlength = 200;
 
@@ -87,6 +93,19 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     }
     return res;
   }
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "genesisAddress", [
+    "WRONG_ADDRESS",
+  ])
+  check_genesisAddress() {
+    const res: any = {};
+    const { genesisAddress } = this.formData;
+    if (genesisAddress === this.userInfo.address) {
+      res.WRONG_ADDRESS = "GENESIS_DESTINATION_CAN_NOT_BE_YOURSELF";
+    } else if (!this.transactionService.isAddressCorrect(genesisAddress)) {
+      res.WRONG_ADDRESS = "GENESIS_ADDRESS_IS_MALFORMED";
+    }
+    return res;
+  }
   @AssetsIssuingAssetsPage.setErrorTo("errors", "rate", [
     "TOO_SMALL",
     "TOO_LARGE",
@@ -105,40 +124,40 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
   }
   /**计算比例*/
   calcRate() {
-    const { expectedRaisedIBTs, originalIssuedAssets } = this.formData;
+    const { expectedFrozenIBTs, expectedIssuedAssets } = this.formData;
     if (
-      typeof expectedRaisedIBTs !== "number" ||
-      typeof originalIssuedAssets !== "number"
+      typeof expectedFrozenIBTs !== "number" ||
+      typeof expectedIssuedAssets !== "number"
     ) {
       return;
     }
     this.formData.rate =
-      originalIssuedAssets /
-      (parseFloat(this.userInfo.balance) / 1e8 + expectedRaisedIBTs);
+      expectedIssuedAssets /
+      (parseFloat(this.userInfo.balance) / 1e8 + expectedFrozenIBTs);
   }
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "originalIssuedAssets", [
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedAssets", [
     "WRONG_RANGE",
   ])
-  check_originalIssuedAssets() {
+  check_expectedIssuedAssets() {
     const res: any = {};
-    const { originalIssuedAssets } = this.formData;
-    if (originalIssuedAssets) {
-      if (originalIssuedAssets <= 0) {
-        res.WRONG_RANGE = "ORIGINALISSUEDASSETS_RANGE_ERROR";
+    const { expectedIssuedAssets } = this.formData;
+    if (expectedIssuedAssets) {
+      if (expectedIssuedAssets <= 0) {
+        res.WRONG_RANGE = "expectedIssuedAssets_RANGE_ERROR";
       }
     }
     // this.calcRate();
     return res;
   }
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedRaisedIBTs", [
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedFrozenIBTs", [
     "WRONG_RANGE",
   ])
-  check_expectedRaisedIBTs() {
+  check_expectedFrozenIBTs() {
     const res: any = {};
-    const { expectedRaisedIBTs } = this.formData;
-    if (expectedRaisedIBTs) {
-      if (expectedRaisedIBTs <= 0) {
-        res.WRONG_RANGE = "EXPECTEDRAISEDIBTS_RANGE_ERROR";
+    const { expectedFrozenIBTs } = this.formData;
+    if (expectedFrozenIBTs) {
+      if (expectedFrozenIBTs <= 0) {
+        res.WRONG_RANGE = "expectedFrozenIBTs_RANGE_ERROR";
       }
     }
     // this.calcRate();
@@ -275,8 +294,9 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
         rate: formData.rate as number,
         logo: _cache_logo_base64[1],
         abbreviation: formData.abbreviation.toUpperCase(),
-        originalIssuedAssets: formData.originalIssuedAssets as number,
-        expectedRaisedIBTs: formData.expectedRaisedIBTs as number,
+        genesisAddress: formData.genesisAddress,
+        expectedIssuedAssets: formData.expectedIssuedAssets as number,
+        expectedFrozenIBTs: formData.expectedFrozenIBTs as number,
         expectedIssuedBlockHeight: formData.expectedIssuedBlockHeight as number,
       },
       custom_fee,

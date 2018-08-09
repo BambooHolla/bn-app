@@ -114,6 +114,14 @@ page-assets-issuing-assets {
         text-transform: uppercase;
       }
     }
+    > .genesisAddress {
+      button {
+        ali-icon {
+          font-size: 1.6rem;
+          color: #999;
+        }
+      }
+    }
     > .summary {
       textarea {
         padding-top: 0.5rem;
