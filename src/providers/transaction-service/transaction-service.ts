@@ -127,6 +127,14 @@ export class TransactionServiceProvider {
     }
   }
 
+  /**是否是转账交易*/
+  isTranferType(type: TYPE.TransactionTypes) {
+    return (
+      type === TYPE.TransactionTypes.TRANSFER_ASSET ||
+      type === TYPE.TransactionTypes.SEND
+    );
+  }
+
   /**
    * 根据交易ID获取交易信息
    * @param {string} id

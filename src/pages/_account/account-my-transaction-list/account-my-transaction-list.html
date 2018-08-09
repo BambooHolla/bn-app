@@ -19,7 +19,7 @@
     <div class="left">
       <div class="from-to">
         <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-        <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+        <ng-container *ngIf="transactionService.isTranferType(tran.type)">
           <ali-icon name="ifm-chain-right-arrow"></ali-icon>
           <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
         </ng-container>
@@ -32,12 +32,16 @@
       <div class="tran-type">
         {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
       </div>
-      <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+      <div class="amount" *ngIf="transactionService.isTranferType(tran.type);else confirmed_showFeeOnly">
         {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+        <span class="unit">{{tran?.assetType||'IBT'}}</span>
       </div>
-      <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
-        - {{tran?.fee|amountEuler|number:"1.8-8"}}
-      </div>
+      <ng-template #confirmed_showFeeOnly>
+        <div class="amount">
+          - {{tran?.fee|amountEuler|number:"1.8-8"}}
+          <span class="unit">IBT</span>
+        </div>
+      </ng-template>
     </div>
   </div>
   <div class="empty-list" *ngIf="confirmed_transaction_list.length==0&&confirmed_transaction_config.loading==false">
@@ -57,7 +61,7 @@
     <div class="left">
       <div class="from-to">
         <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-        <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+        <ng-container *ngIf="transactionService.isTranferType(tran.type)">
           <ali-icon name="ifm-chain-right-arrow"></ali-icon>
           <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
         </ng-container>
@@ -71,12 +75,16 @@
       <div class="tran-type">
         {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
       </div>
-      <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+      <div class="amount" *ngIf="transactionService.isTranferType(tran.type);else unconfirmed_showFeeOnly">
         {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+        <span class="unit">{{tran?.assetType||'IBT'}}</span>
       </div>
-      <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
-        - {{tran?.fee|amountEuler|number:"1.8-8"}}
-      </div>
+      <ng-template #unconfirmed_showFeeOnly>
+        <div class="amount">
+          - {{tran?.fee|amountEuler|number:"1.8-8"}}
+          <span class="unit">IBT</span>
+        </div>
+      </ng-template>
     </div>
   </div>
   <div class="empty-list" *ngIf="unconfirm_transaction_list.length==0&&unconfirm_transaction_config.loading==false">

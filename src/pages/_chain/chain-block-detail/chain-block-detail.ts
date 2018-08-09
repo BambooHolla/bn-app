@@ -11,6 +11,7 @@ import {
 import {
   TransactionModel,
   TransactionTypes,
+  TransactionServiceProvider
 } from "../../../providers/transaction-service/transaction-service";
 import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
 import {
@@ -30,6 +31,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
+    public transactionService:TransactionServiceProvider,
     public minService: MinServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
