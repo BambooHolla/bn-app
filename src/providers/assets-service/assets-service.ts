@@ -46,24 +46,15 @@ export class AssetsServiceProvider {
     transactionId: "",
     address: "",
     publicKey: "",
-    rate: 1,
     /**英文缩写(unique)*/
     abbreviation: "IBT",
     genesisAddress: "",
-    /**初始冻结的 IBT 数量*/
-    originalFrozenIBT: 0,
     /**初始发行的资产数量*/
-    originalIssuedAssets: 0,
-    /**剩余的 IBT 数量*/
-    remainIBT: 0,
-    /**剩余的资产数量*/
-    remainAssets: 0,
-    applyAssetBlockHeight: 0,
-    expectedRaisedIBTs: 0,
+    expectedIssuedAssets: 0,
     expectedIssuedBlockHeight: 0,
     status: TYPE.ASSETS_STATUS.SUCCESS,
     dateCreated: AppSettingProvider.seedDateTimestamp,
-
+    hodingAssets: "",
     logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
       "./assets/imgs/assets/IBT-assets-logo.jpg"
     ),
@@ -275,7 +266,7 @@ export class AssetsServiceProvider {
     );
     const destorying_map = new Map<string, TransactionModel>();
     localDestoryingAssetsTxList.forEach(trs => {
-      destorying_map.set(trs["assetType"], trs);
+      trs.assetType && destorying_map.set(trs.assetType, trs);
     });
     assets_list.forEach(assets => {
       if (destorying_map.has(assets.abbreviation)) {

@@ -230,7 +230,7 @@ export class TransactionServiceProvider {
     const { transactionUrl, transaction } = await this.createTransaction(
       txData
     );
-    if (await this.unTxDb.findOne(transaction)) {
+    if (await this.unTxDb.findOne({ id: transaction.id })) {
       // 重复交易不发送
       return { success: true, transactionId: transaction.id };
     }
@@ -604,15 +604,16 @@ export class TransactionServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
     password: string,
     secondSecret?: string,
+    assetType?: string,
     publicKey = this.user.publicKey
   ) {
     amount = parseFloat(amount);
-    if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
-      throw this.fetch.ServerResError.getI18nError("Amount error");
-    }
-    if (amount + fee > parseFloat(this.user.balance)) {
-      throw this.fetch.ServerResError.getI18nError("Amount error");
-    }
+    // if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
+    //   throw this.fetch.ServerResError.getI18nError("Amount error");
+    // }
+    // if (amount + fee > parseFloat(this.user.balance)) {
+    //   throw this.fetch.ServerResError.getI18nError("Amount error");
+    // }
 
     const txData: any = {
       type: this.TransactionTypes.SEND,
@@ -622,6 +623,11 @@ export class TransactionServiceProvider {
       publicKey,
       fee: fee.toString(),
     };
+    // 数字资产交易
+    if (assetType) {
+      txData.assetType = assetType;
+      txData.type = this.TransactionTypes.TRANSFER_ASSET;
+    }
     if (secondSecret) {
       txData.secondSecret = secondSecret;
     }
@@ -638,14 +644,16 @@ export class TransactionServiceProvider {
     amount,
     fee = parseFloat(this.appSetting.settings.default_fee),
     password,
-    secondSecret
+    secondSecret,
+    assetType?
   ) {
     const txData = this.createTxData(
       recipientId,
       amount,
       fee,
       password,
-      secondSecret
+      secondSecret,
+      assetType
     );
 
     const responseData = await this.putTransaction(txData);
@@ -658,6 +666,7 @@ export class TransactionServiceProvider {
         ...txData,
         fee: fee * 1e8,
         amount: amount * 1e8,
+        assetType,
       } as TYPE.TransactionModel,
       responseData,
     };

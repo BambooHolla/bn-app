@@ -3,22 +3,11 @@ export type AssetsBaseModel = {
   transactionId: string;
   address: string;
   publicKey: string;
-  rate: number;
-  /**发行的资产名称(unique)*/
-  // assetName: string;
   /**英文缩写(unique)*/
   abbreviation: string;
   genesisAddress: string;
-  /**初始冻结的 IBT 数量*/
-  originalFrozenIBT: NumberLong;
   /**初始发行的资产数量*/
-  originalIssuedAssets: NumberLong;
-  /**剩余的 IBT 数量*/
-  remainIBT: NumberLong;
-  /**剩余的资产数量*/
-  remainAssets: NumberLong;
-  applyAssetBlockHeight: number;
-  expectedRaisedIBTs: NumberLong;
+  expectedIssuedAssets: NumberLong;
   expectedIssuedBlockHeight: number;
   status: ASSETS_STATUS;
   dateCreated: number;

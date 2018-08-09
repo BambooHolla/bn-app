@@ -42,15 +42,18 @@ function createTransaction(body, cb) {
     }
 
     var secondKeypair = null;
-    // var newSecondKeypair = null;
+    var newSecondKeypair = null;
 
     if (body.secondSecret) {
       secondKeypair = formatSecondSecret(body.publicKey, body.secondSecret);
     }
 
-    // if (body.newSecondSecret) {
-    //     newSecondKeypair = formatSecondSecret(body.publicKey, body.newSecondSecret);
-    // }
+    if (body.newSecondSecret) {
+      newSecondKeypair = formatSecondSecret(
+        body.publicKey,
+        body.newSecondSecret
+      );
+    }
 
     var senderId = addressHelper.generateBase58CheckAddress(
       keypair.publicKey.toString("hex")
@@ -66,9 +69,11 @@ function createTransaction(body, cb) {
       recipientUsername: body.recipientUsername || null,
       keypair: keypair,
       secondKeypair: secondKeypair,
-      // newSecondKeypair: newSecondKeypair,
+      newSecondKeypair: newSecondKeypair,
       timestamp: body.timestamp,
-      // remark: body.remark || "",
+      remark: body.remark || "",
+      dappid: body.dappid || "",
+      assetType: body.assetType || "",
       asset: body.asset || {},
     };
     if (body.multisigAccountPublicKey) {
@@ -90,7 +95,9 @@ function createTransaction(body, cb) {
         : null,
       timestamp: data.timestamp, //生成交易时间戳
       fee: data.fee,
-      // remark: data.remark || '',
+      remark: data.remark || "",
+      dappid: body.dappid || "",
+      assetType: body.assetType || "",
       asset: {},
     };
 

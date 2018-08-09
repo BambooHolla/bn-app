@@ -202,7 +202,7 @@ export class TabPayPage extends FirstLevelPage {
   ])
   check_transfer_amount() {
     const { transfer_amount, transfer_fee } = this.formData;
-    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
+    const user_balance = parseFloat(this.selected_assets.hodingAssets) / 1e8;
 
     if (transfer_amount < 0.00000001) {
       return {
@@ -343,7 +343,10 @@ export class TabPayPage extends FirstLevelPage {
       transfer_amount,
       custom_fee,
       password,
-      pay_pwd
+      pay_pwd,
+      this.selected_assets === this.ibt_assets
+        ? undefined
+        : this.selected_assets.abbreviation
     );
   }
 
@@ -505,6 +508,7 @@ export class TabPayPage extends FirstLevelPage {
   selectAssets(assets: AssetsModelWithLogoSafeUrl) {
     this.selected_assets = assets;
     this.toggleAssetsSelectPanel();
+    this.check_transfer_amount(); // 检测金额问题
   }
 
   /*高度变动的时候，更新资产列表，以及选择的资产*/
