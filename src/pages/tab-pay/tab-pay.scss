@@ -209,6 +209,7 @@ page-tab-pay {
             height: 100%;
             left: 0;
             top: 0;
+            pointer-events: none;
             background: radial-gradient(
               ellipse at center,
               #fff 0%,
