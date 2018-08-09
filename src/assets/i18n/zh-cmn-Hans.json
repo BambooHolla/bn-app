@@ -620,6 +620,7 @@
   "OFFLINE_TRANFER_TIP":
     "当网络没有可用网络时，您依然可以使用IBT进行支付，此时的支付将直接点对点的在双方之间进行。离线支付完成后，需要您将离线权益进行兑现后才能进行使用，在兑现前对方都可以将该离线权益进行删除，从而撤销该笔交易",
   "NO_ASSETS": "未拥有其它数字资产",
+  "LOADING_ASSETS": "数字资产加载中",
   "ASSETS_LIST_UPDATE_ERROR": "资产列表更新出错",
 
   "//": "pay-transfer-receipt",

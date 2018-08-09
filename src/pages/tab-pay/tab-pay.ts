@@ -418,27 +418,8 @@ export class TabPayPage extends FirstLevelPage {
   })();
   @TabPayPage.markForCheck selected_assets = this.ibt_assets;
   @TabPayPage.markForCheck
-  _selectable_assets_list: AssetsModelWithLogoSafeUrl[] = [];
+  selectable_assets_list: AssetsModelWithLogoSafeUrl[] = [];
 
-  private _list_with_ibt_assets_symbol = Symbol.for("with-ibt");
-  get selectable_assets_list() {
-    const {
-      _list_with_ibt_assets_symbol,
-      selected_assets,
-      ibt_assets,
-      _selectable_assets_list,
-    } = this;
-    if (selected_assets !== ibt_assets) {
-      if (!_selectable_assets_list[_list_with_ibt_assets_symbol]) {
-        _selectable_assets_list[_list_with_ibt_assets_symbol] = [
-          ibt_assets,
-          ..._selectable_assets_list,
-        ];
-      }
-      return _selectable_assets_list[_list_with_ibt_assets_symbol];
-    }
-    return _selectable_assets_list;
-  }
   /**资产选择面板是否打开*/
   @TabPayPage.markForCheck is_assets_select_panel_open = false;
   assets_page_info = {
@@ -481,7 +462,10 @@ export class TabPayPage extends FirstLevelPage {
         ...(await this._loadSelectableAssetsList())
       );
     } while (assets_page_info.hasMore);
-    this._selectable_assets_list = new_selectable_assets_list;
+    this.selectable_assets_list = [
+      this.ibt_assets,
+      ...new_selectable_assets_list,
+    ];
     assets_page_info.cacheHeight = current_height;
   }
 
@@ -489,7 +473,7 @@ export class TabPayPage extends FirstLevelPage {
   // @asyncCtrlGenerator.error()
   private _updateSelectedAssets() {
     const { selected_assets } = this;
-    const new_selected_assets = this._selectable_assets_list.find(
+    const new_selected_assets = this.selectable_assets_list.find(
       assets => assets.abbreviation === selected_assets.abbreviation
     );
     this.selected_assets = new_selected_assets || this.ibt_assets;
@@ -517,27 +501,10 @@ export class TabPayPage extends FirstLevelPage {
     }
   }
 
-  // /**监听滚动加载更多*/
-  // tryLoadMoreAssetsList($event: Event) {
-  //   const wrapperEle = $event.srcElement as HTMLElement | null;
-  //   if (!wrapperEle) {
-  //     return;
-  //   }
-  //   if (
-  //     wrapperEle.scrollTop +
-  //       wrapperEle.offsetHeight * 0.4 +
-  //       wrapperEle.offsetHeight >
-  //     wrapperEle.scrollHeight
-  //   ) {
-  //     if (!this.assets_page_info.loading) {
-  //       this._loadSelectableAssetsList();
-  //     }
-  //   }
-  // }
-
   /**选择某一个资产*/
   selectAssets(assets: AssetsModelWithLogoSafeUrl) {
     this.selected_assets = assets;
+    this.toggleAssetsSelectPanel();
   }
 
   /*高度变动的时候，更新资产列表，以及选择的资产*/
@@ -545,13 +512,11 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.error("@@ASSETS_LIST_UPDATE_ERROR")
   @asyncCtrlGenerator.retry()
   async refreshAssetsList(height) {
-    const tasks: Promise<any>[] = [];
-    if (this.is_assets_select_panel_open) {
-      tasks[tasks.length] = this.loadAllSelectableAssetsList();
-    }
     if (this.selected_assets !== this.ibt_assets) {
+      await this.loadAllSelectableAssetsList();
       this._updateSelectedAssets();
+    } else if (this.is_assets_select_panel_open) {
+      await this.loadAllSelectableAssetsList();
     }
-    await Promise.all(tasks);
   }
 }
