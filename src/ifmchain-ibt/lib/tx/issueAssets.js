@@ -77,13 +77,8 @@ var IssueAssets = (function() {
         trs.asset.issueAsset = {
           address: data.asset.issueAsset.address,
           publicKey: data.asset.issueAsset.publicKey,
-          rate: data.asset.issueAsset.rate,
           logo: data.asset.issueAsset.logo,
           abbreviation: data.asset.issueAsset.abbreviation,
-          expectedFrozenIBTs: accMul(
-            data.asset.issueAsset.expectedFrozenIBTs,
-            100000000
-          ),
           expectedIssuedAssets: accMul(
             data.asset.issueAsset.expectedIssuedAssets,
             100000000
@@ -185,12 +180,6 @@ var IssueAssets = (function() {
           }
         }
 
-        if (!trs.asset.issueAsset.rate) {
-          return cb({
-            message: "Assets original divided rate is required",
-          });
-        }
-
         if (!trs.asset.issueAsset.logo) {
           return cb({
             message: "Assets logo is required",
@@ -206,12 +195,6 @@ var IssueAssets = (function() {
         if (!trs.asset.issueAsset.expectedIssuedAssets) {
           return cb({
             message: "Assets original issued assets number is required",
-          });
-        }
-
-        if (!trs.asset.issueAsset.expectedRaisedIBTs) {
-          return cb({
-            message: "Assets expected raised ibt number is required",
           });
         }
 
@@ -277,18 +260,11 @@ var IssueAssets = (function() {
         var abbrBuf = Buffer.from(trs.asset.issueAsset.abbreviation);
         buf = Buffer.concat([buf, abbrBuf]);
 
-        var efiBuf = Buffer.from(trs.asset.issueAsset.expectedFrozenIBTs);
-        buf = Buffer.concat([buf, efiBuf]);
-
         var eiaBuf = Buffer.from(trs.asset.issueAsset.expectedIssuedAssets);
         buf = Buffer.concat([buf, eiaBuf]);
 
         var gasBuf = Buffer.from(trs.asset.issueAsset.genesisAddress);
         buf = Buffer.concat([buf, gasBuf]);
-
-        var bb = new ByteBuffer(4, true);
-        bb.writeInt(trs.asset.issueAsset.rate);
-        bb.flip();
 
         buf = Buffer.concat([buf, Buffer.from(bb.toString("hex"), "hex")]);
 
@@ -318,10 +294,6 @@ var IssueAssets = (function() {
               type: "string",
               format: "publicKey",
             },
-            rate: {
-              type: "integer",
-              minimum: 0,
-            },
             logo: {
               type: "string",
               minLength: 1,
@@ -330,9 +302,6 @@ var IssueAssets = (function() {
               type: "string",
               minLength: 3,
               maxLength: 5,
-            },
-            expectedFrozenIBTs: {
-              type: "string",
             },
             expectedIssuedAssets: {
               type: "string",
@@ -343,10 +312,8 @@ var IssueAssets = (function() {
             },
           },
           required: [
-            "rate",
             "logo",
             "abbreviation",
-            "expectedFrozenIBTs",
             "expectedIssuedAssets",
             "genesisAddress",
           ],

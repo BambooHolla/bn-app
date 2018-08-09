@@ -46,22 +46,16 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
   }
   formData: {
-    rate?: number;
-    // assetName: string;
     logo: string;
     abbreviation: string;
     genesisAddress: string;
     expectedIssuedAssets?: number;
-    expectedFrozenIBTs?: number;
     expectedIssuedBlockHeight?: number;
   } = {
-    rate: undefined,
-    // assetName: "",
     logo: "",
     abbreviation: "",
     genesisAddress: "",
     expectedIssuedAssets: undefined,
-    expectedFrozenIBTs: undefined,
     expectedIssuedBlockHeight: undefined,
   };
 
@@ -106,35 +100,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     }
     return res;
   }
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "rate", [
-    "TOO_SMALL",
-    "TOO_LARGE",
-  ])
-  check_rate() {
-    const res: any = {};
-    const { rate } = this.formData;
-    if (rate) {
-      if (rate < 0.0002) {
-        res.TOO_SMALL = "RATE_TOO_SMALL";
-      } else if (rate > 5000) {
-        res.TOO_LARGE = "RATE_TOO_LARGE";
-      }
-    }
-    return res;
-  }
-  /**计算比例*/
-  calcRate() {
-    const { expectedFrozenIBTs, expectedIssuedAssets } = this.formData;
-    if (
-      typeof expectedFrozenIBTs !== "number" ||
-      typeof expectedIssuedAssets !== "number"
-    ) {
-      return;
-    }
-    this.formData.rate =
-      expectedIssuedAssets /
-      (parseFloat(this.userInfo.balance) / 1e8 + expectedFrozenIBTs);
-  }
+
   @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedAssets", [
     "WRONG_RANGE",
   ])
@@ -149,20 +115,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     // this.calcRate();
     return res;
   }
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedFrozenIBTs", [
-    "WRONG_RANGE",
-  ])
-  check_expectedFrozenIBTs() {
-    const res: any = {};
-    const { expectedFrozenIBTs } = this.formData;
-    if (expectedFrozenIBTs) {
-      if (expectedFrozenIBTs <= 0) {
-        res.WRONG_RANGE = "expectedFrozenIBTs_RANGE_ERROR";
-      }
-    }
-    // this.calcRate();
-    return res;
-  }
+
   @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedBlockHeight", [
     "WRONG_RANGE",
   ])
@@ -291,12 +244,10 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 
     await this.assetsService.addAssets(
       {
-        rate: formData.rate as number,
         logo: _cache_logo_base64[1],
         abbreviation: formData.abbreviation.toUpperCase(),
         genesisAddress: formData.genesisAddress,
         expectedIssuedAssets: formData.expectedIssuedAssets as number,
-        expectedFrozenIBTs: formData.expectedFrozenIBTs as number,
         expectedIssuedBlockHeight: formData.expectedIssuedBlockHeight as number,
       },
       custom_fee,

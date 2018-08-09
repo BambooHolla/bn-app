@@ -191,12 +191,10 @@ export class AssetsServiceProvider {
   }
   addAssets(
     assetsInfo: {
-      rate: number;
       logo: string;
       abbreviation: string;
       genesisAddress: string;
       expectedIssuedAssets: number;
-      expectedFrozenIBTs: number;
       expectedIssuedBlockHeight: number;
     },
     fee = parseFloat(this.appSetting.settings.default_fee),

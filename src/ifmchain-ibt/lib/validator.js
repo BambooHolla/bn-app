@@ -270,10 +270,8 @@ ZSchema.registerFormat("issueAsset", function(obj) {
   if (
     obj &&
     obj.issueAsset &&
-    obj.issueAsset.rate &&
     obj.issueAsset.logo &&
     obj.issueAsset.abbreviation &&
-    obj.issueAsset.expectedFrozenIBTs &&
     obj.issueAsset.expectedIssuedAssets &&
     obj.issueAsset.genesisAddress
   ) {
