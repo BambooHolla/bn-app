@@ -37,7 +37,7 @@
       </div>
       <div class="right">
         {{transaction?.amount|amountEuler|number:'1.8-8'}}
-        <span class="unit">IBT</span>
+        <div class="unit">{{transaction?.assetType||'IBT'}}</div>
       </div>
     </div>
     <div class="common-item fee" *ngIf="transaction?.fee!='0'">
@@ -46,7 +46,7 @@
       </div>
       <div class="right">
         {{transaction?.fee|amountEuler|number:'1.8-8'}}
-        <div class="unit">{{transaction?.assetType||'IBT'}}</div>
+        <span class="unit">IBT</span>
       </div>
     </div>
     <div class="common-item transfer-time">

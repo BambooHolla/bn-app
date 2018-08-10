@@ -396,20 +396,51 @@ export class TransactionServiceProvider {
     extend_query: any = {}
   ) {
     if (in_or_out !== "or") {
-      const data = await this.getTransactions({
-        senderId: in_or_out !== "in" ? address : undefined,
-        recipientId: in_or_out !== "out" ? address : undefined,
+      // const data = await this.getTransactions({
+      //   senderId: in_or_out !== "in" ? address : undefined,
+      //   recipientId: in_or_out !== "out" ? address : undefined,
+      //   offset,
+      //   limit,
+      //   orderBy: "t_timestamp:desc",
+      //   type,
+      //   ...extend_query,
+      // });
+      const data = await this.queryTransaction(
+        {
+          senderId: in_or_out !== "in" ? address : undefined,
+          recipientId: in_or_out !== "out" ? address : undefined,
+          type:
+            typeof type !== "undefined"
+              ? type
+              : {
+                  $in: [
+                    this.TransactionTypes.SEND,
+                    this.TransactionTypes.TRANSFER_ASSET,
+                  ],
+                },
+          ...extend_query,
+        },
+        {
+          timestamp: -1,
+        },
         offset,
-        limit,
-        orderBy: "t_timestamp:desc",
-        type,
-        ...extend_query,
-      });
+        limit
+      );
       return data.transactions;
     } else {
       const data = await this.queryTransaction(
         {
           $or: [{ senderId: address }, { recipientId: address }],
+          type:
+            typeof type !== "undefined"
+              ? type
+              : {
+                  $in: [
+                    this.TransactionTypes.SEND,
+                    this.TransactionTypes.TRANSFER_ASSET,
+                  ],
+                },
+          ...extend_query,
         },
         {
           timestamp: -1,

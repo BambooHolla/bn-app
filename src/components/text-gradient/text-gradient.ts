@@ -36,7 +36,13 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
   @Input("fontSize") fontSize = "1.6em";
   @Input("fontWeight") fontWeight = "normal";
   @Input("fontFamily")
-  fontFamily = ["-apple-system", "Helvetica Neue", "Roboto", "sans-serif"];
+  fontFamily = [
+    "SF Compact Text",
+    "-apple-system",
+    "Helvetica Neue",
+    "Roboto",
+    "sans-serif",
+  ];
   @Input("direction") direction = "right";
   @Input("fallbackColor") fallbackColor = "";
   constructor(private el: ElementRef) {

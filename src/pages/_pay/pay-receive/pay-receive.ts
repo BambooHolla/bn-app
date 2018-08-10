@@ -76,8 +76,7 @@ export class PayReceivePage extends SecondLevelPage {
         this.userInfo.address,
         receive_config.page,
         receive_config.pageSize,
-        "in",
-        TransactionTypes.SEND
+        "in"
       );
       receive_config.has_more = list.length >= receive_config.pageSize;
       return list;

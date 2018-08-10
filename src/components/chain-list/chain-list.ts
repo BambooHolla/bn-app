@@ -52,6 +52,7 @@ loader.load((loader, resources) => {
 });
 
 const commonFontFamily = [
+  "SF Compact Text",
   "-apple-system",
   "Helvetica Neue",
   "Roboto",

@@ -390,8 +390,7 @@ export class TabPayPage extends FirstLevelPage {
         this.userInfo.address,
         roll_out_config.page,
         roll_out_config.pageSize,
-        "out",
-        TransactionTypes.SEND
+        "out"
       );
       roll_out_config.has_more = list.length >= roll_out_config.pageSize;
       return list;
