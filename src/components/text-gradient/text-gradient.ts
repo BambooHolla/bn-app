@@ -37,8 +37,8 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
   @Input("fontWeight") fontWeight = "normal";
   @Input("fontFamily")
   fontFamily = [
-    "SF Compact Text",
     "-apple-system",
+    "SF Compact Text",
     "Helvetica Neue",
     "Roboto",
     "sans-serif",

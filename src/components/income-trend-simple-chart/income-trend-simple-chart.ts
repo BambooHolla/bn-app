@@ -96,6 +96,13 @@ export class IncomeTrendSimpleChartComponent extends AniBase
     const text_style = {
       fontSize: pt(9),
       fill: 0xffffff,
+      fontFamily: [
+        "-apple-system",
+        "SF Compact Text",
+        "Helvetica Neue",
+        "Roboto",
+        "sans-serif",
+      ],
     };
     const xAxis_height = pt(12);
     const yAxis_height = H - xAxis_height;
