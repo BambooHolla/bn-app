@@ -41,6 +41,9 @@
             </div>
             <div class="right">
               {{(tran.amount!='0'?tran.amount:tran.fee)|amountEuler|number:"1.8-8"}}
+              <span class="unit">
+                {{tran.assetType||'IBT'}}
+              </span>
             </div>
           </div>
         </div>
@@ -56,15 +59,15 @@
         <!-- <virtual-scroll class="list-container" [items]="income_list" (update)="viewPortItems = $event" (change)="onIncomeListChange($event)">
           QAQQQ:{{viewPortItems?.length}} -->
         <div class="list-container">
-          <div class="item" *ngFor="let tran of income_list">
+          <div class="item" *ngFor="let log of income_list">
             <div class="left">
               <div class="create-time">
-                {{toDateMS(tran.dealDateTime)|amLocale:localName|amTimeAgo}}
+                {{toDateMS(log.dateCreated)|amLocale:localName|amTimeAgo}}
               </div>
               <!-- +timeago_clock -->
             </div>
             <div class="right">
-              {{tran?.amount|amountEuler|number:"1.8-8"}}
+              {{log?.amount|amountEuler|number:"1.8-8"}}
             </div>
           </div>
         </div>

@@ -392,9 +392,18 @@ export class TransactionServiceProvider {
     offset: number,
     limit: number,
     in_or_out?: "in" | "out" | "or",
-    type?: TYPE.TransactionTypes,
+    type?: TYPE.TransactionTypes | TYPE.TransactionTypes[],
     extend_query: any = {}
   ) {
+    let type_query_condition: any = {
+      $in: [this.TransactionTypes.SEND, this.TransactionTypes.TRANSFER_ASSET],
+    };
+    if (type instanceof Array) {
+      type_query_condition.$in = type;
+    } else if (typeof type !== "undefined") {
+      type_query_condition = type;
+    }
+
     if (in_or_out !== "or") {
       // const data = await this.getTransactions({
       //   senderId: in_or_out !== "in" ? address : undefined,
@@ -409,15 +418,7 @@ export class TransactionServiceProvider {
         {
           senderId: in_or_out !== "in" ? address : undefined,
           recipientId: in_or_out !== "out" ? address : undefined,
-          type:
-            typeof type !== "undefined"
-              ? type
-              : {
-                  $in: [
-                    this.TransactionTypes.SEND,
-                    this.TransactionTypes.TRANSFER_ASSET,
-                  ],
-                },
+          type: type_query_condition,
           ...extend_query,
         },
         {
@@ -431,15 +432,7 @@ export class TransactionServiceProvider {
       const data = await this.queryTransaction(
         {
           $or: [{ senderId: address }, { recipientId: address }],
-          type:
-            typeof type !== "undefined"
-              ? type
-              : {
-                  $in: [
-                    this.TransactionTypes.SEND,
-                    this.TransactionTypes.TRANSFER_ASSET,
-                  ],
-                },
+          type: type_query_condition,
           ...extend_query,
         },
         {
@@ -453,6 +446,10 @@ export class TransactionServiceProvider {
   }
   // 默认缓存10条
   default_user_in_transactions_pageSize = 10;
+  default_user_in_transactions_type = [
+    TYPE.TransactionTypes.SEND,
+    TYPE.TransactionTypes.TRANSFER_ASSET,
+  ];
   myInTransactions!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
   @HEIGHT_AB_Generator("myInTransactions", true)
   myInTransactions_Executor(promise_pro) {
@@ -462,11 +459,15 @@ export class TransactionServiceProvider {
         0,
         this.default_user_in_transactions_pageSize,
         "in",
-        this.TransactionTypes.SEND
+        this.default_user_in_transactions_type
       )
     );
   }
   default_user_out_transactions_pageSize = 10;
+  default_user_out_transactions_type = [
+    TYPE.TransactionTypes.SEND,
+    TYPE.TransactionTypes.TRANSFER_ASSET,
+  ];
   myOutTransactions!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
   @HEIGHT_AB_Generator("myOutTransactions", true)
   myOutTransactions_Executor(promise_pro) {
@@ -476,7 +477,7 @@ export class TransactionServiceProvider {
         0,
         this.default_user_out_transactions_pageSize,
         "out",
-        this.TransactionTypes.SEND
+        this.default_user_out_transactions_type
       )
     );
   }
@@ -487,14 +488,15 @@ export class TransactionServiceProvider {
     page = 1,
     pageSize = 10,
     in_or_out: "in" | "out",
-    type?: TYPE.TransactionTypes
+    type?: TYPE.TransactionTypes | TYPE.TransactionTypes[]
   ) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
     if (
       address === this.user.address &&
       in_or_out === "in" &&
-      offset + limit <= this.default_user_in_transactions_pageSize
+      offset + limit <= this.default_user_in_transactions_pageSize &&
+      `${type}` == `${this.default_user_in_transactions_type}`
     ) {
       const list = await this.myInTransactionsPreRound.getPromise();
       return list.slice(offset, offset + limit);
@@ -502,12 +504,21 @@ export class TransactionServiceProvider {
     if (
       address === this.user.address &&
       in_or_out === "out" &&
-      offset + limit <= this.default_user_out_transactions_pageSize
+      offset + limit <= this.default_user_out_transactions_pageSize &&
+      `${type}` == `${this.default_user_out_transactions_type}`
     ) {
       const list = await this.myOutTransactionsPreRound.getPromise();
       return list.slice(offset, offset + limit);
     }
-    return this._getUserTransactions(address, offset, limit, in_or_out, type);
+    const cur_round = this.appSetting.getRound();
+    const per_round_start_height = this.appSetting.getRoundStartHeight(
+      cur_round - 1
+    );
+    const pre_round_end_height =
+      this.appSetting.getRoundStartHeight(cur_round) - 1;
+    return this._getUserTransactions(address, offset, limit, in_or_out, type, {
+      height: { $lte: pre_round_end_height, $gte: per_round_start_height },
+    });
   }
   /**
    * 根据地址获得交易，分页，send:true为转出
@@ -522,7 +533,7 @@ export class TransactionServiceProvider {
     offset: number,
     limit: number,
     in_or_out: "in" | "out",
-    type?: TYPE.TransactionTypes
+    type?: TYPE.TransactionTypes | TYPE.TransactionTypes[]
   ) {
     const cur_round = this.appSetting.getRound();
     const startHeight = this.appSetting.getRoundStartHeight(cur_round - 1);

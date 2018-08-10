@@ -114,7 +114,12 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
       this.userInfo.address,
       page_info.pay_page,
       page_info.pay_pageSize,
-      "out"
+      "out",
+      [
+        TransactionTypes.SEND,
+        TransactionTypes.VOTE,
+        TransactionTypes.TRANSFER_ASSET,
+      ]
     );
     page_info.pay_hasMore = pay_list.length === page_info.pay_pageSize;
     return pay_list;
