@@ -1,0 +1,66 @@
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Ultralight.otf") format("opentype");
+    font-weight: 100;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Thin.otf") format("opentype");
+    font-weight: 200;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Light.otf") format("opentype");
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Regular.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Medium.otf") format("opentype");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Semibold.otf") format("opentype");
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Bold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Heavy.otf") format("opentype");
+    font-weight: 800;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Black.otf") format("opentype");
+    font-weight: 900;
+    font-style: normal;
+}
+@font-face {
+    font-family: "SF Compact Display";
+    src: url("./SF Compact Display/SFCompactDisplay-Heavy.otf") format("opentype");
+    font-weight: bold;
+    font-style: normal;
+}

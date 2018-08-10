@@ -98,7 +98,7 @@ export class IncomeTrendSimpleChartComponent extends AniBase
       fill: 0xffffff,
       fontFamily: [
         "-apple-system",
-        "SF Compact Text",
+        "SF Compact Display",
         "Helvetica Neue",
         "Roboto",
         "sans-serif",
