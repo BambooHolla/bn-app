@@ -17,6 +17,7 @@ import { AccountServiceProvider } from "../account-service/account-service";
 import {
   TransactionServiceProvider,
   TransactionTypes,
+  TransactionModel,
 } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
@@ -646,33 +647,52 @@ export class MinServiceProvider extends FLP_Tool {
    * TODO:需要后端在rank中添加手续费字段或者从其他地方获取手续费或者获取交易时可以根据轮次进行获取
    */
   async getRateOfReturn() {
-    let lastRoundT = await this.transactionService.getTransactions({
-      type: this.ifmJs.transactionTypes.VOTE,
-      senderId: this.userInfo.address,
-      orderBy: "t_timestamp:desc",
-      limit: 57,
-    });
+    /// 1. 查询上一轮的所有的投票交易
 
-    let transactions = lastRoundT.transactions;
+    const cur_round = this.appSetting.getRound();
+    const pre_round = cur_round - 1;
+    const transactions: TransactionModel[] = [];
+    const pageSize = 59; // 一般不会超过57，这里考虑到自动投票+手动投57个来方便一次性查询处理啊
+    let offset = 0;
+    do {
+      const preRoundVoteTrs = await this.transactionService.queryTransaction(
+        {
+          senderId: this.userInfo.address,
+          height: {
+            $lt: this.appSetting.getRoundStartHeight(cur_round),
+            $gte: this.appSetting.getRoundStartHeight(pre_round),
+          },
+          type: TransactionTypes.VOTE,
+        },
+        {},
+        offset,
+        pageSize
+      );
+      transactions.push(...preRoundVoteTrs.transactions);
+      // 查询到了尽头，不查了
+      if (preRoundVoteTrs.transactions.length < pageSize) {
+        break;
+      }
+      offset += pageSize;
+    } while (true);
+    // 累计所有投票交易的手续费
+    let totalFee = 0;
+    for (var trs of transactions) {
+      totalFee += parseFloat(trs.fee);
+    }
+    if (totalFee < 0) {
+      throw new RangeError("手续费不可能为负数");
+    }
 
-    let totalBenefitList = await this.myRank.getPromise();
+    /// 2. 查询上一轮的所有挖矿收入
+    const totalBenefitList = await this.myRank.getPromise();
     const myBenefit = totalBenefitList.find(
       rank_info => rank_info.address === this.userInfo.address
     );
     if (!myBenefit) {
       return undefined;
     }
-    let totalBenefit = parseInt(myBenefit.profit);
-    let totalFee = 0;
-    const pre_round = this.appSetting.getRound() - 1;
-    for (var i of transactions) {
-      if (this.appSetting.calcRoundByHeight(i.height) == pre_round) {
-        totalFee += parseFloat(i.fee);
-      }
-    }
-    if (totalFee < 0) {
-      throw new RangeError("手续费不可能为负数");
-    }
+    const totalBenefit = parseInt(myBenefit.profit);
 
     return {
       totalBenefit,

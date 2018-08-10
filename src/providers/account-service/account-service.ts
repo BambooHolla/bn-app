@@ -122,22 +122,20 @@ export class AccountServiceProvider {
   /**上轮是否有投票*/
   async isPreRoundHasVote(address: string) {
     const cur_round = this.appSetting.getRound();
-    const data = await this.transactionService.getTransactions({
-      type: TransactionTypes.VOTE,
-      senderId: address,
-      startHeight: Math.max(
-        this.appSetting.getRoundStartHeight(cur_round - 1),
-        1
-      ),
-      limit: 1,
-      orderBy: "height:esc", // 取height最小的
-    });
+    const data = await this.transactionService.queryTransaction(
+      {
+        height: {
+          $lt: this.appSetting.getRoundStartHeight(cur_round),
+          $gte: this.appSetting.getRoundStartHeight(cur_round - 1),
+        },
+        type: TransactionTypes.VOTE,
+      },
+      {},
+      0,
+      1
+    );
 
-    const tran = data.transactions[0];
-    if (tran && tran.height < this.appSetting.getRoundStartHeight(cur_round)) {
-      return true;
-    }
-    return false;
+    return data.transactions.length !== 0;
   }
   is_pre_round_has_vote!: AsyncBehaviorSubject<boolean>;
   @ROUND_AB_Generator("is_pre_round_has_vote", true)

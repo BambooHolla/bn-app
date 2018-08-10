@@ -918,15 +918,14 @@ export class BlockServiceProvider extends FLP_Tool {
   async getTransactionsInBlock(
     blockId: string,
     page = 1,
-    limit = 10
+    pageSize = 10
   ): Promise<TransactionModel[]> {
-    let query = {
-      blockId: blockId,
-      offset: (page - 1) * limit,
-      limit: limit,
-      orderBy: "t_timestamp:desc",
-    };
-    let data = await this.transactionService.getTransactions(query);
+    const data = await this.transactionService.queryTransaction(
+      { blockId },
+      { timestamp: -1 },
+      (page - 1) * pageSize,
+      pageSize
+    );
 
     return data.transactions;
   }

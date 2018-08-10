@@ -592,20 +592,8 @@ export class TransactionServiceProvider {
   }
 
   /**
-   * 获取交易
-   * @param {{}} query
-   * @returns {Promise<{}>}
+   * 使用Mongodb语句查询交易
    */
-  async getTransactions(query) {
-    let data = await this.fetch.get<TYPE.QueryTransactionsResModel>(
-      this.GET_TRANSACTIONS,
-      {
-        search: query,
-      }
-    );
-
-    return data;
-  }
   async queryTransaction(query, order, offset?: number, limit?: number) {
     return this.fetch.get<TYPE.QueryTransactionsResModel>(
       this.QUERY_TRANSACTIONS,
@@ -620,19 +608,19 @@ export class TransactionServiceProvider {
     );
   }
 
-  /**
-   * 根据时间逆序获得交易
-   * @param page
-   * @param limit
-   */
-  async getTransactionsByPages(page = 1, limit = 10) {
-    let data = await this.getTransactions({
-      offset: (page - 1) * limit,
-      limit: limit,
-      orderBy: "t_timestamp:desc",
-    });
-    return data.transactions;
-  }
+  // /**
+  //  * 根据时间逆序获得交易
+  //  * @param page
+  //  * @param limit
+  //  */
+  // async getTransactionsByPages(page = 1, limit = 10) {
+  //   let data = await this.getTransactions({
+  //     offset: (page - 1) * limit,
+  //     limit: limit,
+  //     orderBy: "t_timestamp:desc",
+  //   });
+  //   return data.transactions;
+  // }
 
   /**
    * 获取未确认交易
