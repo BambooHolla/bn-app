@@ -32,7 +32,11 @@ export enum LocalContactGroupMethod {
   /*以上所有*/
   mix,
 }
-export type TransactionWithLoclContactNicknameModel = PromiseType<ReturnType<typeof LocalContactProvider.prototype.formatTransactionWithLoclContactNickname>>
+export type TransactionWithLoclContactNicknameModel = PromiseType<
+  ReturnType<
+    typeof LocalContactProvider.prototype.formatTransactionWithLoclContactNickname
+  >
+>;
 
 @Injectable()
 export class LocalContactProvider extends EventEmitter {
@@ -67,14 +71,44 @@ export class LocalContactProvider extends EventEmitter {
     transaction_list: import("../transaction-service/transaction.types").TransactionModel[],
     owner_publicKey = this.userInfo.publicKey
   ) {
+    const findTask = new Map<
+      string,
+      ReturnType<typeof LocalContactProvider.prototype.findContact>
+    >();
     return Promise.all(
-      transaction_list.map(async tra => {
+      transaction_list.map(async trs => {
+        let sender_finder_task:
+          | ReturnType<typeof LocalContactProvider.prototype.findContact>
+          | undefined;
+        if (trs.senderId) {
+          sender_finder_task = findTask.get(trs.senderId);
+          if (!sender_finder_task) {
+            sender_finder_task = this.findContact(
+              trs.senderId,
+              owner_publicKey
+            );
+            findTask.set(trs.senderId, sender_finder_task);
+          }
+        }
+        let recipient_finder_task:
+          | ReturnType<typeof LocalContactProvider.prototype.findContact>
+          | undefined;
+        if (trs.recipientId) {
+          recipient_finder_task = findTask.get(trs.recipientId);
+          if (!recipient_finder_task) {
+            recipient_finder_task = this.findContact(
+              trs.recipientId,
+              owner_publicKey
+            );
+            findTask.set(trs.recipientId, recipient_finder_task);
+          }
+        }
         const [contact_sender, contact_recipient] = await Promise.all([
-          this.findContact(tra.senderId, owner_publicKey),
-          this.findContact(tra.recipientId, owner_publicKey),
+          sender_finder_task,
+          recipient_finder_task,
         ]);
         return {
-          ...tra,
+          ...trs,
           senderNickname: contact_sender && contact_sender.nickname,
           recipientNickname: contact_recipient && contact_recipient.nickname,
         };

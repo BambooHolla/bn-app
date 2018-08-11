@@ -608,19 +608,17 @@ export class TransactionServiceProvider {
     );
   }
 
-  // /**
-  //  * 根据时间逆序获得交易
-  //  * @param page
-  //  * @param limit
-  //  */
-  // async getTransactionsByPages(page = 1, limit = 10) {
-  //   let data = await this.getTransactions({
-  //     offset: (page - 1) * limit,
-  //     limit: limit,
-  //     orderBy: "t_timestamp:desc",
-  //   });
-  //   return data.transactions;
-  // }
+  /**
+   * 使用Mongodb语句查询交易，通过page,pageSize风格的进行查询
+   */
+  queryTransactionsByPages(query, order, page = 1, pageSize = 10) {
+    return this.queryTransaction(
+      query,
+      order,
+      (page - 1) * pageSize,
+      pageSize
+    ).then(data => data.transactions);
+  }
 
   /**
    * 获取未确认交易

@@ -93,37 +93,55 @@ export class AssetsServiceProvider {
     return this.formatAssetsToWithLogoSafeUrl(data.assets);
   }
 
-  my_assets_default_pageSize = 20;
+  /**我的账户的所有资产*/
   myAssetsList!: AsyncBehaviorSubject<TYPE.AssetsModelWithLogoSafeUrl[]>;
   @HEIGHT_AB_Generator("myAssetsList")
   myAssetsList_Executor(promise_pro) {
     // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
     return promise_pro.follow(
-      this._getPossessorAssets(this.appSetting.user.address, {
-        offset: 0,
-        limit: this.my_assets_default_pageSize,
-        needLogo: 0,
-      })
+      this.getAllPossessorAssets(this.appSetting.user.address)
     );
   }
-
-  async getPossessorAssets(
-    address: string,
-    extends_query: { limit?: number; offset?: number; [key: string]: any } = {}
-  ) {
-    if (address === this.appSetting.user.address) {
-      if (
-        typeof extends_query.limit === "number" &&
-        typeof extends_query.offset === "number"
-      ) {
-        const end = extends_query.offset + extends_query.limit;
-        if (end <= this.my_assets_default_pageSize) {
-          const my_assets_list = await this.myAssetsList.getPromise();
-          return my_assets_list.slice(extends_query.offset, end);
-        }
+  /**查询指定账户的所有可用资产*/
+  async getAllPossessorAssets(address: string, extends_query?) {
+    let page = 0;
+    const pageSize = 40;
+    const all_assets_list: TYPE.AssetsModelWithLogoSafeUrl[] = [];
+    do {
+      page += 1;
+      const { assets_list, hasMore } = await this._getPossessorAssetsByPage(
+        address,
+        page,
+        pageSize,
+        extends_query
+      );
+      all_assets_list.push(...assets_list);
+      if (!hasMore) {
+        break;
       }
+    } while (true);
+    return all_assets_list;
+  }
+  /**查询指定页的资产列表*/
+  private async _getPossessorAssetsByPage(
+    address: string,
+    page: number,
+    pageSize: number,
+    extends_query?
+  ) {
+    let query_condition = {
+      offset: (page - 1) * pageSize,
+      limit: pageSize,
+    };
+    if (extends_query) {
+      query_condition = Object.assign(extends_query, query_condition);
     }
-    return this._getPossessorAssets(address, extends_query);
+    const assets_list = await this._getPossessorAssets(
+      address,
+      query_condition
+    );
+
+    return { assets_list, hasMore: assets_list.length >= pageSize };
   }
   async _getPossessorAssets(address: string, extends_query: object) {
     const data = await this.fetch.get<{ assets: TYPE.AssetsModel[] }>(
@@ -131,8 +149,8 @@ export class AssetsServiceProvider {
       {
         search: {
           address,
-          ...extends_query,
           needLogo: 0,
+          ...extends_query,
         },
       }
     );

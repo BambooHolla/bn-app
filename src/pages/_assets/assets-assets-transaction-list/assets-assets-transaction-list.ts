@@ -33,6 +33,7 @@ import {
 @Component({
 	selector: "page-assets-assets-transaction-list",
 	templateUrl: "assets-assets-transaction-list.html",
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 	constructor(
@@ -48,6 +49,7 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 		super(navCtrl, navParams, true, tabs);
 	}
 
+	@AssetsAssetsTransactionListPage.markForCheck
 	transaction_list: TransactionModel[] = [];
 	page_info = {
 		page: 0,
@@ -56,20 +58,68 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 		loading: false,
 	};
 
+	@AssetsAssetsTransactionListPage.markForCheck
 	assets_info?: AssetsModelWithLogoSafeUrl;
 
 	@AssetsAssetsTransactionListPage.willEnter
 	initData() {
+		if (this._is_from_child) {
+			this._is_from_child = false;
+			this._updateTrsListNickName();
+			return;
+		}
 		const assets_info = this.navParams.get("assets");
 		if (!assets_info) {
 			return this.navCtrl.goToRoot({});
 		}
 		this.assets_info = assets_info;
+
+		this.initAssetsTransactionList();
 	}
 
+	/*初始化列表*/
 	@asyncCtrlGenerator.error()
+	async initAssetsTransactionList() {
+		const { page_info } = this;
+		page_info.page = 1;
+		this.transaction_list = await this._loadAssetsTransactionList();
+	}
+	@asyncCtrlGenerator.error()
+	async loadMoreAssetsTransactionList() {
+		const { page_info } = this;
+		page_info.page += 1;
+		this.transaction_list.push(
+			...(await this._loadAssetsTransactionList())
+		);
+	}
+
 	private _loadAssetsTransactionList() {
-		// TODO: 查询资产交易
+		const { page_info, assets_info } = this;
+		if (!assets_info) {
+			return [];
+		}
+
+		return this.transactionService
+			.queryTransactionsByPages(
+				{
+					type: this.transactionService.TransactionTypes
+						.TRANSFER_ASSET,
+					assetType: assets_info.abbreviation,
+				},
+				{ timestamp: -1 },
+				page_info.page,
+				page_info.pageSize
+			)
+			.then(tra_list =>
+				this.localContact.formatTransactionWithLoclContactNickname(
+					tra_list
+				)
+			);
+	}
+	private _updateTrsListNickName() {
+		this.localContact
+			.formatTransactionWithLoclContactNickname(this.transaction_list)
+			.then(trs_list => (this.transaction_list = trs_list));
 	}
 
 	private _is_from_child = false;

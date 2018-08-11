@@ -69,8 +69,9 @@ export class AccountServiceProvider {
             return {
               reqs: [request_opts],
               cache: {
-                success: true,
-                account: {} as TYPE.AccountModel,
+                success: false,
+                account: undefined as any,
+                error: { message: "Account not found" },
               },
             };
           } else {

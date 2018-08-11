@@ -49,8 +49,27 @@ page-assets-assets-transaction-list {
 			}
 		}
 		.common-item {
-			margin: 0 2rem;
+			// margin: 0 2rem;
 			border-bottom: 0.55px solid #eee;
+			.left{
+				align-items: flex-start!important;
+			}
+			.from-to {
+				display: flex;
+				align-items: center;
+				ali-icon {
+					font-size: 3rem;
+					margin: 0 0.2rem;
+				}
+			}
+			.create-time {
+				color: #b5b5b5;
+				font-size: 1.2rem;
+			}
+			.amount {
+				color: #505050;
+				font-weight: 500;
+			}
 		}
 	}
 }

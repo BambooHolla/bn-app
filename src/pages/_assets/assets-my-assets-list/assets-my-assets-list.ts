@@ -42,9 +42,6 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
   my_assets_list: AssetsModelWithLogoSafeUrl[] = [];
 
   page_info = {
-    page: 0,
-    pageSize: 20,
-    hasMore: true,
     loading: false,
   };
 
@@ -62,35 +59,14 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
     cssClass: "can-tap blockchain-loading",
   })
   async initMyAssetsList() {
-    this.page_info.page = 1;
     this.my_assets_list = await this._loadMyAssetsList();
-  }
-
-  @asyncCtrlGenerator.error()
-  async loadMoreMyAssetsList() {
-    if (!this.page_info.hasMore) {
-      return;
-    }
-    if (this.page_info.loading) {
-      return;
-    }
-    this.page_info.page += 1;
-    this.my_assets_list.push(...(await this._loadMyAssetsList()));
   }
 
   private async _loadMyAssetsList() {
     const { page_info } = this;
     page_info.loading = true;
-    await sleep(1000);
     try {
-      const assets_list = await this.assetsService.getPossessorAssets(
-        this.userInfo.address,
-        {
-          offset: (page_info.page - 1) * page_info.pageSize,
-          limit: page_info.pageSize,
-        }
-      );
-      page_info.hasMore = assets_list.length >= page_info.pageSize;
+      const assets_list = await this.assetsService.myAssetsList.getPromise();
       /*异步查询本地的未确认交易，看是否有销毁信息*/
       return await this.assetsService.mixDestoryingAssets(
         this.userInfo.address,

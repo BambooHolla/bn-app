@@ -426,10 +426,6 @@ export class TabPayPage extends FirstLevelPage {
   @TabPayPage.markForCheck is_assets_select_panel_open = false;
   assets_page_info = {
     loading: false,
-    hasMore: true,
-    page: 1,
-    pageSize: 20,
-    cacheHeight: 0,
   };
   /**打开、关闭 资产选择面板*/
   toggleAssetsSelectPanel(state = !this.is_assets_select_panel_open) {
@@ -453,22 +449,13 @@ export class TabPayPage extends FirstLevelPage {
   async loadAllSelectableAssetsList() {
     const current_height = this.appSetting.getHeight();
     const { assets_page_info } = this;
-    if (assets_page_info.cacheHeight === current_height) {
-      return;
+    assets_page_info.loading = true;
+    try {
+      const my_all_assets = await this.assetsService.myAssetsList.getPromise();
+      this.selectable_assets_list = [this.ibt_assets, ...my_all_assets];
+    } finally {
+      assets_page_info.loading = false;
     }
-    const new_selectable_assets_list: AssetsModelWithLogoSafeUrl[] = [];
-    assets_page_info.page = 0;
-    do {
-      assets_page_info.page += 1;
-      new_selectable_assets_list.push(
-        ...(await this._loadSelectableAssetsList())
-      );
-    } while (assets_page_info.hasMore);
-    this.selectable_assets_list = [
-      this.ibt_assets,
-      ...new_selectable_assets_list,
-    ];
-    assets_page_info.cacheHeight = current_height;
   }
 
   // @asyncCtrlGenerator.single()
@@ -479,28 +466,6 @@ export class TabPayPage extends FirstLevelPage {
       assets => assets.abbreviation === selected_assets.abbreviation
     );
     this.selected_assets = new_selected_assets || this.ibt_assets;
-  }
-
-  /**查询指定页的资产列表*/
-  private async _loadSelectableAssetsList() {
-    const current_height = this.appSetting.getHeight();
-    const { assets_page_info } = this;
-
-    assets_page_info.loading = true;
-    try {
-      const assets_list = await this.assetsService.getPossessorAssets(
-        this.userInfo.address,
-        {
-          offset: (assets_page_info.page - 1) * assets_page_info.pageSize,
-          limit: assets_page_info.pageSize,
-        }
-      );
-      assets_page_info.hasMore =
-        assets_list.length >= assets_page_info.pageSize;
-      return assets_list;
-    } finally {
-      assets_page_info.loading = false;
-    }
   }
 
   /**选择某一个资产*/

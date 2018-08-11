@@ -19,17 +19,19 @@
       {{assets_info?.abbreviation}}
     </div>
     <div class="balance">
-      <text-gradient [text]="assets_info?.balance|amountEuler|number:'1.8-8'" from="#74f5e1" to="#83d8f6" direction="bottom" fontSize="2.8rem"></text-gradient>
+      <text-gradient [text]="assets_info?.hodingAssets|amountEuler|number:'1.8-8'" from="#74f5e1" to="#83d8f6" direction="bottom" fontSize="2.8rem"></text-gradient>
       <div class="usd" hidden>
         ≈ 666 USD
       </div>
     </div>
   </div>
-  <div class="transaction-logs common-list">
+  <div class="transaction-logs">
     <div class="list-title">
       <ali-icon name="ifm-tran-history"></ali-icon>
       {{'RECENT_ASSETS_TRANSACTION_LOGS'|translate}}
-      <div class="common-item" *ngFor="let tran of transaction_list;trackBy:commonTrackBy('id')" (click)="routeToAssetsTransaction(tran)">
+    </div>
+    <div class="common-list">
+      <button mat-button class="common-item" *ngFor="let tran of transaction_list;trackBy:commonTrackBy('id')" (click)="routeToAssetsTransaction(tran)">
         <div class="left">
           <div class="tran-type">
             {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
@@ -42,19 +44,19 @@
         <div class="right">
           <div class="from-to">
             <div class="sender" [innerHTML]="(tran.senderNickname||tran.senderUsername)?(tran.senderNickname||tran.senderUsername):(tran.senderId|mask:'@address')"></div>
-            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
-              <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-              <div class="recipient" [innerHTML]="(tran.recipientNickname||tran.recipientUsername)?(tran.recipientNickname||tran.recipientUsername):(tran.recipientId|mask:'@address')"></div>
-            </ng-container>
+            <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+            <div class="recipient" [innerHTML]="(tran.recipientNickname||tran.recipientUsername)?(tran.recipientNickname||tran.recipientUsername):(tran.recipientId|mask:'@address')"></div>
           </div>
-          <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
-            {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
-          </div>
-          <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
-            - {{tran?.fee|amountEuler|number:"1.8-8"}}
+          <div class="amount">
+            {{tran.senderId==userInfo.address?'-':'+'}} {{tran.amount|amountEuler|number:"1.8-8"}}
+            <span class="unit">{{tran.assetType}}</span>
           </div>
         </div>
-      </div>
+      </button>
     </div>
   </div>
+  <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreAssetsTransactionList())" [enabled]="page_info.hasMore">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    <!-- [loadingText]="'LOADING_MOREC_CONTACT_TRANSACTION_LIST'|translate" -->
+  </ion-infinite-scroll>
 </ion-content>
