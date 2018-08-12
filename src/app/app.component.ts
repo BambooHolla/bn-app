@@ -22,6 +22,7 @@ import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
 import { FingerprintAIO } from "./native/fingerprint-aio";
 import { checkUpdate } from "../pages/tab-account/checkUpdate";
+import { File } from "@ionic-native/file";
 
 import {
   Config,
@@ -109,6 +110,7 @@ export class MyApp implements OnInit {
     public userInfo: UserInfoProvider,
     public peerService: PeerServiceProvider,
     public faio: FingerprintAIO,
+    public file: File,
     public androidPermissions: AndroidPermissions
   ) {
     global["ac"] = this;
@@ -128,6 +130,7 @@ export class MyApp implements OnInit {
     global["appFetch"] = appFetch;
     global["minService"] = minService;
     global["peerService"] = peerService;
+    global["file"] = file;
     global["myapp"] = this;
     config.setTransition("common-transition", CommonTransition);
     config.setTransition("custom-dialog-pop-in", CustomDialogPopIn);
