@@ -186,23 +186,12 @@ var IssueAssets = (function() {
           });
         }
 
-        /* if (!trs.asset.issueAsset.originalFrozenIBT) {
-                return cb({
-                    message: "Assets original frozen IBT is required"
-                })
-            } */
-
         if (!trs.asset.issueAsset.expectedIssuedAssets) {
           return cb({
             message: "Assets original issued assets number is required",
           });
         }
 
-        if (!trs.asset.issueAsset.expectedIssuedBlockHeight) {
-          return cb({
-            message: "Assets expected issued block height is required",
-          });
-        }
 
         if (!addressHelper.isAddress(trs.asset.issueAsset.genesisAddress)) {
           return cb({
@@ -241,9 +230,7 @@ var IssueAssets = (function() {
     {
       key: "getBytes",
       value: function getBytes(trs) {
-        var buf = void 0;
-
-        buf = Buffer.from([]);
+        var buf = Buffer.from([]);
         if (trs.asset.issueAsset.address) {
           var addressBuf = Buffer.from(trs.asset.issueAsset.address);
           buf = Buffer.concat([buf, addressBuf]);
@@ -265,8 +252,6 @@ var IssueAssets = (function() {
 
         var gasBuf = Buffer.from(trs.asset.issueAsset.genesisAddress);
         buf = Buffer.concat([buf, gasBuf]);
-
-        buf = Buffer.concat([buf, Buffer.from(bb.toString("hex"), "hex")]);
 
         return buf;
       },

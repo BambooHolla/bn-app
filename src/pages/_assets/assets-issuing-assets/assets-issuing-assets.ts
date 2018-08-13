@@ -50,13 +50,13 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     abbreviation: string;
     genesisAddress: string;
     expectedIssuedAssets?: number;
-    expectedIssuedBlockHeight?: number;
+    // expectedIssuedBlockHeight?: number;
   } = {
     logo: "",
     abbreviation: "",
     genesisAddress: "",
     expectedIssuedAssets: undefined,
-    expectedIssuedBlockHeight: undefined,
+    // expectedIssuedBlockHeight: undefined,
   };
 
 
@@ -116,86 +116,10 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     return res;
   }
 
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedBlockHeight", [
-    "WRONG_RANGE",
-  ])
-  check_expectedIssuedBlockHeight() {
-    const res: any = {};
-    const { expectedIssuedBlockHeight } = this.formData;
-    if (expectedIssuedBlockHeight) {
-      if (expectedIssuedBlockHeight <= this.appSetting.getHeight()) {
-        res.WRONG_RANGE = "EXPECTEDISSUEDBLOCKHEIGHT_RANGE_ERROR";
-      }
-    }
-    // this.calcRate();
-    return res;
-  }
 
-  private _blockHeightTime_Lock_map = new Map<number, Promise<number>>();
-
-  blockHeightTime(height = this.formData.expectedIssuedBlockHeight) {
-    if (!height) {
-      return;
-    }
-    const { lastBlock } = this;
-    const diff_height = height - lastBlock.height;
-    return (
-      this.blockService.getFullTimestamp(lastBlock.timestamp) +
-      diff_height * this.appSetting.BLOCK_UNIT_TIME
-    );
-  }
   @AssetsIssuingAssetsPage.markForCheck
   lastBlock: SingleBlockModel = { height: 1, timestamp: 0, id: "" };
-  /*自动补全*/
-  @AssetsIssuingAssetsPage.markForCheck
-  expectedIssuedBlockHeightOptions: number[] = [];
 
-  private _expectedIssuedBlockHeightOptions: number[] = [];
-  @AssetsIssuingAssetsPage.addEventAfterDidEnter("HEIGHT:CHANGED")
-  watchHeightChanged() {
-    const height = this.appSetting.getHeight();
-    /*7*24*60*60/128 = 4725*/
-    const weakly_height =
-      (7 * 24 * 60 * 60 * 1000) / this.appSetting.BLOCK_UNIT_TIME;
-    // 一个季度的时间，3月*4周
-    this._expectedIssuedBlockHeightOptions = Array.from({ length: 12 }).map(
-      (_, i) => height + weakly_height * (i + 1)
-    );
-
-    this.blockService.lastBlock.getPromise().then(b => {
-      this.lastBlock = b;
-    });
-    // 校验范围
-    this.check_expectedIssuedBlockHeight();
-  }
-  @ViewChild("autoExpectedIssuedBlockHeight") autoHeight!: MatAutocomplete;
-
-  @AssetsIssuingAssetsPage.didEnter
-  init_delaySetHeightOptions() {
-    let show_options_ti;
-    this.event.on("input-status-changed", ({ key: formKey, event: e }) => {
-      if (formKey !== "expectedIssuedBlockHeight") {
-        return;
-      }
-      if (e.type === "focus") {
-        clearTimeout(show_options_ti);
-        show_options_ti = setTimeout(() => {
-          this._delaySetHeightOptions();
-        }, 500);
-      } else if (e.type === "blur") {
-        clearTimeout(show_options_ti);
-        show_options_ti = setTimeout(() => {
-          this._delayUnSetHeightOptions();
-        }, 500);
-      }
-    });
-  }
-  private _delaySetHeightOptions() {
-    this.expectedIssuedBlockHeightOptions = this._expectedIssuedBlockHeightOptions;
-  }
-  private _delayUnSetHeightOptions() {
-    this.expectedIssuedBlockHeightOptions = [];
-  }
   /**选择资产logo图片*/
   pickAssetsLogo() {
     const inputEle = document.createElement("input");
@@ -248,7 +172,6 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
         abbreviation: formData.abbreviation.toUpperCase(),
         genesisAddress: formData.genesisAddress,
         expectedIssuedAssets: formData.expectedIssuedAssets as number,
-        expectedIssuedBlockHeight: formData.expectedIssuedBlockHeight as number,
       },
       custom_fee,
       password,

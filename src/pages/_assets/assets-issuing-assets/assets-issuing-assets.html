@@ -56,31 +56,6 @@
         </mat-error>
       </mat-form-field>
     </div>
-    <div class="mat-container expectedIssuedBlockHeight">
-      <mat-form-field>
-        <span matPrefix class="prefix-info">{{'ISSUED_BLOCK_HEIGHT'|translate}}</span>
-        <input data-keyboard-view-position="top" data-keyboard-move-node="new_assets_form" matInput [(ngModel)]="formData.expectedIssuedBlockHeight" set-input-status="expectedIssuedBlockHeight" [errorStateMatcher]="matFormMatcherFactory('expectedIssuedBlockHeight')" type="number" [matAutocomplete]="autoExpectedIssuedBlockHeight">
-        <mat-error *ngIf="errors?.expectedIssuedBlockHeight?.WRONG_RANGE">
-          {{errors.expectedIssuedBlockHeight.WRONG_RANGE|translate}}
-        </mat-error>
-        <mat-autocomplete class="expectedIssuedBlockHeight-autocomplete" #autoExpectedIssuedBlockHeight="matAutocomplete">
-          <mat-option *ngFor="let option of expectedIssuedBlockHeightOptions" [value]="option">
-            <div class="left">
-              <div class="label">{{'BLOCK_height'|translate}}</div>
-              <div class="value">{{option}}</div>
-            </div>
-            <div class="right">
-              <div class="label">{{'ESTIMATED_TIME'|translate}}</div>
-              <div class="value">{{blockHeightTime(option)|amDateFormat:"YYYY.MM.DD"}}</div>
-            </div>
-          </mat-option>
-        </mat-autocomplete>
-        <mat-hint align="end" *ngIf="formData.expectedIssuedBlockHeight">
-          <ali-icon name="ifm-wancheng"></ali-icon>
-          {{'ESTIMATED_TIME'|translate}} : {{blockHeightTime()|amDateFormat:"YYYY-MM-DD HH:mm:ss"}}
-        </mat-hint>
-      </mat-form-field>
-    </div>
   </div>
   <div class="footer">
     <button mat-button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'ISSUED_IMMEDIATELY'|translate}}</button>

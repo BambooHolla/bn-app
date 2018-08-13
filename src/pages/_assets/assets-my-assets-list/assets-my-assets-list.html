@@ -10,7 +10,7 @@
 </ion-header>
 <ion-content>
   <div class="common-list my-assets-list">
-    <div class="common-item" [class.destorying]="assets._destorying" *ngFor="let assets of my_assets_list" (click)="routeToAssetsTraList(assets)">
+    <button mat-button class="common-item" [class.destorying]="assets._destorying" *ngFor="let assets of my_assets_list" (click)="routeToAssetsTraList(assets)">
       <div class="left">
         <div class="assets-logo-shape-wrapper">
           <div class="assets-logo-shape">
@@ -28,7 +28,7 @@
           <span class="unit">{{assets.abbreviation}}</span>
         </div>
       </div>
-    </div>
+    </button>
   </div>
   <div class="empty-list" *ngIf="my_assets_list.length==0&&page_info.loading==false">
     <img src="assets/imgs/empty-list.png" alt="空列表">

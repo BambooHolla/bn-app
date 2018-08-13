@@ -213,7 +213,6 @@ export class AssetsServiceProvider {
       abbreviation: string;
       genesisAddress: string;
       expectedIssuedAssets: number;
-      expectedIssuedBlockHeight: number;
     },
     fee = parseFloat(this.appSetting.settings.default_fee),
     secret: string,
