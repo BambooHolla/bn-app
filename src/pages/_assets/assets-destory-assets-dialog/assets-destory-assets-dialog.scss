@@ -1,0 +1,89 @@
+page-assets-destory-assets-dialog {
+  background-color: rgba(0, 0, 0, 0.3);
+  > .content {
+    background: none;
+    > .scroll-content {
+      background: none;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* animation-name: aplha-dark-bg-in;
+      animation-duration: 300ms;
+      animation-delay: 400ms;
+      animation-fill-mode: forwards; */
+    }
+  }
+  /*   @keyframes aplha-dark-bg-in {
+    0% {
+      background-color: transparent;
+    }
+    100% {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+  } */
+  .dialog-wrapper {
+    position: relative;
+    top: -11vh;
+    > .close-button {
+      position: absolute;
+      width: 1.9rem;
+      height: 1.9rem;
+      padding: 0;
+      box-sizing: border-box;
+      font-size: 1.7rem;
+      color: #fff;
+      background-color: #929292;
+      border-radius: 50%;
+      right: -0.7rem;
+      top: -0.7rem;
+      text-align: center;
+      line-height: 1.8rem;
+      /* display: flex;
+      align-items: center;
+      justify-content: center; */
+    }
+    > .dialog-content {
+      width: 76vw;
+      min-height: 12.2rem;
+      background-color: #fff;
+      border-radius: 0.8rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1.7rem;
+
+      > .content {
+      }
+      > .buttons {
+        width: 100%;
+        background: linear-gradient(top, #e1e3e2 0%, #e1e3e2 100%);
+        background-size: 2px;
+        background-size: 1px 1px;
+        background-repeat: repeat-x;
+        height: 4.92rem;
+        display: flex;
+        flex-direction: row;
+        > button {
+          flex: 1;
+          height: 100%;
+          line-height: 4.92rem;
+          text-align: center;
+          background-color: transparent;
+
+          font-size: 1.55rem;
+          margin: 0;
+          &.cancel {
+            color: #666;
+          }
+          &.ok {
+            background-color: #ff6769;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}

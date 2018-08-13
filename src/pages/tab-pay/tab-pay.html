@@ -54,46 +54,52 @@
         </div>
       </div>
     </div>
-    <div class="assets-select-panel-overlayer" [class.show]="is_assets_select_panel_open" [class.android]="isAndroid" [class.ios]="isIOS" (click)="tryCloseAssetsSelectPanel($event)">
+    <div class="assets-select-panel-overlayer android" [class.show]="is_assets_select_panel_open" [class.android]="isAndroid" [class.ios]="isIOS" (click)="tryCloseAssetsSelectPanel($event)">
       <div class="assets-select-panel-wrapper">
         <!-- (scroll)="tryLoadMoreAssetsList($event)" -->
-        <div class="assets-select-panel">
-          <ng-container *ngFor="let assets of selectable_assets_list;trackBy:commonTrackBy('abbreviation')">
-            <div class="assets-item assets-item-table-cell" (click)="selectAssets(assets)" *ngIf="assets.abbreviation!=this.selected_assets.abbreviation">
-              <div class="assets-logo-shape-wrapper">
-                <div class="assets-logo-shape">
-                  <img [src]="assets.logo_safe_url" alt="LOGO" />
+        <div class="assets-select-scroll">
+          <div class="assets-select-panel">
+            <ng-container *ngFor="let assets of selectable_assets_list;trackBy:commonTrackBy('abbreviation')">
+              <div class="assets-item assets-item-table-cell" (click)="selectAssets(assets)" *ngIf="assets.abbreviation!=this.selected_assets.abbreviation">
+                <div class="assets-logo-shape-wrapper">
+                  <div class="assets-logo-shape">
+                    <img [src]="assets.logo_safe_url" alt="LOGO" />
+                  </div>
                 </div>
+                <div class="abbreviation">{{assets.abbreviation}}</div>
+                <div class="balance">
+                  {{amountViewer(assets.hodingAssets|amountEuler|number:'1.8-8')}}
+                </div>
+                <span class="unit">{{assets.abbreviation}}</span>
               </div>
-              <div class="abbreviation">{{assets.abbreviation}}</div>
-              <div class="balance">
-                {{amountViewer(assets.hodingAssets|amountEuler|number:'1.8-8')}}
-              </div>
-              <span class="unit">{{assets.abbreviation}}</span>
-            </div>
-          </ng-container>
-          <div class="no-assets" *ngIf="selectable_assets_list.length==1">
-            <ng-container *ngIf="assets_page_info.loading==false;else loadingAssets">
-              <i>{{'NO_ASSETS'|translate}}</i>
             </ng-container>
-            <ng-template #loadingAssets>
-              <span>{{'LOADING_ASSETS'|translate}}</span>
-            </ng-template>
+            <div class="no-assets" *ngIf="selectable_assets_list.length<=1">
+              <ng-container *ngIf="assets_page_info.loading==false;else loadingAssets">
+                <i>{{'NO_ASSETS'|translate}}</i>
+              </ng-container>
+              <ng-template #loadingAssets>
+                <span>{{'LOADING_ASSETS'|translate}}</span>
+              </ng-template>
+            </div>
           </div>
         </div>
       </div>
-      <div class="android-shadow-fix-layer" *ngIf="isAndroid">
-        <div class="assets-select-panel">
-          <ng-container *ngFor="let assets of selectable_assets_list;trackBy:commonTrackBy('abbreviation')">
-            <div class="assets-item" *ngIf="assets.abbreviation!=this.selected_assets.abbreviation">
-            </div>
-          </ng-container>
+      <div class="android-shadow-fix-layer">
+        <!-- *ngIf="isAndroid" -->
+        <div class="assets-select-scroll">
+          <div class="assets-select-panel">
+            <ng-container *ngFor="let assets of selectable_assets_list;trackBy:commonTrackBy('abbreviation')">
+              <div class="assets-item" *ngIf="assets.abbreviation!=this.selected_assets.abbreviation">
+              </div>
+            </ng-container>
+          </div>
         </div>
       </div>
     </div>
     <div class="fee" (click)="setTransferFee()">
       <ali-icon class="left" name="ifm-info"></ali-icon>
       <span class="value">{{formData.transfer_fee|number:'1.8-8'}}</span>
+      <span class="unit">IBT</span>
       <!-- <div class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div> -->
     </div>
     <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()" (un-submit)="helpSubmit($event)">{{'SUBMIT_TRANSFER' | translate}}</button>
@@ -105,11 +111,7 @@
       <ali-icon class="right" name="ifm-arrow-dot-dot"></ali-icon>
     </div>
     <ion-content class="log-list">
-      <!-- <ion-refresher (ionRefresh)="loadRollOutLogs($event)">
-        <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新转出记录……"></ion-refresher-content>
-      </ion-refresher> -->
       <div class="log-item" *ngFor="let log of roll_out_logs;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail',{transaction:log})">
-        <!-- <div class="create-time">{{log.create_time|amLocal:localName|amTimeAgo}}</div> -->
         <div class="create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         <div class="address" [innerHTML]="log.recipientId|mask:'@address'"></div>
         <div class="amount">

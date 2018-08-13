@@ -140,6 +140,9 @@ page-tab-pay {
         display: flex;
         align-items: center;
       }
+      > .unit {
+        padding-left: 0.5rem;
+      }
     }
     > .submit-button {
       width: 100%;
@@ -424,16 +427,16 @@ page-tab-pay {
     &.android {
       transition-duration: unset;
       .assets-select-panel-wrapper {
-        /* transition-duration: unset; */
+        transition-duration: unset;
         border-radius: 0;
         box-shadow: unset;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(7px);
         .assets-select-panel {
           backdrop-filter: unset;
         }
       }
       .android-shadow-fix-layer {
-        box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0.4rem 2rem 0.2rem rgba(0, 0, 0, 0.2);
       }
     }
     &.ios {
@@ -449,9 +452,13 @@ page-tab-pay {
       }
       .android-shadow-fix-layer {
         z-index: 9;
+        &::before {
+          /* filter: drop-shadow(-0.1rem -0.1rem 0.2rem rgba(0, 0, 0, 0.3)); */
+          box-shadow: -0rem -0rem 0.2rem rgba(0, 0, 0, 0.2);
+        }
       }
     }
-    .assets-select-panel-wrapper{
+    .assets-select-panel-wrapper {
       &::after {
         content: " ";
         position: absolute;
@@ -469,7 +476,6 @@ page-tab-pay {
       transform-origin: center top;
       box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.2);
       position: absolute;
-      overflow: auto;
       width: 76vw;
       top: 29rem;
       left: 0;
@@ -478,12 +484,28 @@ page-tab-pay {
       margin: 0 12vw;
       border-radius: 0.5rem;
       z-index: 10;
+      &::before {
+        content: " ";
+        position: absolute;
+        width: 1.4rem;
+        height: 1.4rem;
+        right: 0.7rem;
+        top: -0.7rem;
+        transform: rotate(45deg);
+        background-color: rgba(101, 221, 234, 0.2);
+        /* background-color: #ff0; */
+      }
+      .assets-select-scroll {
+        min-height: 4rem;
+        max-height: 20rem;
+        overflow: auto;
+        backdrop-filter: blur(5px);
+      }
       .assets-select-panel {
         /* pointer-events: all; */
         background-color: rgba(#65ddea, 0.2);
         padding-left: 1.1rem;
         /* padding-right: 0.7rem; */
-        backdrop-filter: blur(5px);
         display: table;
         width: 100%;
 

@@ -76,6 +76,9 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 
 		this.initAssetsTransactionList();
 	}
+	showDestoryAssetsDialog(){
+		this.modalCtrl.create("assets-destory-assets-dialog").present();
+	}
 
 	/*初始化列表*/
 	@asyncCtrlGenerator.error()

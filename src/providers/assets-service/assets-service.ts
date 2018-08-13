@@ -242,6 +242,7 @@ export class AssetsServiceProvider {
   /**销毁资产*/
   destoryAssets(
     assets: TYPE.AssetsBaseModel,
+    amount: number,
     fee = parseFloat(this.appSetting.settings.default_fee),
     secret: string,
     secondSecret?: string,
@@ -253,13 +254,9 @@ export class AssetsServiceProvider {
       type: this.transactionService.TransactionTypes.DESTORY_ASSET,
       secret,
       publicKey,
+      amount,
       fee,
       assetType: assets.abbreviation,
-      asset: {
-        destoryAsset: {
-          abbreviation: assets.abbreviation,
-        },
-      },
     };
     if (secondSecret) {
       txData.secondSecret = secondSecret;

@@ -67,11 +67,11 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
   async initAssetsOwnerRank() {
     this.page_info.page = 1;
     // this.owner_list = this.mixArrayByUnshift(
-    // 	this.owner_list,
-    // 	await this._loadAssetsOwnerRank(),
-    // 	{
-    // 		mix_key: "address",
-    // 	},
+    //   this.owner_list,
+    //   await this._loadAssetsOwnerRank(),
+    //   {
+    //     mix_key: "address",
+    //   },
     // );
     this.owner_list = await this._loadAssetsOwnerRank();
   }
@@ -84,11 +84,11 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
     this.page_info.page += 1;
     this.owner_list = this.owner_list.concat(await this._loadAssetsOwnerRank());
     // this.owner_list = this.mixArrayByPush(
-    // 	this.owner_list,
-    // 	await this._loadAssetsOwnerRank(),
-    // 	{
-    // 		mix_key: "address",
-    // 	},
+    //   this.owner_list,
+    //   await this._loadAssetsOwnerRank(),
+    //   {
+    //     mix_key: "address",
+    //   },
     // );
   }
   /**虚拟滚动辅助函数*/
@@ -126,21 +126,7 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
     this.initAssetsOwnerRank();
   }
 
-  async confirmToDestoryAssets() {
-    await this.showConfirmDialog("@@CONFIM_TO_DESTORY_ASSETS", () => {
-      this.destoryAssets();
-    });
-  }
-  async destoryAssets() {
-    const { custom_fee, password, pay_pwd } = await this.getUserPassword({
-      custom_fee: true,
-    });
-
-    return this.assetsService.destoryAssets(
-      this.assets_info,
-      custom_fee,
-      password,
-      pay_pwd
-    );
+  showDestoryAssetsDialog() {
+    this.modalCtrl.create("assets-destory-assets-dialog").present();
   }
 }

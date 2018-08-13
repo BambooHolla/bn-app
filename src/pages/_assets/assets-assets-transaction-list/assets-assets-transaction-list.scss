@@ -2,9 +2,11 @@ page-assets-assets-transaction-list {
 	@extend .header-no-border;
 	.base-info {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
 		position: relative;
+		padding-top: 1.5rem;
+		padding-bottom: 2rem;
 		&::before {
 			content: " ";
 			position: absolute;
@@ -20,18 +22,41 @@ page-assets-assets-transaction-list {
 			pointer-events: none;
 		}
 		.assets-logo-shape-wrapper {
-			margin-top: 1.5rem;
 			width: 9rem;
 			height: 9rem;
 		}
 		.abbreviation {
-			margin-top: 0.5rem;
-			font-size: 1.6rem;
-			font-weight: bolder;
+			padding-top: 1.5rem;
+			font-size: 1.8rem;
+			font-weight: 500;
 		}
 		.balance {
-			margin-top: 2rem;
 			height: 8rem;
+		}
+		.destory-assets{
+			border-radius: 0.5rem;
+			border: 0.55px solid #d6d6d6;
+			color: #d6d6d6;
+			font-size: 1.3rem;
+			line-height: 3.4rem;
+			background-color: transparent;
+		}
+		> .left {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 13rem;
+		}
+		> .right {
+			padding-top: 2rem;
+			padding-bottom: 1rem;
+			padding-right: 2.5rem;
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			justify-content: space-between;
 		}
 	}
 	.transaction-logs {
@@ -49,6 +74,11 @@ page-assets-assets-transaction-list {
 			}
 		}
 		.common-item {
+			width: calc(100% - 4rem);
+			margin-left: 2rem;
+			margin-right: 2rem;
+			padding-left: 0;
+			padding-right: 0;
 			margin-bottom: 0;
 			border-bottom: 0.55px solid #eee;
 			.left {
@@ -63,12 +93,17 @@ page-assets-assets-transaction-list {
 				}
 			}
 			.create-time {
-				color: #b5b5b5;
-				font-size: 1.2rem;
+				// color: #666666;
+				font-size: 1.4rem;
 			}
 			.amount {
-				color: #505050;
+				// color: #505050;
 				font-weight: 500;
+				.unit {
+					font-size: 1.2rem;
+					color: #999999;
+					font-weight: lighter;
+				}
 			}
 		}
 	}

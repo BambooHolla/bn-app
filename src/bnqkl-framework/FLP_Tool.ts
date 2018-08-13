@@ -140,20 +140,20 @@ export class FLP_Tool {
         message,
         buttons: [
           {
-            text: await this.getTranslate("CONFIRM"),
-            cssClass: "ok",
-            handler: () => {
-              if (ok_handle instanceof Function) {
-                return ok_handle();
-              }
-            },
-          },
-          {
             text: await this.getTranslate("CANCEL"),
             cssClass: "cancel",
             handler: () => {
               if (cancel_handle instanceof Function) {
                 return cancel_handle();
+              }
+            },
+          },
+          {
+            text: await this.getTranslate("CONFIRM"),
+            cssClass: "ok",
+            handler: () => {
+              if (ok_handle instanceof Function) {
+                return ok_handle();
               }
             },
           },
