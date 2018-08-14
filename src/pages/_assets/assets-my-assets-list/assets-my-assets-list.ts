@@ -71,6 +71,7 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
   private async _loadMyAssetsList() {
     const { page_info } = this;
     page_info.loading = true;
+    this.markForCheck();
     try {
       const assets_list = await this.assetsService.myAssetsList.getPromise();
       /*异步查询本地的未确认交易，看是否有销毁信息*/

@@ -1,8 +1,18 @@
 <ion-header>
-  <!-- 连接节点 -->
 </ion-header>
 <ion-content>
-  <div class="card-wrapper">
+  <div class="scan-panel" [ngClass]="page_status">
+    <div class="radar-wrapper">
+      <peer-radar-scanning [peer-list]="peer_host_list"></peer-radar-scanning>
+    </div>
+    <div class="info" [hidden]="!peer_list.length">
+      {{'ALREADY_SEARCHED_#NUM#_PEERS' | translate:({num:peer_list.length})}}
+    </div>
+    <div class="info" [hidden]="peer_list.length">
+      {{'SCANING_PEERS' | translate}}
+    </div>
+  </div>
+  <div class="card-wrapper" [ngClass]="page_status">
     <div class="card-title">
       <div class="shield-logo" (click)="toggleCanSelectByMyself()" title="{{'SHEILD' | translate}}"></div>
     </div>

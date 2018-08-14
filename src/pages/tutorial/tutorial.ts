@@ -9,7 +9,7 @@ import {
 } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { MyApp } from "../../app/app.component";
-import { ScanPeersPage } from "../../pages/pages";
+import { ScanLinkPeerPage } from "../../pages/pages";
 
 export interface SlideItem {
   class: string;
@@ -83,7 +83,7 @@ export class TutorialPage extends FirstLevelPage {
 
     if (!sessionStorage.getItem("LINK_PEER")) {
       // 强行进入节点扫描页面
-      return this.myapp._openPage(ScanPeersPage);
+      return this.myapp._openPage(ScanLinkPeerPage);
     }
     this.myapp.openPage(this.myapp.tryInPage, true);
   }

@@ -559,10 +559,6 @@
   "TOTAL_ASSETS": "总权益",
   "CANCEL": "取消",
 
-  "//": "scan-nodes",
-  "ALREADY_SEARCHED_#NUM#_PEERS": "已扫描到{{num}}个节点",
-  "SCANING_PEERS": "正在扫描",
-
   "//": "pwd-input",
   "PAY_PASSPHRASE": "支付密码",
   "PLEASE_INPUT_PAY_PASSPHRASE": "请输入支付密码",
@@ -620,7 +616,7 @@
   "OFFLINE_TRANFER_TIP":
     "当网络没有可用网络时，您依然可以使用IBT进行支付，此时的支付将直接点对点的在双方之间进行。离线支付完成后，需要您将离线权益进行兑现后才能进行使用，在兑现前对方都可以将该离线权益进行删除，从而撤销该笔交易",
   "NO_ASSETS": "未拥有其它数字权益",
-  "LOADING_ASSETS": "数字权益加载中",
+  "LOADING_ASSETS": "载入中",
   "ASSETS_LIST_UPDATE_ERROR": "权益列表更新出错",
   "FREEZED_ACCOUNT_COULD_NOT_TRANFER":
     "您的账户在区块链上发行资产而被冻结，无法进行任何交易",
@@ -769,9 +765,13 @@
   "LINK_PEER_NODE_ERROR": "节点同步失败",
 
   "//": "link-node",
+  "//": "scan-nodes",
+  "//": "scan-link-peer",
   "SHEILD": "盾牌",
   "START_NOW": "立即开始",
   "START_WITH_OFFLINE": "离线模式",
+  "ALREADY_SEARCHED_#NUM#_PEERS": "已扫描到{{num}}个节点",
+  "SCANING_PEERS": "正在扫描",
 
   "//": "assets-issuing-assets",
   "ASSETS-ISSUING-ASSETS": "发行新权益",

@@ -39,7 +39,7 @@ import {
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 import {
   FirstRunPage,
-  ScanPeersPage,
+  ScanLinkPeerPage,
   LoginPage,
   MainPage,
 } from "../pages/pages";
@@ -189,10 +189,10 @@ export class MyApp implements OnInit {
         );
         if (Date.now() - pre_link_time >= 8 * 60 * 60 * 1000) {
           // 上一次检测节点已经超过了8小时，那么进行重新检查
-          await this.openPage(ScanPeersPage);
+          await this.openPage(ScanLinkPeerPage);
           return null;
         }
-        // return ScanPeersPage
+        // return ScanLinkPeerPage
       }
       const user_token = appSetting.getUserToken();
       if (user_token && user_token.password) {
@@ -335,7 +335,7 @@ export class MyApp implements OnInit {
     if (!force) {
       if (
         this.currentPage == FirstRunPage ||
-        this.currentPage == ScanPeersPage
+        this.currentPage == ScanLinkPeerPage
       ) {
         return;
       }
