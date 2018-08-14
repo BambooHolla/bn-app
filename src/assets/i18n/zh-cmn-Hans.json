@@ -544,7 +544,7 @@
   "//": "ISSUE_ASSET",
   "TRAN_TYPE_NAME_14": "发行数字权益",
   "//": "DESTORY_ASSET",
-  "TRAN_TYPE_NAME_15": "销毁数字权益",
+  "TRAN_TYPE_NAME_15": "赎回IBT",
   "//": "TRANSFER_ASSET",
   "TRAN_TYPE_NAME_16": "数字权益转账",
 
@@ -803,12 +803,12 @@
   "//": "assets-assets-transaction-list",
   "ASSETS-ASSETS-TRANSACTION-LIST": "权益交易记录",
   "RECENT_ASSETS_TRANSACTION_LOGS": "最近交易记录",
-  "GENESIS_ACCOUNT_COULD_NOT_DESTORY_ASSETS": "资产接收账户不可销毁资产",
+  "GENESIS_ACCOUNT_COULD_NOT_DESTORY_ASSETS": "权益接收账户不可赎回IBT",
 
   "//": "assets-destory-assets-dialog",
-  "ASSETS-DESTORY-ASSETS-DIALOG": "销毁权益",
-  "PLEASE_INPUT_ASSETS_AMOUNT": "请输入销毁数量",
-  "DESTORY_ASSETS_RANGE_ERROR": "请输入正确的销毁数量额度",
+  "ASSETS-DESTORY-ASSETS-DIALOG": "赎回IBT",
+  "PLEASE_INPUT_ASSETS_AMOUNT": "请输入赎回数量",
+  "DESTORY_ASSETS_RANGE_ERROR": "请输入正确的额度",
   "ASSETS_NOT_FOUND#ABBREVIATION#": "找不到指定数字资产{{abbreviation}}",
 
   "//": "assets-my-assets-list",
@@ -826,8 +826,8 @@
   "INITIAL_FREEZE_NUMBER_OF_ISSUES": "初始冻结数量",
   "NUMBER_OF_ISSUES_OWNER": "持有人数",
   "RANK_OF_ISSUES_OWNER": "持有人数",
-  "DESTROY_ASSETS": "销毁权益",
-  "CONFIM_TO_DESTORY_ASSETS": "确定要销毁权益吗？",
+  "DESTROY_ASSETS": "赎回IBT",
+  "CONFIM_TO_DESTORY_ASSETS": "确定要赎回IBT吗？",
 
   "UPLOAD_LOGO_IMAGE": "上传logo图片",
   "PLEASE_INPUT_ASSETNAME": "权益名称",

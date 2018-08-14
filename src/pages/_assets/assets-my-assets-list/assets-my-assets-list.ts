@@ -51,14 +51,19 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
       this._is_from_child = false;
       return;
     }
-    this.initMyAssetsList();
+    return this.initMyAssetsList();
   }
 
-  @asyncCtrlGenerator.error()
   @asyncCtrlGenerator.loading("@@LOADING_MY_ASSETS_LIST", undefined, {
     cssClass: "can-tap blockchain-loading",
   })
-  async initMyAssetsList() {
+  initMyAssetsList() {
+    return this.updateMyAssetsList();
+  }
+
+  @AssetsMyAssetsListPage.addEventAfterDidEnter("HEIGHT:CHANGED")
+  @asyncCtrlGenerator.error()
+  async updateMyAssetsList() {
     this.my_assets_list = await this._loadMyAssetsList();
   }
 

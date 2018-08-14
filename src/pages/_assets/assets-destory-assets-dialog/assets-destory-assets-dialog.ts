@@ -18,7 +18,7 @@ import { FirstLevelPage } from "../../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import {
 	AssetsServiceProvider,
-	AssetsModel,
+	AssetsModelWithLogoSafeUrl,
 } from "../../../providers/assets-service/assets-service";
 type buttonOptions = {
 	text: string;
@@ -77,7 +77,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 		return res;
 	}
 
-	assets_info!: AssetsModel;
+	assets_info!: AssetsModelWithLogoSafeUrl;
 
 	@AssetsDestoryAssetsDialogPage.willEnter
 	initData() {
@@ -87,6 +87,23 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 			return;
 		}
 		this.getRate();
+	}
+
+	@AssetsDestoryAssetsDialogPage.addEventAfterDidEnter("HEIGHT:CHANGED")
+	async updateAssetsInfo() {
+		const { assets_info } = this;
+		if (!assets_info) {
+			return;
+		}
+		const my_assets_list = await this.assetsService.myAssetsList.getPromise();
+		const new_assets_info = my_assets_list.find(
+			assets => assets.abbreviation === assets_info.abbreviation
+		);
+		if (!new_assets_info) {
+			return;
+		}
+		this.assets_info = new_assets_info;
+		return this.getRate();
 	}
 
 	rate = 1;
@@ -115,7 +132,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 	}
 
 	closeDialog() {
-		this.viewCtrl.dismiss();
+		return this.viewCtrl.dismiss();
 	}
 	tryCloseDialog(event) {
 		if (event.target.classList.contains("scroll-content")) {
@@ -132,6 +149,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 		}
 	}
 
+	@asyncCtrlGenerator.single()
 	@asyncCtrlGenerator.loading()
 	@asyncCtrlGenerator.error()
 	@asyncCtrlGenerator.success()
@@ -139,12 +157,13 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 		const { password, pay_pwd, custom_fee } = await this.getUserPassword({
 			custom_fee: true,
 		});
-		return await this.assetsService.destoryAssets(
+		await this.assetsService.destoryAssets(
 			this.assets_info,
 			this.formData.amount as number,
 			custom_fee,
 			password,
 			pay_pwd
 		);
+		return this.closeDialog();
 	}
 }

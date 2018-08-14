@@ -76,7 +76,19 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 
 		this.initAssetsTransactionList();
 	}
-	
+
+	@AssetsAssetsTransactionListPage.addEventAfterDidEnter("HEIGHT:CHANGED")
+	async updateAssetsInfo() {
+		const { assets_info } = this;
+		if (!assets_info) {
+			return;
+		}
+		const my_assets_list = await this.assetsService.myAssetsList.getPromise();
+		this.assets_info = my_assets_list.find(
+			assets => assets.abbreviation === assets_info.abbreviation
+		);
+	}
+
 	@asyncCtrlGenerator.error("")
 	async showDestoryAssetsDialog() {
 		if (!this.assets_info) {
@@ -102,6 +114,7 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 	}
 
 	/*初始化列表*/
+	@AssetsAssetsTransactionListPage.addEventAfterDidEnter("HEIGHT:CHANGED")
 	@asyncCtrlGenerator.error()
 	async initAssetsTransactionList() {
 		const { page_info } = this;

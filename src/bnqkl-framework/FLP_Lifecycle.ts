@@ -363,7 +363,7 @@ export class FLP_Lifecycle extends FLP_Tool
     };
   }
   static addEventAfterDidEnter(event_name: string) {
-    const after_did_enter = Symbol.for("addEventAfterDidEnter:" + event_name);
+    const after_did_enter = Symbol("addEventAfterDidEnter:" + event_name);
     return function(
       target: any,
       handle_name: string,
