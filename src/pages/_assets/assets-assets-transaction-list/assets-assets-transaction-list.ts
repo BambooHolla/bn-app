@@ -76,8 +76,29 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 
 		this.initAssetsTransactionList();
 	}
-	showDestoryAssetsDialog(){
-		this.modalCtrl.create("assets-destory-assets-dialog").present();
+	
+	@asyncCtrlGenerator.error("")
+	async showDestoryAssetsDialog() {
+		if (!this.assets_info) {
+			return;
+		}
+		if (this.assets_info.genesisAddress === this.userInfo.address) {
+			throw new Error(
+				this.getTranslateSync(
+					"GENESIS_ACCOUNT_COULD_NOT_DESTORY_ASSETS"
+				)
+			);
+		}
+		this.modalCtrl
+			.create(
+				"assets-destory-assets-dialog",
+				{ assets: this.assets_info },
+				{
+					enterAnimation: "custom-dialog-pop-in",
+					leaveAnimation: "custom-dialog-pop-out",
+				}
+			)
+			.present();
 	}
 
 	/*初始化列表*/

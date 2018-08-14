@@ -71,6 +71,12 @@ page-tab-pay {
     display: flex;
     flex-direction: column;
     align-items: center;
+    &.freezed {
+      opacity: 0.8;
+      > * {
+        pointer-events: none;
+      }
+    }
     > .input-container {
       width: 92.6829%; // 76
       margin-top: 1.3rem;

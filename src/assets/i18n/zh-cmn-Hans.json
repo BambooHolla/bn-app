@@ -622,6 +622,8 @@
   "NO_ASSETS": "未拥有其它数字权益",
   "LOADING_ASSETS": "数字权益加载中",
   "ASSETS_LIST_UPDATE_ERROR": "权益列表更新出错",
+  "FREEZED_ACCOUNT_COULD_NOT_TRANFER":
+    "您的账户在区块链上发行资产而被冻结，无法进行任何交易",
 
   "//": "pay-transfer-receipt",
   "TRANSFER": "转账",
@@ -801,11 +803,13 @@
   "//": "assets-assets-transaction-list",
   "ASSETS-ASSETS-TRANSACTION-LIST": "权益交易记录",
   "RECENT_ASSETS_TRANSACTION_LOGS": "最近交易记录",
+  "GENESIS_ACCOUNT_COULD_NOT_DESTORY_ASSETS": "资产接收账户不可销毁资产",
 
-  "//":"assets-destory-assets-dialog",
+  "//": "assets-destory-assets-dialog",
   "ASSETS-DESTORY-ASSETS-DIALOG": "销毁权益",
-  "PLEASE_INPUT_ASSETS_AMOUNT":"请输入销毁数量",
-  "PLEASE_INPUT_ASSETS_AMOUNT":"请输入销毁数量",
+  "PLEASE_INPUT_ASSETS_AMOUNT": "请输入销毁数量",
+  "DESTORY_ASSETS_RANGE_ERROR": "请输入正确的销毁数量额度",
+  "ASSETS_NOT_FOUND#ABBREVIATION#": "找不到指定数字资产{{abbreviation}}",
 
   "//": "assets-my-assets-list",
   "ASSETS-MY-ASSETS-LIST": "数字权益",

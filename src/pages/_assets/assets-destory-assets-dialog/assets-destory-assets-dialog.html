@@ -2,24 +2,37 @@
 <ion-content (click)="tryCloseDialog($event)">
   <div class="dialog-wrapper">
     <div class="dialog-content">
-      <ng-container [ngSwitch]="iconType">
-        <div class="icon warning" *ngSwitchCase="'warning'">
-          <ali-icon name="ifm-dialog-warning"></ali-icon>
-        </div>
-        <div class="icon error" *ngSwitchCase="'error'">
-          <ali-icon name="ifm-dialog-error"></ali-icon>
-        </div>
-        <div class="icon success" *ngSwitchCase="'success'">
-          <ali-icon name="ifm-dialog-success"></ali-icon>
-        </div>
-      </ng-container>
       <div class="content">
-        <div class="title" *ngIf="content_title">{{content_title}}</div>
-        <div class="sub-title" *ngIf="content_subTitle">{{content_subTitle}}</div>
-        <div class="message" *ngIf="content_message">{{content_message}}</div>
+        <div class="title">{{'ASSETS-DESTORY-ASSETS-DIALOG'|translate}}</div>
+        <div class="balance">
+          <ali-icon name="ifm-iconfontyue3eps"></ali-icon>
+          <div class="amount">
+            {{assets_info?.hodingAssets|amountEuler|number:'1.8-8'}}
+          </div>
+          <div class="unit">{{assets_info?.abbreviation}}</div>
+        </div>
+      </div>
+      <div class="common-form">
+        <div class="mat-container amount">
+          <mat-form-field>
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETS_AMOUNT'|translate" type="number" [(ngModel)]="formData.amount" set-input-status="amount" [errorStateMatcher]="matFormMatcherFactory('amount')" [max]="assets_info?.hodingAssets|amountEuler" [min]="0">
+            <span class="abbreviation" matSuffix>{{assets_info?.abbreviation}}</span>
+            <mat-error *ngIf="errors?.amount?.RANGE_ERROR">
+              {{errors.amount.RANGE_ERROR|translate}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="expected-to-be-obtained">
+          <div class="label">{{'EXPECTED_TO_BE_OBTAINED'|translate}}</div>
+          <div class="amount">
+            <ali-icon name="ifm-iconfontyue3eps"></ali-icon>
+            <text-gradient class="amount" [text]="(formData?.amount*rate||0)|number:'1.0-8'" from="#74f5e1" to="#83d8f6" direction="bottom" fontSize="2rem"></text-gradient>
+            <div class="unit">IBT</div>
+          </div>
+        </div>
       </div>
       <div class="buttons" *ngIf="buttons?.length">
-        <button *ngFor="let button of buttons" [ngClass]="button.cssClass" (click)="runButtonHandler(button)">
+        <button mat-button *ngFor="let button of buttons" [ngClass]="button.cssClass" (click)="runButtonHandler(button)">
           {{button.text}}
         </button>
       </div>

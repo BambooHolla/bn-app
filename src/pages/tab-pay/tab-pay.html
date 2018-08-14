@@ -16,7 +16,7 @@
       <ali-icon name="ifm-IBT"></ali-icon>
     </button>
   </div>
-  <div class="transfer">
+  <div class="transfer" [class.freezed]="userInfo.isFreezed" (click)="freezeWarn()">
     <div class="input-container">
       <ali-icon class="left" name="ifm-account-detail"></ali-icon>
       <input [disabled]="userInfo.isFreezed" type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />

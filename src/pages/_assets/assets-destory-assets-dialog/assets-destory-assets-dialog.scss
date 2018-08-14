@@ -1,5 +1,5 @@
 page-assets-destory-assets-dialog {
-  background-color: rgba(0, 0, 0, 0.3);
+  // background-color: rgba(0, 0, 0, 0.3);
   > .content {
     background: none;
     > .scroll-content {
@@ -24,7 +24,7 @@ page-assets-destory-assets-dialog {
   } */
   .dialog-wrapper {
     position: relative;
-    top: -11vh;
+    // top: -11vh;
     > .close-button {
       position: absolute;
       width: 1.9rem;
@@ -45,7 +45,8 @@ page-assets-destory-assets-dialog {
     }
     > .dialog-content {
       width: 76vw;
-      min-height: 12.2rem;
+      // min-height: 12.2rem;
+      height: 88.759vw;
       background-color: #fff;
       border-radius: 0.8rem;
       overflow: hidden;
@@ -54,8 +55,83 @@ page-assets-destory-assets-dialog {
       justify-content: space-between;
       align-items: center;
       padding-top: 1.7rem;
+      background-image: url("../assets/imgs/assets/destory-assets-panel-bg.jpg");
+      background-size: 100% 100%;
 
       > .content {
+        text-align: center;
+        height: 12rem;
+        > .title {
+          color: #fff;
+          font-size: 1.8rem;
+        }
+        > .balance {
+          padding-top: 2rem;
+          display: flex;
+          flex-direction: row;
+          align-items: baseline;
+          color: #fff;
+          ali-icon {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+          }
+          > .amount {
+            font-size: 2.6rem;
+          }
+          > .unit {
+            font-size: 1.1rem;
+            font-weight: lighter;
+            margin-left: 0.5rem;
+          }
+        }
+      }
+      > .common-form {
+        width: 86%;
+        text-align: center;
+        > .mat-container.amount {
+          input/*,
+          .mat-error  */,
+          .mat-form-field-label {
+            text-align: center;
+          }
+          .abbreviation{
+            font-size: 1.2rem;
+          }
+          .abbreviation {
+            color: #bbbbbb;
+          }
+          .mat-form-field-should-float {
+            .mat-form-field-label {
+              /* text-align: left; */
+            }
+          }
+        }
+        > .expected-to-be-obtained {
+          padding-top: 2rem;
+          > .label {
+            font-size: 1.4rem;
+            color: #333;
+          }
+          > .amount {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: baseline;
+            color: #999;
+            ali-icon {
+              font-size: 2rem;
+              margin-right: 0.5rem;
+            }
+            > .amount {
+              font-size: 2.6rem;
+            }
+            > .unit {
+              font-size: 1.1rem;
+              font-weight: lighter;
+              margin-left: 0.5rem;
+            }
+          }
+        }
       }
       > .buttons {
         width: 100%;

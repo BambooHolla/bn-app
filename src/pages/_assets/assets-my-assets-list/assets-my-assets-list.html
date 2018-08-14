@@ -2,7 +2,7 @@
   <ion-navbar color="white">
     <ion-title>{{'ASSETS-MY-ASSETS-LIST'|translate}}</ion-title>
     <ion-buttons end>
-      <button ion-button (click)="routeTo('assets-issuing-assets',{auto_return:true})">
+      <button *ngIf="!userInfo.isFreezed" ion-button (click)="routeTo('assets-issuing-assets',{auto_return:true})">
         <ali-icon name="ifm-zichanjianshe1"></ali-icon>
       </button>
     </ion-buttons>

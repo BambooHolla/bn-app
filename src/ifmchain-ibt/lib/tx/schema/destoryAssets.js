@@ -26,12 +26,8 @@ var destoryAssets = {
       type: "string",
       minLength: 1,
     },
-    asset: {
-      type: "object",
-      format: "destoryAsset",
-    },
   },
-  required: ["secret", "fee", "assetType", "asset"],
+  required: ["secret", "fee", "assetType"],
 };
 
 module.exports = destoryAssets;

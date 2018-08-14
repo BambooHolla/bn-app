@@ -99,6 +99,16 @@ export class TabPayPage extends FirstLevelPage {
     }
   }
 
+  /**账户如果被冻结了，转账操作应该提供警告信息*/
+  @asyncCtrlGenerator.warning("")
+  async freezeWarn() {
+    if (this.userInfo.isFreezed) {
+      throw new Error(
+        this.getTranslateSync("FREEZED_ACCOUNT_COULD_NOT_TRANFER")
+      );
+    }
+  }
+
   @asyncCtrlGenerator.error()
   async receiptOfflineTransaction(tran: TransactionModel) {
     if (tran.recipientId !== this.userInfo.address) {

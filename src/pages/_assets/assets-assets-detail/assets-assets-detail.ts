@@ -127,6 +127,15 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
   }
 
   showDestoryAssetsDialog() {
-    this.modalCtrl.create("assets-destory-assets-dialog").present();
+    this.modalCtrl
+      .create(
+        "assets-destory-assets-dialog",
+        { assets: this.assets_info },
+        {
+          enterAnimation: "custom-dialog-pop-in",
+          leaveAnimation: "custom-dialog-pop-out",
+        }
+      )
+      .present();
   }
 }

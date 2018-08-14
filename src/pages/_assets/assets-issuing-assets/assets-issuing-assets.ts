@@ -44,6 +44,16 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     public domSanitizer: DomSanitizer
   ) {
     super(navCtrl, navParams, true, tabs);
+    this.event.on("job-finished", async ({ id, data }) => {
+      console.log("job-finished", id, data);
+      if (
+        id === "pay-select-my-contacts" ||
+        id === "pay-select-my-local-contacts"
+      ) {
+        this.formData.genesisAddress = data.address;
+        this.markForCheck();
+      }
+    });
   }
   formData: {
     logo: string;
@@ -58,7 +68,6 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     expectedIssuedAssets: undefined,
     // expectedIssuedBlockHeight: undefined,
   };
-
 
   ignore_keys = ["logo"];
   summary_maxlength = 200;
@@ -115,7 +124,6 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     // this.calcRate();
     return res;
   }
-
 
   @AssetsIssuingAssetsPage.markForCheck
   lastBlock: SingleBlockModel = { height: 1, timestamp: 0, id: "" };
