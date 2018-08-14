@@ -11,7 +11,7 @@ import {
 import {
   TransactionModel,
   TransactionTypes,
-  TransactionServiceProvider
+  TransactionServiceProvider,
 } from "../../../providers/transaction-service/transaction-service";
 import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
 import {
@@ -31,7 +31,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
-    public transactionService:TransactionServiceProvider,
+    public transactionService: TransactionServiceProvider,
     public minService: MinServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
@@ -69,20 +69,22 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   async initAndLoadData(block_id?: string) {
     let block: BlockModel | undefined;
     if (!block) {
+      // block_id优先级比较高
       if (typeof block_id === "string") {
         block = await this.blockService.getBlockById(block_id);
       }
     }
     if (!block) {
+      // 内存里头有的直接用内存的
+      block = this.navParams.get("block");
+    }
+    if (!block) {
+      // 是在没有只能根据高度查询了
       const height = this.navParams.get("height");
       if (typeof height === "number") {
         block = await this.blockService.getBlockByHeight(height);
       }
     }
-    if (!block) {
-      block = this.navParams.get("block");
-    }
-
     if (!block) {
       return this.navCtrl.goToRoot({});
     }

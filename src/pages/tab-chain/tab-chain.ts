@@ -77,8 +77,12 @@ export class TabChainPage extends FirstLevelPage {
     return unconfirm_block.height;
   }
 
-  routeToChainBlockDetail(height: number) {
-    this.routeTo("chain-block-detail", { height });
+  routeToChainBlockDetail(height: number, block) {
+    const params: any = { height };
+    if (block && block.height) {
+      params.block = block;
+    }
+    this.routeTo("chain-block-detail", params);
   }
 
   @ViewChild("fixedHeader") fixedHeader!: ElementRef;
