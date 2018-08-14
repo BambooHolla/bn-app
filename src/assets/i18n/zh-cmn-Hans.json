@@ -811,6 +811,14 @@
   "DESTORY_ASSETS_RANGE_ERROR": "请输入正确的额度",
   "ASSETS_NOT_FOUND#ABBREVIATION#": "找不到指定数字资产{{abbreviation}}",
 
+  "//": "assets-guide",
+  "ASSETS-GUIDE": "资产发行说明",
+  "ASSETS_GUIDE_SLIDE_1": "<b>任何地址</b>都可以发行数字资产",
+  "ASSETS_GUIDE_SLIDE_2": "不过需要地址上至少有<b>10万</b>IBT",
+  "ASSETS_GUIDE_SLIDE_3": "发起发行后地址上的<b>所有IBT将被冻结</b>",
+  "ASSETS_GUIDE_SLIDE_4": "冻结的IBT只能由资产持有者<b>销毁资产后赎回</b>",
+  "ASSETS_GUIDE_SLIDE_5": "资产销毁后将<b>使资产总量减少并无法再恢复</b>",
+
   "//": "assets-my-assets-list",
   "ASSETS-MY-ASSETS-LIST": "数字权益",
   "MY_ASSETS_LIST_IS_EMPTY": "未拥有数字权益",

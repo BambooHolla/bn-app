@@ -1,0 +1,76 @@
+page-assets-guide {
+	@extend .header-no-border;
+	&::before {
+		position: absolute;
+		width: 128vh;
+		height: 128vh;
+		top: calc(50vh - 64vh);
+		left: calc(50vw - 64vh);
+		content: " ";
+		background-image: url("../assets/imgs/net-circle-gray.png");
+		background-size: 100% 100%;
+		background-position: center;
+		animation-name: rotate-bg3;
+		animation-timing-function: linear;
+		animation-duration: 280s * 2;
+		animation-iteration-count: infinite;
+		background-color: #fff;
+	}
+	/* 	> .header {
+		.toolbar-ios {
+			.back-button {
+				.button-inner {
+					.back-button-icon {
+						&::before {
+							color: #fff;
+						}
+					}
+				}
+			}
+			.toolbar-title-ios {
+				color: #fff;
+			}
+			.bar-buttons {
+				ali-icon {
+					color: #fff;
+				}
+			}
+		}
+	} */
+	> .content {
+		background: transparent;
+		> .scroll-content {
+			overflow: hidden;
+			margin-top: 0 !important;
+		}
+	}
+	.swiper-container-vertical > .swiper-pagination-bullets {
+		top: 15%;
+		.swiper-pagination-bullet {
+			background: #3ce5d7;
+			opacity: 0.2;
+			&.swiper-pagination-bullet-active {
+				opacity: 1;
+			}
+		}
+	}
+	ion-slide {
+		h1 {
+			color: #666;
+			font-weight: normal;
+			b {
+				color: #83d6f7;
+				font-weight: normal;
+			}
+		}
+	}
+	/* .s-1 {
+		background-color: rgba(123, 4, 51, 0.1);
+	}
+	.s-2 {
+		background-color: rgba(4, 123, 51, 0.1);
+	}
+	.s-3 {
+		background-color: rgba(123, 51, 4, 0.1);
+	} */
+}

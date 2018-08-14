@@ -25,6 +25,7 @@ import {
 @Component({
   selector: "page-assets-my-assets-list",
   templateUrl: "assets-my-assets-list.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AssetsMyAssetsListPage extends SecondLevelPage {
   constructor(
