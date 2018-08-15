@@ -141,7 +141,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 		}, 800);
 	}
 
-/*
+	/*
  *
  *
  */
@@ -158,11 +158,6 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 			| undefined;
 		/*这个界面至少等待3s*/
 		const min_search_time = sleep(3000);
-		min_search_time.then(() => {
-			if (this.selected_peer) {
-				this.linkSelectedNode();
-			}
-		});
 
 		// const peer_searcher = this.navParams.get("peer_searcher"); // 搜索器
 		// const peer_list = this.navParams.get("peer_list"); // 已经搜索到的节点
@@ -288,6 +283,8 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 				}
 			}
 		}
+
+		await min_search_time;
 
 		this.is_scaning_finish = true;
 		// 已经搜索完了

@@ -138,7 +138,7 @@
   "GET_LATEST_APP_VERSION_INFO_ERROR": "获取最新版本应用信息失败",
   "WELCOME_TO_DOWNLOAD_IBT_APP": "欢迎下载IBT应用",
   "SHARE_APP_TIP":
-    "这里将把IBT手机端的下载链接分享到其它社交平台，您的好友可以通过您分享的链接下载并安装IBT。您可以点击“更多”分享到更多的社交平台",
+    "这里将把IBT的下载链接分享到其它社交平台，您的好友可以通过您分享的链接下载并安装IBT。您可以点击“更多”分享到更多的社交平台",
   "SHOW_INCOME_IBT_NOTICE_TIP": "您是否需要在每次收到IBT时通知？",
   "AFTER_SHOW_INCOME_IBT_NOTICE_TIP":
     "本通知为本机节点根据IFMChain网络数据生成的通知，如果您关闭了IBT节点将无法接收通知，请知悉。",

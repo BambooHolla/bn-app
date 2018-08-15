@@ -17,14 +17,14 @@
     </button>
   </div>
   <div class="transfer" [class.freezed]="userInfo.isFreezed" (click)="freezeWarn()">
-    <div class="input-container">
+    <div class="input-container address">
       <ali-icon class="left" name="ifm-account-detail"></ali-icon>
       <input [disabled]="userInfo.isFreezed" type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />
       <button [disabled]="userInfo.isFreezed" class="right" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
     </div>
-    <div class="input-container">
+    <div class="input-container amount">
       <ali-icon class="left" name="ifm-amount"></ali-icon>
       <input [disabled]="userInfo.isFreezed" type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" [watch-input-keys]="['transfer_fee']" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
     </div>
@@ -32,7 +32,7 @@
       <ali-icon class="left" name="ifm-duihua"></ali-icon>
       <input type="text" [(ngModel)]="formData.transfer_mark" set-input-status="transfer_mark" placeholder="{{'PLEASE_MARK_THE_TRANSACTION' | translate}}" disabled />
     </div> -->
-    <div class="input-container" (click)="toggleAssetsSelectPanel()">
+    <div class="input-container assets" (click)="toggleAssetsSelectPanel()">
       <div class="assets-item selected-assets" [class.open-panel]="is_assets_select_panel_open" [class.loading]="assets_page_info.loading">
         <div class="left">
           <div class="assets-logo-shape-wrapper">

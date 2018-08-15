@@ -100,6 +100,7 @@ export class FLP_Data extends FLP_MatForm {
                 } else {
                   ani_val = v;
                 }
+                this.detectChanges();
                 ti_aborter = abort;
               },
               () => {

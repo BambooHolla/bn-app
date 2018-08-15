@@ -78,11 +78,15 @@ page-tab-pay {
       }
     }
     > .input-container {
-      width: 92.6829%; // 76
+      // width: 92.6829%; // 76
+      width: 95%;
+      padding-left: 1.5%;
+      padding-right: 1%;
       margin-top: 1.3rem;
       position: relative;
       display: flex;
       align-items: center;
+      border-bottom: 0.55px solid rgba(#fff, 0.2);
       .left,
       .right {
         /* position: absolute; */
@@ -119,9 +123,13 @@ page-tab-pay {
         color: #fff;
         padding: 1rem 0.5rem 0.8rem 1rem;
         /* text-indent: 1.8rem; */
-        border-bottom: 0.55px solid rgba(#fff, 0.2);
         &::-webkit-input-placeholder {
           color: rgba(#fff, 0.6);
+        }
+      }
+      &.address {
+        > .right {
+          margin-right: 0;
         }
       }
     }
@@ -396,6 +404,9 @@ page-tab-pay {
       }
     }
     > .left {
+      // margin-left: 0;
+      position: relative;
+      left: -0.6rem;
       /* padding-left: 1.2rem; */
     }
     .panel-arrow {
