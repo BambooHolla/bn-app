@@ -100,7 +100,7 @@
       <ali-icon class="left" name="ifm-info"></ali-icon>
       <span class="value">{{formData.transfer_fee|number:'1.8-8'}}</span>
       <span class="unit">IBT</span>
-      <!-- <div class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div> -->
+      <div *ngIf="selected_assets!=ibt_assets" class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div>
     </div>
     <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()" (un-submit)="helpSubmit($event)">{{'SUBMIT_TRANSFER' | translate}}</button>
   </div>

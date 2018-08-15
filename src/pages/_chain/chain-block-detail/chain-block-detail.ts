@@ -13,6 +13,7 @@ import {
   TransactionTypes,
   TransactionServiceProvider,
 } from "../../../providers/transaction-service/transaction-service";
+import { LocalContactProvider } from "../../../providers/local-contact/local-contact";
 import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
 import {
   MinServiceProvider,
@@ -32,7 +33,8 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
     public transactionService: TransactionServiceProvider,
-    public minService: MinServiceProvider
+    public minService: MinServiceProvider,
+    public localContact: LocalContactProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -154,7 +156,9 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       );
       tran_list_config.has_more =
         transaction_list.length === tran_list_config.pageSize;
-      return transaction_list;
+      return this.localContact.formatTransactionWithLoclContactNickname(
+        transaction_list
+      );
     } finally {
       tran_list_config.loading = false;
     }

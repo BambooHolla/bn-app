@@ -19,7 +19,7 @@
     <div class="left">
       <div class="from-to">
         <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-        <ng-container *ngIf="transactionService.isTranferType(tran.type)">
+        <ng-container *ngIf="transactionService.isShowAmountType(tran.type)">
           <ali-icon name="ifm-chain-right-arrow"></ali-icon>
           <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
         </ng-container>
@@ -32,7 +32,7 @@
       <div class="tran-type">
         {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
       </div>
-      <div class="amount" *ngIf="transactionService.isTranferType(tran.type);else confirmed_showFeeOnly">
+      <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else confirmed_showFeeOnly">
         {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
         <span class="unit">{{tran?.assetType||'IBT'}}</span>
       </div>
@@ -61,7 +61,7 @@
     <div class="left">
       <div class="from-to">
         <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-        <ng-container *ngIf="transactionService.isTranferType(tran.type)">
+        <ng-container *ngIf="transactionService.isShowAmountType(tran.type)">
           <ali-icon name="ifm-chain-right-arrow"></ali-icon>
           <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
         </ng-container>
@@ -75,7 +75,7 @@
       <div class="tran-type">
         {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
       </div>
-      <div class="amount" *ngIf="transactionService.isTranferType(tran.type);else unconfirmed_showFeeOnly">
+      <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else unconfirmed_showFeeOnly">
         {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
         <span class="unit">{{tran?.assetType||'IBT'}}</span>
       </div>

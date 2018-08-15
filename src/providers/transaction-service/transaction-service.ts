@@ -135,6 +135,13 @@ export class TransactionServiceProvider {
     );
   }
 
+  /**是否是转账交易*/
+  isShowAmountType(type: TYPE.TransactionTypes) {
+    return (
+      this.isTranferType(type) || type === TYPE.TransactionTypes.DESTORY_ASSET
+    );
+  }
+
   /**
    * 根据交易ID获取交易信息
    * @param {string} id
@@ -354,7 +361,7 @@ export class TransactionServiceProvider {
     page = 1,
     pageSize = 10,
     in_or_out?: "in" | "out" | "or",
-    type?: TYPE.TransactionTypes
+    type?: TYPE.TransactionTypes | "all"
   ) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
@@ -389,7 +396,7 @@ export class TransactionServiceProvider {
     offset: number,
     limit: number,
     in_or_out?: "in" | "out" | "or",
-    type?: TYPE.TransactionTypes | TYPE.TransactionTypes[],
+    type?: TYPE.TransactionTypes | TYPE.TransactionTypes[] | "all",
     extend_query: any = {}
   ) {
     let type_query_condition: any = {
@@ -397,6 +404,8 @@ export class TransactionServiceProvider {
     };
     if (type instanceof Array) {
       type_query_condition.$in = type;
+    } else if (type === "all") {
+      type_query_condition = undefined;
     } else if (typeof type !== "undefined") {
       type_query_condition = type;
     }

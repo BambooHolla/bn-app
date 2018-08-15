@@ -55,9 +55,9 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
     return this.initMyAssetsList();
   }
 
-  @asyncCtrlGenerator.loading("@@LOADING_MY_ASSETS_LIST", undefined, {
-    cssClass: "can-tap blockchain-loading",
-  })
+  // @asyncCtrlGenerator.loading("@@LOADING_MY_ASSETS_LIST", undefined, {
+  //   cssClass: "can-tap blockchain-loading",
+  // })
   initMyAssetsList() {
     return this.updateMyAssetsList();
   }
