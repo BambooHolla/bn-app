@@ -320,7 +320,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
   }
 
   syncInBackground() {
-    // this.finishJob(true, 10);
+    this.finishJob(true, 10);
   }
 
   listTrackBy(index) {
