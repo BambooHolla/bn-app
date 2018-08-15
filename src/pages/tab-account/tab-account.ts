@@ -60,6 +60,7 @@ export class TabAccountPage extends FirstLevelPage {
   // }
   @TabAccountPage.didEnter
   async isShowMiningIncomeNotice() {
+    /// 开启收益提醒
     if (!this.appSetting.settings._is_first_balance_grow_up_notice) {
       this.appSetting.settings._is_first_balance_grow_up_notice = true;
       let res = await this.waitTipDialogConfirm(
@@ -79,6 +80,30 @@ export class TabAccountPage extends FirstLevelPage {
         );
       }
       this.appSetting.settings.mining_income_notice = res;
+    }
+    /// 开启余额过多必须设置支付密码的提醒
+    if (
+      !this.userInfo.hasSecondPwd &&
+      !sessionStorage.getItem(
+        "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP"
+      ) &&
+      parseFloat(this.userInfo.balance) / 1e8 >= 10
+    ) {
+      sessionStorage.setItem(
+        "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP",
+        "true"
+      );
+      if (
+        await this.waitTipDialogConfirm(
+          "@@TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP",
+          {
+            true_text: "@@SET_NOW",
+            false_text: "@@NOT_SET",
+          }
+        )
+      ) {
+        return this.routeTo("settings-set-pay-pwd", { auto_return: true });
+      }
     }
   }
 

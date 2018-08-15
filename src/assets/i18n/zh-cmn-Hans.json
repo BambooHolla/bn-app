@@ -144,6 +144,10 @@
   "AFTER_SHOW_INCOME_IBT_NOTICE_TIP":
     "本通知为本机节点根据IFMChain网络数据生成的通知，如果您关闭了IBT节点将无法接收通知，请知悉。",
   "NO_NOTICE_ME": "不通知",
+  "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP":
+    "为了进一步保护您的资产安全，请进一步设置支付密码，支付密码将在您的主密码被盗后保护您的资产不被转走",
+  "NOT_SET": "不设置",
+  "SET_NOW": "立即设置",
 
   "//": "share-app-panel",
   "SHARE_TO": "分享到",
