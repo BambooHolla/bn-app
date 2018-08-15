@@ -95,12 +95,16 @@ export class FLP_Data extends FLP_MatForm {
               opts.easing
             )(
               (v, abort) => {
+                const new_val = opts.floor ? Math.floor(v) : v;
                 if (opts.floor) {
                   ani_val = Math.floor(v);
                 } else {
                   ani_val = v;
                 }
-                this.detectChanges();
+                if (ani_val !== new_val) {
+                  ani_val = new_val;
+                  this.detectChanges();
+                }
                 ti_aborter = abort;
               },
               () => {
@@ -128,7 +132,7 @@ export class FLP_Data extends FLP_MatForm {
       } else {
         this.timeago_clock = 0.000001;
       }
-      this.markForCheck();
+      this.detectChanges();
       setTimeout(this.refreshShowList.bind(this), 1000);
     }
   }

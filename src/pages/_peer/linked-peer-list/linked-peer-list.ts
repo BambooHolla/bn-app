@@ -7,7 +7,12 @@ import {
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  ViewController,
+} from "ionic-angular";
 import {
   PeerServiceProvider,
   LocalPeerModel,
@@ -28,6 +33,7 @@ export class LinkedPeerListPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public peerService: PeerServiceProvider,
     public blockService: BlockServiceProvider,
+    public viewCtrl: ViewController,
     public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
@@ -50,5 +56,9 @@ export class LinkedPeerListPage extends SecondLevelPage {
         }
       }, 1000);
     }
+  }
+
+  closeModal() {
+    this.viewCtrl.dismiss();
   }
 }

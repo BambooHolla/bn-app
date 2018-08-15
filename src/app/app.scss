@@ -152,6 +152,9 @@ ion-navbar.toolbar-ios {
     button {
       background-color: transparent;
       border: none;
+      .button-inner{
+        color: #7a7a7a;
+      }
     }
     ali-icon {
       color: #7a7a7a;

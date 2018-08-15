@@ -268,7 +268,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
           get: () => this[private_k],
           set: v => {
             this[private_k] = v;
-            this.cdRef.markForCheck();
+            this.markForCheck();
 
             // 如果进度倒退了，就快速显示成小的进度，避免出现倒退的问题
             const old_progress = ps.progress;
@@ -289,7 +289,7 @@ export class ChainSyncDetailPage extends SecondLevelPage {
           get: () => this[private_enable_k],
           set: v => {
             this[private_enable_k] = v;
-            this.cdRef.markForCheck();
+            this.markForCheck();
 
             ps.setDisabled(!v);
           },
@@ -297,8 +297,13 @@ export class ChainSyncDetailPage extends SecondLevelPage {
       }
     });
   }
+  private _inited_bind = false;
   @ChainSyncDetailPage.didEnter
   async bindSyncProgress() {
+    if (this._inited_bind) {
+      return;
+    }
+    this._inited_bind = true;
     const ani_init = i => {
       return new Promise(resolve => {
         this.syncProgressSpinner!.getPS(i).setProgress(0, 500, resolve);
@@ -320,5 +325,9 @@ export class ChainSyncDetailPage extends SecondLevelPage {
 
   listTrackBy(index) {
     return index;
+  }
+
+  openLinkedPeerList(){
+    this.modalCtrl.create('linked-peer-list').present();
   }
 }
