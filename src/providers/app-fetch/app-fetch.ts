@@ -19,17 +19,25 @@ import { getSocketIOInstance, baseConfig } from "../../bnqkl-framework/helper";
 import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
 
 export class ServerResError extends Error {
-  static translateAndParseErrorMessage(message, code?, details?) {
-    const err_translated_msg = (window[
-      "translate"
-    ] as TranslateService).instant(message);
-    return ServerResError.parseErrorMessage(code, message, details);
+  static translateAndParseErrorMessage(
+    message?: string,
+    code?: string,
+    details?
+  ) {
+    const err_translated_msg = message
+      ? (window["translate"] as TranslateService).instant(message)
+      : "";
+    return ServerResError.parseErrorMessage(code, err_translated_msg, details);
   }
-  static getI18nError(message, code?, details?) {
-    const err_translated_msg = (window[
-      "translate"
-    ] as TranslateService).instant(message);
-    const err = ServerResError.parseErrorMessage(code, message, details);
+  static getI18nError(message?: string, code?: string, details?) {
+    const err_translated_msg = message
+      ? (window["translate"] as TranslateService).instant(message)
+      : "";
+    const err = ServerResError.parseErrorMessage(
+      code,
+      err_translated_msg,
+      details
+    );
     return this.removeErrorCurrentStackLine(err);
   }
   static removeErrorCurrentStackLine(err: Error) {
@@ -41,34 +49,39 @@ export class ServerResError extends Error {
     message: string,
     details?
   ) {
-    const CODE_LIST = code ? [code + ""] : [];
-    var MESSAGE = message;
-    while (MESSAGE.indexOf("500 - ") === 0) {
-      const rest_msg = MESSAGE.substr(6);
-      try {
-        const rest_err = JSON.parse(rest_msg);
-        if (rest_err.error) {
-          CODE_LIST.push(rest_err.error.code);
-          MESSAGE = rest_err.error.message;
-        } else {
-          break;
-        }
-      } catch (err) {}
-    }
-    const err = new ServerResError(CODE_LIST, MESSAGE, details);
+    const err = new ServerResError(code || "", message, details);
     return this.removeErrorCurrentStackLine(err);
   }
-  constructor(code_list: string[], message: string, public details?: any) {
-    super(code_list.map(c => `<small>${c}</small>`).join("") + message);
+  constructor(code: string, message: string, public details?: any) {
+    super(
+      (() => {
+        if (!message) {
+          const CODE = code.slice(code.lastIndexOf("_") + 1);
+          message = (window["translate"] as TranslateService).instant(
+            `C_${CODE}`
+          );
+        }
+        return message;
+      })()
+    );
+
+    const code_info = code.split("_");
+    this.PLATFORM = code_info[0];
+    this.CHANNEL = code_info[1];
+    this.BUSINESS = code_info[2];
+    this.MODULE = code_info[3];
+    this.FILE = code_info[4];
+    this.CODE = code_info[5];
     this.MESSAGE = String(message);
-    this.CODE_LIST = code_list;
-    this.stack += "\t\n" + code_list.join("\t\n");
+    // this.stack += "\t\n" + code_list.join("\t\n");
   }
-  CODE_LIST: string[];
-  get CODE(): string {
-    return this.CODE_LIST[0] || "";
-  }
-  MESSAGE: string;
+  PLATFORM = "";
+  CHANNEL = "";
+  BUSINESS = "";
+  MODULE = "";
+  FILE = "";
+  CODE = "";
+  MESSAGE = "";
 }
 export type CommonResponseData<T> = {
   error?: {

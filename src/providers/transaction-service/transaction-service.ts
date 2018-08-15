@@ -178,9 +178,6 @@ export class TransactionServiceProvider {
   }
 
   async createTransaction(txData) {
-    if (parseInt(this.user.userInfo.balance) <= 0) {
-      throw this.fetch.ServerResError.getI18nError("not enough balance");
-    }
     if (
       txData.secondSecret &&
       txData.type !== this.TransactionTypes.SIGNATURE

@@ -507,8 +507,8 @@ export function translateMessage(message: any, arg?: any, self?: FLP_Tool) {
   }
   return Promise.resolve(message).then(message => {
     message = "" + message;
-    if (typeof message === "string" && message.startsWith("@@")) {
-      const i18n_key = message.substr(2);
+    if (typeof message === "string") {
+      const i18n_key = message.startsWith("@@") ? message.substr(2) : message;
       message = () => (self || FLP_Tool).getTranslate(i18n_key);
     }
     if (message instanceof Function) {

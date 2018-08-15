@@ -79,14 +79,13 @@ export class TabPayPage extends FirstLevelPage {
   formData = {
     transfer_address: "",
     transfer_amount: 0,
-    transfer_mark: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+  // ignore_keys = ["transfer_amount"];
   /*用于错误提示输入*/
   formDataKeyI18nMap = {
     transfer_address: "@@TRANSFER_ADDRESS",
     transfer_amount: "@@TRANSFER_AMOUNT",
-    transfer_mark: "@@TRANSFER_MARK",
     transfer_fee: "@@TRANSFER_FEE",
   };
   /*尝试设置交易手续费*/
@@ -189,9 +188,10 @@ export class TabPayPage extends FirstLevelPage {
       return { wrongAddress: "@@TRANSFER_ADDRESS_IS_MALFORMED" };
     }
   }
-  ignore_keys = ["transfer_mark"];
 
-  private _check_total_amount(user_balance: number) {
+  private _check_total_amount(
+    user_balance = parseFloat(this.selected_assets.hodingAssets) / 1e8
+  ) {
     if (user_balance === 0) {
       return {
         NoBalance: "@@USER_HAS_NO_BALANCE",
@@ -212,14 +212,13 @@ export class TabPayPage extends FirstLevelPage {
   ])
   check_transfer_amount() {
     const { transfer_amount, transfer_fee } = this.formData;
-    const user_balance = parseFloat(this.selected_assets.hodingAssets) / 1e8;
 
     if (transfer_amount < 0.00000001) {
       return {
         ErrorRange: "@@TOO_LITTLE_TRANSFER_AMOUNT",
       };
     }
-    return this._check_total_amount(user_balance);
+    // return this._check_total_amount(user_balance);
   }
   @TabPayPage.setErrorTo("errors", "transfer_fee", [
     "NoBalance",
@@ -228,7 +227,6 @@ export class TabPayPage extends FirstLevelPage {
   ])
   check_transfer_fee() {
     const { transfer_amount, transfer_fee } = this.formData;
-    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
 
     if (transfer_fee < 0.00000001) {
       return {
@@ -248,6 +246,26 @@ export class TabPayPage extends FirstLevelPage {
         return;
       }
       this.appSetting.settings._is_show_first_transfer_tip = true;
+    }
+    if (this._check_total_amount()) {
+      if (
+        !(await this.waitTipDialogConfirm(
+          "@@NOT_ENOUGH_BALANCE_TO_TRANGER_TIP",
+          {
+            true_text: "@@CONTINUE",
+            false_text: "@@CANCEL",
+          }
+        ))
+      ) {
+        return;
+      } else if (
+        !(await this.waitTipDialogConfirm("@@TRANSFER_WILL_BA_ABANDON_TIP", {
+          true_text: "@@CONTINUE",
+          false_text: "@@CANCEL",
+        }))
+      ) {
+        return;
+      }
     }
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
@@ -276,11 +294,7 @@ export class TabPayPage extends FirstLevelPage {
         this.appSetting.settings._is_first_show_offline_pay = true;
       }
       // 离线凭证
-      const {
-        transfer_address,
-        transfer_amount,
-        transfer_mark,
-      } = this.formData;
+      const { transfer_address, transfer_amount } = this.formData;
       const txData = this.transactionService.createTxData(
         transfer_address.trim(),
         transfer_amount,
@@ -347,7 +361,7 @@ export class TabPayPage extends FirstLevelPage {
     TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS")
   )
   _submit(password: string, pay_pwd?: string, custom_fee?: number) {
-    const { transfer_address, transfer_amount, transfer_mark } = this.formData;
+    const { transfer_address, transfer_amount } = this.formData;
     return this.transactionService.transfer(
       transfer_address,
       transfer_amount,

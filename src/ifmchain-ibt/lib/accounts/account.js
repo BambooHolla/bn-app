@@ -52,9 +52,7 @@ var Account = function() {
         }
         var secret = body.secret;
         if (!Mnemonic.isValid(secret.toString())) {
-          return cb({
-            message: "Invalid secret",
-          });
+          return cb(new Error("Invalid secret"));
         }
         //验证密码信息（根据登录密码生成 keypair）
         var hash = crypto

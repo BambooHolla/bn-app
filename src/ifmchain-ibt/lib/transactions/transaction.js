@@ -35,9 +35,7 @@ function createTransaction(body, cb) {
 
     if (body.publicKey) {
       if (keypair.publicKey.toString("hex") != body.publicKey) {
-        return cb({
-          message: "Invalid passphrase",
-        });
+        return cb(new Error("Invalid passphrase"));
       }
     }
 
@@ -136,16 +134,14 @@ function createTransaction(body, cb) {
 function formatSecondSecret(publicKey, secondSecret) {
   var reg = /^[^\s]+$/;
   if (!reg.test(secondSecret)) {
-    return cb({
-      message: "The Second Passphrase cannot contain spances",
-    });
+    return cb(new Error("The Second Passphrase cannot contain spances"));
   }
 
   var pattern = /^[^\u4e00-\u9fa5]+$/;
   if (!pattern.test(secondSecret)) {
-    return cb({
-      message: "The Second Passphrase cannot contain Chinese characters",
-    });
+    return cb(
+      new Error("The Second Passphrase cannot contain Chinese characters")
+    );
   }
 
   var md5pass =
