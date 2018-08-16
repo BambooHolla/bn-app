@@ -404,12 +404,13 @@ page-tab-vote {
     > ali-icon {
       font-size: 2.6rem;
       margin: 0 0.8rem 0.8rem 0.8rem;
-      > .ifmicon::before {
-        -webkit-background-clip: text;
-        color: transparent;
-        -webkit-text-fill-color: transparent;
-        background-image: linear-gradient(to bottom, #fccf51 0%, #fbb460 100%);
-      }
+      color: #fcc54b;
+      // > .ifmicon::before {
+      //   -webkit-background-clip: text;
+      //   color: transparent;
+      //   -webkit-text-fill-color: transparent;
+      //   background-image: linear-gradient(to bottom, #fccf51 0%, #fbb460 100%);
+      // }
     }
     > span {
       color: #fcc54b;
