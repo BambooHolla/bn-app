@@ -21,6 +21,7 @@ import { MyApp } from "../../app/app.component";
 // } from "./sign-in-and-sign-up.animations";
 import { MainPage } from "../pages";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import { SocialSharing } from "@ionic-native/social-sharing";
 
 // @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -39,6 +40,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     public blockService: BlockServiceProvider,
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer,
+    public socialSharing: SocialSharing,
     public peerService: PeerServiceProvider
   ) {
     super(navCtrl, navParams);
@@ -162,7 +164,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
           duration: 2000,
         })
         .present();
-      return;
+      return this.socialSharing.share(this.pwd_by_register, undefined);
     }
     const result = await this.loginService.doLogin(
       this.formData.pwd.trim(),
@@ -198,9 +200,10 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     }
     let passphrase = this.loginService.generateNewPassphrase(params);
     this.gotoLogin();
-    this.formData.pwd = passphrase;
+    // 不自动填充。放入到剪切板中
+    // this.formData.pwd = passphrase;
+    // this.show_pwd = true;
     this.pwd_by_register = passphrase;
-    this.show_pwd = true;
 
     this.platform.raf(() => {
       this.autoReHeightPWDTextArea(true);
