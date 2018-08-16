@@ -155,16 +155,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
         false_text: "@@ALREADY_SAVED",
       }))
     ) {
-      await this.navigatorClipboard.writeText(this.formData.pwd);
-      this.toastCtrl
-        .create({
-          message: this.getTranslateSync(
-            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"
-          ),
-          duration: 2000,
-        })
-        .present();
-      return;
+      return await this.copyAndShare();
     }
     const result = await this.loginService.doLogin(
       this.formData.pwd.trim(),
@@ -214,16 +205,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
         false_text: "@@CANCEL_COPY",
       })
     ) {
-      await this.navigatorClipboard.writeText(this.formData.pwd);
-      this.toastCtrl
-        .create({
-          message: this.getTranslateSync(
-            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"
-          ),
-          duration: 2000,
-        })
-        .present();
-      return this.socialSharing.share(this.pwd_by_register, undefined);
+      return await this.copyAndShare();
     }
   }
 
@@ -234,5 +216,18 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       this.is_agree_user_agreement = data;
     });
     model.present();
+  }
+
+  async copyAndShare() {
+    await this.navigatorClipboard.writeText(this.pwd_by_register);
+    this.toastCtrl
+      .create({
+        message: this.getTranslateSync(
+          "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"
+        ),
+        duration: 2000,
+      })
+      .present();
+    return this.socialSharing.share(this.pwd_by_register);
   }
 }
