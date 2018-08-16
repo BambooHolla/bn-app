@@ -91,6 +91,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       return this.navCtrl.goToRoot({});
     }
     if (this.block_info == block) {
+      this.updateTranLogs();
       return;
     }
     if (block) {
@@ -124,6 +125,13 @@ export class ChainBlockDetailPage extends SecondLevelPage {
         this.block_info.generatorPublicKey
       );
     }
+  }
+
+  // 更新已经有的交易列表
+  async updateTranLogs() {
+    this.tran_list = await this.localContact.formatTransactionWithLoclContactNickname(
+      this.tran_list
+    );
   }
 
   @asyncCtrlGenerator.error(() =>
