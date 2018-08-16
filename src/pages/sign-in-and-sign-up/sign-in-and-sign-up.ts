@@ -164,7 +164,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
           duration: 2000,
         })
         .present();
-      return this.socialSharing.share(this.pwd_by_register, undefined);
+      return;
     }
     const result = await this.loginService.doLogin(
       this.formData.pwd.trim(),
@@ -223,6 +223,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
           duration: 2000,
         })
         .present();
+      return this.socialSharing.share(this.pwd_by_register, undefined);
     }
   }
 
