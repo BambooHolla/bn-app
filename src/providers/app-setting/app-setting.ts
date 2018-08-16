@@ -323,6 +323,11 @@ export class AppSettingProvider extends CommonService {
   }
   setUserToken(obj: any) {
     if (typeof obj !== "string") {
+      const old_token = this.getUserToken();
+      if (old_token && old_token.address === obj.address) {
+        obj.remember = old_token.remember;
+        obj.password = old_token.password;
+      }
       this.user.initUserInfo(obj);
       obj = JSON.stringify(obj);
     } else {

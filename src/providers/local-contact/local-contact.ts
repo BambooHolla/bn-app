@@ -107,11 +107,14 @@ export class LocalContactProvider extends EventEmitter {
           sender_finder_task,
           recipient_finder_task,
         ]);
-        return {
+        const res: any = {
           ...trs,
           senderNickname: contact_sender && contact_sender.nickname,
           recipientNickname: contact_recipient && contact_recipient.nickname,
         };
+        res.senderName = res.senderNickname || res.senderUsername;
+        res.recipientName = res.recipientNickname || res.recipientUsername;
+        return res;
       })
     );
   }

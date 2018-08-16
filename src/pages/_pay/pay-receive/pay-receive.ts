@@ -19,6 +19,7 @@ import {
   TransactionTypes,
   TransactionModel,
 } from "../../../providers/transaction-service/transaction-service";
+import { LocalContactProvider } from "../../../providers/local-contact/local-contact";
 
 @IonicPage({ name: "pay-receive" })
 @Component({
@@ -31,7 +32,8 @@ export class PayReceivePage extends SecondLevelPage {
     public navParams: NavParams,
     public transactionService: TransactionServiceProvider,
     @Optional() public tabs: TabsPage,
-    public cdRef: ChangeDetectorRef
+    public cdRef: ChangeDetectorRef,
+    public localContact: LocalContactProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -79,7 +81,7 @@ export class PayReceivePage extends SecondLevelPage {
         "in"
       );
       receive_config.has_more = list.length >= receive_config.pageSize;
-      return list;
+      return this.localContact.formatTransactionWithLoclContactNickname(list);
     } finally {
       receive_config.loading = false;
     }

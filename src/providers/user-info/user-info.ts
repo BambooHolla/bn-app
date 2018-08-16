@@ -56,17 +56,17 @@ export class UserInfoProvider extends EventEmitter {
     }
     this._userInfo = userInfo;
     this._accountType = userInfo.accountType || 0;
-    if (this._address !== userInfo.address) {
-      this._password = "";
-    }
+    // if (this._address !== userInfo.address) {
+    //   this._password = "";
+    // }
     this._address = userInfo.address;
     this._balance = userInfo.balance;
     this._secondPublicKey = userInfo.secondPublicKey;
     this._publicKey = userInfo.publicKey;
     this._username = userInfo.username;
-    if ("remember" in userInfo) {
-      this._password = userInfo.remember ? userInfo.password : "";
-    }
+    // if ("password" in userInfo) {
+    this._password = userInfo.remember ? userInfo.password : "";
+    // }
     this.emit("changed");
   }
 }

@@ -136,10 +136,10 @@
         </div>
         <div class="right">
           <div class="from-to">
-            <div class="sender" [innerHTML]="(tran.senderNickname||tran.senderUsername)?(tran.senderNickname||tran.senderUsername):(tran.senderId|mask:'@address')"></div>
+            <div class="sender" [innerHTML]="(tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address')"></div>
             <ng-container *ngIf="transactionService.isShowAmountType(tran.type)">
               <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-              <div class="recipient" [innerHTML]="(tran.recipientNickname||tran.recipientUsername)?(tran.recipientNickname||tran.recipientUsername):(tran.recipientId|mask:'@address')"></div>
+              <div class="recipient" [innerHTML]="(tran.recipientName)?(tran.recipientName):(tran.recipientId|mask:'@address')"></div>
             </ng-container>
           </div>
           <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else showFeeOnly">
