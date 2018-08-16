@@ -220,14 +220,10 @@ export class SignInAndSignUpPage extends FirstLevelPage {
 
   async copyAndShare() {
     await this.navigatorClipboard.writeText(this.pwd_by_register);
-    this.toastCtrl
-      .create({
-        message: this.getTranslateSync(
-          "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"
-        ),
-        duration: 2000,
-      })
-      .present();
+    await this.showToast(
+      this.getTranslateSync("YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"),
+      2000
+    );
     return this.socialSharing.share(this.pwd_by_register);
   }
 }

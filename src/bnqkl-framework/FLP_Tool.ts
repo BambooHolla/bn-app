@@ -24,6 +24,7 @@ import {
 } from "./helper";
 export { is_dev, tryRegisterGlobal, global };
 import { getErrorFromAsyncerror, isErrorFromAsyncerror } from "./const";
+import { Toast } from "@ionic-native/toast";
 
 export class FLP_Tool {
   constructor() {}
@@ -32,6 +33,7 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
   @FLP_Tool.FromGlobal loadingCtrl!: LoadingController;
   @FLP_Tool.FromGlobal toastCtrl!: ToastController;
+  @FLP_Tool.FromGlobal toast!: Toast;
   @FLP_Tool.FromGlobal modalCtrl!: ModalController;
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
@@ -40,6 +42,35 @@ export class FLP_Tool {
   static formatAndTranslateMessage = formatAndTranslateMessage;
   translateMessage = translateMessage;
   static translateMessage = translateMessage;
+
+  showToast(msg: string, duration: number, position = "bottom") {
+    if ("plugins" in window && "toast" in window["plugins"]) {
+      const toast = window["toast"] as Toast;
+      Promise.resolve(msg).then(message => {
+        toast.show(String(message), duration + "", position).toPromise();
+      });
+    } else {
+      const toastCtrl: ToastController = this.toastCtrl;
+      if (!(toastCtrl instanceof ToastController)) {
+        console.warn(
+          "需要在",
+          this.constructor.name,
+          "中注入 ToastController 依赖"
+        );
+        alert(String(msg));
+      } else {
+        Promise.resolve(msg).then(message => {
+          toastCtrl
+            .create({
+              message: String(message),
+              position,
+              duration,
+            })
+            .present();
+        });
+      }
+    }
+  }
 
   _event?: EventEmitter;
   get event() {

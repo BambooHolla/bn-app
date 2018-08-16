@@ -318,12 +318,7 @@ export class TabPayPage extends FirstLevelPage {
       });
     } else {
       const message = await formatAndTranslateMessage(has_err);
-      this.toastCtrl
-        .create({
-          message,
-          duration: 2000,
-        })
-        .present();
+      this.showToast(message, 2000);
     }
   }
   // @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
