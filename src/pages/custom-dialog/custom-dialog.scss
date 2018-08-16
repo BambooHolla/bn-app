@@ -111,7 +111,6 @@ page-custom-dialog {
         > .title {
           padding: 0 0.5rem;
           padding-bottom: 0.5rem;
-          color: #333;
           font-size: 1.8rem;
           // font-weight: 600;
         }
@@ -119,8 +118,10 @@ page-custom-dialog {
           padding: 0 0.5rem;
         }
         .message {
-          padding: 1rem 1.5rem;
+          padding: 1rem 0rem;
           line-height: 2rem;
+          text-align: left;
+          color: #333;
         }
       }
       > .buttons {

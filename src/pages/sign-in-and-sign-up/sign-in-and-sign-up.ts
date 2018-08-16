@@ -201,7 +201,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     });
     if (
       await this.waitTipDialogConfirm("@@RGISTER_PWD_TIP", {
-        true_text: "@@COPY_NOW",
+        true_text: "@@SAVE_NOW",
         false_text: "@@CANCEL_COPY",
       })
     ) {
