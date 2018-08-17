@@ -1,4 +1,5 @@
 import { isIPv4 } from "../helper/ip";
+import { Buffer } from "buffer";
 
 export default class District {
     constructor(public data) {}
