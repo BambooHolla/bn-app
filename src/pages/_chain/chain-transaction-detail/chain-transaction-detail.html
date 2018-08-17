@@ -22,7 +22,7 @@
         {{('TRAN_TYPE_NAME_'+transaction?.type) | translate}}
       </div>
     </div>
-    <div class="common-item block-id" (click)="smartRouteTo('chain-block-detail',{height:transaction?.height})">
+    <div class="common-item block-id" *ngIf="transaction?.blockId" (click)="smartRouteTo('chain-block-detail',{height:transaction?.height})">
        <!-- [click-to-copy]="transaction?.blockId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSACTION_blockId'|translate)}" -->
       <div class="left">
         {{'TRANSACTION_blockId'|translate}}

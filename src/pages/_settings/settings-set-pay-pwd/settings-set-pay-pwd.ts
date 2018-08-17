@@ -53,16 +53,15 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
     SettingsSetPayPwdPage.getTranslate("SET_PAY_PWD_SUBMIT_SUCCESS")
   )
   async _submit(password: string, custom_fee?: number, old_pay_pwd?: string) {
-    return this.accountService
-      .setSecondPassphrase(
-        password,
-        this.formData.pay_pwd,
-        old_pay_pwd,
-        custom_fee
-      )
-      .then(() => {
-        this.finishJob();
-      });
+    await this.accountService.setSecondPassphrase(
+      password,
+      this.formData.pay_pwd,
+      old_pay_pwd,
+      custom_fee
+    );
+    await this.waitTipDialogConfirm("@@AFTER_SET_PAY_PWD_TIP");
+
+    this.finishJob();
   }
 
   @SettingsSetPayPwdPage.setErrorTo("errors", "confrim_pay_pwd", ["noSame"])

@@ -1,4 +1,5 @@
 page-account-my-transaction-list {
+  background-color: #fff;
   > .header {
     > .bg {
       position: absolute;
@@ -108,68 +109,129 @@ page-account-my-transaction-list {
         z-index: -1;
         pointer-events: none;
       }
-      > .item {
-        width: 100%;
-        height: 5rem;
-        border-bottom: 0.55px solid #e5e5e5;
-        flex-shrink: 0;
-        flex-grow: 0;
-        padding: 0 2rem;
-        display: flex;
-        align-items: center;
-        font-size: 1.35rem;
-        color: #787878;
-        > .left {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-start;
-          > .from-to {
-            display: flex;
-            align-items: center;
-            ali-icon {
-              font-size: 3rem;
-              margin: 0 0.2rem;
-            }
-          }
-          > .create-time {
-            color: #b5b5b5;
-            font-size: 1.2rem;
-          }
-        }
-        > .right {
-          height: 100%;
-          margin-left: auto;
-          align-self: flex-end;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-end;
-          color: #505050;
-          > .amount {
-            color: #505050;
-            font-weight: 500;
-          }
+    }
+  }
+  .item {
+    width: 100%;
+    min-height: 4.92rem;
+    border-bottom: 0.55px solid #e5e5e5;
+    flex-shrink: 0;
+    flex-grow: 0;
+    padding: 0.6rem 2rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.35rem;
+    > .left {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    > .right {
+      height: 100%;
+      margin-left: auto;
+      align-self: flex-end;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .from-to {
+      color: #787878;
+      display: flex;
+      align-items: center;
+      ali-icon {
+        font-size: 3rem;
+        margin: 0 0.2rem;
+      }
+    }
+    .create-time {
+      color: #b5b5b5;
+      font-size: 1.2rem;
+    }
+    .tran-type {
+      color: #505050;
+    }
+    .amount {
+      color: #505050;
+      font-weight: 500;
+      .unit {
+        font-size: 1.1rem;
+        padding-left: 0.5rem;
+        font-weight: lighter;
+      }
+    }
+  }
+  // .common-list {
+  //   background-color: #e5e5e5;
+  // }
+  // .common-item.item {
+  //   > .left {
+  //     height: 100%;
+  //     display: flex;
+  //     flex-direction: column;
+  //     justify-content: center;
+  //     align-items: flex-start;
+  //     > .from-to {
+  //       display: flex;
+  //       align-items: center;
+  //       ali-icon {
+  //         font-size: 3rem;
+  //         margin: 0 0.2rem;
+  //       }
+  //     }
+  //     > .create-time {
+  //       color: #b5b5b5;
+  //       font-size: 1.2rem;
+  //     }
+  //   }
+  //   > .right {
+  //     height: 100%;
+  //     margin-left: auto;
+  //     align-self: flex-end;
+  //     display: flex;
+  //     flex-direction: column;
+  //     justify-content: center;
+  //     align-items: flex-end;
+  //     color: #505050;
+  //     > .amount {
+  //       color: #505050;
+  //       font-weight: 500;
+  //     }
+  //   }
+  // }
+  ion-item-sliding {
+    ion-item {
+      border-bottom: 0 !important;
+      padding: 0 !important;
+      .item-inner {
+        padding-right: 0;
+        border-bottom: 0 !important;
+        ion-label {
+          margin: 0;
         }
       }
-      > .empty-list {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        > img {
-          margin-top: 2rem;
-          margin-bottom: 2rem;
-          opacity: 0.6;
-          height: 20vh;
-          width: 20vh;
-        }
-        > .message {
-          font-size: 1.4rem;
-          color: #787878;
-        }
-      }
+    }
+  }
+  .empty-list {
+    position: absolute;
+    width: 100%;
+    top: 10vh;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > img {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      opacity: 0.6;
+      height: 20vh;
+      width: 20vh;
+    }
+    > .message {
+      font-size: 1.4rem;
+      color: #787878;
     }
   }
 }

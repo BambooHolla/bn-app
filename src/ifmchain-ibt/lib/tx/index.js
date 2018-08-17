@@ -207,6 +207,22 @@ var Transaction = (function() {
 
         bb.writeString(trs.amount);
 
+        if (trs.remark) {
+          bb.writeString(trs.remark);
+        }
+
+        if (trs.dappid) {
+          bb.writeString(trs.dappid);
+        }
+
+        if (trs.sourceIP) {
+          bb.writeString(trs.sourceIP);
+        }
+
+        if (trs.assetType) {
+          bb.writeString(trs.assetType);
+        }
+
         if (assetSize > 0) {
           for (var _i3 = 0; _i3 < assetSize; _i3++) {
             bb.writeByte(assetBytes[_i3]);

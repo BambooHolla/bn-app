@@ -85,6 +85,9 @@ export function asyncErrorWrapGenerator(
             err_msg = err + "";
           }
           console.group("CATCH BY asyncErrorWrapGenerator:");
+          err &&
+            err.CODE &&
+            console.log(`%c${err.CODE}`, "color:red;background:pink");
           console.warn(err);
           console.groupEnd();
           if (hidden_when_page_leaved && page_leaved) {

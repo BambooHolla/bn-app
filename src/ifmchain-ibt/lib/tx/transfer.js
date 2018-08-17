@@ -52,24 +52,9 @@ function accMul(arg1, arg2) {
  */
 
 var Transfer = (function() {
-  /**
-   *
-   * @param mod
-   * @param lib
-   * @constructor
-   */
   function Transfer() {
     _classCallCheck(this, Transfer);
   }
-  //mod, lib
-  //_module = mod;
-  //library = lib;
-
-  /**
-   *
-   * @param data
-   * @param trs
-   */
 
   _createClass(Transfer, [
     {
@@ -87,34 +72,16 @@ var Transfer = (function() {
       value: function validateInput(data, cb) {
         Validator.validate(data, TransferSchema, cb);
       },
-
-      /**
-       *
-       * @param trs
-       * @param sender
-       */
     },
     {
       key: "calculateFee",
       value: function calculateFee(trs, sender) {
         return library.logic.block.calculateFee();
       },
-
-      /**
-       *
-       * @param trs
-       * @param sender
-       * @param cb
-       */
     },
     {
       key: "verify",
       value: function verify(trs, sender, cb) {
-        // let isAddress = /^[0-9]+[L|l]$/g;
-        // if (!isAddress.test(trs.recipientId.toLowerCase())) {
-        //     return cb("Invalid recipient");
-        // }
-
         if (!addressHelper.isAddress(trs.recipientId)) {
           return cb({
             message: "Invalid recipient",
@@ -129,13 +96,6 @@ var Transfer = (function() {
 
         cb(null, trs);
       },
-
-      /**
-       *
-       * @param trs
-       * @param sender
-       * @param cb
-       */
     },
     {
       key: "process",
@@ -143,22 +103,12 @@ var Transfer = (function() {
         // setImmediate(cb, null, trs);
         cb(null, trs);
       },
-
-      /**
-       *
-       * @param trs
-       */
     },
     {
       key: "getBytes",
       value: function getBytes(trs) {
         return null;
       },
-
-      /**
-       *
-       * @param trs
-       */
     },
     {
       key: "objectNormalize",
@@ -166,12 +116,6 @@ var Transfer = (function() {
         delete trs.blockId;
         return trs;
       },
-
-      /**
-       *
-       * @param trs
-       * @param sender
-       */
     },
     {
       key: "ready",

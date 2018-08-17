@@ -137,7 +137,7 @@
         <div class="right">
           <div class="from-to">
             <div class="sender" [innerHTML]="(tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address')"></div>
-            <ng-container *ngIf="transactionService.isShowAmountType(tran.type)">
+            <ng-container *ngIf="transactionService.isTransferType(tran.type)">
               <ali-icon name="ifm-chain-right-arrow"></ali-icon>
               <div class="recipient" [innerHTML]="(tran.recipientName)?(tran.recipientName):(tran.recipientId|mask:'@address')"></div>
             </ng-container>

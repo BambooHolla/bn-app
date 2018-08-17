@@ -71,6 +71,7 @@ export class TransactionServiceProvider {
   readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL(
     "/api/transactions/query"
   );
+  readonly GET_SOURCE_IP = this.appSetting.APP_URL("/api/system/sourceIp");
 
   getTransactionLink(type) {
     switch (type) {
@@ -128,7 +129,7 @@ export class TransactionServiceProvider {
   }
 
   /**是否是转账交易*/
-  isTranferType(type: TYPE.TransactionTypes) {
+  isTransferType(type: TYPE.TransactionTypes) {
     return (
       type === TYPE.TransactionTypes.TRANSFER_ASSET ||
       type === TYPE.TransactionTypes.SEND
@@ -138,7 +139,7 @@ export class TransactionServiceProvider {
   /**是否是转账交易*/
   isShowAmountType(type: TYPE.TransactionTypes) {
     return (
-      this.isTranferType(type) || type === TYPE.TransactionTypes.DESTORY_ASSET
+      this.isTransferType(type) || type === TYPE.TransactionTypes.DESTORY_ASSET
     );
   }
 
@@ -184,6 +185,19 @@ export class TransactionServiceProvider {
     };
   }
 
+  getSourceIp() {
+    if (this.fetch.onLine) {
+      return this.fetch
+        .get<{ sourceIp: string }>(this.GET_SOURCE_IP)
+        .then(data => {
+          localStorage.setItem("sourceIp", data.sourceIp);
+          return data.sourceIp;
+        });
+    } else {
+      return localStorage.getItem("sourceIp") || "";
+    }
+  }
+
   async createTransaction(txData) {
     if (
       txData.secondSecret &&
@@ -209,11 +223,11 @@ export class TransactionServiceProvider {
       "/api/" + this.getTransactionLink(txData.type)
     );
 
-    // txData.type = txData.type || this.transactionTypeCode[txData.typeName];
-    //获取时间戳
-    let timestampRes = await this.getTimestamp();
     //时间戳加入转账对象
-    txData.timestamp = timestampRes.timestamp;
+    txData.timestamp = (await this.getTimestamp()).timestamp;
+    // 加入ip地址
+    txData.sourceIp = await this.getSourceIp();
+
     //生成转账        await上层包裹的函数需要async
     const transaction = await new Promise<TYPE.TransactionModel>(
       (resolve, reject) => {
@@ -600,13 +614,20 @@ export class TransactionServiceProvider {
   /**
    * 使用Mongodb语句查询交易
    */
-  async queryTransaction(query, order, offset?: number, limit?: number) {
+  async queryTransaction(
+    query,
+    order,
+    offset?: number,
+    limit?: number,
+    select?
+  ) {
     return this.fetch.get<TYPE.QueryTransactionsResModel>(
       this.QUERY_TRANSACTIONS,
       {
         search: {
           query: JSON.stringify(query),
           order: JSON.stringify(order),
+          select: select && JSON.stringify(select),
           limit,
           offset,
         },
@@ -630,16 +651,95 @@ export class TransactionServiceProvider {
    * 获取未确认交易
    */
   async getUnconfirmed(page = 1, limit = 10) {
-    let query = {
+    const query = {
       address: this.user.address,
       senderPublicKey: this.user.publicKey,
       offset: (page - 1) * limit,
       limit: limit,
     };
 
-    let data = await this.fetch.get<any>(this.UNCONFIRMED, { search: query });
+    const data = await this.fetch.get<TYPE.QueryTransactionsResModel>(
+      this.UNCONFIRMED,
+      { search: query }
+    );
     return data.transactions;
   }
+
+  getLocalUnconfirmed(
+    offset = 0,
+    pageSize = 10,
+    sort?,
+    senderId = this.user.address
+  ) {
+    return this.unTxDb.find(
+      {
+        senderId,
+      },
+      {
+        skip: offset,
+        limit: pageSize,
+        sort,
+      }
+    );
+  }
+  /**
+   * 获取本地的未确认交易，并确保已经被处理
+   */
+  async getLocalUnconfirmedAndCheck(
+    offset = 0,
+    pageSize = 10,
+    sort?,
+    senderId = this.user.address
+  ) {
+    const res_checkd_tra_list: TYPE.TransactionModel[] = [];
+
+    const ids = new Set<string>();
+    const rm_untra_ids = new Set();
+    do {
+      const tra_list = await this.getLocalUnconfirmed(
+        offset,
+        pageSize,
+        sort,
+        senderId
+      );
+      if (!this.fetch.onLine) {
+        // 断网的情况下直接返回
+        return tra_list;
+      }
+      // 向服务端查询交易是否完成，批量查询
+      await this.queryTransaction(
+        {
+          id: { $in: tra_list.map(t => t.id) },
+        },
+        {},
+        0,
+        tra_list.length,
+        { id: 1 }
+      ).then(data => data.transactions.forEach(t => ids.add(t.id)));
+
+      // 将查询的结果用于过滤本地交易，并且标记那些已经被处理的交易，要从本地中移除
+      for (var tra of tra_list) {
+        if (ids.has(tra.id)) {
+          rm_untra_ids.add(tra["_id"]);
+        } else {
+          res_checkd_tra_list.push(tra);
+        }
+        if (res_checkd_tra_list.length >= pageSize) {
+          break;
+        }
+      }
+
+      if (tra_list.length < pageSize) {
+        break;
+      }
+    } while (res_checkd_tra_list.length < pageSize);
+    // 将标记为已经完成的本地数据移除
+    for (var _rm_id of rm_untra_ids) {
+      await this.unTxDb.remove({ _id: _rm_id });
+    }
+    return res_checkd_tra_list;
+  }
+
   createTxData(
     recipientId: string,
     amount: any,

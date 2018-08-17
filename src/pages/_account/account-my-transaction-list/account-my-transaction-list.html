@@ -14,29 +14,56 @@
     </div>
   </div>
 </ion-header>
-<ion-content class="list confimed-page" [class.show]="TranSubPage.CONFIRMED===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
-  <div class="item" *ngFor="let tran of confirmed_transaction_list;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
+<ion-content class="confimed-page" [class.show]="TranSubPage.CONFIRMED===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+  <div class=" item" *ngFor="let tran of confirmed_transaction_list;trackBy:commonTrackBy('id')" (click)="routeToTransactionDetail(tran)">
+    <!--       <div class="left">
+        <div class="from-to">
+          <div class="sender" [innerHTML]="tran.senderName?tran.senderName:(tran.senderId|mask:'@address')"></div>
+          <ng-container *ngIf="transactionService.isTransferType(tran.type)">
+            <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+            <div class="recipient" [innerHTML]="tran.recipientName?tran.recipientName:(tran.recipientId|mask:'@address')"></div>
+          </ng-container>
+        </div>
+        <div class="create-time">
+          {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+        </div>
+      </div>
+      <div class="right">
+        <div class="tran-type">
+          {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+        </div>
+        <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else confirmed_showFeeOnly">
+          {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+          <span class="unit">{{tran?.assetType||'IBT'}}</span>
+        </div>
+        <ng-template #confirmed_showFeeOnly>
+          <div class="amount">
+            - {{tran?.fee|amountEuler|number:"1.8-8"}}
+            <span class="unit">IBT</span>
+          </div>
+        </ng-template>
+      </div> -->
     <div class="left">
-      <div class="from-to">
-        <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-        <ng-container *ngIf="transactionService.isShowAmountType(tran.type)">
-          <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-          <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
-        </ng-container>
+      <div class="tran-type">
+        {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
       </div>
       <div class="create-time">
         {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
       </div>
     </div>
     <div class="right">
-      <div class="tran-type">
-        {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+      <div class="from-to">
+        <div class="sender" [innerHTML]="(tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address')"></div>
+        <ng-container *ngIf="transactionService.isTransferType(tran.type)">
+          <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+          <div class="recipient" [innerHTML]="(tran.recipientName)?(tran.recipientName):(tran.recipientId|mask:'@address')"></div>
+        </ng-container>
       </div>
-      <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else confirmed_showFeeOnly">
+      <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else showFeeOnly">
         {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
         <span class="unit">{{tran?.assetType||'IBT'}}</span>
       </div>
-      <ng-template #confirmed_showFeeOnly>
+      <ng-template #showFeeOnly>
         <div class="amount">
           - {{tran?.fee|amountEuler|number:"1.8-8"}}
           <span class="unit">IBT</span>
@@ -53,44 +80,58 @@
     <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_CONFIRMED_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
-<ion-content class="list unconfim-page" [class.show]="TranSubPage.UNCONFIRM===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
-  <ion-refresher (ionRefresh)="loadUnconfirmTransactionList($event)">
+<ion-content class="unconfim-page" [class.show]="TranSubPage.UNCONFIRM===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+  <!-- <ion-refresher (ionRefresh)="loadUnconfirmTransactionList($event)">
     <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_UNCONFIRM_TRANSACTION_LIST'|translate"></ion-refresher-content>
-  </ion-refresher>
-  <div class="item" *ngFor="let tran of unconfirm_transaction_list;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
-    <div class="left">
-      <div class="from-to">
-        <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-        <ng-container *ngIf="transactionService.isShowAmountType(tran.type)">
-          <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-          <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
-        </ng-container>
-      </div>
-      <div class="create-time">
-        <!-- {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}} -->
-        {{(toDateMS(tran.dealDateTime)+timeago_clock)|amLocale:localName|amTimeAgo}}
-      </div>
-    </div>
-    <div class="right">
-      <div class="tran-type">
-        {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
-      </div>
-      <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else unconfirmed_showFeeOnly">
-        {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
-        <span class="unit">{{tran?.assetType||'IBT'}}</span>
-      </div>
-      <ng-template #unconfirmed_showFeeOnly>
-        <div class="amount">
-          - {{tran?.fee|amountEuler|number:"1.8-8"}}
-          <span class="unit">IBT</span>
-        </div>
-      </ng-template>
-    </div>
-  </div>
+  </ion-refresher> -->
   <div class="empty-list" *ngIf="unconfirm_transaction_list.length==0&&unconfirm_transaction_config.loading==false">
     <img src="assets/imgs/empty-list.png" alt="空列表">
     <div class="message">{{'UNCONFIRM_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
   </div>
+  <ion-list class="contact-list list">
+    <ion-item-sliding *ngFor="let tran of unconfirm_transaction_list;trackBy:commonTrackBy('id')">
+      <ion-item (click)="routeToTransactionDetail(tran)">
+        <div class="item">
+          <div class="left">
+            <div class="from-to">
+              <div class="sender" [innerHTML]="tran.senderName?tran.senderName:(tran.senderId|mask:'@address')"></div>
+              <ng-container *ngIf="transactionService.isTransferType(tran.type)">
+                <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+                <div class="recipient" [innerHTML]="tran.recipientName?tran.recipientName:(tran.recipientId|mask:'@address')"></div>
+              </ng-container>
+            </div>
+            <div class="create-time">
+              <!-- {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}} -->
+              {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+            </div>
+          </div>
+          <div class="right">
+            <div class="tran-type">
+              {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+            </div>
+            <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else unconfirmed_showFeeOnly">
+              {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+              <span class="unit">{{tran?.assetType||'IBT'}}</span>
+            </div>
+            <ng-template #unconfirmed_showFeeOnly>
+              <div class="amount">
+                - {{tran?.fee|amountEuler|number:"1.8-8"}}
+                <span class="unit">IBT</span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item-options side="right">
+        <button class="options-item list-remark" (click)="confirmToRetry(tran)">
+          <span class="inner">{{'RETRY'|translate}}</span>
+        </button>
+        <button class="options-item list-delete" (click)="confirmToDelete(tran)">
+          <span class="inner">{{'REMOVE'|translate}}</span>
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreUnconfirmTransactionList())" [enabled]="unconfirm_transaction_config.has_more">
     <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_UNCONFIRM_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>
   </ion-infinite-scroll>

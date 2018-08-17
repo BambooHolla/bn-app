@@ -8,6 +8,8 @@ import {
   LocalContactProvider,
   LocalContactModel,
 } from "../../../providers/local-contact/local-contact";
+import { Buffer } from "buffer";
+import { City } from "../../../datx";
 
 @IonicPage({ name: "chain-transaction-detail" })
 @Component({
@@ -15,6 +17,15 @@ import {
   templateUrl: "chain-transaction-detail.html",
 })
 export class ChainTransactionDetailPage extends SecondLevelPage {
+  private static _city_data?: Promise<City>;
+  static get ipcity() {
+    if (!this._city_data) {
+      this._city_data = fetch("http://192.168.16.224:8080/17monipdb.datx")
+        .then(res => res.arrayBuffer())
+        .then(data => new City(Buffer.from(data)));
+    }
+    return this._city_data;
+  }
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -25,13 +36,26 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     this.auto_header_shadow_when_scroll_down = true;
   }
   transaction?: TransactionModel;
+  transaction_ip_country = "";
   @ChainTransactionDetailPage.willEnter
   setTransactionData() {
-    const transaction = this.navParams.get("transaction");
+    const transaction: TransactionModel = this.navParams.get("transaction");
     if (!transaction) {
       return this.navCtrl.goToRoot({});
     }
+
     this.transaction = transaction;
+
+    // 寻找ip地址
+    ChainTransactionDetailPage.ipcity.then(city => {
+      if (!transaction["sourceIp"]) {
+        return;
+      }
+      const city_info = city.findSync(transaction["sourceIp"]);
+      if (city_info) {
+        this.transaction_ip_country = city_info[0];
+      }
+    });
 
     // 匹配本地联系人信息
     this.matchMyContact();
