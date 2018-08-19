@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'ASSETS-LOGO-CLIP'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="clip-container">
+    <div class="logo-clip">
+      <clip-assets-logo></clip-assets-logo>
+    </div>
+    <div class="tool-bar">
+      <button mat-button class="tool-item turn-left-90deg"></button>
+      <button mat-button class="tool-item turn-right-90deg"></button>
+      <button mat-button class="tool-item size-container"></button>
+      <button mat-button class="tool-item size-cover"></button>
+    </div>
+  </div>
+  <div class="preview-container">
+    <div class="preview-item small">
+      <div class="assets-logo-shape-wrapper">
+        <div class="assets-logo-shape">
+          <img *ngIf="export_clip_logo_url" [src]="export_clip_logo_url" alt="LOGO-CLIP-PREVIEW">
+        </div>
+      </div>
+    </div>
+    <div class="preview-item large">
+      <div class="assets-logo-shape-wrapper">
+        <div class="assets-logo-shape">
+          <img *ngIf="export_clip_logo_url" [src]="export_clip_logo_url" alt="LOGO-CLIP-PREVIEW">
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

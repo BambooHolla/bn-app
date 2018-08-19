@@ -72,6 +72,7 @@ function createTransaction(body, cb) {
       remark: body.remark || "",
       dappid: body.dappid || "",
       assetType: body.assetType || "",
+      sourceIp: body.sourceIp || "",
       asset: body.asset || {},
     };
     if (body.multisigAccountPublicKey) {
@@ -96,6 +97,7 @@ function createTransaction(body, cb) {
       remark: data.remark || "",
       dappid: body.dappid || "",
       assetType: body.assetType || "",
+      sourceIp: body.sourceIp || "",
       asset: {},
     };
 

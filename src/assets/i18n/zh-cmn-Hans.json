@@ -811,6 +811,9 @@
   "GENESIS_DESTINATION_CAN_NOT_BE_YOURSELF": "权益接收账户不能是发行权益的账户",
   "GENESIS_ADDRESS_IS_MALFORMED": "权益接收账户有误",
 
+  "//":"assets-logo-clip",
+  "ASSETS-LOGO-CLIP": "图标裁剪",
+
   "//": "assets-assets-market",
   "ASSETS-ASSETS-MARKET": "权益市场",
   "NUMBER_OF_HOLDERS": "持有人数",

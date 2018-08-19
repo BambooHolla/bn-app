@@ -1,0 +1,50 @@
+page-assets-logo-clip {
+	> .content {
+		> .scroll-content {
+			overflow: hidden;
+			display: flex;
+
+			flex-direction: column;
+			.clip-container {
+				width: 100%;
+				flex-grow: 1;
+				display: flex;
+				flex-direction: column;
+				.logo-clip {
+					flex-grow: 1;
+				}
+				.tool-bar {
+					width: 100%;
+					flex-grow: 0;
+					height: 6vw;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+			}
+			.preview-container {
+				width: 100%;
+				flex-grow: 0;
+				height: 40vw;
+				border-top: 0.55px solid #ddd;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				.preview-item {
+					&.small {
+						.assets-logo-shape-wrapper {
+							width: 18vw;
+							height: 18vw;
+						}
+					}
+					&.large {
+						.assets-logo-shape-wrapper {
+							width: 36vw;
+							height: 36vw;
+						}
+					}
+				}
+			}
+		}
+	}
+}
