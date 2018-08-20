@@ -68,7 +68,7 @@ export class FLP_Route extends FLP_Lifecycle {
               data: this._job_res,
             });
           } else {
-            viewCtrl.dismiss();
+            viewCtrl.dismiss(this._job_res);
           }
         } else {
           console.warn(

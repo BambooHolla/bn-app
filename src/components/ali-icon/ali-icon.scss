@@ -8,11 +8,14 @@ ali-icon {
   line-height: initial;
   /* overflow: hidden; */
   > .ifmicon {
-    display: block;
+    // display: block;
     position: relative;
     width: 100%;
     height: 100%;
     font-size: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     &::before {
       object-fit: contain;
       object-position: center;

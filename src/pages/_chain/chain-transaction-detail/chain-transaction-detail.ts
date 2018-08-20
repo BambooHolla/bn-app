@@ -9,7 +9,7 @@ import {
   LocalContactModel,
 } from "../../../providers/local-contact/local-contact";
 import { Buffer } from "buffer";
-import { City } from "../../../datx";
+import { City, translateCity } from "../../../datx";
 
 @IonicPage({ name: "chain-transaction-detail" })
 @Component({
@@ -20,7 +20,7 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
   private static _city_data?: Promise<City>;
   static get ipcity() {
     if (!this._city_data) {
-      this._city_data = fetch("http://192.168.16.224:8080/17monipdb.datx")
+      this._city_data = fetch("./assets/17monipdb.datx")
         .then(res => res.arrayBuffer())
         .then(data => new City(Buffer.from(data)));
     }
@@ -48,12 +48,16 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
 
     // 寻找ip地址
     ChainTransactionDetailPage.ipcity.then(city => {
-      if (!transaction["sourceIp"]) {
+      if (!transaction["sourceIP"]) {
         return;
       }
-      const city_info = city.findSync(transaction["sourceIp"]);
+      const city_info = city.findSync(transaction["sourceIP"]);
       if (city_info) {
-        this.transaction_ip_country = city_info[0];
+        translateCity(city_info[0], k => this.getTranslateSync(k)).then(
+          translated_city => {
+            this.transaction_ip_country = translated_city;
+          }
+        );
       }
     });
 

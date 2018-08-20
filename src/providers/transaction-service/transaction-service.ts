@@ -226,7 +226,7 @@ export class TransactionServiceProvider {
     //时间戳加入转账对象
     txData.timestamp = (await this.getTimestamp()).timestamp;
     // 加入ip地址
-    txData.sourceIp = await this.getSourceIp();
+    txData.sourceIP = await this.getSourceIp();
 
     //生成转账        await上层包裹的函数需要async
     const transaction = await new Promise<TYPE.TransactionModel>(

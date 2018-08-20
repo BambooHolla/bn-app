@@ -12,11 +12,19 @@ page-assets-logo-clip {
 				flex-direction: column;
 				.logo-clip {
 					flex-grow: 1;
+					position: relative;
+					> clip-assets-logo {
+						position: absolute;
+						width: 100%;
+						height: 100%;
+						top: 0;
+						left: 0;
+					}
 				}
 				.tool-bar {
 					width: 100%;
 					flex-grow: 0;
-					height: 6vw;
+					height: 12vw;
 					display: flex;
 					align-items: center;
 					justify-content: center;
@@ -25,12 +33,27 @@ page-assets-logo-clip {
 			.preview-container {
 				width: 100%;
 				flex-grow: 0;
-				height: 40vw;
+				height: 26vw;
 				border-top: 0.55px solid #ddd;
 				display: flex;
 				align-items: center;
-				justify-content: center;
+				justify-content: space-between;
+				> .cancel {
+					margin-left: 2rem;
+					/* justify-self: flex-start; */
+					background-color: rgba(#b71c1c, 1);
+					color: #fff;
+					font-size: 2.5rem;
+				}
+				> .submit {
+					margin-right: 2rem;
+					background-color: rgba(#00c853, 1);
+					color: #fff;
+					font-size: 2.5rem;
+					/* justify-self: flex-end; */
+				}
 				.preview-item {
+					display: none;
 					&.small {
 						.assets-logo-shape-wrapper {
 							width: 18vw;
@@ -39,8 +62,8 @@ page-assets-logo-clip {
 					}
 					&.large {
 						.assets-logo-shape-wrapper {
-							width: 36vw;
-							height: 36vw;
+							width: 25vw;
+							height: 25vw;
 						}
 					}
 				}

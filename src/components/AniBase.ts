@@ -64,6 +64,10 @@ export class AniBase extends EventEmitter {
   ngOnDestroy() {
     this.stopAnimation();
     this.removeAllListeners();
+    const { app } = this;
+    if (app) {
+      app.destroy();
+    }
   }
   devicePixelRatio = window.devicePixelRatio;
   pt = px => this.devicePixelRatio * px;
@@ -665,10 +669,7 @@ export async function formatImage(
       );
     });
   } else if (opts.target_encode === "base64") {
-    const base64str = format_canvas.toDataURL(
-      opts.target_encode,
-      opts.encoderOptions
-    );
+    const base64str = format_canvas.toDataURL(opts.format, opts.encoderOptions);
     if (!opts.onlyBase64Content) {
       return base64str;
     }

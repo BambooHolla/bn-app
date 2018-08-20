@@ -43,6 +43,16 @@ export class FLP_Tool {
   translateMessage = translateMessage;
   static translateMessage = translateMessage;
 
+  private _is_support_input_color?: boolean;
+  get is_support_input_color() {
+    if (this._is_support_input_color === undefined) {
+      const inputEle = document.createElement("input");
+      inputEle.type = "color";
+      this._is_support_input_color = inputEle.type === "color";
+    }
+    return this._is_support_input_color;
+  }
+
   showToast(msg: string, duration: number, position = "bottom") {
     if ("plugins" in window && "toast" in window["plugins"]) {
       const toast = window["toast"] as Toast;

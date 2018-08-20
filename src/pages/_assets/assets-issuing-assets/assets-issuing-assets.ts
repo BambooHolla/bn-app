@@ -53,6 +53,12 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
         this.formData.genesisAddress = data.address;
         this.markForCheck();
       }
+      if (id === "assets-logo-clip") {
+        if (data && data.logo_url) {
+          this.formData.logo = data.logo_url;
+          this.markForCheck();
+        }
+      }
     });
   }
   formData: {
@@ -141,8 +147,19 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     inputEle.dispatchEvent(clickEvent);
     inputEle.onchange = e => {
       if (inputEle.files && inputEle.files[0]) {
-        this.formData.logo = URL.createObjectURL(inputEle.files[0]);
-        this.markForCheck();
+        const clip_dialog = this.modalCtrl.create("assets-logo-clip", {
+          logo_url: URL.createObjectURL(inputEle.files[0]),
+          auto_return: true,
+        });
+        clip_dialog.present();
+        clip_dialog.onWillDismiss(data => {
+          if (data && data.logo_url) {
+            this.formData.logo = data.logo_url;
+            this.markForCheck();
+            inputEle.value = "";
+          }
+        });
+        // this.formData.logo = URL.createObjectURL(inputEle.files[0]);
       } else {
         console.log("没有选择文件，代码不应该运行到这里");
       }

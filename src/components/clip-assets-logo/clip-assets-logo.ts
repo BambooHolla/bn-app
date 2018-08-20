@@ -3,9 +3,10 @@ import {
 	ViewChild,
 	ElementRef,
 	ChangeDetectionStrategy,
+	OnDestroy
 } from "@angular/core";
 
-import { AniBase, Easing } from "../AniBase";
+import { AniBase, Easing, formatImage } from "../AniBase";
 import * as PIXI from "pixi.js";
 
 enum OpType {
@@ -18,7 +19,7 @@ enum OpType {
 	selector: "clip-assets-logo",
 	templateUrl: "clip-assets-logo.html",
 })
-export class ClipAssetsLogoComponent extends AniBase {
+export class ClipAssetsLogoComponent extends AniBase{
 	@ViewChild("canvas") canvasRef!: ElementRef;
 	constructor() {
 		super();
@@ -43,18 +44,18 @@ export class ClipAssetsLogoComponent extends AniBase {
 			if (!canvasNode) {
 				throw new Error("call init first");
 			}
-			const size = Math.min(
-				canvasNode.parentElement
-					? canvasNode.parentElement.clientWidth
-					: canvasNode.clientWidth,
-				canvasNode.parentElement
-					? canvasNode.parentElement.clientHeight
-					: canvasNode.clientHeight
-			);
+			const w = canvasNode.parentElement
+				? canvasNode.parentElement.clientWidth
+				: canvasNode.clientWidth;
+
+			const h = canvasNode.parentElement
+				? canvasNode.parentElement.clientHeight
+				: canvasNode.clientHeight;
+
 			this.app = ClipAssetsLogoComponent.PIXIAppbuilder({
 				view: canvasNode,
-				width: pt(size),
-				height: pt(size),
+				width: pt(w),
+				height: pt(h),
 				transparent: false,
 				antialias: false,
 				autoStart: true,
@@ -112,11 +113,7 @@ export class ClipAssetsLogoComponent extends AniBase {
 			const mask_container_mask = new PIXI.Sprite(
 				mask_layer_drawer.generateCanvasTexture()
 			);
-			// console.log(
-			// 	mask_container_mask.width,
-			// 	mask_container_mask.height,
-			// 	stage.children.slice()
-			// );
+
 			if (mask_container.mask) {
 				mask_container.mask.destroy();
 			}
@@ -157,53 +154,6 @@ export class ClipAssetsLogoComponent extends AniBase {
 	);
 
 	white_edge_size = 0.1; // 白边的百分比
-	min_size = 32; // 至少要32px
-	public logo_url = "";
-	logo?: PIXI.Sprite;
-	set_logo_url(logo_url: string) {
-		if (logo_url === this.logo_url) {
-			return;
-		}
-		this.logo_url = logo_url;
-		this._set_logo(logo_url);
-		// this.logo.texture.baseTexture = new PIXI
-	}
-
-	private _set_logo(url) {
-		if (!this.app) {
-			return;
-		}
-		if (this.logo) {
-			this.logo.destroy();
-		}
-		this.logo = PIXI.Sprite.from(url);
-		const { width: W, height: H } = this.app.renderer;
-
-		const on_logoContainer_update = () => {
-			const { logo } = this;
-			console.log(logo.texture.width);
-			if (logo.texture.width <= 1) {
-				return;
-			}
-			logo.pivot.set(logo.texture.width / 2, logo.texture.height / 2);
-			logo.width = W;
-			logo.height = H;
-
-			/// size: container
-			const min_scale = Math.min(logo.scale.x, logo.scale.y);
-			logo.scale.x = logo.scale.y = min_scale;
-			// console.log(logo.width,logo.height)
-			logo.x = W / 2; //(W - logo.width) / 2;
-			logo.y = H / 2; //(H - logo.height) / 2;
-			// console.log(W, H, logo.x, logo.y);
-
-			this.logo_container.addChildAt(logo, 0);
-			this._target_rotation = 0;
-		};
-		this.logo.texture.on("update", on_logoContainer_update);
-		on_logoContainer_update();
-		return this.logo;
-	}
 
 	private _init_edge_container() {
 		if (!this.app) {
@@ -248,7 +198,7 @@ export class ClipAssetsLogoComponent extends AniBase {
 			const mask_edge_mask = new PIXI.Sprite(
 				mask_edge_drawer.generateCanvasTexture()
 			);
-			console.log(this.app.renderer.extract.base64(mask_edge_mask));
+
 			mask_edge_container.addChild(mask_edge_mask);
 			mask_edge_container.mask = mask_edge_mask;
 			mask_edge_drawer.visible = false;
@@ -276,14 +226,8 @@ export class ClipAssetsLogoComponent extends AniBase {
 			mask_edge_outter_shape.x = (W - mask_edge_outter_shape.width) / 2;
 			mask_edge_outter_shape.y = (H - mask_edge_outter_shape.height) / 2;
 
-			// console.log(
-			// 	this.app.renderer.extract.base64(
-			// 		new PIXI.Sprite(mask_edge_drawer.generateCanvasTexture())
-			// 	)
-			// );
-
 			is_mask_edge_drawer_done.delete("outter");
-			console.log("outter done");
+			// console.log("outter done");
 			init_mask_edge_drawer();
 		};
 		mask_edge_outter_shape.texture.on(
@@ -312,7 +256,7 @@ export class ClipAssetsLogoComponent extends AniBase {
 			mask_edge_inner_shape.x = (W - mask_edge_inner_shape.width) / 2;
 			mask_edge_inner_shape.y = (H - mask_edge_inner_shape.height) / 2;
 			is_mask_edge_drawer_done.delete("inner");
-			console.log("inner done");
+			// console.log("inner done");
 			init_mask_edge_outter_shape();
 		};
 		mask_edge_inner_shape.texture.on("update", init_mask_edge_inner_shape);
@@ -324,6 +268,7 @@ export class ClipAssetsLogoComponent extends AniBase {
 
 		// mask_edge_container.mask = this.mask_container.mask;
 		this.logo_container.addChild(mask_edge_container);
+		// this.logo_container.addChild(this.export_layer);
 	}
 	private _init_logo_container() {
 		if (!this.app) {
@@ -336,7 +281,7 @@ export class ClipAssetsLogoComponent extends AniBase {
 
 		const { logo_container } = this;
 		logo_container.interactive = true;
-		logo_container.beginFill(0xffff00, 1);
+		logo_container.beginFill(0xffffff, 1);
 		logo_container.drawRect(0, 0, W, H);
 		logo_container.endFill();
 
@@ -357,10 +302,10 @@ export class ClipAssetsLogoComponent extends AniBase {
 				if (!this.logo) {
 					return;
 				}
-				console.log(
-					"touches" in e.data.originalEvent &&
-						[].slice.call(e.data.originalEvent.touches)
-				);
+				// console.log(
+				// 	"touches" in e.data.originalEvent &&
+				// 		[].slice.call(e.data.originalEvent.touches)
+				// );
 				if (
 					e.data.pointerType === "touch" &&
 					"touches" in e.data.originalEvent &&
@@ -464,6 +409,53 @@ export class ClipAssetsLogoComponent extends AniBase {
 		stage.addChildAt(logo_container, 0);
 	}
 
+	min_size = 32; // 至少要32px
+	public logo_url = "";
+	logo?: PIXI.Sprite;
+	set_logo_url(logo_url: string) {
+		if (logo_url === this.logo_url) {
+			return;
+		}
+		this.logo_url = logo_url;
+		this._set_logo(logo_url);
+		// this.logo.texture.baseTexture = new PIXI
+	}
+
+	private _set_logo(url) {
+		if (!this.app) {
+			return;
+		}
+		if (this.logo) {
+			this.logo.destroy();
+		}
+		this.logo = PIXI.Sprite.from(url);
+		const { width: W, height: H } = this.app.renderer;
+
+		const on_logoContainer_update = () => {
+			const { logo } = this;
+			// console.log(logo.texture.width);
+			if (logo.texture.width <= 1) {
+				return;
+			}
+			logo.pivot.set(logo.texture.width / 2, logo.texture.height / 2);
+			logo.width = W;
+			logo.height = H;
+
+			/// size: container
+			const min_scale = Math.min(logo.scale.x, logo.scale.y);
+			logo.scale.x = logo.scale.y = min_scale;
+			// console.log(logo.width,logo.height)
+			logo.x = W / 2; //(W - logo.width) / 2;
+			logo.y = H / 2; //(H - logo.height) / 2;
+			// console.log(W, H, logo.x, logo.y);
+
+			this.logo_container.addChildAt(logo, 0);
+			this._target_rotation = 0;
+		};
+		this.logo.texture.on("update", on_logoContainer_update);
+		on_logoContainer_update();
+		return this.logo;
+	}
 	private _target_rotation = 0;
 	private _rotation_aborter?: Function;
 	private _rotateLogoDeg(deg) {
@@ -494,10 +486,10 @@ export class ClipAssetsLogoComponent extends AniBase {
 		return this._rotateLogoDeg(Math.PI / 2);
 	}
 	rotateLeft90deg = this.rotateClockwise90deg;
-	routeCounterclockwise90deg() {
+	rotateCounterclockwise90deg() {
 		return this._rotateLogoDeg(-Math.PI / 2);
 	}
-	rotateRight90deg = this.routeCounterclockwise90deg;
+	rotateRight90deg = this.rotateCounterclockwise90deg;
 	resetLogo() {
 		if (this._rotation_aborter) {
 			this._rotation_aborter();
@@ -505,13 +497,26 @@ export class ClipAssetsLogoComponent extends AniBase {
 		}
 		this._set_logo(this.logo_url);
 	}
+	setBg(bg_color) {
+		const { logo_container } = this;
+		logo_container.beginFill(parseInt(bg_color.replace("#", ""), 16), 1);
+		logo_container.drawRect(
+			0,
+			0,
+			logo_container.width,
+			logo_container.height
+		);
+		logo_container.endFill();
+	}
 
 	clip_layer_shape = PIXI.Sprite.from(
 		"./assets/imgs/assets/assets-logo-shape-w-large.jpg"
 	);
 
+	// export_layer = new PIXI.Container();
+
 	// 导出裁剪的图形
-	exportClipBase64() {
+	async exportClipBase64() {
 		if (!this.app) {
 			return;
 		}
@@ -524,16 +529,41 @@ export class ClipAssetsLogoComponent extends AniBase {
 			clip_layer_shape.height = mask_layer_shape.height;
 			clip_layer_shape.x = mask_layer_shape.x;
 			clip_layer_shape.y = mask_layer_shape.y;
+			// this.export_layer.addChild(this.logo_container);
+			// const size = Math.min(
+			// 	this.logo_container.width,
+			// 	this.logo_container.height
+			// );
+			// this.export_layer.width = size;
+			// this.export_layer.height = size;
+			// this.logo_container.x = (size - this.logo_container.width) / 2;
+			// this.logo_container.y = (size - this.logo_container.height) / 2;
 		}
 
 		// this.logo_container.generateCanvasTexture()
 		const export_base64 = this.app.renderer.extract.base64(
 			this.logo_container
 		);
-		return export_base64;
+		this.logo_container.mask = null;
+		this.logo_container.removeChild(clip_layer_shape);
+		// this.logo_container.x = 0;
+		// this.logo_container.y = 0;
+		// this.app.stage.addChild(this.logo_container)
+		const size = Math.min(
+			this.logo_container.width,
+			this.logo_container.height
+		);
+		return await formatImage(export_base64, {
+			format: "image/png",
+			view_width: size,
+			view_height: size,
+			size: "cover",
+			position: "center",
+			target_encode: "base64",
+		}) as string;
 	}
-	exportClipBolb() {
-		const export_base64 = this.exportClipBase64();
+	async exportClipBolb() {
+		const export_base64 = await this.exportClipBase64();
 		if (!export_base64) {
 			return;
 		}
@@ -562,7 +592,7 @@ export class ClipAssetsLogoComponent extends AniBase {
 		const blob = new Blob(byteArrays, { type: contentType });
 		return blob;
 	}
-	exportClipBolbUrl() {
-		return URL.createObjectURL(this.exportClipBolb());
+	async exportClipBolbUrl() {
+		return URL.createObjectURL(await this.exportClipBolb());
 	}
 }

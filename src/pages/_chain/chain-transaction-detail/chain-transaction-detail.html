@@ -77,6 +77,19 @@
         <ali-icon name="ifm-arrow-to-right"></ali-icon>
       </div>
     </div>
+    <div class="common-item sourceIP" *ngIf="transaction?.sourceIP">
+      <div class="left">
+        {{'TRANSACTION_sourceIP'|translate}}
+      </div>
+      <div class="right">
+        <div class="ip-address">
+          {{transaction?.sourceIP}}
+        </div>
+        <div class="city">
+          {{transaction_ip_country}}
+        </div>
+      </div>
+    </div>
     <div class="common-item extend-data" *ngIf="transaction?.mark">
       <details>
         <summary>{{'TRANSACTION_mark'|translate}}</summary>

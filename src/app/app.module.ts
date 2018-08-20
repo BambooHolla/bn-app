@@ -36,6 +36,7 @@ import { EmailComposer } from "@ionic-native/email-composer";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { ColorPickerModule } from 'ngx-color-picker';
 import {
   MatFormFieldModule,
   MatInputModule,
@@ -43,6 +44,7 @@ import {
   MatMenuModule,
   MatGridListModule,
   MatButtonModule,
+  MatIconModule,
 } from "@angular/material";
 import {
   IonicErrorHandler,
@@ -208,6 +210,7 @@ const heightLevelModules = [
     MatMenuModule,
     MatGridListModule,
     MatButtonModule,
+    MatIconModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: pages,

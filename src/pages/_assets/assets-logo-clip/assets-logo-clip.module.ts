@@ -5,8 +5,9 @@ import { ComponentsModule } from "../../../components/components.module";
 import { DirectivesModule } from "../../../directives/directives.module";
 import { PipesModule } from "../../../pipes/pipes.module";
 import { TranslateModule } from "@ngx-translate/core";
-import { MatButtonModule } from "@angular/material";
+import { MatButtonModule, MatIconModule } from "@angular/material";
 import { MomentModule } from "angular2-moment";
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
 	declarations: [AssetsLogoClipPage],
@@ -17,7 +18,9 @@ import { MomentModule } from "angular2-moment";
 		PipesModule,
 		ComponentsModule,
 		MatButtonModule,
+		MatIconModule,
 		MomentModule,
+		ColorPickerModule
 	],
 })
 export class AssetsLogoClipPageModule {}

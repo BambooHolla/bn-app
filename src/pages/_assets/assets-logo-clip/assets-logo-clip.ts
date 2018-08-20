@@ -6,7 +6,7 @@ import {
 	ChangeDetectorRef,
 	ElementRef,
 } from "@angular/core";
-import { DomSanitizer,SafeUrl } from "@angular/platform-browser";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -46,11 +46,54 @@ export class AssetsLogoClipPage extends SecondLevelPage {
 
 	@AssetsLogoClipPage.willEnter
 	initData() {
-		const logo_url = this.navParams.get("logo-url");
+		const logo_url = this.navParams.get("logo_url");
 		this.clipAssetsLogo.set_logo_url(
 			logo_url || "./assets/imgs/net-circle-mask.jpg"
 		);
 	}
 
-	export_clip_logo_url?:SafeUrl
+	formData = {
+		bgcolor: "#FFFFFF",
+	};
+
+	export_clip_logo_url?: SafeUrl;
+
+	rotateClockwise() {
+		this.clipAssetsLogo.rotateClockwise90deg();
+	}
+	rotateCounterclockwise() {
+		this.clipAssetsLogo.rotateCounterclockwise90deg();
+	}
+
+	private _input_color_ele = document.createElement("input");
+	fillBG() {
+		if (this._input_color_ele.type !== "color") {
+			this._input_color_ele.type = "color";
+			this._input_color_ele.onchange = e => {
+				this.formData.bgcolor = this._input_color_ele.value;
+			};
+		}
+		const clickEvent = new MouseEvent("click", {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+		});
+		this._input_color_ele.dispatchEvent(clickEvent);
+	}
+	setLogoBg($event) {
+		console.log("set logo bg ", $event);
+		this.formData.bgcolor = $event;
+		this.clipAssetsLogo.setBg(this.formData.bgcolor);
+	}
+
+	closeModal() {
+		this.finishJob();
+	}
+	@asyncCtrlGenerator.loading()
+	@asyncCtrlGenerator.single()
+	async exportClip() {
+		await sleep(200);
+		this.jobRes({ logo_url: await this.clipAssetsLogo.exportClipBolbUrl() });
+		this.finishJob(true);
+	}
 }
