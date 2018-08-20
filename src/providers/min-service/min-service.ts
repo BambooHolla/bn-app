@@ -262,8 +262,14 @@ export class MinServiceProvider extends FLP_Tool {
     try {
       var vote_res = await this.transactionService.putTransaction(txData);
     } catch (err) {
-      if (err && err.details && err.details.minFee) {
-        const minFee = parseFloat(err.details.minFee) / 1e8;
+      if (
+        err &&
+        err.CODE === "1074" &&
+        err.details &&
+        err.details.details &&
+        err.details.details.minFee
+      ) {
+        const minFee = parseFloat(err.details.details.minFee) / 1e8;
         if (isFinite(minFee) && minFee > parseFloat(fee)) {
           console.warn("手续费过低，继续重试", minFee, fee);
           return this._vote(
@@ -407,10 +413,6 @@ export class MinServiceProvider extends FLP_Tool {
   private _vote_error(err) {
     this.vote_status_detail = err;
 
-    // FIXME: 临时操作，这个应该是后端的错误信息
-    if (err && err.message === "移动端挖矿升级中，敬请期待") {
-      err.message = "当前矿工拒绝接收投票，请稍后再试或使用其它节点";
-    }
     const has_handler = this.tryEmit("vote-error", err);
     this.vote_status.next(false);
     if (!has_handler) {
