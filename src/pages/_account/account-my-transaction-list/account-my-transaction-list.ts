@@ -191,7 +191,8 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
       return this._resendUnconfirmTransaction(tra);
     }
   }
-  @asyncCtrlGenerator.error("@@TRANSACTION_SEND_FAIL")
+  @asyncCtrlGenerator.error("@@TRANSACTION_RESEND_FAIL")
+  @asyncCtrlGenerator.success("@@TRANSACTION_RESEND_SUCCESS")
   private async _resendUnconfirmTransaction(tra: TransactionModel) {
     await this.transactionService.putThirdTransaction(tra);
   }
@@ -210,11 +211,13 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
     await this.transactionService.unTxDb.remove({ _id: tra["_id"] });
     const { unconfirm_transaction_config, unconfirm_transaction_list } = this;
     const index = unconfirm_transaction_list.indexOf(tra);
-    if (index !== -1) {
-      unconfirm_transaction_config.offset -= 1;
-      unconfirm_transaction_list.splice(index, 1);
-      this.markForCheck();
-    }
+    tra["__remove"] = true;
+    this.markForCheck();
+    // if (index !== -1) {
+    //   unconfirm_transaction_config.offset -= 1;
+    //   unconfirm_transaction_list.splice(index, 1);
+    //   this.markForCheck();
+    // }
   }
 
   /// 自动更新

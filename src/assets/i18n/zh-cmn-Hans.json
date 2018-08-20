@@ -661,7 +661,8 @@
   "LOADING_MORE_UNCONFIRM_TRANSACTION_LIST": "加载更多未确认交易列表中……",
   "CONFIRM_TO_RESEND_TRANSACTION": "确定要重新发送交易？",
   "RESEND_TRANSACTION": "发送",
-  "TRANSACTION_SEND_FAIL": "交易发送失败",
+  "TRANSACTION_RESEND_FAIL": "交易重新发送失败",
+  "TRANSACTION_RESEND_SUCCESS": "交易重新发送成功",
   "TRANSACTION_DELETE_FAIL": "交易删除失败",
 
   "//": "account-peer-list",

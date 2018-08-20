@@ -163,45 +163,33 @@ page-account-my-transaction-list {
       }
     }
   }
-  // .common-list {
-  //   background-color: #e5e5e5;
-  // }
-  // .common-item.item {
-  //   > .left {
-  //     height: 100%;
-  //     display: flex;
-  //     flex-direction: column;
-  //     justify-content: center;
-  //     align-items: flex-start;
-  //     > .from-to {
-  //       display: flex;
-  //       align-items: center;
-  //       ali-icon {
-  //         font-size: 3rem;
-  //         margin: 0 0.2rem;
-  //       }
-  //     }
-  //     > .create-time {
-  //       color: #b5b5b5;
-  //       font-size: 1.2rem;
-  //     }
-  //   }
-  //   > .right {
-  //     height: 100%;
-  //     margin-left: auto;
-  //     align-self: flex-end;
-  //     display: flex;
-  //     flex-direction: column;
-  //     justify-content: center;
-  //     align-items: flex-end;
-  //     color: #505050;
-  //     > .amount {
-  //       color: #505050;
-  //       font-weight: 500;
-  //     }
-  //   }
-  // }
+
   ion-item-sliding {
+    &.removed {
+      animation-name: "fadeOutLeftAndRemove";
+      animation-duration: 0.8s;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      animation-direction: alternate;
+      @keyframes fadeOutLeftAndRemove {
+        0% {
+          opacity: 1;
+          height: 4.92rem;
+          /* transform: translate3d(0, 0, 0); */
+        }
+
+        99% {
+          opacity: 0;
+          transform: translate3d(-100%, 0, 0);
+        }
+        100% {
+          opacity: 0;
+          transform: translate3d(-100%, 0, 0);
+          display: none;
+          height: 0;
+        }
+      }
+    }
     ion-item {
       border-bottom: 0 !important;
       padding: 0 !important;
