@@ -167,15 +167,17 @@ page-account-my-transaction-list {
   ion-item-sliding {
     &.removed {
       animation-name: "fadeOutLeftAndRemove";
-      animation-duration: 0.8s;
+      animation-duration: 500ms;
       animation-timing-function: linear;
       animation-fill-mode: forwards;
       animation-direction: alternate;
       @keyframes fadeOutLeftAndRemove {
         0% {
           opacity: 1;
-          height: 4.92rem;
           /* transform: translate3d(0, 0, 0); */
+        }
+        50%{
+          height: 4.92rem;
         }
 
         99% {
@@ -200,6 +202,16 @@ page-account-my-transaction-list {
           margin: 0;
         }
       }
+    }
+    .list-retry{
+      background-color: #B3E5FC;
+      color: #333;
+      border-radius: 0;
+    }
+    .list-delete{
+      background-color: #FFCDD2;
+      color: #333;
+      border-radius: 0;
     }
   }
   .empty-list {
