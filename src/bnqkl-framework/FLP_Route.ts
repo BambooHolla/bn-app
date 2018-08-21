@@ -14,6 +14,7 @@ export class FLP_Route extends FLP_Lifecycle {
     super();
   }
   _navCtrlPush(path: string, params?: any, opts?: NavOptions, done?: any) {
+    sessionStorage.setItem("CURRENT_PAGE", path);
     // opts = Object.assign({animation: 'common-transition', direction: 'forward'}, opts);
     return this.navCtrl.push(path, params, opts, done);
   }

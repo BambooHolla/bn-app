@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{'ACCOUNT-MY-TAGS'|translate}}</ion-title>
+    <!--     <ion-buttons right>
+      <button [title]="'CREATE_TAG'|translate" (click)="routeTo('pay-select-my-local-contact',{auto_return:true,title:getTranslateSync('SELECT_LOCAL_CONTACT_TO_NEW_TAG'),mode:'select-local-contact-to-new-tag'})">
+        <ali-icon name="ifm-zengjia"></ali-icon>
+      </button>
+    </ion-buttons> -->
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="common-list">
+    <button mat-button class="common-item" *ngFor="let tag of tag_list" (click)="routeTo('account-tag-detail',{tag:tag,auto_return:true})">
+      <div class="left">
+        {{tag.name}}
+      </div>
+      <div class="right">
+        <div class="contact-num">{{tag.contact_ids.length}}</div>
+        <ali-icon name="ifm-arrow-to-right"></ali-icon>
+      </div>
+    </button>
+    <div class="empty-list" *ngIf="tag_list.length==0&&page_info.loading==false">
+      <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST'|translate">
+      <div class="message">{{'TAG_LIST_IS_EMPTY'|translate}}</div>
+    </div>
+  </div>
+</ion-content>

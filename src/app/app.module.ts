@@ -45,6 +45,7 @@ import {
   MatGridListModule,
   MatButtonModule,
   MatIconModule,
+  MatChipsModule,
 } from "@angular/material";
 import {
   IonicErrorHandler,
@@ -211,6 +212,7 @@ const heightLevelModules = [
     MatGridListModule,
     MatButtonModule,
     MatIconModule,
+    MatChipsModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: pages,

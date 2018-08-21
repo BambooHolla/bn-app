@@ -46,7 +46,11 @@ export class AccountContactDetailPage extends SecondLevelPage {
             data.updated_contact.address === this.contact.address
           ) {
             this.contact = data.updated_contact;
-            this.markForCheck();
+            if (data.tag_names) {
+              this.contact_tag_names = data.tag_names;
+            } else {
+              this.loadContactTagNames();
+            }
           }
           break;
       }
@@ -54,6 +58,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
   }
   @AccountContactDetailPage.markForCheck
   contact?: LocalContactModel | AccountModel;
+  @AccountContactDetailPage.markForCheck contact_tag_names: string[] = [];
   get mainname() {
     const { contact } = this;
     if (contact) {
@@ -102,6 +107,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     if (!this.contact) {
       return this.navCtrl.goToRoot({});
     }
+    this.loadContactTagNames();
     this.hide_navbar_tools = this.contact.address === this.userInfo.address;
     if (!this.hide_navbar_tools) {
       if (this.contact) {
@@ -131,6 +137,23 @@ export class AccountContactDetailPage extends SecondLevelPage {
       this.checking_is_my_contact = false;
     }
     this.markForCheck();
+  }
+  @asyncCtrlGenerator.error()
+  async loadContactTagNames() {
+    if (!this.contact || !("tags" in this.contact)) {
+      return;
+    }
+    const tag_ids = this.contact.tags;
+    const contact_tags = await Promise.all(
+      tag_ids.map(tag_id => this.localContact.tag_db.findOne({ _id: tag_id }))
+    );
+    const tag_names = [] as string[];
+    contact_tags.forEach(contact => {
+      if (contact) {
+        tag_names.push(contact.name);
+      }
+    });
+    this.contact_tag_names = tag_names;
   }
 
   /*跳转到编辑页面*/

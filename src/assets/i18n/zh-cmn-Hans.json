@@ -428,6 +428,7 @@
 
   "//": "pay-select-my-local-contacts",
   "PAY-SELECT-MY-LOCAL-CONTACTS": "选择地址",
+  "TAGS": "标签",
 
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "离线支付",
@@ -645,6 +646,22 @@
   "EXPECTED_CONFIRMATION_TIME": "预计确认",
   "CONFIRMED_TIME": "已确认",
   "SHARE_ERROR": "分享失败",
+
+  "//": "account-my-tags",
+  "ACCOUNT-MY-TAGS": "所有标签",
+  "GET_TAGS_ERROR": "获取本地所有标签失败",
+  "TAG_LIST_IS_EMPTY": "本地暂无标签",
+  "CREATE_TAG": "新建标签",
+
+  "//": "account-tag-detail",
+  "ACCOUNT-TAG-DETAIL": "编辑标签",
+  "ACCOUNT-NEW-TAG": "保存为标签",
+  "TAG_NAME": "标签名字",
+  "TAG_NAME_EXAMPLE":"例如家人、朋友",
+  "TAG_CONTACTS": "成员",
+  "DELETE_TAG": "删除标签",
+  "TAG_SAVE_SUCCESS": "保存完成",
+  "TAG_REMOVE_SUCCESS": "标签已删除",
 
   "//": "account-my-transaction-list",
   "ACCOUNT-MY-TRANSACTION-LIST": "交易数据",

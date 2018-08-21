@@ -42,8 +42,8 @@ export class AccountRemarkContactPage extends SecondLevelPage {
       switch (id) {
         case "account-remark-contact-tags":
           if (data.contact_id === this.contact._id) {
-            this.contact.tags = data.new_tags;
-            this.formData.tags = data.new_tags.slice();
+            this.contact.tags = data.tag_ids;
+            this.formData.tags = data.tag_names;
             this.markForCheck();
           }
           break;
@@ -65,7 +65,7 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     }
     this.contact = contact;
     this.formData.nickname = contact.nickname || "";
-    this.formData.tags = contact.tags.slice();
+    this.loadContactTagNames();
     this.formData.phones = contact.phones
       .map(phone => {
         phone = phone.trim();
@@ -79,9 +79,28 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     this._tryAddPhoneInput();
     this.markForCheck();
   }
+  async loadContactTagNames() {
+    const tag_ids = this.contact.tags;
+    const contact_tags = await Promise.all(
+      tag_ids.map(tag_id => this.localContact.tag_db.findOne({ _id: tag_id }))
+    );
+    // 索引的过程中可能被改变了，那么这些数据就白查了，不能用了。
+    if (tag_ids !== this.contact.tags) {
+      return;
+    }
+    const tag_names = [] as string[];
+    contact_tags.forEach(contact => {
+      if (contact) {
+        tag_names.push(contact.name);
+      }
+    });
+    this.formData.tags = tag_names;
+    this.markForCheck();
+  }
 
   formData = {
     nickname: "",
+    // 这里的tags只用于显示，实际的ids存储与contact对象中，于"account-remark-contact-tags"传来的数据来进行更新
     tags: [] as string[],
     phones: [] as { value: string }[],
     remark: "",
@@ -139,13 +158,15 @@ export class AccountRemarkContactPage extends SecondLevelPage {
     const local_contact: LocalContactModel = {
       ...this.contact,
       nickname,
-      tags,
       phones: phones.map(p => p.value).filter(v => v.trim()),
       remark,
       image,
     };
     await this.localContact.updateLocaContact(local_contact);
-    this.jobRes({ updated_contact: local_contact });
+    this.jobRes({
+      updated_contact: local_contact,
+      tag_names: this.formData.tags,
+    });
     this.finishJob();
   }
 

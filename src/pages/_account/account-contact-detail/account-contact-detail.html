@@ -53,9 +53,9 @@
           <span class="split"></span>
         </div>
       </div>
-      <div class="tags" *ngIf="contact?.tags?.length">
+      <div class="tags" *ngIf="contact_tag_names.length">
         <ali-icon name="ifm-biaoqian"></ali-icon>
-        <div class="tag-item" *ngFor="let tag of contact.tags">
+        <div class="tag-item" *ngFor="let tag of contact_tag_names">
           <span class="inner">{{tag}}</span>
         </div>
       </div>

@@ -23,6 +23,14 @@
   </div> -->
   <ion-list class="contact-list list">
     <!-- <div *ngIf="list_placeholder" class="divider">{{search_placeholder}}</div> -->
+    <ion-item class="mat-item-wrapper">
+      <button class="mat-item-container" mat-button (click)="routeTo('account-my-tags')">
+        <div class="left">
+          <ali-icon name="ifm-biaoqian"></ali-icon>
+        </div>
+        <div class="center">{{'TAGS'|translate}}</div>
+      </button>
+    </ion-item>
     <ng-container *ngFor="let letter_contacts of grouped_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
       <ion-item-sliding *ngFor="let contact of letter_contacts.list">
@@ -35,10 +43,10 @@
           </div>
         </ion-item>
         <ion-item-options side="right">
-          <button class="options-item list-remark" (click)="routeTo('account-remark-contact',{contact:contact,auto_return:true})">
+          <button mat-button class="options-item list-remark" (click)="routeTo('account-remark-contact',{contact:contact,auto_return:true})">
             <span class="inner">{{'SET_REMARK'|translate}}</span>
           </button>
-          <button class="options-item list-delete" (click)="confirmToDelete(contact)">
+          <button mat-button class="options-item list-delete" (click)="confirmToDelete(contact)">
             <span class="inner">{{'REMOVE'|translate}}</span>
           </button>
         </ion-item-options>

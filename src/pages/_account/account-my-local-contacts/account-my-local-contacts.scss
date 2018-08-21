@@ -40,10 +40,12 @@ page-account-my-local-contacts {
     .list-remark {
       background-color: #c1c1c1;
       color: #fff;
+      border-radius: 0;
     }
     .list-delete {
       background-color: #ff5c5b;
       color: #fff;
+      border-radius: 0;
     }
     ion-item {
       border-bottom: 0.55px solid #eeeeee !important;
@@ -53,6 +55,30 @@ page-account-my-local-contacts {
     }
     ion-item-options {
       border-bottom: none !important;
+    }
+    .mat-item-wrapper {
+      padding: 0;
+      > .item-inner {
+        padding: 0;
+      }
+      ion-label {
+        margin: 0;
+      }
+      .mat-item-container {
+        padding: 0;
+        width: 100%;
+        .mat-button-wrapper {
+          height: 5.6rem;
+          display: flex;
+          align-items: center;
+          color: #333;
+          .left {
+            width: 12vw;
+            text-align: center;
+            font-size: 2rem;
+          }
+        }
+      }
     }
   }
   .contact-list {

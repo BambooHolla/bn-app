@@ -266,17 +266,18 @@ export class LocalContactProvider extends EventEmitter {
   }
   async updateTag(tag: TYPE.TagModel) {
     const { _id, ...updates } = tag;
-    // 如果这个标签里头已经没有联系人了，就自动删除标签
-    if (updates.contact_ids.length) {
-      return this.tag_db.update(
-        {
-          _id,
-        },
-        updates
-      );
-    } else {
-      return this.removeTag(_id);
-    }
+    return this.tag_db.update({ _id }, updates);
+    // // 如果这个标签里头已经没有联系人了，就自动删除标签
+    // if (updates.contact_ids.length) {
+    //   return this.tag_db.update(
+    //     {
+    //       _id,
+    //     },
+    //     updates
+    //   );
+    // } else {
+    //   return this.removeTag(_id);
+    // }
   }
 
   /*导出导入*/

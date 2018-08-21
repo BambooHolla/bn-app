@@ -67,7 +67,7 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
     this.used_tags = contact.tags.map(name => ({ name }));
     this.all_tags = await this.localContact.getTags();
     this.used_tags = this.all_tags.filter(
-      t => contact.tags.indexOf(t.name) !== -1
+      t => contact.tags.indexOf(t._id) !== -1
     );
     this.markForCheck();
   }
@@ -172,14 +172,19 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
   @asyncCtrlGenerator.loading()
   async saveContactTags() {
     const { used_tags, contact, all_tags } = this;
+    const tag_ids = [] as string[];
     const tag_names = [] as string[];
 
     const used_tag_id_map = new Set();
     for (var _tag of used_tags) {
       const tag = _tag;
+      tag_names.push(tag.name);
       if (!("_id" in tag)) {
         // 没有id的需要进行生成标签
-        await this.localContact.addTag(_tag.name, [contact._id]);
+        const new_tag_id = await this.localContact.addTag(_tag.name, [
+          contact._id,
+        ]);
+        tag_ids.push(new_tag_id);
       } else {
         // 有id的需要更新 contact_ids
         if (tag.contact_ids.indexOf(contact._id) === -1) {
@@ -187,8 +192,8 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
           await this.localContact.updateTag(tag);
         }
         used_tag_id_map.add(tag._id);
+        tag_ids.push(tag._id);
       }
-      tag_names.push(tag.name);
     }
     for (var _t of all_tags) {
       const tag = _t;
@@ -203,12 +208,13 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
     }
     const local_contact = {
       ...this.contact,
-      tags: tag_names,
+      tags: tag_ids,
     };
     await this.localContact.updateLocaContact(local_contact);
     this.jobRes({
       contact_id: local_contact._id,
-      new_tags: tag_names,
+      tag_ids: tag_ids,
+      tag_names: tag_names,
     });
     this.finishJob();
   }

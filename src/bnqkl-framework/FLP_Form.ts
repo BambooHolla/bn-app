@@ -153,7 +153,7 @@ export class FLP_Form extends FLP_Route {
           console.warn("表单检查出错", fun_key, err);
         }
       });
-      if (ele) {
+      if (ele && ele.setCustomValidity) {
         let err_msg = "";
         if (err_res && Object.keys(err_res).length) {
           err_msg = JSON.stringify(err_res);

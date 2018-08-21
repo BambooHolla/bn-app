@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{(is_create_mode?'ACCOUNT-NEW-TAG':'ACCOUNT-TAG-DETAIL')|translate}}</ion-title>
+    <ion-buttons right>
+      <button [title]="'CREATE_TAG'|translate" (click)="saveTagDetail()">
+        {{'SAVE'|translate}}
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="common-form">
+    <div class="label divider">
+      {{'TAG_NAME'|translate}}
+    </div>
+    <div class="mat-container tag-name">
+      <mat-form-field floatLabel="never">
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'TAG_NAME_EXAMPLE'|translate" maxlength="18" [(ngModel)]="formData.tag_name" set-input-status="tag_name" [errorStateMatcher]="matFormMatcherFactory('tag_name')">
+      </mat-form-field>
+    </div>
+    <div class="label divider">
+      {{'TAG_CONTACTS'|translate}}
+    </div>
+    <div class="common-item">
+      <mat-chip-list [class.is-edit]="is_edit_contact_list">
+        <mat-chip *ngFor="let contact of contact_list" [removable]="is_edit_contact_list" (removed)="removeContact(contact)" (click)="is_edit_contact_list?removeContact(contact):routeTo('account-contact-detail',{contact:contact})">
+          <span [innerHTML]="contact.nickname||contact.username||(contact.address|mask:'@address')"></span>
+          <mat-icon matChipRemove *ngIf="is_edit_contact_list">cancel</mat-icon>
+        </mat-chip>
+        <button [hidden]="is_edit_contact_list" mat-icon-button (click)="gotoAddContact()">
+          <mat-icon>add</mat-icon>
+        </button>
+        <button mat-icon-button (click)="toggleRemoveContact()">
+          <mat-icon>{{is_edit_contact_list?'done':'remove'}}</mat-icon>
+        </button>
+      </mat-chip-list>
+    </div>
+  </div>
+</ion-content>
