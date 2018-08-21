@@ -171,15 +171,35 @@ export class AccountRemarkContactTagsPage extends SecondLevelPage {
   // 提交
   @asyncCtrlGenerator.loading()
   async saveContactTags() {
-    const { used_tags, contact } = this;
+    const { used_tags, contact, all_tags } = this;
     const tag_names = [] as string[];
+
+    const used_tag_id_map = new Set();
     for (var _tag of used_tags) {
       const tag = _tag;
       if (!("_id" in tag)) {
         // 没有id的需要进行生成标签
         await this.localContact.addTag(_tag.name, [contact._id]);
+      } else {
+        // 有id的需要更新 contact_ids
+        if (tag.contact_ids.indexOf(contact._id) === -1) {
+          tag.contact_ids.push(contact._id);
+          await this.localContact.updateTag(tag);
+        }
+        used_tag_id_map.add(tag._id);
       }
       tag_names.push(tag.name);
+    }
+    for (var _t of all_tags) {
+      const tag = _t;
+      // 移除ids
+      if (!used_tag_id_map.has(tag._id)) {
+        const index = tag.contact_ids.indexOf(contact._id);
+        if (index !== -1) {
+          tag.contact_ids.splice(index, 1);
+          this.localContact.updateTag(tag);
+        }
+      }
     }
     const local_contact = {
       ...this.contact,
