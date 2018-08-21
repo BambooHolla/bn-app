@@ -68,6 +68,7 @@ export class AniBase extends EventEmitter {
     if (app) {
       app.destroy();
     }
+    this.app = undefined;
   }
   devicePixelRatio = window.devicePixelRatio;
   pt = px => this.devicePixelRatio * px;

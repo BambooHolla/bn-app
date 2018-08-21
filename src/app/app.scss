@@ -153,7 +153,7 @@ ion-navbar.toolbar-ios {
       background-color: transparent;
       border: none;
       color: #7a7a7a;
-      .button-inner{
+      .button-inner {
         color: #7a7a7a;
       }
     }
@@ -316,4 +316,11 @@ ion-loading.blockchain-loading {
 ion-app.app-root {
   font-family: -apple-system, "SF Compact Display", "Helvetica Neue", "Roboto",
     sans-serif;
+  .mat-ripple-element {
+    background-color: rgba(#76e5de, 0.1);
+  }
+  .mat-button-focus-overlay {
+    background-color: rgba(#76e5de, 0.12);
+  }
 }
+

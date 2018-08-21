@@ -102,9 +102,7 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.warning("")
   async freezeWarn() {
     if (this.userInfo.isFreezed) {
-      throw new Error(
-        this.getTranslateSync("FREEZED_ACCOUNT_COULD_NOT_TRANFER")
-      );
+      throw new Error("@@FREEZED_ACCOUNT_COULD_NOT_TRANFER");
     }
   }
 

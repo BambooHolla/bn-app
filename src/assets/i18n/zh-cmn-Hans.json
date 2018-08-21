@@ -550,7 +550,7 @@
   "//": "MARK",
   "TRAN_TYPE_NAME_13": "侧链数据存证",
   "//": "ISSUE_ASSET",
-  "TRAN_TYPE_NAME_14": "发行数字权益",
+  "TRAN_TYPE_NAME_14": "生成数字权益合约",
   "//": "DESTORY_ASSET",
   "TRAN_TYPE_NAME_15": "赎回IBT",
   "//": "TRANSFER_ASSET",
@@ -632,8 +632,7 @@
   "NO_ASSETS": "未拥有其它数字权益",
   "LOADING_ASSETS": "载入中",
   "ASSETS_LIST_UPDATE_ERROR": "权益列表更新出错",
-  "FREEZED_ACCOUNT_COULD_NOT_TRANFER":
-    "您的账户在区块链上发行资产而被冻结，无法进行任何交易",
+  "FREEZED_ACCOUNT_COULD_NOT_TRANFER": "您的IBT被冻结，无法完成交易",
 
   "//": "pay-transfer-receipt",
   "TRANSFER": "转账",
@@ -657,7 +656,7 @@
   "ACCOUNT-TAG-DETAIL": "编辑标签",
   "ACCOUNT-NEW-TAG": "保存为标签",
   "TAG_NAME": "标签名字",
-  "TAG_NAME_EXAMPLE":"例如家人、朋友",
+  "TAG_NAME_EXAMPLE": "例如家人、朋友",
   "TAG_CONTACTS": "成员",
   "DELETE_TAG": "删除标签",
   "TAG_SAVE_SUCCESS": "保存完成",

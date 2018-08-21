@@ -15,6 +15,7 @@ import { MyApp } from "../../app/app.component";
 import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import { UserInfoProvider } from "../../providers/user-info/user-info";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 
 import { Tab1Root, Tab2Root, Tab3Root, Tab4Root } from "../pages";
@@ -48,7 +49,8 @@ export class TabsPage extends FLP_Lifecycle {
     public fetch: AppFetchProvider,
     public r2: Renderer2,
     public elRef: ElementRef,
-    public cdRef: ChangeDetectorRef
+    public cdRef: ChangeDetectorRef,
+    public userInfo:UserInfoProvider
   ) {
     super();
     translateService
