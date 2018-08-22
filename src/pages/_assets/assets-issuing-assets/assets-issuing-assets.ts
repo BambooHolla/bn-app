@@ -166,6 +166,42 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     };
   }
 
+  /**申请成为受托人*/
+  @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.success()
+  async applyToAsDelegate() {
+    const { custom_fee, password, pay_pwd } = await this.getUserPassword({
+      custom_fee: true,
+    });
+    await this._sendToDelegateTx(
+      (custom_fee || this.appSetting.settings.default_fee).toString(),
+      password,
+      pay_pwd
+    );
+  }
+  @asyncCtrlGenerator.loading()
+  private async _sendToDelegateTx(
+    fee: string,
+    secret: string,
+    secondSecret?: string
+  ) {
+    await this.transactionService.putTransaction({
+      type: this.transactionService.TransactionTypes.DELEGATE,
+      secondSecret,
+      secret,
+      publicKey: this.userInfo.publicKey,
+      fee,
+      asset: {
+        delegate: {
+          ...(this.userInfo.username
+            ? { username: this.userInfo.username }
+            : {}),
+          publicKey: this.userInfo.publicKey,
+        },
+      },
+    });
+  }
+
   private _cache_logo_base64 = ["", ""];
   /**提交数字资产表单*/
   @asyncCtrlGenerator.single()

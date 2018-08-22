@@ -47,7 +47,13 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
   current_info_height: number = 0;
   @VoteDelegateDetailPage.willEnter
   async initData() {
-    const delegate_info = this.navParams.get("delegate_info");
+    let delegate_info: DelegateModel = this.navParams.get("delegate_info");
+    if (!delegate_info) {
+      const publicKey = this.navParams.get("publicKey");
+      if (publicKey) {
+        delegate_info = await this.minService.getDelegateInfo(publicKey);
+      }
+    }
     if (!delegate_info) {
       this.wait_delegate_info.reject();
       this.navCtrl.goToRoot({});

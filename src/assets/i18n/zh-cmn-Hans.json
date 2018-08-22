@@ -828,6 +828,15 @@
   "PLEASE_PICK_AN_IMAGE_AS_ASSETS_LOGO": "请选择一张图片作为权益LOGO",
   "GENESIS_DESTINATION_CAN_NOT_BE_YOURSELF": "权益接收账户不能是发行权益的账户",
   "GENESIS_ADDRESS_IS_MALFORMED": "权益接收账户有误",
+  "BECOME_A_DELEGATE": "申请成为矿工",
+  "BECOME_A_DELEGATE_TIP":
+    "申请成为矿工后再生成数字权益合约，可以在未来通过挖矿的形式带来冻结IBT数量的增加。",
+  "ASSETS_ABBREVIATION_TIP":
+    "资产的英文简称为2到5个大写英语字母，不能与现有资产重名，不能与任何国家法币重名；名称一旦设置将永远无法修改。",
+  "ASSETS_GENESISADDRESS_TIP":
+    "接收地址为您的资产发行成功后，用于接收全部资产的账户；这个账户至少需要给您的当前发行账户至少进行过一笔转账交易。",
+  "ASSETS_EXPECTEDISSUEDASSETS_TIP":
+    "发行数量为您的即将发行资产的总量；不能少于您冻结的IBT数量，也不能超过5000倍您冻结的IBT数量这个数量必须为正整数。",
 
   "//": "assets-logo-clip",
   "ASSETS-LOGO-CLIP": "图标裁剪",

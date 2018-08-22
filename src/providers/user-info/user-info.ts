@@ -44,6 +44,9 @@ export class UserInfoProvider extends EventEmitter {
   get isFreezed() {
     return this._accountType === 1;
   }
+  get isDelegate() {
+    return !!this._userInfo.isDelegate;
+  }
   constructor(public storage: Storage) {
     super();
   }

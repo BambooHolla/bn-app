@@ -16,7 +16,40 @@
           </ng-template>
         </button>
       </div>
-      <div class="label">{{'UPLOAD_LOGO_IMAGE'|translate}}</div>
+      <!-- <div class="label">{{'UPLOAD_LOGO_IMAGE'|translate}}</div> -->
+      <div class="delegate-extends">
+        <ng-container *ngIf="!userInfo.isDelegate;else delegateAddress">
+          <button mat-button class="apply-delegate" (click)="applyToAsDelegate()">
+            <span class="left">
+              <span class="icon-wrapper">
+                <ali-icon name="ifm-dagou"></ali-icon>
+              </span>
+            </span>
+            <span class="right">{{'BECOME_A_DELEGATE'|translate}}</span>
+          </button>
+          <div class="tip">{{'BECOME_A_DELEGATE_TIP'|translate}}</div>
+        </ng-container>
+        <ng-template #delegateAddress>
+          <div class="into-delegate-wrapper">
+            <button mat-button class="into-delegate">
+              <span class="left">
+                <span class="icon-wrapper">
+                  <ali-icon name="ifm-kuanggong"></ali-icon>
+                </span>
+              </span>
+              <span class="right">{{userInfo.address}}</span>
+            </button>
+            <button mat-button class="into-delegate" (click)="routeTo('vote-delegate-detail',{publicKey:userInfo.publicKey})">
+              <span class="left">
+                <span class="icon-wrapper">
+                  <ali-icon name="ifm-kuanggong"></ali-icon>
+                </span>
+              </span>
+              <span class="right">{{userInfo.address}}</span>
+            </button>
+          </div>
+        </ng-template>
+      </div>
     </div>
     <!-- <div class="mat-container assetName">
       <mat-form-field>
@@ -36,6 +69,10 @@
           {{errors.abbreviation.TOO_LONG|translate}}
         </mat-error>
       </mat-form-field>
+      <div class="tip">
+        <ali-icon name="ifm-dialog-warning"></ali-icon>
+        {{'ASSETS_ABBREVIATION_TIP'|translate}}
+      </div>
     </div>
     <div class="mat-container genesisAddress">
       <mat-form-field>
@@ -47,6 +84,10 @@
           {{errors.genesisAddress.WRONG_ADDRESS|translate}}
         </mat-error>
       </mat-form-field>
+      <div class="tip">
+        <ali-icon name="ifm-dialog-warning"></ali-icon>
+        {{'ASSETS_GENESISADDRESS_TIP'|translate}}
+      </div>
     </div>
     <div class="mat-container expectedIssuedAssets">
       <mat-form-field>
@@ -55,6 +96,10 @@
           {{errors.expectedIssuedAssets.WRONG_RANGE|translate}}
         </mat-error>
       </mat-form-field>
+      <div class="tip">
+        <ali-icon name="ifm-dialog-warning"></ali-icon>
+        {{'ASSETS_EXPECTEDISSUEDASSETS_TIP'|translate}}
+      </div>
     </div>
   </div>
   <div class="footer">

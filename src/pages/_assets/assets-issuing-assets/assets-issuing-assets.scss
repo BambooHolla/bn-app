@@ -95,6 +95,7 @@ page-assets-issuing-assets {
         width: 27.8vw;
         height: 27.8vw;
         margin-top: 5rem;
+        filter: drop-shadow(0 0 2vw rgba(#7de1f0, 1));
         .mat-button {
           padding: 0; /* .mat-button-wrapper{
             object-fit: cover;
@@ -111,6 +112,106 @@ page-assets-issuing-assets {
         margin-top: 1rem;
         font-size: 1.3rem;
         color: #666;
+      }
+      > .delegate-extends {
+        text-align: center;
+        padding-top: 3rem;
+        > .apply-delegate {
+          display: inline-block;
+          height: 3rem;
+          background: linear-gradient(to bottom, #73f5e0 0%, #83d6f7 100%);
+          box-shadow: 0 3px 1px -2px rgba(#7de1f0, 0.2),
+            0 2px 2px 0 rgba(#7de1f0, 0.14), 0 1px 5px 0 rgba(#7de1f0, 0.12);
+          line-height: 3rem;
+          color: #fff;
+          border-radius: 1.5rem;
+          padding: 0 1rem;
+          .mat-ripple-element {
+            background-color: rgba(#fff, 0.1);
+          }
+          .mat-button-focus-overlay {
+            background-color: rgba(#fff, 0.12);
+          }
+          .left {
+            display: inline-block;
+            padding-right: 0.5rem;
+            border-right: 1px solid rgba(#fff, 0.5);
+            .icon-wrapper {
+              display: block;
+              border-radius: 50%;
+              border: 0.165rem solid #fff;
+              height: 2rem;
+              width: 2rem;
+              line-height: 1.9rem;
+              text-align: center;
+              overflow: hidden;
+              font-size: 1rem;
+              transform: scale(0.95);
+            }
+          }
+          .right {
+            padding-left: 0.5rem;
+            display: inline-block;
+            font-weight: lighter;
+            font-size: 1.3rem;
+            letter-spacing: 0.15rem;
+          }
+        }
+        > .tip {
+          color: #82d7f6;
+          padding-top: 1rem;
+          font-weight: lighter;
+          font-size: 1.35rem;
+          text-shadow: 0 0 1rem #fff;
+          overflow: hidden;
+        }
+        >.into-delegate-wrapper{
+          position: relative;
+          width: 0;
+          height: 5rem;
+          filter: drop-shadow(0 0 0.8rem #FFF);
+          > .into-delegate {
+            position: absolute;
+            transform: translateX(-50%);
+            top: 0;
+            border: 0.2rem solid transparent;
+            border-top-color: #73f5e0;
+            border-bottom-color: #83d6f7;
+            border-left-color: #7be5eb;
+            border-right-color: #7be5eb;
+            color: #7be5eb;
+            border-radius: 2rem;
+            height: 3.6rem;
+            line-height: 3.5rem;
+            font-size: 1.4rem;
+            padding: 0 0.8rem;
+            background: transparent;
+            overflow: hidden;
+            .left {
+              display: inline-block;
+              .icon-wrapper {
+                display: block;
+                height: 3rem;
+                ali-icon {
+                  font-size: 2.4rem;
+                }
+              }
+            }
+            &:first-child{
+              border-color: #73f5e0;
+              color: #73f5e0;
+              mask-image: linear-gradient(to bottom,#000 0%,transparent 100%);
+              mask-size: 100% 100%;
+              pointer-events: none;
+            }
+            &:last-child{
+              border-color: #83d6f7;
+              color: #83d6f7;
+              mask-image: linear-gradient(to top,#000 0%,transparent 100%);
+              mask-size: 100% 100%;
+            }
+          }
+        }
       }
     }
     > .abbreviation {
@@ -174,6 +275,25 @@ page-assets-issuing-assets {
       }
       input {
         text-align: right;
+      }
+    }
+
+    > .mat-container {
+      > .tip {
+        transition-duration: 250ms;
+        color: #dcdcdc;
+        font-size: 1.25rem;
+        padding-bottom: 3rem;
+        ali-icon {
+          color: #666;
+          margin: 0 0.5rem;
+        }
+      }
+      > .mat-focused + .tip {
+        color: #999;
+        ali-icon {
+          color: #ff5d5b;
+        }
       }
     }
   }

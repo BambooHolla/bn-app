@@ -198,13 +198,13 @@ export class AccountServiceProvider {
         "account already has username"
       );
     }
-    let is_existed = await this.checkUsernameExisted(newUsername);
+    const is_existed = await this.checkUsernameExisted(newUsername);
     if (!is_existed) {
       throw this.fetch.ServerResError.getI18nError(
         "this username has already exist"
       );
     }
-    let accountData: any = {
+    const accountData: any = {
       type: this.ifmJs.transactionTypes.USERNAME,
       secret,
       publicKey: this.user.userInfo.publicKey,
@@ -221,13 +221,13 @@ export class AccountServiceProvider {
       accountData.secondSecret = secondSecret;
     }
 
-    try {
-      await this.transactionService.putTransaction(accountData);
-      this.user.userInfo.username = newUsername;
-      return true;
-    } catch (err) {
-      throw this.fetch.ServerResError.getI18nError("change username error");
-    }
+    // try {
+    await this.transactionService.putTransaction(accountData);
+    // this.user.userInfo.username = newUsername;
+    return true;
+    // } catch (err) {
+    //   throw this.fetch.ServerResError.getI18nError("change username error");
+    // }
   }
 
   /**
