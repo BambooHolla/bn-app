@@ -54,13 +54,82 @@ page-assets-guide {
 			}
 		}
 	}
+	ion-slides{
+		&.changing{
+			.arrow{
+				opacity: 0;
+				bottom: -5vw;
+			}
+		}
+	}
 	ion-slide {
+		.slide-zoom{
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		// &.swiper-slide-active {
+		// 	.ani-conatiner {
+		// 		opacity: 1;
+		// 	}
+		// }
+		.ani-conatiner {
+			// opacity: 0;
+			opacity: 1;
+			// transition-duration: 250ms;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			display: block;
+			overflow: hidden;
+			transform: translate3d(0, 0, 0);
+			text-align: center;
+			pointer-events: none;
+		}
 		h1 {
+			position: absolute;
+			font-size: 1.8rem;
+			width: 67%;
+			left: 16.5%;
+			margin: 0 auto;
+			top: 80%;
 			color: #666;
-			font-weight: normal;
+			font-weight: 500;
+			text-align: left;
+			line-height: 2.2rem;
 			b {
 				color: #83d6f7;
-				font-weight: normal;
+				font-weight: 600;
+			}
+		}
+		.arrow{
+			position: absolute;
+			bottom: 0;
+			height: 10vw;
+			width: 10vw;
+			left: 45vw;
+			bottom: 5vw;
+			background-image: url('../assets/imgs/assets/arrow-swirl.png') ;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center;
+			animation-name: up-and-down;
+			animation-duration: 2s;
+			animation-timing-function: ease-in-out;
+			animation-iteration-count: infinite;
+			transition-duration: 250ms;
+			@keyframes up-and-down{
+				0% {
+					transform: translateY(-10%);
+				}
+				50%{
+					transform: translateY(10%);
+				}
+				100%{
+					transform: translateY(-10%);
+				}
 			}
 		}
 	}
@@ -73,4 +142,11 @@ page-assets-guide {
 	.s-3 {
 		background-color: rgba(123, 51, 4, 0.1);
 	} */
+	.s-4 {
+		h1{
+			width: 68%;
+			left: 16%;
+			top: 75%;
+		}
+	}
 }
