@@ -61,10 +61,6 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 		console.log("NextStart");
 		this._slide_changing = true;
 	}
-	slideWillChange() {
-		console.log("WillChange");
-		this._slide_changing = true;
-	}
 	slideNextEnd() {
 		console.log("NextEnd");
 		this._slide_changing = false;

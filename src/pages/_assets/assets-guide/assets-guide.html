@@ -4,7 +4,7 @@
   </ion-navbar>
 </ion-header>
 <ion-content>
-  <ion-slides pager direction="vertical" (ionSlideDidChange)="slideChanged($event)" (ionSlideNextStart)="slideNextStart()" (ionSlideNextEnd)="slideNextEnd()" (ionSlideTap)="slideWillChange()" [class.changing]="_slide_changing">
+  <ion-slides pager direction="vertical" (ionSlideDidChange)="slideChanged($event)" (ionSlideNextStart)="slideNextStart()" (ionSlideNextEnd)="slideNextEnd()" [class.changing]="_slide_changing">
     <ion-slide class="s-1">
       <div class="ani-conatiner"></div>
       <h1 [innerHTML]="'ASSETS_GUIDE_SLIDE_1'|translate"> </h1>
