@@ -38,6 +38,14 @@ export class TextMgComponent implements OnInit, OnChanges {
 	get foregroundEle() {
 		return this.foreground.nativeElement as HTMLSpanElement;
 	}
+	@Input("stops")
+	set stops(v) {
+		this._stops = v;
+	}
+	private _stops?: number[][]; /*alpha, per*/
+	get stops() {
+		return this._stops || [[0, 0], [1, 1]];
+	}
 
 	@Input("no-trim-blank") no_trim_blank = false;
 	@Input("fontSize") fontSize = "1.6em";
@@ -62,11 +70,12 @@ export class TextMgComponent implements OnInit, OnChanges {
 		wrapperEle.style.fontFamily = this.fontFamily as any;
 		wrapperEle.style.fontWeight = this.fontWeight;
 		backgroundEle.style.cssText = `color:${this.from};`;
+		const gradient = [
+			this.stops.map(stop => `rgba(0,0,0,${stop[0]}) ${stop[1] * 100}%`),
+		].join(",");
 		foregroundEle.style.cssText = `
-			-webkit-mask-image: linear-gradient(${
-				this.direction
-			}, transparent 0%, black 100%);
-			mask-image: linear-gradient(${this.direction}, transparent 0%, black 100%);
+			-webkit-mask-image: linear-gradient(${this.direction}, ${gradient});
+			mask-image: linear-gradient(${this.direction}, ${gradient});
 			-webkit-mask-size: 100% 100%;
 			mask-size: 100% 100%;
 			color:${this.to};

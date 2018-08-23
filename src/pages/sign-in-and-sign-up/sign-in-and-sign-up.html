@@ -35,12 +35,14 @@
       </div>
       <button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
         <!-- <div class="inner">立即开始</div> -->
-        <text-gradient text="{{'SIGN_IN' | translate}}" fontSize="1.8rem" [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+        <!-- [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" -->
+        <text-mg text="{{'SIGN_IN' | translate}}" fontSize="1.8rem" [from]="canDoLogin?'#dddddd':'#02e5f6'" [to]="canDoLogin?'#FFFFFF':'#01acdd'" [stops]="canDoLogin?[[0,0],[1,1]]:[[0,0],[0.2,0],[0.8,1],[1,1]]" direction="to bottom" fontWeight="600"></text-mg>
       </button>
       <div class="goto-container">
         <span class="dot"></span>
         <button class="goto-button" (click)="gotoRegister()">
-          <text-gradient text="{{'GENERATE_NEW_PASSPHRASE' | translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+          <!-- [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" -->
+          <text-mg text="{{'GENERATE_NEW_PASSPHRASE' | translate}}" fontSize="1.6rem"  direction="to bottom" fontSize="1.6rem" from="#02e5f6" to="#01acdd" [stops]="[[0,0],[0.2,0],[0.8,1],[1,1]]" fontWeight="600"></text-mg>
         </button>
         <span class="dot"></span>
       </div>
@@ -74,7 +76,8 @@
       <div class="goto-container">
         <span class="dot"></span>
         <button class="goto-button" (click)="gotoLogin()">
-          <text-gradient text="{{'ALREADY_HAS_PASSPHRASE'| translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+          <!-- <text-mg text="{{'ALREADY_HAS_PASSPHRASE'| translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-mg> -->
+          <text-mg text="{{'ALREADY_HAS_PASSPHRASE'| translate}}" fontSize="1.6rem" from="#02e5f6" to="#01acdd" [stops]="[[0,0],[0.2,0],[0.8,1],[1,1]]" direction="to bottom" fontWeight="600"></text-mg>
         </button>
         <span class="dot"></span>
       </div>

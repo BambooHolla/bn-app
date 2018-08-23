@@ -233,7 +233,7 @@ page-assets-my-assets-list {
       top: 0;
       left: 0;
       position: absolute;
-      mask-image: linear-gradient(to bottom,#000 0%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
       mask-size: 100% 100%;
       background-image: url("../assets/imgs/net-circle-gray.png");
       background-size: 200vw 200vw;
@@ -254,12 +254,19 @@ page-assets-my-assets-list {
         font-size: 1.8rem;
       }
     }
+    .normal-gradient {
+      color: transparent;
+      background: linear-gradient(0, #009688 0%, yellowgreen 100%);
+      background-size: cover;
+      background-position: center center;
+      -webkit-background-clip: text;
+    }
     .amount {
       display: flex;
       align-items: baseline;
       justify-content: center;
       padding-top: 1.8rem;
-      text-mg{
+      text-mg {
         filter: drop-shadow(0 0.1rem 0.15rem rgba(0, 0, 0, 0.3));
       }
       .unit {
