@@ -26,6 +26,7 @@ import { PeerRadarScanningComponent } from "./peer-radar-scanning/peer-radar-sca
 import { SemicircularProgressBarComponent } from "./semicircular-progress-bar/semicircular-progress-bar";
 import { SimpleSectorComponent } from "./simple-sector/simple-sector";
 import { ClipAssetsLogoComponent } from './clip-assets-logo/clip-assets-logo';
+import { TextMgComponent } from './text-mg/text-mg';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ClipAssetsLogoComponent } from './clip-assets-logo/clip-assets-logo';
     SemicircularProgressBarComponent,
     SimpleSectorComponent,
     ClipAssetsLogoComponent,
+    TextMgComponent,
   ],
   imports: [],
   exports: [
@@ -86,6 +88,7 @@ import { ClipAssetsLogoComponent } from './clip-assets-logo/clip-assets-logo';
     SemicircularProgressBarComponent,
     SimpleSectorComponent,
     ClipAssetsLogoComponent,
+    TextMgComponent,
   ],
 })
 export class ComponentsModule {}

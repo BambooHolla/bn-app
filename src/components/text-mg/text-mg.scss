@@ -1,0 +1,15 @@
+text-mg {
+	> span {
+		position: relative;
+		> span {
+			font-size: inherit;
+			font-weight: inherit;
+			font-family: inherit;
+			&:last-child{
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+		}
+	}
+}

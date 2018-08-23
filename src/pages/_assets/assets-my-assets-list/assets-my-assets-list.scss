@@ -240,6 +240,7 @@ page-assets-my-assets-list {
       background-position: center 20%;
       background-repeat: no-repeat;
       z-index: 10;
+      pointer-events: none;
     }
     .label {
       display: flex;
@@ -258,7 +259,7 @@ page-assets-my-assets-list {
       align-items: baseline;
       justify-content: center;
       padding-top: 1.8rem;
-      text-gradient{
+      text-mg{
         filter: drop-shadow(0 0.1rem 0.15rem rgba(0, 0, 0, 0.3));
       }
       .unit {
