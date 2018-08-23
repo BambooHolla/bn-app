@@ -33,7 +33,7 @@
           <span class="label-text">{{'REMEMBER' | translate}}</span>
         </label>
       </div>
-      <button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
+      <button mat-button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
         <!-- <div class="inner">立即开始</div> -->
         <!-- [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" -->
         <text-mg text="{{'SIGN_IN' | translate}}" fontSize="1.8rem" [from]="canDoLogin?'#dddddd':'#02e5f6'" [to]="canDoLogin?'#FFFFFF':'#01acdd'" [stops]="canDoLogin?[[0,0],[1,1]]:[[0,0],[0.2,0],[0.8,1],[1,1]]" direction="to bottom" fontWeight="600"></text-mg>
@@ -70,7 +70,7 @@
       <div class="info">
         <ali-icon name="ifm-info"></ali-icon>
         {{'INFORMATION_NOT_SAVE_IN_BLOCKCHAIN' | translate}}</div>
-      <button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">
+      <button mat-button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">
         <div class="inner">{{'GENERATE_NEW_PASSPHRASE' | translate}}</div>
       </button>
       <div class="goto-container">
