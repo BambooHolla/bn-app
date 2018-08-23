@@ -73,13 +73,14 @@
                 <span class="unit">{{assets.abbreviation}}</span>
               </div>
             </ng-container>
-            <div class="no-assets" *ngIf="selectable_assets_list.length<=1">
-              <ng-container *ngIf="assets_page_info.loading==false;else loadingAssets">
+            <div class="no-assets" [class.loading]="assets_page_info.loading" *ngIf="selectable_assets_list.length<=1">
+              <div class="no-own">
+                <div class="no-assets-img"></div>
                 <i>{{'NO_ASSETS'|translate}}</i>
-              </ng-container>
-              <ng-template #loadingAssets>
+              </div>
+              <div class="loading">
                 <span>{{'LOADING_ASSETS'|translate}}</span>
-              </ng-template>
+              </div>
             </div>
           </div>
         </div>
@@ -92,6 +93,8 @@
               <div class="assets-item" *ngIf="assets.abbreviation!=this.selected_assets.abbreviation">
               </div>
             </ng-container>
+            <div class="no-assets" [class.loading]="assets_page_info.loading" *ngIf="selectable_assets_list.length<=1">
+            </div>
           </div>
         </div>
       </div>

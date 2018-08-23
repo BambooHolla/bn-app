@@ -466,6 +466,9 @@ page-tab-pay {
     &.show {
       pointer-events: all;
       opacity: 1;
+      .assets-select-panel-wrapper {
+        border-radius: 0.5rem;
+      }
       .assets-select-panel-wrapper,
       .android-shadow-fix-layer {
         transform: scale(1, 1);
@@ -513,6 +516,7 @@ page-tab-pay {
         top: -0.7rem;
         transform: rotate(45deg);
         background-color: rgba(101, 221, 234, 0.2);
+        backdrop-filter: blur(5px);
         /* background-color: #ff0; */
       }
       .assets-select-scroll {
@@ -528,6 +532,7 @@ page-tab-pay {
         /* padding-right: 0.7rem; */
         display: table;
         width: 100%;
+        overflow-x: hidden;
 
         > .assets-item-table-cell {
           display: table-row;
@@ -564,11 +569,45 @@ page-tab-pay {
         }
       }
       .no-assets {
-        height: 4rem;
         line-height: 4rem;
         text-align: center;
-        color: #999;
-        text-shadow: 0 0 0.1rem rgba(#fff, 0.3);
+        color: #fff;
+        /* text-shadow: 0 0 0.1rem rgba(#fff, 0.3); */
+        &.loading {
+          height: 4rem;
+          > .loading {
+            display: block;
+          }
+          > .no-own {
+            display: none;
+          }
+        }
+        &:not(.loading) {
+          height: 12rem;
+          > .no-own {
+            display: block;
+          }
+          > .loading {
+            display: none;
+          }
+        }
+        > .no-own {
+          padding-top: 1rem;
+          .no-assets-img {
+            background-image: url("../assets/imgs/tab-pay/no-assets.png");
+            height: 6rem;
+            width: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+          i {
+            font-style: normal;
+            font-weight: normal;
+          }
+        }
+        > .loading {
+        }
       }
     }
   }
