@@ -859,16 +859,23 @@
 
   "//": "assets-guide",
   "ASSETS-GUIDE": "资产发行说明",
-  "ASSETS_GUIDE_SLIDE_1": "<b>任何地址</b>都可以通过资产合约在区块链上生成新的数字资产权益",
-  "ASSETS_GUIDE_SLIDE_2": "地址IBT数量必须大于等于<b>10万</b>个才能完成资产合约的生成",
-  "ASSETS_GUIDE_SLIDE_3": "地址上<b>所有IBT将以资产合约的形式冻结</b>在区块链上爆炸新的数字资产权益生成",
-  "ASSETS_GUIDE_SLIDE_4": "区块链上冻结的IBT<b>只能有资产合约生成的新的数字资产权益赎回</b>，赎回多少比例IBT，基销毁多少比例新的数字资产权益",
+  "ASSETS_GUIDE_SLIDE_1":
+    "<b>任何地址</b>都可以通过资产合约在区块链上生成新的数字资产权益",
+  "ASSETS_GUIDE_SLIDE_2":
+    "地址IBT数量必须大于等于<b>10万</b>个才能完成资产合约的生成",
+  "ASSETS_GUIDE_SLIDE_3":
+    "地址上<b>所有IBT将以资产合约的形式冻结</b>在区块链上爆炸新的数字资产权益生成",
+  "ASSETS_GUIDE_SLIDE_4":
+    "区块链上冻结的IBT<b>只能有资产合约生成的新的数字资产权益赎回</b>，赎回多少比例IBT，基销毁多少比例新的数字资产权益",
   "ASSETS_GUIDE_SLIDE_5": "新的数字资产权益被<b>销毁赎回后将无法恢复</b>",
 
   "//": "assets-my-assets-list",
   "ASSETS-MY-ASSETS-LIST": "数字权益",
   "MY_ASSETS_LIST_IS_EMPTY": "未拥有数字权益",
   "LOADING_MY_ASSETS_LIST": "加载拥有的数字权益",
+  "TOTAL_VALUE": "总价值",
+  "ASSETS_ISSUSED_BY_ME": "我创建的",
+  "ASSETS_I_OWN": "我拥有的",
 
   "//": "assets-assets-detail",
   "ASSETS-ASSETS-DETAIL": "权益详情",

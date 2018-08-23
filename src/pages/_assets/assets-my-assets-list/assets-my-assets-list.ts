@@ -38,8 +38,12 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
+  @AssetsMyAssetsListPage.markForCheck
+  /**我发布的资产*/
+  my_issued_assets_list: AssetsModelWithLogoSafeUrl[] = [];
 
   @AssetsMyAssetsListPage.markForCheck
+  /**我持有的资产*/
   my_assets_list: AssetsModelWithLogoSafeUrl[] = [];
 
   page_info = {
@@ -64,8 +68,19 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
 
   @AssetsMyAssetsListPage.addEventAfterDidEnter("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error()
-  async updateMyAssetsList() {
-    this.my_assets_list = await this._loadMyAssetsList();
+  updateMyAssetsList() {
+    return Promise.all([
+      this._loadIssuedAssetsList().then(
+        list => (this.my_issued_assets_list = list)
+      ),
+      this._loadMyAssetsList().then(list => (this.my_assets_list = list)),
+    ]);
+  }
+
+  private async _loadIssuedAssetsList() {
+    return await this.assetsService.getAssets({
+      address: this.userInfo.address,
+    });
   }
 
   private async _loadMyAssetsList() {

@@ -70,6 +70,19 @@ ali-icon {
       }
     }
   }
+  &[name="ifm-chiyouzichan"] {
+    > .ifmicon {
+      &::before {
+        background-image: url("../assets/icon/持有资产-01.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        color: transparent; /* 需要来占位不然heigth和width撑不起来 */
+      }
+    }
+  }
   &[name="ifm-assets-market"] {
     > .ifmicon {
       &::before {

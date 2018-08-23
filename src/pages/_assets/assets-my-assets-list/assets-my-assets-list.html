@@ -1,20 +1,121 @@
 <ion-header>
-  <ion-navbar color="white">
+  <!--   <ion-navbar color="white">
     <ion-title>{{'ASSETS-MY-ASSETS-LIST'|translate}}</ion-title>
     <ion-buttons end>
       <button *ngIf="!userInfo.isFreezed" ion-button (click)="routeTo('assets-issuing-assets',{auto_return:true})">
         <ali-icon name="ifm-zichanjianshe1"></ali-icon>
       </button>
     </ion-buttons>
-  </ion-navbar>
+  </ion-navbar> -->
 </ion-header>
 <ion-content>
-  <div class="common-list my-assets-list">
-    <button mat-button class="common-item" [class.destorying]="assets._destorying" *ngFor="let assets of my_assets_list" (click)="routeToAssetsTraList(assets)">
+  <div class="sticky-title">
+    <div class="left">
+      <button class="back-button" (tap)="navCtrl.pop()">
+        <ion-icon name="ios-arrow-back"></ion-icon>
+      </button>
+    </div>
+    <div class="center">{{'ASSETS-MY-ASSETS-LIST'|translate}}</div>
+    <div class="right">
+      <button mat-icon-button class="create-assets-button" (click)="routeTo('assets-issuing-assets',{auto_return:true})">
+        <ali-icon name="ifm-zichanjianshe1"></ali-icon>
+      </button>
+    </div>
+  </div>
+  <div class="bg-img"></div>
+  <div class="bg-color"></div>
+  <div class="static-header">
+    <div class="ibt-logo">
+      <div class="logo"></div>
+    </div>
+    <div class="balance">
+      <ali-icon name="ifm-iconfontyue3eps"></ali-icon>
+      <div class="amount">
+        {{userInfo.balance|amountEuler|number:'1.8-8'}}
+        <div class="unit">IBT</div>
+      </div>
+    </div>
+    <div class="usd">
+      <div class="symbol">$</div>
+      <div class="amount">666.66
+        <div class="unit">USD</div>
+      </div>
+    </div>
+
+    <div class="extends-info">
+      <div class="left total-income">
+        <div class="amount">
+          {{userInfo.votingReward|amountEuler|number:'1.8-8'}}
+          <div class="unit">IBT</div>
+        </div>
+        <div class="label">
+          <ali-icon name="ifm-shouyi1"></ali-icon>
+          {{'PROFIT'|translate}}
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="right total-fee">
+        <div class="amount">
+          {{userInfo.votingReward|amountEuler|number:'1.8-8'}}
+          <div class="unit">IBT</div>
+        </div>
+        <div class="label">
+          <ali-icon name="ifm-shouxufei"></ali-icon>
+          {{'FEE'|translate}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="total-value">
+    <div class="label">
+      <ali-icon name="ifm-shiliangzhinengduixiang4"></ali-icon>
+      {{'TOTAL_VALUE'|translate}}
+    </div>
+    <div class="amount">
+      <text-gradient text="1213231231321.66" from="#ff5d5b" to="#ff9b75" fontSize="2.5rem" fontWeight="600"></text-gradient>
+      <div class="unit">USD</div>
+    </div>
+  </div>
+  <div class="common-list created-assets-by-me" *ngIf="my_issued_assets_list.length">
+    <div class="list-title">
+      <ali-icon name="ifm-jindu"></ali-icon>
+      {{'ASSETS_ISSUSED_BY_ME'|translate}}
+    </div>
+    <button mat-button class="common-item" [class.destorying]="assets._destorying" *ngFor="let assets of my_issued_assets_list;trackBy:commonTrackBy('abbreviation')" (click)="routeToAssetsTraList(assets)">
       <div class="left">
         <div class="assets-logo-shape-wrapper">
           <div class="assets-logo-shape">
-            <img [src]="assets.logo_safe_url" alt="LOGO"/>
+            <img [src]="assets.logo_safe_url" alt="LOGO" />
+          </div>
+        </div>
+      </div>
+      <div class="center">
+        {{assets.abbreviation}}
+      </div>
+      <div class="right">
+        <!-- <div class="issued-assets">{{assets.hodingAsset|number:'1.0-0'}}</div> -->
+        <div class="balance">
+          <ali-icon class="symbol" name="ifm-shiliangzhinengduixiang"></ali-icon>
+          {{assets.hodingAssets|amountEuler|number:'1.8-8'}}
+          <span class="unit">{{assets.abbreviation}}</span>
+        </div>
+        <div class="issued-time">
+          {{assets.dateCreated|amDateFormat:"YYYY-MM-DD"}}
+          <ali-icon name="ifm-yujishijian"></ali-icon>
+        </div>
+      </div>
+    </button>
+  </div>
+  <div class="common-list my-assets-list">
+    <div class="list-title" *ngIf="my_assets_list.length">
+      <ali-icon name="ifm-chiyouzichan"></ali-icon>
+      {{'ASSETS_I_OWN'|translate}}
+    </div>
+    <button mat-button class="common-item" [class.destorying]="assets._destorying" *ngFor="let assets of my_assets_list;trackBy:commonTrackBy('abbreviation')" (click)="routeToAssetsTraList(assets)">
+      <div class="left">
+        <div class="assets-logo-shape-wrapper">
+          <div class="assets-logo-shape">
+            <img [src]="assets.logo_safe_url" alt="LOGO" />
           </div>
         </div>
       </div>

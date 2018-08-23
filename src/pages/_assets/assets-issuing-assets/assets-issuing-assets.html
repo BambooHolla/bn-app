@@ -31,7 +31,7 @@
         </ng-container>
         <ng-template #delegateAddress>
           <div class="into-delegate-wrapper">
-            <button mat-button class="into-delegate">
+            <button mat-button class="into-delegate" (click)="routeTo('vote-delegate-detail',{publicKey:userInfo.publicKey})">
               <span class="left">
                 <span class="icon-wrapper">
                   <ali-icon name="ifm-kuanggong"></ali-icon>
@@ -39,7 +39,7 @@
               </span>
               <span class="right">{{userInfo.address}}</span>
             </button>
-            <button mat-button class="into-delegate" (click)="routeTo('vote-delegate-detail',{publicKey:userInfo.publicKey})">
+            <button mat-button class="into-delegate">
               <span class="left">
                 <span class="icon-wrapper">
                   <ali-icon name="ifm-kuanggong"></ali-icon>

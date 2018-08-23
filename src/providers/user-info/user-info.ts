@@ -47,6 +47,12 @@ export class UserInfoProvider extends EventEmitter {
   get isDelegate() {
     return !!this._userInfo.isDelegate;
   }
+  get votingReward(){
+    return this._userInfo.votingReward;
+  }
+  get paidFee(){
+    return this._userInfo.paidFee;
+  }
   constructor(public storage: Storage) {
     super();
   }

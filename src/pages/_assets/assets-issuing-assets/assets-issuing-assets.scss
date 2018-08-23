@@ -200,15 +200,18 @@ page-assets-issuing-assets {
             &:first-child{
               border-color: #73f5e0;
               color: #73f5e0;
-              mask-image: linear-gradient(to bottom,#000 0%,transparent 100%);
+              // mask-image: linear-gradient(to bottom,#000 0%,transparent 100%);
               mask-size: 100% 100%;
               pointer-events: none;
+              z-index: 1;
             }
             &:last-child{
               border-color: #83d6f7;
               color: #83d6f7;
               mask-image: linear-gradient(to top,#000 0%,transparent 100%);
               mask-size: 100% 100%;
+              pointer-events: none;
+              z-index: 2;
             }
           }
         }

@@ -1,12 +1,207 @@
 page-assets-my-assets-list {
   @extend .header-no-border;
+  .sticky-title {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    height: 4rem;
+    line-height: 4rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fff;
+    z-index: 4;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    box-sizing: content-box;
+    padding-top: 20.012px;
+    padding-top: #{constant(safe-area-inset-top)};
+    padding-top: #{env(safe-area-inset-top)};
+    > * {
+      flex: 1;
+    }
+    > .center {
+      flex: 2;
+      text-align: center;
+    }
+    > .left {
+      transform: translateX(1.6vw);
+      .back-button {
+        width: 100%;
+        height: 100%;
+        display: block;
+        background-color: transparent;
+        color: inherit;
+        text-align: left;
+        font-size: 2rem;
+      }
+    }
+    > .right {
+      transform: translateX(-1.6vw);
+      text-align: right;
+      .create-assets-button {
+        margin-left: auto;
+        margin-right: 0;
+        display: block;
+        background-color: transparent;
+        color: inherit;
+        font-size: 2.4rem;
+      }
+    }
+  }
+  .bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100vw;
+    height: 81vw; // 已知的图片比例
+    background-image: linear-gradient(
+        to bottom,
+        #fe9150 0%,
+        #fe8853 10%,
+        #ff584e 20%,
+        #fe9150 50%,
+        #ffaa81 100%
+      ),
+      url("../assets/imgs/net-circle-gray.png");
+    background-size: 200vw 200vw;
+    background-position: center 20%;
+    background-blend-mode: color;
+    background-repeat: no-repeat;
+    color: #fff;
+    overflow: hidden;
+    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.3);
+  }
+  .bg-color {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #ffaa81;
+    z-index: 2;
+    height: 4rem;
+    box-sizing: content-box;
+    padding-top: 20.012px;
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.3);
+    padding-top: #{constant(safe-area-inset-top)};
+    padding-top: #{env(safe-area-inset-top)};
+  }
+  .static-header {
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 81vw; // 已知的图片比例
+    z-index: 3;
+    > .ibt-logo {
+      padding-bottom: 2rem;
+      > .logo {
+        width: 9rem;
+        height: 9rem;
+        background-color: rgba(#fff, 0.5);
+        mask-image: url("../assets/imgs/assets/assets-logo-shape.png");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+        position: relative;
+        &::after {
+          content: " ";
+          position: absolute;
+          width: 6rem;
+          height: 6rem;
+          left: 1.5rem;
+          top: 1.5rem;
+          background-image: url("../assets/imgs/assets/ibt-fire-logo-inner.png");
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          filter: drop-shadow(0 0.1rem 0.1rem rgba(0, 0, 0, 0.15));
+        }
+      }
+    }
+    > .balance,
+    > .usd {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      > .amount {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        > .unit {
+          font-weight: lighter;
+          padding-left: 0.5rem;
+        }
+      }
+    }
+    > .balance {
+      padding-bottom: 0.8rem;
+      font-size: 2.7rem;
+      ali-icon {
+        font-size: 2.4rem;
+        padding-right: 0.6rem;
+      }
+      .unit {
+        font-size: 1.4rem;
+      }
+    }
+    > .usd {
+      padding-bottom: 2rem;
+      font-size: 1.7rem;
+      font-weight: lighter;
+      .symbol {
+        padding-right: 0.5rem;
+      }
+      .unit {
+        font-size: 1.4rem;
+      }
+    }
+    > .extends-info {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      height: 6rem;
+      background-color: #ffa781;
+      > .left,
+      > .right {
+        flex: 1;
+        text-align: center;
+        > .amount {
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          text-align: center;
+          font-size: 1.6rem;
+          > .unit {
+            font-weight: lighter;
+            font-size: 1.2rem;
+            padding-left: 0.5rem;
+          }
+        }
+        > .label {
+          padding-top: 0.5rem;
+          font-size: 1.3rem;
+          ali-icon {
+            font-size: 1.4rem;
+          }
+        }
+      }
+      > .divider {
+        width: 1px;
+        height: 3rem;
+        background: rgba(#fff, 0.2);
+      }
+    }
+  }
+
   .content {
     > .scroll-content {
-      /* overflow: hidden; */
-      /*       display: flex;
-      flex-direction: column; */
-      > .pink-bg {
-        /* content: " "; */
+      background-color: #eee;
+      /*       > .pink-bg {
         position: fixed;
         width: 100vw;
         height: 60vw;
@@ -19,31 +214,148 @@ page-assets-my-assets-list {
           linear-gradient(#ff3c00, #ff3c00);
         background-blend-mode: lighten;
         opacity: 0.1;
+      } */
+    }
+  }
+  .total-value {
+    width: 100%;
+    margin-top: 1.5rem;
+    text-align: center;
+    position: relative;
+    background-color: #fff;
+    padding-top: 1.8rem;
+    padding-bottom: 1.8rem;
+    margin-bottom: 0.55px;
+    &::after {
+      content: " ";
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      mask-image: linear-gradient(to bottom,#000 0%, transparent 100%);
+      mask-size: 100% 100%;
+      background-image: url("../assets/imgs/net-circle-gray.png");
+      background-size: 200vw 200vw;
+      background-position: center 20%;
+      background-repeat: no-repeat;
+      z-index: 10;
+    }
+    .label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      font-weight: bold;
+      color: #333;
+      ali-icon {
+        margin-right: 0.5rem;
+        font-size: 1.8rem;
+      }
+    }
+    .amount {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      padding-top: 1.8rem;
+      text-gradient{
+        filter: drop-shadow(0 0.1rem 0.15rem rgba(0, 0, 0, 0.3));
+      }
+      .unit {
+        color: #bcbcbc;
+        font-size: 1.4rem;
+        font-weight: lighter;
+        margin-left: 0.5rem;
+      }
+    }
+  }
+  .common-list {
+    .list-title {
+      height: 4.8rem;
+      line-height: 4.8rem;
+      display: flex;
+      align-items: center;
+      font-size: 1.45rem;
+      font-weight: bold;
+      padding-left: 2rem;
+      background-color: #fff;
+      color: #333;
+      ali-icon {
+        font-size: 2.2rem;
+        margin-right: 0.4rem;
+      }
+    }
+    &.created-assets-by-me {
+      .list-title {
+        ali-icon {
+          font-size: 1.8rem;
+        }
+      }
+    }
+  }
+  .created-assets-by-me {
+    .common-item {
+      height: 8.4rem;
+      border-top: 0.55px solid #eeeeee;
+      color: #9999;
+      .assets-logo-shape-wrapper {
+        width: 6rem;
+        height: 6rem;
+        filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.2));
+      }
+      .center {
+        padding-left: 1.2rem;
+        font-weight: 500;
+        font-size: 1.9rem;
+      }
+      .right {
+        .balance {
+          color: #333;
+          font-size: 1.8rem;
+          font-weight: 500;
+          .unit {
+            font-size: 1.4rem;
+            font-weight: lighter;
+          }
+        }
+        .issued-time {
+          font-size: 1.35rem;
+          padding-top: 1rem;
+          font-weight: normal;
+        }
       }
     }
   }
   .my-assets-list {
     width: 100%;
-    margin-top: 0.2rem;
+    margin-top: 1rem;
     .common-item {
       height: 8.4rem;
       border-top: 0.55px solid #eeeeee;
+      color: #333;
       .assets-logo-shape-wrapper {
         width: 6rem;
         height: 6rem;
-        filter: drop-shadow(0 0 0.4rem rgba(0, 0, 0, 0.2));
+        filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.2));
       }
       .center {
         padding-left: 1.2rem;
-        color: #333;
         font-weight: 500;
-        font-size: 1.7rem;
+        font-size: 1.9rem;
       }
       .right {
         .issued-assets {
           font-size: 2rem;
           color: #333;
           font-weight: 500;
+        }
+        .balance {
+          font-size: 1.8rem;
+          font-weight: 500;
+          .unit {
+            font-size: 1.4rem;
+            font-weight: lighter;
+          }
         }
       }
     }
