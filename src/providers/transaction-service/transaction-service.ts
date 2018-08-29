@@ -13,6 +13,7 @@ import {
 import { AlertController } from "ionic-angular";
 import { UserInfoProvider } from "../user-info/user-info";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
+import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import * as promisify from "es6-promisify";
@@ -187,12 +188,13 @@ export class TransactionServiceProvider {
 
   getSourceIp() {
     if (this.fetch.onLine) {
-      return this.fetch
-        .get<{ sourceIp: string }>(this.GET_SOURCE_IP)
-        .then(data => {
+      return Promise.race([
+        this.fetch.get<{ sourceIp: string }>(this.GET_SOURCE_IP).then(data => {
           localStorage.setItem("sourceIp", data.sourceIp);
           return data.sourceIp;
-        });
+        }),
+        sleep(5e3).then(() => ""),
+      ]);
     } else {
       return localStorage.getItem("sourceIp") || "";
     }

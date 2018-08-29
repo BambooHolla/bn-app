@@ -248,6 +248,8 @@
   "CHECK_BLOCKCHAIN_IS_COMPLETE": "正在检查区块链是否完整",
   "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#": "正在同步区块:{{progress}}%",
   "DOWNLOAD_BLOCKCHAIN_COMPLETE": "本地区块已同步到最新",
+  "THE_NUMBER_OF_TRANSACTIONS_TREND": "交易数量走势",
+  "AMOUNT_OF_THE_TRANSACTION_TREND": "交易金额走势",
 
   "//": "chain-block-detail",
   "CHAIN-BLOCK-DETAIL": "区块信息",
