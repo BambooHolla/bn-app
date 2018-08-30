@@ -107,15 +107,6 @@ export class TabAccountPage extends FirstLevelPage {
     }
   }
 
-  get ibt() {
-    return this.userInfo.balance;
-  }
-  get dollar() {
-    return parseFloat(this.userInfo.balance) * 50;
-  }
-  get address() {
-    return this.userInfo.address;
-  }
   app_version_info?: LATEST_VERSION_INFO;
 
   async openSharePanel() {

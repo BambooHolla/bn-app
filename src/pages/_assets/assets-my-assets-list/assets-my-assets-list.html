@@ -37,7 +37,7 @@
     </div>
     <div class="usd">
       <div class="symbol">$</div>
-      <div class="amount">666.66
+      <div class="amount">{{userInfo.dollar|amountEuler|number:'1.8-8'}}
         <div class="unit">USD</div>
       </div>
     </div>
@@ -72,7 +72,7 @@
       {{'TOTAL_VALUE'|translate}}
     </div>
     <div class="amount">
-      <text-mg [text]="zzz" from="#ff5d5b" to="#ff9b75" fontSize="2.5rem" fontWeight="500"></text-mg>
+      <text-mg [text]="userInfo.dollar|amountEuler|number:'1.8-8'" from="#ff5d5b" to="#ff9b75" fontSize="2.5rem" fontWeight="500"></text-mg>
       <div class="unit">USD</div>
     </div>
   </div>

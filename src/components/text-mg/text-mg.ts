@@ -67,6 +67,7 @@ export class TextMgComponent implements OnInit, OnChanges {
 	updateText() {
 		const { wrapperEle, backgroundEle, foregroundEle } = this;
 		wrapperEle.style.fontSize = this.fontSize;
+		wrapperEle.style.lineHeight = this.fontSize;
 		wrapperEle.style.fontFamily = this.fontFamily as any;
 		wrapperEle.style.fontWeight = this.fontWeight;
 		backgroundEle.style.cssText = `color:${this.from};`;

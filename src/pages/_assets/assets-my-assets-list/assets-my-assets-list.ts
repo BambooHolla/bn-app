@@ -58,16 +58,6 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
     }
     return this.initMyAssetsList();
   }
-  @AssetsMyAssetsListPage.markForCheck
-  zzz = 666;
-  @AssetsMyAssetsListPage.willEnter
-  randomZZZ() {
-    setInterval(()=>{
-      if(this.PAGE_STATUS < this.PAGE_STATUS_ENUM.DID_LEAVE){
-        this.zzz = Math.random();
-      }
-    },1000)
-  }
 
   // @asyncCtrlGenerator.loading("@@LOADING_MY_ASSETS_LIST", undefined, {
   //   cssClass: "can-tap blockchain-loading",

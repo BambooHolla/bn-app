@@ -566,7 +566,7 @@ export class PeerServiceProvider extends CommonService {
   private async _updatePeerFlow(origin: string, flow: number) {
     const peer = await this.peerDb.findOne({ origin });
     if (!peer) {
-      console.error(new Error(`找不到本地节点信息: ${origin}`));
+      // console.error(new Error(`找不到本地节点信息: ${origin}`));
       return;
     }
     peer.acc_flow = (peer.acc_flow || 0) + flow;
@@ -577,7 +577,7 @@ export class PeerServiceProvider extends CommonService {
   async updatePeerDuration(origin: string, acc_duration: number) {
     const peer = await this.peerDb.findOne({ origin });
     if (!peer) {
-      console.error(new Error(`找不到本地节点信息: ${origin}`));
+      // console.error(new Error(`找不到本地节点信息: ${origin}`));
       return;
     }
     peer.acc_use_duration += acc_duration;

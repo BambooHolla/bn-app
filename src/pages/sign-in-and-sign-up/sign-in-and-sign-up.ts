@@ -155,7 +155,8 @@ export class SignInAndSignUpPage extends FirstLevelPage {
         false_text: "@@ALREADY_SAVED",
       }))
     ) {
-      return await this.copyAndShare();
+      await this.copy(this.pwd_by_register);
+      return await this.shareToSocial();
     }
     const result = await this.loginService.doLogin(
       this.formData.pwd.trim(),
@@ -195,6 +196,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     // this.formData.pwd = passphrase;
     // this.show_pwd = true;
     this.pwd_by_register = passphrase;
+    await this.copy(passphrase);
 
     this.platform.raf(() => {
       this.autoReHeightPWDTextArea(true);
@@ -205,7 +207,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
         false_text: "@@CANCEL_COPY",
       })
     ) {
-      return await this.copyAndShare();
+      return await this.shareToSocial();
     }
   }
 
@@ -217,13 +219,14 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     });
     model.present();
   }
-
-  async copyAndShare() {
-    await this.navigatorClipboard.writeText(this.pwd_by_register);
+  async copy(text) {
+    await this.navigatorClipboard.writeText(text);
     await this.showToast(
       this.getTranslateSync("YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"),
       2000
     );
+  }
+  shareToSocial() {
     return this.socialSharing.share(this.pwd_by_register);
   }
 }

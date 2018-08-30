@@ -18,6 +18,12 @@ export class UserInfoProvider extends EventEmitter {
   get balance() {
     return this._balance;
   }
+  get usd() {
+    return parseFloat(this.balance) * 50;
+  }
+  get dollar() {
+    return this.usd;
+  }
   private _address!: string;
   get address() {
     return this._address;
@@ -47,10 +53,10 @@ export class UserInfoProvider extends EventEmitter {
   get isDelegate() {
     return !!this._userInfo.isDelegate;
   }
-  get votingReward(){
+  get votingReward() {
     return this._userInfo.votingReward;
   }
-  get paidFee(){
+  get paidFee() {
     return this._userInfo.paidFee;
   }
   constructor(public storage: Storage) {
