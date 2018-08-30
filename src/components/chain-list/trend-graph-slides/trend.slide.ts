@@ -128,7 +128,7 @@ export class TrendSlide extends PIXI.Graphics {
 			this._point_list = this.data.map(([x_val, y_val]) => {
 				return new PIXI.Point(
 					((x_val - x_coo_min) / x_coo_diff) * chart_width,
-					((y_val - y_coo_min) / y_coo_diff) * chart_height
+					(1 - (y_val - y_coo_min) / y_coo_diff) * chart_height
 				);
 			});
 			this._data_dirty = false;
@@ -325,7 +325,8 @@ export class TrendSlide extends PIXI.Graphics {
 
 			for (var i = 0; i < scale_list.length; i += 1) {
 				const scale_item = scale_list[i];
-				const [pos_rate, val] = scale_item;
+				const [_pos_rate, val] = scale_item;
+				const pos_rate = 1 - _pos_rate;
 				const t = new PIXI.Text(val.toString(), coo_text_style);
 				t[DESTORY_ABLE_SYMBOL] = true;
 				const text_width = t.width;
@@ -506,22 +507,23 @@ export class TrendSlide extends PIXI.Graphics {
 			chartLineGradientCover.mask = chartLine;
 		}
 		/// 实现点击聚焦曲线上的某一点
+		const drawAuxiliaryLineByPoint = (point: PIXI.Point) => {
+			const bounds = chartLine.getBounds();
+			this._drawAuxiliaryLine(point.x - bounds.x, point.y - bounds.y);
+			this.emit("refresh-frame");
+		};
+		let pre_tap_point: PIXI.Point | undefined;
 		if (!coordinateMesh.interactive) {
 			coordinateMesh.interactive = true;
-			const chart_line_gradient_cover = chartLineGradientCover;
 			coordinateMesh.on(
 				"pointerdown",
 				(e: PIXI.interaction.InteractionEvent) => {
-					const point = e.data.global.clone();
-					const bounds = chart_line_gradient_cover.getBounds();
-					// PIXI.extract.WebGLExtract.
-					this._drawAuxiliaryLine(
-						point.x - bounds.x,
-						point.y - bounds.y
-					);
-					this.emit("refresh-frame");
+					pre_tap_point = e.data.global.clone();
+					drawAuxiliaryLineByPoint(pre_tap_point);
 				}
 			);
+		} else if (pre_tap_point) {
+			drawAuxiliaryLineByPoint(pre_tap_point);
 		}
 	}
 	private _auxiliaryLine?: PIXI.Graphics;
@@ -534,6 +536,7 @@ export class TrendSlide extends PIXI.Graphics {
 			_auxiliaryText: auxiliaryText,
 		} = this;
 		const {
+			chartLine,
 			coordinateMesh,
 			chart_line_width,
 			chartLineGradientCover,
@@ -548,6 +551,9 @@ export class TrendSlide extends PIXI.Graphics {
 		}
 		if (!coordinateMesh) {
 			throw new Error("coordinateMesh not init");
+		}
+		if (!chartLine) {
+			throw new Error("chartLine not init");
 		}
 		/// 初始化辅助线
 		if (!auxiliaryLine) {
@@ -667,8 +673,8 @@ export class TrendSlide extends PIXI.Graphics {
 			}
 		}
 		auxiliaryLine.position.set(
-			chartLineGradientCover.x + near_point.x,
-			chartLineGradientCover.y + near_point.y
+			chartLine.x + near_point.x,
+			chartLine.y + near_point.y
 		);
 		/// 改变遮罩的形态
 		{
