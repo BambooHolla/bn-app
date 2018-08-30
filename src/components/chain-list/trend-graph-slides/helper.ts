@@ -2,7 +2,10 @@ import { NumColor } from "./const";
 import { AniBase, Easing } from "../../AniBase";
 
 /**获取一组数据的大范围，用于Y轴的显示*/
-export function calcOutterNearRange(list: number[]) {
+export function calcOutterNearRange(
+	list: number[],
+	opts?: { min_val?: number }
+) {
 	/// 最大值和最小值都要进行取整数
 	const max = Math.round(Math.max(...list));
 	const min = Math.floor(Math.min(...list));
@@ -36,6 +39,11 @@ export function calcOutterNearRange(list: number[]) {
 		if (try_val >= bot_min_val) {
 			bot_min = try_val;
 			break;
+		}
+	}
+	if (opts) {
+		if (typeof opts.min_val === "number") {
+			bot_min = Math.max(opts.min_val, bot_min);
 		}
 	}
 
@@ -92,7 +100,7 @@ export function calcRangeScale(
 ): [number, number][] {
 	const diff = max - min;
 	let unit_diff = 0;
-	let scale_num = max_scale_num;
+	let scale_num = max_scale_num - 1;
 	if (typeof base_diff !== "number") {
 		base_diff = Math.pow(
 			10,
@@ -168,5 +176,5 @@ export function mixFromToStyle<T>(
 			ani_style[key] = abs_progress <= 0.5 ? from_val : to_val;
 		}
 	}
-	return ani_style as T
+	return ani_style as T;
 }

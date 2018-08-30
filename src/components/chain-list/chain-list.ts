@@ -463,7 +463,7 @@ export class ChainListComponent extends AniBase {
       if (_cahce_height !== height) {
         _cahce_height = height;
         const unit_block_time = this.blockService.appSetting.BLOCK_UNIT_TIME;
-        const block_num = Math.round((30 * 60 * 1000) / unit_block_time);
+        const block_num = Math.round((60 * 60 * 1000) / unit_block_time);
         cache_data = this.blockService.getBlocksByRange(
           Math.max(height - block_num, 1),
           height,
@@ -530,7 +530,7 @@ export class ChainListComponent extends AniBase {
 
       const setTrData = () => {
         slide_args.getData().then(data => {
-          console.log(slide_args.title, data);
+          // console.log(slide_args.title, data);
           tr.data = data;
         });
       };

@@ -229,7 +229,9 @@ export class TrendSlide extends PIXI.Graphics {
 		} = this;
 		const x_data = data.map(d => d[0]);
 		const y_data = data.map(d => d[1]);
-		const [y_coo_max, y_coo_min] = calcOutterNearRange(y_data);
+		const [y_coo_max, y_coo_min] = calcOutterNearRange(y_data, {
+			min_val: 0,
+		});
 		const x_coo_max = Math.max(...x_data);
 		const x_coo_min = Math.min(...x_data);
 

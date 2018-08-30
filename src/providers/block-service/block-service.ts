@@ -103,11 +103,13 @@ export class BlockServiceProvider extends FLP_Tool {
           endHeight,
           ...query
         } = search;
+        let may_need_mix_reqs = false;
         if (Number.isFinite(startHeight) && Number.isFinite(endHeight)) {
           query.height = {
             $gte: startHeight,
             $lte: endHeight,
           };
+          may_need_mix_reqs = true;
           if (!limit) {
             limit = Math.abs(endHeight - startHeight) + 1;
           }
@@ -129,6 +131,8 @@ export class BlockServiceProvider extends FLP_Tool {
         if (Number.isFinite(query.height) && blocks.length === 1) {
           return { reqs: [], cache };
         }
+        // TODO:blocks.length != limit
+        // TODO:要考虑request_opts中的范围大小不得超过100，需要做切割再多次获取
         if (Number.isFinite(limit) && blocks.length == limit) {
           return { reqs: [], cache };
         }
