@@ -88,6 +88,10 @@ page-assets-guide {
 			text-align: center;
 			pointer-events: none;
 		}
+		.bootstrap-button-container{
+			z-index: 2;
+			pointer-events: all;
+		}
 		h1 {
 			position: absolute;
 			font-size: 1.8rem;

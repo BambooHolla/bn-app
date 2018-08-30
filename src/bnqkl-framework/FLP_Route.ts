@@ -362,6 +362,22 @@ FLP_Route.registerRouteToBeforeCheck(
   0,
   "询问用户是否要从相册选择图像进行二维码扫描"
 );
+FLP_Route.registerRouteToBeforeCheck(
+  ["assets-issuing-assets"],
+  async (self, to_next_params, { path, params, opts }) => {
+    // self._navCtrlPush('assets-guide',{
+    //   auto_return:true
+    // })
+    const guideModal = self.modalCtrl.create("assets-guide");
+    guideModal.present();
+    await new Promise(resolve => {
+      guideModal.onWillDismiss(resolve);
+    });
+    return false;
+  },
+  0,
+  "引导用户进入资产发行说明页面"
+);
 
 type RouteToBeforeCheck = {
   name?: string;
