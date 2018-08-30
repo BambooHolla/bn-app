@@ -102,6 +102,9 @@ page-assets-issuing-assets {
           } */
         }
         .logo-uploader {
+          >.mat-button-wrapper{
+            margin: auto;
+          }
           ali-icon {
             font-size: 4.2rem;
             color: #ddd;

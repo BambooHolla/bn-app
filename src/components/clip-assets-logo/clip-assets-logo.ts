@@ -130,7 +130,7 @@ export class ClipAssetsLogoComponent extends AniBase{
 
 		stage.addChild(mask_container);
 		mask_container.addChild(mask_layer_drawer);
-		this._init_edge_container();
+		// this._init_edge_container();
 		this._init_logo_container();
 	}
 	logo_container = new PIXI.Graphics();

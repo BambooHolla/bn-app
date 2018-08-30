@@ -144,7 +144,6 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
       bubbles: true,
       cancelable: true,
     });
-    inputEle.dispatchEvent(clickEvent);
     inputEle.onchange = e => {
       if (inputEle.files && inputEle.files[0]) {
         const clip_dialog = this.modalCtrl.create("assets-logo-clip", {
@@ -164,6 +163,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
         console.log("没有选择文件，代码不应该运行到这里");
       }
     };
+    inputEle.dispatchEvent(clickEvent);
   }
 
   /**申请成为受托人*/
