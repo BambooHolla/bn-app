@@ -3,7 +3,7 @@ import {
 	ViewChild,
 	ElementRef,
 	ChangeDetectionStrategy,
-	OnDestroy
+	OnDestroy,
 } from "@angular/core";
 
 import { AniBase, Easing, formatImage } from "../AniBase";
@@ -19,7 +19,7 @@ enum OpType {
 	selector: "clip-assets-logo",
 	templateUrl: "clip-assets-logo.html",
 })
-export class ClipAssetsLogoComponent extends AniBase{
+export class ClipAssetsLogoComponent extends AniBase {
 	@ViewChild("canvas") canvasRef!: ElementRef;
 	constructor() {
 		super();
@@ -514,6 +514,7 @@ export class ClipAssetsLogoComponent extends AniBase{
 	);
 
 	// export_layer = new PIXI.Container();
+	static clip_renderer?: PIXI.CanvasRenderer;
 
 	// 导出裁剪的图形
 	async exportClipBase64() {
@@ -540,8 +541,30 @@ export class ClipAssetsLogoComponent extends AniBase{
 			// this.logo_container.y = (size - this.logo_container.height) / 2;
 		}
 
-		// this.logo_container.generateCanvasTexture()
-		const export_base64 = this.app.renderer.extract.base64(
+		const size_info_symbol = Symbol.for("size");
+		const clip_size_info = `${mask_layer_shape.width},${
+			mask_layer_shape.height
+		}`;
+		let { clip_renderer } = ClipAssetsLogoComponent;
+		if (
+			// 尺寸发生了改变，进行重新生成
+			clip_renderer &&
+			clip_renderer[size_info_symbol] !== clip_size_info
+		) {
+			clip_renderer.destroy();
+			clip_renderer = undefined;
+		}
+		if (!clip_renderer) {
+			clip_renderer = new PIXI.CanvasRenderer(
+				mask_layer_shape.width,
+				mask_layer_shape.height,
+				{ transparent: false, backgroundColor: 0xffffff }
+			);
+			clip_renderer[size_info_symbol] = clip_size_info;
+		}
+		ClipAssetsLogoComponent.clip_renderer = clip_renderer;
+
+		const export_base64 /*this.app.renderer.extract*/ = clip_renderer.extract.base64(
 			this.logo_container
 		);
 		this.logo_container.mask = null;
@@ -553,14 +576,14 @@ export class ClipAssetsLogoComponent extends AniBase{
 			this.logo_container.width,
 			this.logo_container.height
 		);
-		return await formatImage(export_base64, {
+		return (await formatImage(export_base64, {
 			format: "image/png",
 			view_width: size,
 			view_height: size,
 			size: "cover",
 			position: "center",
 			target_encode: "base64",
-		}) as string;
+		})) as string;
 	}
 	async exportClipBolb() {
 		const export_base64 = await this.exportClipBase64();
