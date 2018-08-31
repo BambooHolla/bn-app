@@ -8,6 +8,7 @@ import {
 import { asyncCtrlGenerator } from "./Decorator";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { PAGE_STATUS } from "./const";
+import { fileInputEleFactory } from "./helper";
 
 export class FLP_Route extends FLP_Lifecycle {
   constructor(public navCtrl: NavController, public navParams: NavParams) {
@@ -285,9 +286,9 @@ FLP_Route.registerRouteToBeforeCheck(
           text: await self.getTranslate(QRCODE_GET_WAY.FromPicture),
           handler() {
             // 必须把触发函数写在click里头，不然安全角度来说，是无法正常触发的
-            inputEle = document.createElement("input");
-            inputEle.type = "file";
-            inputEle.accept = "image/*";
+            const inputEle = fileInputEleFactory("qrcodePicker");
+            inputEle.value = "";
+
             const clickEvent = new MouseEvent("click", {
               view: window,
               bubbles: true,

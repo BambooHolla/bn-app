@@ -9,6 +9,7 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
+import { fileInputEleFactory } from "../../../bnqkl-framework/helper";
 import { TabsPage } from "../../tabs/tabs";
 import {
   IonicPage,
@@ -136,15 +137,8 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 
   /**选择资产logo图片*/
   pickAssetsLogo() {
-    const inputEle_id = "pickAssetsLogoPicker";
-    const inputEle =
-      (document.getElementById(inputEle_id) as HTMLInputElement) ||
-      document.createElement("input");
-    if (inputEle.id !== inputEle_id) {
-      inputEle.id = inputEle_id;
-      inputEle.type = "file";
-      inputEle.accept = "image/*";
-    }
+    const inputEle = fileInputEleFactory("pickAssetsLogoPicker");
+    inputEle.value = "";
     const clickEvent = new MouseEvent("click", {
       view: window,
       bubbles: true,
