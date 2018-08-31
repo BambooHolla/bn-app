@@ -19,7 +19,7 @@ enum OpType {
 	selector: "clip-assets-logo",
 	templateUrl: "clip-assets-logo.html",
 })
-export class ClipAssetsLogoComponent extends AniBase {
+export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 	@ViewChild("canvas") canvasRef!: ElementRef;
 	constructor() {
 		super();
@@ -514,7 +514,29 @@ export class ClipAssetsLogoComponent extends AniBase {
 	);
 
 	// export_layer = new PIXI.Container();
-	static clip_renderer?: PIXI.CanvasRenderer;
+	private static _clip_renderer?: PIXI.CanvasRenderer;
+	static getClipRenderer(width, height) {
+		const size_info_symbol = Symbol.for("size");
+		const clip_size_info = `${width},${height}`;
+		let { _clip_renderer: clip_renderer } = ClipAssetsLogoComponent;
+		if (
+			// 尺寸发生了改变，进行重新生成
+			clip_renderer &&
+			clip_renderer[size_info_symbol] !== clip_size_info
+		) {
+			clip_renderer.destroy();
+			clip_renderer = undefined;
+		}
+		if (!clip_renderer) {
+			clip_renderer = new PIXI.CanvasRenderer(width, height, {
+				transparent: false,
+				backgroundColor: 0xffffff,
+			});
+			clip_renderer[size_info_symbol] = clip_size_info;
+			ClipAssetsLogoComponent._clip_renderer = clip_renderer;
+		}
+		return clip_renderer;
+	}
 
 	// 导出裁剪的图形
 	async exportClipBase64() {
@@ -525,44 +547,16 @@ export class ClipAssetsLogoComponent extends AniBase {
 		if (this.logo_container.mask != clip_layer_shape) {
 			this.logo_container.mask = clip_layer_shape;
 			this.logo_container.addChild(clip_layer_shape);
-			// const { width: W, height: H } = this.app.renderer;
 			clip_layer_shape.width = mask_layer_shape.width;
 			clip_layer_shape.height = mask_layer_shape.height;
 			clip_layer_shape.x = mask_layer_shape.x;
 			clip_layer_shape.y = mask_layer_shape.y;
-			// this.export_layer.addChild(this.logo_container);
-			// const size = Math.min(
-			// 	this.logo_container.width,
-			// 	this.logo_container.height
-			// );
-			// this.export_layer.width = size;
-			// this.export_layer.height = size;
-			// this.logo_container.x = (size - this.logo_container.width) / 2;
-			// this.logo_container.y = (size - this.logo_container.height) / 2;
 		}
 
-		const size_info_symbol = Symbol.for("size");
-		const clip_size_info = `${mask_layer_shape.width},${
+		const clip_renderer = ClipAssetsLogoComponent.getClipRenderer(
+			mask_layer_shape.width,
 			mask_layer_shape.height
-		}`;
-		let { clip_renderer } = ClipAssetsLogoComponent;
-		if (
-			// 尺寸发生了改变，进行重新生成
-			clip_renderer &&
-			clip_renderer[size_info_symbol] !== clip_size_info
-		) {
-			clip_renderer.destroy();
-			clip_renderer = undefined;
-		}
-		if (!clip_renderer) {
-			clip_renderer = new PIXI.CanvasRenderer(
-				mask_layer_shape.width,
-				mask_layer_shape.height,
-				{ transparent: false, backgroundColor: 0xffffff }
-			);
-			clip_renderer[size_info_symbol] = clip_size_info;
-		}
-		ClipAssetsLogoComponent.clip_renderer = clip_renderer;
+		);
 
 		const export_base64 /*this.app.renderer.extract*/ = clip_renderer.extract.base64(
 			this.logo_container
@@ -572,16 +566,14 @@ export class ClipAssetsLogoComponent extends AniBase {
 		// this.logo_container.x = 0;
 		// this.logo_container.y = 0;
 		// this.app.stage.addChild(this.logo_container)
-		const size = Math.min(
-			this.logo_container.width,
-			this.logo_container.height
-		);
+		const size = Math.max(mask_layer_shape.width, mask_layer_shape.height);
+		// return export_base64;
 		return (await formatImage(export_base64, {
 			format: "image/png",
 			view_width: size,
 			view_height: size,
-			size: "cover",
-			position: "center",
+			size: `100%`,
+			position: `0 ${mask_layer_shape.y}`,
 			target_encode: "base64",
 		})) as string;
 	}

@@ -70,7 +70,7 @@ export class AssetsLogoClipPage extends SecondLevelPage {
 		if (this._input_color_ele.type !== "color") {
 			this._input_color_ele.type = "color";
 			this._input_color_ele.onchange = e => {
-				this.formData.bgcolor = this._input_color_ele.value;
+				this.setLogoBg(this._input_color_ele.value);
 			};
 		}
 		const clickEvent = new MouseEvent("click", {
@@ -93,7 +93,9 @@ export class AssetsLogoClipPage extends SecondLevelPage {
 	@asyncCtrlGenerator.single()
 	async exportClip() {
 		await sleep(200);
-		this.jobRes({ logo_url: await this.clipAssetsLogo.exportClipBolbUrl() });
+		this.jobRes({
+			logo_url: await this.clipAssetsLogo.exportClipBolbUrl(),
+		});
 		this.finishJob(true);
 	}
 }

@@ -589,7 +589,7 @@ export async function formatImage(
     format: string /* = "image/png"*/;
     view_width: number;
     view_height: number;
-    size: "contain" | "cover";
+    size: string; //"contain" | "cover"|"100[%][,[ 100[%]]]";
     position: string;
     target_encode: string /*base64,blob*/;
     encoderOptions?: number /*jpeg格式的质量*/;
@@ -610,46 +610,115 @@ export async function formatImage(
     img.onerror = reject;
   });
   /*宽高比例*/
-  const img_rate = img.width / img.height;
+  const { width: img_source_width, height: img_source_height } = img;
+
+  /// size
+  const img_rate = img_source_width / img_source_height;
   const view_rate = opts.view_width / opts.view_height;
-  let dstX = 0;
-  let dstY = 0;
-  if (opts.size === "contain") {
-    if (img.width > opts.view_width) {
-      img.width = opts.view_width;
-      img.height = opts.view_width / img_rate;
-    }
-    if (img.height > opts.view_height) {
-      img.height = opts.view_height;
-      img.width = opts.view_height * img_rate;
-    }
-  } else if (opts.size === "cover") {
-    if (img_rate > view_rate) {
-      // 源图是宽的，保证高度
-      img.height = opts.view_height;
-      img.width = opts.view_height * img_rate;
-    } else if (view_rate === img_rate) {
-      img.width = opts.view_width;
-      img.height = opts.view_height;
+  if (opts.size) {
+    if (opts.size === "contain") {
+      if (img.width > opts.view_width) {
+        img.width = opts.view_width;
+        img.height = opts.view_width / img_rate;
+      }
+      if (img.height > opts.view_height) {
+        img.height = opts.view_height;
+        img.width = opts.view_height * img_rate;
+      }
+    } else if (opts.size === "cover") {
+      if (img_rate > view_rate) {
+        // 源图是宽的，保证高度
+        img.height = opts.view_height;
+        img.width = opts.view_height * img_rate;
+      } else if (view_rate === img_rate) {
+        img.width = opts.view_width;
+        img.height = opts.view_height;
+      } else {
+        // view_rate < img_rate 源图是窄的，保证宽度
+        img.width = opts.view_width;
+        img.height = opts.view_width / img_rate;
+      }
     } else {
-      // view_rate < img_rate 源图是窄的，保证宽度
-      img.width = opts.view_width;
-      img.height = opts.view_width / img_rate;
+      const source_size_info = opts.size.split(/[\s,]{1,}/);
+      const source_size_info_width = source_size_info[0].trim();
+      const source_size_info_height = (
+        source_size_info[1] || source_size_info_width
+      ).trim();
+      if (source_size_info_width.endsWith("%")) {
+        img.width =
+          (img_source_width *
+            parseFloat(
+              source_size_info_width.substr(
+                0,
+                source_size_info_width.length - 1
+              )
+            )) /
+          100;
+      } else if (isFinite(parseFloat(source_size_info_width))) {
+        img.width = parseFloat(source_size_info_width);
+      } else {
+        console.warn(
+          new Error(`no support size width: ${source_size_info_width}`)
+        );
+      }
+      if (source_size_info_height.endsWith("%")) {
+        img.height =
+          (img_source_height *
+            parseFloat(
+              source_size_info_height.substr(
+                0,
+                source_size_info_height.length - 1
+              )
+            )) /
+          100;
+      } else if (isFinite(parseFloat(source_size_info_height))) {
+        img.height = parseFloat(source_size_info_height);
+      } else {
+        console.warn(
+          new Error(`no support size height: ${source_size_info_height}`)
+        );
+      }
     }
   }
+  const img_scale_x = img.width / img_source_width;
+  const img_scale_y = img.height / img_source_height;
 
-  const source_position_info = opts.position.split(/[\s]{1,}/);
-  const source_position_info_x = source_position_info[0];
-  const source_position_info_y =
-    source_position_info[1] || source_position_info_x;
+  /// position
+  let dstX = 0;
+  let dstY = 0;
+  const source_position_info = opts.position.split(/[\s,]{1,}/);
+  const source_position_info_x = source_position_info[0].trim();
+  const source_position_info_y = (
+    source_position_info[1] || source_position_info_x
+  ).trim();
   // 这里目前仅仅支持center，没有支持百分比、left/right/top/bottom等其它语义
   if (source_position_info_x === "center") {
     dstX = (opts.view_width - img.width) / 2;
+  } else if (source_position_info_x.endsWith("%")) {
+    dstX =
+      (-parseFloat(
+        source_position_info_x.substr(0, source_position_info_x.length - 1)
+      ) /
+        100) *
+      img.width *
+      img_scale_x;
+  } else if (isFinite(parseFloat(source_position_info_x))) {
+    dstX = -parseFloat(source_position_info_x) * img_scale_x || 0;
   } else {
     console.warn(new Error(`no support position x: ${source_position_info_x}`));
   }
   if (source_position_info_y === "center") {
     dstY = (opts.view_height - img.height) / 2;
+  } else if (source_position_info_y.endsWith("%")) {
+    dstY =
+      (-parseFloat(
+        source_position_info_y.substr(0, source_position_info_y.length - 1)
+      ) /
+        100) *
+      img.height *
+      img_scale_y;
+  } else if (isFinite(parseFloat(source_position_info_y))) {
+    dstY = -parseFloat(source_position_info_y) * img_scale_y || 0;
   } else {
     console.warn(new Error(`no support position y: ${source_position_info_y}`));
   }
@@ -681,3 +750,4 @@ export async function formatImage(
     throw new TypeError(`unknown target encode: ${opts.target_encode}`);
   }
 }
+tryRegisterGlobal("formatImage", formatImage);
