@@ -498,14 +498,13 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 		this._set_logo(this.logo_url);
 	}
 	setBg(bg_color) {
-		const { logo_container } = this;
+		const { logo_container, app } = this;
+		if (!app) {
+			return;
+		}
+		logo_container.clear();
 		logo_container.beginFill(parseInt(bg_color.replace("#", ""), 16), 1);
-		logo_container.drawRect(
-			0,
-			0,
-			logo_container.width,
-			logo_container.height
-		);
+		logo_container.drawRect(0, 0, app.renderer.width, app.renderer.height);
 		logo_container.endFill();
 	}
 
