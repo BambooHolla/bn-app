@@ -542,15 +542,15 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 		if (!this.app) {
 			return;
 		}
-		const { clip_layer_shape, mask_layer_shape } = this;
-		if (this.logo_container.mask != clip_layer_shape) {
+		const { /*clip_layer_shape,*/ mask_layer_shape } = this;
+		/*if (this.logo_container.mask != clip_layer_shape) {
 			this.logo_container.mask = clip_layer_shape;
 			this.logo_container.addChild(clip_layer_shape);
 			clip_layer_shape.width = mask_layer_shape.width;
 			clip_layer_shape.height = mask_layer_shape.height;
 			clip_layer_shape.x = mask_layer_shape.x;
 			clip_layer_shape.y = mask_layer_shape.y;
-		}
+		}*/
 
 		const clip_renderer = ClipAssetsLogoComponent.getClipRenderer(
 			mask_layer_shape.width,
@@ -560,11 +560,9 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 		const export_base64 /*this.app.renderer.extract*/ = clip_renderer.extract.base64(
 			this.logo_container
 		);
-		this.logo_container.mask = null;
-		this.logo_container.removeChild(clip_layer_shape);
-		// this.logo_container.x = 0;
-		// this.logo_container.y = 0;
-		// this.app.stage.addChild(this.logo_container)
+		// this.logo_container.mask = null;
+		// this.logo_container.removeChild(clip_layer_shape);
+
 		const size = Math.max(mask_layer_shape.width, mask_layer_shape.height);
 		// return export_base64;
 		return (await formatImage(export_base64, {

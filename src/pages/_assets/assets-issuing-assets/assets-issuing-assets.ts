@@ -136,9 +136,15 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 
   /**选择资产logo图片*/
   pickAssetsLogo() {
-    const inputEle = document.createElement("input");
-    inputEle.type = "file";
-    inputEle.accept = "image/*";
+    const inputEle_id = "pickAssetsLogoPicker";
+    const inputEle =
+      (document.getElementById(inputEle_id) as HTMLInputElement) ||
+      document.createElement("input");
+    if (inputEle.id !== inputEle_id) {
+      inputEle.id = inputEle_id;
+      inputEle.type = "file";
+      inputEle.accept = "image/*";
+    }
     const clickEvent = new MouseEvent("click", {
       view: window,
       bubbles: true,
