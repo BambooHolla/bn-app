@@ -296,114 +296,103 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 		let resize_distance: number;
 		let resize_rule = Math.max(W, H) / 6; // 多少像素放大0.1
 
-		logo_container.on(
-			"pointerdown",
-			(e: PIXI.interaction.InteractionEvent) => {
-				if (!this.logo) {
-					return;
+		const start_handle = (e: PIXI.interaction.InteractionEvent) => {
+			if (!this.logo) {
+				return;
+			}
+
+			if (
+				e.data.pointerType === "touch" &&
+				"touches" in e.data.originalEvent &&
+				e.data.originalEvent.touches.length === 2
+			) {
+				/// 缩放
+				status = OpType.resize;
+				const point_1 = e.data.originalEvent.touches[0];
+				const point_2 = e.data.originalEvent.touches[1];
+				init_point_1 = new PIXI.Point(point_1.clientX, point_1.clientY);
+				init_point_2 = new PIXI.Point(point_2.clientX, point_2.clientY);
+				resize_distance = Math.sqrt(
+					Math.pow(init_point_2.x - init_point_1.x, 2) +
+						Math.pow(init_point_2.y - init_point_1.y, 2)
+				);
+				resize_init_scale = this.logo.scale.x;
+			} else {
+				/// 移动
+				status = OpType.move;
+				init_point_1 = e.data.global.clone();
+				move_init_point = new PIXI.Point(
+					this.logo.position.x,
+					this.logo.position.y
+				);
+			}
+		};
+		const move_handle = (e: PIXI.interaction.InteractionEvent) => {
+			if (!this.logo) {
+				return;
+			}
+			if (status === OpType.move) {
+				const current_point = e.data.global.clone();
+				const diff_x = current_point.x - init_point_1.x;
+				const diff_y = current_point.y - init_point_1.y;
+				this.logo.position.set(
+					move_init_point.x + diff_x,
+					move_init_point.y + diff_y
+				);
+				// 边界限制
+				if (this.logo.position.x < 0) {
+					this.logo.position.x = 0;
 				}
-				// console.log(
-				// 	"touches" in e.data.originalEvent &&
-				// 		[].slice.call(e.data.originalEvent.touches)
-				// );
-				if (
-					e.data.pointerType === "touch" &&
-					"touches" in e.data.originalEvent &&
-					e.data.originalEvent.touches.length === 2
-				) {
-					status = OpType.resize;
-					const point_1 = e.data.originalEvent.touches[0];
-					const point_2 = e.data.originalEvent.touches[1];
-					init_point_1 = new PIXI.Point(
-						point_1.clientX,
-						point_1.clientY
-					);
-					init_point_2 = new PIXI.Point(
-						point_2.clientX,
-						point_2.clientY
-					);
-					resize_distance = Math.sqrt(
-						Math.pow(init_point_2.x - init_point_1.x, 2) +
-							Math.pow(init_point_2.y - init_point_1.y, 2)
-					);
-					resize_init_scale = this.logo.scale.x;
-				} else {
-					status = OpType.move;
-					init_point_1 = e.data.global.clone();
-					move_init_point = new PIXI.Point(
-						this.logo.position.x,
-						this.logo.position.y
-					);
+				if (this.logo.position.x > W) {
+					this.logo.position.x = W;
+				}
+				if (this.logo.position.y < 0) {
+					this.logo.position.y = 0;
+				}
+				if (this.logo.position.y > H) {
+					this.logo.position.y = H;
+				}
+			} else if (
+				status === OpType.resize &&
+				e.data.pointerType === "touch" &&
+				"touches" in e.data.originalEvent &&
+				e.data.originalEvent.touches.length === 2
+			) {
+				const point_1 = e.data.originalEvent.touches[0];
+				const point_2 = e.data.originalEvent.touches[1];
+				init_point_1 = new PIXI.Point(point_1.clientX, point_1.clientY);
+				init_point_2 = new PIXI.Point(point_2.clientX, point_2.clientY);
+				const current_distance = Math.sqrt(
+					Math.pow(init_point_2.x - init_point_1.x, 2) +
+						Math.pow(init_point_2.y - init_point_1.y, 2)
+				);
+				const diff_scale =
+					(current_distance - resize_distance) / resize_rule;
+				const target_scale = Math.max(
+					resize_init_scale + diff_scale,
+					0
+				);
+				this.logo.scale.set(target_scale);
+				// 缩放限制
+				if (this.logo.height < this.min_size) {
+					this.logo.height = this.min_size;
+					this.logo.scale.x = this.logo.scale.y;
+				}
+				if (this.logo.width < this.min_size) {
+					this.logo.width = this.min_size;
+					this.logo.scale.y = this.logo.scale.x;
 				}
 			}
-		);
-		// 移动
-		logo_container.on(
-			"pointermove",
-			(e: PIXI.interaction.InteractionEvent) => {
-				if (!this.logo) {
-					return;
-				}
-				if (status === OpType.move) {
-					const current_point = e.data.global.clone();
-					const diff_x = current_point.x - init_point_1.x;
-					const diff_y = current_point.y - init_point_1.y;
-					this.logo.position.set(
-						move_init_point.x + diff_x,
-						move_init_point.y + diff_y
-					);
-					// 边界限制
-					if (this.logo.position.x < 0) {
-						this.logo.position.x = 0;
-					}
-					if (this.logo.position.x > W) {
-						this.logo.position.x = W;
-					}
-					if (this.logo.position.y < 0) {
-						this.logo.position.y = 0;
-					}
-					if (this.logo.position.y > H) {
-						this.logo.position.y = H;
-					}
-				} else if (
-					status === OpType.resize &&
-					e.data.pointerType === "touch" &&
-					"touches" in e.data.originalEvent &&
-					e.data.originalEvent.touches.length === 2
-				) {
-					const point_1 = e.data.originalEvent.touches[0];
-					const point_2 = e.data.originalEvent.touches[1];
-					init_point_1 = new PIXI.Point(
-						point_1.clientX,
-						point_1.clientY
-					);
-					init_point_2 = new PIXI.Point(
-						point_2.clientX,
-						point_2.clientY
-					);
-					const current_distance = Math.sqrt(
-						Math.pow(init_point_2.x - init_point_1.x, 2) +
-							Math.pow(init_point_2.y - init_point_1.y, 2)
-					);
-					const diff_scale =
-						(current_distance - resize_distance) / resize_rule;
-					const target_scale = Math.max(
-						resize_init_scale + diff_scale,
-						0
-					);
-					this.logo.scale.set(target_scale);
-					// 缩放限制
-					if (this.logo.height < this.min_size) {
-						this.logo.height = this.min_size;
-						this.logo.scale.x = this.logo.scale.y;
-					}
-					if (this.logo.width < this.min_size) {
-						this.logo.width = this.min_size;
-						this.logo.scale.y = this.logo.scale.x;
-					}
-				}
-			}
-		);
+		};
+		const end_handle = (e: PIXI.interaction.InteractionEvent) => {
+			status = OpType.none;
+		};
+
+		logo_container.on("pointerdown", start_handle);
+		logo_container.on("pointermove", move_handle);
+		logo_container.on("pointerup", end_handle);
+		logo_container.on("pointerout", end_handle);
+		logo_container.on("pointerupoutside", end_handle);
 
 		// 添加到最底层
 		stage.addChildAt(logo_container, 0);
