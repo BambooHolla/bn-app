@@ -873,7 +873,7 @@
 
   "//": "assets-my-assets-list",
   "ASSETS-MY-ASSETS-LIST": "数字权益",
-  "MY_ASSETS_LIST_IS_EMPTY": "未拥有数字权益",
+  "MY_ASSETS_LIST_IS_EMPTY": "未拥有其它数字权益",
   "LOADING_MY_ASSETS_LIST": "加载拥有的数字权益",
   "TOTAL_VALUE": "总价值",
   "ASSETS_ISSUSED_BY_ME": "我创建的",

@@ -66,7 +66,7 @@
       </div>
     </div>
   </div>
-  <div class="total-value">
+  <div class="total-value" *ngIf="my_issued_assets_list.length||my_assets_list.length">
     <div class="label">
       <ali-icon name="ifm-shiliangzhinengduixiang4"></ali-icon>
       {{'TOTAL_VALUE'|translate}}
@@ -130,10 +130,10 @@
         </div>
       </div>
     </button>
-  </div>
-  <div class="empty-list" *ngIf="my_assets_list.length==0&&page_info.loading==false">
-    <img src="assets/imgs/empty-list.png" alt="空列表">
-    <div class="message">{{'MY_ASSETS_LIST_IS_EMPTY'|translate}}</div>
+    <div class="empty-list" *ngIf="my_assets_list.length==0&&page_info.loading==false">
+      <img src="assets/imgs/empty-list.png" alt="空列表">
+      <div class="message">{{'MY_ASSETS_LIST_IS_EMPTY'|translate}}</div>
+    </div>
   </div>
   <div class="pink-bg"></div>
 </ion-content>

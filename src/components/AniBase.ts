@@ -751,3 +751,23 @@ export async function formatImage(
   }
 }
 tryRegisterGlobal("formatImage", formatImage);
+
+const _useable_image_list: HTMLImageElement[] = [];
+export function preLoadImages(assets_list: string[], base_url = "") {
+  const fetch_task_list = assets_list.map((url, i) => {
+    const img = _useable_image_list.shift() || new Image();
+    img.src = base_url + url;
+    return new Promise<string>((resolve, reject) => {
+      img.onload = () => {
+        resolve(img.src);
+        _useable_image_list.push(img); //进入回收站
+      };
+      img.onerror = e => {
+        reject(e);
+        _useable_image_list.push(img); //进入回收站
+      };
+    });
+  });
+  // return Promise.all(fetch_task_list);
+  return fetch_task_list;
+}
