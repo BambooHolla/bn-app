@@ -98,6 +98,8 @@ export function calcRangeScale(
 	max_scale_num: number,
 	base_diff?: number
 ): [number, number][] {
+	max = Math.round(max);
+	min = Math.floor(min);
 	const diff = max - min;
 	let unit_diff = 0;
 	let scale_num = max_scale_num - 1;

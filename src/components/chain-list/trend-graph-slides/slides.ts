@@ -166,7 +166,7 @@ export class Slides extends PIXI.Container {
 	/**动画控制器*/
 	slide_ani_ctrl: any;
 	/**动画时间*/
-	slide_ani_duration = 600;
+	slide_ani_duration = 800;
 
 	/**初始化控制*/
 	initGestureCtrl() {

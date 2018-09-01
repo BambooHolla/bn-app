@@ -23,6 +23,7 @@ import {
 } from "../../providers/block-service/block-service";
 import { BlockCard } from "./block-card";
 import { GoldBlockCard } from "./block-card.gold";
+import { OverBlockCard } from "./block-card.over";
 import { CardChain } from "./card-chain";
 import { Slides } from "./trend-graph-slides/slides";
 import { TrendSlide } from "./trend-graph-slides/trend.slide";
@@ -44,6 +45,7 @@ export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 loader.add("block_card_blue_bg", "assets/imgs/tab-chain/block-card-blue.png");
 loader.add("block_card_gold_bg", "assets/imgs/tab-chain/block-card-gold.png");
+loader.add("block_card_over_bg", "assets/imgs/tab-chain/block-card-over.png");
 loader.add("chain_texture", "assets/imgs/tab-chain/chain-texture.png");
 
 loader.onError.add(err => {
@@ -129,6 +131,7 @@ export class ChainListComponent extends AniBase {
     const resource: PIXI.loaders.ResourceDictionary = await _load_resource_promiseout.promise;
     BlockCard.bg_resource = resource.block_card_blue_bg.texture;
     GoldBlockCard.bg_resource = resource.block_card_gold_bg.texture;
+    OverBlockCard.bg_resource = resource.block_card_over_bg.texture;
     CardChain.bg_resource = resource.chain_texture.texture;
     this.emit("app-inited");
     this._draw_init();
@@ -491,7 +494,7 @@ export class ChainListComponent extends AniBase {
             block_list =>
               block_list.map(block => [
                 block.height,
-                parseFloat(block.totalAmount),
+                parseFloat(block.totalAmount) / 1e8,
               ]) as [number, number][]
           );
         },
@@ -663,21 +666,21 @@ export class ChainListComponent extends AniBase {
   private _useable_blockcard_cache: {
     [chain_height: string]: BlockCard;
   } = {};
-  private _useable_gold_blockcard?: GoldBlockCard;
+  private _useable_over_blockcard?: OverBlockCard;
   private _getUseableBlockCard(height: number) {
     // 1. 金色区块
     if (height % 57 === 0) {
-      let { _useable_gold_blockcard } = this;
-      if (!_useable_gold_blockcard) {
-        _useable_gold_blockcard = new GoldBlockCard(
+      let { _useable_over_blockcard } = this;
+      if (!_useable_over_blockcard) {
+        _useable_over_blockcard = new OverBlockCard(
           this.item_width,
           this.item_height,
           height
         );
-        this._init_block_card_bind(_useable_gold_blockcard);
-        this._useable_gold_blockcard = _useable_gold_blockcard;
+        this._init_block_card_bind(_useable_over_blockcard);
+        this._useable_over_blockcard = _useable_over_blockcard;
       }
-      return _useable_gold_blockcard;
+      return _useable_over_blockcard;
     }
     const { _useable_blockcard_cache } = this;
     const cache = _useable_blockcard_cache[height];
@@ -735,7 +738,7 @@ export class ChainListComponent extends AniBase {
   }
   private _addUserableBlockCard(height: string, bc: BlockCard) {
     bc.parent.removeChild(bc);
-    if (bc === this._useable_gold_blockcard) {
+    if (bc === this._useable_over_blockcard) {
       return;
     }
     this._useable_blockcard_cache[height] = bc;
