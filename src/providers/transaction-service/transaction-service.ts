@@ -444,7 +444,7 @@ export class TransactionServiceProvider {
           ...extend_query,
         },
         {
-          timestamp: -1,
+          dealDateTime: -1,
         },
         offset,
         limit
@@ -458,7 +458,7 @@ export class TransactionServiceProvider {
           ...extend_query,
         },
         {
-          timestamp: -1,
+          dealDateTime: -1,
         },
         offset,
         limit

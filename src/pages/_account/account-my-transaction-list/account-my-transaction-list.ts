@@ -116,6 +116,9 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
   private _is_from_child = false;
   /**跳转到交易详情页面*/
   routeToTransactionDetail(tran: TransactionModel) {
+    this.unconfirm_transaction_list = this.unconfirm_transaction_list.filter(
+      trs => !trs["__remove"]
+    );
     return this.routeTo("chain-transaction-detail", { transaction: tran }).then(
       () => (this._is_from_child = true)
     );
@@ -229,7 +232,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
   watchHeightChanged() {
     return Promise.all([
       this.loadConfirmedTransactionList(),
-      this.loadMoreUnconfirmTransactionList(),
+      this.loadUnconfirmTransactionList(),
     ]);
   }
 }
