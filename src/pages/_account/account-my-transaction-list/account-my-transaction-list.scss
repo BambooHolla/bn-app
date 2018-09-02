@@ -1,5 +1,4 @@
 page-account-my-transaction-list {
-  background-color: #fff;
   > .header {
     > .bg {
       position: absolute;
@@ -70,10 +69,19 @@ page-account-my-transaction-list {
     }
   }
   > .content {
-    opacity: 0.4;
-    transition-duration: 0.25s;
-    &.show {
-      opacity: 1;
+    > .scroll-content {
+      > .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.4;
+        transition-duration: 0.25s;
+        &.show {
+          opacity: 1;
+        }
+      }
     }
   }
   .confimed-page {
@@ -176,7 +184,7 @@ page-account-my-transaction-list {
           opacity: 1;
           /* transform: translate3d(0, 0, 0); */
         }
-        50%{
+        50% {
           height: 5.9rem;
         }
 
@@ -203,15 +211,28 @@ page-account-my-transaction-list {
         }
       }
     }
-    .list-retry{
-      background-color: #c1c1c1;
-      color: #333;
-      border-radius: 0;
-    }
-    .list-delete{
+    .list-retry {
       background-color: #ff5c5b;
+    }
+    .list-delete {
+      background-color: #c1c1c1;
+    }
+    .options-item {
       color: #333;
       border-radius: 0;
+      .inner {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .mat-icon {
+          font-size: 2rem;
+          width: 2rem;
+          height: 2rem;
+          margin-right: 0.5rem;
+        }
+      }
     }
   }
   .empty-list {
