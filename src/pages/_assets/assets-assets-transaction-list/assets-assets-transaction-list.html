@@ -10,25 +10,25 @@
 </ion-header>
 <ion-content>
   <div class="base-info">
-    <div class="left">
-      <div class="assets-logo-shape-wrapper">
-        <div class="assets-logo-shape">
-          <img [src]="assets_info?.logo_safe_url" alt="LOGO">
-        </div>
+    <div class="assets-logo-shape-wrapper">
+      <div class="assets-logo-shape">
+        <img [src]="assets_info?.logo_safe_url" alt="LOGO">
       </div>
-      <div class="abbreviation">
-        {{assets_info?.abbreviation}}
+    </div>
+    <div class="abbreviation">
+      {{assets_info?.abbreviation}}
+    </div>
+    <div class="balance">
+      <text-mg [text]="assets_info?.hodingAssets|amountEuler|number:'1.8-8'" from="#74f5e1" to="#83d8f6" direction="to bottom" fontSize="3rem"></text-mg>
+      <div class="usd" hidden>
+        ≈ 666 USD
       </div>
+    </div>
+<!--     <div class="left">
     </div>
     <div class="right">
-      <div class="balance">
-        <text-mg [text]="assets_info?.hodingAssets|amountEuler|number:'1.8-8'" from="#74f5e1" to="#83d8f6" direction="to bottom" fontSize="2.8rem"></text-mg>
-        <div class="usd" hidden>
-          ≈ 666 USD
-        </div>
-      </div>
       <button mat-button class="destory-assets" (click)="showDestoryAssetsDialog()">{{'DESTROY_ASSETS'|translate}}</button>
-    </div>
+    </div> -->
   </div>
   <div class="transaction-logs">
     <div class="list-title">

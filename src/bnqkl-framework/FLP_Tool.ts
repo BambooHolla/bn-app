@@ -41,6 +41,12 @@ export class FLP_Tool {
   formatAndTranslateMessage = formatAndTranslateMessage;
   static formatAndTranslateMessage = formatAndTranslateMessage;
   translateMessage = translateMessage;
+  translateError = (error_msg: string) => {
+    if (error_msg.startsWith("@@")) {
+      error_msg = error_msg.substr(2);
+    }
+    return this.translate.instant(error_msg);
+  };
   static translateMessage = translateMessage;
 
   private _is_support_input_color?: boolean;
@@ -389,6 +395,10 @@ export class FLP_Tool {
       return "zh-tw";
     }
     return currentLang;
+  }
+  get isCN() {
+    const { localName } = this;
+    return localName == "zh-cn" || localName == "zh-tw";
   }
 
   private async _showCustomLoadingDialog(

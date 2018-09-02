@@ -478,6 +478,22 @@ export class ChainListComponent extends AniBase {
 
     const slide_args_list = [
       {
+        // 交易数量
+        title: "THE_NUMBER_OF_TRANSACTIONS_TREND",
+        opts: {
+          title_icon: "\ue653",
+        },
+        getData: () => {
+          return get30MinRangeBlockList(this.max_chain_height).then(
+            block_list =>
+              block_list.map(block => [
+                block.height,
+                block.numberOfTransactions,
+              ]) as [number, number][]
+          );
+        },
+      },
+      {
         // 交易金额
         title: "AMOUNT_OF_THE_TRANSACTION_TREND",
         opts: {
@@ -495,22 +511,6 @@ export class ChainListComponent extends AniBase {
               block_list.map(block => [
                 block.height,
                 parseFloat(block.totalAmount) / 1e8,
-              ]) as [number, number][]
-          );
-        },
-      },
-      {
-        // 交易数量
-        title: "THE_NUMBER_OF_TRANSACTIONS_TREND",
-        opts: {
-          title_icon: "\ue653",
-        },
-        getData: () => {
-          return get30MinRangeBlockList(this.max_chain_height).then(
-            block_list =>
-              block_list.map(block => [
-                block.height,
-                block.numberOfTransactions,
               ]) as [number, number][]
           );
         },

@@ -81,10 +81,29 @@ page-assets-issuing-assets {
       opacity: 0.5;
     }
   }
+  /* 表单样式 */
   .new-assets-form {
-    width: 76%;
-    margin: 0 auto;
+    /* width: 86%;
+    margin: 0 auto; */
+    padding-left: 7%;
+    padding-right: 7%;
     padding-bottom: 9.4rem;
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 15%,
+      #fff 100%
+    );
+    background-size: 100% 100%;
+
+    .mat-input-placeholder {
+      text-indent: 1rem;
+    }
+    .mat-form-field-should-float {
+      .mat-input-placeholder {
+        text-indent: 0rem;
+      }
+    }
     > .logo-wrapper {
       width: 100%;
       display: flex;
@@ -102,7 +121,7 @@ page-assets-issuing-assets {
           } */
         }
         .logo-uploader {
-          >.mat-button-wrapper{
+          > .mat-button-wrapper {
             margin: auto;
           }
           ali-icon {
@@ -168,11 +187,11 @@ page-assets-issuing-assets {
           text-shadow: 0 0 1rem #fff;
           overflow: hidden;
         }
-        >.into-delegate-wrapper{
+        > .into-delegate-wrapper {
           position: relative;
           width: 0;
           height: 5rem;
-          filter: drop-shadow(0 0 0.8rem #FFF);
+          filter: drop-shadow(0 0 0.8rem #fff);
           > .into-delegate {
             position: absolute;
             transform: translateX(-50%);
@@ -200,7 +219,7 @@ page-assets-issuing-assets {
                 }
               }
             }
-            &:first-child{
+            &:first-child {
               border-color: #73f5e0;
               color: #73f5e0;
               // mask-image: linear-gradient(to bottom,#000 0%,transparent 100%);
@@ -208,10 +227,10 @@ page-assets-issuing-assets {
               pointer-events: none;
               z-index: 1;
             }
-            &:last-child{
+            &:last-child {
               border-color: #83d6f7;
               color: #83d6f7;
-              mask-image: linear-gradient(to top,#000 0%,transparent 100%);
+              mask-image: linear-gradient(to top, #000 0%, transparent 100%);
               mask-size: 100% 100%;
               pointer-events: none;
               z-index: 2;
@@ -283,11 +302,26 @@ page-assets-issuing-assets {
         text-align: right;
       }
     }
-
+    > .fee-info {
+      margin: 0.6rem 0;
+      margin-bottom: 5rem;
+      color: #fbd965;
+      width: 92%;
+      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      font-weight: lighter;
+      ali-icon {
+        font-size: 1.6rem;
+        margin-right: 0.5rem;
+      }
+    }
     > .mat-container {
       > .tip {
         transition-duration: 250ms;
         color: #dcdcdc;
+        text-shadow: 0 0 0.1rem #fff, 0 0 0.2rem #fff, 0 0 0.4rem #fff,
+          0 0 0.8rem #fff;
         font-size: 1.25rem;
         padding-bottom: 3rem;
         ali-icon {

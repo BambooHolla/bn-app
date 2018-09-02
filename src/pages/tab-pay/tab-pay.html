@@ -68,7 +68,9 @@
                 </div>
                 <div class="abbreviation">{{assets.abbreviation}}</div>
                 <div class="balance">
-                  {{amountViewer(assets.hodingAssets|amountEuler|number:'1.8-8')}}
+                  <div class="text">
+                    {{amountViewer(assets.hodingAssets|amountEuler|number:'1.8-8')}}
+                  </div>
                 </div>
                 <span class="unit">{{assets.abbreviation}}</span>
               </div>

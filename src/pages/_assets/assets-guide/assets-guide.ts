@@ -44,6 +44,9 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
+	closeModal(){
+		this.viewCtrl.dismiss();
+	}
 
 	@ViewChild(Slides) slides!: Slides;
 	@AssetsGuidePage.willEnter

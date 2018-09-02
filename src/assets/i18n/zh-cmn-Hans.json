@@ -92,7 +92,7 @@
   "SIGN_IN": "立即开始",
   "GENERATE_NEW_PASSPHRASE": "生成新密码",
   "PLEASE_INPUT_EMAIL_ADDRESS": "请输入常用邮箱",
-  "PLEASE_INPUT_PHONE": "请输入常用手机",
+  "PLEASE_INPUT_PHONE": "请输入常用手机号码",
   "YOUR_UNIQUE_SIGN": "我的个性签名",
   "PLEASE_INPUT_CODE": "请输入常用密码",
   "INFORMATION_NOT_SAVE_IN_BLOCKCHAIN": "仅用于生成密码数据不会保存在区块链上",
@@ -180,10 +180,10 @@
   "APP_WILL_RESTART": "应用将会重启",
 
   "//": "settings-cache-manage",
-  "SETTINGS-CACHE-MANAGE": "清空手机缓存",
+  "SETTINGS-CACHE-MANAGE": "清空设备缓存",
   "IN_CALCULATION": "计算中",
   "TAP_TO_CLEAR": "开始清理",
-  "OCCUPY_#PERCENTAGE#%_OF_MOBILE_PHONE_STORAGE": "占据手机{{percentage}}%存储",
+  "OCCUPY_#PERCENTAGE#%_OF_MOBILE_PHONE_STORAGE": "占据设备{{percentage}}%存储",
   "CLEANING": "清理中……",
   "YOUR_DEVICE_IS_HEALTHY": "设备状态良好",
 
@@ -200,7 +200,7 @@
   "START_VOTE_VERIFY": "开启挖矿校验",
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
   "VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP":
-    "即将对本地区块进行检验，这需要消耗大量的计算能力，可能导致部分型号的手机发热，检验结束后发热的手机将不再发热。",
+    "即将对本地区块进行检验，这需要消耗大量的计算能力，可能导致部分型号的设备发热，检验结束后发热的设备将不再发热。",
   "BEFORE_DOWNLOAD_TIP":
     "即将同步区块链数据，第一次同步可能需要较长时间，在这个过程中您依然可以进行其它操作",
   "FIRST_MINGING_TIP":
@@ -248,8 +248,8 @@
   "CHECK_BLOCKCHAIN_IS_COMPLETE": "正在检查区块链是否完整",
   "FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#": "正在同步区块:{{progress}}%",
   "DOWNLOAD_BLOCKCHAIN_COMPLETE": "本地区块已同步到最新",
-  "THE_NUMBER_OF_TRANSACTIONS_TREND": "交易数量走势",
-  "AMOUNT_OF_THE_TRANSACTION_TREND": "交易金额走势",
+  "THE_NUMBER_OF_TRANSACTIONS_TREND": "交易数走势",
+  "AMOUNT_OF_THE_TRANSACTION_TREND": "交易量走势",
 
   "//": "chain-block-detail",
   "CHAIN-BLOCK-DETAIL": "区块信息",
@@ -363,7 +363,7 @@
   "ADD_MORE_INFORMATION_REMARKS": "添加更多备注信息",
   "ADD_REAMRK_PHOTO": "添加名片或相关图片",
   "REMAKR_ONLY_SAVE_ON_LOCAL_TIP":
-    "备注信息保存在本机上，更换手机时备注信息需要重新设置",
+    "备注信息保存在本机上，更换设备时备注信息需要重新设置",
   "CONTACT_REMARK_SAVE_FAIL": "地址备注信息保存失败",
   "CONTACT_REMARK_SAVE_SUCCESS": "地址备注信息保存成功",
 
@@ -756,7 +756,7 @@
   "TUTORIAL_SLIDE3_TITLE": "有的未来",
   "TUTORIAL_SLIDE3_DESCRIPTION": "良性竞争万物共存",
 
-  "TUTORIAL_SLIDE4_TITLE": "开始进入手机挖矿时代？",
+  "TUTORIAL_SLIDE4_TITLE": "开始进入设备挖矿时代？",
 
   "WELCOME_INTRO": "出发，您的下一个强大的<b>区块链应用</b>",
 
@@ -817,6 +817,7 @@
   "ASSETS_rate": "置换比例",
   "ASSETS_expectedFrozenIBTs": "初始冻结IBT数量",
   "ASSETS_expectedIssuedAssets": "生成数量",
+  "CAPITALIZATION_OF_ASSETS":"资产大写",
   "ASSETS_applyAssetBlockHeight": "权益发起时的区块高度",
   "ASSETS_expectedIssuedBlockHeight": "计划生成时的区块高度",
   "ABBREVIATION_TOO_SHORT": "英文简写太短",

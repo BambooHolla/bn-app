@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header [backdrop-blur]=5>
   <ion-navbar color="transparent">
     <ion-title>{{'ASSETS-ISSUING-ASSETS'|translate}}</ion-title>
   </ion-navbar>
@@ -95,11 +95,33 @@
         <mat-error *ngIf="errors?.expectedIssuedAssets?.RATE_TOO_LARGE">
           {{errors.expectedIssuedAssets.WRONG_RANGE|translate}}
         </mat-error>
+        <mat-hint *ngIf="isCN" align="end">
+          {{'CAPITALIZATION_OF_ASSETS'|translate}}: {{DX(formData.expectedIssuedAssets)}}
+        </mat-hint>
       </mat-form-field>
       <div class="tip">
         <ali-icon name="ifm-dialog-warning"></ali-icon>
         {{'ASSETS_EXPECTEDISSUEDASSETS_TIP'|translate}}
       </div>
+    </div>
+    <!-- 密码与手续费 -->
+    <div class="mat-container pwd">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_LOGIN_PASSPHRASE'|translate" type="password" [(ngModel)]="formData.pwd" set-input-status="pwd" [errorStateMatcher]="matFormMatcherFactory('pwd')">
+      </mat-form-field>
+    </div>
+    <div class="mat-container pay_pwd" *ngIf="formData.need_pay_pwd">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_PAY_PASSPHRASE'|translate" type="password" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd" [errorStateMatcher]="matFormMatcherFactory('pay_pwd')">
+        <mat-error *ngIf="errors?.pay_pwd?.VerificationFailure">
+          {{errors.pay_pwd.VerificationFailure|translate}}
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="fee-info" (click)="setFee()">
+      <ali-icon name="ifm-info"></ali-icon>
+      <span class="fee">{{formData.fee|number:'1.8-8'}}
+        <span class="unit">IBT</span></span>
     </div>
   </div>
   <div class="footer">

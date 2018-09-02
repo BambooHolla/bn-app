@@ -543,6 +543,19 @@ page-tab-pay {
           }
           > .balance {
             text-align: right;
+            width: 40vw;
+            position: relative;
+            > .text {
+              top: 0;
+              left: 0;
+              width: 100%;
+              text-align: right;
+              position: absolute;
+              overflow: hidden;
+              line-height: 4rem;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
           }
           > .unit {
             padding-right: 2rem;

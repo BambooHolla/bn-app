@@ -26,6 +26,8 @@ import { MatAutocomplete } from "@angular/material";
 import { formatImage } from "../../../components/AniBase";
 import { TransactionServiceProvider } from "../../../providers/transaction-service/transaction-service";
 
+import { PwdInputPage } from "../../pwd-input/pwd-input";
+
 @IonicPage({ name: "assets-issuing-assets" })
 @Component({
   selector: "page-assets-issuing-assets",
@@ -68,18 +70,34 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     genesisAddress: string;
     expectedIssuedAssets?: number;
     // expectedIssuedBlockHeight?: number;
+    pwd: string;
+    need_pay_pwd: boolean;
+    pay_pwd: string;
+    fee: number;
   } = {
     logo: "",
     abbreviation: "",
     genesisAddress: "",
     expectedIssuedAssets: undefined,
+
+    pwd: "",
+    need_pay_pwd: this.userInfo.hasSecondPwd,
+    pay_pwd: "",
+    fee: parseFloat(this.appSetting.settings.default_fee),
     // expectedIssuedBlockHeight: undefined,
   };
 
-  ignore_keys = ["logo"];
+  ignore_keys = ["logo", "pay_pwd"];
   summary_maxlength = 200;
 
-  // 表单校验
+  @asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
+  async setFee() {
+    const { custom_fee } = await this.getCustomFee(this.formData.fee);
+    this.formData.fee = custom_fee;
+  }
+
+  /// 表单校验
+  /**校验数字资产英文简写*/
   @AssetsIssuingAssetsPage.setErrorTo("errors", "abbreviation", [
     "TOO_SHORT",
     "TOO_LONG",
@@ -103,6 +121,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     }
     return res;
   }
+  /**校验数字接受地址简写*/
   @AssetsIssuingAssetsPage.setErrorTo("errors", "genesisAddress", [
     "WRONG_ADDRESS",
   ])
@@ -116,7 +135,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     }
     return res;
   }
-
+  /**校验资产发行数量*/
   @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedAssets", [
     "WRONG_RANGE",
   ])
@@ -130,6 +149,23 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     }
     // this.calcRate();
     return res;
+  }
+
+  /**校验支付密码数量*/
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "pay_pwd", [
+    "VerificationFailure",
+    "NeedInput",
+  ])
+  check_pay_pwd() {
+    if (this.formData.pay_pwd) {
+      if (
+        !this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
+      ) {
+        return {
+          VerificationFailure: "PAY_PWD_VERIFICATION_FAILURE",
+        };
+      }
+    }
   }
 
   @AssetsIssuingAssetsPage.markForCheck
@@ -202,6 +238,38 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     });
   }
 
+  /**数字转大写*/
+  DX(n) {
+    if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(n)) return "数据非法";
+    var unit = "千百拾亿千百拾万千百拾個",
+      str = "";
+    // n += "00";
+    // var p = n.indexOf(".");
+    // if (p >= 0) n = n.substring(0, p) + n.substr(p + 1, 2);
+    n = parseInt(n) || 0;
+    n += "";
+    unit = unit.substr(unit.length - n.length);
+    for (var i = 0; i < n.length; i++)
+      str += "零壹贰叁肆伍陆柒捌玖"[n[i]] + unit[i];
+    return str
+      .replace(/零(千|百|拾|角)/g, "零")
+      .replace(/(零)+/g, "零")
+      .replace(/零(万|亿|個)/g, "$1")
+      .replace(/(亿)万|壹(拾)/g, "$1$2")
+      .replace(/^個零?|零分/g, "")
+      .replace(/個$/g, "個整");
+  }
+
+  get canSubmit() {
+    const canSubmit = super.canSubmit;
+    if (canSubmit) {
+      if (this.formData.need_pay_pwd) {
+        return !!this.formData.pay_pwd;
+      }
+    }
+    return canSubmit;
+  }
+
   private _cache_logo_base64 = ["", ""];
   /**提交数字资产表单*/
   @asyncCtrlGenerator.single()
@@ -223,10 +291,6 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
       );
     }
 
-    const { custom_fee, password, pay_pwd } = await this.getUserPassword({
-      custom_fee: true,
-    });
-
     await this.assetsService.addAssets(
       {
         logo: _cache_logo_base64[1],
@@ -234,9 +298,9 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
         genesisAddress: formData.genesisAddress,
         expectedIssuedAssets: formData.expectedIssuedAssets as number,
       },
-      custom_fee,
-      password,
-      pay_pwd
+      this.formData.fee,
+      this.formData.pwd,
+      this.formData.pay_pwd
     );
 
     this.finishJob();

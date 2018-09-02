@@ -8,6 +8,7 @@ import { ListAniDirective } from "./list-ani/list-ani";
 import { ClickToCopyDirective } from "./click-to-copy/click-to-copy";
 import { TapWaitforDirective } from "./tap-waitfor/tap-waitfor";
 import { BeforeSubmitDirective } from "./before-submit/before-submit";
+import { BackdropBlurDirective } from './backdrop-blur/backdrop-blur';
 @NgModule({
   declarations: [
     KeyboardAttachDirective,
@@ -19,6 +20,7 @@ import { BeforeSubmitDirective } from "./before-submit/before-submit";
     ClickToCopyDirective,
     TapWaitforDirective,
     BeforeSubmitDirective,
+    BackdropBlurDirective,
   ],
   imports: [],
   exports: [
@@ -31,6 +33,7 @@ import { BeforeSubmitDirective } from "./before-submit/before-submit";
     ClickToCopyDirective,
     TapWaitforDirective,
     BeforeSubmitDirective,
+    BackdropBlurDirective,
   ],
 })
 export class DirectivesModule {}

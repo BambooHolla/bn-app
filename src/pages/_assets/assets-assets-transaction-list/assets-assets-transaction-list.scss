@@ -2,7 +2,7 @@ page-assets-assets-transaction-list {
 	@extend .header-no-border;
 	.base-info {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		align-items: center;
 		position: relative;
 		padding-top: 1.5rem;
@@ -14,7 +14,8 @@ page-assets-assets-transaction-list {
 			height: 100%;
 			left: 0;
 			top: 0;
-			background-image: url("../assets/imgs/net-circle-gray.png");
+			background-image: url("../assets/imgs/net-circle-gray.png"),
+				linear-gradient(to bottom, transparent 0%, #eee 100%);
 			background-size: 200vw 200vw;
 			background-position: center 20%;
 			/* opacity: 0.5; */
@@ -24,16 +25,20 @@ page-assets-assets-transaction-list {
 		.assets-logo-shape-wrapper {
 			width: 9rem;
 			height: 9rem;
+			> .right {
+				overflow: hidden;
+			}
 		}
 		.abbreviation {
-			padding-top: 1.5rem;
+			padding-top: 1rem;
 			font-size: 1.8rem;
 			font-weight: 500;
+			padding-bottom: 1.5rem;
 		}
 		.balance {
-			height: 8rem;
+			height: 6rem;
 		}
-		.destory-assets{
+		.destory-assets {
 			border-radius: 0.5rem;
 			border: 0.55px solid #d6d6d6;
 			color: #d6d6d6;
@@ -94,7 +99,7 @@ page-assets-assets-transaction-list {
 			}
 			.create-time {
 				// color: #666666;
-				font-size: 1.4rem;
+				font-size: 1.2rem;
 			}
 			.amount {
 				// color: #505050;
