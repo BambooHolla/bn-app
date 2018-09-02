@@ -28,6 +28,38 @@
         </div>
       </div>
     </div>
+    <div class="generator-info">
+      <div class="address">
+        <!-- {{}} -->
+      </div>
+    </div>
+    <div class="issues-owner-list">
+      <div class="issues-owner-number">
+        <div class="label">
+          <ali-icon name="ifm-renshu"></ali-icon>
+          {{'NUMBER_OF_ISSUES_OWNER'|translate}}
+        </div>
+        <div class="value">123443</div>
+      </div>
+      <div class="issues-owner-rank-list">
+        <div class="list-title">
+          <ali-icon name="ifm-liebiao"></ali-icon>
+          {{'RANK_OF_ISSUES_OWNER'|translate}}
+        </div>
+        <virtual-scroll #vscroll class="list-container" [items]="owner_list" (update)="viewPortItems = $event" (change)="onOwnerListChange($event)">
+          <!-- <div class="list"> -->
+          <div class="item" *ngFor="let item of viewPortItems;let i = index;trackBy:commonTrackBy('address')">
+            <div class="ranking">
+              <div class="inner" [ngClass]="['rank-'+(item._ranking),'rs-'+((item._ranking).toString().length)]">{{item._ranking}}</div>
+            </div>
+            <div class="address" [innerHTML]="item.address|mask:'@address'"></div>
+            <div class="empty-space"></div>
+            <div class="balance">{{item.hodingAssets|amountEuler|number:'1.8-8'}} <span class="unit">{{assets_info.abbreviation}}</span></div>
+          </div>
+          <!-- </div> -->
+        </virtual-scroll>
+      </div>
+    </div>
   </div>
   <div class="detail-info">
     <div class="card remaing-freeze-amount">
@@ -56,30 +88,6 @@
       </div>
       <div class="right">
         <simple-sector [progress]="0.75" class="chart"></simple-sector>
-      </div>
-    </div>
-    <div class="card issues-owner-list">
-      <div class="issues-owner-number">
-        <div class="label">{{'NUMBER_OF_ISSUES_OWNER'|translate}}</div>
-        <div class="value">123443</div>
-      </div>
-      <div class="issues-owner-rank-list">
-        <div class="list-title">
-          <ali-icon name="ifm-liebiao"></ali-icon>
-          {{'RANK_OF_ISSUES_OWNER'|translate}}
-        </div>
-        <virtual-scroll #vscroll class="list-container" [items]="owner_list" (update)="viewPortItems = $event" (change)="onOwnerListChange($event)">
-          <!-- <div class="list"> -->
-          <div class="item" *ngFor="let item of viewPortItems;let i = index;trackBy:commonTrackBy('address')">
-            <div class="ranking">
-              <div class="inner" [ngClass]="['rank-'+(item._ranking),'rs-'+((item._ranking).toString().length)]">{{item._ranking}}</div>
-            </div>
-            <div class="address" [innerHTML]="item.address|mask:'@address'"></div>
-            <div class="empty-space"></div>
-            <div class="balance">{{item.hodingAssets|amountEuler|number:'1.8-8'}} <span class="unit">{{assets_info.abbreviation}}</span></div>
-          </div>
-          <!-- </div> -->
-        </virtual-scroll>
       </div>
     </div>
   </div>

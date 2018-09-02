@@ -428,8 +428,9 @@ export class TabPayPage extends FirstLevelPage {
   /**选中的资产*/
   readonly ibt_assets = (() => {
     const userInfo = this.userInfo;
+    const { hodingAssets, ...ibtAssets } = this.assetsService.ibt_assets;
     return {
-      ...this.assetsService.ibt_assets,
+      ...ibtAssets,
       get hodingAssets() {
         return userInfo.balance;
       },

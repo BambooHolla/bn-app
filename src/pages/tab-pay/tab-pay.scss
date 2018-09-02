@@ -27,12 +27,13 @@ page-tab-pay {
     }
   }
   .toolbar {
-    height: 6.8rem;
+    height: 7.8rem;
     display: flex;
     align-items: center; // justify-content: space-around;
     flex-shrink: 0;
     flex-grow: 0;
     padding: 0 9%;
+    padding-top: 1rem;
     .tool-item {
       width: 6rem;
       height: 6rem;

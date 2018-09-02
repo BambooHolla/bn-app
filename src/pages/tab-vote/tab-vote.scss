@@ -72,9 +72,9 @@ page-tab-vote {
   #bg2 {
     overflow: hidden;
     position: fixed;
-    height: 100.6vw;
-    width: 100.6vw;
-    left: calc(50vw - 100.6vw / 2);
+    height: 97.2vw;
+    width: 97.2vw;
+    left: calc(50vw - 97.2vw / 2);
     top: 0;
     z-index: -1;
     // background-color: purple;
@@ -456,9 +456,9 @@ page-tab-vote {
       flex-shrink: 0;
       flex-grow: 0;
       position: absolute;
-      left: calc(50vw - 100.6vw / 2);
-      height: 100.6vw;
-      width: 100.6vw;
+      left: calc(50vw - 97.2vw / 2);
+      height: 97.2vw;
+      width: 97.2vw;
       transform: scale(0.8) translateZ(0);
       // translateY(8.6363636363vh)
       transform-origin: top;
@@ -490,7 +490,7 @@ page-tab-vote {
       border-radius: 50%;
       .ani-progress {
         pointer-events: none;
-        $out_r: 8;
+        $out_r: 10;
         position: absolute;
         transform: translateZ(0);
         width: calc(100% + #{$out_r}rem);
@@ -560,6 +560,10 @@ page-tab-vote {
         &.show {
           display: block;
           opacity: 1;
+        }
+        > canvas {
+          border-radius: 50%;
+          overflow: hidden;
         }
       }
       .ani-countdown {

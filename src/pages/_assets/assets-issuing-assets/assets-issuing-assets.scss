@@ -27,6 +27,7 @@
 page-assets-issuing-assets {
   @extend .header-no-border;
   > .header {
+    background-color: rgba(#85d9f3, 0.3);
     .toolbar-ios {
       // min-height: $navbar-height;
       // padding: 0 1.1rem;

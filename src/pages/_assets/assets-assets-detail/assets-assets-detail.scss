@@ -2,7 +2,7 @@ page-assets-assets-detail {
   @extend .header-no-border;
   .base-info {
     width: 100%;
-    padding: 1.9rem;
+    padding: 1.9rem 0;
     position: relative;
     z-index: 2;
     background-color: #fff;
@@ -16,14 +16,14 @@ page-assets-assets-detail {
       left: 0;
       top: 0;
       background-image: url("../assets/imgs/net-circle-gray.png");
-      background-size: 200vw 200vw;
-      background-position: center 20%;
-      opacity: 0.5;
+      background-size: 300vw 300vw;
+      background-position: center -30vw;
+      opacity: 1;
       z-index: 0;
       pointer-events: none;
     }
-    .header-line {
-      padding: 1.9rem 0;
+    > .header-line {
+      padding: 1.9rem 1.9rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -64,6 +64,136 @@ page-assets-assets-detail {
           }
           .rate {
             font-size: 1.8rem;
+          }
+        }
+      }
+    }
+
+    > .issues-owner-list {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+      > .issues-owner-number {
+        flex-grow: 0;
+        flex-shrink: 0;
+        padding: 0.8rem 1.9rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 0.55px solid #efefef;
+        > .label {
+          font-weight: bolder;
+          color: #333;
+          font-size: 1.3rem;
+          ali-icon {
+            margin-right: 1rem;
+            font-size: 1.7rem;
+          }
+        }
+        > .value {
+          color: #999;
+          font-size: 2rem;
+        }
+      }
+      > .issues-owner-rank-list {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0.8rem 1.9rem;
+        padding-top: 0;
+        > .list-title {
+          flex-grow: 0;
+          flex-shrink: 0;
+          height: 3.5rem;
+          font-size: 1.3rem;
+          color: #333;
+          font-weight: bolder;
+          display: flex;
+          align-items: center;
+          ali-icon {
+            margin-right: 1rem;
+            font-size: 1.5rem;
+          }
+        }
+        > .list-container {
+          /* max-height: 62vh; */
+          height: 50vh;
+        }
+        > .list {
+          overflow: auto;
+          min-height: 38vh;
+          max-height: 62vh;
+        }
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          color: #999;
+          height: 3.6rem;
+          > .ranking {
+            flex-grow: 0;
+            flex-shrink: 0;
+            width: 3.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            .inner {
+              height: 1.8rem;
+              font-size: 1.3rem;
+              border-radius: 50%;
+              text-align: center;
+              line-height: 1.95rem;
+              &.rs-1 {
+                font-size: 1.5rem;
+                border: 0.55px solid currentcolor;
+                width: 1.8rem;
+              }
+              &.rs-2 {
+                font-size: 1.3rem;
+                border: 0.55px solid currentcolor;
+                width: 1.8rem;
+              }
+              /* &.rs-3 {
+                height: 2rem;
+                width: 2rem;
+                font-size: 1rem;
+                transform: scale(0.9);
+                border: 0.55px solid currentcolor;
+              } */
+              &.rank-1,
+              &.rank-2,
+              &.rank-3 {
+                color: transparent;
+                width: 2rem;
+                height: 3rem;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+                text-align: center;
+              }
+              &.rank-1 {
+                background-image: url("../assets/imgs/assets/assets-rank-1.png");
+              }
+              &.rank-2 {
+                background-image: url("../assets/imgs/assets/assets-rank-2.png");
+              }
+              &.rank-3 {
+                background-image: url("../assets/imgs/assets/assets-rank-3.png");
+              }
+            }
+          }
+          > .address {
+            flex-grow: 0;
+            flex-shrink: 0;
+          }
+          > .empty-space {
+            flex-grow: 1;
+          }
+          > .balance {
+            flex-grow: 0;
+            flex-shrink: 0;
           }
         }
       }
@@ -187,128 +317,6 @@ page-assets-assets-detail {
           width: 8rem;
           margin-right: 3rem;
           /* background-color: #74f4e1; */
-        }
-      }
-    }
-    .issues-owner-list {
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 1rem;
-      > .issues-owner-number {
-        flex-grow: 0;
-        flex-shrink: 0;
-        padding: 0.8rem 1rem;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        color: #999;
-        border-bottom: 0.55px solid #efefef;
-        > .label {
-          font-size: 1.3rem;
-        }
-        > .value {
-          font-size: 2rem;
-        }
-      }
-      > .issues-owner-rank-list {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        padding: 0.8rem 1rem;
-        padding-top: 0;
-        > .list-title {
-          flex-grow: 0;
-          flex-shrink: 0;
-          height: 3.5rem;
-          font-size: 1.3rem;
-          color: #999;
-          display: flex;
-          align-items: center;
-          ali-icon {
-            margin-right: 1rem;
-            font-size: 1.5rem;
-          }
-        }
-        > .list-container {
-          /* max-height: 62vh; */
-          height: 50vh;
-        }
-        > .list {
-          overflow: auto;
-          min-height: 38vh;
-          max-height: 62vh;
-        }
-        .item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          color: #999;
-          height: 3.6rem;
-          > .ranking {
-            flex-grow: 0;
-            flex-shrink: 0;
-            width: 3.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            .inner {
-              height: 1.8rem;
-              font-size: 1.3rem;
-              border-radius: 50%;
-              text-align: center;
-              line-height: 1.95rem;
-              &.rs-1 {
-                font-size: 1.5rem;
-                border: 0.55px solid currentcolor;
-                width: 1.8rem;
-              }
-              &.rs-2 {
-                font-size: 1.3rem;
-                border: 0.55px solid currentcolor;
-                width: 1.8rem;
-              }
-              /* &.rs-3 {
-								height: 2rem;
-								width: 2rem;
-								font-size: 1rem;
-								transform: scale(0.9);
-								border: 0.55px solid currentcolor;
-							} */
-              &.rank-1,
-              &.rank-2,
-              &.rank-3 {
-                color: transparent;
-                width: 2rem;
-                height: 3rem;
-                background-size: contain;
-                background-position: center;
-                background-repeat: no-repeat;
-                text-align: center;
-              }
-              &.rank-1 {
-                background-image: url("../assets/imgs/assets/assets-rank-1.png");
-              }
-              &.rank-2 {
-                background-image: url("../assets/imgs/assets/assets-rank-2.png");
-              }
-              &.rank-3 {
-                background-image: url("../assets/imgs/assets/assets-rank-3.png");
-              }
-            }
-          }
-          > .address {
-            flex-grow: 0;
-            flex-shrink: 0;
-          }
-          > .empty-space {
-            flex-grow: 1;
-          }
-          > .balance {
-            flex-grow: 0;
-            flex-shrink: 0;
-          }
         }
       }
     }

@@ -124,16 +124,16 @@
           </div>
         </ion-item>
         <ion-item-options side="right">
+          <button mat-button class="options-item list-delete" (click)="confirmToDelete(tran)">
+            <span class="inner">
+              <mat-icon>delete_outline</mat-icon>
+              <!-- {{'REMOVE'|translate}} -->
+            </span>
+          </button>
           <button mat-button class="options-item list-retry" (click)="confirmToRetry(tran)">
             <span class="inner">
               <mat-icon>replay</mat-icon>
-              {{'RETRY'|translate}}
-            </span>
-          </button>
-          <button mat-button class="options-item list-delete" (click)="confirmToDelete(tran)">
-            <span class="inner">
-              <mat-icon>remove_circle_outline</mat-icon>
-              {{'REMOVE'|translate}}
+              <!-- {{'RETRY'|translate}} -->
             </span>
           </button>
         </ion-item-options>
