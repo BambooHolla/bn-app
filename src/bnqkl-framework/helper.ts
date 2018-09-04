@@ -268,3 +268,104 @@ export function fileInputEleFactory(ele_id: string, accept = "image/*") {
   }
   return inputEle;
 }
+
+/**垫片工具*/
+export class Shim {
+  constructor(public name = "", public auto_suffix = "") {}
+  /**是否使用垫片*/
+  is_use_shim = false;
+  /**是否进行静态链接*/
+  compile_into = false;
+  By(shim_fun_name?: string) {
+    const self = this;
+    return function shim(target: any, name: string, des: PropertyDescriptor) {
+      const source_fun = target[name];
+      const shim_name =
+        shim_fun_name === undefined ? name + self.auto_suffix : shim_fun_name;
+      des.value = function(...args) {
+        if (self.compile_into) {
+          this[name] = self.is_use_shim ? this[shim_name] : source_fun;
+        }
+        if (self.is_use_shim) {
+          return this[shim_name](...args);
+        } else {
+          return source_fun.apply(this, ...args);
+        }
+      };
+      des.value.source_fun = source_fun;
+    };
+  }
+  AOT(is_use_shim: boolean) {
+    if (this.compile_into) {
+      return false;
+    }
+    this.is_use_shim = is_use_shim;
+    return (this.compile_into = true);
+  }
+}
+/**用于将一些函数在运行的过程中，跳过一些固有的等待条件，使得运行更快*/
+export class AOT {
+  constructor(default_condition = false) {
+    this._condition = default_condition;
+  }
+  /**JIT运行时的条件属性*/
+  private _condition = false;
+  /**是否进行静态链接*/
+  compile_into = false;
+  /**条件语句*/
+  Then(then_fun_name: string) {
+    const self = this;
+    return function(target: any, name: string, des: PropertyDescriptor) {
+      const source_fun = target[name];
+      des.value = function(...args) {
+        const { _condition } = self;
+        if (self.compile_into) {
+          this[name] = _condition ? this[then_fun_name] : source_fun;
+        }
+        if (_condition) {
+          return this[then_fun_name](...args);
+        } else {
+          return source_fun.apply(this, args);
+        }
+      };
+      des.value.source_fun = source_fun;
+      return des;
+    };
+  }
+  /**前置条件*/
+  Wait(condition_promise_fun_name: string, skip_if_false = false) {
+    const self = this;
+    return function(target: any, name: string, des: PropertyDescriptor) {
+      const source_fun = target[name];
+      des.value = function(...args) {
+        const { _condition } = self;
+        if (self.compile_into) {
+          if (!_condition) {
+            console.warn("AOT-Wait's condition must be true");
+          }
+          this[name] = source_fun;
+        }
+        if (!_condition) {
+          // 在条件不成立的时候，需要始终进行条件判断的等待
+          this[condition_promise_fun_name](...args).then(pre_condition_res => {
+            if (skip_if_false && !pre_condition_res) {
+              return;
+            }
+            return source_fun.apply(this, args);
+          });
+        } else {
+          return source_fun.apply(this, args);
+        }
+      };
+      des.value.source_fun = source_fun;
+      return des;
+    };
+  }
+  compile(condition: boolean) {
+    if (this.compile_into) {
+      return false;
+    }
+    this._condition = condition;
+    return (this.compile_into = true);
+  }
+}

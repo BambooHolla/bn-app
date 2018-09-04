@@ -102,6 +102,35 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       .present();
   }
   private _changeNetVersion(net_version: PEER_INFO) {
+    localStorage.removeItem("LINK_PEER");
+    sessionStorage.removeItem("LINK_PEER");
+    if (net_version.config.NET_VERSION === "mainnet") {
+      localStorage.removeItem("PEERS");
+    } else {
+      const aNode = document.createElement("a");
+      aNode.href = net_version.config.SERVER_URL;
+      localStorage.setItem(
+        "PEERS",
+        JSON.stringify([
+          {
+            origin: net_version.config.SERVER_URL,
+            level: 1,
+            webChannelLinkNum: 0,
+            netVersion: net_version.config.NET_VERSION,
+            netInterval: 10,
+            ip: aNode.hostname,
+            height: 0,
+            p2pPort: 19000,
+            webPort: 19002,
+            delay: -1,
+            acc_use_duration: 0,
+            latest_verify_fail_time: 0,
+            acc_verify_total_times: 0,
+            acc_verify_success_times: 0,
+          },
+        ])
+      );
+    }
     this._importLS(net_version.config);
   }
 
