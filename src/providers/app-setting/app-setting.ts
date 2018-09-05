@@ -2,11 +2,13 @@ import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
+import { Platform } from "ionic-angular";
 import {
   AsyncBehaviorSubject,
   Executor,
 } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
@@ -42,6 +44,8 @@ export class AppSettingProvider extends CommonService {
   );
   static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
   static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
+
+  isIOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 
   APP_URL(path: string) {
     return new AppUrl(path);
@@ -462,7 +466,7 @@ export class AppSettingProvider extends CommonService {
     /**同步权益 的进度 0 ~ 100*/
     sync_progress_equitys: 0,
     /**启用同步区块*/
-    enable_sync_progress_blocks: true,
+    enable_sync_progress_blocks: !this.isIOS,
     /**启用同步交易*/
     enable_sync_progress_transactions: false,
     /**启用同步权益*/
@@ -476,6 +480,17 @@ export class AppSettingProvider extends CommonService {
     /**累计APP使用时长*/
     acc_app_usage_duration: 0,
   };
+
+  afterShareSettings(key: string) {
+    if (!this.share_settings.hasOwnProperty(key)) {
+      return false;
+    }
+    if (this.share_settings[key]) {
+      return true;
+    }
+
+    return new Promise(cb => this.once("changed@share_settings." + key, cb));
+  }
 }
 
 export const testnet_flag = document.createElement("div");

@@ -10,7 +10,7 @@ export class BlockChainDownloader extends EventEmitter {
   constructor(
     public webio: SocketIOClient.Socket,
     public blockDb: Mdb<BlockModel>,
-    public ifmJs: any,
+    public ifmJs: any
   ) {
     super();
   }
@@ -26,7 +26,7 @@ export class BlockChainDownloader extends EventEmitter {
     endHeight: number,
     ownEndHeight: number,
     total?: number,
-    asc?: boolean,
+    asc?: boolean
   ) {
     if (this._download_lock) {
       return this._download_lock.promise;
@@ -40,14 +40,14 @@ export class BlockChainDownloader extends EventEmitter {
           startHeight,
           endHeight,
           ownEndHeight,
-          total,
+          total
         );
       } else {
         await this._download_with_auto_retry(
           startHeight,
           endHeight,
           ownEndHeight,
-          total,
+          total
         );
       }
     } finally {
@@ -61,7 +61,7 @@ export class BlockChainDownloader extends EventEmitter {
     startHeight: number,
     endHeight: number,
     ownEndHeight: number,
-    total?: number,
+    total?: number
   ) {
     if (typeof total !== "number") {
       total = ownEndHeight - startHeight + 1;
@@ -78,7 +78,7 @@ export class BlockChainDownloader extends EventEmitter {
           acc_endHeight,
           startHeight,
           ownEndHeight,
-          total,
+          total
         );
         if (acc_endHeight > startHeight) {
           acc_endHeight -= pageSize;
@@ -98,12 +98,12 @@ export class BlockChainDownloader extends EventEmitter {
     acc_endHeight: number,
     startHeight: number,
     ownEndHeight: number,
-    total: number,
+    total: number
   ) {
     const cur_end_height = acc_endHeight;
     const cur_start_height = Math.max(
       cur_end_height - (pageSize - 1),
-      startHeight,
+      startHeight
     );
     const tin_task = new PromiseOut<{ blocks: ArrayBuffer }>();
     // await this.blockService.getBlocksByRange(startHeight, endHeight);
@@ -121,7 +121,7 @@ export class BlockChainDownloader extends EventEmitter {
           // prettier-ignore
           tin_task.reject(Object.assign(new Error("SERVER REJECT"), res));
         }
-      },
+      }
     );
 
     sleep(1000).then(() => tin_task.reject(new Error("TIME OUT")));
@@ -146,7 +146,7 @@ export class BlockChainDownloader extends EventEmitter {
           payloadHash: buf2hex(unpack_block.payloadHash),
           generatorPublicKey,
           generatorId: this.ifmJs.addressCheck.generateBase58CheckAddress(
-            generatorPublicKey,
+            generatorPublicKey
           ),
           blockSignature: buf2hex(unpack_block.blockSignature),
           previousBlock: buf2hex(unpack_block.previousBlock),
@@ -163,7 +163,7 @@ export class BlockChainDownloader extends EventEmitter {
     // 更改进度
     this.emit(
       "progress",
-      ((ownEndHeight - 1 - cur_start_height) / total) * 100,
+      ((ownEndHeight - 1 - cur_start_height) / total) * 100
     );
     // 统计消耗流量
     this.emit("use-flow", {
@@ -177,7 +177,7 @@ export class BlockChainDownloader extends EventEmitter {
     startHeight: number,
     endHeight: number,
     ownEndHeight: number,
-    total?: number,
+    total?: number
   ) {
     if (typeof total !== "number") {
       total = ownEndHeight - startHeight + 1;
@@ -190,6 +190,7 @@ export class BlockChainDownloader extends EventEmitter {
       cursorHeight: Math.max(acc_startHeight - 1, 1),
     });
     do {
+      await this.checkPaused();
       let retry_interval = 1000;
       try {
         await this._download_range_blocks_asc(
@@ -197,7 +198,7 @@ export class BlockChainDownloader extends EventEmitter {
           acc_startHeight,
           endHeight,
           ownEndHeight,
-          total,
+          total
         );
         if (acc_startHeight < endHeight) {
           /*这里不包含等于的情况，但可以生成等于的情况*/
@@ -219,12 +220,12 @@ export class BlockChainDownloader extends EventEmitter {
     acc_startHeight: number,
     endHeight: number,
     ownEndHeight: number,
-    total: number,
+    total: number
   ) {
     const cur_start_height = acc_startHeight;
     const cur_end_height = Math.min(
       cur_start_height + (pageSize - 1),
-      endHeight,
+      endHeight
     );
     const tin_task = new PromiseOut<{ blocks: ArrayBuffer }>();
     // await this.blockService.getBlocksByRange(startHeight, endHeight);
@@ -232,7 +233,7 @@ export class BlockChainDownloader extends EventEmitter {
       "cur_start_height",
       cur_start_height,
       "cur_end_height",
-      cur_end_height,
+      cur_end_height
     );
     this.webio.emit(
       "get/api/blocks/protobuf",
@@ -247,7 +248,7 @@ export class BlockChainDownloader extends EventEmitter {
           // prettier-ignore
           tin_task.reject(Object.assign(new Error("SERVER REJECT"), res));
         }
-      },
+      }
     );
     /*五秒的时间下载区块（1KB左右的数据），下载不下来基本就是断网了*/
     sleep(5000).then(() => tin_task.reject(new Error("TIME OUT")));
@@ -272,7 +273,7 @@ export class BlockChainDownloader extends EventEmitter {
           payloadHash: buf2hex(unpack_block.payloadHash),
           generatorPublicKey,
           generatorId: this.ifmJs.addressCheck.generateBase58CheckAddress(
-            generatorPublicKey,
+            generatorPublicKey
           ),
           blockSignature: buf2hex(unpack_block.blockSignature),
           previousBlock: buf2hex(unpack_block.previousBlock),
@@ -320,7 +321,7 @@ export class BlockChainDownloader extends EventEmitter {
         range.end,
         max_end_height,
         max_end_height,
-        true,
+        true
       );
     }
     this.emit("end-sync", {});
@@ -328,5 +329,23 @@ export class BlockChainDownloader extends EventEmitter {
      * 在已经确保区块链已经完整的情况下，再次运行 useableLocalBlocksFinder，
      * 拿出不是1~max_end_height的数据片，进行删除，因为那些是冗余数据
      */
+  }
+
+  checkPaused() {
+    return this._paused_lock && this._paused_lock.promise;
+  }
+  private _paused_lock?: PromiseOut<void>;
+  pause() {
+    if (!this._paused_lock) {
+      this._paused_lock = new PromiseOut();
+    }
+  }
+  resume() {
+    if (this._paused_lock) {
+      this._paused_lock.promise.then(() => {
+        this._paused_lock = undefined;
+      });
+      this._paused_lock.resolve();
+    }
   }
 }

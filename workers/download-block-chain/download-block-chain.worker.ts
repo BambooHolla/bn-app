@@ -32,11 +32,12 @@ function errorFormat(err) {
 }
 
 const blockChainDownloaderCache = new Map<string, BlockChainDownloader>();
+self["blockChainDownloaderCache"] = blockChainDownloaderCache;
 function getBlockChainDownloader(
   NET_VERSION,
   webio_path,
   startHeight: number,
-  endHeight: number,
+  endHeight: number
 ) {
   const id = `${NET_VERSION} ${webio_path} ${startHeight} ${endHeight}`;
   var blockChainDownloader = blockChainDownloaderCache.get(id);
@@ -47,6 +48,7 @@ function getBlockChainDownloader(
     const blockDb = new Mdb<BlockModel>("blocks");
     const ifmJs = new IFM(NET_VERSION);
     blockChainDownloader = new BlockChainDownloader(webio, blockDb, ifmJs);
+    blockChainDownloaderCache.set(id, blockChainDownloader);
   }
   return blockChainDownloader;
 }
@@ -64,7 +66,7 @@ const cmd_handler = {
       NET_VERSION,
       webio_path,
       startHeight,
-      endHeight,
+      endHeight
     );
 
     // 事件注册
@@ -81,7 +83,7 @@ const cmd_handler = {
         return () => {
           blockChainDownloader.off(eventname, fun);
         };
-      },
+      }
     );
 
     const downloader = blockChainDownloader;
@@ -90,7 +92,7 @@ const cmd_handler = {
       return blockChainDownloader.downloadBlocks(
         startHeight,
         endHeight,
-        max_end_height,
+        max_end_height
       );
     } finally {
       cgs.forEach(cg => cg());
@@ -101,7 +103,7 @@ const cmd_handler = {
       NET_VERSION,
       webio_path,
       1,
-      max_end_height,
+      max_end_height
     );
 
     // 事件注册
@@ -135,6 +137,15 @@ const cmd_handler = {
       return await blockChainDownloader.syncFullBlockchain(max_end_height);
     } finally {
       cgs.forEach(cg => cg());
+    }
+  },
+  async toggleSyncBlocks({ toggle_sync_blocks, req_id }) {
+    for (var downloader of blockChainDownloaderCache.values()) {
+      if (toggle_sync_blocks) {
+        downloader.resume();
+      } else {
+        downloader.pause();
+      }
     }
   },
 };

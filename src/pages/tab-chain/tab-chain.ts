@@ -122,7 +122,9 @@ export class TabChainPage extends FirstLevelPage {
   // })
   @TabChainPage.onInit
   async checkBlockchainComplete() {
-    if (getQueryVariable("AUTO_DOWNLOAD_BLOCKCHAINE") === "disabled") {
+    if (
+      !(await this.appSetting.afterShareSettings("enable_sync_progress_blocks"))
+    ) {
       return;
     }
     await this.netWorkConnection();

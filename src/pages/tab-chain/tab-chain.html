@@ -2,7 +2,7 @@
   <div #fixedHeader class="fixed-header" (click)="pullToTop()">
     <div class="title">
       <div class="left">
-        <div class="sync-progress" [class.show]="is_show_sync_loading" (click)="openChainSyncDetail()">
+        <div class="sync-progress" [class.show]="is_show_sync_loading&&appSetting.share_settings.enable_sync_progress_blocks" (click)="openChainSyncDetail()">
           <div class="sync-spinner-dots" #progressCircle>
             <span class="item dot-1"></span>
             <span class="item dot-2"></span>

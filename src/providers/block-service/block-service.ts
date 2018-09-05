@@ -213,6 +213,10 @@ export class BlockServiceProvider extends FLP_Tool {
       });
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
+
+    /// 重新初始化一些同步区块链的状态
+    this.appSetting.share_settings.is_syncing_blocks = false;
+    this.appSetting.share_settings.sync_is_verifying_block = false;
   }
 
   @FLP_Tool.FromGlobal peerService!: PeerServiceProvider;
@@ -424,8 +428,19 @@ export class BlockServiceProvider extends FLP_Tool {
   private _download_worker?: Worker;
   getDownloadWorker() {
     if (!this._download_worker) {
-      this._download_worker = new Worker(
+      const download_worker = (this._download_worker = new Worker(
         "./assets/workers/download-block-chain.worker.js"
+      ));
+      this.appSetting.on(
+        "changed@share_settings.enable_sync_progress_blocks",
+        enable_sync_progress_blocks => {
+          const req_id = this._download_req_id_acc++;
+          download_worker.postMessage({
+            cmd: "toggleSyncBlocks",
+            toggle_sync_blocks: enable_sync_progress_blocks,
+            req_id,
+          });
+        }
       );
     }
     return this._download_worker;
@@ -444,8 +459,8 @@ export class BlockServiceProvider extends FLP_Tool {
     const req_id = this._download_req_id_acc++;
     let cg;
     download_worker.postMessage({
-      NET_VERSION: AppSettingProvider.NET_VERSION,
       cmd: "syncBlockChain",
+      NET_VERSION: AppSettingProvider.NET_VERSION,
       webio_path: this.fetch.webio.io_url_path,
       max_end_height,
       req_id,
