@@ -135,7 +135,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   // @asyncCtrlGenerator.loading("@@LOGINNG")
   async doLogin() {
     if (!this.is_agree_user_agreement) {
-      this.openUserAgreementPage();
+      this.openUserAgreementPage({ auto_login: true });
       return;
     }
     if (this.formData.pwd.length < 24) {
@@ -212,10 +212,13 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
 
   /*打开用户协议*/
-  openUserAgreementPage() {
+  openUserAgreementPage(params?: { auto_login?: boolean }) {
     const model = this.modalCtrl.create("user-agreement");
     model.onWillDismiss(data => {
       this.is_agree_user_agreement = data;
+      if (this.is_agree_user_agreement && params && params.auto_login) {
+        this.doLogin();
+      }
     });
     model.present();
   }

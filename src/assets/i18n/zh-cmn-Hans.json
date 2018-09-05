@@ -817,7 +817,7 @@
   "ASSETS_rate": "置换比例",
   "ASSETS_expectedFrozenIBTs": "初始冻结IBT数量",
   "ASSETS_expectedIssuedAssets": "生成数量",
-  "CAPITALIZATION_OF_ASSETS":"资产大写",
+  "CAPITALIZATION_OF_ASSETS": "资产大写",
   "ASSETS_applyAssetBlockHeight": "权益发起时的区块高度",
   "ASSETS_expectedIssuedBlockHeight": "计划生成时的区块高度",
   "ABBREVIATION_TOO_SHORT": "英文简写太短",
@@ -863,14 +863,14 @@
   "//": "assets-guide",
   "ASSETS-GUIDE": "权益合约创建说明",
   "ASSETS_GUIDE_SLIDE_1":
-    "<b>任何地址</b>都可以通过资产合约在区块链上生成新的数字资产权益",
+    "<b>任何地址</b>都可以通过资产合约在区块链上生成新的数字资产权益。",
   "ASSETS_GUIDE_SLIDE_2":
-    "地址IBT数量必须大于等于<b>10万</b>个才能完成资产合约的生成",
+    "地址IBT数量必须大于等于<b>10万</b>个才能完成资产合约的生成。",
   "ASSETS_GUIDE_SLIDE_3":
-    "地址上<b>所有IBT将以资产合约的形式冻结</b>在区块链上爆炸新的数字资产权益生成",
+    "地址上<b>所有IBT将以资产合约的形式冻结</b>在区链上保障新数字资产权益生成。",
   "ASSETS_GUIDE_SLIDE_4":
-    "区块链上冻结的IBT<b>只能有资产合约生成的新的数字资产权益赎回</b>，赎回多少比例IBT，基销毁多少比例新的数字资产权益",
-  "ASSETS_GUIDE_SLIDE_5": "新的数字资产权益被<b>销毁赎回后将无法恢复</b>",
+    "区块链上冻结的IBT<b>只能由资产合约生成的新数字资产权益赎回</b>，赎回多少比例IBT，即销毁多少比例新的数字资产权益。",
+  "ASSETS_GUIDE_SLIDE_5": "新的数字资产权益<b>被销毁赎回后将无法恢复</b>",
 
   "//": "assets-my-assets-list",
   "ASSETS-MY-ASSETS-LIST": "数字权益",

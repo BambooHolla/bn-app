@@ -187,11 +187,16 @@ export class MyApp implements OnInit {
         const pre_link_time = parseFloat(
           localStorage.getItem("LINK_PEER") || "0"
         );
-        if (Date.now() - pre_link_time >= 8 * 60 * 60 * 1000) {
+        if (
           // 上一次检测节点已经超过了8小时，那么进行重新检查
+          Date.now() - pre_link_time >= 8 * 60 * 60 * 1000 ||
+          // 校验当前节点的magic是否正常
+          !(await this.peerService.checkCurrentMagic())
+        ) {
           await this.openPage(ScanLinkPeerPage);
           return null;
         }
+
         // return ScanLinkPeerPage
       }
       const user_token = appSetting.getUserToken();

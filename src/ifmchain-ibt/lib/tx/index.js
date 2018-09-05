@@ -223,6 +223,10 @@ var Transaction = (function() {
           bb.writeString(trs.assetType);
         }
 
+        if (trs.magic) {
+          bb.writeString(trs.magic);
+        }
+
         if (assetSize > 0) {
           for (var _i3 = 0; _i3 < assetSize; _i3++) {
             bb.writeByte(assetBytes[_i3]);

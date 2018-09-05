@@ -156,6 +156,9 @@ Transaction.prototype.getTransactionName = function(type) {
     //数字资产转账
     case transactionTypes.TRANSFER_ASSET:
       return "assets/tx";
+    //发行子链
+    case transactionTypes.ISSUE_SUBCHAIN:
+      return "subchain/tx";
   }
 };
 module.exports = Transaction;

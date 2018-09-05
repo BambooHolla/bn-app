@@ -13,6 +13,7 @@ var IfmchainJs = function(NET_VERSION) {
       keypairHelper: require("./lib/helpers/keypair"),
       HttpProvider: require("./lib/api/httpprovider"),
       addressCheck: require("./lib/helpers/address.js"),
+      // createGenesisBlock: 
       nacl_factory: require("js-nacl"),
       Buff: require("buffer/").Buffer,
       crypto: require("crypto"),

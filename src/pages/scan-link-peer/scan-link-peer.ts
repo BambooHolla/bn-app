@@ -59,6 +59,10 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 
 	@ViewChild(PeerRadarScanningComponent)
 	peerRadarScanning!: PeerRadarScanningComponent;
+	@ScanLinkPeerPage.willEnter
+	startPeerRadarScanning() {
+		this.peerRadarScanning.startAnimation();
+	}
 	@ScanLinkPeerPage.markForCheck peer_list: LocalPeerModel[] = [];
 	all_second_trust_peer_list: LocalPeerModel[] = [];
 	get peer_host_list() {
@@ -390,6 +394,15 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 					}))
 				) {
 					this.peerService.peerDb.insert(peer).catch(console.error);
+				} else {
+					this.peerService.peerDb
+						.update(
+							{
+								origin: peer.origin,
+							},
+							peer
+						)
+						.catch(console.error);
 				}
 			})
 		);
@@ -406,6 +419,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 
 		// await sleep(500);
 		localStorage.setItem("SERVER_URL", peer.origin);
+		localStorage.setItem("MAGIC", peer.magic);
 		const BLOCK_UNIT_TIME = peer.netInterval * 1000 || 128000;
 		localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
 		localStorage.setItem("NET_VERSION", peer.netVersion || "mainnet");
@@ -418,6 +432,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 		// location.reload();
 
 		if (
+			baseConfig.NET_VERSION !== peer.magic ||
 			baseConfig.NET_VERSION !== peer.netVersion ||
 			AppSettingProvider.BLOCK_UNIT_TIME != baseConfig.BLOCK_UNIT_TIME
 		) {

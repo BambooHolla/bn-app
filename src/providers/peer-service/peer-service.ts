@@ -37,6 +37,7 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
     ip: "mainnet.ifmchain.org",
     height: 0,
     p2pPort: 9000,
+    magic: "",
     webPort: 9002,
     delay: -1,
     acc_use_duration: 0,
@@ -69,6 +70,9 @@ export class PeerServiceProvider extends CommonService {
   readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
   readonly FORGING_ENABLE = this.appSetting.APP_URL("/forging/enable");
   readonly SYSTEM_RUNTIME = this.appSetting.APP_URL(`/api/system/runtime`);
+  readonly SYSTEM_BASE_INFO = this.appSetting.APP_URL(
+    `/api/system/systemBaseInfo`
+  );
 
   /*获取所有次信任节点*/
   async getAllSecondTrustPeers() {
@@ -142,6 +146,18 @@ export class PeerServiceProvider extends CommonService {
       })
       .catch(() => 0);
   }
+  private _getPeerMagic(peer: TYPE.LocalPeerModel) {
+    return this.fetch
+      .get<any>(
+        this.oneTimeUrl(this.SYSTEM_BASE_INFO, peer.origin, true)
+          .SYSTEM_BASE_INFO
+      )
+      .then(system_base_info => {
+        peer.magic = system_base_info.magic;
+        localStorage.setItem("sourceIp", system_base_info.sourceIp);
+        return peer.magic;
+      });
+  }
   /*获取节点检查信息*/
   async _checkPeer(peer: TYPE.LocalPeerModel) {
     const tasks = [
@@ -159,6 +175,7 @@ export class PeerServiceProvider extends CommonService {
         .getBlocks({ orderBy: "height:asc", limit: 6 })
         .then(res => res.blocks),
       this._getPeerWebsocketLinkNum(peer),
+      this._getPeerMagic(peer),
     ];
 
     let highest_blocks: BlockModel[] = [];
@@ -261,6 +278,7 @@ export class PeerServiceProvider extends CommonService {
           acc_verify_total_times: 0,
           acc_verify_success_times: 0,
           netVersion: sec_peer_info.netVersion,
+          magic: sec_peer_info.magic,
           netInterval: sec_peer_info.netInterval,
           type: sec_peer_info.type,
         };
@@ -505,7 +523,13 @@ export class PeerServiceProvider extends CommonService {
         peer.height = lastBlock.height;
         return lastBlock;
       });
-    const tasks = [get_platform_task, get_linknum_task, get_lastblock_task];
+    const get_system_base_info = this._getPeerMagic(peer);
+    const tasks = [
+      get_platform_task,
+      get_linknum_task,
+      get_lastblock_task,
+      get_system_base_info,
+    ];
 
     let runtime;
     let web_link_num;
@@ -582,5 +606,21 @@ export class PeerServiceProvider extends CommonService {
     }
     peer.acc_use_duration += acc_duration;
     await this.peerDb.update({ _id: peer["_id"] }, peer);
+  }
+
+  /**检测本地magic是否正确*/
+  async checkCurrentMagic() {
+    const local_magic = localStorage.getItem("MAGIC");
+    if (!local_magic) {
+      return false;
+    }
+    if (await this.fetch.webio.getOnlineStatus()) {
+      return this.fetch
+        .get<any>(this.SYSTEM_BASE_INFO)
+        .then(info => info.magic === local_magic);
+    } else {
+      // 没网络的情况下，直接默认成功
+      return true;
+    }
   }
 }

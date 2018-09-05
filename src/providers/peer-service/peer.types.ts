@@ -8,6 +8,7 @@ export type PeerModel = {
   sharePort: number;
   webChannelLinkNum: number;
   netVersion: string;
+  magic: string;
   netInterval: number;
   type: number;
 };
@@ -21,6 +22,7 @@ export type LocalPeerModel = {
   delay: number;
   webChannelLinkNum: number;
   netVersion: string;
+  magic: string;
   netInterval: number;
   type: number;
   platform?: string;

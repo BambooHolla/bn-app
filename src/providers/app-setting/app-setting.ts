@@ -27,6 +27,7 @@ export class AppSettingProvider extends CommonService {
   static readonly APP_VERSION = baseConfig.APP_VERSION;
   static SERVER_URL = baseConfig.SERVER_URL;
   static readonly SEED_DATE = baseConfig.SEED_DATE;
+  static readonly MAGIC = baseConfig.MAGIC;
   static readonly seedDateTimestamp = baseConfig.seedDateTimestamp;
   static readonly seedDate = baseConfig.seedDate;
   static readonly timezoneoffset = baseConfig.timezoneoffset;

@@ -48,6 +48,19 @@ class WSIOInstance extends EventEmitter {
   get onLine() {
     return this._onLine;
   }
+  private _reconnecting = false;
+  getOnlineStatus() {
+    if (this.onLine) {
+      return true;
+    }
+    if (this._reconnecting) {
+      return new Promise<boolean>((resolve, reject) => {
+        this.once("ononline", () => resolve(true));
+        this.once("onoffline", () => resolve(false));
+      });
+    }
+    return false;
+  }
   private _io?: SocketIOClient.Socket;
   get io() {
     if (!this._io) {
@@ -56,16 +69,22 @@ class WSIOInstance extends EventEmitter {
       });
       this._io = io;
       this._io.on("connect", () => {
+        this._reconnecting = false;
         this._onLine = true;
         this.emit("ononline");
       });
       this._io.on("disconnect", () => {
+        this._reconnecting = false;
         this._onLine = false;
         this.emit("onoffline");
       });
       this._io.on("connect_error", () => {
+        this._reconnecting = false;
         this._onLine = false;
         this.emit("onoffline");
+      });
+      this._io.on("reconnecting", () => {
+        this._reconnecting = true;
       });
       // 尝试自动重连，可能一开始服务就不可用，后面才可用的，所以reconnect没法正常工作
       setInterval(() => {
@@ -217,6 +236,7 @@ export const baseConfig = new class BaseConfig extends EventEmitter {
   //  SERVER_URL = "http://test1.ifmchain.org:6062";
   SERVER_TIMEOUT = 1000;
   NET_VERSION = getQueryVariable("NET_VERSION") || "mainnet";
+  MAGIC = getQueryVariable("MAGIC") || "";
   BLOCK_UNIT_TIME =
     parseFloat(getQueryVariable("BLOCK_UNIT_TIME") || "") || 128e3;
 

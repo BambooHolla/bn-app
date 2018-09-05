@@ -73,6 +73,7 @@ function createTransaction(body, cb) {
       dappid: body.dappid || "",
       assetType: body.assetType || "",
       sourceIP: body.sourceIP || "",
+      magic: body.magic,
       asset: body.asset || {},
     };
     if (body.multisigAccountPublicKey) {
@@ -98,6 +99,7 @@ function createTransaction(body, cb) {
       dappid: body.dappid || "",
       assetType: body.assetType || "",
       sourceIP: body.sourceIP || "",
+      magic: data.magic,
       asset: {},
     };
 
