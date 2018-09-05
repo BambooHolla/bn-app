@@ -234,6 +234,18 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 									l[0].highest_blocks[0].height
 								);
 							});
+						/// 最短延迟方案
+						const min_delay_peer = selectable_peer_list.sort(
+							(a, b) => a.peer.delay - b.peer.delay
+						)[0];
+						this.selected_peer = min_delay_peer.peer;
+						this.selected_peer_highest_blocks =
+							min_delay_peer.highest_blocks;
+						this.scrollSelectedPeerIntoView();
+
+						/*
+
+						/// 方差方案
 
 						const random_select_peer_seed = Math.random();
 						// 算方差
@@ -276,7 +288,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 							this.selected_peer_highest_blocks =
 								selected_s_rate.pi.highest_blocks;
 							this.scrollSelectedPeerIntoView();
-						}
+						}*/
 
 						// this.selected_peer =
 						//   selectable_peer_list[

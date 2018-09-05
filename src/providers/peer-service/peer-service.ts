@@ -175,7 +175,7 @@ export class PeerServiceProvider extends CommonService {
         .getBlocks({ orderBy: "height:asc", limit: 6 })
         .then(res => res.blocks),
       this._getPeerWebsocketLinkNum(peer),
-      this._getPeerMagic(peer),
+      this._getPeerMagic(peer).catch(console.error),
     ];
 
     let highest_blocks: BlockModel[] = [];

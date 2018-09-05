@@ -375,10 +375,14 @@ export class MyApp implements OnInit {
       let loadinger =
         loading_content !== false &&
         (loading_content
-          ? this.loadingCtrl.create({
-              content: loading_content || "",
-              ...loading_opts,
-            })
+          ? this.loadingCtrl.create(
+              Object.assign(
+                {
+                  content: loading_content || "",
+                },
+                loading_opts
+              )
+            )
           : this.loadingCtrl.create(loading_opts));
       await (loadinger && loadinger.present());
       try {
