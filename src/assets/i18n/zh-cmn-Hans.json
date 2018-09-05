@@ -179,6 +179,9 @@
   "NET_VERSION_OF_TESTNET128": "测试网络（128s）",
   "APP_WILL_RESTART": "应用将会重启",
 
+  "//": "settings-sync-config",
+  "SETTINGS-SYNC-CONFIG": "同步设置",
+
   "//": "settings-cache-manage",
   "SETTINGS-CACHE-MANAGE": "清空设备缓存",
   "IN_CALCULATION": "计算中",
@@ -716,6 +719,7 @@
   "SETTINGS_SET_PAY_PWD": "设置支付密码",
   "MINING_INCOME_NOTICE": "入账通知",
   "SETTINGS_LANG": "语言设置",
+  "SETTINGS_SYNC_CONFIG": "同步设置",
   "SETTINGS_NET_VERSION": "开发测试",
   "MINING_ONLY_IN_WIFI": "仅在wifi时挖矿",
   "FINGERPRINT_PROTECTION": "指纹保护",
