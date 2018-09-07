@@ -94,6 +94,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
   async setFee() {
     const { custom_fee } = await this.getCustomFee(this.formData.fee);
     this.formData.fee = custom_fee;
+    this.markForCheck();
   }
 
   /// 表单校验

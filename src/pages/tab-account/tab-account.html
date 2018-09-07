@@ -31,7 +31,7 @@
         <div class="title">{{'ASSETS_MARKET' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </div> -->
-      <div class="nav-item" (click)="routeTo('assets-my-assets-list')">
+      <div *ngIf="hasBalance" class="nav-item" (click)="routeTo('assets-my-assets-list')">
         <ali-icon class="left" name="ifm-shiliangzhinengduixiang3"></ali-icon>
         <div class="title">{{'MY_ASSETS_LIST' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
@@ -41,7 +41,7 @@
         <div class="title">{{'MY_CONTACTS' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </div>
-      <div class="nav-item" (click)="routeTo('account-peer-list')">
+      <div *ngIf="hasBalance" class="nav-item" (click)="routeTo('account-peer-list')">
         <ali-icon class="left" name="ifm--target-"></ali-icon>
         <div class="title">{{'PEER_LIST' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
@@ -51,7 +51,7 @@
       <div class="title">应用市场</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div> -->
-      <div class="nav-item" (click)="routeTo('account-my-transaction-list')">
+      <div *ngIf="hasBalance" class="nav-item" (click)="routeTo('account-my-transaction-list')">
         <ali-icon class="left" name="ifm-tran-history"></ali-icon>
         <div class="title">{{'MY_TRANSACTION' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
@@ -67,7 +67,7 @@
         </div>
       </div>
       <!-- <div class="nav-item"></div> -->
-      <div class="nav-item" (click)="routeTo('account-miner-list')">
+      <div *ngIf="hasBalance" class="nav-item" (click)="routeTo('account-miner-list')">
         <ali-icon class="left" name="ifm-auction"></ali-icon>
         <div class="title">{{'MINER_LIST' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>

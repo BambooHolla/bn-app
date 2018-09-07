@@ -371,10 +371,9 @@ FLP_Route.registerRouteToBeforeCheck(
     // })
     const guideModal = self.modalCtrl.create("assets-guide");
     guideModal.present();
-    await new Promise(resolve => {
+    return !(await new Promise(resolve => {
       guideModal.onWillDismiss(resolve);
-    });
-    return false;
+    }));
   },
   0,
   "引导用户进入资产发行说明页面"

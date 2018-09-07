@@ -6,7 +6,7 @@
 <ion-content>
   <div class="base-info">
     <div class="header-line">
-      <div class="assets-logo-shape-wrapper">
+      <!--       <div class="assets-logo-shape-wrapper">
         <div class="assets-logo-shape">
           <img [src]="assets_info?.logo_safe_url" alt="LOGO">
         </div>
@@ -14,7 +14,6 @@
       <div class="right">
         <div class="name">
           <div class="simple-name">{{assets_info?.abbreviation}}</div>
-          <!-- <div class="full-name">{{assets_info?.assetsName}}</div> -->
           <div class="create-time">{{assets_info?.dateCreated|amDateFormat:"YYYY.MM.DD"}}</div>
           <div class="publish-time"></div>
         </div>
@@ -26,11 +25,67 @@
             <text-gradient [text]="'1 IBT = '+(assets_info?.rate|number:'1.0-2')+' '+(assets_info?.abbreviation)" from="#ff5a5b" to="#fca178" fontSize="1.6rem" fontWeight="500"></text-gradient>
           </div>
         </div>
+      </div> -->
+      <div class="assets-logo-shape-wrapper">
+        <div class="assets-logo-shape">
+          <img [src]="assets_info?.logo_safe_url" alt="LOGO">
+        </div>
+      </div>
+      <div class="abbreviation">
+        {{assets_info?.abbreviation}}
+      </div>
+      <div class="balance">
+        <text-mg [text]="assets_info?.hodingAssets|amountEuler|number:'1.8-8'" from="#74f5e1" to="#83d8f6" direction="to bottom" fontSize="3.6rem"></text-mg>
+        <div class="usd" hidden>
+          ≈ 666 USD
+        </div>
       </div>
     </div>
     <div class="generator-info">
-      <div class="address">
-        <!-- {{}} -->
+      <div class="address">{{assets_info?.address}}</div>
+    </div>
+    <div class="assets-balance-info">
+      <div class="left">
+        <div class="line expectedissuedassets-total-amount">
+          <div class="label">
+            <span class="dot"></span> {{'EXPECTEDISSUEDASSETS_TOTAL_AMOUNT'|translate}}
+          </div>
+          <div class="value">
+            {{assets_info?.expectedIssuedAssets|amountEuler|number:'1.8-8'}}
+            <span class="unit">{{assets_info?.abbreviation}}</span>
+          </div>
+        </div>
+        <div class="line expectedissuedassets-rest-amount">
+          <div class="label">
+            <span class="dot"></span> {{'EXPECTEDISSUEDASSETS_REST_AMOUNT'|translate}}
+          </div>
+          <div class="value">
+            {{rest_amount|amountEuler|number:'1.8-8'}}
+            <span class="unit">{{assets_info?.abbreviation}}</span>
+          </div>
+        </div>
+        <div class="line expectedissuedassets-ransom-rate">
+          <div class="label">
+            <span class="dot"></span> {{'EXPECTEDISSUEDASSETS_RANSOM_RATE'|translate}}
+          </div>
+          <div class="value">
+            {{ransom_rate|number:'1.2-2'}}
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="date-created">
+          <div class="label">
+            <span class="dot">
+              <ali-icon name="ifm-chuangjianshijian"></ali-icon>
+            </span> {{'DATE_CREATED'|translate}}
+          </div>
+          <div class="value">
+            {{assets_info?.dateCreated|amDateFormat:"YYYY.MM.DD"}}
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <svg-chart type="circle" [circleSm]="59" [circleMd]="69" [circleLg]="0"></svg-chart>
       </div>
     </div>
     <div class="issues-owner-list">
@@ -61,33 +116,25 @@
       </div>
     </div>
   </div>
-  <div class="detail-info">
-    <div class="card remaing-freeze-amount">
-      <div class="left">
+  <div class="remaing-freeze-amount">
+    <div class="left">
+      <div class="remaining-number-of-freezes-ibt">
         <div class="label">
-          <text-gradient [text]="'REMAINING_NUMBER_OF_FREEZES'|translate" from="#ff5a5b" to="#fca178" fontSize="1.4rem" fontWeight="500"></text-gradient>
+          <text-gradient [text]="'REMAINING_NUMBER_OF_FREEZES_IBT'|translate" from="#ff5a5b" to="#fca178" fontSize="1.4rem" fontWeight="500"></text-gradient>
         </div>
         <div class="value">5000 <span class="unit">IBT</span></div>
       </div>
-      <div class="right">
-        <semicircular-progress-bar [progress]="0.62" class="chart"></semicircular-progress-bar>
-        <div class="chart-info">
-          <div class="value">10000 <span class="unit">IBT</span></div>
-          <div class="label">{{'INITIAL_FREEZE_NUMBER_OF_ISSUES'|translate}}</div>
-        </div>
+      <div class="initial-freeze-number-of-issues">
+        <div class="label">{{'INITIAL_FREEZE_NUMBER_OF_ISSUES'|translate}}</div>
+        <div class="value">5000 <span class="unit">IBT</span></div>
       </div>
     </div>
-    <div class="card remaing-publish-amount">
-      <div class="left">
-        <div class="label">{{'REMAINING_NUMBER_OF_ISSUES'|translate}}</div>
-        <div class="value">5000 <span class="unit">MKR</span></div>
-        <div class="init-publish-amount">
-          <div class="label">{{'INITIAL_PUBLICE_NUMBER_OF_ISSUES'|translate}}</div>
-          <div class="value">150000 <span class="unit">MKR</span></div>
-        </div>
-      </div>
-      <div class="right">
-        <simple-sector [progress]="0.75" class="chart"></simple-sector>
+    <div class="right">
+      <!-- <semicircular-progress-bar [progress]="0.62" class="chart"></semicircular-progress-bar> -->
+      <svg-chart type="barometer" [barometer]="59"></svg-chart>
+      <div class="chart-info">
+        <div class="value">50 <span class="unit">%</span></div>
+        <div class="label">{{'REMAINING_FREEZE_RATIO'|translate}}</div>
       </div>
     </div>
   </div>

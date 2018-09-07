@@ -14,6 +14,7 @@ import * as TYPE from "./assets.types";
 export * from "./assets.types";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
+import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
 
 @Injectable()
 export class AssetsServiceProvider {
@@ -22,7 +23,9 @@ export class AssetsServiceProvider {
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer
-  ) {}
+  ) {
+    tryRegisterGlobal("assetsService", this);
+  }
   readonly GET_ASSETS_POSSESSOR = this.appSetting.APP_URL(
     "/api/assets/assetsPossessor"
   );

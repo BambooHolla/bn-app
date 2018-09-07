@@ -19,24 +19,26 @@ page-assets-assets-transaction-list {
 			background-size: 200vw 200vw;
 			background-position: center 20%;
 			/* opacity: 0.5; */
-			z-index: 0;
+			z-index: -1;
 			pointer-events: none;
 		}
 		.assets-logo-shape-wrapper {
-			width: 9rem;
-			height: 9rem;
+			width: 8rem;
+			height: 8rem;
 			> .right {
 				overflow: hidden;
 			}
 		}
 		.abbreviation {
 			padding-top: 1rem;
-			font-size: 1.8rem;
+			font-size: 2.2rem;
 			font-weight: 500;
 			padding-bottom: 1.5rem;
+			color: #333;
 		}
 		.balance {
 			height: 6rem;
+			filter: drop-shadow(0 0.15rem 0.3rem rgba(0, 0, 0, 0.2));
 		}
 		.destory-assets {
 			border-radius: 0.5rem;

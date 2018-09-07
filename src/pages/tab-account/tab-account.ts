@@ -36,6 +36,9 @@ export class TabAccountPage extends FirstLevelPage {
       this.checkAndroidUpdate();
     });
   }
+  get hasBalance() {
+    return parseFloat(this.userInfo.balance) !== 0;
+  }
   /*监听账户余额增加 */
   // @TabAccountPage.autoUnsubscribe({ ignore_did_leve: true })
   // private _user_balance_grow_up_sub?: Subscription;

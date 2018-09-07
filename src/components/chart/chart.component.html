@@ -1,0 +1,37 @@
+<div>
+  <ng-template [ngIf]="type === 'circle'">
+    <svg class="svg-chart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850.39 850.39">
+      <g class="path">
+        <circle cx="322.784" cy="28.293" r="19.695" fill="#43c3ff" />
+        <path class="path-bg" stroke-dasharray="1552" stroke-dashoffset="0" d="M389.875 27.215c218.694 0 395.98 177.286 395.98 395.98s-177.286 395.98-395.98 395.98c-108.246 0-206.347-43.433-277.827-113.823" />
+        <path class="path-blue" stroke-dasharray="1552" [attr.stroke-dashoffset]="getValue(circleLg, 1552)" d="M389.875 27.215c218.694 0 395.98 177.286 395.98 395.98s-177.286 395.98-395.98 395.98c-108.246 0-206.347-43.433-277.827-113.823" />
+      </g>
+      <g class="path">
+        <circle class="jump-in-b" cx="322.784" cy="257.208" r="19.695" fill="#999" />
+        <path class="path-bg" stroke-dasharray="1118" stroke-dashoffset="0" d="M393.12 135.975c157.516 0 285.207 127.692 285.207 285.208S550.636 706.39 393.12 706.39c-77.965 0-148.623-31.283-200.107-81.982" />
+        <path class="path-red" stroke-dasharray="1118" [attr.stroke-dashoffset]="getValue(circleMd, 1118)" d="M393.12 135.975c157.516 0 285.207 127.692 285.207 285.208S550.636 706.39 393.12 706.39c-77.965 0-148.623-31.283-200.107-81.982" />
+      </g>
+      <g class="path">
+        <circle class="jump-in-c" cx="322.784" cy="135.975" r="19.695" fill="#fe605e" />
+        <path class="path-bg" stroke-dasharray="623" stroke-dashoffset="0" d="M390.209 257.208c87.864 0 159.091 71.227 159.091 159.091S478.072 575.39 390.209 575.39c-43.489 0-82.903-17.45-111.621-45.73" />
+        <path class="path-grey" stroke-dasharray="623" [attr.stroke-dashoffset]="getValue(circleSm, 623)" d="M390.209 257.208c87.864 0 159.091 71.227 159.091 159.091S478.072 575.39 390.209 575.39c-43.489 0-82.903-17.45-111.621-45.73" />
+      </g>
+    </svg>
+  </ng-template>
+  <ng-template [ngIf]="type === 'barometer'">
+    <svg class="svg-chart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850.39 850.39">
+      <g class="path">
+        <linearGradient id="a" gradientUnits="userSpaceOnUse" x1="14.707" y1="411.734" x2="835.683" y2="411.734" gradientTransform="matrix(1 0 0 -1 0 850.39)">
+          <stop offset="0" stop-color="#83d6f7" />
+          <stop offset="1" stop-color="#73f5e0" />
+        </linearGradient>
+        <linearGradient id="b" gradientUnits="userSpaceOnUse" x1="14.707" y1="438.656" x2="835.683" y2="438.656">
+          <stop offset="0" stop-color="#ff5a5b" />
+          <stop offset="1" stop-color="#fca178" />
+        </linearGradient>
+        <path stroke="url(#a)" stroke-dasharray="1211" stroke-dashoffset="0" d="M39.707 631.4c0-212.899 172.589-385.488 385.488-385.488S810.683 418.501 810.683 631.4" />
+        <path class="path-barometer" stroke="url(#b)" stroke-dasharray="1211" [attr.stroke-dashoffset]="getValue(barometer, 1211)" d="M39.707 631.4c0-212.899 172.589-385.488 385.488-385.488S810.683 418.501 810.683 631.4" />
+      </g>
+    </svg>
+  </ng-template>
+</div>

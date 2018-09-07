@@ -1,4 +1,7 @@
 page-assets-guide {
+	.modal-close-button {
+		transform: rotate(-90deg) translateY(1rem);
+	}
 	@extend .header-no-border;
 	&::before {
 		position: absolute;
@@ -54,16 +57,16 @@ page-assets-guide {
 			}
 		}
 	}
-	ion-slides{
-		&.changing{
-			.arrow{
+	ion-slides {
+		&.changing {
+			.arrow {
 				opacity: 0;
 				bottom: -5vw;
 			}
 		}
 	}
 	ion-slide {
-		.slide-zoom{
+		.slide-zoom {
 			width: 100%;
 			height: 100%;
 			position: relative;
@@ -88,7 +91,7 @@ page-assets-guide {
 			text-align: center;
 			pointer-events: none;
 		}
-		.bootstrap-button-container{
+		.bootstrap-button-container {
 			z-index: 2;
 			pointer-events: all;
 		}
@@ -108,14 +111,14 @@ page-assets-guide {
 				font-weight: 600;
 			}
 		}
-		.arrow{
+		.arrow {
 			position: absolute;
 			bottom: 0;
 			height: 10vw;
 			width: 10vw;
 			left: 45vw;
 			bottom: 5vw;
-			background-image: url('../assets/imgs/assets/arrow-swirl.png') ;
+			background-image: url("../assets/imgs/assets/arrow-swirl.png");
 			background-size: contain;
 			background-repeat: no-repeat;
 			background-position: center;
@@ -124,14 +127,14 @@ page-assets-guide {
 			animation-timing-function: ease-in-out;
 			animation-iteration-count: infinite;
 			transition-duration: 250ms;
-			@keyframes up-and-down{
+			@keyframes up-and-down {
 				0% {
 					transform: translateY(-10%);
 				}
-				50%{
+				50% {
 					transform: translateY(10%);
 				}
-				100%{
+				100% {
 					transform: translateY(-10%);
 				}
 			}
@@ -147,7 +150,7 @@ page-assets-guide {
 		background-color: rgba(123, 51, 4, 0.1);
 	} */
 	.s-4 {
-		h1{
+		h1 {
 			width: 68%;
 			left: 16%;
 			top: 75%;

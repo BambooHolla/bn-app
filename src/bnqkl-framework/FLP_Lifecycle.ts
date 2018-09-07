@@ -221,6 +221,34 @@ export class FLP_Lifecycle extends FLP_Tool
     }
     // return descriptor;
   }
+  static detectChanges(
+    target: any,
+    name: string,
+    descriptor?: PropertyDescriptor
+  ) {
+    if (!descriptor) {
+      let val;
+      descriptor = {
+        get() {
+          return val;
+        },
+        set(v) {
+          if (v !== val) {
+            val = v;
+            this.detectChanges();
+          }
+        },
+      };
+      Object.defineProperty(target, name, descriptor);
+    } else if (descriptor.set) {
+      const srouce_set = descriptor.set;
+      descriptor.set = function(v) {
+        srouce_set.call(this, v);
+        this.detectChanges();
+      };
+    }
+    // return descriptor;
+  }
 
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;

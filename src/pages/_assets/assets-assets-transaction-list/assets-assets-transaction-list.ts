@@ -84,9 +84,12 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 			return;
 		}
 		const my_assets_list = await this.assetsService.myAssetsList.getPromise();
-		this.assets_info = my_assets_list.find(
+		const newest_assets_info = my_assets_list.find(
 			assets => assets.abbreviation === assets_info.abbreviation
 		);
+		if (newest_assets_info) {
+			this.assets_info = newest_assets_info;
+		}
 	}
 
 	@asyncCtrlGenerator.error("")

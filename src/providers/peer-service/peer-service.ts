@@ -156,7 +156,8 @@ export class PeerServiceProvider extends CommonService {
         peer.magic = system_base_info.magic;
         localStorage.setItem("sourceIp", system_base_info.sourceIp);
         return peer.magic;
-      });
+      })
+      .catch(() => 0);
   }
   /*获取节点检查信息*/
   async _checkPeer(peer: TYPE.LocalPeerModel) {
@@ -175,7 +176,7 @@ export class PeerServiceProvider extends CommonService {
         .getBlocks({ orderBy: "height:asc", limit: 6 })
         .then(res => res.blocks),
       this._getPeerWebsocketLinkNum(peer),
-      this._getPeerMagic(peer).catch(console.error),
+      this._getPeerMagic(peer),
     ];
 
     let highest_blocks: BlockModel[] = [];
@@ -491,19 +492,35 @@ export class PeerServiceProvider extends CommonService {
     }
     return "ifm-unknown-system";
   }
-  async *updateUseablePeersInfo(useablePeers: TYPE.LocalPeerModel[]) {
+  async *updateUseablePeersInfo(useablePeers: TYPE.LocalPeerModel[], emiter?) {
     const fetch_peer_infos: PromiseType<
       ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfoAndUpdate>
     >[] = [];
     const parallel_pool = new ParallelPool<typeof fetch_peer_infos[0]>(4);
     for (var i = 0; i < useablePeers.length; i += 1) {
-      let peer = useablePeers[i];
-      parallel_pool.addTaskExecutor(() => this.fetchPeersInfoAndUpdate(peer));
+      const peer = useablePeers[i];
+      parallel_pool.addTaskExecutor(() =>
+        this.fetchPeersInfoAndUpdate(peer, emiter)
+      );
     }
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
-  private async fetchPeersInfoAndUpdate(peer: TYPE.LocalPeerModel) {
+  private async fetchPeersInfoAndUpdate(
+    peer: TYPE.LocalPeerModel,
+    emiter?: { emit: any }
+  ) {
+    let finished_task_num = 0;
+    const emit_progress = emiter
+      ? (v = finished_task_num) => {
+          finished_task_num = v;
+          emiter.emit("fetch-peers-info", {
+            peer,
+            total_tasks_num: tasks.length,
+            finished_num: finished_task_num,
+          });
+        }
+      : () => {};
     const common_cache_handler = () => {
       peer.disabled = true;
     };
@@ -513,23 +530,32 @@ export class PeerServiceProvider extends CommonService {
       )
       .then(runtime => {
         peer.platform = runtime.data.System.platform;
+        emit_progress(finished_task_num + 1);
         return runtime;
       });
-    const get_linknum_task = this._getPeerWebsocketLinkNum(peer);
+    const get_linknum_task = this._getPeerWebsocketLinkNum(peer).then(res => {
+      emit_progress(finished_task_num + 1);
+      return res;
+    });
     const get_lastblock_task = this.blockService
       .oneTimeUrl(this.blockService.GET_LAST_BLOCK_URL, peer.origin, true)
       .getLastBlock()
       .then(lastBlock => {
         peer.height = lastBlock.height;
+        emit_progress(finished_task_num + 1);
         return lastBlock;
       });
-    const get_system_base_info = this._getPeerMagic(peer);
+    const get_system_base_info = this._getPeerMagic(peer).then(res => {
+      emit_progress(finished_task_num + 1);
+      return res;
+    });
     const tasks = [
       get_platform_task,
       get_linknum_task,
       get_lastblock_task,
       get_system_base_info,
     ];
+    emit_progress(0);
 
     let runtime;
     let web_link_num;
@@ -550,7 +576,9 @@ export class PeerServiceProvider extends CommonService {
       cur_peer_data.delay = peer.delay;
       cur_peer_data.height = peer.height;
       cur_peer_data.platform = peer.platform;
-      peer = cur_peer_data;
+      cur_peer_data.magic = peer.magic;
+      cur_peer_data.webChannelLinkNum = peer.webChannelLinkNum;
+      Object.assign(peer, cur_peer_data);
       await this.peerDb.update({ _id: peer["_id"] }, peer);
     }
 

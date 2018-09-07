@@ -44,7 +44,7 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
-	closeModal(){
+	closeModal() {
 		this.viewCtrl.dismiss();
 	}
 
@@ -94,6 +94,9 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 	private _lottie_ins_map = new Map();
 	/**初始化指定slide的动画*/
 	initAniInstance(index: number) {
+		if (index >= AssetsGuidePage.lottie_opts.length) {
+			return;
+		}
 		let ani_ins = this._lottie_ins_map.get(index);
 		if (!ani_ins) {
 			const ele = (this.elementRef
@@ -126,8 +129,11 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 	}
 	/**运作指定slide的动画*/
 	runAni(index) {
+		console.log("RUN ANI:", index);
 		const ani_ins = this.initAniInstance(index);
-		ani_ins.play();
+		if (ani_ins) {
+			ani_ins.play();
+		}
 		return ani_ins;
 	}
 	/**停止指定slide的动画*/
@@ -174,7 +180,8 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 		});
 		ani_btn.addEventListener("complete", () => {
 			// this.routeTo('assets-issusing-assets',{force_route_in:true})
-			this.finishJob(true);
+			this.jobRes(true);
+			this.finishJob(true, 1);
 		});
 	}
 
