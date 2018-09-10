@@ -34,6 +34,7 @@ import {
   BenefitWithNicknameModel,
   TransactionWithNicknameModel,
 } from "../../../providers/local-contact/local-contact";
+import { AccountModel } from "../../../providers/account-service/account.types";
 
 @IonicPage({ name: "assets-assets-detail" })
 @Component({
@@ -69,6 +70,7 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
     this.updateAssetsInfo();
     this.initAssetsOwnerRank();
     this.initMiningIncomeList();
+    this.getAccessAccountInfo();;
   }
 
   /**更新拥有的数字资产基本信息*/
@@ -86,7 +88,11 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
       this.assets_info = newest_assets_info;
     }
     // 加载拓展信息
-    await Promise.all([this.getRemaingAssets(), this.getRemaingIBT()]);
+    await Promise.all([
+      this.getRemaingAssets(),
+      this.getRemaingIBT(),
+      this.getMiningInfo(),
+    ]);
   }
   // issus_assets_trs_info = new PromisePro<TransactionModel>();
   // /**获取发行数字资产对应的交易的信息*/
@@ -166,6 +172,12 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
   };
   async getMiningInfo() {
     // TODO: 获取 applyAssetBlockHeight 开始的挖矿收益，对比初始冻结数量算出增长率
+  }
+
+  /// 4.
+  access_account_info ?:AccountModel
+  async getAccessAccountInfo(){
+    this.access_account_info = await this.accountService.getAccountByAddress(this.assets_info.address);
   }
 
   /// 持有排名

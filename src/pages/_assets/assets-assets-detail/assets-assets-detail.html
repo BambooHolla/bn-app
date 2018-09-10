@@ -30,7 +30,7 @@
         <div class="flag-item issue-assets-account">
           <ali-icon name="ifm-shiliangzhinengduixiang6"></ali-icon>
         </div>
-        <div class="flag-item delegate-account">
+        <div class="flag-item delegate-account" *ngIf="access_account_info?.isDelegate">
           <ali-icon name="ifm-kuanggong"></ali-icon>
         </div>
       </div>

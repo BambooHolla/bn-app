@@ -6,6 +6,7 @@ export type AccountModel = {
   secondSignature: boolean;
   unconfirmedBalance: string;
   unconfirmedSignature: boolean;
+  isDelegate: number;
   username: string;
   votingReward: string;
 };

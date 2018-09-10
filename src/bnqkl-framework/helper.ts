@@ -103,6 +103,7 @@ export function getSocketIOInstance(server_url: string, nsp: string) {
   let ins = WSIOInstanceMap.get(key);
   if (!ins) {
     ins = new WSIOInstance(server_url, nsp);
+    WSIOInstanceMap.set(key, ins);
   }
   return ins;
 }
