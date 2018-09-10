@@ -85,7 +85,7 @@ export class AccountPeerListPage extends SecondLevelPage {
       this.cur_peer_list,
       this.event
     )) {
-      if (this.PAGE_STATUS <= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
+      if (this.PAGE_STATUS >= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
         break;
       }
       this.markForCheck();
