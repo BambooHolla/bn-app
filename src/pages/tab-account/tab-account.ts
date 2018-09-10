@@ -86,6 +86,7 @@ export class TabAccountPage extends FirstLevelPage {
     }
     /// 开启余额过多必须设置支付密码的提醒
     if (
+      !this.userInfo.isFreezed &&
       !this.userInfo.hasSecondPwd &&
       !sessionStorage.getItem(
         "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP"
