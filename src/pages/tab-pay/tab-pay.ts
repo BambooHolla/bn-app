@@ -20,6 +20,7 @@ import { Subscription } from "rxjs/Subscription";
 import {
   AssetsServiceProvider,
   AssetsModelWithLogoSafeUrl,
+  AssetsPersonalModelWithLogoSafeUrl,
 } from "../../providers/assets-service/assets-service";
 
 // import { Network } from '@ionic-native/network';
@@ -440,11 +441,11 @@ export class TabPayPage extends FirstLevelPage {
     //     return userInfo.balance;
     //   },
     // };
-    return ibtAssets;
+    return ibtAssets as AssetsPersonalModelWithLogoSafeUrl;
   })();
   @TabPayPage.markForCheck selected_assets = this.ibt_assets;
   @TabPayPage.markForCheck
-  selectable_assets_list: AssetsModelWithLogoSafeUrl[] = [];
+  selectable_assets_list: AssetsPersonalModelWithLogoSafeUrl[] = [];
 
   /**资产选择面板是否打开*/
   @TabPayPage.markForCheck is_assets_select_panel_open = false;
@@ -493,7 +494,7 @@ export class TabPayPage extends FirstLevelPage {
   }
 
   /**选择某一个资产*/
-  selectAssets(assets: AssetsModelWithLogoSafeUrl) {
+  selectAssets(assets: AssetsPersonalModelWithLogoSafeUrl) {
     this.selected_assets = assets;
     this.toggleAssetsSelectPanel();
     this.check_transfer_amount(); // 检测金额问题

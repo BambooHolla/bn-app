@@ -5,6 +5,7 @@ import { DatediffPipe } from "./datediff/datediff";
 import { AmountEulerPipe } from "./amount-euler/amount-euler";
 import { BytesPipe } from "./bytes/bytes";
 import { AmomentPipe } from './amoment/amoment';
+import { CommonDurationHumainzePipe } from './common-duration-humainze/common-duration-humainze';
 @NgModule({
   declarations: [
     MaskPipe,
@@ -13,9 +14,11 @@ import { AmomentPipe } from './amoment/amoment';
     AmountEulerPipe,
     BytesPipe,
     AmomentPipe,
+    CommonDurationHumainzePipe,
   ],
   imports: [],
   exports: [MaskPipe, TimestampPipe, DatediffPipe, AmountEulerPipe, BytesPipe,
-    AmomentPipe],
+    AmomentPipe,
+    CommonDurationHumainzePipe],
 })
 export class PipesModule {}

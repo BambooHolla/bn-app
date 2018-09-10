@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import * as moment from "moment";
+window["moment"] = moment;
 
 @Pipe({
 	name: "amoment",

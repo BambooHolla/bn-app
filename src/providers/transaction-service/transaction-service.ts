@@ -214,7 +214,7 @@ export class TransactionServiceProvider {
       }
     }
     if (typeof txData.fee === "number") {
-      txData.fee = txData.fee.toString();
+      txData.fee = txData.fee.toFixed(8);
     }
 
     if (!this.validateTxdata(txData)) {

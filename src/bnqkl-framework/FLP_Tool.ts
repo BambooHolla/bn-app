@@ -309,13 +309,7 @@ export class FLP_Tool {
     auto_open = true
   ) {
     return this._showCustomDialog(
-      {
-        title,
-        iconType: "warning",
-        subTitle,
-        message,
-        buttons,
-      },
+      { title, iconType: "warning", subTitle, message, buttons },
       auto_open
     );
   }
@@ -327,13 +321,7 @@ export class FLP_Tool {
     auto_open = true
   ) {
     return this._showCustomDialog(
-      {
-        title,
-        iconType: "success",
-        subTitle,
-        message,
-        buttons,
-      },
+      { title, iconType: "success", subTitle, message, buttons },
       auto_open
     );
   }
@@ -345,13 +333,7 @@ export class FLP_Tool {
     auto_open = true
   ) {
     return this._showCustomDialog(
-      {
-        title,
-        iconType: "error",
-        subTitle,
-        message,
-        buttons,
-      },
+      { title, iconType: "error", subTitle, message, buttons },
       auto_open
     );
   }
@@ -416,7 +398,10 @@ export class FLP_Tool {
   }
   /*系统级别的加载动画*/
   async showLogoLoading(msg, auto_open = true) {
-    this._showCustomLoadingDialog(msg, { auto_open, cssClass: "logo-loading" });
+    this._showCustomLoadingDialog(msg, {
+      auto_open,
+      cssClass: "logo-loading",
+    });
   }
   showChainLoading(msg, auto_open = true) {
     this._showCustomLoadingDialog(msg, {

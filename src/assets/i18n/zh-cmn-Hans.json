@@ -511,6 +511,7 @@
   "MINING_QUANTITY": "已挖矿数量",
 
   "//": "vote-income-logs",
+  "VOTE-INCOME-LOGS": "历史挖矿收益表",
   "LOAD_VOTE_INCOME_LIST_ERROR": "加载挖矿收益列表出错",
   "LOADING_VOTE_INCOME_LIST": "加载挖矿收益列表中……",
   "LOAD_MORE_VOTE_INCOME_LIST_ERROR": "加载更多挖矿收益出错",
@@ -901,6 +902,9 @@
   "RANK_OF_ISSUES_OWNER": "持有人数",
   "DESTROY_ASSETS": "赎回IBT",
   "CONFIM_TO_DESTORY_ASSETS": "确定要赎回IBT吗？",
+  "GROWTH_RATE":"增长率",
+  "MINING_INCOME_LIST":"挖矿收益清单",
+  "DESTORY_LOG_LIST": "历史分红清单",
 
   "UPLOAD_LOGO_IMAGE": "上传logo图片",
   "PLEASE_INPUT_ASSETNAME": "权益名称",

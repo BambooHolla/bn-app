@@ -17,7 +17,7 @@ import {
 } from "ionic-angular";
 import {
   AssetsServiceProvider,
-  AssetsModel,
+  AssetsBaseModel,
   AssetsModelWithLogoSafeUrl,
 } from "../../../providers/assets-service/assets-service";
 
@@ -101,7 +101,7 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
 
   private _is_from_child = false;
   /**跳转到资产详情页面*/
-  routeToAssetsTraList(assets: AssetsModel) {
+  routeToAssetsTraList(assets: AssetsBaseModel) {
     this._is_from_child = true;
     this.routeTo("assets-assets-transaction-list", { assets });
   }

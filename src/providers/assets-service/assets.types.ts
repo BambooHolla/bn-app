@@ -3,22 +3,38 @@ export type AssetsBaseModel = {
   transactionId: string;
   address: string;
   publicKey: string;
+  logo?: string;
   /**英文缩写(unique)*/
   abbreviation: string;
   genesisAddress: string;
   /**初始发行的资产数量*/
-  expectedIssuedAssets: NumberLong;
+  expectedIssuedAssets: string;
   expectedIssuedBlockHeight: number;
+  applyAssetBlockHeight: number;
   status: ASSETS_STATUS;
   dateCreated: number;
+};
+export type AssetsPersonalModel = AssetsBaseModel & {
   hodingAssets: string;
+  destoryAssets: string;
 };
-export type AssetsModel = AssetsBaseModel & {
-  logo?: string;
+export type AssetsDetailModel = AssetsBaseModel & {
+  remainAssets: string;
+  originalFrozenIBTs: string;
 };
+// export type AssetsModel = AssetsBaseModel & {
+//   logo?: string;
+// };
+// export type AssetsModelWithLogoSafeUrl = AssetsBaseModel & {
+//   logo_safe_url: import("@angular/platform-browser").SafeUrl;
+// };
 export type AssetsModelWithLogoSafeUrl = AssetsBaseModel & {
   logo_safe_url: import("@angular/platform-browser").SafeUrl;
 };
+export type AssetsPersonalModelWithLogoSafeUrl = AssetsPersonalModel &
+  AssetsModelWithLogoSafeUrl;
+export type AssetsDetailModelWithLogoSafeUrl = AssetsDetailModel &
+  AssetsModelWithLogoSafeUrl;
 
 export enum ASSETS_STATUS {
   /**

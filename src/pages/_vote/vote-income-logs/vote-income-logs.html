@@ -1,6 +1,6 @@
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>历史挖矿收益表</ion-title>
+    <ion-title>{{'VOTE-INCOME-LOGS'|translate}}</ion-title>
     <!-- <ion-buttons right>
       <button (click)="openSeach(SearchType.VOTE_INCOME)">
         <ali-icon name="ifm-sousuo"></ali-icon>
@@ -13,7 +13,7 @@
 
   <div class="common-list">
     <div class="common-item" *ngIf="income_log_list.length==0 && !income_log_list_config.loading">
-      <i>无可用数据</i>
+      <i>{{'EMPTY_LIST'|translate}}</i>
     </div>
     <div class="common-item" *ngFor="let log of income_log_list" (click)="routeToBlockDetail(log)">
       <div class="left">

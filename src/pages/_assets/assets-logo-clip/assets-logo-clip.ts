@@ -19,7 +19,7 @@ import {
 } from "ionic-angular";
 import {
 	AssetsServiceProvider,
-	AssetsModel,
+	AssetsBaseModel,
 	AssetsModelWithLogoSafeUrl,
 } from "../../../providers/assets-service/assets-service";
 import { ClipAssetsLogoComponent } from "../../../components/clip-assets-logo/clip-assets-logo";

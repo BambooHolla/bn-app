@@ -45,7 +45,7 @@ export class AssetsServiceProvider {
     "/api/assets/downloadAssetsLogo"
   );
 
-  readonly ibt_assets: TYPE.AssetsModelWithLogoSafeUrl = {
+  readonly ibt_assets: TYPE.AssetsPersonalModelWithLogoSafeUrl = {
     transactionId: "",
     address: "",
     publicKey: "",
@@ -53,51 +53,73 @@ export class AssetsServiceProvider {
     abbreviation: "IBT",
     genesisAddress: "",
     /**初始发行的资产数量*/
-    expectedIssuedAssets: 0,
+    expectedIssuedAssets: "0",
     expectedIssuedBlockHeight: 0,
     status: TYPE.ASSETS_STATUS.SUCCESS,
     dateCreated: AppSettingProvider.seedDateTimestamp,
+    applyAssetBlockHeight: 0,
     hodingAssets: "",
+    destoryAssets: "",
     logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
       "./assets/imgs/assets/IBT-assets-logo.jpg"
     ),
   };
 
-  formatAssetsToWithLogoSafeUrl(assets: TYPE.AssetsModel[]) {
+  formatAssetsToWithLogoSafeUrl<
+    T extends TYPE.AssetsPersonalModel | TYPE.AssetsDetailModel
+  >(assets: T[]) {
     return assets.map(assets => {
-      const { logo, ...rest_assets } = assets;
+      const { logo, ...rest_assets } = assets as any;
+      const res = {
+        ...rest_assets,
+      } as any;
+      if ("expectedIssuedAssets" in res) {
+        res.expectedIssuedAssets = parseFloat(res.expectedIssuedAssets);
+      }
+      if ("remainAssets" in res) {
+        res.remainAssets = parseFloat(res.remainAssets);
+      }
+      if ("originalFrozenIBTs" in res) {
+        res.originalFrozenIBTs = parseFloat(res.originalFrozenIBTs);
+      }
       if (logo) {
         const logo_blob = this.jpgBase64ToBlob(logo);
-        return {
-          ...rest_assets,
-          logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
-            URL.createObjectURL(logo_blob)
-          ),
-        } as TYPE.AssetsModelWithLogoSafeUrl;
+        res.logo_safe_url = this.domSanitizer.bypassSecurityTrustUrl(
+          URL.createObjectURL(logo_blob)
+        );
       } else {
-        return {
-          ...rest_assets,
-          logo_safe_url: this.domSanitizer.bypassSecurityTrustUrl(
-            this.getAssetsLogoHttpUrl(assets.abbreviation)
-          ),
-        };
+        res.logo_safe_url = this.domSanitizer.bypassSecurityTrustUrl(
+          this.getAssetsLogoHttpUrl(assets.abbreviation)
+        );
       }
+      return res as T extends TYPE.AssetsPersonalModel
+        ? TYPE.AssetsPersonalModelWithLogoSafeUrl
+        : TYPE.AssetsDetailModelWithLogoSafeUrl;
     });
   }
 
   /**获取资产*/
   async getAssets(query) {
-    const data = await this.fetch.get<{ assets: TYPE.AssetsModel[] }>(
+    const data = await this.fetch.get<{ assets: TYPE.AssetsDetailModel[] }>(
       this.GET_ASSETS,
       {
         search: query,
       }
     );
-    return this.formatAssetsToWithLogoSafeUrl(data.assets);
+    return this.formatAssetsToWithLogoSafeUrl(
+      data.assets
+    ) as TYPE.AssetsDetailModelWithLogoSafeUrl[];
+  }
+  getAssetsByAbbreviation(abbreviation: string) {
+    return this.getAssets({ abbreviation }).then(
+      list => list[0] as TYPE.AssetsDetailModelWithLogoSafeUrl | undefined
+    );
   }
 
   /**我的账户的所有资产*/
-  myAssetsList!: AsyncBehaviorSubject<TYPE.AssetsModelWithLogoSafeUrl[]>;
+  myAssetsList!: AsyncBehaviorSubject<
+    TYPE.AssetsPersonalModelWithLogoSafeUrl[]
+  >;
   @HEIGHT_AB_Generator("myAssetsList")
   myAssetsList_Executor(promise_pro) {
     // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
@@ -109,7 +131,7 @@ export class AssetsServiceProvider {
   async getAllPossessorAssets(address: string, extends_query?) {
     let page = 0;
     const pageSize = 40;
-    const all_assets_list: TYPE.AssetsModelWithLogoSafeUrl[] = [];
+    const all_assets_list: TYPE.AssetsPersonalModelWithLogoSafeUrl[] = [];
     do {
       page += 1;
       const { assets_list, hasMore } = await this._getPossessorAssetsByPage(
@@ -147,7 +169,7 @@ export class AssetsServiceProvider {
     return { assets_list, hasMore: assets_list.length >= pageSize };
   }
   async _getPossessorAssets(address: string, extends_query: object) {
-    const data = await this.fetch.get<{ assets: TYPE.AssetsModel[] }>(
+    const data = await this.fetch.get<{ assets: TYPE.AssetsPersonalModel[] }>(
       this.GET_POSSESSOR_ASSETS,
       {
         search: {

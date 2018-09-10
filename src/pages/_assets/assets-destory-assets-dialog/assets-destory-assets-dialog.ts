@@ -18,7 +18,7 @@ import { FirstLevelPage } from "../../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import {
 	AssetsServiceProvider,
-	AssetsModelWithLogoSafeUrl,
+	AssetsPersonalModelWithLogoSafeUrl,
 } from "../../../providers/assets-service/assets-service";
 type buttonOptions = {
 	text: string;
@@ -77,7 +77,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 		return res;
 	}
 
-	assets_info!: AssetsModelWithLogoSafeUrl;
+	assets_info!: AssetsPersonalModelWithLogoSafeUrl;
 
 	@AssetsDestoryAssetsDialogPage.willEnter
 	initData() {
