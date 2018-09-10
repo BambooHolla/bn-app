@@ -497,7 +497,6 @@ export class PeerServiceProvider extends CommonService {
       ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfoAndUpdate>
     >[] = [];
     const parallel_pool = new ParallelPool<typeof fetch_peer_infos[0]>(4);
-    console.log("parallel_pool", parallel_pool);
     for (var i = 0; i < useablePeers.length; i += 1) {
       const peer = useablePeers[i];
       parallel_pool.addTaskExecutor(() =>
