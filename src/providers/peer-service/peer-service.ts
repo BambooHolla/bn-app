@@ -29,12 +29,12 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
   } catch (err) {}
 })() || [
   {
-    origin: "http://mainnet.ifmchain.org",
+    origin: "http://publish.ifmchain.org",
     level: TYPE.PEER_LEVEL.TRUST,
     webChannelLinkNum: 0,
     netVersion: "mainnet",
     netInterval: 128,
-    ip: "mainnet.ifmchain.org",
+    ip: "publish.ifmchain.org",
     height: 0,
     p2pPort: 9000,
     magic: "",
