@@ -6,6 +6,8 @@ import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider, AppUrl } from "../app-setting/app-setting";
 import { BlockModel, BlockResModel } from "../block-service/block.types";
+import { UserInfoProvider } from "../user-info/user-info";
+import { LoginServiceProvider } from "../login-service/login-service";
 type BlockServiceProvider = import("../block-service/block-service").BlockServiceProvider;
 import { MinServiceProvider } from "../min-service/min-service";
 import {
@@ -14,7 +16,11 @@ import {
   PromiseOut,
 } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import { getQueryVariable } from "../../bnqkl-framework/helper";
+import {
+  getQueryVariable,
+  baseConfig,
+  getSocketIOInstance,
+} from "../../bnqkl-framework/helper";
 import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { CommonService } from "../commonService";
 import { Mdb } from "../mdb";
@@ -58,7 +64,9 @@ export class PeerServiceProvider extends CommonService {
     // public storage: Storage,
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
-    public minService: MinServiceProvider
+    public minService: MinServiceProvider,
+    public userInfo: UserInfoProvider,
+    public loginService: LoginServiceProvider
   ) {
     super();
   }
@@ -451,7 +459,9 @@ export class PeerServiceProvider extends CommonService {
       for (var h_peer_info_list of [...peer_last_block_map.values()].sort(
         (a, b) => b.length - a.length
       )) {
-        if (
+        return h_peer_info_list;
+        /// PS: 暂时停止拜占庭，直接使用最高的
+        /* if (
           level === TYPE.PEER_LEVEL.SEC_TRUST &&
           h_peer_info_list.length >= min_second_peer_num
         ) {
@@ -459,7 +469,7 @@ export class PeerServiceProvider extends CommonService {
         }
         if (level === TYPE.PEER_LEVEL.OTHER && h_peer_info_list.length >= 57) {
           return h_peer_info_list;
-        }
+        } */
       }
       // }
     }
@@ -649,6 +659,50 @@ export class PeerServiceProvider extends CommonService {
     } else {
       // 没网络的情况下，直接默认成功
       return true;
+    }
+  }
+
+  /**
+   * 连接指定节点
+   */
+  async linkPeer(peer: TYPE.LocalPeerModel) {
+    // await sleep(500);
+    localStorage.setItem("SERVER_URL", peer.origin);
+    localStorage.setItem("MAGIC", peer.magic);
+    const BLOCK_UNIT_TIME = peer.netInterval * 1000 || 128000;
+    localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
+    localStorage.setItem("NET_VERSION", peer.netVersion || "mainnet");
+    sessionStorage.setItem("LINK_PEER", "true");
+    // this.peerService.useablePeers(this.useable_peers);
+
+    // 保存这次检测完成的时间，为了避免过度频繁的检测
+    localStorage.setItem("LINK_PEER", Date.now().toString());
+    // location.hash = "";
+    // location.reload();
+
+    if (
+      baseConfig.NET_VERSION !== peer.magic ||
+      baseConfig.NET_VERSION !== peer.netVersion ||
+      AppSettingProvider.BLOCK_UNIT_TIME != baseConfig.BLOCK_UNIT_TIME
+    ) {
+      location.hash = "";
+      location.reload();
+      return;
+    }
+    // 只支持url动态重载
+    if (baseConfig.SERVER_URL !== peer.origin) {
+      baseConfig.SERVER_URL = peer.origin;
+      AppSettingProvider.SERVER_URL = baseConfig.SERVER_URL;
+      // 重新初始化io
+      this.blockService.io.disconnect();
+      delete this.blockService["_io"];
+      this.blockService.bindIOBlockChange();
+      FLP_Tool.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+      this.fetch.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+      /// TODO: 重新登录
+      if (this.userInfo.password) {
+        await this.loginService.doLogin(this.userInfo.password, true);
+      }
     }
   }
 }

@@ -148,6 +148,12 @@ export class PeerRadarScanningComponent extends AniBase {
       const pre_line = running_lines[pre_index];
       ani_line.rotation =
         pre_line.rotation + pre_line[ANI_PROGRESS_SYMBOL] * Math.PI * 4;
+      console.log(
+        "forceRenderOneFrame",
+        this.app!.renderer.width,
+        this.app!.renderer.height
+      );
+      this.forceRenderOneFrame();
       return ani_line;
     };
     loop_ani_line();

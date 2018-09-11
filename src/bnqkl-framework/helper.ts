@@ -169,7 +169,7 @@ export const afCtrl = new class RafController {
 }();
 
 /*通用的AppUrl*/
-var BACKEND_VERSION = getQueryVariable("BACKEND_VERSION") || "v3.0.1/";
+var BACKEND_VERSION = getQueryVariable("BACKEND_VERSION") || "v3.1.1/";
 export class AppUrl {
   static SERVER_URL = "http://127.0.0.1";
   static BACKEND_VERSION = BACKEND_VERSION;
