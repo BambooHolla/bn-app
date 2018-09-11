@@ -261,7 +261,7 @@ export const baseConfig = new class BaseConfig extends EventEmitter {
   }
 }();
 baseConfig.SERVER_URL =
-  getQueryVariable("SERVER_URL") || "http://mainnet.ifmchain.org";
+  getQueryVariable("SERVER_URL") || "http://publish.ifmchain.org";
 
 console.log(
   "%cSERVER_URL:",

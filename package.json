@@ -2,7 +2,7 @@
   "name": "ifm-app-v2",
   "version": "3.3.0",
   "author": "BNQKL Team",
-  "homepage": "http://mainnet.ifmchain.org/",
+  "homepage": "http://publish.ifmchain.org/",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",

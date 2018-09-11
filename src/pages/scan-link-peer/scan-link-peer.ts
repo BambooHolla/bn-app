@@ -30,6 +30,7 @@ import { AniBase, Easing } from "../../components/AniBase";
 import { PeerRadarScanningComponent } from "../../components/peer-radar-scanning/peer-radar-scanning";
 import * as IFM from "ifmchain-ibt";
 import { MyApp } from "../../app/app.component";
+import { LoginPage } from "../pages";
 
 enum PAGE {
   scan = "scan-peer",
@@ -56,6 +57,11 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   }
   PAGE = PAGE;
   @ScanLinkPeerPage.markForCheck page_status = PAGE.scan;
+
+  @asyncCtrlGenerator.tttttap()
+  forceGoInSignInPage() {
+    return this.myapp.openPage(LoginPage, true, '强制进入');
+  }
 
   @ViewChild(PeerRadarScanningComponent)
   peerRadarScanning!: PeerRadarScanningComponent;
@@ -418,9 +424,9 @@ export class ScanLinkPeerPage extends FirstLevelPage {
           this.blockService.blockDb.insert(block).catch(console.error);
         }
       })
-	);
-	/// 尝试连接节点
-    await this.linkNode(peer);
+    );
+    /// 尝试连接节点
+    await this.peerService.linkPeer(peer);
     return this.myapp.openPage(this.myapp.tryInPage, true, false);
   }
 

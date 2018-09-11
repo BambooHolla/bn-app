@@ -37,7 +37,7 @@ export class MaskPipe implements PipeTransform {
         }
       }
       if (type === "ip") {
-        if (value === "mainnet.ifmchain.org") {
+        if (value === "publish.ifmchain.org") {
           return FLP_Tool.getTranslateSync("CREATION_NODE");
         }
         const ipinfo = value.split(".");

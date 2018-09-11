@@ -12,6 +12,7 @@ import {
   PeerServiceProvider,
   LocalPeerModel,
 } from "../../../providers/peer-service/peer-service";
+import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 
 @IonicPage({ name: "account-peer-list" })
 @Component({
@@ -92,5 +93,16 @@ export class AccountPeerListPage extends SecondLevelPage {
     }
     await min_wait_time;
     // this.loopUpdatePeerList();
+  }
+
+  async forceTogglePeer(peer: LocalPeerModel) {
+    if (
+      await this.waitTipDialogConfirm("确定要切换到这个节点？", {
+        false_text: "@@CANCEL",
+        true_text: "@@OK",
+      })
+    ) {
+      return this.peerService.linkPeer(peer);
+    }
   }
 }

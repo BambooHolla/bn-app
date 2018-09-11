@@ -22,7 +22,7 @@
       <div class="item system-type">
       </div>
     </div>
-    <div class="row common-item" [class.fetching]="isFetching(peer)" [class.disabled]="peer.disabled" *ngFor="let peer of cur_peer_list">
+    <div class="row common-item" [class.fetching]="isFetching(peer)" [class.disabled]="peer.disabled" *ngFor="let peer of cur_peer_list" (press)="forceTogglePeer(peer)">
       <div class="fetching-progress" [style.width]="getFetchingProgress(peer)+'%'"></div>
       <div class="item ip" [innerHTML]="peer.ip|mask:'@ip'"></div>
       <div class="item height">{{peer.height}}</div>

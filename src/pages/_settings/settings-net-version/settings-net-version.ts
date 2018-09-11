@@ -44,7 +44,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     {
       title: "mainnet",
       config: {
-        SERVER_URL: "http://mainnet.ifmchain.org",
+        SERVER_URL: "http://publish.ifmchain.org",
         NET_VERSION: "mainnet",
         BLOCK_UNIT_TIME: 128000,
       },
