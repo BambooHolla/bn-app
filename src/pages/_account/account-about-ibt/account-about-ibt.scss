@@ -76,7 +76,7 @@ page-account-about-ibt {
     height: 71vw; // 已知的图片比例
     background-position: center center;
     background-image: url(../assets/imgs/about-ibt/header-bg.jpg),
-      linear-gradient(to bottom, transparent 0%, transparent 70%, #ff5e60 100%);
+      linear-gradient(to bottom, rgba(#ff5e60, 0) 0%, rgba(#ff5e60, 0.1) 70%, #ff5e60 100%);
     background-size: cover;
     background-blend-mode: lighten;
     background-repeat: no-repeat;
