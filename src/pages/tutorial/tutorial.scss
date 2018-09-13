@@ -1,5 +1,31 @@
 page-tutorial {
   @extend .header-no-border;
+  ion-navbar.toolbar-ios {
+    // min-height: $navbar-height; // padding: 0 1.1rem;
+    .back-button {
+      .button-inner {
+        .back-button-icon {
+          &::before {
+            color: #FFF;
+          }
+        }
+      }
+    }
+    .toolbar-title-ios {
+      color: #FFF;
+    }
+    .bar-buttons {
+      button {
+        color: #FFF;
+        .button-inner {
+          color: #FFF;
+        }
+      }
+      ali-icon {
+        color: #FFF;
+      }
+    }
+  }
   .toolbar-background {
     background: transparent;
     border-color: transparent;
