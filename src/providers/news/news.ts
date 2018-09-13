@@ -23,7 +23,7 @@ export class NewsProvider {
         author: "凤凰新闻",
         publish_time: "2018-07-12",
         cover_image_url:
-          "http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
+          "http://ifmchain-cdn.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -38,7 +38,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-1.jpg",
           },
           {
             type: "image-alt",
@@ -52,7 +52,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-2.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain在区块链世界论坛荣获“年度区块链创新大奖”-2.jpg",
           },
           {
             type: "image-alt",
@@ -92,7 +92,7 @@ export class NewsProvider {
         author: "凤凰新闻",
         publish_time: "2018-06-29",
         cover_image_url:
-          "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
+          "http://ifmchain-cdn.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -102,7 +102,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
+              "http://ifmchain-cdn.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-1.jpg",
           },
           {
             type: "p",
@@ -112,7 +112,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-2.jpg",
+              "http://ifmchain-cdn.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-2.jpg",
           },
           {
             type: "p",
@@ -122,7 +122,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-3.jpg",
+              "http://ifmchain-cdn.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-3.jpg",
           },
           {
             type: "p",
@@ -137,7 +137,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-4.jpg",
+              "http://ifmchain-cdn.gaubee.com/致敬创新！IFMChain获得“年度区块链产业最具创新力项目”大奖-4.jpg",
           },
           {
             type: "p",
@@ -158,7 +158,7 @@ export class NewsProvider {
         author: "凤凰新闻",
         publish_time: "2018-07-07",
         cover_image_url:
-          "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
+          "http://ifmchain-cdn.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -173,7 +173,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
+              "http://ifmchain-cdn.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-1.jpg",
           },
           {
             type: "p",
@@ -183,12 +183,12 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-2.png",
+              "http://ifmchain-cdn.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-2.png",
           },
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-3.png",
+              "http://ifmchain-cdn.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-3.png",
           },
           {
             type: "p",
@@ -198,7 +198,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-4.jpg",
+              "http://ifmchain-cdn.gaubee.com/微软（中国）和IFMChain 齐获区块链杰出平台，并同台领取“金链奖”-4.jpg",
           },
           {
             type: "p",
@@ -239,7 +239,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain斩获全球区块链峰会“卓越区块链技术解决方案”大奖-1.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain斩获全球区块链峰会“卓越区块链技术解决方案”大奖-1.jpg",
           },
           {
             type: "p",
@@ -249,7 +249,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain斩获全球区块链峰会“卓越区块链技术解决方案”大奖-2.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain斩获全球区块链峰会“卓越区块链技术解决方案”大奖-2.jpg",
           },
           {
             type: "p",
@@ -275,7 +275,7 @@ export class NewsProvider {
         author: "凤凰新闻",
         publish_time: "2018-05-07",
         cover_image_url:
-          "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
+          "http://ifmchain-cdn.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
         contents: [
           {
             type: "blockquote",
@@ -290,7 +290,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-1.jpg",
+              "http://ifmchain-cdn.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-1.jpg",
           },
           {
             type: "p",
@@ -305,7 +305,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
+              "http://ifmchain-cdn.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-2.jpg",
           },
           {
             type: "p",
@@ -315,7 +315,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-3.jpg",
+              "http://ifmchain-cdn.gaubee.com/全球首个支持移动端网络的公链项目 荣获“区块链品牌引领奖”-3.jpg",
           },
           {
             type: "p",
@@ -336,7 +336,7 @@ export class NewsProvider {
         author: "新浪深圳",
         publish_time: "2018-01-19",
         cover_image_url:
-          "http://cdn-blnc.gaubee.com/随身的数字资产保险箱 “IFMChain”正式上线-1.jpg",
+          "http://ifmchain-cdn.gaubee.com/随身的数字资产保险箱 “IFMChain”正式上线-1.jpg",
         contents: [
           {
             type: "blockquote",
@@ -351,7 +351,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/随身的数字资产保险箱 “IFMChain”正式上线-1.jpg",
+              "http://ifmchain-cdn.gaubee.com/随身的数字资产保险箱 “IFMChain”正式上线-1.jpg",
           },
           {
             type: "p",
@@ -510,10 +510,10 @@ export class NewsProvider {
         author: "乐透社",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.mp4"
+          "http://ifmchain-cdn.gaubee.com/区块链里程碑IFMChain1月16日正式上线.mp4"
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/区块链里程碑IFMChain1月16日正式上线.jpg"
+          "http://ifmchain-cdn.gaubee.com/区块链里程碑IFMChain1月16日正式上线.jpg"
         ),
       },
       {
@@ -522,10 +522,10 @@ export class NewsProvider {
         author: "第一视频",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.mp4"
+          "http://ifmchain-cdn.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.mp4"
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.jpg"
+          "http://ifmchain-cdn.gaubee.com/1月16日IFMChain正式全球上线，标志着区块链3.0时代的开启.jpg"
         ),
       },
       {
@@ -534,10 +534,10 @@ export class NewsProvider {
         author: "新奇视频",
         type: "video",
         url: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.mp4"
+          "http://ifmchain-cdn.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.mp4"
         ),
         poster: this.sanitizer.bypassSecurityTrustUrl(
-          "http://cdn-blnc.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.jpg"
+          "http://ifmchain-cdn.gaubee.com/1月16日IFMChain公有链在澳门正式上线，开启区块链3.0时代.jpg"
         ),
       },
       {
@@ -627,7 +627,7 @@ export class NewsProvider {
         author: "凤凰新闻",
         publish_time: "2018-06-26",
         cover_image_url:
-          "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
+          "http://ifmchain-cdn.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
         contents: [
           {
             type: "p",
@@ -637,7 +637,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-1.jpg",
           },
           {
             type: "image-alt",
@@ -646,7 +646,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-2.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-2.jpg",
           },
           {
             type: "image-alt",
@@ -665,7 +665,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-3.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-3.jpg",
           },
           {
             type: "p",
@@ -675,7 +675,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-4.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-4.jpg",
           },
           {
             type: "image-alt",
@@ -689,7 +689,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-5.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-5.jpg",
           },
           {
             type: "image-alt",
@@ -703,7 +703,7 @@ export class NewsProvider {
           {
             type: "image",
             content:
-              "http://cdn-blnc.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-6.jpg",
+              "http://ifmchain-cdn.gaubee.com/IFMChain登陆纳斯达克大屏，为世界献上全球第一款区块链APP！-6.jpg",
           },
           {
             type: "image-alt",
@@ -719,3 +719,16 @@ export class NewsProvider {
     ];
   }
 }
+// abstract class a {
+//   aa() {
+//     return "qaq";
+//   }
+//   abstract zz(): string;
+//   // abstract s:string
+// }
+
+// class aa extends a {
+//   zz() {
+//     return "zzz";
+//   }
+// }

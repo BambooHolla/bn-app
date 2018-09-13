@@ -235,6 +235,7 @@ page-vote-list {
         bottom: 0;
         padding: 1rem;
         text-align: center;
+        z-index: 10;
         &.has-list-item {
           background-color: rgba(0, 0, 0, 0.2);
           > .submit-button {
