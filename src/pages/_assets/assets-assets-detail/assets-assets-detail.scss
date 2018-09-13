@@ -645,9 +645,38 @@ page-assets-assets-detail {
       }
     }
 
+
     >.common-list {
       height: 28.2rem;
       overflow: auto;
+
+      .common-item {
+        color: #666;
+
+        .left {
+          align-items: flex-start;
+          font-size: 1.4rem;
+
+          .time {
+            color: #999999;
+            font-size: 1.3rem;
+          }
+        }
+
+        .right {
+          .amount {
+            font-size: 2.2rem;
+            font-weight: 500;
+
+            .unit {
+              margin-left: 0.2rem;
+              font-size: 1.1rem;
+              font-weight: lighter;
+              color: #999;
+            }
+          }
+        }
+      }
     }
   }
 

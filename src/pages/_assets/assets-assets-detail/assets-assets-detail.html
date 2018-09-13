@@ -179,7 +179,7 @@
         </div>
       </div>
       <div class="common-list">
-        <div class="common-item" *ngFor="let income_item of mining_income_list;trackBy:commonTrackBy('_id')">
+        <button mat-button class="common-item" *ngFor="let income_item of mining_income_list;trackBy:commonTrackBy('_id')" (click)="routeToBlockDetail(income_item)">
           <div class="left">
             <div class="address" [innerHTML]="(income_item.name)?(income_item.name):(income_item.address|mask:'@address')"></div>
             <div class="time">
@@ -192,7 +192,7 @@
               <span class="unit">IBT</span>
             </div>
           </div>
-        </div>
+        </button>
       </div>
     </div>
   </div>
@@ -207,11 +207,11 @@
       </div>
     </div>
     <div class="common-list">
-      <div class="common-item" *ngFor="let tran of destory_log_list;trackBy:commonTrackBy('id')">
+      <button mat-button class="common-item" *ngFor="let tran of destory_log_list;trackBy:commonTrackBy('id')" (click)="routeToTransactionDetail(tran)">
         <div class="left">
           <div class="address" [innerHTML]="(tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address')"></div>
           <div class="time">
-            {{tran.timestamp|timestamp|amoment:['INIT','locale',localName]:['humanize']}}
+            {{tran.timestamp|timestamp|commonDurationHumainze:localName}}
           </div>
         </div>
         <div class="right">
@@ -220,7 +220,7 @@
             <span class="unit">IBT</span>
           </div>
         </div>
-      </div>
+      </button>
     </div>
   </div>
   <div class="footer-bar">

@@ -70,6 +70,7 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
     this.updateAssetsInfo();
     this.initAssetsOwnerRank();
     this.initMiningIncomeList();
+    this.initDestoryLogList();
     this.getAccessAccountInfo();;
   }
 
@@ -162,7 +163,8 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
     account_extend_info.remain_rate =
       (account_extend_info.current_balance /
         account_extend_info.original_frozen_ibts) *
-        100 || 100;
+      100 || 100;
+    this.markForCheck();
   }
 
   /// 3.
@@ -175,8 +177,9 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
   }
 
   /// 4.
-  access_account_info ?:AccountModel
-  async getAccessAccountInfo(){
+  @AssetsAssetsDetailPage.markForCheck
+  access_account_info?: AccountModel
+  async getAccessAccountInfo() {
     this.access_account_info = await this.accountService.getAccountByAddress(this.assets_info.address);
   }
 
@@ -242,6 +245,7 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
   }
 
   /// 挖矿收益清单
+  @AssetsAssetsDetailPage.markForCheck
   mining_income_list: BenefitWithNicknameModel[] = [];
   mining_income_page_info = {
     page: 1,
@@ -290,8 +294,14 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
       mining_income_page_info.loading = false;
     }
   }
+  routeToBlockDetail(log: BenefitModel) {
+    return this.routeTo("chain-block-detail", { height: log.height }).then(
+      () => (this._is_from_child = true)
+    );
+  }
 
   /// 赎回IBT清单（销毁数字资产）
+  @AssetsAssetsDetailPage.markForCheck
   destory_log_list: TransactionWithNicknameModel[] = [];
   destory_log_page_info = {
     page: 1,
@@ -306,6 +316,17 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
   async initDestoryLogList() {
     this.destory_log_page_info.page = 1;
     this.destory_log_list = await this._loadDestoryLogList();
+  }
+  /**加载更多赎回IBT清单*/
+  @asyncCtrlGenerator.error()
+  async loadMoreDestoryLogList() {
+    if (!this.destory_log_page_info.hasMore) {
+      return;
+    }
+    this.destory_log_page_info.page += 1;
+    this.destory_log_list = this.destory_log_list.concat(
+      await this._loadDestoryLogList()
+    );
   }
 
   async _loadDestoryLogList() {
@@ -331,11 +352,19 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
       destory_log_page_info.loading = false;
     }
   }
+  private _is_from_child = false;
+  /**跳转到交易详情页面*/
+  routeToTransactionDetail(tran: TransactionModel) {
+    return this.routeTo("chain-transaction-detail", { transaction: tran }).then(
+      () => (this._is_from_child = true)
+    );
+  }
 
   @AssetsAssetsDetailPage.addEvent("HEIGHT:CHANGED")
   watchHeightChanged() {
     this.initAssetsOwnerRank();
     this.initMiningIncomeList();
+    this.initDestoryLogList();
   }
 
   get enable_destory_assets_button() {

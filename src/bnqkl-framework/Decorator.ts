@@ -55,10 +55,20 @@ export function asyncErrorWrapGenerator(
     const source_fun = descriptor.value;
     descriptor.value = function ErrorWrap(...args) {
       var page_leaved = false;
+      var page_status_rm = () => { };
       if ("PAGE_STATUS" in this) {
-        this.event.once("didLeave", () => {
+        const didLeave = () => {
           page_leaved = true;
-        });
+        }
+        const didEnter = () => {
+          page_leaved = false;
+        }
+        this.event.on("didLeave", didLeave);
+        this.event.on("didEnter", didEnter);
+        page_status_rm = () => {
+          this.event.off("didLeave", didLeave);
+          this.event.off("didEnter", didEnter);
+        }
       }
       return source_fun
         .apply(this, args)
@@ -91,12 +101,16 @@ export function asyncErrorWrapGenerator(
           console.warn(err);
           console.groupEnd();
           if (hidden_when_page_leaved && page_leaved) {
+            page_status_rm();// 移除页面事件监听
             console.log(
               "%c不弹出异常提示因为页面的切换 " + (this.cname || ""),
               "color:yellow"
             );
             return getErrorFromAsyncerror(keep_throw);
+          } else {
+            page_status_rm();// 移除页面事件监听
           }
+
 
           if (!dialogGenerator) {
             const alertCtrl: AlertController = this.alertCtrl;
@@ -241,7 +255,7 @@ const loadingIdLock = (window["loadingIdLock"] = new Map<
     loading?: Loading;
     promises: Set<Promise<any>>;
   }
->());
+  >());
 export function asyncLoadingWrapGenerator(
   loading_msg: any = () => FLP_Tool.getTranslate("PLEASE_WAIT"),
   check_prop_before_present?: string,
@@ -264,7 +278,7 @@ export function asyncLoadingWrapGenerator(
   }
   return function asyncLoadingWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
-    descriptor.value = function(...args) {
+    descriptor.value = function (...args) {
       const loadingCtrl: LoadingController = this.loadingCtrl;
       if (!(loadingCtrl instanceof LoadingController)) {
         throw new Error(
@@ -412,9 +426,9 @@ export function autoRetryWrapGenerator(
     | (() => IterableIterator<number>)
     | number
     | {
-        max_retry_seconed?: number;
-        max_retry_times?: number;
-      },
+      max_retry_seconed?: number;
+      max_retry_times?: number;
+    },
   onAbort?: Function
 ) {
   var max_retry_seconed = 16;
@@ -429,7 +443,7 @@ export function autoRetryWrapGenerator(
   if (maxSeconed_or_timeGenerator instanceof Function) {
     timeGenerator = maxSeconed_or_timeGenerator;
   } else {
-    timeGenerator = function*() {
+    timeGenerator = function* () {
       var second = 1;
       var times = 0;
       do {
@@ -449,7 +463,7 @@ export function autoRetryWrapGenerator(
     };
   }
   const time_gen = timeGenerator();
-  return function(target, name, descriptor) {
+  return function (target, name, descriptor) {
     const source_fun = descriptor.value;
     // 强制转为异步函数
     descriptor.value = async function loop(...args) {
@@ -489,7 +503,7 @@ export function autoRetryWrapGenerator(
 }
 
 export function singleRunWrap(opts: { lock_prop_key?: string } = {}) {
-  return function(target, name, descriptor) {
+  return function (target, name, descriptor) {
     const source_fun = descriptor.value;
     var run_lock: PromiseOut<any> | undefined;
     descriptor.value = async function lock(...args) {
@@ -533,7 +547,7 @@ export function queneTask(
     can_mix_queue?: number;
   } = {}
 ) {
-  return function(target, name, descriptor) {
+  return function (target, name, descriptor) {
     const source_fun = descriptor.value;
     var run_lock: Promise<any> = Promise.resolve();
     var queue_num = 0;
@@ -567,7 +581,7 @@ export function queneTask(
 }
 
 export function tttttap(opts: { times: number } = { times: 5 }) {
-  return function(target, name, descriptor) {
+  return function (target, name, descriptor) {
     var tap_times = 0;
     var per_tap_time = 0;
     const source_fun = descriptor.value;
