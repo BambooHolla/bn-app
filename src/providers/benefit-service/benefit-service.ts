@@ -24,7 +24,6 @@ import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./benefit.types";
 export * from "./benefit.types";
-import * as IFM from "ifmchain-ibt";
 import {
   PromiseOut,
   PromisePro,
@@ -50,7 +49,7 @@ export class BenefitServiceProvider extends CommonService {
     public user: UserInfoProvider,
     public loginService: LoginServiceProvider,
     public localNotifications: LocalNotifications,
-    public platform: Platform,
+    public platform: Platform
   ) {
     super();
     this.ifmJs = AppSettingProvider.IFMJS;
@@ -70,14 +69,14 @@ export class BenefitServiceProvider extends CommonService {
   }
 
   readonly GET_BENEFIT = this.appSetting.APP_URL(
-    "/api/accounts/balanceDetails",
+    "/api/accounts/balanceDetails"
   );
 
   async getBenefitsByRound(
     offset = 0,
     limit = this.top_benefit_size,
     rounds = this.appSetting.getRound(),
-    address = this.user.userInfo.address,
+    address = this.user.userInfo.address
   ) {
     let query = {
       offset,
@@ -98,8 +97,8 @@ export class BenefitServiceProvider extends CommonService {
         await this.getBenefitsByRound(
           this.top_benefit_size,
           this.top_benefit_size,
-          round,
-        ),
+          round
+        )
       );
     }
     return list;
@@ -113,8 +112,8 @@ export class BenefitServiceProvider extends CommonService {
         await this.getBenefitsByRound(
           this.top_benefit_size,
           this.top_benefit_size,
-          round,
-        ),
+          round
+        )
       );
     }
     return list;
@@ -156,7 +155,7 @@ export class BenefitServiceProvider extends CommonService {
             this._topBenefits = list.slice();
           }
           return this._topBenefits;
-        }),
+        })
     );
   }
 
@@ -180,7 +179,7 @@ export class BenefitServiceProvider extends CommonService {
   async getBenefitsByPage(
     page: number,
     pageSize: number,
-    address = this.user.address,
+    address = this.user.address
   ): Promise<TYPE.BenefitModel[]> {
     if (this._topBenefits && this._topBenefits.length) {
       const from = (page - 1) * pageSize;
@@ -286,7 +285,7 @@ export class BenefitServiceProvider extends CommonService {
                 id: (this._notify_id = this.appSetting.getHeight()),
                 text: this.translate.instant("MINING_INCOME_#AMOUNT#IBT", {
                   amount: (parseFloat(cur_block_benefit.amount) / 1e8).toFixed(
-                    8,
+                    8
                   ),
                 }),
                 sound: this.platform.is("android")
@@ -298,7 +297,7 @@ export class BenefitServiceProvider extends CommonService {
               const total_amount = this._acc_notify_blocks.reduce(
                 (acc_amount, benefit) =>
                   acc_amount + parseFloat(benefit.amount),
-                0,
+                0
               );
               this.localNotifications.update({
                 id: this._notify_id as number,
@@ -307,14 +306,14 @@ export class BenefitServiceProvider extends CommonService {
                   {
                     times: this._acc_notify_blocks.length,
                     amount: (total_amount / 1e8).toFixed(8),
-                  },
+                  }
                 ),
               });
             }
           }
           this._pre_mining_block = cur_block_benefit;
         }
-      },
+      }
     );
   }
 

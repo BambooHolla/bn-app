@@ -1,24 +1,30 @@
 page-account-about-ibt {
-  > .header {
+  >.header {
     color: #fff;
+
     .back-button {
       color: inherit;
+
       .back-button-icon {
         color: inherit;
+
         &::before {
           color: inherit !important;
         }
       }
     }
   }
+
   @extend .header-no-border;
-  > .content {
-    > .scroll-content {
+
+  >.content {
+    >.scroll-content {
       background-color: #f0f0f0;
       margin-top: 0 !important;
       /* position: relative; */
     }
   }
+
   .sticky-title {
     position: fixed;
     width: 100%;
@@ -36,15 +42,19 @@ page-account-about-ibt {
     padding-top: 20.012px;
     padding-top: #{constant(safe-area-inset-top)};
     padding-top: #{env(safe-area-inset-top)};
-    > * {
+
+    >* {
       flex: 1;
     }
-    > .center {
+
+    >.center {
       flex: 2;
       text-align: center;
     }
-    > .left {
+
+    >.left {
       transform: translateX(1.6vw);
+
       .back-button {
         width: 100%;
         height: 100%;
@@ -56,27 +66,28 @@ page-account-about-ibt {
       }
     }
   }
+
   .bg-img {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 3;
     width: 100vw;
-    height: 77.6vw; // 已知的图片比例
-    background-position: center top;
-    background-image: url(../assets/imgs/about-ibt/header-bg.jpg);
-    background-size: contain;
+    height: 71vw; // 已知的图片比例
+    background-position: center center;
+    background-image: url(../assets/imgs/about-ibt/header-bg.jpg),
+      linear-gradient(to bottom, rgba(#ff5e60, 0) 0%, rgba(#ff5e60, 0.1) 70%, #ff5e60 100%);
+    background-size: cover;
     background-blend-mode: lighten;
     background-repeat: no-repeat;
     color: #fff;
     overflow: hidden;
-    mask-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 1) 0%,
-      rgba(0, 0, 0, 1) 60%,
-      rgba(0, 0, 0, 0) 100%
-    );
+    // mask-image: linear-gradient(to bottom,
+    //   rgba(0, 0, 0, 1) 0%,
+    //   rgba(0, 0, 0, 1) 70%,
+    //   rgba(0, 0, 0, 0) 100%);
   }
+
   .bg-color {
     position: fixed;
     top: 0;
@@ -90,6 +101,7 @@ page-account-about-ibt {
     padding-top: #{env(safe-area-inset-top)};
     box-shadow: 0 0.2rem 0.5rem rgba(#000, 0.3);
   }
+
   .static-header {
     color: #fff;
     overflow: hidden;
@@ -101,97 +113,124 @@ page-account-about-ibt {
     // margin-top: 4rem;
     // margin-top: calc(4rem + #{constant(safe-area-inset-top)});
     // margin-top: calc(4rem + #{env(safe-area-inset-top)});
-    height: 77.6vw; // 已知的图片比例
+    height: 71vw; // 已知的图片比例
     z-index: 3;
-    background: linear-gradient(
-      to bottom,
+    background: linear-gradient(to bottom,
       transparent 0%,
-      #ff5e60 80%,
-      #ff5e60 100%
-    );
+      rgba(#ff5e60, 0.6) 60%,
+      #ff5e60 100%);
 
-    > .info-wrapper {
+    >.info-wrapper {
       text-align: center;
-      > .info {
+
+      >.info {
         transform: scale(1);
-        > .version-info {
+
+        >.version-info {
           padding: 0;
           text-align: center;
           font-size: 1.25rem;
         }
-        > .logo {
-          width: 5.6rem;
+
+        >.logo {
+          width: 6.8rem;
           margin-top: 1.5rem;
         }
-        > div {
+
+        >div {
           color: #fff;
-          padding: 1rem;
+          padding: 1.2rem;
           text-align: left;
-          font-size: 1.4rem;
+          font-size: 1.5rem;
           font-weight: lighter;
           line-height: 2rem;
         }
       }
     }
+
     .toolbar-title-ios {
       color: inherit;
     }
   }
+
   .news-list {
-    margin-top: 1rem;
+    margin-top: 1.2rem;
     background-color: #fff;
-    .flag {
-      margin-top: 0.5rem;
-      padding-left: 0.5rem;
-      padding-right: 1.5rem;
-      height: 2.5rem;
-      line-height: 3rem;
-      color: #fff;
-      background: linear-gradient(to bottom, #ff6160 0%, #fe926a 100%);
-      display: inline-block;
-      position: relative;
-      &::after {
-        content: " ";
-        position: absolute;
-        border-top: 2.5rem solid #fff;
-        border-left: 1.5rem solid transparent;
+
+    .flag-line {
+      display: block;
+
+      .flag {
+        margin-top: 1rem;
+        padding-left: 0.7rem;
+        padding-right: 2.2rem;
+        height: 3.5rem;
+        line-height: 3.5rem;
+        color: #fff;
+        background: linear-gradient(to bottom, #ff6160 0%, #fe926a 100%);
+        display: inline-block;
+        position: relative;
+        font-size: 1.6rem;
+
+        &::after {
+          content: " ";
+          position: absolute;
+          border-top: 3.5rem solid #fff;
+          border-left: 2.2rem solid transparent;
+        }
       }
     }
+
+    .ee-line {
+      height: 1rem;
+      background-color: #f2f2f2;
+    }
+
     .news-item {
-      padding: 1rem;
-      padding-bottom: 1.8rem;
+      padding: 1.2rem 1.5rem;
+      padding-bottom: 2.2rem;
       border-bottom: 1px #f2f2f2 solid;
+
       .title {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         font-weight: 600;
         color: #7b7b7b;
       }
+
       .base-info {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         color: #7b7b7b;
         font-weight: lighter;
         display: flex;
-        margin: 0.5rem 0;
-        > .author {
-          margin-left: 0.5rem;
+        padding: 0.6rem 0 0.8rem 0;
+
+        >* {
+          margin-right: 0.7rem;
         }
       }
+
       .cover {
         font-size: 0;
         max-width: 100%;
+        max-height: 21rem;
+        overflow: hidden;
         box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
-        > iframe {
+
+        >iframe {
           max-width: 100%;
           max-height: fit-content;
         }
+
         & video {
           width: 100%;
         }
       }
     }
   }
+
   .footer {
-    padding-bottom: 1rem;
+    padding-top: 1.8rem;
+    padding-bottom: 1.5rem;
     color: #fff;
     background-image: url(../assets/imgs/about-ibt/footer-bg.jpg);
     background-size: cover;
@@ -199,18 +238,33 @@ page-account-about-ibt {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-weight: lighter;
+
     ali-icon {
-      font-size: 2.6rem;
-      margin-top: 1.5rem;
       &[name="ifm-youjian"] {
         font-size: 3rem;
+        margin-bottom: 0.5rem;
+      }
+
+      &[name="ifm-shequ"] {
+        font-size: 2.6rem;
+        margin-top: 1.7rem;
       }
     }
-    a {
+
+    .link-line {
       color: inherit;
       text-decoration: none;
       margin: 0;
       padding: 0.6rem 0;
+      width: 100%;
+      display: flex;
+
+      >.label {
+        width: 39%;
+        padding-right: 0.8rem;
+        text-align: right;
+      }
     }
   }
 }

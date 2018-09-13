@@ -52,20 +52,23 @@ page-custom-dialog {
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
+      padding-top: 1.7rem;
       > .icon {
         flex: 1;
         font-size: 5.6rem;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
+        padding-bottom: 1rem;
         &.error {
           > ali-icon {
             margin-top: auto;
             .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #ff5a5a 0%, #fc9f7a 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
+              // color: transparent;
+              // background: linear-gradient(bottom, #ff5a5a 0%, #fc9f7a 100%);
+              // -webkit-background-clip: text !important;
+              // background-clip: text !important;
+              color: #ff5a5a;
             }
           }
         }
@@ -73,10 +76,11 @@ page-custom-dialog {
           > ali-icon {
             margin-top: auto;
             .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #ffcd4a 0%, #fba656 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
+              // color: transparent;
+              // background: linear-gradient(bottom, #ffcd4a 0%, #fba656 100%);
+              // -webkit-background-clip: text !important;
+              // background-clip: text !important;
+              color: #ffcd4a;
             }
           }
         }
@@ -84,10 +88,11 @@ page-custom-dialog {
           > ali-icon {
             margin-top: auto;
             .ifmicon::before {
-              color: transparent;
-              background: linear-gradient(bottom, #3de0da 0%, #c3d97b 100%);
-              -webkit-background-clip: text !important;
-              background-clip: text !important;
+              // color: transparent;
+              // background: linear-gradient(bottom, #3de0da 0%, #c3d97b 100%);
+              // -webkit-background-clip: text !important;
+              // background-clip: text !important;
+              color: #3de0da;
             }
           }
         }
@@ -100,21 +105,23 @@ page-custom-dialog {
         align-items: center;
         color: #787878;
         text-align: center;
-        padding-top: 1.7rem;
         padding-bottom: 1rem;
+        padding-left: 1.7rem;
+        padding-right: 1.7rem;
         > .title {
           padding: 0 0.5rem;
           padding-bottom: 0.5rem;
-          color: #333;
           font-size: 1.8rem;
-          font-weight: 600;
+          // font-weight: 600;
         }
         .sub-title {
           padding: 0 0.5rem;
         }
         .message {
-          padding: 1rem 1.5rem;
+          padding: 1rem 0rem;
           line-height: 2rem;
+          text-align: left;
+          color: #333;
         }
       }
       > .buttons {
@@ -123,18 +130,21 @@ page-custom-dialog {
         background-size: 2px;
         background-size: 1px 1px;
         background-repeat: repeat-x;
-        height: 4rem;
+        height: 4.92rem;
         display: flex;
         flex-direction: row;
         > button {
           flex: 1;
           height: 100%;
-          line-height: 4rem;
+          line-height: 4.92rem;
           text-align: center;
           background-color: transparent;
 
-          font-size: 1.4rem;
+          font-size: 1.55rem;
           margin: 0;
+          &.cancel {
+            color: #666;
+          }
           &.ok {
             background-color: #ff6769;
             color: #fff;

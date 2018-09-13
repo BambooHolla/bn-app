@@ -9,13 +9,14 @@ import {
   NgZone,
 } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-// import {
-//   BrowserAnimationsModule,
-//   NoopAnimationsModule,
-// } from "@angular/platform-browser/animations";
+import {
+  BrowserAnimationsModule,
+  // NoopAnimationsModule,
+} from "@angular/platform-browser/animations";
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner";
 import { Camera } from "@ionic-native/camera";
+import { Device } from "@ionic-native/device";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
@@ -24,24 +25,40 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { Screenshot } from "@ionic-native/screenshot";
 import { SocialSharing } from "@ionic-native/social-sharing";
 import { FileTransfer } from "@ionic-native/file-transfer";
+import { ThemeableBrowser } from "@ionic-native/themeable-browser";
 import { Network } from "@ionic-native/network";
 import { NetworkInterface } from "@ionic-native/network-interface";
 import { File } from "@ionic-native/file";
 import { FileOpener } from "@ionic-native/file-opener";
 import { LocalNotifications } from "@ionic-native/local-notifications";
 import { FingerprintAIO } from "./native/fingerprint-aio";
+import { EmailComposer } from "@ionic-native/email-composer";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { ColorPickerModule } from 'ngx-color-picker';
 import {
-  IonicApp,
+  MatFormFieldModule,
+  MatInputModule,
+  MatAutocompleteModule,
+  MatMenuModule,
+  MatGridListModule,
+  MatButtonModule,
+  MatIconModule,
+  MatChipsModule,
+} from "@angular/material";
+import {
   IonicErrorHandler,
   IonicModule,
   DeepLinkConfigToken,
   Config,
   UrlSerializer,
   App,
+  IonicApp,
 } from "ionic-angular";
+// import { IonicApp } from "ionic-angular/components/app/app-root";
+// import { ClickBlock } from "ionic-angular/components/app/click-block";
+// import { OverlayPortal } from "ionic-angular/components/app/overlay-portal";
 import { setupPreloading } from "ionic-angular/util/module-loader";
 import {
   ModuleLoader,
@@ -73,6 +90,7 @@ import { BenefitServiceProvider } from "../providers/benefit-service/benefit-ser
 import { UserInfoProvider } from "../providers/user-info/user-info";
 
 // 预加载页面
+import { UserAgreementPage } from "../pages/user-agreement/user-agreement";
 import { CustomDialogPage } from "../pages/custom-dialog/custom-dialog";
 import { TutorialPage } from "../pages/tutorial/tutorial";
 import { SignInAndSignUpPage } from "../pages/sign-in-and-sign-up/sign-in-and-sign-up";
@@ -98,11 +116,15 @@ import { VotePreRoundIncomeRankingComponent } from "../components/vote-pre-round
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { DbCacheProvider } from "../providers/db-cache/db-cache";
 import { VoucherServiceProvider } from "../providers/voucher-service/voucher-service";
+import { LocalContactProvider } from "../providers/local-contact/local-contact";
+import { AssetsServiceProvider } from "../providers/assets-service/assets-service";
+import { BlockchainStoreProvider } from '../providers/blockchain-store/blockchain-store';
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
 export function customDeepLinkConfig(deepLinkConfig) {
   const static_links = [
+    { component: UserAgreementPage, name: "user-agreement" },
     { component: CustomDialogPage, name: "custom-dialog" },
     { component: TutorialPage, name: "tutorial" },
     { component: TabsPage, name: "tabs" },
@@ -116,7 +138,7 @@ export function customDeepLinkConfig(deepLinkConfig) {
   if (deepLinkConfig && deepLinkConfig.links) {
     const static_links_name_set = new Set(static_links.map(link => link.name));
     deepLinkConfig.links = deepLinkConfig.links.filter(
-      link => !static_links_name_set.has(link.name as string),
+      link => !static_links_name_set.has(link.name as string)
     );
     deepLinkConfig.links.push(...static_links);
   }
@@ -125,6 +147,7 @@ export function customDeepLinkConfig(deepLinkConfig) {
 
 const pages = [
   MyApp,
+  UserAgreementPage,
   CustomDialogPage,
   TutorialPage,
   SignInAndSignUpPage,
@@ -144,10 +167,16 @@ const heightLevelModules = [
 ];
 
 @NgModule({
-  declarations: [...pages, ...heightLevelModules],
+  declarations: [
+    ...pages,
+    ...heightLevelModules,
+    // IonicApp,
+    // ClickBlock,
+    // OverlayPortal,
+  ],
   imports: [
     BrowserModule,
-    // BrowserAnimationsModule,
+    BrowserAnimationsModule,
     // NoopAnimationsModule,
     HttpClientModule,
     HttpModule,
@@ -169,7 +198,7 @@ const heightLevelModules = [
       autoFocusAssist: false,
       statusbarPadding: true,
       swipeBackEnabled: false,
-      preloadModules: true,
+      preloadModules: false,
       // tabsHideOnSubPages: true,// 这个有BUG，不要用。
     }),
     ComponentsModule,
@@ -177,6 +206,14 @@ const heightLevelModules = [
     PipesModule,
     MomentModule,
     VirtualScrollModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatMenuModule,
+    MatGridListModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: pages,
@@ -184,6 +221,7 @@ const heightLevelModules = [
     AndroidPermissions,
     BarcodeScanner,
     Camera,
+    Device,
     SplashScreen,
     Keyboard,
     Toast,
@@ -192,12 +230,14 @@ const heightLevelModules = [
     Screenshot,
     SocialSharing,
     FileTransfer,
+    ThemeableBrowser,
     Network,
     NetworkInterface,
     File,
     FileOpener,
     LocalNotifications,
     FingerprintAIO,
+    EmailComposer,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AppFetchProvider,
@@ -225,6 +265,9 @@ const heightLevelModules = [
     },
     DbCacheProvider,
     VoucherServiceProvider,
+    LocalContactProvider,
+    AssetsServiceProvider,
+    BlockchainStoreProvider,
   ],
 })
 export class AppModule {}

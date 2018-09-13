@@ -1,23 +1,27 @@
 page-account-news-detail {
   > .header {
     @extend .header-no-border;
+    .toolbar-title {
+      color: transparent;
+    }
   }
   .news-wrapper {
     color: #7c7c7c;
     > .title {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
+      line-height: 3.2rem;
       font-weight: bold;
     }
     > .author {
       text-align: center;
     }
     > .public-time {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
     }
     > .embed {
       font-size: 0;
       max-width: 100%;
-      box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0.6rem 1.7rem rgba(0, 0, 0, 0.3);
       > iframe {
         max-width: 100%;
         max-height: fit-content;
@@ -25,10 +29,16 @@ page-account-news-detail {
     }
     > .news-content {
       > p {
-        text-indent: 2rem;
+        text-indent: 2em;
+        line-height: 3rem;
+        font-size: 1.5rem;
       }
       > img {
         box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.3);
+      }
+      > .image-alt {
+        text-align: center;
+        margin: 0.5rem 0 1rem 0;
       }
     }
   }

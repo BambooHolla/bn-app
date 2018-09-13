@@ -1,0 +1,21 @@
+page-account-tag-detail {
+	@extend .header-no-border;
+	.label.divider {
+		height: 4rem;
+		background-color: #eee;
+		color: #666;
+		font-size: 1.45rem;
+		line-height: 5rem;
+		padding: 0 1rem;
+	}
+	.mat-container{
+		padding: 0 1rem;
+		height: 5rem;
+	}
+	.mat-chip-list-wrapper{
+		padding: 0.5rem 1rem;
+		button[mat-icon-button]{
+			margin: 0 0.5rem;
+		}
+	}
+}

@@ -1,4 +1,11 @@
-import { Component, Optional, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  Optional,
+  ViewChild,
+  ElementRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 import {
   IonicPage,
@@ -37,7 +44,7 @@ export function versionToNumber(version: string) {
   res += (parseInt(vcodes[0]) || 0) * 100000;
   res += (parseInt(vcodes[1]) || 0) * 1000;
   res += parseInt(vcodes[2]) || 0;
-  const last_info = vcodes[2].split("-");
+  const last_info = vcodes[2].split(/[-\.]/);
   res += (parseInt(last_info[1]) || 0) * 0.0001;
   return res;
 }
@@ -46,6 +53,7 @@ export function versionToNumber(version: string) {
 @Component({
   selector: "page-version-update-dialog",
   templateUrl: "version-update-dialog.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VersionUpdateDialogPage extends FirstLevelPage {
   constructor(
@@ -56,10 +64,11 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
     public file: File,
     public fileOpener: FileOpener,
     public sanitizer: DomSanitizer,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams);
   }
-  version_info!: LATEST_VERSION_INFO;
+  @VersionUpdateDialogPage.markForCheck version_info!: LATEST_VERSION_INFO;
   @VersionUpdateDialogPage.willEnter
   initData() {
     this.version_info = this.navParams.get("version_info");
@@ -74,7 +83,7 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
         () => {
           this.fileTransfer && this.fileTransfer.abort();
           this.viewCtrl.dismiss();
-        },
+        }
       );
     } else {
       this.viewCtrl.dismiss();
@@ -98,7 +107,8 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
     return res;
   }
   fileTransfer?: FileTransferObject;
-  isDownloading = false;
+  @VersionUpdateDialogPage.markForCheck isDownloading = false;
+  @VersionUpdateDialogPage.markForCheck
   download_progress: SafeStyle = "--progress:0%";
   @asyncCtrlGenerator.error("@@UPDATE_APK_FAIL")
   async androidUpadate() {
@@ -110,16 +120,16 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       // fileTransfer.
 
       this.download_progress = this.sanitizer.bypassSecurityTrustStyle(
-        "--progress:0%",
+        "--progress:0%"
       );
       this.fileTransfer.onProgress(e => {
         this.download_progress = this.sanitizer.bypassSecurityTrustStyle(
-          `--progress:${(e.loaded / e.total) * 100}%`,
+          `--progress:${(e.loaded / e.total) * 100}%`
         );
       });
       const entry = await this.fileTransfer.download(
         apk_url,
-        this.file.dataDirectory + filename,
+        this.file.dataDirectory + filename
       );
       this.fileTransfer = undefined;
       this.isDownloading = false;
@@ -127,7 +137,7 @@ export class VersionUpdateDialogPage extends FirstLevelPage {
       console.log("download complete: " + entry.toURL());
       await this.fileOpener.open(
         entry.toURL(),
-        "application/vnd.android.package-archive",
+        "application/vnd.android.package-archive"
       );
     } finally {
       this.isDownloading = false;

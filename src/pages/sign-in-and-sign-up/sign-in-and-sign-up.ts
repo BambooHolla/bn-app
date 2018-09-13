@@ -21,7 +21,7 @@ import { MyApp } from "../../app/app.component";
 // } from "./sign-in-and-sign-up.animations";
 import { MainPage } from "../pages";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
-import plumin from "plumin.js";
+import { SocialSharing } from "@ionic-native/social-sharing";
 
 // @IonicPage({ name: "sign-in-and-sign-up" })
 @Component({
@@ -40,7 +40,8 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     public blockService: BlockServiceProvider,
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer,
-    public peerService: PeerServiceProvider,
+    public socialSharing: SocialSharing,
+    public peerService: PeerServiceProvider
   ) {
     super(navCtrl, navParams);
   }
@@ -75,6 +76,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     pwd: "",
     remember_pwd: true,
   };
+  is_agree_user_agreement = false;
   pwd_by_register = "";
   _ture_pwd = "";
   pwd_textarea_height = "";
@@ -107,25 +109,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       this.autoReHeightPWDTextArea();
     });
   }
-  pwd_font_char_map = new Map();
-  pwd_font = (() => {
-    // const canvas_ele = document.createElement("canvas");
-    // canvas_ele.style.display = "none";
-    // document.body.appendChild(canvas_ele);
-    plumin.setup({
-      width: 1024,
-      height: 1024,
-    });
 
-    return new plumin.Font({
-      familyName: "PWD",
-      ascender: 800,
-      descender: -200,
-    });
-  })();
-  hiddenPwd() {
-    this.generatePWDFont();
-  }
   font_name: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("PWD");
   @ViewChild("fontCalc") fontCalcEle?: ElementRef;
   calcFontWidth(c): number {
@@ -135,72 +119,6 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       return ele.getBoundingClientRect().width;
     }
     return 0;
-  }
-  generatePWDFont() {
-    const { pwd_font_char_map } = this;
-    const pwd_str = this.formData.pwd;
-    const new_char_list: any[] = [];
-    for (var i = 0; i < pwd_str.length; i += 1) {
-      const char = pwd_str[i];
-      if (pwd_font_char_map.has(char)) {
-        continue;
-      }
-      const char_width = this.calcFontWidth(char);
-      if (/\s/.test(char)) {
-        continue;
-      }
-      if (!char_width) {
-        // 可能有回车符号之类的不可见符号
-        continue;
-      }
-      const char_g = new plumin.Glyph({
-        name: "PWD:" + char,
-        unicode: char,
-        advanceWidth: 76.57 * char_width, //536,
-      });
-
-      const shape = new plumin.Path.Ellipse({
-        point: [50, 0],
-        size: [436, 510],
-      });
-      char_g.addContour(shape);
-      new_char_list.push(char_g);
-      pwd_font_char_map.set(char, char_g);
-    }
-    // if (new_char_list.length) {
-    //   // const font_name =
-    //   //   "PWD-" +
-    //   //   Date.now()
-    //   //     .toString(36)
-    //   //     .substr(2);
-    //   // this.font_name = this.domSanitizer.bypassSecurityTrustStyle(font_name);
-    //   // const pwd_font = new plumin.Font({
-    //   //   familyName: font_name,
-    //   //   ascender: 800,
-    //   //   descender: -200,
-    //   // });
-    //   const font_name = "PWD";
-    //   const { pwd_font } = this;
-    //   pwd_font.addGlyphs(new_char_list);
-    //   pwd_font.updateOTCommands();
-    //   pwd_font.addToFonts(undefined, font_name, true);
-    // }
-    const font_name =
-      "PWD-" +
-      Date.now()
-        .toString(36)
-        .substr(2);
-    this.font_name = this.domSanitizer.bypassSecurityTrustStyle(font_name);
-    const pwd_font = new plumin.Font({
-      familyName: font_name,
-      ascender: 800,
-      descender: -200,
-    });
-    this.pwd_font = pwd_font;
-
-    pwd_font.addGlyphs([...pwd_font_char_map.values()]);
-    pwd_font.updateOTCommands();
-    pwd_font.addToFonts(undefined, font_name, true);
   }
 
   page_status = "login";
@@ -212,10 +130,24 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     return this.formData.pwd;
   }
   @asyncCtrlGenerator.error(() =>
-    SignInAndSignUpPage.getTranslate("LOGIN_ERROR"),
+    SignInAndSignUpPage.getTranslate("LOGIN_ERROR")
   )
-  // @asyncCtrlGenerator.loading(() => SignInAndSignUpPage.getTranslate("LOGINNG"))
+  // @asyncCtrlGenerator.loading("@@LOGINNG")
   async doLogin() {
+    if (!this.is_agree_user_agreement) {
+      this.openUserAgreementPage({ auto_login: true });
+      return;
+    }
+    if (this.formData.pwd.length < 24) {
+      const res = await this.waitTipDialogConfirm("@@PWD_TOO_SHORT_TIP", {
+        true_text: "@@GO_GENERATOR_NEW_PWD",
+        false_text: "@@KEEP_USE_SHORT_PWD",
+      });
+      if (res) {
+        this.gotoRegister();
+        return;
+      }
+    }
     if (
       this.pwd_by_register === this.formData.pwd &&
       (await this.waitTipDialogConfirm("@@LOGIN_PWD_TIP", {
@@ -223,24 +155,16 @@ export class SignInAndSignUpPage extends FirstLevelPage {
         false_text: "@@ALREADY_SAVED",
       }))
     ) {
-      await this.navigatorClipboard.writeText(this.formData.pwd);
-      this.toastCtrl
-        .create({
-          message: this.getTranslateSync(
-            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD",
-          ),
-          duration: 2000,
-        })
-        .present();
-      return;
+      await this.copy(this.pwd_by_register);
+      return await this.shareToSocial();
     }
     const result = await this.loginService.doLogin(
       this.formData.pwd.trim(),
-      this.formData.remember_pwd,
+      this.formData.remember_pwd
     );
     if (result) {
       // this.routeTo("scan-nodes");
-      await this.myapp.openPage(MainPage, undefined, null);
+      await this.myapp.openPage(MainPage, undefined, null /*"@@LOGINNG"*/);
     }
   }
   gotoRegister() {
@@ -249,7 +173,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   get canDoRegister() {
     return true; //this.allHaveValues(this.formData);
   }
-
+  @asyncCtrlGenerator.single()
   async doRegister() {
     // // let peers = await this.peerService.getAllPeers();
     // let sortPeer = await this.peerService.sortPeers();
@@ -268,28 +192,44 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     }
     let passphrase = this.loginService.generateNewPassphrase(params);
     this.gotoLogin();
-    this.formData.pwd = passphrase;
+    // 不自动填充。放入到剪切板中
+    // this.formData.pwd = passphrase;
+    // this.show_pwd = true;
     this.pwd_by_register = passphrase;
-    this.show_pwd = true;
-    this.hiddenPwd();
+    await this.copy(passphrase);
+
     this.platform.raf(() => {
       this.autoReHeightPWDTextArea(true);
     });
     if (
       await this.waitTipDialogConfirm("@@RGISTER_PWD_TIP", {
-        true_text: "@@COPY_NOW",
+        true_text: "@@SAVE_NOW",
         false_text: "@@CANCEL_COPY",
       })
     ) {
-      await this.navigatorClipboard.writeText(this.formData.pwd);
-      this.toastCtrl
-        .create({
-          message: this.getTranslateSync(
-            "YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD",
-          ),
-          duration: 2000,
-        })
-        .present();
+      return await this.shareToSocial();
     }
+  }
+
+  /*打开用户协议*/
+  openUserAgreementPage(params?: { auto_login?: boolean }) {
+    const model = this.modalCtrl.create("user-agreement");
+    model.onWillDismiss(data => {
+      this.is_agree_user_agreement = data;
+      if (this.is_agree_user_agreement && params && params.auto_login) {
+        this.doLogin();
+      }
+    });
+    model.present();
+  }
+  async copy(text) {
+    await this.navigatorClipboard.writeText(text);
+    await this.showToast(
+      this.getTranslateSync("YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"),
+      2000
+    );
+  }
+  shareToSocial() {
+    return this.socialSharing.share(this.pwd_by_register);
   }
 }

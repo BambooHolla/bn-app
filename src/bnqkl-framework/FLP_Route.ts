@@ -8,12 +8,14 @@ import {
 import { asyncCtrlGenerator } from "./Decorator";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { PAGE_STATUS } from "./const";
+import { fileInputEleFactory } from "./helper";
 
 export class FLP_Route extends FLP_Lifecycle {
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     super();
   }
   _navCtrlPush(path: string, params?: any, opts?: NavOptions, done?: any) {
+    sessionStorage.setItem("CURRENT_PAGE", path);
     // opts = Object.assign({animation: 'common-transition', direction: 'forward'}, opts);
     return this.navCtrl.push(path, params, opts, done);
   }
@@ -51,7 +53,7 @@ export class FLP_Route extends FLP_Lifecycle {
   finishJob(
     remove_view_after_finish: boolean = this.navParams.get("auto_return") ||
       this.navParams.get("remove_view_after_finish"),
-    time: number = this.navParams.get("auto_return_time"),
+    time: number = this.navParams.get("auto_return_time")
   ) {
     this.navParams.data["is_finish_job"] = true;
     if (remove_view_after_finish) {
@@ -67,10 +69,12 @@ export class FLP_Route extends FLP_Lifecycle {
               id: viewCtrl.id,
               data: this._job_res,
             });
+          } else {
+            viewCtrl.dismiss(this._job_res);
           }
         } else {
           console.warn(
-            "使用remove_view_after_finish必须注入viewCtrl: ViewController对象",
+            "使用remove_view_after_finish必须注入viewCtrl: ViewController对象"
           );
           this.PAGE_STATUS === PAGE_STATUS.DID_ENTER && this.navCtrl.pop();
         }
@@ -99,8 +103,8 @@ export class FLP_Route extends FLP_Lifecycle {
     "hide_jump_loading",
     {
       showBackdrop: false,
-      cssClass: "can-tap",
-    },
+      cssClass: "can-tap blockchain-loading",
+    }
   )
   @asyncCtrlGenerator.error(FLP_Route.jump_error_title)
   async routeTo(path: string, params?: any, opts?: any, force = false) {
@@ -119,7 +123,7 @@ export class FLP_Route extends FLP_Lifecycle {
         this,
         path,
         params,
-        opts,
+        opts
       );
       if (checkInfo.preventDefault) {
         console.log("页面发生重定向");
@@ -148,7 +152,7 @@ export class FLP_Route extends FLP_Lifecycle {
     match: string | string[] | RouteToBeforeCheck_Match,
     checker: RouteToBeforeCheck_Checker,
     weight = 0,
-    name?: string,
+    name?: string
   ) {
     if (typeof match === "string") {
       const match_path = match;
@@ -171,7 +175,7 @@ export class FLP_Route extends FLP_Lifecycle {
     self: FLP_Route,
     path: string,
     params?: any,
-    opts?: any,
+    opts?: any
   ) {
     const to_next_params = {};
     let preventDefault = false;
@@ -225,7 +229,7 @@ export class FLP_Route extends FLP_Lifecycle {
       auto_close_when_redirect?: boolean;
       navbar_color?: string;
       after_nav_pop?: () => void;
-    },
+    }
   ) {
     // this.redirect_url = this.sanitizer.bypassSecurityTrustResourceUrl(redirect_url);
     if (localStorage.getItem("disabled-iframe")) {
@@ -245,8 +249,8 @@ export class FLP_Route extends FLP_Lifecycle {
             // 在第三方页面进行再跳转的时候，强制关闭页面
             auto_close_when_redirect: true,
           },
-          options,
-        ),
+          options
+        )
       )
       .present();
   }
@@ -282,9 +286,9 @@ FLP_Route.registerRouteToBeforeCheck(
           text: await self.getTranslate(QRCODE_GET_WAY.FromPicture),
           handler() {
             // 必须把触发函数写在click里头，不然安全角度来说，是无法正常触发的
-            inputEle = document.createElement("input");
-            inputEle.type = "file";
-            inputEle.accept = "image/*";
+            const inputEle = fileInputEleFactory("qrcodePicker");
+            inputEle.value = "";
+
             const clickEvent = new MouseEvent("click", {
               view: window,
               bubbles: true,
@@ -357,7 +361,22 @@ FLP_Route.registerRouteToBeforeCheck(
     return true;
   },
   0,
-  "询问用户是否要从相册选择图像进行二维码扫描",
+  "询问用户是否要从相册选择图像进行二维码扫描"
+);
+FLP_Route.registerRouteToBeforeCheck(
+  ["assets-issuing-assets"],
+  async (self, to_next_params, { path, params, opts }) => {
+    // self._navCtrlPush('assets-guide',{
+    //   auto_return:true
+    // })
+    const guideModal = self.modalCtrl.create("assets-guide");
+    guideModal.present();
+    return !(await new Promise(resolve => {
+      guideModal.onWillDismiss(resolve);
+    }));
+  },
+  0,
+  "引导用户进入资产发行说明页面"
 );
 
 type RouteToBeforeCheck = {
@@ -369,7 +388,7 @@ type RouteToBeforeCheck = {
 type RouteToBeforeCheck_Match = (
   path: string,
   params?: any,
-  opts?: any,
+  opts?: any
 ) => boolean;
 type RouteToBeforeCheck_Checker = (
   self: FLP_Route,
@@ -378,5 +397,5 @@ type RouteToBeforeCheck_Checker = (
     path: string;
     params?: any;
     opts?: any;
-  },
+  }
 ) => Promise<undefined | boolean> | undefined | boolean;

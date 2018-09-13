@@ -95,7 +95,7 @@ export default class Cursor extends EventEmitter {
       doc => {
         docs.push(doc);
       },
-      error => cb(error, docs),
+      error => cb(error, docs)
     );
   }
 

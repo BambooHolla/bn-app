@@ -1,39 +1,112 @@
+<!-- 这个页面已经没有再维护了 -->
 <ion-header>
   <ion-navbar color="white">
-    <ion-title>{{'ACCOUNT-CONTACT-DETAIL'|translate}}</ion-title>
+    <ion-title>
+      <!-- {{'ACCOUNT-CONTACT-DETAIL'|translate}} -->
+      {{mainname||('ACCOUNT-CONTACT-DETAIL'|translate)}}
+    </ion-title>
+    <ion-buttons *ngIf="!checking_is_my_contact&&!hide_navbar_tools" right>
+      <ng-container *ngIf="is_my_contact;else addContact">
+        <button (click)="goToEditContact()" (press)="tryRemarkAllContacts()">
+          <ali-icon name="ifm-bianji"></ali-icon>
+        </button>
+      </ng-container>
+      <ng-template #addContact>
+        <button (click)="addToMyContacts()">
+          <ali-icon name="ifm-guanzhu2"></ali-icon>
+        </button>
+      </ng-template>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 <ion-content>
   <div class="common-list">
-    <div class="base-info">
-      <div class="main-name" *ngIf="mainname">{{mainname}}</div>
-      <div class="address">
-        <ali-icon name="ifm-account-detail">{{contact?.address}}</ali-icon>
+    <div class="base-info" (click)="tryShowAccountBalanceDetail()">
+      <div class="address" [click-to-copy]="contact?.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}">
+        <ali-icon name="ifm-account-detail"></ali-icon>
+        {{contact?.address}}
       </div>
-      <div class="nick-name" *ngIf="nickname">{{nickname}}</div>
     </div>
     <div class="remark-info">
+      <ng-container *ngIf="is_show_extend_info">
+        <div class="extend-info line">
+          <div class="label">{{'BALANCE'|translate}}</div>
+          {{extend_info?.balance|amountEuler|number:'1.8-8'}}
+        </div>
+        <div class="extend-info line">
+          <div class="label">{{'VOTE_INCOME'|translate}}</div>
+          {{extend_info?.votingReward|amountEuler|number:'1.8-8'}}
+        </div>
+        <div class="extend-info line">
+          <div class="label">{{'TRANSACTION_FEES'|translate}}</div>
+          {{extend_info?.paidFee|amountEuler|number:'1.8-8'}}
+        </div>
+      </ng-container>
+      <div class="nickname line" *ngIf="username">
+        <div class="label">{{'USERNAME'|translate}}</div>
+        {{username}}
+      </div>
       <div class="phones" *ngIf="contact?.phones?.length">
         <ali-icon name="ifm-phone"></ali-icon>
         <div class="phone-item" *ngFor="let phone of contact.phones">
           <a [href]="'tel:'+phone">{{phone}}</a>
-          <span class="split">/</span>
+          <span class="split"></span>
         </div>
       </div>
-      <div class="tags" *ngIf="contact?.tags?.length">
-      	<div class="tag-item" *ngFor="let tag of contact.tags">{{tag}}</div>
+      <div class="tags" *ngIf="contact_tag_names.length">
+        <ali-icon name="ifm-biaoqian"></ali-icon>
+        <div class="tag-item" *ngFor="let tag of contact_tag_names">
+          <span class="inner">{{tag}}</span>
+        </div>
       </div>
       <div class="remark-image" *ngIf="contact?.image">
-      	<img [src]="contact.image">
+        <img [src]="contact.image">
       </div>
       <div class="remark-text" *ngIf="contact?.remark">
-      	<div class="label">{{'REMARK_TEXT_LABEL'|translate}}</div>
-      	<div class="text">{{contact.remark}}</div>
+        <!-- <div class="text"> -->
+        <div class="label">{{'REMARK_TEXT_LABEL'|translate}} :</div>{{contact.remark}}
+        <!-- </div> -->
       </div>
     </div>
     <div class="divider"></div>
-    <div class="tran-logs">
-    	<div class="title"></div>
+    <div class="tran-logs common-list">
+      <div class="title">
+        <ali-icon name="ifm-tran-history"></ali-icon>
+        {{'TRANSACTION_LOGS'|translate}}
+      </div>
+      <div class="tran-item common-item" *ngFor="let tran of transaction_list;trackBy:listTrackBy" (click)="goToTransactionDetail(tran)">
+        <div class="left">
+          <div class="tran-type">
+            {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
+          </div>
+          <div class="create-time">
+            {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+          </div>
+        </div>
+        <div class="right">
+          <div class="from-to">
+            <div class="sender" [innerHTML]="tran.senderName||(tran.senderId|mask:'@address':contact?.address)"></div>
+            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+              <ali-icon name="ifm-chain-right-arrow"></ali-icon>
+              <div class="recipient" [innerHTML]="tran.recipientName||(tran.recipientId|mask:'@address':contact?.address)"></div>
+            </ng-container>
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+            {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+          </div>
+          <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
+            - {{tran?.fee|amountEuler|number:"1.8-8"}}
+          </div>
+        </div>
+      </div>
+      <div class="empty-list" *ngIf="transaction_list.length==0&&transaction_config.loading==false">
+        <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST
+    '|translate">
+        <div class="message">{{'CONTACT_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>
+      </div>
+      <ion-infinite-scroll (ionInfinite)="$event.waitFor(getMoreTransactionLogs())" [enabled]="transaction_config.has_more">
+        <ion-infinite-scroll-content [loadingText]="'LOADING_MOREC_CONTACT_TRANSACTION_LIST'|translate"></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </div>
   </div>
 </ion-content>

@@ -39,7 +39,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
   drawTransaction(v: TransactionModel): Promise<Blob> {
     // 将任务进行排队
     this._render_task_lock = Promise.resolve(this._render_task_lock).then(() =>
-      this._drawTransaction(v),
+      this._drawTransaction(v)
     );
     return this._render_task_lock;
   }
@@ -115,12 +115,12 @@ class OfflineTransactionTicketDrawer extends AniBase {
 
       const username = new PIXI.Text(
         this.usernameToString(
-          transaction.senderUsername || transaction.senderId,
+          transaction.senderUsername || transaction.senderId
         ),
         {
           fill: 0x2d90ab,
           fontSize,
-        },
+        }
       );
 
       const timeFontSize = fontSize * 0.7;
@@ -132,10 +132,10 @@ class OfflineTransactionTicketDrawer extends AniBase {
         {
           fill: 0x2d90ab,
           fontSize: timeFontSize,
-        },
+        }
       );
       const maxHeight = Math.max(
-        ...[label, username, clock_icon, time].map(item => item.height),
+        ...[label, username, clock_icon, time].map(item => item.height)
       );
 
       // 开始布局
@@ -205,7 +205,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
           {
             fontSize: label_fontSize,
             fill: 0x2d90ab,
-          },
+          }
         );
         label.x = baseSpan;
         tran_line_x_offset = -label.width;
@@ -227,7 +227,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
 
       ///
       const max_width = Math.max(
-        ...[banner, amount_line, tran_line].map(item => item.width),
+        ...[banner, amount_line, tran_line].map(item => item.width)
       );
       banner.x = max_width / 2 - banner.width / 2;
       amount_line.x = max_width / 2 - amount_line.width / 2;
@@ -249,7 +249,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
         {
           fontSize,
           fill: 0xffffff,
-        },
+        }
       );
       label.x = baseSpan;
       remark.addChild(label);
@@ -257,7 +257,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
       const formatedRemark = this.remarkToString(
         transaction.remark,
         fontSize,
-        W - label.width - baseSpan * 4,
+        W - label.width - baseSpan * 4
       );
       const text = new PIXI.Text(formatedRemark, {
         fontSize,
@@ -312,7 +312,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
   remarkToString(
     remark: string | undefined,
     fontSize: number,
-    maxWidth: number,
+    maxWidth: number
   ) {
     if (!remark) {
       return "";
@@ -357,7 +357,7 @@ export class OfflineTransactionTicketComponent extends OfflineTransactionTicketD
     if (v && this.mode === "canvas") {
       console.log("draw tick", v);
       this.drawTransaction(
-        v,
+        v
       ); /*.then(blob => {
 				this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
 					URL.createObjectURL(blob),

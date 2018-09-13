@@ -44,10 +44,10 @@ page-chain-block-detail {
         &.extend-data {
           color: #7c7c7c;
           height: auto;
-          min-height: 3.6rem;
-          padding-top: 0.8rem;
-          padding-bottom: 0.8rem;
-          display: block;
+          min-height: 4.92rem;
+          padding-top: 1.765vw;
+          display: flex;
+          align-items: flex-start;
           &.show-all {
             display: block;
             .right {
@@ -70,7 +70,8 @@ page-chain-block-detail {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 3rem;
+            width: 100%;
+            height: 8.69vw;
             font-size: 1.45rem;
             > .left {
               display: flex;
@@ -115,12 +116,29 @@ page-chain-block-detail {
     }
     > .header {
       padding: 0 1.2rem 0 2rem;
-      height: 4.5rem;
+      height: 4.92rem;
       color: #fff;
       background: linear-gradient(to bottom, #9af5fc 0%, #9adef0 100%);
       font-weight: lighter;
       ali-icon {
-        margin-right: 0.5rem;
+        margin-right: 1rem;
+        font-size: 1.5rem;
+      }
+      > .line {
+        .left {
+          align-items: flex-start;
+          flex-direction: column;
+          ali-icon {
+            margin-right: 0.5rem;
+          }
+          > .label {
+            display: flex;
+            align-items: center;
+          }
+          > .address {
+            padding-top: 0.2rem;
+          }
+        }
       }
       > .address {
         padding-top: 0.2rem;
@@ -129,30 +147,31 @@ page-chain-block-detail {
     > .content {
       > .line {
         background-color: #fff;
-        padding: 0 1.8rem;
+        padding: 0 2rem;
       }
       .reward,
       .trans_num {
         margin-top: 1rem;
         margin-bottom: 0.5rem;
-        height: 5rem;
+        // height: 5rem;
         display: flex;
         align-items: center;
         justify-content: center;
 
         flex-direction: column;
         > .value {
-          font-size: 1.9rem;
+          font-size: 2rem;
           font-weight: 600;
           color: #7b7b7b;
+          font-weight: 500;
         }
         > .title {
           background: linear-gradient(to bottom, #63d8f8 0%, #69efe6 100%);
           font-weight: bolder;
-          font-size: 1.5rem;
+          font-size: 1.6rem;
           @extend .clip-text;
           ali-icon {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-right: 0.3rem;
             > .ifmicon::before {
               background: linear-gradient(to bottom, #63d8f8 0%, #69efe6 100%);
@@ -174,7 +193,7 @@ page-chain-block-detail {
           flex-grow: 1;
           word-break: break-all;
           text-align: right;
-          font-size: 1.3rem;
+          font-size: 1.4rem;
         }
       }
 
@@ -182,17 +201,19 @@ page-chain-block-detail {
       > .confirm-num,
       > .fee,
       > .block-id {
-        min-height: 3.6rem;
+        min-height: 12.22vw;
+        display: flex;
+        align-items: center;
         box-sizing: border-box;
         padding-top: 0.8rem;
         padding-bottom: 0.8rem;
         margin-bottom: 1px;
         color: #7c7c7c;
-        font-size: 1.45rem;
+        font-size: 1.5rem;
         ali-icon {
           /* font-weight: ; */
           font-size: 1.6rem;
-          margin-right: 0.6rem;
+          margin-right: 0.7rem;
         }
       }
     }
@@ -210,7 +231,7 @@ page-chain-block-detail {
       flex-grow: 0;
       flex-shrink: 0;
       background: linear-gradient(to bottom, #9af5fc 0%, #9adef0 100%);
-      height: 3.2rem;
+      height: 4.92rem * 0.8;
       color: #fff;
       padding: 0 2rem;
       font-size: 1.4rem;
@@ -247,11 +268,11 @@ page-chain-block-detail {
 
       > .item {
         width: 100%;
-        height: 5rem;
+        min-height: 4.92rem;
         border-bottom: 0.55px solid #e5e5e5;
         flex-shrink: 0;
         flex-grow: 0;
-        padding: 0 2rem;
+        padding: 0.6rem 2rem;
         display: flex;
         align-items: center;
         font-size: 1.35rem;
@@ -290,6 +311,11 @@ page-chain-block-detail {
         .amount {
           color: #505050;
           font-weight: 500;
+          .unit {
+            font-size: 1.1rem;
+            padding-left: 0.5rem;
+            font-weight: lighter;
+          }
         }
       }
       > .empty-list {

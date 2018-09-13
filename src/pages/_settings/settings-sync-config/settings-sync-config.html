@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{'SETTINGS-SYNC-CONFIG'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="common-list">
+    <div class="common-item">
+      <div class="left">{{'SYNC_BLOCKS'|translate}}</div>
+      <div class="right">
+        <ion-toggle class="left" [(ngModel)]="appSetting.share_settings.enable_sync_progress_blocks"></ion-toggle>
+      </div>
+    </div>
+    <div class="common-item disabled">
+      <div class="left">{{'SYNC_TRANSACTIONS'|translate}}</div>
+      <div class="right">
+        <ion-toggle class="left" disabled [(ngModel)]="appSetting.share_settings.enable_sync_progress_transactions"></ion-toggle>
+      </div>
+    </div>
+    <div class="common-item disabled">
+      <div class="left">{{'SYNC_EQUITYS'|translate}}</div>
+      <div class="right">
+        <ion-toggle class="left" disabled [(ngModel)]="appSetting.share_settings.enable_sync_progress_equitys"></ion-toggle>
+      </div>
+    </div>
+  </div>
+</ion-content>

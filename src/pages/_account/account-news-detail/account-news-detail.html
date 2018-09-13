@@ -21,6 +21,9 @@
           <ng-container *ngSwitchCase="'p'">
             <p [innerHTML]="c.content"></p>
           </ng-container>
+          <ng-container *ngSwitchCase="'image-alt'">
+            <div class="image-alt" [innerHTML]="c.content"></div>
+          </ng-container>
         </ng-container>
       </ng-container>
     </div>

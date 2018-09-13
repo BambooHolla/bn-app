@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{'ACCOUNT-MY-EXPORT-LOCAL-CONTACTS'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ng-container *ngIf="!is_exporting;else Exporting">
+    <kjua-qrcode (click)="tryShowHiddenButtons()" class="qrcode" [text]="export_data" [size]="600" fill="#000" [rounded]="80"></kjua-qrcode>
+  </ng-container>
+  <div class="common-form" *ngIf="is_show_hidden_buttons">
+  	<div class="buttons">
+  		<button (click)="tryCopyText()">导出到剪切板</button>
+  		<button (click)="tryImportText()">从剪切板导入</button>
+  	</div>
+  </div>
+</ion-content>

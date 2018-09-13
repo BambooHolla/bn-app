@@ -10,7 +10,7 @@ import remove from "./remove";
 export default class Collection {
   /** <strong>Note:</strong> Do not instantiate directly. */
   _indexes = new Set<string>();
-  constructor(private _db, private _name) {}
+  constructor(public _db: import("./db").default, public _name) {}
 
   /**
    * The name of the collection.

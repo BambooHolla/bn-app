@@ -1,0 +1,37 @@
+page-account-add-local-contact {
+  @extend .header-no-border;
+  .scroll-content {
+    background-color: #eeeeee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .common-form {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    .right {
+      padding-right: 1rem;
+      ali-icon[name="ifm-sousuo"] {
+        font-size: 2.4rem;
+      }
+    }
+    .input-container {
+      input {
+        &::-webkit-input-placeholder {
+          color: #acacac;
+        }
+      }
+    }
+  }
+  .account-address {
+    padding: 0 1.4rem;
+    font-size: 1.3rem;
+    color: #7b7b7b;
+    display: flex;
+    align-items: center;
+    .prefix {
+      flex-shrink: 0;
+      flex-grow: 0;
+    }
+  }
+}

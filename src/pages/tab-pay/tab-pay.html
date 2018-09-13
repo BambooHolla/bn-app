@@ -9,33 +9,103 @@
     <button class="tool-item qr-scan" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
       <ali-icon name="ifm-scan"></ali-icon>
     </button>
-    <button class="tool-item contact-book" (click)="routeTo('pay-select-my-contacts',{auto_return:true,mode:'select-address'})">
+    <button class="tool-item contact-book" (click)="routeTo('pay-select-my-local-contacts',{auto_return:true,mode:'select-address'})">
       <ali-icon name="ifm-tongxunlu"></ali-icon>
     </button>
     <button class="tool-item ibt" (click)="routeTo('pay-receive')">
       <ali-icon name="ifm-IBT"></ali-icon>
     </button>
   </div>
-  <div class="transfer">
-    <div class="input-container">
+  <div class="transfer" [class.freezed]="userInfo.isFreezed" (click)="freezeWarn()">
+    <div class="input-container address">
       <ali-icon class="left" name="ifm-account-detail"></ali-icon>
-      <input type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />
-      <button class="right" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
+      <input [disabled]="userInfo.isFreezed" type="text" [(ngModel)]="formData.transfer_address" set-input-status="transfer_address" placeholder="{{'PLEASE_INPUT_ADDRESS' | translate}}" />
+      <button [disabled]="userInfo.isFreezed" class="right" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
         <ali-icon name="ifm-scan"></ali-icon>
       </button>
     </div>
-    <div class="input-container">
+    <div class="input-container amount">
       <ali-icon class="left" name="ifm-amount"></ali-icon>
-      <input type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" [watch-input-keys]="['transfer_fee']" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
+      <input [disabled]="userInfo.isFreezed" type="number" [(ngModel)]="formData.transfer_amount" set-input-status="transfer_amount" [watch-input-keys]="['transfer_fee']" placeholder="{{'PLEASE_INPUT_AMOUNT' | translate}}" />
     </div>
-    <div class="input-container">
+    <!-- <div class="input-container">
       <ali-icon class="left" name="ifm-duihua"></ali-icon>
       <input type="text" [(ngModel)]="formData.transfer_mark" set-input-status="transfer_mark" placeholder="{{'PLEASE_MARK_THE_TRANSACTION' | translate}}" disabled />
+    </div> -->
+    <div class="input-container assets" (click)="toggleAssetsSelectPanel()">
+      <div class="assets-item selected-assets" [class.open-panel]="is_assets_select_panel_open" [class.loading]="assets_page_info.loading">
+        <div class="left">
+          <div class="assets-logo-shape-wrapper">
+            <div class="assets-logo-shape">
+              <img [src]="selected_assets.logo_safe_url" alt="LOGO" />
+            </div>
+          </div>
+          <div class="abbreviation">{{selected_assets.abbreviation}}</div>
+        </div>
+        <div class="right">
+          <div class="balance">
+            {{amountViewer(selected_assets.hodingAssets|amountEuler|number:'1.8-8')}}
+            <span class="unit">{{selected_assets.abbreviation}}</span>
+          </div>
+          <div class="panel-arrow">
+            <ali-icon class="arrow" name="ifm-arrow-to-right"></ali-icon>
+            <ali-icon class="loading ani-rotate-45deg" name="ifm-loading"></ali-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="assets-select-panel-overlayer android" [class.show]="is_assets_select_panel_open" [class.android]="isAndroid" [class.ios]="isIOS" (click)="tryCloseAssetsSelectPanel($event)">
+      <div class="assets-select-panel-wrapper">
+        <!-- (scroll)="tryLoadMoreAssetsList($event)" -->
+        <div class="assets-select-scroll">
+          <div class="assets-select-panel">
+            <ng-container *ngFor="let assets of selectable_assets_list;trackBy:commonTrackBy('abbreviation')">
+              <div class="assets-item assets-item-table-cell" (click)="selectAssets(assets)" *ngIf="assets.abbreviation!=this.selected_assets.abbreviation">
+                <div class="assets-logo-shape-wrapper">
+                  <div class="assets-logo-shape">
+                    <img [src]="assets.logo_safe_url" alt="LOGO" />
+                  </div>
+                </div>
+                <div class="abbreviation">{{assets.abbreviation}}</div>
+                <div class="balance">
+                  <div class="text">
+                    {{amountViewer(assets.hodingAssets|amountEuler|number:'1.8-8')}}
+                  </div>
+                </div>
+                <span class="unit">{{assets.abbreviation}}</span>
+              </div>
+            </ng-container>
+            <div class="no-assets" [class.loading]="assets_page_info.loading" *ngIf="selectable_assets_list.length<=1">
+              <div class="no-own">
+                <div class="no-assets-img"></div>
+                <i>{{'NO_ASSETS'|translate}}</i>
+              </div>
+              <div class="loading">
+                <span>{{'LOADING_ASSETS'|translate}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="android-shadow-fix-layer">
+        <!-- *ngIf="isAndroid" -->
+        <div class="assets-select-scroll">
+          <div class="assets-select-panel">
+            <ng-container *ngFor="let assets of selectable_assets_list;trackBy:commonTrackBy('abbreviation')">
+              <div class="assets-item" *ngIf="assets.abbreviation!=this.selected_assets.abbreviation">
+              </div>
+            </ng-container>
+            <div class="no-assets" [class.loading]="assets_page_info.loading" *ngIf="selectable_assets_list.length<=1">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="fee" (click)="setTransferFee()">
       <ali-icon class="left" name="ifm-info"></ali-icon>
       <span class="value">{{formData.transfer_fee|number:'1.8-8'}}</span>
-      <div class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div>
+      <span class="unit">IBT</span>
+      <div *ngIf="selected_assets!=ibt_assets" class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div>
     </div>
     <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()" (un-submit)="helpSubmit($event)">{{'SUBMIT_TRANSFER' | translate}}</button>
   </div>
@@ -46,14 +116,13 @@
       <ali-icon class="right" name="ifm-arrow-dot-dot"></ali-icon>
     </div>
     <ion-content class="log-list">
-      <!-- <ion-refresher (ionRefresh)="loadRollOutLogs($event)">
-        <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新转出记录……"></ion-refresher-content>
-      </ion-refresher> -->
       <div class="log-item" *ngFor="let log of roll_out_logs;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail',{transaction:log})">
-        <!-- <div class="create-time">{{log.create_time|amLocal:localName|amTimeAgo}}</div> -->
         <div class="create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         <div class="address" [innerHTML]="log.recipientId|mask:'@address'"></div>
-        <div class="amount">{{amountViewer(log.amount|amountEuler|number:'1.8-8')}}</div>
+        <div class="amount">
+          {{amountViewer(log.amount|amountEuler|number:'1.8-8')}}
+          <span class="unit">{{log.assetType||'IBT'}}</span>
+        </div>
       </div>
       <div class="empty" *ngIf="!roll_out_config.loading&&roll_out_logs.length==0">
         <i>{{'NO_OUT_COME_RECORED' | translate}}</i>
@@ -64,6 +133,6 @@
     </ion-content>
   </div>
   <div class="button-bg">
-    <chain-mesh [auto-start]="true"></chain-mesh>
+    <div class="chain-mesh"></div>
   </div>
 </ion-content>

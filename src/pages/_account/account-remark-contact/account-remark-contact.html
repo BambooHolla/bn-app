@@ -3,19 +3,61 @@
     <ion-title>{{'ACCOUNT-REMARK-CONTACT'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content>
-  <div class="common-form common-list">
-    <div class="input-container">
-      <input type="text" [placeholder]="'REMAKR_NICKNAME'|translate" />
+<ion-content #content>
+  <div class="common-form common-list remark-form">
+    <div class="divider bg-color"></div>
+    <div class="input-container nickname">
+      <div class="left">{{'REMAKR_NICKNAME'|translate}}</div>
+      <input type="text" [(ngModel)]="formData.nickname" maxlength="56" />
       <div class="right">
-        <button>
+        <button class="icon-button" (click)="clearNickName()">
+          <ali-icon name="ifm-reset"></ali-icon>
+        </button>
+      </div>
+    </div>
+    <div class="divider bg-color"></div>
+    <div class="common-item tags" (click)="goToTagsEditor()">
+      <ng-container *ngIf="formData?.tags.length;else tagEmptyPlaceholder">
+        <div class="left">
+          <div class="tag-item" *ngFor="let tag of formData?.tags">
+            <span class="inner">{{tag}}</span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #tagEmptyPlaceholder>
+        <div class="left empty-tags-placeholer">
+          {{'CLASSIFY_CONTACTS_BY_TAG'|translate}}
+        </div>
+      </ng-template>
+      <div class="right">
+        <button class="icon-button">
+          <ali-icon name="ifm-arrow-to-right"></ali-icon>
+        </button>
+      </div>
+    </div>
+    <div class="divider bg-color"></div>
+    <div class="input-container phone-item" *ngFor="let phone of formData?.phones; let i = index">
+      <input type="tel" [(ngModel)]="phone.value" (ngModelChange)="onPhoneItemChanged(i)" [placeholder]="'ADD_REMARK_PHONE_NUMBER'|translate">
+      <div class="right">
+        <button class="icon-button" [disabled]="i==formData.phones.length-1" (click)="removePhoneItem(i)">
           <ali-icon name="ifm-guanbi"></ali-icon>
         </button>
       </div>
     </div>
-    <div class="divider"></div>
-    <div class="common-item">
-      <div class="left">{{'CLASSIFY_CONTACTS_BY_TAG'|translate}}</div>
+    <div class="divider bg-color"></div>
+    <div class="input-container extends-remark">
+      <textarea #remarkTextArea [(ngModel)]="formData.remark" (ngModelChange)="autoResizeRemarkTextArea()" [placeholder]="'ADD_MORE_INFORMATION_REMARKS'|translate" maxlength="360"></textarea>
     </div>
+    <!-- TODO:图片备注功能
+    <div class="input-container image-remark">
+    </div> -->
+  </div>
+  <div class="footer">
+    <div class="tip">
+      <ali-icon name="ifm-info"></ali-icon>
+      {{'REMAKR_ONLY_SAVE_ON_LOCAL_TIP'|translate}}
+    </div>
+    <button class="submit-button" (click)="saveContact()">{{'SAVE'|translate}}</button>
   </div>
 </ion-content>
+<ion-footer [keyboardAttach]="content"></ion-footer>

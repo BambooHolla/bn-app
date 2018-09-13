@@ -10,6 +10,7 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import kjua from "kjua";
+import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
 
 const default_config: KjuaConfig = {
   // render method: 'canvas' or 'image'
@@ -149,7 +150,9 @@ export class KjuaQrcodeComponent implements OnInit, OnChanges {
     }
   }
 
-  constructor(public eleRef: ElementRef, public render2: Renderer2) {}
+  constructor(public eleRef: ElementRef, public render2: Renderer2) {
+    tryRegisterGlobal("kjua", this);
+  }
   ngOnInit() {
     this.update();
   }

@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-buttons *ngIf="showCloseButton">
+      <button ion-button (click)="closeModal()"><ion-icon name="close"></ion-icon></button>
+    </ion-buttons>
+    <ion-title>{{'ACCOUNT-ADD-LOCAL-CONTACT'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E6%89%8B%E5%8A%A8%E6%B7%BB%E5%8A%A0%E8%81%94%E7%B3%BB%E4%BA%BA.jpg" alt=""> -->
+  <div class="common-form">
+    <div class="input-container">
+      <div class="right">
+        <ali-icon name="ifm-sousuo"></ali-icon>
+      </div>
+      <input type="text" [placeholder]="'PLEASE_INPUT_IBT_ADDRESS'|translate" [(ngModel)]="formData.search_text">
+    </div>
+  </div>
+  <div class="account-address" [click-to-copy]="user.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}">
+    <div class="prefix">{{'MY_ACCOUNT_IBT_ADDRESS'|translate}}:</div>
+    <div class="address">{{user.address}}</div>
+  </div>
+  <button class="submit-button" (click)="addContacts()" [disabled]="adding_contact">
+    {{'CONFIRM_THEN_ADD_ADDRESS'|translate}}
+  </button>
+</ion-content>

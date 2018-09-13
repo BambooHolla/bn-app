@@ -51,7 +51,7 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
     public minService: MinServiceProvider,
     cdRef: ChangeDetectorRef,
     public transactionService: TransactionServiceProvider,
-    public blockService: BlockServiceProvider,
+    public blockService: BlockServiceProvider
   ) {
     super(cdRef);
   }
@@ -96,10 +96,10 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
     }
     const [in_tran_list, out_tran_list] = await Promise.all([
       this._loadMyIncomeTransactionsPreRound().then(
-        list => (this.income_list = list),
+        list => (this.income_list = list)
       ),
       this._loadMyPayTransactionsPreRound().then(
-        list => (this.pay_list = list),
+        list => (this.pay_list = list)
       ),
     ]);
 
@@ -115,6 +115,11 @@ export class VotePreRoundIncomeRateComponent extends VoteExtendsPanelComponent {
       page_info.pay_page,
       page_info.pay_pageSize,
       "out",
+      [
+        TransactionTypes.SEND,
+        TransactionTypes.VOTE,
+        TransactionTypes.TRANSFER_ASSET,
+      ]
     );
     page_info.pay_hasMore = pay_list.length === page_info.pay_pageSize;
     return pay_list;

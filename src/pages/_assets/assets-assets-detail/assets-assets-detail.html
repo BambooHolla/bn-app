@@ -1,0 +1,234 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title>{{assets_info?.abbreviation||('ASSETS-ASSETS-DETAIL'|translate)}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="base-info">
+    <div class="header-line">
+      <div class="assets-logo-shape-wrapper">
+        <div class="assets-logo-shape">
+          <img [src]="assets_info?.logo_safe_url" alt="LOGO">
+        </div>
+      </div>
+      <div class="abbreviation">
+        {{assets_info?.abbreviation}}
+      </div>
+      <div class="balance">
+        <text-mg [text]="assets_info?.hodingAssets|amountEuler|number:'1.8-8'" from="#74f5e1" to="#83d8f6" direction="to bottom"
+          fontSize="3.6rem"></text-mg>
+        <div class="usd" hidden>
+          ≈ 666 USD
+        </div>
+      </div>
+    </div>
+    <div class="generator-info">
+      <div class="flags">
+        <div class="flag-item normal-account">
+          <ali-icon name="ifm-shiliangzhinengduixiang5"></ali-icon>
+        </div>
+        <div class="flag-item issue-assets-account">
+          <ali-icon name="ifm-shiliangzhinengduixiang6"></ali-icon>
+        </div>
+        <div class="flag-item delegate-account" *ngIf="access_account_info?.isDelegate">
+          <ali-icon name="ifm-kuanggong"></ali-icon>
+        </div>
+      </div>
+      <div class="address">{{assets_info?.address}}</div>
+    </div>
+    <div class="assets-balance-info">
+      <div class="left">
+        <div class="line expectedissuedassets-total-amount">
+          <div class="label">
+            <span class="dot"></span> {{'EXPECTEDISSUEDASSETS_TOTAL_AMOUNT'|translate}}
+          </div>
+          <div class="value">
+            {{assets_extend_info?.total_amount|amountEuler|number:'1.8-8'}}
+            <span class="unit">{{assets_info?.abbreviation}}</span>
+          </div>
+        </div>
+        <div class="line expectedissuedassets-rest-amount">
+          <div class="label">
+            <span class="dot"></span> {{'EXPECTEDISSUEDASSETS_REST_AMOUNT'|translate}}
+          </div>
+          <div class="value">
+            {{assets_extend_info?.remain_amount|amountEuler|number:'1.8-8'}}
+            <span class="unit">{{assets_info?.abbreviation}}</span>
+          </div>
+        </div>
+        <div class="line expectedissuedassets-ransom-rate">
+          <div class="label">
+            <span class="dot"></span> {{'EXPECTEDISSUEDASSETS_RANSOM_RATE'|translate}}
+          </div>
+          <div class="value">
+            {{assets_extend_info?.used_ratio|number:'1.2-2'}}
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="date-created">
+          <div class="label">
+            <span class="dot">
+              <ali-icon name="ifm-chuangjianshijian"></ali-icon>
+            </span> {{'DATE_CREATED'|translate}}
+          </div>
+          <div class="value">
+            {{assets_info?.dateCreated|amDateFormat:"YYYY.MM.DD"}}
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <svg-chart type="circle" [circleSm]="assets_extend_info?.used_ratio" [circleMd]="assets_extend_info?.remain_ratio"
+          [circleLg]="100"></svg-chart>
+      </div>
+    </div>
+    <div class="issues-owner-list">
+      <div class="issues-owner-number">
+        <div class="label">
+          <ali-icon name="ifm-renshu"></ali-icon>
+          {{'NUMBER_OF_ISSUES_OWNER'|translate}}
+        </div>
+        <div class="value">123443</div>
+      </div>
+      <div class="issues-owner-rank-list">
+        <div class="list-title">
+          <ali-icon name="ifm-liebiao"></ali-icon>
+          {{'RANK_OF_ISSUES_OWNER'|translate}}
+        </div>
+        <virtual-scroll #vscroll class="list-container" [items]="owner_list" (update)="viewPortItems = $event" (change)="onOwnerListChange($event)">
+          <!-- <div class="list"> -->
+          <div class="item" *ngFor="let item of viewPortItems;let i = index;trackBy:commonTrackBy('address')">
+            <div class="ranking">
+              <div class="inner" [ngClass]="['rank-'+(item._ranking),'rs-'+((item._ranking).toString().length)]">{{item._ranking}}</div>
+            </div>
+            <div class="address" [innerHTML]="item.address|mask:'@address'"></div>
+            <div class="empty-space"></div>
+            <div class="balance">{{item.hodingAssets|amountEuler|number:'1.8-8'}} <span class="unit">{{assets_info.abbreviation}}</span></div>
+          </div>
+          <!-- </div> -->
+        </virtual-scroll>
+      </div>
+    </div>
+  </div>
+  <div class="ibt-info">
+    <div class="freeze-info">
+      <div class="left">
+        <div class="remaining-number-of-freezes-ibt">
+          <div class="label">
+            <text-mg [text]="'REMAINING_NUMBER_OF_FREEZES_IBT'|translate" from="#ff5a5b" to="#fca178" fontSize="1.3rem"
+              fontWeight="500"></text-mg>
+          </div>
+          <div class="value">
+            {{account_extend_info.current_balance|amountEuler|number:'1.8-8'}}
+            <span class="unit">IBT</span>
+          </div>
+        </div>
+        <div class="initial-freeze-number-of-issues">
+          <div class="label">{{'INITIAL_FREEZE_NUMBER_OF_ISSUES'|translate}}</div>
+          <div class="value">{{account_extend_info.original_frozen_ibts|amountEuler|number:'1.8-8'}} <span class="unit">IBT</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <!-- <semicircular-progress-bar [progress]="0.62" class="chart"></semicircular-progress-bar> -->
+        <svg-chart class="chart-view" type="barometer" [barometer]="account_extend_info.remain_rate"></svg-chart>
+        <div class="chart-info">
+          <div class="value">{{account_extend_info.remain_rate|number:'1.0-0'}} <span class="unit">%</span></div>
+          <div class="label">{{'REMAINING_FREEZE_RATIO'|translate}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="mining-info">
+      <div class="line mining-income-amount">
+        <div class="left">
+          <ali-icon name="ifm-shouxufei"></ali-icon>
+          <div class="label">
+            {{'VOTE_INCOME'|translate}}
+          </div>
+        </div>
+        <div class="right">
+          <div class="amount">
+            <text-mg [text]="mining_extend_info.income_amount|amountEuler|number:'1.8-8'" from="#f9a660" to="#fecc51"
+              fontSize="2.2rem" fontWeight="200"></text-mg>
+            <span class="unit">IBT</span>
+          </div>
+        </div>
+      </div>
+      <div class="line mining-growth-rate">
+        <div class="left">
+          <ali-icon name="ifm-shouyi1"></ali-icon>
+          <div class="label">
+            {{'GROWTH_RATE'|translate}}
+          </div>
+        </div>
+        <div class="right">
+          <div class="amount">
+            <text-mg [text]="mining_extend_info.growth_rate|amountEuler|number:'1.2-2'" from="#f9a660" to="#fecc51"
+              fontSize="2.2rem" fontWeight="200"></text-mg>
+            <span class="unit">%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mining-list">
+      <div class="title">
+        <div class="left">
+          <ali-icon name="ifm-shouyi2"></ali-icon>
+          {{'MINING_INCOME_LIST'|translate}}
+        </div>
+        <div class="right">
+          <ali-icon name="ifm-arrow-to-right"></ali-icon>
+        </div>
+      </div>
+      <div class="common-list">
+        <div class="common-item" *ngFor="let income_item of mining_income_list;trackBy:commonTrackBy('_id')">
+          <div class="left">
+            <div class="address" [innerHTML]="(income_item.name)?(income_item.name):(income_item.address|mask:'@address')"></div>
+            <div class="time">
+              {{income_item.timestamp|timestamp|commonDurationHumainze:localName}}
+            </div>
+          </div>
+          <div class="right">
+            <div class="amount">
+              {{income_item.amount|amountEuler|number:'1.8-8'}}
+              <span class="unit">IBT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="destory-log-list">
+    <div class="title">
+      <div class="left">
+        <ali-icon name="ifm-tuanduifenhong"></ali-icon>
+        {{'DESTORY_LOG_LIST'|translate}}
+      </div>
+      <div class="right">
+        <ali-icon name="ifm-arrow-to-right"></ali-icon>
+      </div>
+    </div>
+    <div class="common-list">
+      <div class="common-item" *ngFor="let tran of destory_log_list;trackBy:commonTrackBy('id')">
+        <div class="left">
+          <div class="address" [innerHTML]="(tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address')"></div>
+          <div class="time">
+            {{tran.timestamp|timestamp|amoment:['INIT','locale',localName]:['humanize']}}
+          </div>
+        </div>
+        <div class="right">
+          <div class="amount">
+            {{tran.amount|amountEuler|number:'1.8-8'}}
+            <span class="unit">IBT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <!-- <button mat-button class="submit-button">
+      <span class="inner">{{'DESTROY_ASSETS'|translate}}</span>
+    </button> -->
+    <button mat-button class="submit-button destroy" [disabled]="!enable_destory_assets_button" (click)="showDestoryAssetsDialog()">
+      <text-gradient [text]="'DESTROY_ASSETS'|translate" from="#3ecdeb" to="#3ce6d7" fontSize="1.9rem" fontWeight="500"></text-gradient>
+    </button>
+  </div>
+</ion-content>

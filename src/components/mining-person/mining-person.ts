@@ -86,7 +86,7 @@ export class MiningPersonComponent extends CssAniBase {
     let is_saving_power_mode = this.appSetting.settings.power_saving_mode;
     this.appSetting.on(
       "changed@setting.power_saving_mode",
-      is_saving => (is_saving_power_mode = is_saving),
+      is_saving => (is_saving_power_mode = is_saving)
     );
 
     this.addLoop(() => {

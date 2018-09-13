@@ -25,7 +25,7 @@
     <ali-icon class="tab-icon" name="ifm-web__anquan"></ali-icon>
     <div class="tab-title">{{tab3Title}}</div>
   </div>
-  <div class="tab-item" [class.selected]="selectedIndex==3" (tap)="selectTab(3)">
+  <div class="tab-item" [class.selected]="selectedIndex==3"  [class.freezed]="userInfo.isFreezed"(tap)="selectTab(3)">
     <ali-icon class="tab-icon" name="ifm-qianbao-copy"></ali-icon>
     <div class="tab-title">{{tab4Title}}</div>
   </div>

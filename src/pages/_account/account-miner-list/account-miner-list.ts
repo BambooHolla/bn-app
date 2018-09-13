@@ -6,12 +6,17 @@ import {
 } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
+import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import {
   MinServiceProvider,
   DelegateModel,
 } from "../../../providers/min-service/min-service";
+import {
+  PeerServiceProvider,
+  LocalPeerModel,
+} from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-list" })
 @Component({
@@ -26,6 +31,7 @@ export class AccountMinerListPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public minService: MinServiceProvider,
     public cdRef: ChangeDetectorRef,
+    public peerService: PeerServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -66,10 +72,32 @@ export class AccountMinerListPage extends SecondLevelPage {
   }
   @AccountMinerListPage.addEvent("ROUND:CHANGED")
   @asyncCtrlGenerator.error(() =>
-    AccountMinerListPage.getTranslate("LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR"),
+    AccountMinerListPage.getTranslate("LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR")
   )
   @asyncCtrlGenerator.retry()
   async watchRoundChange(height) {
     return this.initMinterList();
   }
+
+  // @AccountMinerListPage.markForCheck cur_peer_list: LocalPeerModel[] = [];
+  // @AccountMinerListPage.willEnter
+  // async initPeerList() {
+  //   this.cur_peer_list = this.peerService.useablePeers();
+  //   // 更新节点信息
+  //   return this.loopUpdatePeerList();
+  // }
+  // async loopUpdatePeerList() {
+  //   const min_wait_time = sleep(5000); // 至少每5秒要更新一次数据
+  //   // 更新节点信息
+  //   for await (var _pi of this.peerService.updateUseablePeersInfo(
+  //     this.cur_peer_list,
+  //   )) {
+  //     if (this.PAGE_STATUS <= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
+  //       break;
+  //     }
+  //     this.markForCheck();
+  //   }
+  //   await min_wait_time;
+  //   this.loopUpdatePeerList();
+  // }
 }

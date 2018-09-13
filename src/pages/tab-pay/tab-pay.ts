@@ -17,6 +17,12 @@ import {
   formatAndTranslateMessage,
 } from "../../bnqkl-framework/Decorator";
 import { Subscription } from "rxjs/Subscription";
+import {
+  AssetsServiceProvider,
+  AssetsModelWithLogoSafeUrl,
+  AssetsPersonalModelWithLogoSafeUrl,
+} from "../../providers/assets-service/assets-service";
+
 // import { Network } from '@ionic-native/network';
 
 import {
@@ -48,19 +54,23 @@ export class TabPayPage extends FirstLevelPage {
     public transactionService: TransactionServiceProvider,
     public voucherService: VoucherServiceProvider,
     public cdRef: ChangeDetectorRef, // public network: Network
+    public assetsService: AssetsServiceProvider
   ) {
     super(navCtrl, navParams);
     this.enable_timeago_clock = true;
     this.event.on("job-finished", async ({ id, data }) => {
       console.log("job-finished", id, data);
-      if (id === "pay-select-my-contacts") {
+      if (
+        id === "pay-select-my-contacts" ||
+        id === "pay-select-my-local-contacts"
+      ) {
         this.formData.transfer_address = data.address;
-        this.cdRef.markForCheck();
+        this.markForCheck();
       }
       if (id === "account-scan-add-contact") {
         if (typeof data === "string") {
           this.formData.transfer_address = data;
-          this.cdRef.markForCheck();
+          this.markForCheck();
         } else if (data && data.protocol === "ifmchain-transaction") {
           this.receiptOfflineTransaction(data.transaction);
         }
@@ -70,13 +80,13 @@ export class TabPayPage extends FirstLevelPage {
   formData = {
     transfer_address: "",
     transfer_amount: 0,
-    transfer_mark: "",
     transfer_fee: parseFloat(this.appSetting.settings.default_fee),
   };
+  // ignore_keys = ["transfer_amount"];
+  /*用于错误提示输入*/
   formDataKeyI18nMap = {
     transfer_address: "@@TRANSFER_ADDRESS",
     transfer_amount: "@@TRANSFER_AMOUNT",
-    transfer_mark: "@@TRANSFER_MARK",
     transfer_fee: "@@TRANSFER_FEE",
   };
   /*尝试设置交易手续费*/
@@ -84,8 +94,16 @@ export class TabPayPage extends FirstLevelPage {
   tryResetTransferFee() {
     if (this.formData.transfer_fee === 0) {
       this.formData.transfer_fee = parseFloat(
-        this.appSetting.settings.default_fee,
+        this.appSetting.settings.default_fee
       );
+    }
+  }
+
+  /**账户如果被冻结了，转账操作应该提供警告信息*/
+  @asyncCtrlGenerator.warning("")
+  async freezeWarn() {
+    if (this.userInfo.isFreezed) {
+      throw new Error("@@FREEZED_ACCOUNT_COULD_NOT_TRANFER");
     }
   }
 
@@ -94,12 +112,12 @@ export class TabPayPage extends FirstLevelPage {
     if (tran.recipientId !== this.userInfo.address) {
       throw new Error(
         this.getTranslateSync(
-          "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT",
-        ),
+          "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT"
+        )
       );
     }
     // todo: check voucher is my
-    if (navigator.onLine) {
+    if (this.webio.onLine) {
       await this.putThirdTransaction(tran);
     } else {
       await this.showReceiptToVoucher(tran);
@@ -116,8 +134,8 @@ export class TabPayPage extends FirstLevelPage {
       // 已经存在了，不重复操作
       throw new Error(
         this.getTranslateSync(
-          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET",
-        ),
+          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET"
+        )
       );
     } else {
       await this.transactionService.putThirdTransaction(tran);
@@ -126,7 +144,7 @@ export class TabPayPage extends FirstLevelPage {
       await this.voucherService.updateVoucher(voucher);
     }
 
-    this.showTransferReceipt(tran);
+    await this.showTransferReceipt(tran);
   }
 
   @asyncCtrlGenerator.error()
@@ -144,7 +162,7 @@ export class TabPayPage extends FirstLevelPage {
           cssClass: "transfer-receipt-modal",
           showBackdrop: true,
           enableBackdropDismiss: false,
-        },
+        }
       )
       .present();
   }
@@ -154,7 +172,7 @@ export class TabPayPage extends FirstLevelPage {
     const { custom_fee } = await this.getCustomFee(this.formData.transfer_fee);
     this.formData.transfer_fee = custom_fee;
     this.setInputstatus("transfer_fee", { type: "input" });
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
 
   @TabPayPage.setErrorTo("errors", "transfer_address", ["wrongAddress"])
@@ -169,9 +187,10 @@ export class TabPayPage extends FirstLevelPage {
       return { wrongAddress: "@@TRANSFER_ADDRESS_IS_MALFORMED" };
     }
   }
-  ignore_keys = ["transfer_mark"];
 
-  private _check_total_amount(user_balance: number) {
+  private _check_total_amount(
+    user_balance = parseFloat(this.selected_assets.hodingAssets) / 1e8
+  ) {
     if (user_balance === 0) {
       return {
         NoBalance: "@@USER_HAS_NO_BALANCE",
@@ -192,14 +211,13 @@ export class TabPayPage extends FirstLevelPage {
   ])
   check_transfer_amount() {
     const { transfer_amount, transfer_fee } = this.formData;
-    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
 
     if (transfer_amount < 0.00000001) {
       return {
         ErrorRange: "@@TOO_LITTLE_TRANSFER_AMOUNT",
       };
     }
-    return this._check_total_amount(user_balance);
+    // return this._check_total_amount(user_balance);
   }
   @TabPayPage.setErrorTo("errors", "transfer_fee", [
     "NoBalance",
@@ -208,7 +226,6 @@ export class TabPayPage extends FirstLevelPage {
   ])
   check_transfer_fee() {
     const { transfer_amount, transfer_fee } = this.formData;
-    const user_balance = parseFloat(this.userInfo.balance) / 1e8;
 
     if (transfer_fee < 0.00000001) {
       return {
@@ -229,42 +246,65 @@ export class TabPayPage extends FirstLevelPage {
       }
       this.appSetting.settings._is_show_first_transfer_tip = true;
     }
+    if (this._check_total_amount()) {
+      if (
+        !(await this.waitTipDialogConfirm(
+          "@@NOT_ENOUGH_BALANCE_TO_TRANGER_TIP",
+          {
+            true_text: "@@CONTINUE",
+            false_text: "@@CANCEL",
+          }
+        ))
+      ) {
+        return;
+      } else if (
+        !(await this.waitTipDialogConfirm("@@TRANSFER_WILL_BA_ABANDON_TIP", {
+          true_text: "@@CONTINUE",
+          false_text: "@@CANCEL",
+        }))
+      ) {
+        return;
+      }
+    }
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
     });
-    let online = navigator.onLine;
+    let online = this.webio.onLine;
     if (online) {
-      try {
-        const { transfer } = await this._submit(
-          password,
-          pay_pwd,
-          this.formData.transfer_fee,
-        );
-        this.resetFormData();
-        this.showTransferReceipt(transfer);
-      } catch (err) {
-        console.error("online but peer no work", err);
-        online = false;
-      }
+      // try {
+      const { transfer } = await this._submit(
+        password,
+        pay_pwd,
+        this.formData.transfer_fee
+      );
+      await this.showTransferReceipt(transfer);
+      this.resetFormData();
+      // } catch (err) {
+      //   console.error("online but peer no work", err);
+      //   online = false;
+      // }
     }
 
     if (!online) {
+      if (!this.appSetting.settings._is_first_show_offline_pay) {
+        if (!(await this.waitTipDialogConfirm("@@OFFLINE_TRANFER_TIP"))) {
+          return;
+        }
+        this.appSetting.settings._is_first_show_offline_pay = true;
+      }
       // 离线凭证
-      const {
-        transfer_address,
-        transfer_amount,
-        transfer_mark,
-      } = this.formData;
+      const { transfer_address, transfer_amount } = this.formData;
       const txData = this.transactionService.createTxData(
         transfer_address.trim(),
         transfer_amount,
         this.formData.transfer_fee,
         password,
-        pay_pwd,
+        pay_pwd
       );
       const { transaction } = await this.transactionService.createTransaction(
-        txData,
+        txData
       );
+      this.resetFormData();
       this.routeTo("pay-offline-receipt", { transaction });
     }
   }
@@ -277,19 +317,13 @@ export class TabPayPage extends FirstLevelPage {
       });
     } else {
       const message = await formatAndTranslateMessage(has_err);
-      this.toastCtrl
-        .create({
-          message,
-          duration: 2000,
-        })
-        .present();
+      this.showToast(message, 2000);
     }
   }
-  @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
-  @asyncCtrlGenerator.retry()
+  // @asyncCtrlGenerator.error("@@SHOW_TRANSFER_RECEIPT_FAIL")
   async showTransferReceipt(transfer: TransactionModel) {
     if (!transfer) {
-      throw new Error(await this.getTranslate("COULD_NOT_FOUND_TRANSFER"));
+      throw new Error(this.getTranslateSync("COULD_NOT_FOUND_TRANSFER"));
     }
     return this.modalCtrl
       .create(
@@ -301,7 +335,7 @@ export class TabPayPage extends FirstLevelPage {
           cssClass: "transfer-receipt-modal",
           showBackdrop: true,
           enableBackdropDismiss: false,
-        },
+        }
       )
       .present();
   }
@@ -309,25 +343,28 @@ export class TabPayPage extends FirstLevelPage {
   resetFormData() {
     super.resetFormData();
     delete this.formData.transfer_amount;
-    this.cdRef && this.cdRef.markForCheck();
+    this.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"),
+    TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR")
   )
   @asyncCtrlGenerator.loading(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMITING"),
+    TabPayPage.getTranslate("TRANSFER_SUBMITING")
   )
   @asyncCtrlGenerator.success(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS"),
+    TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS")
   )
   _submit(password: string, pay_pwd?: string, custom_fee?: number) {
-    const { transfer_address, transfer_amount, transfer_mark } = this.formData;
+    const { transfer_address, transfer_amount } = this.formData;
     return this.transactionService.transfer(
       transfer_address,
       transfer_amount,
       custom_fee,
       password,
       pay_pwd,
+      this.selected_assets === this.ibt_assets
+        ? undefined
+        : this.selected_assets.abbreviation
     );
   }
 
@@ -371,8 +408,7 @@ export class TabPayPage extends FirstLevelPage {
         this.userInfo.address,
         roll_out_config.page,
         roll_out_config.pageSize,
-        "out",
-        TransactionTypes.SEND,
+        "out"
       );
       roll_out_config.has_more = list.length >= roll_out_config.pageSize;
       return list;
@@ -383,10 +419,97 @@ export class TabPayPage extends FirstLevelPage {
 
   @TabPayPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(() =>
-    TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR"),
+    TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR")
   )
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {
     return this.loadRollOutLogs();
+  }
+
+  /**选中的资产*/
+  readonly ibt_assets = (() => {
+    const userInfo = this.userInfo;
+    const ibtAssets = { ...this.assetsService.ibt_assets };
+    Object.defineProperty(ibtAssets, "hodingAssets", {
+      get() {
+        return userInfo.balance;
+      },
+    });
+    // return {
+    //   ...ibtAssets,
+    //   get hodingAssets() {
+    //     return userInfo.balance;
+    //   },
+    // };
+    return ibtAssets as AssetsPersonalModelWithLogoSafeUrl;
+  })();
+  @TabPayPage.markForCheck selected_assets = this.ibt_assets;
+  @TabPayPage.markForCheck
+  selectable_assets_list: AssetsPersonalModelWithLogoSafeUrl[] = [];
+
+  /**资产选择面板是否打开*/
+  @TabPayPage.markForCheck is_assets_select_panel_open = false;
+  assets_page_info = {
+    loading: false,
+  };
+  /**打开、关闭 资产选择面板*/
+  toggleAssetsSelectPanel(state = !this.is_assets_select_panel_open) {
+    this.is_assets_select_panel_open = state;
+    if (this.is_assets_select_panel_open) {
+      this.loadAllSelectableAssetsList();
+    }
+  }
+  tryCloseAssetsSelectPanel($event: Event) {
+    const ele = $event.target as HTMLElement | null;
+    if (ele) {
+      if (ele.classList.contains("assets-select-panel-overlayer")) {
+        this.toggleAssetsSelectPanel(false);
+      }
+    }
+  }
+
+  /**查询所有资产*/
+  @asyncCtrlGenerator.single()
+  @asyncCtrlGenerator.error()
+  async loadAllSelectableAssetsList() {
+    const current_height = this.appSetting.getHeight();
+    const { assets_page_info } = this;
+    assets_page_info.loading = true;
+    try {
+      const my_all_assets = await this.assetsService.myAssetsList.getPromise();
+      this.selectable_assets_list = [this.ibt_assets, ...my_all_assets];
+    } finally {
+      assets_page_info.loading = false;
+    }
+  }
+
+  // @asyncCtrlGenerator.single()
+  // @asyncCtrlGenerator.error()
+  private _updateSelectedAssets() {
+    const { selected_assets } = this;
+    const new_selected_assets = this.selectable_assets_list.find(
+      assets => assets.abbreviation === selected_assets.abbreviation
+    );
+    this.selected_assets = new_selected_assets || this.ibt_assets;
+  }
+
+  /**选择某一个资产*/
+  selectAssets(assets: AssetsPersonalModelWithLogoSafeUrl) {
+    this.selected_assets = assets;
+    this.toggleAssetsSelectPanel();
+    this.check_transfer_amount(); // 检测金额问题
+  }
+
+  /*高度变动的时候，更新资产列表，以及选择的资产*/
+  @TabPayPage.addEvent("HEIGHT:CHANGED")
+  @asyncCtrlGenerator.error("@@ASSETS_LIST_UPDATE_ERROR")
+  @asyncCtrlGenerator.retry()
+  async refreshAssetsList(height) {
+    if (this.selected_assets !== this.ibt_assets) {
+      await this.loadAllSelectableAssetsList();
+      this._updateSelectedAssets();
+    } else if (this.is_assets_select_panel_open) {
+      await this.loadAllSelectableAssetsList();
+    }
   }
 }

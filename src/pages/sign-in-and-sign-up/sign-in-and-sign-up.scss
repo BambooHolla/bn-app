@@ -52,10 +52,10 @@ page-sign-in-and-sign-up {
   }
   @keyframes rotate-bg3 {
     0% {
-      transform: rotate(0deg);
+      transform: rotate(0deg) translateZ(0);
     }
     100% {
-      transform: rotate(360deg);
+      transform: rotate(360deg) translateZ(0);
     }
   }
   .net-select-button {
@@ -176,6 +176,28 @@ page-sign-in-and-sign-up {
       .inputer-container {
         position: relative;
         width: 72vw;
+        &.pwd-inputer-container::after {
+          margin-top: 2.5rem;
+          content: " ";
+          top: 0;
+          left: 0;
+          display: block;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            to bottom,
+            rgba(#fff, 0.5) 0%,
+            rgba(#fff, 0.5) 2%,
+            transparent 2%,
+            transparent 100%
+          );
+          background-size: 100% 4rem;
+          background-position: 0 3rem;
+          background-attachment: local;
+          z-index: 0;
+          pointer-events: none;
+        }
         .password-inputer-wrapper {
           position: relative;
           ali-icon {
@@ -227,25 +249,18 @@ page-sign-in-and-sign-up {
           display: block;
           width: 100%;
           resize: none;
-          height: 20.5rem;
+          height: 14.2em;
           min-height: 12.5rem;
           color: #fff;
           overflow-y: visible;
           font-family: "PWD";
           font-size: 1.4rem;
-          background: linear-gradient(
-            to bottom,
-            rgba(#fff, 0.5) 0%,
-            rgba(#fff, 0.5) 2%,
-            transparent 2%,
-            transparent 100%
-          );
-          background-size: 100% 4rem;
-          background-position: 0 3rem;
-          background-attachment: local;
+          position: relative;
+          background: transparent;
           // letter-spacing: 6px;
           &.show-pwd {
-            font-family: "monospace", "Menlo" !important;
+            /* font-family: "monospace", "Menlo" !important; */
+            filter: blur(3.4px) drop-shadow(1px 1px 3px #fff);
           }
           &::selection {
             // color: transparent;
@@ -303,44 +318,47 @@ page-sign-in-and-sign-up {
         color: #fff;
         font-size: 1.4rem;
         font-weight: lighter;
-        .checkbox-wrapper {
-          display: inline-block;
-          position: relative;
-          width: 1.4rem;
-          height: 1.4rem;
-          border-radius: 50%;
-          color: #0f608b;
-          transform: scale(0.8);
-          transform-origin: 100% 100%;
-          .checked {
-            background-color: rgba(#fff, 0.6);
-          }
-          > input:checked + .checked {
-            background-color: currentColor;
-          }
-
-          #remember-pwd-checkbox {
-            position: absolute;
-            transform: scale(0.9285);
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* color: #4deb99; */
-            opacity: 0;
-          }
-        }
         .label-text {
           display: inline-block;
           width: 50vw;
+          font-size: 1.4rem;
+          font-weight: lighter;
         }
       }
     }
   }
 
+  .checkbox-wrapper {
+    display: inline-block;
+    position: relative;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    color: #0f608b;
+    transform: scale(0.8);
+    transform-origin: 100% 100%;
+    .checked {
+      background-color: rgba(#fff, 0.6);
+    }
+    > input:checked + .checked {
+      background-color: currentColor;
+    }
+
+    #remember-pwd-checkbox {
+      position: absolute;
+      transform: scale(0.9285);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* color: #4deb99; */
+      opacity: 0;
+    }
+  }
+
   .submit-button {
     border-radius: 0.8rem;
-    padding: 1.2rem;
+    padding: 0 1.2rem;
     width: 75vw;
     font-size: 1.8rem;
     font-weight: bolder;
@@ -474,13 +492,33 @@ page-sign-in-and-sign-up {
     white-space: pre;
   }
 
-  .version-info {
+  .footer-content {
     position: fixed;
     bottom: 1rem;
     left: 0;
     width: 100%;
     font-size: 1.3rem;
     text-align: center;
-    color: rgba(#fff, 0.8);
+    .agree-user-aggreement {
+      align-self: flex-start;
+      margin-top: 0.3rem;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: lighter;
+      .checkbox-wrapper {
+        color: #6c9bb6;
+      }
+      .label-text {
+        display: inline-block;
+        padding: 0 2vw;
+        font-size: 1.3rem;
+        font-weight: lighter;
+        // width: 50vw;
+      }
+    }
+    .version-info {
+      color: rgba(#fff, 0.8);
+    }
   }
 }

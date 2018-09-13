@@ -15,9 +15,9 @@
     </div> -->
     <div class="login-form sign-form" [ngClass]="page_status">
       <!--  [@login-in-out]="page_status" -->
-      <div class="inputer-container">
+      <div class="inputer-container pwd-inputer-container">
         <ali-icon class="lock-icon" name="ifm-lock"></ali-icon>
-        <textarea class="password-textarear" [style.fontFamily]="font_name" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="{{'PLEASE_INPUT_PASSPHRASE' | translate}}" [(ngModel)]="formData.pwd" (ngModelChange)="hiddenPwd()" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
+        <textarea class="password-textarear" #passwordTextarear [class.show-pwd]="show_pwd" [style.height]="pwd_textarea_height" placeholder="{{'PLEASE_INPUT_PASSPHRASE' | translate}}" [(ngModel)]="formData.pwd" (ngModelChange)="autoReHeightPWDTextArea()"></textarea>
         <button class="show-pwd-button" [class.show-pwd]="show_pwd" (tap)="togglePWD()">
           <ali-icon name="ifm-jinzhi"></ali-icon>
           <ali-icon name="ifm-show-pwd"></ali-icon>
@@ -33,14 +33,16 @@
           <span class="label-text">{{'REMEMBER' | translate}}</span>
         </label>
       </div>
-      <button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
+      <button mat-button class="login-button submit-button " [disabled]="!canDoLogin" (click)="doLogin()">
         <!-- <div class="inner">立即开始</div> -->
-        <text-gradient text="{{'SIGN_IN' | translate}}" fontSize="1.8rem" [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+        <!-- [stops]="canDoLogin?[[0,'#dddddd'],[1,'#FFFFFF']]:[[0.2,'#02e5f6'],[0.8,'#01acdd']]" -->
+        <text-mg text="{{'SIGN_IN' | translate}}" fontSize="1.8rem" [from]="canDoLogin?'#dddddd':'#02e5f6'" [to]="canDoLogin?'#FFFFFF':'#01acdd'" [stops]="canDoLogin?[[0,0],[1,1]]:[[0,0],[0.2,0],[0.8,1],[1,1]]" direction="to bottom" fontWeight="600"></text-mg>
       </button>
       <div class="goto-container">
         <span class="dot"></span>
         <button class="goto-button" (click)="gotoRegister()">
-          <text-gradient text="{{'GENERATE_NEW_PASSPHRASE' | translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+          <!-- [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" -->
+          <text-mg text="{{'GENERATE_NEW_PASSPHRASE' | translate}}" fontSize="1.6rem"  direction="to bottom" fontSize="1.6rem" from="#02e5f6" to="#01acdd" [stops]="[[0,0],[0.2,0],[0.8,1],[1,1]]" fontWeight="600"></text-mg>
         </button>
         <span class="dot"></span>
       </div>
@@ -68,18 +70,31 @@
       <div class="info">
         <ali-icon name="ifm-info"></ali-icon>
         {{'INFORMATION_NOT_SAVE_IN_BLOCKCHAIN' | translate}}</div>
-      <button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">
+      <button mat-button class="register-button submit-button " [disabled]="!canDoRegister" (click)="doRegister()">
         <div class="inner">{{'GENERATE_NEW_PASSPHRASE' | translate}}</div>
       </button>
       <div class="goto-container">
         <span class="dot"></span>
         <button class="goto-button" (click)="gotoLogin()">
-          <text-gradient text="{{'ALREADY_HAS_PASSPHRASE'| translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-gradient>
+          <!-- <text-mg text="{{'ALREADY_HAS_PASSPHRASE'| translate}}" fontSize="1.6rem" [stops]="[[0.2,'#02e5f6'],[0.8,'#01acdd']]" direction="to bottom" fontWeight="600"></text-mg> -->
+          <text-mg text="{{'ALREADY_HAS_PASSPHRASE'| translate}}" fontSize="1.6rem" from="#02e5f6" to="#01acdd" [stops]="[[0,0],[0.2,0],[0.8,1],[1,1]]" direction="to bottom" fontWeight="600"></text-mg>
         </button>
         <span class="dot"></span>
       </div>
     </div>
-    <div class="version-info">v{{app_version}}</div>
+    <div class="footer-content" (click)="openUserAgreementPage()">
+      <div class="agree-user-aggreement">
+        <label for="agree-user-aggreement-checkbox" class="radio-label">
+          <span class="radio-button checkbox-wrapper">
+            <input id="agree-user-aggreement-checkbox" type="checkbox" [(ngModel)]="is_agree_user_agreement" />
+              <span class="checked"></span>
+          </span>
+          <span class="checked"></span>
+        </label>
+        <span class="label-text">{{'AGREE_TO_THE_USER_AGREEMENT' | translate}}</span>
+      </div>
+      <div class="version-info">v{{app_version}}</div>
+    </div>
   </div>
 </ion-content>
 <ion-footer>

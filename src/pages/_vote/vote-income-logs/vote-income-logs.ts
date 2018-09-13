@@ -29,7 +29,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     public minService: MinServiceProvider,
     public accountService: AccountServiceProvider,
     public benefitService: BenefitServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -48,18 +48,20 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
   };
   // @VoteIncomeLogsPage.willEnter
   @asyncCtrlGenerator.error(() =>
-    VoteIncomeLogsPage.getTranslate("LOAD_VOTE_INCOME_LIST_ERROR"),
+    VoteIncomeLogsPage.getTranslate("LOAD_VOTE_INCOME_LIST_ERROR")
   )
   async loadIncomeLogList() {
     const { income_log_list_config } = this;
     // 重置分页
     income_log_list_config.page = 1;
     const list = await this._getIncomeLogData();
-    this.income_log_list = list;
-    this.cdRef.markForCheck();
+    this.income_log_list = this.mixArrayByUnshift(this.income_log_list, list, {
+      mix_key: "height",
+    });
+    this.markForCheck();
   }
   @asyncCtrlGenerator.error(() =>
-    VoteIncomeLogsPage.getTranslate("LOAD_MORE_VOTE_INCOME_LIST_ERROR"),
+    VoteIncomeLogsPage.getTranslate("LOAD_MORE_VOTE_INCOME_LIST_ERROR")
   )
   async loadMoreIncomeLogList() {
     await new Promise(cb => setTimeout(cb, 1000));
@@ -68,7 +70,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     income_log_list_config.page += 1;
     const list = await this._getIncomeLogData();
     this.income_log_list.push(...list);
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
   private async _getIncomeLogData() {
     const { income_log_list_config } = this;
@@ -76,7 +78,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     try {
       const list = await this.benefitService.getBenefitsByPage(
         income_log_list_config.page,
-        income_log_list_config.pageSize,
+        income_log_list_config.pageSize
       );
       income_log_list_config.hasMore =
         list.length >= income_log_list_config.pageSize;
@@ -84,5 +86,9 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     } finally {
       income_log_list_config.loading = false;
     }
+  }
+
+  routeToBlockDetail(log: BenefitModel) {
+    this.routeTo("chain-block-detail", { height: log.height });
   }
 }

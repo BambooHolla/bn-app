@@ -32,10 +32,17 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
   get stops() {
     return this._stops || [[0, this.from], [1, this.to]];
   }
+  @Input("no-trim-blank") no_trim_blank = false;
   @Input("fontSize") fontSize = "1.6em";
   @Input("fontWeight") fontWeight = "normal";
   @Input("fontFamily")
-  fontFamily = ["-apple-system", "Helvetica Neue", "Roboto", "sans-serif"];
+  fontFamily = [
+    "-apple-system",
+    "SF Compact Display",
+    "Helvetica Neue",
+    "Roboto",
+    "sans-serif",
+  ];
   @Input("direction") direction = "right";
   @Input("fallbackColor") fallbackColor = "";
   constructor(private el: ElementRef) {
@@ -70,7 +77,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     this.span_text_node.textContent = this.text;
 
     textEle.style.fontSize = this.fontSize;
-    textEle.style.fontFamily = this.fontFamily.join(" ");
+    textEle.style.fontFamily = this.fontFamily as any;
     textEle.style.fontWeight = this.fontWeight;
     const { width, height } = textEle.getBoundingClientRect();
     // console.log("width, height", width, height);
@@ -87,7 +94,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
       if (this.devicePixelRatio !== 1) {
         fontSize = fontSize.replace(
           fontSize_num + "",
-          (fontSize_num *= this.devicePixelRatio) + "",
+          (fontSize_num *= this.devicePixelRatio) + ""
         );
       }
       font = font.replace(new RegExp(style_fontSize, "g"), fontSize);
@@ -105,14 +112,18 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     const wh_rate = canvas.width / canvas.height;
     const padding_height = devicePixelRatio;
     const padding_width = devicePixelRatio * wh_rate;
-    canvas.height += 2 * padding_height;
+    const canvas_base_height = canvas.height + 2 * padding_height;
+    canvas.height = Math.max(
+      canvas_base_height,
+      height * this.devicePixelRatio
+    );
     canvas.width += 2 * padding_width;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const [x0, y0, x1, y1] = TextGradientComponent.formatDirection(
       canvas.width,
       canvas.height,
-      direction,
+      direction
     );
     const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
     const stops = this.stops;
@@ -121,22 +132,24 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     });
     ctx.fillStyle = gradient;
     ctx.font = font;
-    ctx.fillText(text, padding_width, canvas.height - 2 * padding_height);
-    // 过滤掉空白
-    const bound = TextGradientComponent.trim(canvas);
-    if (
-      bound &&
-      (canvas.width !== bound.width || canvas.height !== bound.height)
-    ) {
-      const data = ctx.getImageData(
-        bound.left,
-        bound.top,
-        bound.width,
-        bound.height,
-      );
-      canvas.width = bound.width;
-      canvas.height = bound.height;
-      ctx.putImageData(data, 0, 0);
+    ctx.fillText(text, padding_width, canvas_base_height - 2 * padding_height);
+    if (!this.no_trim_blank) {
+      // 过滤掉空白
+      const bound = TextGradientComponent.trim(canvas);
+      if (
+        bound &&
+        (canvas.width !== bound.width || canvas.height !== bound.height)
+      ) {
+        const data = ctx.getImageData(
+          bound.left,
+          bound.top,
+          bound.width,
+          bound.height
+        );
+        canvas.width = bound.width;
+        canvas.height = bound.height;
+        ctx.putImageData(data, 0, 0);
+      }
     }
   }
   static formatDirection(width: number, height: number, direction: string) {
@@ -164,7 +177,7 @@ export class TextGradientComponent implements OnInit, OnChanges, OnDestroy {
     y0 = 0,
     x1 = 1,
     y1 = 1,
-    stops = [[0, "#FFF"], [1, "#000"]],
+    stops = [[0, "#FFF"], [1, "#000"]]
   ) {
     const canvas = document.createElement("canvas");
 

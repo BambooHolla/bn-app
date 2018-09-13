@@ -70,6 +70,9 @@ page-tabs {
     justify-content: center;
     position: relative;
     overflow: hidden;
+    &.freezed {
+      filter: hue-rotate(180deg);
+    }
     .tab-title {
       color: inherit !important;
       font-size: 1.2rem;

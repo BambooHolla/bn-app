@@ -1,18 +1,21 @@
 <ion-header>
-<!--   <ion-navbar color="transparent">
+  <!--   <ion-navbar color="transparent">
   <ion-title>输入密码</ion-title>
 </ion-navbar> -->
 </ion-header>
 <ion-content>
-  <div class="title">
-    <div class="label">{{'PLEASE_INPUT_TRANSACTION_FEES' | translate}}</div>
-  </div>
-  <div class="common-form">
-    <div class="input-container">
-      <input type="number" [placeholder]="'TRANSACTION_FEES' | translate" min="0.00000001" [(ngModel)]="formData.custom_fee" set-input-status="custom_fee">
+  <div class="close-bg-layer" (click)="closeDialog()"></div>
+  <div class="content-wrapper">
+    <div class="title">
+      <div class="label">{{'PLEASE_INPUT_TRANSACTION_FEES' | translate}}</div>
     </div>
+    <div class="common-form">
+      <div class="input-container">
+        <input type="number" [placeholder]="'TRANSACTION_FEES' | translate" min="0.00000001" [(ngModel)]="formData.custom_fee" set-input-status="custom_fee">
+      </div>
+    </div>
+    <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submitData()">
+      {{'OK'|translate}}
+    </button>
   </div>
-  <button class="submit-button" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submitData()">
-    {{'OK'|translate}}
-  </button>
 </ion-content>

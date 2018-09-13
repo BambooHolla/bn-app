@@ -5,19 +5,19 @@ page-account-settings {
   }
   .settings-list {
     > .divider {
-      height: 1rem;
+      height: 1.1rem;
     }
     > .item {
-      height: 4.6rem;
-      padding: 0 1.4rem;
+      height: 5.62rem;
+      padding: 0.6rem 2rem;
       background-color: #fff;
       display: flex;
       align-items: center;
       margin-bottom: 1px;
-      font-size: 1.45rem;
+      font-size: 1.55rem;
       color: #707070;
       ali-icon[name="ifm-arrow-to-right"] {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         color: #989898;
       }
       > .left {
@@ -37,8 +37,9 @@ page-account-settings {
     width: 100%;
     background: #fff;
     color: #7a7a7a;
-    height: 4.8rem;
-    font-size: 1.6rem;
+    height: 5.8rem;
+    font-size: 1.7rem;
+    font-weight: bolder;
     margin-bottom: 1rem;
   }
 }

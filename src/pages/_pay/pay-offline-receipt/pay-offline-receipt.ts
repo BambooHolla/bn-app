@@ -26,7 +26,7 @@ export class PayOfflineReceiptPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public transactionService: TransactionServiceProvider,
-    @Optional() public tabs: TabsPage,
+    @Optional() public tabs: TabsPage
   ) {
     super(navCtrl, navParams, true, tabs);
   }

@@ -5,7 +5,7 @@ export type Executor<T> = (
   // resolve: (value?: T | PromiseLike<T>) => void,
   // reject: (reason?: any) => void,
   promise_pro: PromisePro<T>,
-  current_value?: Promise<T>,
+  current_value?: Promise<T>
 ) => Promise<T>;
 
 const CONSTRUCTOR_HELPER = Promise.resolve() as Promise<any>;

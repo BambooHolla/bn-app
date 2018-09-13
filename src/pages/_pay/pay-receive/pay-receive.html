@@ -26,13 +26,13 @@
       <!-- <ion-refresher (ionRefresh)="loadReceiveLogs($event)">
         <ion-refresher-content pullingText="下拉更新列表" refreshingText="正在更新转入记录……"></ion-refresher-content>
       </ion-refresher> -->
-      <div class="log-item" *ngFor="let log of receive_logs;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail',{transaction:log})">
+      <div class="log-item" *ngFor="let tran of receive_logs;trackBy:listTrackBy" (click)="routeTo('chain-transaction-detail',{transaction:tran})">
         <div class="left">
-          <div class="title username">{{log.username}}</div>
-          <div class="sub-title create-time">{{(log.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
+          <div class="title username" [innerHTML]="amountViewer((tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address'))"></div>
+          <div class="sub-title create-time">{{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}</div>
         </div>
         <div class="right">
-          +{{amountViewer(log.amount|amountEuler|number:'1.8-8')}}
+          {{amountViewer('+'+(tran.amount|amountEuler|number:'1.8-8'))}}
         </div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreReceiveLogs())" [enabled]="receive_config.has_more">

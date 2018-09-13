@@ -11,11 +11,20 @@ import {
   Loading,
   ToastController,
   ModalController,
+  LoadingOptions,
 } from "ionic-angular";
 import { PromiseOut } from "./PromiseExtends";
-import { is_dev, tryRegisterGlobal, global } from "./helper";
+import {
+  is_dev,
+  tryRegisterGlobal,
+  global,
+  getSocketIOInstance,
+  afCtrl,
+  baseConfig,
+} from "./helper";
 export { is_dev, tryRegisterGlobal, global };
 import { getErrorFromAsyncerror, isErrorFromAsyncerror } from "./const";
+import { Toast } from "@ionic-native/toast";
 
 export class FLP_Tool {
   constructor() {}
@@ -24,6 +33,7 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
   @FLP_Tool.FromGlobal loadingCtrl!: LoadingController;
   @FLP_Tool.FromGlobal toastCtrl!: ToastController;
+  @FLP_Tool.FromGlobal toast!: Toast;
   @FLP_Tool.FromGlobal modalCtrl!: ModalController;
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
@@ -31,11 +41,66 @@ export class FLP_Tool {
   formatAndTranslateMessage = formatAndTranslateMessage;
   static formatAndTranslateMessage = formatAndTranslateMessage;
   translateMessage = translateMessage;
+  translateError = (error_msg: string) => {
+    if (error_msg.startsWith("@@")) {
+      error_msg = error_msg.substr(2);
+    }
+    return this.translate.instant(error_msg);
+  };
   static translateMessage = translateMessage;
+
+  private _is_support_input_color?: boolean;
+  get is_support_input_color() {
+    if (this._is_support_input_color === undefined) {
+      const inputEle = document.createElement("input");
+      inputEle.type = "color";
+      this._is_support_input_color = inputEle.type === "color";
+    }
+    return this._is_support_input_color;
+  }
+
+  showToast(msg: string, duration: number, position = "bottom") {
+    if ("plugins" in window && "toast" in window["plugins"]) {
+      const toast = window["toast"] as Toast;
+      Promise.resolve(msg).then(message => {
+        toast.show(String(message), duration + "", position).toPromise();
+      });
+    } else {
+      const toastCtrl: ToastController = this.toastCtrl;
+      if (!(toastCtrl instanceof ToastController)) {
+        console.warn(
+          "需要在",
+          this.constructor.name,
+          "中注入 ToastController 依赖"
+        );
+        alert(String(msg));
+      } else {
+        Promise.resolve(msg).then(message => {
+          toastCtrl
+            .create({
+              message: String(message),
+              position,
+              duration,
+            })
+            .present();
+        });
+      }
+    }
+  }
 
   _event?: EventEmitter;
   get event() {
-    return this._event || (this._event = new EventEmitter());
+    if (!this._event) {
+      const event = new EventEmitter();
+      this._event = event;
+      // 根据web的线路情况来绑定在线情况
+      ["ononline", "onoffline"].forEach(bind_io_ename => {
+        this.webio.on(bind_io_ename, (...args) => {
+          event.emit(bind_io_ename, ...args);
+        });
+      });
+    }
+    return this._event;
   }
   tryEmit(eventanme, ...args) {
     if (this._event) {
@@ -47,7 +112,7 @@ export class FLP_Tool {
   static translateError(
     target: any,
     name: string,
-    descriptor: PropertyDescriptor,
+    descriptor: PropertyDescriptor
   ) {
     const hidden_prop_name = `-G-${name}-`;
     const source_fun = descriptor.value;
@@ -81,23 +146,27 @@ export class FLP_Tool {
   static get isInCordova() {
     return window["cordova"] && !(window["cordova"] instanceof HTMLElement);
   }
+  static webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+  get webio() {
+    return FLP_Tool.webio;
+  }
   static netWorkConnection() {
-    if (navigator.onLine) {
+    if (this.webio.onLine) {
       return Promise.resolve();
     }
     return new Promise<void>(cb => {
       const once = () => {
         cb();
-        window.removeEventListener("ononline", once);
+        this.webio.off("ononline", once);
       };
-      window.addEventListener("ononline", once);
+      this.webio.on("ononline", once);
     });
   }
   netWorkConnection = FLP_Tool.netWorkConnection;
   isArrayDiff<T>(
     source_list: T[],
     target_list: T[],
-    item_parser: (item: T) => string | number,
+    item_parser: (item: T) => string | number
   ) {
     if (source_list.length !== target_list.length) {
       return true;
@@ -110,22 +179,13 @@ export class FLP_Tool {
     message: string,
     ok_handle?: Function,
     cancel_handle?: Function,
-    auto_open = true,
+    auto_open = true
   ) {
     const dialog = this.modalCtrl.create(
       "custom-dialog",
       {
         message,
         buttons: [
-          {
-            text: await this.getTranslate("CONFIRM"),
-            cssClass: "ok",
-            handler: () => {
-              if (ok_handle instanceof Function) {
-                return ok_handle();
-              }
-            },
-          },
           {
             text: await this.getTranslate("CANCEL"),
             cssClass: "cancel",
@@ -135,12 +195,21 @@ export class FLP_Tool {
               }
             },
           },
+          {
+            text: await this.getTranslate("CONFIRM"),
+            cssClass: "ok",
+            handler: () => {
+              if (ok_handle instanceof Function) {
+                return ok_handle();
+              }
+            },
+          },
         ],
       },
       {
         enterAnimation: "custom-dialog-pop-in",
         leaveAnimation: "custom-dialog-pop-out",
-      },
+      }
     );
     if (auto_open) {
       await dialog.present();
@@ -155,7 +224,7 @@ export class FLP_Tool {
       message?: string;
       buttons?: any[];
     },
-    auto_open = true,
+    auto_open = true
   ) {
     const dialog = this.modalCtrl.create("custom-dialog", data, {
       enterAnimation: "custom-dialog-pop-in",
@@ -199,7 +268,7 @@ export class FLP_Tool {
       cancel_with_error?: boolean;
       false_text?: string;
       true_text?: string;
-    } = {},
+    } = {}
   ) {
     const res = new PromiseOut<boolean>();
     this._showCustomDialog(
@@ -228,7 +297,7 @@ export class FLP_Tool {
           },
         ],
       },
-      true,
+      true
     );
     return res.promise;
   }
@@ -237,17 +306,11 @@ export class FLP_Tool {
     subTitle?: string,
     message?: string,
     buttons?: any[],
-    auto_open = true,
+    auto_open = true
   ) {
     return this._showCustomDialog(
-      {
-        title,
-        iconType: "warning",
-        subTitle,
-        message,
-        buttons,
-      },
-      auto_open,
+      { title, iconType: "warning", subTitle, message, buttons },
+      auto_open
     );
   }
   async showSuccessDialog(
@@ -255,17 +318,11 @@ export class FLP_Tool {
     subTitle?: string,
     message?: string,
     buttons?: any[],
-    auto_open = true,
+    auto_open = true
   ) {
     return this._showCustomDialog(
-      {
-        title,
-        iconType: "success",
-        subTitle,
-        message,
-        buttons,
-      },
-      auto_open,
+      { title, iconType: "success", subTitle, message, buttons },
+      auto_open
     );
   }
   showErrorDialog(
@@ -273,17 +330,11 @@ export class FLP_Tool {
     subTitle?: string,
     message?: string,
     buttons?: any[],
-    auto_open = true,
+    auto_open = true
   ) {
     return this._showCustomDialog(
-      {
-        title,
-        iconType: "error",
-        subTitle,
-        message,
-        buttons,
-      },
-      auto_open,
+      { title, iconType: "error", subTitle, message, buttons },
+      auto_open
     );
   }
   private _isIOS?: boolean;
@@ -327,6 +378,37 @@ export class FLP_Tool {
     }
     return currentLang;
   }
+  get isCN() {
+    const { localName } = this;
+    return localName == "zh-cn" || localName == "zh-tw";
+  }
+
+  private async _showCustomLoadingDialog(
+    msg,
+    opts: { auto_open?: boolean } & LoadingOptions
+  ) {
+    const dialog = this.loadingCtrl.create({
+      content: await translateMessage(msg),
+      cssClass: opts.cssClass,
+    });
+    if (opts.auto_open) {
+      dialog.present();
+    }
+    return dialog;
+  }
+  /*系统级别的加载动画*/
+  async showLogoLoading(msg, auto_open = true) {
+    this._showCustomLoadingDialog(msg, {
+      auto_open,
+      cssClass: "logo-loading",
+    });
+  }
+  showChainLoading(msg, auto_open = true) {
+    this._showCustomLoadingDialog(msg, {
+      auto_open,
+      cssClass: "blockchain-loading",
+    });
+  }
 
   /**
    * 用于管理loading对象的对象池
@@ -338,9 +420,15 @@ export class FLP_Tool {
   presented_loading_instances: Array<Loading> = [];
 
   // 页面上通用的辅助函数
-  toFixed(num: any, fix_to: number) {
+  toFixed(num: any, fix_to: number, pre_fix?: number) {
     num = parseFloat(num) || 0;
-    return num.toFixed(fix_to);
+    var res = num.toFixed(fix_to);
+    if (pre_fix) {
+      res = ("0".repeat(pre_fix - 1) + res).substr(
+        -Math.max(res.length, fix_to ? fix_to + pre_fix + 1 : pre_fix)
+      );
+    }
+    return res;
   }
   toBool(v: any) {
     if (v) {
@@ -354,7 +442,7 @@ export class FLP_Tool {
   static FromGlobal(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     if (!descriptor) {
       const hidden_prop_name = `-G-${name}-`;
@@ -374,7 +462,7 @@ export class FLP_Tool {
   static FromNavParams(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     if (!descriptor) {
       const hidden_prop_name = `-P-${name}-`;
@@ -415,71 +503,22 @@ export class FLP_Tool {
   static getTranslateSync(key: string | string[], interpolateParams?: Object) {
     return (window["translate"] as TranslateService).instant(
       key,
-      interpolateParams,
+      interpolateParams
     );
   }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
   static removeProtoArray = removeProtoArray;
-  static _raf_id_acc = 0;
-  static _raf_map = {};
-  private static _raf_register(callback) {
-    FLP_Tool._raf_map[++FLP_Tool._raf_id_acc] = callback;
-    if (FLP_Tool._cur_raf_id === null) {
-      FLP_Tool._cur_raf_id = FLP_Tool.native_raf(t => {
-        const raf_map = FLP_Tool._raf_map;
-        FLP_Tool._raf_map = {};
-        FLP_Tool._cur_raf_id = null;
-        for (var _id in raf_map) {
-          const cb = raf_map[_id];
-          try {
-            cb(t);
-          } catch (err) {
-            console.error(err);
-          }
-        }
-      });
-    }
-    return FLP_Tool._raf_id_acc;
-  }
-  private static _raf_unregister(id) {
-    delete FLP_Tool._raf_map[id];
-    var has_size = false;
-    for (var _k in FLP_Tool._raf_map) {
-      has_size = true;
-      break;
-    }
-    if (has_size && FLP_Tool._cur_raf_id !== null) {
-      FLP_Tool.native_unraf(FLP_Tool._cur_raf_id);
-      FLP_Tool._cur_raf_id = null;
-    }
-  }
-  private static _cur_raf_id: number | null = null;
-  static native_raf(callback) {
-    const raf = (
-      window["__zone_symbol__requestAnimationFrame"] ||
-      window["webkitRequestAnimationFrame"]
-    ).bind(window);
-    this.native_raf = raf;
-    return raf(callback);
-  }
-  static native_unraf(rafId) {
-    const caf = (
-      window["__zone_symbol__cancelAnimationFrame"] ||
-      window["webkitCancelAnimationFrame"]
-    ).bind(window);
-    this.native_unraf = caf;
-    return caf(rafId);
-  }
 
-  static raf(callback) {
-    return FLP_Tool._raf_register(callback);
-  }
+  static raf: typeof afCtrl.raf = afCtrl.raf.bind(afCtrl);
   raf = FLP_Tool.raf;
-  static caf(rafId) {
-    return FLP_Tool._raf_unregister(rafId);
-  }
+  static caf: typeof afCtrl.caf = afCtrl.caf.bind(afCtrl);
   caf = FLP_Tool.caf;
+
+  static toDateMS(date_arg) {
+    return new Date(date_arg).valueOf();
+  }
+  toDateMS = FLP_Tool.toDateMS;
 }
 
 export function formatAndTranslateMessage(has_error: any, self?: FLP_Tool) {
@@ -504,9 +543,9 @@ export function translateMessage(message: any, arg?: any, self?: FLP_Tool) {
   }
   return Promise.resolve(message).then(message => {
     message = "" + message;
-    if (typeof message === "string" && message.startsWith("@@")) {
-      const i18n_key = message.substr(2);
-      message = () => (self || FLP_Tool).getTranslate(i18n_key);
+    if (typeof message === "string") {
+      const i18n_key = message.startsWith("@@") ? message.substr(2) : message;
+      message = i18n_key && (() => (self || FLP_Tool).getTranslate(i18n_key));
     }
     if (message instanceof Function) {
       message = message(arg);

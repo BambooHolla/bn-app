@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-buttons>
+      <button class="modal-close-button" ion-button (click)="closeModal()"><ion-icon name="ios-arrow-back"></ion-icon></button>
+    </ion-buttons>
+    <ion-title>{{'LINKED-PEER-LIST'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="common-list linkd-peer-list">
+    <div class="row table-head">
+      <div class="item ip">
+        <ali-icon name="ifm-ip"></ali-icon>
+      </div>
+      <div class="item delay">
+        <ali-icon name="ifm-delay"></ali-icon>
+      </div>
+      <div class="item acc-flow">
+        <ali-icon name="ifm-xiazai"></ali-icon>
+      </div>
+      <div class="item acc-use-duraction">
+        <ali-icon name="ifm-shichang"></ali-icon>
+      </div>
+    </div>
+    <div class="row common-item" *ngFor="let peer of using_peer_list">
+      <div class="item ip" [innerHTML]="peer.ip|mask:'@ip'"></div>
+      <div class="item delay">{{peer.delay|number:"1.0-2"}}ms</div>
+      <div class="item acc-flow">{{peer.acc_flow|bytes}}</div>
+      <!-- <div class="item acc-use-duraction">{{peer.acc_use_duration|amDuration:'seconds'}}</div> -->
+      <div class="item acc-use-duraction">{{peer.acc_use_duration|amoment:['INIT','duration','seconds']:['locale',localName]:['humanize']}}</div>
+    </div>
+  </div>
+</ion-content>

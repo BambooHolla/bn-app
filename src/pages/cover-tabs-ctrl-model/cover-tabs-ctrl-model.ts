@@ -15,7 +15,7 @@ export class CoverTabsCtrlModelPage extends FirstLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public viewCtrl: ViewController,
+    public viewCtrl: ViewController
   ) {
     super(navCtrl, navParams);
   }
@@ -36,8 +36,8 @@ export class CoverTabsCtrlModelPage extends FirstLevelPage {
           {
             cssClass: "cover-tabs-ctrl-model",
           },
-          opts,
-        ),
+          opts
+        )
       )
       .present();
   }

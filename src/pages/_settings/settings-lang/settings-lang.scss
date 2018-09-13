@@ -10,18 +10,16 @@ page-settings-lang {
       display: flex;
       flex-direction: row;
       align-items: center;
-      padding-left: 1.2rem;
-      padding-right: 1.2rem;
       > .flag {
-        width: 2.2rem;
-        height: 2.2rem;
+        width: 3rem;
+        height: 3rem;
         border-radius: 50%;
         flex-grow: 0;
         flex-shrink: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 0.5rem;
+        margin-right: 1.1rem;
       }
       > .names {
         /* font-weight: lighter; */
@@ -30,12 +28,15 @@ page-settings-lang {
           color: #4f4f4f;
         }
         > .trans-name {
-          font-size: 1.4rem;
+          font-size: 1.2rem;
           color: #7c7c7c;
         }
       }
       > .right {
         color: #3cde7d;
+        ali-icon {
+          font-size: 1.8rem;
+        }
       }
     }
   }

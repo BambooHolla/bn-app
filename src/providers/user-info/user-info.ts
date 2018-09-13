@@ -18,6 +18,12 @@ export class UserInfoProvider extends EventEmitter {
   get balance() {
     return this._balance;
   }
+  get usd() {
+    return parseFloat(this.balance) * 50;
+  }
+  get dollar() {
+    return this.usd;
+  }
   private _address!: string;
   get address() {
     return this._address;
@@ -37,20 +43,45 @@ export class UserInfoProvider extends EventEmitter {
   get username() {
     return this._username;
   }
+  private _accountType!: number;
+  get accountType() {
+    return this._accountType;
+  }
+  get isFreezed() {
+    return this._accountType === 1;
+  }
+  get isDelegate() {
+    return !!this._userInfo.isDelegate;
+  }
+  get votingReward() {
+    return this._userInfo.votingReward;
+  }
+  get paidFee() {
+    return this._userInfo.paidFee;
+  }
   constructor(public storage: Storage) {
     super();
   }
+  TA_address = "";
+  /*数据是否来自网络*/
+  is_from_network = false;
   initUserInfo(userInfo) {
     if (!userInfo) {
       userInfo = {};
     }
     this._userInfo = userInfo;
+    this._accountType = userInfo.accountType || 0;
+    // if (this._address !== userInfo.address) {
+    //   this._password = "";
+    // }
     this._address = userInfo.address;
     this._balance = userInfo.balance;
     this._secondPublicKey = userInfo.secondPublicKey;
     this._publicKey = userInfo.publicKey;
     this._username = userInfo.username;
-    this._password = userInfo.remember ? userInfo.password : null;
+    // if ("password" in userInfo) {
+    this._password = userInfo.remember ? userInfo.password : "";
+    // }
     this.emit("changed");
   }
 }

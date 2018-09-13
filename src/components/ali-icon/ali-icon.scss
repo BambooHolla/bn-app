@@ -5,14 +5,27 @@ ali-icon {
   // vertical-align: -0.15em;
   fill: currentColor;
   color: currentColor;
+  line-height: initial;
   /* overflow: hidden; */
   > .ifmicon {
-    display: block;
-    object-fit: contain;
+    // display: block;
     position: relative;
     width: 100%;
     height: 100%;
     font-size: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &::before {
+      object-fit: contain;
+      object-position: center;
+      // position: absolute;
+      // width: 100%;
+      // height: 100%;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+    }
   }
   > svg {
     width: 100%;
@@ -48,6 +61,35 @@ ali-icon {
     > .ifmicon {
       &::before {
         background-image: url("../assets/icon/ifm-roll-out-logs.svg");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        color: transparent; /* 需要来占位不然heigth和width撑不起来 */
+      }
+    }
+  }
+  &[name="ifm-chiyouzichan"] {
+    > .ifmicon {
+      &::before {
+        background-image: url("../assets/icon/持有资产-01.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        color: transparent; /* 需要来占位不然heigth和width撑不起来 */
+      }
+    }
+  }
+  &[name="ifm-assets-market"] {
+    > .ifmicon {
+      &::before {
+        content: " ";
+        background-image: url("../assets/icon/assets-market.png");
+        background-position: center;
+        background-repeat: no-repeat;
         background-size: contain;
         width: 100%;
         height: 100%;
@@ -79,6 +121,24 @@ ali-icon {
       &::before {
         content: " ";
         background-image: url("../assets/icon/mac-address-icon.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        color: transparent; /* 需要来占位不然heigth和width撑不起来 */
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+  }
+  &[name="ifm-sync-progress"] {
+    > .ifmicon {
+      position: relative;
+      &::before {
+        content: " ";
+        background-image: url("../assets/icon/LOADING.png");
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;

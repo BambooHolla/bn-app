@@ -19,6 +19,7 @@ import {
   TransactionTypes,
   TransactionModel,
 } from "../../../providers/transaction-service/transaction-service";
+import { LocalContactProvider } from "../../../providers/local-contact/local-contact";
 
 @IonicPage({ name: "pay-receive" })
 @Component({
@@ -32,6 +33,7 @@ export class PayReceivePage extends SecondLevelPage {
     public transactionService: TransactionServiceProvider,
     @Optional() public tabs: TabsPage,
     public cdRef: ChangeDetectorRef,
+    public localContact: LocalContactProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -76,11 +78,10 @@ export class PayReceivePage extends SecondLevelPage {
         this.userInfo.address,
         receive_config.page,
         receive_config.pageSize,
-        "in",
-        TransactionTypes.SEND,
+        "in"
       );
       receive_config.has_more = list.length >= receive_config.pageSize;
-      return list;
+      return this.localContact.formatTransactionWithLoclContactNickname(list);
     } finally {
       receive_config.loading = false;
     }
@@ -89,8 +90,8 @@ export class PayReceivePage extends SecondLevelPage {
   @PayReceivePage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(() =>
     PayReceivePage.getTranslate(
-      "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK",
-    ),
+      "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK"
+    )
   )
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {

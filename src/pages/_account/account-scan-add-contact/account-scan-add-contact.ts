@@ -16,6 +16,10 @@ import {
 import { playSound, addSound } from "../../../components/sound";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
 import {
+  LocalContactProvider,
+  LocalContactModel,
+} from "../../../providers/local-contact/local-contact";
+import {
   TransactionServiceProvider,
   TransactionTypes,
   TransactionModel,
@@ -36,6 +40,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     public androidPermissions: AndroidPermissions,
     public barcodeScanner: BarcodeScanner,
     public transactionService: TransactionServiceProvider,
+    public localContact: LocalContactProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -55,7 +60,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         (this.videoDevices.indexOf(this._cur_video_device as MediaDeviceInfo) +
           1) %
           this.videoDevices.length
-      ],
+      ]
     );
   }
   private _cur_video_device?: MediaDeviceInfo;
@@ -94,7 +99,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
           deviceId: videoDevice.deviceId,
         },
         audio: false,
-      },
+      }
     ));
     // video.src = window.URL.createObjectURL(stream);
     video.srcObject = stream;
@@ -108,7 +113,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   @ViewChild("canvas") canvas!: ElementRef;
   @AccountScanAddContactPage.willEnter
   @asyncCtrlGenerator.error(() =>
-    AccountScanAddContactPage.getTranslate("SCAN_ERROR"),
+    AccountScanAddContactPage.getTranslate("SCAN_ERROR")
   )
   async openCameraMedia() {
     const image_url = this.navParams.get("image_url");
@@ -132,14 +137,14 @@ export class AccountScanAddContactPage extends SecondLevelPage {
             console.log("Has permission?", result.hasPermission);
             if (!result.hasPermission) {
               return this.androidPermissions.requestPermission(
-                this.androidPermissions.PERMISSION.CAMERA,
+                this.androidPermissions.PERMISSION.CAMERA
               );
             }
           },
           err =>
             this.androidPermissions.requestPermission(
-              this.androidPermissions.PERMISSION.CAMERA,
-            ),
+              this.androidPermissions.PERMISSION.CAMERA
+            )
         );
       // this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
     }
@@ -186,7 +191,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
           },
         ],
       } as AlertOptions;
-    },
+    }
   )
   async parseSingleImage() {
     const image_url = this.navParams.get("image_url");
@@ -229,16 +234,21 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       const protocol = res.substr(0, protocol_index);
       const handler_key = "protocol:" + protocol;
       if (handler_key in this) {
-        this[handler_key](res.substr(protocol_index + 3));
+        this[handler_key](res.substr(protocol_index + 3), res);
         return;
       }
     }
 
     const mode = this.navParams.get("mode");
-    if (mode === "try-to-add-contact") {
-      const m = this.modalCtrl.create("account-add-contact", {
+    const ADD_CONTACT_MODE_MAP = {
+      "try-to-add-contact": "account-add-contact",
+      "try-to-add-local-contact": "account-add-local-contact",
+    };
+    if (mode in ADD_CONTACT_MODE_MAP) {
+      const m = this.modalCtrl.create(ADD_CONTACT_MODE_MAP[mode], {
         address: res,
         auto_search: true,
+        auto_return: true,
         showCloseButton: true,
       });
       m.present();
@@ -286,7 +296,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   private _scanQrcodeFrame(
     source: HTMLVideoElement | HTMLImageElement,
     auto_size: boolean,
-    filter?: (res: string) => boolean,
+    filter?: (res: string) => boolean
   ) {
     const canvas = this.canvas.nativeElement as HTMLCanvasElement;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -308,7 +318,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
         (canvas.width - source_width) / 2,
         (canvas.height - source_height) / 2,
         source_width,
-        source_height,
+        source_height
       );
     } else {
       ctx.drawImage(source, 0, 0);
@@ -366,10 +376,10 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   }
 
   @asyncCtrlGenerator.error(() =>
-    AccountScanAddContactPage.getTranslate("ADD_CONTACT_ERROR"),
+    AccountScanAddContactPage.getTranslate("ADD_CONTACT_ERROR")
   )
   @asyncCtrlGenerator.success(() =>
-    AccountScanAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
+    AccountScanAddContactPage.getTranslate("ADD_CONTACT_SUCCESS")
   )
   private async _searchContacts(password, pay_pwd) {
     // 直接添加，暂时不支持搜索
@@ -377,7 +387,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     const is_success = await this.contactService.addContact(
       password,
       address,
-      pay_pwd,
+      pay_pwd
     );
     this.finishJob();
   }
@@ -390,12 +400,81 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       tran = JSON.parse(content).T;
     } catch (err) {}
     if (!tran) {
-      throw new Error("PROTOCOL_PARSE_ERROR");
+      throw new Error("@@TRANSACTION_PARSE_ERROR");
     }
     this.jobRes({
       protocol: "ifmchain-transaction",
       transaction: tran,
     });
     this.finishJob();
+  }
+
+  @asyncCtrlGenerator.error("@LOCAL_CONTACTS_IMPORT_ERROR")
+  @asyncCtrlGenerator.success("@LOCAL_CONTACTS_IMPORT_SUCCESS")
+  @asyncCtrlGenerator.success()
+  async ["protocol:ifmchain-local-contacts"](
+    content: string,
+    export_data: string
+  ) {
+    // var local_contacts: LocalContactModel[] | undefined;
+    // try {
+    //   local_contacts = JSON.parse(content).C;
+    // } catch (err) {}
+    // if (!local_contacts) {
+    //   throw new Error("@@LOCAL_CONTACTS_PARSE_ERROR");
+    // }
+    // let success_contacts: LocalContactModel[] = [];
+    // let error_contacts: LocalContactModel[] = [];
+    // let skip_contacts: LocalContactModel[] = [];
+    // if (local_contacts instanceof Array) {
+    //   const has_tags = await this.localContact.getTags();
+    //   await Promise.all(
+    //     local_contacts.map(async import_contact => {
+    //       const contact = await this.localContact.findContact(
+    //         import_contact.address,
+    //       );
+    //       if (contact) {
+    //         if (
+    //           contact.last_update_height > import_contact.last_update_height
+    //         ) {
+    //           // 略过，
+    //           skip_contacts.push(import_contact);
+    //           return;
+    //         }
+    //         import_contact._id = contact._id;
+    //       }
+    //       if (import_contact._id) {
+    //         // 更新
+    //         await this.localContact.updateLocaContact(import_contact);
+    //       } else {
+    //         // 插入
+    //         import_contact._id = await this.localContact.addLocalContact(
+    //           {
+    //             address: import_contact.address,
+    //             username: import_contact.username,
+    //           },
+    //           import_contact.tags,
+    //           import_contact.phones,
+    //           import_contact.remark,
+    //           import_contact.image,
+    //         );
+    //       }
+    //       // 添加标签
+    //       await Promise.all(
+    //         import_contact.tags.map(async tag_name => {
+    //           if (!has_tags.find(t => t.name === tag_name)) {
+    //             return this.localContact.addTag(tag_name, [import_contact._id]);
+    //           }
+    //         }),
+    //       );
+    //     }),
+    //   );
+    // }
+    const parse_result = await this.localContact.importLocalContacts(
+      export_data
+    );
+    this.jobRes(parse_result);
+    this.finishJob();
+    return parse_result;
   }
 }

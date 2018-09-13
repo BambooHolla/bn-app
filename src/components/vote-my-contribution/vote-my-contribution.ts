@@ -30,26 +30,26 @@ export class VoteMyContributionComponent extends VoteExtendsPanelComponent
   constructor(cdRef: ChangeDetectorRef) {
     super(cdRef);
     this.watch_detal_tran_num_changed = this.watch_detal_tran_num_changed.bind(
-      this,
+      this
     );
-    this.watch_contribution_traffic_changed = this.watch_contribution_traffic_changed.bind(
-      this,
+    this.watch_contribution_flow_changed = this.watch_contribution_flow_changed.bind(
+      this
     );
     this.appSetting.on(
       "changed@setting.detal_tran_num",
-      this.watch_detal_tran_num_changed,
+      this.watch_detal_tran_num_changed
     );
     this.appSetting.on(
-      "changed@setting.contribution_traffic",
-      this.watch_contribution_traffic_changed,
+      "changed@setting.contribution_flow",
+      this.watch_contribution_flow_changed
     );
   }
   watch_detal_tran_num_changed(new_v) {
     this.my_contribution.detal_tran_num = new_v;
     this.cdRef.markForCheck();
   }
-  watch_contribution_traffic_changed(new_v) {
-    this.my_contribution.contribution_traffic = new_v;
+  watch_contribution_flow_changed(new_v) {
+    this.my_contribution.contribution_flow = new_v;
     this.cdRef.markForCheck();
   }
 
@@ -58,17 +58,17 @@ export class VoteMyContributionComponent extends VoteExtendsPanelComponent
 
     this.appSetting.off(
       "changed@setting.detal_tran_num",
-      this.watch_detal_tran_num_changed,
+      this.watch_detal_tran_num_changed
     );
     this.appSetting.off(
-      "changed@setting.contribution_traffic",
-      this.watch_contribution_traffic_changed,
+      "changed@setting.contribution_flow",
+      this.watch_contribution_flow_changed
     );
   }
 
   my_contribution = {
     detal_tran_num: 0,
-    contribution_traffic: 0,
+    contribution_flow: 0,
   };
 
   async refreshBaseData() {}

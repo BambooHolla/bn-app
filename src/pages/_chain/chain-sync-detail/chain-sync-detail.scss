@@ -1,0 +1,289 @@
+page-chain-sync-detail {
+  &::before {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../assets/imgs/net-circle-gray.png");
+    background-size: 128vh 128vh;
+    background-position: center;
+    background-color: #fff;
+    opacity: 0.62;
+    z-index: 0;
+  }
+  backdrop-filter: blur(5px);
+  @extend .header-no-border;
+  > .content {
+    background: transparent;
+    > .scroll-content {
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding-bottom: 6.5rem;
+      > .progress-wrapper {
+        width: 100vw;
+        height: 85vw;
+        position: relative;
+        > .spinner {
+          position: absolute;
+          display: block;
+          top: 2vw;
+          left: 11.2vw;
+          width: 77.6vw;
+          height: 77.6vw;
+        }
+        > .sync-progress-detail {
+          position: absolute;
+          display: block;
+          top: 0.5vw;
+          right: 0;
+          width: 50%;
+          height: 20.5vw;
+          display: flex;
+          flex-direction: column;
+          padding-left: 2%;
+          font-size: 1.2rem;
+          > .item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            color: #666666;
+            .dot {
+              transform: scale(0.6);
+              display: block;
+              .l1,
+              .l2,
+              .l3 {
+                display: block;
+                border-radius: 50%;
+                background: inherit;
+                font-size: 0;
+              }
+              .l1 {
+                width: 2rem;
+                height: 2rem;
+                background: rgba(#f9a661, 0.5);
+              }
+              .l2 {
+                width: 1.5rem;
+                height: 1.5rem;
+                transform: translate(0.25rem, 0.25rem);
+                background: rgba(#f9a661, 0.5);
+              }
+              .l3 {
+                width: 1rem;
+                height: 1rem;
+                transform: translate(0.25rem, 0.25rem);
+                background: rgba(#f9a661, 1);
+              }
+            }
+            &.sync-transactions,
+            &.sync-equitys {
+              opacity: 0.6;
+            }
+            &.sync-transactions .dot {
+              .l1 {
+                background: rgba(#ff6766, 0.5);
+              }
+              .l2 {
+                background: rgba(#ff6766, 0.5);
+              }
+              .l3 {
+                background: rgba(#ff6766, 1);
+              }
+            }
+            &.sync-equitys .dot {
+              .l1 {
+                background: rgba(#3eceeb, 0.5);
+              }
+              .l2 {
+                background: rgba(#3eceeb, 0.5);
+              }
+              .l3 {
+                background: rgba(#3eceeb, 1);
+              }
+            }
+            .progress {
+              // padding-left: 1.2rem;
+              width: 5.5rem;
+              text-align: right;
+            }
+          }
+        }
+        > .general-progress {
+          position: absolute;
+          display: block;
+          top: 22.6vw;
+          left: 32.2vw;
+          width: 36vw;
+          height: 36vw;
+          color: #000;
+          text-align: center;
+          > .value {
+            padding-top: 30%;
+            font-size: 8vw;
+            font-weight: lighter;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            > .center {
+              font-weight: 500;
+            }
+            > .unit {
+              text-align: left;
+              padding-left: 1vw;
+              font-size: 3vw;
+              font-weight: 500;
+              margin-right: -3vw;
+            }
+          }
+          > .label {
+            font-size: 1.2rem;
+            padding-top: 2%;
+            font-size: 3vw;
+          }
+          &::after {
+            content: " ";
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url("../assets/imgs/net-circle-gray.png");
+            background-size: 100% 100%;
+            position: absolute;
+            z-index: -1;
+            filter: brightness(107%);
+          }
+        }
+        > .peer-num {
+          position: absolute;
+          top: 24vw;
+          right: 9vw;
+          padding: 0.6rem 1rem;
+          border-radius: 1.5rem;
+          box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.1);
+          background: #fff;
+          font-weight: bolder;
+          display: flex;
+          > .value {
+            min-width: 2rem;
+            text-align: right;
+          }
+          > .label,
+          > .value {
+            -webkit-background-clip: text !important;
+            background-clip: text;
+            color: transparent;
+            font-weight: bolder;
+            background: linear-gradient(to bottom, #3ecdeb 0%, #3ce6d7 100%);
+          }
+        }
+      }
+      > .extends-info {
+        position: fixed;
+        bottom: 24vw;
+        left: 3vw;
+        box-shadow: -0.2rem 0 2rem rgba(0, 0, 0, 0.1);
+        width: 94vw;
+        height: 52.2222vw;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 0.4rem;
+        background-image: url("../assets/imgs/tab-chain/extends-info-bg.jpg");
+        background-size: 100% 100%;
+        > .top {
+          height: 20%;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          // font-size: 1.45rem;
+          font-size: 4vw;
+          /* background: rgba(0, 0, 0, 0.4); */
+          ali-icon {
+            margin-right: 0.5rem;
+          }
+        }
+        > .center {
+          display: flex;
+          align-items: baseline;
+          line-height: 15vw;
+          justify-content: center;
+          padding-top: 3vw;
+          height: 15vw;
+          .value {
+            font-size: 10.5vw; // -webkit-background-clip: text !important; // background-clip: text; // color: transparent;
+            // font-weight: bolder;
+            // background: linear-gradient(
+            // to bottom,
+            // #f9a561 0%,
+            // #fccd51 100%
+            // );
+            /* text-shadow: 0 1vw 1vw rgba(0, 0, 0, 0.3); */
+            filter: drop-shadow(0 0.5vw 0.8vw rgba(0, 0, 0, 0.2));
+          }
+          .unit {
+            font-size: 4vw;
+            color: #666666;
+            align-self: baseline; /* padding-top: 1; */
+          }
+        }
+        > .bottom {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-top: 6.5vw;
+          > .left,
+          > .right {
+            flex: 1;
+            color: #666666;
+            > .label {
+              // font-size: 1.3rem;
+              font-size: 3.586vw;
+            }
+            > .detail {
+              padding-top: 2.2vw;
+              font-size: 6.62vw;
+            }
+          }
+          > .center {
+            flex-grow: 0;
+            width: 1px;
+            background-color: #aeaeae;
+            height: 8vw;
+          }
+        }
+      }
+      > .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        margin: 0 auto;
+        > button {
+          background: #fff;
+          margin: 2.5vw 5vw 4.5vw;
+          width: 90vw;
+          min-height: 4.5rem;
+          height: 13vw;
+          border-radius: 0.8rem;
+          box-shadow: 0rem 0rem 0.5rem rgba(0, 0, 0, 0.2),
+            0rem 0.3rem 1.5rem rgba(0, 0, 0, 0.3);
+          > .inner {
+            height: 100%;
+            font-size: 2rem;
+            font-weight: lighter;
+            -webkit-background-clip: text !important;
+            background-clip: text;
+            color: transparent;
+            font-weight: bolder;
+            background: linear-gradient(to bottom, #fdcd46 0%, #f78567 100%);
+          }
+        }
+      }
+    }
+  }
+}

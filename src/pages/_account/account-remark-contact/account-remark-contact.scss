@@ -1,2 +1,86 @@
 page-account-remark-contact {
+  > .content {
+    > .scroll-content {
+      background: #efefef;
+    }
+  }
+  .remark-form {
+    padding-bottom: 10rem;
+    background: #efefef;
+    .divider.bg-color {
+    }
+    .icon-button {
+      background-color: transparent;
+      font-size: 1.5rem;
+      color: #7b7b7b;
+      padding: 1rem 0.5rem !important;
+    }
+    > .nickname {
+      > .left {
+        padding-right: 1rem;
+        color: #7b7b7b;
+      }
+      input:focus {
+        border-bottom: 1px solid #45d0ea;
+        margin-bottom: -1px;
+      }
+    }
+    > .tags {
+      > .left {
+        flex: 1;
+        display: block;
+      }
+      &:hover {
+        background-color: #f9f9f9;
+      }
+    }
+    > .phone-item {
+      input:focus {
+        border-bottom: 1px solid #45d0ea;
+        margin-bottom: -1px;
+      }
+      .icon-button {
+        font-size: 1.8rem;
+      }
+    }
+    > .extends-remark {
+      height: auto;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      textarea {
+        min-height: 4rem;
+        padding: 0.25rem;
+        overflow: hidden;
+        width: 100%;
+        border: 0;
+        resize: none;
+        &:focus {
+          outline: 1px solid #45d0ea;
+        }
+      }
+    }
+  }
+  .scroll-content {
+    .footer {
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      bottom: 0;
+      height: 10rem;
+      background-color: rgba(#efefef, 0.62);
+      backdrop-filter: blur(5px);
+      padding: 1rem 0;
+      .tip {
+        font-size: 1.2rem;
+        font-weight: lighter;
+        color: #ff5722;
+      }
+      .submit-button {
+        flex-shrink: 0;
+      }
+    }
+  }
 }

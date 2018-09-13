@@ -15,7 +15,7 @@ export class AccountSetUsernamePage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public accountService: AccountServiceProvider,
+    public accountService: AccountServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -46,24 +46,23 @@ export class AccountSetUsernamePage extends SecondLevelPage {
 
   @asyncCtrlGenerator.error()
   async submit() {
-    const { password } = await this.getUserPassword({
+    const { password, pay_pwd } = await this.getUserPassword({
       title: "@@ACCOUNT_SET_USERNAME_TITLE",
     });
-    return this._submit(password, this.formData.transfer_fee);
+    return this._submit(password, this.formData.transfer_fee, pay_pwd);
   }
 
-  @asyncCtrlGenerator.error(() =>
-    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_ERROR"),
-  )
-  @asyncCtrlGenerator.loading(() =>
-    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMITING"),
-  )
-  @asyncCtrlGenerator.success(() =>
-    AccountSetUsernamePage.getTranslate("SET_USERNAME_SUBMIT_SUCCESS"),
-  )
-  async _submit(password: string, custom_fee?: number) {
+  @asyncCtrlGenerator.error("@@SET_USERNAME_SUBMIT_ERROR")
+  @asyncCtrlGenerator.loading("@@SET_USERNAME_SUBMITING")
+  @asyncCtrlGenerator.success("@@SET_USERNAME_SUBMIT_SUCCESS")
+  async _submit(password: string, custom_fee: number, secondSecret?: string) {
     return this.accountService
-      .changeUsername(this.formData.username, password, undefined, custom_fee)
+      .changeUsername(
+        this.formData.username,
+        password,
+        secondSecret,
+        custom_fee
+      )
       .then(() => {
         this.finishJob();
       });

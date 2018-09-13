@@ -69,10 +69,19 @@ page-account-my-transaction-list {
     }
   }
   > .content {
-    opacity: 0.4;
-    transition-duration: 0.25s;
-    &.show {
-      opacity: 1;
+    > .scroll-content {
+      > .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.4;
+        transition-duration: 0.25s;
+        &.show {
+          opacity: 1;
+        }
+      }
     }
   }
   .confimed-page {
@@ -108,73 +117,142 @@ page-account-my-transaction-list {
         z-index: -1;
         pointer-events: none;
       }
-      > .item {
-        width: 100%;
-        height: 5rem;
-        border-bottom: 0.55px solid #e5e5e5;
-        flex-shrink: 0;
-        flex-grow: 0;
-        padding: 0 2rem;
-        display: flex;
-        align-items: center;
-        font-size: 1.35rem;
-        color: #787878;
-        > .left {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-start;
-          > .from-to {
-            display: flex;
-            align-items: center;
-            ali-icon {
-              font-size: 3rem;
-              margin: 0 0.2rem;
-            }
-          }
-          > .create-time {
-            color: #b5b5b5;
-            font-size: 1.2rem;
-          }
+    }
+  }
+  .item {
+    width: 100%;
+    min-height: 5.62rem;
+    border-bottom: 0.55px solid #e5e5e5;
+    flex-shrink: 0;
+    flex-grow: 0;
+    padding: 0.6rem 2rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.35rem;
+    > .left {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    > .right {
+      height: 100%;
+      margin-left: auto;
+      align-self: flex-end;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .from-to {
+      color: #787878;
+      display: flex;
+      align-items: center;
+      ali-icon {
+        font-size: 3rem;
+        margin: 0 0.2rem;
+      }
+    }
+    .create-time {
+      color: #b5b5b5;
+      font-size: 1.2rem;
+    }
+    .tran-type {
+      color: #505050;
+    }
+    .amount {
+      color: #505050;
+      font-weight: 500;
+      .unit {
+        font-size: 1.1rem;
+        padding-left: 0.5rem;
+        font-weight: lighter;
+      }
+    }
+  }
+
+  ion-item-sliding {
+    &.removed {
+      animation-name: "fadeOutLeftAndRemove";
+      animation-duration: 500ms;
+      animation-timing-function: linear;
+      animation-fill-mode: forwards;
+      animation-direction: alternate;
+      @keyframes fadeOutLeftAndRemove {
+        0% {
+          opacity: 1;
+          /* transform: translate3d(0, 0, 0); */
         }
-        > .right {
-          height: 100%;
-          margin-left: auto;
-          align-self: flex-end;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: flex-end;
-          color: #505050;
-          > .amount {
-            color: #505050;
-            font-weight: 500;
-          }
+        50% {
+          height: 5.9rem;
+        }
+
+        99% {
+          opacity: 0;
+          transform: translate3d(-100%, 0, 0);
+        }
+        100% {
+          opacity: 0;
+          transform: translate3d(-100%, 0, 0);
+          display: none;
+          height: 0;
         }
       }
-      > .empty-list {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        > img {
-          margin-top: 2rem;
-          margin-bottom: 2rem;
-          opacity: 0.6;
-          height: 20vh;
-          width: 20vh;
+    }
+    ion-item {
+      border-bottom: 0 !important;
+      padding: 0 !important;
+      .item-inner {
+        padding-right: 0;
+        border-bottom: 0 !important;
+        ion-label {
+          margin: 0;
         }
-        > .message {
-          font-size: 1.4rem;
-          color: #787878;
-        }
-        /* background-image: url("../assets/imgs/empty-list.png");
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        opacity: 0.6; */
       }
+    }
+    .list-retry {
+      background-color: #ff5c5b;
+    }
+    .list-delete {
+      background-color: #c1c1c1;
+    }
+    .options-item {
+      color: #FFF;
+      border-radius: 0;
+      .inner {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .mat-icon {
+          font-size: 2.8rem;
+          width: 2.8rem;
+          height: 2.8rem;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+  .empty-list {
+    position: absolute;
+    width: 100%;
+    top: 10vh;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    > img {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+      opacity: 0.6;
+      height: 20vh;
+      width: 20vh;
+    }
+    > .message {
+      font-size: 1.4rem;
+      color: #787878;
     }
   }
 }

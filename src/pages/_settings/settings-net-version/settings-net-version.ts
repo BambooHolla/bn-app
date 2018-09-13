@@ -22,7 +22,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public fetch: AppFetchProvider,
+    public fetch: AppFetchProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -44,7 +44,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     {
       title: "mainnet",
       config: {
-        SERVER_URL: "http://mainnet.ifmchain.org",
+        SERVER_URL: "http://publish.ifmchain.org",
         NET_VERSION: "mainnet",
         BLOCK_UNIT_TIME: 128000,
       },
@@ -52,7 +52,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
   ]);
   formatPeerList(peer_list: PEER_INFO[]): PEER_INFO_WITH_VERSION[] {
     return peer_list.map(peer =>
-      Object.assign(peer, { net_version: this.peerToNetVersion(peer) }),
+      Object.assign(peer, { net_version: this.peerToNetVersion(peer) })
     );
   }
   peer_list: PEER_INFO_WITH_VERSION[] = [];
@@ -72,7 +72,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     // 在从网络上下载最新的配置并缓存
     const config = await getLatestVersionInfo(
       this.fetch,
-      this.translate.currentLang,
+      this.translate.currentLang
     );
     if (config && config.peer_list) {
       this.peer_list = this.formatPeerList(config.peer_list);
@@ -102,6 +102,35 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       .present();
   }
   private _changeNetVersion(net_version: PEER_INFO) {
+    localStorage.removeItem("LINK_PEER");
+    sessionStorage.removeItem("LINK_PEER");
+    if (net_version.config.NET_VERSION === "mainnet") {
+      localStorage.removeItem("PEERS");
+    } else {
+      const aNode = document.createElement("a");
+      aNode.href = net_version.config.SERVER_URL;
+      localStorage.setItem(
+        "PEERS",
+        JSON.stringify([
+          {
+            origin: net_version.config.SERVER_URL,
+            level: 1,
+            webChannelLinkNum: 0,
+            netVersion: net_version.config.NET_VERSION,
+            netInterval: 10,
+            ip: aNode.hostname,
+            height: 0,
+            p2pPort: 19000,
+            webPort: 19002,
+            delay: -1,
+            acc_use_duration: 0,
+            latest_verify_fail_time: 0,
+            acc_verify_total_times: 0,
+            acc_verify_success_times: 0,
+          },
+        ])
+      );
+    }
     this._importLS(net_version.config);
   }
 
@@ -128,25 +157,30 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     }
   }
 
-  tap_times = 0;
-  per_tap_time = 0;
+  @asyncCtrlGenerator.tttttap()
   trySuperImportLS() {
-    const cur_tap_time = Date.now();
-    if (cur_tap_time - this.per_tap_time > 500) {
-      // 两次点击的间隔不能多余半秒，否则重置计数
-      this.tap_times = 0;
-    }
-    this.per_tap_time = cur_tap_time;
-    this.tap_times += 1;
-    if (this.tap_times === 5) {
-      const ls_json = prompt("请输入配置");
-      if (ls_json) {
-        try {
-          const ls = JSON.parse(ls_json);
-          this._importLS(ls);
-        } catch (err) {
-          alert("配置失败：" + err.message);
+    let ls_json = prompt("请输入配置");
+    if (ls_json) {
+      try {
+        const try_adds = ls_json.split(".");
+        if (
+          try_adds.length <= 4 &&
+          try_adds.every(add => parseInt(add).toString() == add)
+        ) {
+          const footer_adds = Array(3)
+            .concat(try_adds)
+            .slice(-4);
+          const adds = "192.168.16."
+            .split(".")
+            .map((add, i) => footer_adds[i] || add);
+          ls_json = `{"LATEST_APP_VERSION_URL": "http://${adds.join(
+            "."
+          )}:8180/api/app/version/latest"}`;
         }
+        const ls = JSON.parse(ls_json);
+        this._importLS(ls);
+      } catch (err) {
+        alert("配置失败：" + err.message);
       }
     }
   }

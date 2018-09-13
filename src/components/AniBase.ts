@@ -1,6 +1,6 @@
 import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
-import { tryRegisterGlobal, FLP_Tool } from "../bnqkl-framework/FLP_Tool";
+import { afCtrl, tryRegisterGlobal } from "../bnqkl-framework/helper";
 import * as FontFaceObserver from "fontfaceobserver";
 export const ifmicon_font_ready = new FontFaceObserver("ifmicon").load();
 
@@ -12,7 +12,7 @@ function _tick(time) {
     this.update(time);
     // Listener side effects may have modified ticker state.
     if (this.started && this._requestId === null && this._head.next) {
-      this._requestId = FLP_Tool.raf(() => this._tick());
+      this._requestId = afCtrl.raf(() => this._tick());
     }
   }
 }
@@ -21,12 +21,12 @@ PIXI.ticker.Ticker.prototype["_requestIfNeeded"] = function _requestIfNeeded() {
   if (this._requestId === null && this._head.next) {
     // ensure callbacks get correct delta
     this.lastTime = performance.now();
-    this._requestId = FLP_Tool.raf(() => this._tick());
+    this._requestId = afCtrl.raf(() => this._tick());
   }
 };
 PIXI.ticker.Ticker.prototype["_cancelIfNeeded"] = function _cancelIfNeeded() {
   if (this._requestId !== null) {
-    FLP_Tool.caf(this._requestId);
+    afCtrl.caf(this._requestId);
     this._requestId = null;
   }
 };
@@ -64,14 +64,19 @@ export class AniBase extends EventEmitter {
   ngOnDestroy() {
     this.stopAnimation();
     this.removeAllListeners();
+    const { app } = this;
+    if (app) {
+      app.destroy();
+    }
+    this.app = undefined;
   }
   devicePixelRatio = window.devicePixelRatio;
   pt = px => this.devicePixelRatio * px;
   px = pt => pt / this.devicePixelRatio;
-  static raf = FLP_Tool.raf;
-  raf = FLP_Tool.raf;
-  static caf = FLP_Tool.caf;
-  caf = FLP_Tool.caf;
+  static raf: typeof afCtrl.raf = afCtrl.raf.bind(afCtrl);
+  raf = AniBase.raf;
+  static caf: typeof afCtrl.caf = afCtrl.caf.bind(afCtrl);
+  caf = AniBase.caf;
   is_started = false;
   startAnimation() {
     if (this.is_started) {
@@ -204,12 +209,59 @@ export class AniBase extends EventEmitter {
   }
   loop_skip = 0;
   private _cur_loop_skip = 0;
+  static createLinearGradient(
+    x1 = 300,
+    y1 = 0,
+    stops = [[0, "#FFF"], [1, "#000"]]
+  ) {
+    var canvas = document.createElement("canvas");
+    const size = Math.max(x1, y1);
+    const min = Math.min(x1, y1);
+    if (x1 < y1) {
+      canvas.height = size;
+      canvas.width = min || 1;
+    } else {
+      canvas.width = size;
+      canvas.height = min || 1;
+    }
 
+    var ctx = canvas.getContext("2d");
+    if (ctx) {
+      var gradient = ctx.createLinearGradient(0, 0, x1, y1);
+      stops.forEach(stop => {
+        gradient.addColorStop(stop[0] as number, stop[1] as string);
+      });
+      ctx.fillStyle = gradient;
+
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    return canvas;
+  }
+  static createRadialGradient(r = 300, stops = [[0, "#FFF"], [1, "#000"]]) {
+    var canvas = document.createElement("canvas");
+
+    canvas.height = r;
+    canvas.width = r;
+
+    const half_r = r / 2;
+
+    var ctx = canvas.getContext("2d");
+    if (ctx) {
+      var gradient = ctx.createRadialGradient(half_r, 0, half_r, half_r, 0, 0);
+      stops.forEach(stop => {
+        gradient.addColorStop(stop[0] as number, stop[1] as string);
+      });
+      ctx.fillStyle = gradient;
+
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    return canvas;
+  }
   static animateNumber(
     from: number,
     to: number,
     duration: number,
-    easing_function = Easing.Linear,
+    easing_function = Easing.Linear
   ) {
     const diff = to - from;
     let frame_id;
@@ -218,7 +270,7 @@ export class AniBase extends EventEmitter {
     };
     return (
       cb: (v: number, abort: () => void) => void | boolean,
-      after_finished?: () => void,
+      after_finished?: () => void
     ) => {
       const start_time = performance.now();
       const ani = () => {
@@ -259,18 +311,18 @@ export class AniBase extends EventEmitter {
     from: number | string,
     to: number | string,
     duration: number,
-    easing_function = Easing.Linear,
+    easing_function = Easing.Linear
   ) {
     const from_color = AniBase.toColor(from);
     const to_color = AniBase.toColor(to);
     const diff_color = from_color.map((from_v, i) => to_color[i] - from_v);
     return (
       cb: (v: number[], abort: () => void) => void | boolean,
-      after_finished?: () => void,
+      after_finished?: () => void
     ) => {
       AniBase.animateNumber(0, 1, duration, easing_function)((p, abort) => {
         const cur_color = from_color.map(
-          (from_v, i) => (from_v + diff_color[i] * p) | 0,
+          (from_v, i) => (from_v + diff_color[i] * p) | 0
         );
         return cb(cur_color, abort);
       }, after_finished);
@@ -485,9 +537,9 @@ export const Easing = {
     }
     return (
       a *
-      Math.pow(2, -10 * (k -= 1)) *
-      Math.sin(((k - s) * (2 * Math.PI)) / p) *
-      0.5 +
+        Math.pow(2, -10 * (k -= 1)) *
+        Math.sin(((k - s) * (2 * Math.PI)) / p) *
+        0.5 +
       1
     );
   },
@@ -527,3 +579,195 @@ export const Easing = {
     return Easing.Bounce_Out(k * 2 - 1) * 0.5 + 0.5;
   },
 };
+
+const format_canvas = document.createElement("canvas");
+
+/*默认居中裁剪*/
+export async function formatImage(
+  url: string, //|HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap,
+  opts: {
+    format: string /* = "image/png"*/;
+    view_width: number;
+    view_height: number;
+    size: string; //"contain" | "cover"|"100[%][,[ 100[%]]]";
+    position: string;
+    target_encode: string /*base64,blob*/;
+    encoderOptions?: number /*jpeg格式的质量*/;
+    onlyBase64Content?: boolean /*是否只返回base64的内容，没有前缀“data:image/png;base64,”的那种*/;
+  }
+) {
+  format_canvas.width = opts.view_width;
+  format_canvas.height = opts.view_width;
+  const ctx = format_canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("not support 2d canvas");
+  }
+  // if(typeof img ==="string"){
+  const img = new Image();
+  await new Promise((resolve, reject) => {
+    img.src = url;
+    img.onload = resolve;
+    img.onerror = reject;
+  });
+  /*宽高比例*/
+  const { width: img_source_width, height: img_source_height } = img;
+
+  /// size
+  const img_rate = img_source_width / img_source_height;
+  const view_rate = opts.view_width / opts.view_height;
+  if (opts.size) {
+    if (opts.size === "contain") {
+      if (img.width > opts.view_width) {
+        img.width = opts.view_width;
+        img.height = opts.view_width / img_rate;
+      }
+      if (img.height > opts.view_height) {
+        img.height = opts.view_height;
+        img.width = opts.view_height * img_rate;
+      }
+    } else if (opts.size === "cover") {
+      if (img_rate > view_rate) {
+        // 源图是宽的，保证高度
+        img.height = opts.view_height;
+        img.width = opts.view_height * img_rate;
+      } else if (view_rate === img_rate) {
+        img.width = opts.view_width;
+        img.height = opts.view_height;
+      } else {
+        // view_rate < img_rate 源图是窄的，保证宽度
+        img.width = opts.view_width;
+        img.height = opts.view_width / img_rate;
+      }
+    } else {
+      const source_size_info = opts.size.split(/[\s,]{1,}/);
+      const source_size_info_width = source_size_info[0].trim();
+      const source_size_info_height = (
+        source_size_info[1] || source_size_info_width
+      ).trim();
+      if (source_size_info_width.endsWith("%")) {
+        img.width =
+          (img_source_width *
+            parseFloat(
+              source_size_info_width.substr(
+                0,
+                source_size_info_width.length - 1
+              )
+            )) /
+          100;
+      } else if (isFinite(parseFloat(source_size_info_width))) {
+        img.width = parseFloat(source_size_info_width);
+      } else {
+        console.warn(
+          new Error(`no support size width: ${source_size_info_width}`)
+        );
+      }
+      if (source_size_info_height.endsWith("%")) {
+        img.height =
+          (img_source_height *
+            parseFloat(
+              source_size_info_height.substr(
+                0,
+                source_size_info_height.length - 1
+              )
+            )) /
+          100;
+      } else if (isFinite(parseFloat(source_size_info_height))) {
+        img.height = parseFloat(source_size_info_height);
+      } else {
+        console.warn(
+          new Error(`no support size height: ${source_size_info_height}`)
+        );
+      }
+    }
+  }
+  const img_scale_x = img.width / img_source_width;
+  const img_scale_y = img.height / img_source_height;
+
+  /// position
+  let dstX = 0;
+  let dstY = 0;
+  const source_position_info = opts.position.split(/[\s,]{1,}/);
+  const source_position_info_x = source_position_info[0].trim();
+  const source_position_info_y = (
+    source_position_info[1] || source_position_info_x
+  ).trim();
+  // 这里目前仅仅支持center，没有支持百分比、left/right/top/bottom等其它语义
+  if (source_position_info_x === "center") {
+    dstX = (opts.view_width - img.width) / 2;
+  } else if (source_position_info_x.endsWith("%")) {
+    dstX =
+      (-parseFloat(
+        source_position_info_x.substr(0, source_position_info_x.length - 1)
+      ) /
+        100) *
+      img.width *
+      img_scale_x;
+  } else if (isFinite(parseFloat(source_position_info_x))) {
+    dstX = -parseFloat(source_position_info_x) * img_scale_x || 0;
+  } else {
+    console.warn(new Error(`no support position x: ${source_position_info_x}`));
+  }
+  if (source_position_info_y === "center") {
+    dstY = (opts.view_height - img.height) / 2;
+  } else if (source_position_info_y.endsWith("%")) {
+    dstY =
+      (-parseFloat(
+        source_position_info_y.substr(0, source_position_info_y.length - 1)
+      ) /
+        100) *
+      img.height *
+      img_scale_y;
+  } else if (isFinite(parseFloat(source_position_info_y))) {
+    dstY = -parseFloat(source_position_info_y) * img_scale_y || 0;
+  } else {
+    console.warn(new Error(`no support position y: ${source_position_info_y}`));
+  }
+
+  ctx.drawImage(img, dstX, dstY, img.width, img.height);
+  if (opts.target_encode === "blob") {
+    return await new Promise<Blob>((resolve, reject) => {
+      format_canvas.toBlob(
+        res => {
+          if (res) {
+            resolve(res);
+          } else {
+            reject(new Error("format "));
+          }
+        },
+        opts.target_encode,
+        opts.encoderOptions
+      );
+    });
+  } else if (opts.target_encode === "base64") {
+    const base64str = format_canvas.toDataURL(opts.format, opts.encoderOptions);
+    if (!opts.onlyBase64Content) {
+      return base64str;
+    }
+    const perfix_index = base64str.indexOf(",");
+    const base64ctn = base64str.substr(perfix_index + 1);
+    return base64ctn;
+  } else {
+    throw new TypeError(`unknown target encode: ${opts.target_encode}`);
+  }
+}
+tryRegisterGlobal("formatImage", formatImage);
+
+const _useable_image_list: HTMLImageElement[] = [];
+export function preLoadImages(assets_list: string[], base_url = "") {
+  const fetch_task_list = assets_list.map((url, i) => {
+    const img = _useable_image_list.shift() || new Image();
+    img.src = base_url + url;
+    return new Promise<string>((resolve, reject) => {
+      img.onload = () => {
+        resolve(img.src);
+        _useable_image_list.push(img); //进入回收站
+      };
+      img.onerror = e => {
+        reject(e);
+        _useable_image_list.push(img); //进入回收站
+      };
+    });
+  });
+  // return Promise.all(fetch_task_list);
+  return fetch_task_list;
+}

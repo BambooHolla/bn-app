@@ -15,7 +15,6 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./account.types";
 export * from "./account.types";
 import { Observable, BehaviorSubject } from "rxjs";
-import * as IFM from "ifmchain-ibt";
 import { Mdb } from "../mdb";
 import { DbCacheProvider } from "../db-cache/db-cache";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
@@ -45,7 +44,7 @@ export class AccountServiceProvider {
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
-    public dbCache: DbCacheProvider,
+    public dbCache: DbCacheProvider
   ) {
     // this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
     // this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
@@ -66,16 +65,27 @@ export class AccountServiceProvider {
         "get",
         api_url,
         async (db, request_opts) => {
-          const query = request_opts.reqOptions.search;
-          const cache_account = await db.findOne(query);
-          const cache = {
-            account: cache_account,
-            success: true,
-          } as TYPE.AccountResModel;
-          if (cache_account) {
-            return { reqs: [], cache };
+          if (this.fetch.onLine) {
+            return {
+              reqs: [request_opts],
+              cache: {
+                success: false,
+                account: undefined as any,
+                error: { message: "Account not found" },
+              },
+            };
+          } else {
+            const query = request_opts.reqOptions.search;
+            const cache_account = await db.findOne(query);
+            const cache = {
+              account: cache_account,
+              success: true,
+            } as TYPE.AccountResModel;
+            if (cache_account) {
+              return { reqs: [], cache };
+            }
+            return { reqs: [request_opts], cache };
           }
-          return { reqs: [request_opts], cache };
         },
         async req_res_list => {
           if (req_res_list.length > 0) {
@@ -85,44 +95,48 @@ export class AccountServiceProvider {
         async (db, mix_res, cache) => {
           if (mix_res) {
             const new_account = mix_res.account;
-            if (await db.has({ address: new_account.address })) {
+            if (
+              (await db.update(
+                { address: new_account.address },
+                new_account
+              )) === 0
+            ) {
+              await db.insert(new_account);
             }
-            await db.insert(new_account);
-            cache.account = new_account;
+            // cache.account = new_account;
+            return mix_res;
           }
           return cache;
-        },
+        }
       );
     });
   }
 
   readonly GET_USER = this.appSetting.APP_URL("/api/accounts/");
   readonly GET_USER_BY_USERNAME = this.appSetting.APP_URL(
-    "/api/accounts/username/get",
+    "/api/accounts/username/get"
   );
   readonly GET_ACCOUNT_PROFITS = this.appSetting.APP_URL(
-    "/api/accounts/accountProfits",
+    "/api/accounts/accountProfits"
   );
 
   /**上轮是否有投票*/
   async isPreRoundHasVote(address: string) {
     const cur_round = this.appSetting.getRound();
-    const data = await this.transactionService.getTransactions({
-      type: TransactionTypes.VOTE,
-      senderId: address,
-      startHeight: Math.max(
-        this.appSetting.getRoundStartHeight(cur_round - 1),
-        1,
-      ),
-      limit: 1,
-      orderBy: "height:esc", // 取height最小的
-    });
+    const data = await this.transactionService.queryTransaction(
+      {
+        height: {
+          $lt: this.appSetting.getRoundStartHeight(cur_round),
+          $gte: this.appSetting.getRoundStartHeight(cur_round - 1),
+        },
+        type: TransactionTypes.VOTE,
+      },
+      {},
+      0,
+      1
+    );
 
-    const tran = data.transactions[0];
-    if (tran && tran.height < this.appSetting.getRoundStartHeight(cur_round)) {
-      return true;
-    }
-    return false;
+    return data.transactions.length !== 0;
   }
   is_pre_round_has_vote!: AsyncBehaviorSubject<boolean>;
   @ROUND_AB_Generator("is_pre_round_has_vote", true)
@@ -135,11 +149,9 @@ export class AccountServiceProvider {
    * @param {string} address
    * @returns {Promise<any>}
    */
-  async getAccountByAddress(address: string): Promise<TYPE.AccountModel> {
-    let data = await this.fetch.get<any>(this.GET_USER, {
-      search: {
-        address: address,
-      },
+  async getAccountByAddress(address: string) {
+    const data = await this.fetch.get<TYPE.AccountResModel>(this.GET_USER, {
+      search: { address },
     });
     return data.account;
   }
@@ -149,12 +161,13 @@ export class AccountServiceProvider {
    * @param {string} username
    * @returns {Promise<any>}
    */
-  async getAccountByUsername(username: string): Promise<TYPE.AccountModel> {
-    let data = await this.fetch.get<any>(this.GET_USER_BY_USERNAME, {
-      search: {
-        username: username,
-      },
-    });
+  async getAccountByUsername(username: string) {
+    const data = await this.fetch.get<TYPE.AccountResModel>(
+      this.GET_USER_BY_USERNAME,
+      {
+        search: { username },
+      }
+    );
 
     return data.account;
   }
@@ -178,20 +191,20 @@ export class AccountServiceProvider {
     newUsername: string,
     secret: string,
     secondSecret?: string,
-    fee = parseFloat(this.appSetting.settings.default_fee),
+    fee = parseFloat(this.appSetting.settings.default_fee)
   ) {
     if (!!this.user.userInfo.username) {
       throw this.fetch.ServerResError.getI18nError(
-        "account already has username",
+        "account already has username"
       );
     }
-    let is_existed = await this.checkUsernameExisted(newUsername);
+    const is_existed = await this.checkUsernameExisted(newUsername);
     if (!is_existed) {
       throw this.fetch.ServerResError.getI18nError(
-        "this username has already exist",
+        "this username has already exist"
       );
     }
-    let accountData: any = {
+    const accountData: any = {
       type: this.ifmJs.transactionTypes.USERNAME,
       secret,
       publicKey: this.user.userInfo.publicKey,
@@ -208,13 +221,13 @@ export class AccountServiceProvider {
       accountData.secondSecret = secondSecret;
     }
 
-    try {
-      await this.transactionService.putTransaction(accountData);
-      this.user.userInfo.username = newUsername;
-      return true;
-    } catch (err) {
-      throw this.fetch.ServerResError.getI18nError("change username error");
-    }
+    // try {
+    await this.transactionService.putTransaction(accountData);
+    // this.user.userInfo.username = newUsername;
+    return true;
+    // } catch (err) {
+    //   throw this.fetch.ServerResError.getI18nError("change username error");
+    // }
   }
 
   /**
@@ -238,7 +251,7 @@ export class AccountServiceProvider {
           address,
           orderBy: "round:desc",
         },
-      },
+      }
     );
   }
 
@@ -252,7 +265,7 @@ export class AccountServiceProvider {
     newSecondSecret: string,
     oldSecondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee),
-    publicKey = this.user.publicKey,
+    publicKey = this.user.publicKey
   ) {
     let txData = {
       type: this.TransactionTypes.SIGNATURE,

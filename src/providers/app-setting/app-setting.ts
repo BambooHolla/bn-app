@@ -2,93 +2,59 @@ import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
+import { Platform } from "ionic-angular";
 import {
   AsyncBehaviorSubject,
   Executor,
 } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
-import * as IFM from "ifmchain-ibt";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
 import PIXI_SOUND from "pixi-sound";
-import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import {
+  afCtrl,
+  baseConfig,
+  getQueryVariable,
+} from "../../bnqkl-framework/helper";
 import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
 export { AppUrl };
-
-const net_version =
-  getQueryVariable("NET_VERSION") || localStorage.getItem("NET_VERSION") || "";
-
-const block_unit_time =
-  parseFloat(
-    getQueryVariable("BLOCK_UNIT_TIME") ||
-      localStorage.getItem("BLOCK_UNIT_TIME") ||
-      "",
-  ) ||
-  (net_version === "testnet" && 10e3);
-
-const testnet_flag = document.createElement("div");
-testnet_flag.id = "testnetFlag";
-testnet_flag.innerHTML = `TESTNET`;
-const SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
+import * as IFM from "../../ifmchain-ibt";
 
 @Injectable()
 export class AppSettingProvider extends CommonService {
-  static APP_VERSION = window["APP_VERSION"];
-  private static _SERVER_URL = "";
-  static get SERVER_URL() {
-    return this._SERVER_URL;
-  }
-  static set SERVER_URL(v: string) {
-    AppUrl.SERVER_URL = v;
-    this._SERVER_URL = v;
-  }
-  // static SERVER_URL = "http://47.104.142.234:6062";
-  static SEED_DATE = SEED_DATE;
-  static seedDateTimestamp = Math.floor(
-    Date.UTC(
-      SEED_DATE[0],
-      SEED_DATE[1],
-      SEED_DATE[2],
-      SEED_DATE[3],
-      SEED_DATE[4],
-      SEED_DATE[5],
-      SEED_DATE[6],
-    ) / 1000,
-  );
-  static seedDate: Date = new Date(AppSettingProvider.seedDateTimestamp * 1000);
-  static timezoneoffset = -AppSettingProvider.seedDate.getTimezoneOffset() * 60;
-  // static SERVER_URL = "http://test1.ifmchain.org:6062";
-  static SERVER_TIMEOUT = 1000;
-  static NET_VERSION = net_version || "mainnet";
-  static BLOCK_UNIT_TIME = block_unit_time || 128e3;
-  get BLOCK_UNIT_TIME() {
-    return AppSettingProvider.BLOCK_UNIT_TIME;
-  }
-  static IFMJS = IFM(AppSettingProvider.NET_VERSION);
-  static HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
+  static readonly APP_VERSION = baseConfig.APP_VERSION;
+  static SERVER_URL = baseConfig.SERVER_URL;
+  static readonly SEED_DATE = baseConfig.SEED_DATE;
+  static readonly MAGIC = baseConfig.MAGIC;
+  static readonly seedDateTimestamp = baseConfig.seedDateTimestamp;
+  static readonly seedDate = baseConfig.seedDate;
+  static readonly timezoneoffset = baseConfig.timezoneoffset;
+  static readonly SERVER_TIMEOUT = baseConfig.SERVER_TIMEOUT;
+  static readonly NET_VERSION = baseConfig.NET_VERSION;
+  static readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
+  readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
+  static readonly IFMJS = IFM(AppSettingProvider.NET_VERSION);
+  static readonly HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,
-    AppSettingProvider.SERVER_TIMEOUT,
+    AppSettingProvider.SERVER_TIMEOUT
   );
+  static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
+  static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
+
+  isIOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+
   APP_URL(path: string) {
     return new AppUrl(path);
   }
 
-  // 动态获取
-  static get LATEST_APP_VERSION_URL() {
-    return (
-      getQueryVariable("LATEST_APP_VERSION_URL") ||
-      localStorage.getItem("LATEST_APP_VERSION_URL") ||
-      "https://www.ifmchain.com/api/app/version/latest"
-    );
-  }
-  static SETTING_KEY_PERFIX = "SETTING@";
   constructor(
     public http: Http,
     public user: UserInfoProvider,
-    public translate: TranslateService,
+    public translate: TranslateService
   ) {
     super();
     console.log("Hello AppSettingProvider Provider");
@@ -118,76 +84,139 @@ export class AppSettingProvider extends CommonService {
       })
       .distinctUntilChanged<string>();
 
-    const default_settings = { ...this.settings };
-    const get_settings_key = () => {
-      return (
-        this.user.address &&
-        `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
-          AppSettingProvider.NET_VERSION
-        }|${AppSettingProvider.SERVER_URL}|${
-          AppSettingProvider.BLOCK_UNIT_TIME
-        }`
-      );
-    };
-    const getUserSettings = () => {
-      let settings: typeof default_settings | undefined;
-      const settings_key = get_settings_key();
-      if (settings_key) {
-        const settings_json = localStorage.getItem(settings_key);
-        let should_write_in = true; // 是否需要初始化写入
-        if (typeof settings_json === "string") {
-          try {
-            settings = JSON.parse(settings_json); //JSON可用
-            should_write_in = false;
-          } catch (e) {}
+    /** 独立账户的数据与配置*/
+    {
+      const default_settings = { ...this.settings };
+      const get_settings_key = () => {
+        return (
+          this.user.address &&
+          `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
+            AppSettingProvider.NET_VERSION
+          }|${AppSettingProvider.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
+        );
+      };
+      const getUserSettings = () => {
+        let settings: typeof default_settings | undefined;
+        const settings_key = get_settings_key();
+        if (settings_key) {
+          const settings_json = localStorage.getItem(settings_key);
+          let should_write_in = true; // 是否需要初始化写入
+          if (typeof settings_json === "string") {
+            try {
+              settings = JSON.parse(settings_json); //JSON可用
+              should_write_in = false;
+            } catch (e) {}
+          }
+          // 进行初始化写入
+          if (should_write_in) {
+            localStorage.setItem(
+              settings_key,
+              JSON.stringify((settings = { ...default_settings }))
+            );
+          }
         }
-        // 进行初始化写入
-        if (should_write_in) {
-          localStorage.setItem(
-            settings_key,
-            JSON.stringify((settings = { ...default_settings })),
-          );
-        }
+        return settings;
+      };
+      // 将setting与本地存储进行关联
+      for (var _key in this.settings) {
+        const key = _key;
+        const default_value = default_settings[key];
+        Object.defineProperty(this.settings, key, {
+          get: () => {
+            let value = default_value;
+            const settings = getUserSettings();
+            if (settings) {
+              if (key in settings) {
+                value = settings[key];
+              } else {
+                settings[key] = value;
+
+                const settings_key = get_settings_key();
+                localStorage.setItem(settings_key, JSON.stringify(settings));
+              }
+            }
+            return value;
+          },
+          set: value => {
+            const settings_key = get_settings_key();
+            const settings = getUserSettings();
+            if (settings) {
+              settings[key] = value;
+              localStorage.setItem(settings_key, JSON.stringify(settings));
+              this.emit(`changed@setting.${key}`, value);
+              this.emit(`changed@setting`, { key, value });
+            }
+          },
+        });
       }
-      return settings;
-    };
-    // 将setting与本地存储进行关联
-    for (var _key in this.settings) {
-      const key = _key;
-      const default_value = default_settings[key];
-      Object.defineProperty(this.settings, key, {
-        get: () => {
-          let value = default_value;
-          const settings = getUserSettings();
-          if (settings) {
+    }
+
+    /** 多账户共享的数据与配置*/
+    {
+      const default_share_settings = { ...this.share_settings };
+      const get_share_settings_key = () => {
+        return `SHARE:${AppSettingProvider.SETTING_KEY_PERFIX}:${
+          AppSettingProvider.NET_VERSION
+        }|${AppSettingProvider.BLOCK_UNIT_TIME}`; //${AppSettingProvider.SERVER_URL}|;
+      };
+      const shareSettingCtrl = (() => {
+        const settings_key = get_share_settings_key();
+        let micro_task_lock;
+        const cur_settings = {
+          ...default_share_settings,
+          ...JSON.parse(localStorage.getItem(settings_key) || "{}"),
+        };
+        return {
+          save(settings) {
+            if (cur_settings !== settings) {
+              Object.assign(cur_settings, settings);
+            }
+            if (micro_task_lock) {
+              return;
+            }
+            // 创建一个微任务
+            micro_task_lock = Promise.resolve().then(() => {
+              // 写入
+              localStorage.setItem(settings_key, JSON.stringify(cur_settings));
+              // 结束微任务
+              micro_task_lock = undefined;
+            });
+          },
+          get() {
+            return cur_settings;
+          },
+        };
+      })();
+      // 将setting与本地存储进行关联
+      for (var _key in this.share_settings) {
+        const key = _key;
+        const default_value = default_share_settings[key];
+        Object.defineProperty(this.share_settings, key, {
+          get: () => {
+            let value = default_value;
+            const settings = shareSettingCtrl.get();
             if (key in settings) {
               value = settings[key];
-            } else {
-              settings[key] = value;
-
-              const settings_key = get_settings_key();
-              localStorage.setItem(settings_key, JSON.stringify(settings));
             }
-          }
-          return value;
-        },
-        set: value => {
-          const settings_key = get_settings_key();
-          const settings = getUserSettings();
-          if (settings) {
-            settings[key] = value;
-            localStorage.setItem(settings_key, JSON.stringify(settings));
-            this.emit(`changed@setting.${key}`, value);
-            this.emit(`changed@setting`, { key, value });
-          }
-        },
-      });
+            return value;
+          },
+          set: value => {
+            const settings = shareSettingCtrl.get();
+            if (key in settings) {
+              settings[key] = value;
+              shareSettingCtrl.save(settings);
+              this.emit(`changed@share_settings.${key}`, value);
+              this.emit(`changed@share_settings`, { key, value });
+            }
+          },
+        });
+      }
     }
     // 省电模式
     {
       this.on(
         "changed@setting.power_saving_mode",
-        is_save => (this.settings.animation_switch = !is_save),
+        is_save => (this.settings.animation_switch = !is_save)
       );
     }
 
@@ -240,7 +269,7 @@ export class AppSettingProvider extends CommonService {
       console.log(
         "%c新用户登录，配置重新生效",
         "color:purple;font-size:1.6em;",
-        cur_setting,
+        cur_setting
       );
       for (var k in cur_setting) {
         this.settings[k] = cur_setting[k];
@@ -266,7 +295,7 @@ export class AppSettingProvider extends CommonService {
       setTranDur("0ms"); // 确保下面计算出来的值是正确的
       const bound_rect = testnet_flag.getBoundingClientRect(); //reflow
       setTran(pre_flag_transform);
-      FLP_Tool.raf(() => {
+      afCtrl.raf(() => {
         setTranDur(null);
         setTran((pre_flag_transform = `scale(${55 / bound_rect.width})`));
       });
@@ -299,11 +328,16 @@ export class AppSettingProvider extends CommonService {
   }
   setUserToken(obj: any) {
     if (typeof obj !== "string") {
+      const old_token = this.getUserToken();
+      if (old_token && old_token.address === obj.address) {
+        obj.remember = old_token.remember;
+        obj.password = old_token.password;
+      }
       this.user.initUserInfo(obj);
       obj = JSON.stringify(obj);
     } else {
       throw new TypeError(
-        "user token must be an object:{address,password,balance,fee}",
+        "user token must be an object:{address,password,balance,fee}"
       );
     }
     localStorage.setItem(this.USER_TOKEN_STORE_KEY, obj);
@@ -330,6 +364,7 @@ export class AppSettingProvider extends CommonService {
     }
     this.height.next(height);
     this.after_height.next(height);
+    this.emit("HEIGHT:CHANGED");
     const pre_round = this.getRound();
     const cur_round = this.calcRoundByHeight(height);
     if (cur_round !== pre_round) {
@@ -351,11 +386,11 @@ export class AppSettingProvider extends CommonService {
   setRound(round: number) {
     this.round.next(round);
     this.after_round.next(round);
+    this.emit("ROUND:CHANGED");
   }
   getRound() {
     return this.round.getValue();
   }
-  share_settings = {};
 
   settings = {
     lang: "",
@@ -392,66 +427,86 @@ export class AppSettingProvider extends CommonService {
     /**已经处理的交易*/
     detal_tran_num: 0,
     /**贡献的流量*/
-    contribution_traffic: 0,
+    contribution_flow: 0,
     /**隐藏账户金额信息*/
-    can_view_amount: false,
+    can_view_amount: true,
     /**是否显示过 初次转账提醒*/
     _is_show_first_transfer_tip: false,
     /**是否显示过 区块详情*/
     _is_show_first_block_remark: false,
     /**是否显示过 初次挖矿提示*/
     _is_show_first_mining_tip: false,
+    /**是否已经知道校验区块会导致发热*/
+    is_known_verifier_will_heat_up: false,
+    /**是否显示过 我的关注提示*/
+    _is_show_first_local_contacts_tip: false,
+    /*是否显示过 商务合作的提示*/
+    _is_first_show_send_business_cooperation: false,
+    /*是否显示过 用户服务的提示*/
+    _is_first_show_send_user_service: false,
+    /*是否显示过 分享APP的提示*/
+    _is_fisrt_show_share_app: false,
+    /*是否显示过 使用离线支付的提示*/
+    _is_first_show_offline_pay: false,
+    /*是否显示过 将离线收益放入钱包的提示*/
+    _is_first_put_into_voucher: false,
+    /*是否显示过 IBT增加的提示*/
+    _is_first_balance_grow_up_notice: false,
   };
+  /*多个账户之间共享的数据*/
+  share_settings = {
+    /**是否已经同步过区块链数据*/
+    is_agree_to_sync_blockchain: false,
+    /**是否正在同步中*/
+    is_syncing_blocks: false,
+    /**同步区块 的进度 0 ~ 100*/
+    sync_progress_blocks: 0,
+    /**同步交易 的进度 0 ~ 100*/
+    sync_progress_transactions: 0,
+    /**同步权益 的进度 0 ~ 100*/
+    sync_progress_equitys: 0,
+    /**启用同步区块*/
+    enable_sync_progress_blocks: !this.isIOS,
+    /**启用同步交易*/
+    enable_sync_progress_transactions: false,
+    /**启用同步权益*/
+    enable_sync_progress_equitys: false,
+    /**同步数据累计使用的流量*/
+    sync_data_flow: 0,
+    /**当前同步的进度区块*/
+    sync_progress_height: 0,
+    /**当前是否在验证区块*/
+    sync_is_verifying_block: false,
+    /**累计APP使用时长*/
+    acc_app_usage_duration: 0,
+  };
+
+  afterShareSettings(key: string) {
+    if (!this.share_settings.hasOwnProperty(key)) {
+      return false;
+    }
+    if (this.share_settings[key]) {
+      return true;
+    }
+
+    return new Promise(cb => this.once("changed@share_settings." + key, cb));
+  }
 }
+
+export const testnet_flag = document.createElement("div");
+testnet_flag.id = "testnetFlag";
+testnet_flag.innerHTML = `TESTNET`;
+/*显示测试网络flag*/
+const HIDE_FLAG = getQueryVariable("HIDE_FLAG");
 if (
-  (AppSettingProvider.NET_VERSION === "testnet" &&
-    localStorage.getItem("HIDE_FLAG") !== "1") ||
-  localStorage.getItem("HIDE_FLAG") === "-1" // 强制显示flag
+  (baseConfig.NET_VERSION === "testnet" && HIDE_FLAG !== "1") ||
+  HIDE_FLAG === "-1" // 强制显示flag
 ) {
   const testnet_flag_wrapper = document.createElement("div");
   testnet_flag_wrapper.appendChild(testnet_flag);
   testnet_flag_wrapper.className = "testnet-flag";
   document.body.appendChild(testnet_flag_wrapper);
 }
-function getQueryVariable(variable) {
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split("=");
-    if (decodeURIComponent(pair[0]) == variable) {
-      return decodeURIComponent(pair[1]);
-    }
-  }
-}
-
-const server_host =
-  getQueryVariable("SERVER_HOST") || localStorage.getItem("SERVER_HOST") || "";
-if (location.hostname === "dev-bnlc.bnqkl.cn") {
-  AppSettingProvider.SERVER_URL = "http://dev-bnlc.bnqkl.cn:40001/api/v1/bngj/";
-} else if (server_host.startsWith("HOME")) {
-  let home_ip = location.hostname;
-  if (server_host.startsWith("HOME:")) {
-    home_ip = server_host.replace("HOME:", "").trim();
-  }
-  AppSettingProvider.SERVER_URL = `http://${home_ip}:40001/api/v1/bngj/`;
-} else if (location.hostname === "wzx-bnlc.bnqkl.cn" || server_host === "WZX") {
-  AppSettingProvider.SERVER_URL = "http://192.168.16.216:40001/api/v1/bngj/";
-} else if (server_host.startsWith("FULL:")) {
-  AppSettingProvider.SERVER_URL = server_host.replace("FULL:", "").trim();
-} else {
-  AppSettingProvider.SERVER_URL = "http://mainnet.ifmchain.org";
-}
-
-const server_url = localStorage.getItem("SERVER_URL");
-if (server_url) {
-  AppSettingProvider.SERVER_URL = server_url;
-}
-
-console.log(
-  "%cSERVER_URL:",
-  "font-size:2em;color:green;background-color:#DDD",
-  AppSettingProvider.SERVER_URL,
-);
 
 /**
  * 基于token的AsyncBehaviorSubjuet类型的属性/方法生成器
@@ -467,14 +522,14 @@ export function TB_AB_Generator(
   need_token = true,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
-  },
+  }
 ) {
   return (target, name, descriptor) => {
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
       let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from }),
+        Object.assign({}, expiry_time_opts, { from })
       );
       const do_refresh = () => {
         if (_v) {
@@ -491,7 +546,7 @@ export function TB_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
         );
         do_refresh();
       } else {
@@ -507,7 +562,7 @@ export function TB_AB_Generator(
             throw new Error(
               `${
                 this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              } 需要注入依赖： (appSetting)AppSettingProvider`
             );
           }
           (this.appSetting as AppSettingProvider).account_address
@@ -545,14 +600,14 @@ export function HEIGHT_AB_Generator(
   need_token = false,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
-  },
+  }
 ) {
   return (target, name, descriptor) => {
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
       let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from }),
+        Object.assign({}, expiry_time_opts, { from })
       );
       const do_refresh = () => {
         if (_v) {
@@ -569,7 +624,7 @@ export function HEIGHT_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
         );
         do_refresh();
       } else {
@@ -586,7 +641,7 @@ export function HEIGHT_AB_Generator(
             throw new Error(
               `${
                 this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              } 需要注入依赖： (appSetting)AppSettingProvider`
             );
           }
           const runner = height_or_token => {
@@ -625,14 +680,14 @@ export function ROUND_AB_Generator(
   need_token = false,
   expiry_time_opts?: ExpiryTime & {
     loop?: boolean;
-  },
+  }
 ) {
   return (target, name, descriptor) => {
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
       let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from }),
+        Object.assign({}, expiry_time_opts, { from })
       );
       const do_refresh = () => {
         if (_v) {
@@ -649,7 +704,7 @@ export function ROUND_AB_Generator(
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
         refresh_time = new Date(
           +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val,
+            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
         );
         do_refresh();
       } else {
@@ -666,7 +721,7 @@ export function ROUND_AB_Generator(
             throw new Error(
               `${
                 this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`,
+              } 需要注入依赖： (appSetting)AppSettingProvider`
             );
           }
           const runner = height_or_token => {

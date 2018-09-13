@@ -3,5 +3,6 @@ chain-list {
   canvas {
     width: 100% !important;
     height: 100% !important;
+    filter: drop-shadow(0 0.5vw 2vw rgba(0, 0, 0, 0.2));
   }
 }

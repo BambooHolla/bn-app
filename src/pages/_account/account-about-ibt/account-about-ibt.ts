@@ -31,7 +31,7 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     public viewCtrl: ViewController,
     public newsService: NewsProvider,
     public sanitizer: DomSanitizer,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
     // this.auto_header_shadow_when_scroll_down = true;
@@ -41,19 +41,67 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     return AppSettingProvider.APP_VERSION;
   }
 
+  video_list: any[] = [];
   news_list: any[] = [];
+  award_list: any[] = [];
   @AccountAboutIbtPage.willEnter
   loadNewsList() {
-    const news_list = this.newsService.getNewsList();
-    // news_list.forEach(news => {
-    //   if (news.type === "embed") {
-    //     this.sanitizer.bypassSecurityTrustHtml();
-    //   }
-    // });
-    this.news_list = news_list;
-    this.cdRef.markForCheck();
+    if (this.video_list.length) {
+      return;
+    }
+    this.video_list = [];
+    this.news_list = [];
+    this.award_list = [];
+    const all_news = this.newsService.getNewsList();
+    all_news.forEach(news => {
+      if (news.tag === "视频") {
+        this.video_list.push(news);
+      } else if (news.tag === "获奖") {
+        this.award_list.push(news);
+      } else if (news.tag === "新闻") {
+        this.news_list.push(news);
+      }
+    });
+
+    this.markForCheck();
   }
   showVersionInfo() {
     this.showConfirmDialog(`v${AppSettingProvider.APP_VERSION}`);
+  }
+
+  private async _tipThenSendEmail(
+    e: MouseEvent,
+    tip: string,
+    setting_key: string
+  ) {
+    let res = this.appSetting.settings[setting_key];
+    if (!res) {
+      this.appSetting.settings[setting_key] = true;
+      res = await this.waitTipDialogConfirm(tip, {
+        false_text: "@@CANCEL",
+        true_text: "@@SEND_EMAIL",
+      });
+    }
+    if (res) {
+      const linkNode = e.target as HTMLDivElement;
+      const mailto = linkNode.dataset.href;
+      if (mailto && mailto.startsWith("mailto:")) {
+        location.href = mailto;
+      }
+    }
+  }
+  async doBusinessCooperation(e: MouseEvent) {
+    return this._tipThenSendEmail(
+      e,
+      "@@BUSINESS_COOPERATION_TIP",
+      "_is_first_show_send_business_cooperation"
+    );
+  }
+  doUserService(e: MouseEvent) {
+    return this._tipThenSendEmail(
+      e,
+      "@@USER_SERVICE_TIP",
+      "_is_first_show_send_user_service"
+    );
   }
 }

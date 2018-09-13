@@ -12,7 +12,7 @@ export class SettingsLangPage extends SecondLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    @Optional() public tabs: TabsPage,
+    @Optional() public tabs: TabsPage
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -35,7 +35,7 @@ export class SettingsLangPage extends SecondLevelPage {
   private _setLangList() {
     if (!this.lang_list) {
       const current_lang_map = this.translate.getTranslation(
-        this.translate.currentLang,
+        this.translate.currentLang
       );
       const base_list = this.lang_code_list.map(lang_code => {
         return {
@@ -47,7 +47,7 @@ export class SettingsLangPage extends SecondLevelPage {
               return val_map["LANG_" + lang_code];
             }),
           lang_trans_name: current_lang_map.map(
-            val_map => val_map["LANG_" + lang_code],
+            val_map => val_map["LANG_" + lang_code]
           ),
         };
       });

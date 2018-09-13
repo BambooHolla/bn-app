@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   ViewChild,
+  ViewChildren,
   Renderer2,
   AfterViewChecked,
   ChangeDetectionStrategy,
@@ -19,6 +20,7 @@ import {
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
+import { getQueryVariable } from "../../bnqkl-framework/helper";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
 import {
   BlockServiceProvider,
@@ -47,7 +49,7 @@ export class TabChainPage extends FirstLevelPage {
     public viewCtrl: ViewController,
     public r2: Renderer2,
     public cdRef: ChangeDetectorRef,
-    public fetch: AppFetchProvider,
+    public fetch: AppFetchProvider
   ) {
     super(navCtrl, navParams);
     // this.auto_header_shadow_when_scroll_down = true;
@@ -55,7 +57,6 @@ export class TabChainPage extends FirstLevelPage {
 
     this.blockService.event.on("EXPECTBLOCK:CHANGED", expect_block => {
       this.unconfirm_block = expect_block;
-      this.cdRef.markForCheck();
     });
     // this.registerViewEvent(this)
   }
@@ -63,12 +64,11 @@ export class TabChainPage extends FirstLevelPage {
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
   @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
-  unconfirm_block?: UnconfirmBlockModel;
+  @TabChainPage.markForCheck unconfirm_block?: UnconfirmBlockModel;
   // 在应用启动的时候就需要进行一次数据加载
   @TabChainPage.onInit
   async initUnconfirmBlock() {
     await this.loadUnconfirmBlock();
-    this.cdRef.markForCheck();
   }
   async loadUnconfirmBlock() {
     const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
@@ -77,34 +77,39 @@ export class TabChainPage extends FirstLevelPage {
     return unconfirm_block.height;
   }
 
-  routeToChainBlockDetail(height: number) {
-    this.routeTo("chain-block-detail", { height });
+  routeToChainBlockDetail(height: number, block) {
+    const params: any = { height };
+    if (block && block.height) {
+      params.block = block;
+    }
+    this.routeTo("chain-block-detail", params);
   }
 
   @ViewChild("fixedHeader") fixedHeader!: ElementRef;
   @ViewChild(ChainListComponent) chainList!: ChainListComponent;
-  chain_list_view_able = false;
+  @TabChainPage.markForCheck chain_list_view_able = false;
   @TabChainPage.onInit
   checkChainListViewAble() {
     if (!(this.chain_list_view_able = this.chainList.renderer_started)) {
       this.chainList.once("renderer-started", () => {
         this.chain_list_view_able = true;
-        this.cdRef.markForCheck();
       });
     }
-    this.cdRef.markForCheck();
   }
 
   @TabChainPage.didEnter
   initChainListPaddingTop() {
     this.chainList.list_padding_top = this.chainList.pt(
-      this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/,
+      this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/
     );
-    this.cdRef.markForCheck();
   }
 
   pullToTop() {
     this.chainList.setListViewPosY(0, 1000);
+  }
+
+  updateBlocks() {
+    // TODO: 校验区块的过程中，可能发现错误的区块，而这些区块可能已经被渲染到屏幕上了，需要有一个更新机制来让其获取最新的区块
   }
 
   // async checkBlockchainCompleteWithNetworkCheck() {
@@ -112,110 +117,125 @@ export class TabChainPage extends FirstLevelPage {
   //   return this.checkBlockchainComplete();
   // }
   // @asyncCtrlGenerator.loading("@@CHECK_BLOCKCHAIN_IS_COMPLETE", undefined, {
-  //   cssClass: "can-tap",
+  //   cssClass: "can-tap blockchain-loading",
   //   showBackdrop: false,
   // })
   @TabChainPage.onInit
   async checkBlockchainComplete() {
-    if (localStorage.getItem("AUTO_DOWNLOAD_BLOCKCHAINE") === "disabled") {
+    if (
+      !(await this.appSetting.afterShareSettings("enable_sync_progress_blocks"))
+    ) {
       return;
     }
     await this.netWorkConnection();
-    // 检测现有数据库中最低的块是否为1
-    let min_height_block:
-      | SingleBlockModel
-      | undefined = await this.blockService.blockDb.findOne(
-      {},
-      { sort: { height: 1 } },
-    );
     const latest_block = await this.blockService.getLastBlock();
-    if (!min_height_block) {
-      min_height_block = latest_block;
-    }
-
-    if (min_height_block.height <= 1) {
-      return true;
-    }
-    const startHeight = 1;
-    const endHeight = min_height_block.height;
     const max_end_height = latest_block.height;
-    await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
+    // 记录第一次同步区块的时间
+    if (!this.appSetting.share_settings.is_agree_to_sync_blockchain) {
+      await this.waitTipDialogConfirm("@@BEFORE_DOWNLOAD_TIP");
+      // 这个点击确认后的is_agree_to_the_agreement_of_sync_blockchain，在区块链正式开始下载后才设置为true
+      // this.appSetting.settings.is_agree_to_the_agreement_of_sync_blockchain = true;
+    }
     // 开始下载
-    this.downloadBlock(startHeight, endHeight, max_end_height);
+    this.syncBlockchain(max_end_height);
+  }
+  @asyncCtrlGenerator.queue()
+  async simpleQueue(v) {
+    console.log("simpleQueue", v);
+    return v;
+  }
+  @asyncCtrlGenerator.queue({ can_mix_queue: 1 })
+  async mixQueue(v) {
+    console.log("mixQueue", v);
+    return v;
   }
 
-  loading_dialog?: Loading;
+  /*下载进度的相关属性*/
+  @TabChainPage.markForCheck is_show_sync_loading = false;
+  @TabChainPage.markForCheck sync_progress_blocks = 0;
+  @TabChainPage.markForCheck sync_is_verifying_block = false;
 
-  /*显示loading*/
-  @TabChainPage.didEnter
-  showLoading() {
-    if (this._download_task && !this.loading_dialog) {
-      this.loading_dialog = this.loadingCtrl.create({
-        cssClass: "can-tap",
-        showBackdrop: false,
-      });
-      this.loading_dialog.present();
-      this.setProgress(this.cur_sync_progres);
-    }
+  @TabChainPage.onInit
+  bindSyncInfo() {
+    // 是否在同步区块
+    this.registerViewEvent(
+      this.appSetting,
+      "changed@share_settings.is_syncing_blocks",
+      () => {
+        this.is_show_sync_loading = this.appSetting.share_settings.is_syncing_blocks;
+      },
+      true
+    );
+    // 是否在校验区块
+    this.registerViewEvent(
+      this.appSetting,
+      "changed@share_settings.sync_is_verifying_block",
+      () => {
+        this.sync_is_verifying_block = this.appSetting.share_settings.sync_is_verifying_block;
+      },
+      true
+    );
+    // 同步区块的进度
+    this.registerViewEvent(
+      this.appSetting,
+      "changed@share_settings.sync_progress_blocks",
+      () => {
+        this.sync_progress_blocks = this.appSetting.share_settings.sync_progress_blocks;
+      },
+      true
+    );
   }
-  /*关闭loading*/
-  @TabChainPage.didLeave
-  closeLoading() {
-    if (this.loading_dialog) {
-      this.loading_dialog.dismiss();
-      this.cdRef.markForCheck();
-      this.loading_dialog = undefined;
-    }
-  }
-  cur_sync_progres = 0;
-  /*改变loading文本*/
-  setProgress = async (progress: number) => {
-    this.cur_sync_progres = progress;
-    if (this.loading_dialog) {
-      this.loading_dialog.setContent(
-        await this.getTranslate("FULL_BLOCKCHAIN_DOWNLOADING_#PROGRESS#", {
-          progress: ("0" + progress.toFixed(2)).substr(-5),
-        }),
-      );
-      this.cdRef.markForCheck();
-    }
-  };
 
   // private _download_worker?: Worker;
   private _download_task?: PromiseOut<void>;
   /*下载区块链数据*/
   @asyncCtrlGenerator.success("@@DOWNLOAD_BLOCKCHAIN_COMPLETE")
-  async downloadBlock(
-    startHeight: number,
-    endHeight: number,
-    max_end_height: number,
-  ) {
+  async syncBlockchain(max_end_height: number) {
     if (this._download_task) {
       return this._download_task.promise;
     }
     let cg;
     try {
-      const { worker, req_id, task } = this.blockService.downloadBlockInWorker(
-        startHeight,
-        endHeight,
-        max_end_height,
+      const { worker, req_id, task } = this.blockService.syncBlockChain(
+        max_end_height
       );
       this._download_task = task;
       // this._download_worker = worker;
-      const onmessage = e => {
+      const onmessage = async e => {
         const msg = e.data;
-        console.log("bs", msg);
+        // console.log("bs", msg);
         if (msg && msg.req_id === req_id) {
+          // 在第一次同意同步区块链的时候，要显示同步窗口
+          const firstAutoOpenChainSyncDetail = () => {
+            if (!this.appSetting.share_settings.is_agree_to_sync_blockchain) {
+              this.appSetting.share_settings.is_agree_to_sync_blockchain = true;
+              this.openChainSyncDetail();
+            }
+          };
           switch (msg.type) {
+            // 校验开始，显示协议，并显示 sync-detail
+            case "start-verifier":
+              if (!this.appSetting.settings.is_known_verifier_will_heat_up) {
+                this.appSetting.settings.is_known_verifier_will_heat_up = true;
+                await this.waitTipDialogConfirm(
+                  "@@VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP"
+                ).then(v => {
+                  this.appSetting.settings.is_known_verifier_will_heat_up = v;
+                });
+              }
+              // 显示 sync-detail
+              firstAutoOpenChainSyncDetail();
+              break;
+            // 下载开始，显示 sync-detail
             case "start-download":
-              this.showLoading();
+              firstAutoOpenChainSyncDetail();
               break;
-            case "end-download":
-              this.closeLoading();
-              // this._download_worker = undefined;
-              break;
-            case "progress":
-              this.setProgress(msg.data);
+            case "error":
+              this.showErrorDialog(
+                this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"),
+                "",
+                msg.data
+              );
               break;
           }
         }
@@ -244,6 +264,47 @@ export class TabChainPage extends FirstLevelPage {
   @TabChainPage.addEvent("HEIGHT:CHANGED")
   async watchHeightChange(height) {
     await this.loadUnconfirmBlock();
-    this.cdRef.markForCheck();
   }
+
+  @ViewChild("progressCircle", { read: ElementRef })
+  progressCircle!: ElementRef;
+  private _progressCircle_rotate = 0;
+  _before_markForCheck() {
+    if (this.is_show_sync_loading) {
+      this._pre_progressCircle_ani_time = performance.now();
+      this._progressCircle_rotate = (this._progressCircle_rotate + 45) % 360;
+      this.raf(() => {
+        (this.progressCircle
+          .nativeElement as HTMLElement).style.transform = `rotate(${
+          this._progressCircle_rotate
+        }deg)`;
+      });
+      this.cdRef.detectChanges;
+    }
+  }
+  private _auto_aniProgressCircle_ti;
+  private _pre_progressCircle_ani_time;
+  // 至少每秒要让这个spinner动一次
+  @TabChainPage.didEnter
+  private _auto_aniProgressCircle() {
+    this._auto_aniProgressCircle_ti = setInterval(() => {
+      const now = performance.now();
+      if (now - this._pre_progressCircle_ani_time >= 490) {
+        this._before_markForCheck();
+      }
+    }, 500);
+  }
+  @TabChainPage.didLeave
+  private _clear_aniProgressCircle() {
+    clearInterval(this._auto_aniProgressCircle_ti);
+  }
+
+  openChainSyncDetail() {
+    this.modalCtrl.create("chain-sync-detail").present();
+  }
+
+  showVerifierLoading() {
+    // this.loadingCtrl.create("")
+  }
+  closeVerifierLoading() {}
 }

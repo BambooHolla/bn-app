@@ -15,6 +15,9 @@ export class FLP_Form extends FLP_Route {
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     super(navCtrl, navParams);
     this.trySubmit = this.trySubmit.bind(this);
+    this.registerViewEvent(this.userInfo, "changed", () => {
+      this.markForCheck();
+    });
   }
   private __ecc__?: { [prop_name: string]: string[] };
   private get _error_checks_col() {
@@ -33,7 +36,7 @@ export class FLP_Form extends FLP_Route {
     extends_opts: {
       check_when_empty?: boolean;
       formData_key?: string;
-    } = {},
+    } = {}
   ) {
     const formData_key = extends_opts.formData_key || "formData";
     return (target: any, name: string, descriptor: PropertyDescriptor) => {
@@ -133,22 +136,31 @@ export class FLP_Form extends FLP_Route {
   setInputstatus(formKey: string, e) {
     this.inputstatus[formKey] = e.type;
     if (e.type === "input") {
-      this.checkFormKey(formKey);
+      this.checkFormKey(formKey, e.target);
     }
     this.event.emit("input-status-changed", {
       key: formKey,
       event: e,
     });
   }
-  checkFormKey(formKey: string) {
+  checkFormKey(formKey: string, ele?: HTMLInputElement | HTMLTextAreaElement) {
     if (this._error_checks_col[formKey]) {
+      let err_res: any = {};
       this._error_checks_col[formKey].forEach(fun_key => {
         try {
-          this[fun_key]();
+          err_res = Object.assign(err_res, this[fun_key]());
         } catch (err) {
           console.warn("表单检查出错", fun_key, err);
         }
       });
+      if (ele && ele.setCustomValidity) {
+        let err_msg = "";
+        if (err_res && Object.keys(err_res).length) {
+          err_msg = JSON.stringify(err_res);
+        }
+        ele.setCustomValidity(err_msg);
+      }
+      return err_res;
     }
   }
 
@@ -160,6 +172,7 @@ export class FLP_Form extends FLP_Route {
         this.formData[key] = 0
       }*/
     }
+    this.markForCheck();
   }
 
   /*要求用户输入支付密码*/
@@ -170,7 +183,7 @@ export class FLP_Form extends FLP_Route {
     () => FLP_Form.getTranslate("PAY_INPUT_ERROR"),
     undefined,
     undefined,
-    true,
+    true
   )
   async getUserPassword(
     opts: {
@@ -178,7 +191,7 @@ export class FLP_Form extends FLP_Route {
       custom_fee?: boolean;
       /**是否一定要输入主密码*/
       force_require_password?: boolean;
-    } = {},
+    } = {}
   ): Promise<{
     password: string;
     have_password?: boolean;
@@ -228,18 +241,19 @@ export class FLP_Form extends FLP_Route {
             enableBackdropDismiss: true,
             cssClass: "fee-input-modal",
             showBackdrop: true,
-          },
+          }
         );
         model.present();
         model.onDidDismiss(data => {
           if (data) {
+            data.custom_fee = parseFloat(data.custom_fee);
             resolve(data);
           } else {
             if (current_fee && isFinite(current_fee)) {
               resolve({ custom_fee: current_fee }); //返回默认值
             } else {
               console.warn(
-                new Error(this.getTranslateSync("FEE_INPUT_CANCEL")),
+                new Error(this.getTranslateSync("FEE_INPUT_CANCEL"))
               );
               reject(getErrorFromAsyncerror(false));
             }
@@ -278,7 +292,7 @@ export class FLP_Form extends FLP_Route {
         ) {
           return this.getTranslateSync("NEED_INPUT_#FORM_KEY#", {
             form_key: await translateMessage(
-              this.formDataKeyI18nMap[form_key] || form_key,
+              this.formDataKeyI18nMap[form_key] || form_key
             ),
           });
         }

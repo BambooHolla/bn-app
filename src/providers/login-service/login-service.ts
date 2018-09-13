@@ -19,7 +19,6 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AlertController } from "ionic-angular";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
-import * as IFM from "ifmchain-ibt";
 
 export type UserModel = {
   name: string;
@@ -39,7 +38,7 @@ export class LoginServiceProvider extends FLP_Tool {
     public alertController: AlertController,
     public translateService: TranslateService,
     public accountService: AccountServiceProvider,
-    public user: UserInfoProvider,
+    public user: UserInfoProvider
   ) {
     super();
     console.group("Hello LoginServiceProvider Provider");
@@ -48,7 +47,7 @@ export class LoginServiceProvider extends FLP_Tool {
       // console.log("USER TOKEN:", val);
       return !!val;
     });
-    this.ifmJs = IFM(AppSettingProvider.NET_VERSION);
+    this.ifmJs = AppSettingProvider.IFMJS;
     //用于生成随机语句
     this.Mnemonic = this.ifmJs.Mnemonic;
 
@@ -70,7 +69,7 @@ export class LoginServiceProvider extends FLP_Tool {
     }
     // 高度发生变动的时候，更新用户信息
     this._user_info_refresher = this.appSetting.height.subscribe(
-      this.refreshUserInfo.bind(this),
+      this.refreshUserInfo.bind(this)
     );
   }
   unInstallUserInfoRefresher() {
@@ -83,7 +82,7 @@ export class LoginServiceProvider extends FLP_Tool {
   /** 更新用户信息
    */
   @asyncCtrlGenerator.retry(undefined, err =>
-    console.error("获取用户信息一直失败，需要检查网络", err),
+    console.error("获取用户信息一直失败，需要检查网络", err)
   )
   async refreshUserInfo() {
     await this.netWorkConnection();
@@ -92,14 +91,15 @@ export class LoginServiceProvider extends FLP_Tool {
       return;
     }
     const res = await this.fetch
-      .forceNetwork(navigator.onLine)
+      .forceNetwork(this.fetch.onLine)
       .get<any>(this.SEARCH_ACCOUNT_URL, {
         search: {
           address: userinfo.address,
         },
       });
-    Object.assign(userinfo, res.account);
-    this.appSetting.setUserToken(userinfo);
+    this.user.is_from_network = true;
+    // Object.assign(userinfo, res.account);
+    this.appSetting.setUserToken(res.account);
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
   readonly SEARCH_ACCOUNT_URL = this.appSetting.APP_URL("/api/accounts/");
@@ -128,7 +128,7 @@ export class LoginServiceProvider extends FLP_Tool {
       const keypair = this.ifmJs.keypairHelper.create(password);
       const publicKey = keypair.publicKey.toString("hex");
       const address = this.ifmJs.addressCheck.generateBase58CheckAddress(
-        publicKey,
+        publicKey
       );
       FLP_Tool.netWorkConnection().then(async () => {
         var fail = true;
@@ -176,6 +176,8 @@ export class LoginServiceProvider extends FLP_Tool {
       {
         // 以Token的形式保存用户登录信息，用于自动登录
         const { password, savePwd, ...safe_data } = loginObj;
+        // 初始的数据并不是来自网络
+        this.user.is_from_network = true;
         this.appSetting.setUserToken(loginObj);
         return safe_data;
       }

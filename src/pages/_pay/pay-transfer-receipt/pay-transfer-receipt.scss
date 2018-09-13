@@ -190,10 +190,11 @@ page-pay-transfer-receipt {
           }
           // &::after {
           // content: " ";
-
           // position: absolute;
           // width: 100%;
+
           // height: 100%;
+
           // left: 0;
           // top: 0;
           // background: radial-gradient(
@@ -239,7 +240,6 @@ page-pay-transfer-receipt {
           // }
           > .time {
             color: #afafb0;
-
             font-size: 1.5rem;
             margin-top: 0.5rem;
             font-weight: lighter;
@@ -287,24 +287,23 @@ page-pay-transfer-receipt {
     pointer-events: all;
     position: fixed;
     width: 100%;
-    bottom: 10%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    bottom: 18%;
+    left: 0;
     > button {
-      display: inline-block;
-      width: 8vh;
-      height: 8vh;
+      margin: 0 auto;
+      display: block;
+      width: 12vw;
+      height: 12vw;
       border-radius: 50%;
       background: none;
       text-align: center;
       padding: 0;
-      line-height: 7.8vh;
+      line-height: 12vw;
       &.close-button {
         animation-delay: 500ms;
-        background-color: #929292;
+        background-color: #bab8b9;
         color: #fff;
-        font-size: 6vh;
+        font-size: 9vw;
       }
     }
   }

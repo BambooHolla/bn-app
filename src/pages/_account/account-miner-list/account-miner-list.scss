@@ -111,4 +111,35 @@ page-account-miner-list {
       background-image: url("../assets/imgs/miner-list/安全帽.png");
     }
   }
+  .cur-peer-list {
+    margin-top: 1rem;
+    > .header {
+      background-color: #fff;
+      color: #4e4e4e;
+      padding-left: 1.8rem;
+      font-weight: bold;
+      font-size: 1.5rem;
+      padding-top: 1.2rem;
+      padding-bottom: 2rem;
+    }
+    > .row {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      color: #7b7b7b;
+      justify-content: space-around;
+      padding: 0;
+      &.disabled {
+        background-color: #eee;
+      }
+      > .item {
+        flex: 1;
+        text-align: center;
+      }
+    }
+    > .table-head {
+      font-size: 2rem;
+      height: 2.6rem;
+    }
+  }
 }

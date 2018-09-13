@@ -1,3 +1,17 @@
+// 修复高版本的编译，原生Promise对象被重写的问题
+if (
+  typeof Symbol === "function" &&
+  Symbol["hasInstance"] &&
+  Promise.name !== "Promise"
+) {
+  Object.defineProperty(Promise, Symbol["hasInstance"], {
+    value: ins =>
+      ins && typeof ins.then === "function" && typeof ins.catch === "function",
+  });
+}
+(<any>Symbol).asyncIterator ||
+  ((<any>Symbol).asyncIterator = Symbol.for("Symbol.asyncIterator"));
+
 import { Component, ViewChild, OnInit, Renderer2 } from "@angular/core";
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { Clipboard } from "@ionic-native/clipboard";
@@ -8,6 +22,7 @@ import { Keyboard } from "@ionic-native/keyboard";
 import { Toast } from "@ionic-native/toast";
 import { FingerprintAIO } from "./native/fingerprint-aio";
 import { checkUpdate } from "../pages/tab-account/checkUpdate";
+import { File } from "@ionic-native/file";
 
 import {
   Config,
@@ -18,19 +33,29 @@ import {
   LoadingController,
   ToastController,
   ModalController,
+  LoadingOptions,
 } from "ionic-angular";
 
 import { AndroidPermissions } from "@ionic-native/android-permissions";
-import { FirstRunPage, LoginPage, MainPage } from "../pages/pages";
+import {
+  FirstRunPage,
+  ScanLinkPeerPage,
+  LoginPage,
+  MainPage,
+} from "../pages/pages";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
+import { AppFetchProvider } from "../providers/app-fetch/app-fetch";
 import { MinServiceProvider } from "../providers/min-service/min-service";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
 import { UserInfoProvider } from "../providers/user-info/user-info";
+import { PeerServiceProvider } from "../providers/peer-service/peer-service";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { global } from "../bnqkl-framework/helper";
+import { translateMessage } from "../bnqkl-framework/FLP_Tool";
+import { getQueryVariable } from "../bnqkl-framework/helper";
 
 import { CommonTransition } from "./common.transition";
 import {
@@ -48,7 +73,7 @@ if (
   }
 }
 // 强行让SecondLevelPage编译进来
-(function noop(x){})(SecondLevelPage);
+(function noop(x) {})(SecondLevelPage);
 
 enum FAIO_CHECK {
   Login,
@@ -72,6 +97,7 @@ export class MyApp implements OnInit {
     public accountService: AccountServiceProvider,
     public loginService: LoginServiceProvider,
     public appSetting: AppSettingProvider,
+    public appFetch: AppFetchProvider,
     public minService: MinServiceProvider,
     public storage: Storage,
     public keyboard: Keyboard,
@@ -82,8 +108,10 @@ export class MyApp implements OnInit {
     public toastCtrl: ToastController,
     public modalController: ModalController,
     public userInfo: UserInfoProvider,
+    public peerService: PeerServiceProvider,
     public faio: FingerprintAIO,
-    public androidPermissions: AndroidPermissions,
+    public file: File,
+    public androidPermissions: AndroidPermissions
   ) {
     global["ac"] = this;
     global["clipboard"] = clipboard;
@@ -99,7 +127,10 @@ export class MyApp implements OnInit {
     global["benefitService"] = benefitService;
     global["userInfo"] = userInfo;
     global["appSetting"] = appSetting;
+    global["appFetch"] = appFetch;
     global["minService"] = minService;
+    global["peerService"] = peerService;
+    global["file"] = file;
     global["myapp"] = this;
     config.setTransition("common-transition", CommonTransition);
     config.setTransition("custom-dialog-pop-in", CustomDialogPopIn);
@@ -135,9 +166,38 @@ export class MyApp implements OnInit {
     this.initTranslate();
 
     const initPage = (async () => {
+      const lock_page = getQueryVariable("LOCK_PAGE");
+      if (lock_page) {
+        await this.openPage(lock_page);
+        const page_base_name = lock_page
+          .replace(/-([a-z])/g, (...args) => args[1].toUpperCase())
+          .replace(/^([a-z])/, (...args) => args[1].toUpperCase());
+        const pageInstance = window[`instanceOf${page_base_name}Page`];
+        if ((window["ii"] = pageInstance)) {
+          pageInstance.ionViewWillEnter();
+          pageInstance.ionViewDidEnter();
+        }
+        return null;
+      }
       if (!localStorage.getItem("HIDE_WELCOME")) {
         await this.openPage(FirstRunPage);
         return null;
+      }
+      if (!sessionStorage.getItem("LINK_PEER")) {
+        const pre_link_time = parseFloat(
+          localStorage.getItem("LINK_PEER") || "0"
+        );
+        if (
+          // 上一次检测节点已经超过了8小时，那么进行重新检查
+          Date.now() - pre_link_time >= 8 * 60 * 60 * 1000 ||
+          // 校验当前节点的magic是否正常
+          !(await this.peerService.checkCurrentMagic())
+        ) {
+          await this.openPage(ScanLinkPeerPage);
+          return null;
+        }
+
+        // return ScanLinkPeerPage
       }
       const user_token = appSetting.getUserToken();
       if (user_token && user_token.password) {
@@ -271,16 +331,27 @@ export class MyApp implements OnInit {
   currentPage: any;
   _currentOpeningPage: any; // 前置对象 锁
   tryInPage: any;
-  async openPage(page: string, force = false, loading_content?: string | null) {
+  async openPage(
+    page: string,
+    force = false,
+    loading_content?: string | null | false
+  ) {
     this.tryInPage = page;
     if (!force) {
-      if (this.currentPage == FirstRunPage) {
+      if (
+        this.currentPage == FirstRunPage ||
+        this.currentPage == ScanLinkPeerPage
+      ) {
+        return;
+      }
+      const lock_page = getQueryVariable("LOCK_PAGE");
+      if (lock_page && this.currentPage === lock_page) {
         return;
       }
     }
     return this._openPage(page, loading_content);
   }
-  private async _openPage(page: string, loading_content?: string | null) {
+  async _openPage(page: string, loading_content?: string | null | false) {
     if (this.currentPage === page || this._currentOpeningPage === page) {
       return;
     }
@@ -288,35 +359,43 @@ export class MyApp implements OnInit {
       this._currentOpeningPage = page;
       console.log(
         `%c Open Page:[${page}] and set as root`,
-        "font-size:1.2rem;color:yellow;",
+        "font-size:1.2rem;color:yellow;"
       );
       if (page === MainPage) {
         if (!(await this.showFAIO(FAIO_CHECK.Login))) {
           return;
         }
-        // if (loading_content === undefined) {
-        //   loading_content = await this.translate.get("LOGINNG").toPromise();
-        // }
+        if (loading_content) {
+          loading_content = await translateMessage(loading_content);
+        }
       }
 
       this.currentPage = page;
-      // const loadinger = loading_content
-      //   ? this.loadingCtrl.create({
-      //       content: loading_content,
-      //     })
-      //   : null;
-      // await (loadinger && loadinger.present());
-      // try {
-      if (this.nav) {
-        await this.nav.setRoot(page);
-      } else {
-        await this._onNavInitedPromise.promise.then(() => {
-          return this.nav && this.nav.setRoot(page);
-        });
+      const loading_opts: LoadingOptions = { cssClass: "logo-loading" };
+      let loadinger =
+        loading_content !== false &&
+        (loading_content
+          ? this.loadingCtrl.create(
+              Object.assign(
+                {
+                  content: loading_content || "",
+                },
+                loading_opts
+              )
+            )
+          : this.loadingCtrl.create(loading_opts));
+      await (loadinger && loadinger.present());
+      try {
+        if (this.nav) {
+          await this.nav.setRoot(page);
+        } else {
+          await this._onNavInitedPromise.promise.then(() => {
+            return this.nav && this.nav.setRoot(page);
+          });
+        }
+      } finally {
+        await (loadinger && loadinger.dismiss());
       }
-      // } finally {
-      //   await (loadinger && loadinger.dismiss());
-      // }
     } finally {
       // 还原临时对象
       this._currentOpeningPage = this.currentPage;
@@ -352,15 +431,15 @@ export class MyApp implements OnInit {
               console.log("Has permission?", result.hasPermission);
               if (!result.hasPermission) {
                 return this.androidPermissions.requestPermission(
-                  this.androidPermissions.PERMISSION.USE_FINGERPRINT,
+                  this.androidPermissions.PERMISSION.USE_FINGERPRINT
                 );
               }
               return result;
             },
             err =>
               this.androidPermissions.requestPermission(
-                this.androidPermissions.PERMISSION.USE_FINGERPRINT,
-              ),
+                this.androidPermissions.PERMISSION.USE_FINGERPRINT
+              )
           );
         this.has_finger_permission = permission && permission.hasPermission;
       }
@@ -382,7 +461,7 @@ export class MyApp implements OnInit {
         ? this.getTranslateSync(
             support_info === "face"
               ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME_WITH_FACE"
-              : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME",
+              : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_RESUME"
           )
         : this.getTranslateSync("IOS_CANCEL_AGAIN_WILL_LOGINOUT");
     try {
@@ -399,18 +478,18 @@ export class MyApp implements OnInit {
         fingerprint_use_backup: this.getTranslateSync("FINGERPRINT_USE_BACKUP"),
         fingerprint_ok: this.getTranslateSync("FINGERPRINT_OK"),
         fingerprint_description: this.getTranslateSync(
-          "FINGERPRINT_DESCRIPTION",
+          "FINGERPRINT_DESCRIPTION"
         ),
         fingerprint_hint: this.getTranslateSync("FINGERPRINT_HINT"),
         fingerprint_not_recognized: this.getTranslateSync(
-          "FINGERPRINT_NOT_RECOGNIZED",
+          "FINGERPRINT_NOT_RECOGNIZED"
         ),
         fingerprint_success: this.getTranslateSync("FINGERPRINT_SUCCESS"),
         new_fingerprint_enrolled_description: this.getTranslateSync(
-          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION",
+          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION"
         ),
         secure_lock_screen_required: this.getTranslateSync(
-          "SECURE_LOCK_SCREEN_REQUIRED",
+          "SECURE_LOCK_SCREEN_REQUIRED"
         ),
       });
       if (res.withPassword === true) {
@@ -436,7 +515,7 @@ export class MyApp implements OnInit {
       const dialog_title = this.getTranslateSync(
         support_info === "face"
           ? "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN_WITH_FACE"
-          : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN",
+          : "FINGERPRINT_AUTH_DIALOG_TITLE_FOR_LOGIN"
       );
       const res = await this.faio.show({
         clientId: this.userInfo.address + "@LOGIN",
@@ -446,24 +525,24 @@ export class MyApp implements OnInit {
         localizedReason: dialog_title,
         fingerprint_auth_dialog_title: dialog_title,
         fingerprint_cancel: this.getTranslateSync(
-          "FINGERPRINT_CANCEL_USER_OTHER_ACCOUNT",
+          "FINGERPRINT_CANCEL_USER_OTHER_ACCOUNT"
         ),
 
         fingerprint_use_backup: this.getTranslateSync("FINGERPRINT_USE_BACKUP"),
         fingerprint_ok: this.getTranslateSync("FINGERPRINT_OK"),
         fingerprint_description: this.getTranslateSync(
-          "FINGERPRINT_DESCRIPTION",
+          "FINGERPRINT_DESCRIPTION"
         ),
         fingerprint_hint: this.getTranslateSync("FINGERPRINT_HINT"),
         fingerprint_not_recognized: this.getTranslateSync(
-          "FINGERPRINT_NOT_RECOGNIZED",
+          "FINGERPRINT_NOT_RECOGNIZED"
         ),
         fingerprint_success: this.getTranslateSync("FINGERPRINT_SUCCESS"),
         new_fingerprint_enrolled_description: this.getTranslateSync(
-          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION",
+          "NEW_FINGERPRINT_ENROLLED_DESCRIPTION"
         ),
         secure_lock_screen_required: this.getTranslateSync(
-          "SECURE_LOCK_SCREEN_REQUIRED",
+          "SECURE_LOCK_SCREEN_REQUIRED"
         ),
       });
       if (res.withPassword === true) {
@@ -493,7 +572,7 @@ function onresize() {
   ]}</p>`;
   MyApp.WINDOW_MAX_HEIGHT = Math.max(
     MyApp.WINDOW_MAX_HEIGHT,
-    global.innerHeight,
+    global.innerHeight
   );
 }
 onresize();

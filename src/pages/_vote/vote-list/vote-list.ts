@@ -26,7 +26,7 @@ export class VoteListPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public minService: MinServiceProvider,
+    public minService: MinServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -89,7 +89,7 @@ export class VoteListPage extends SecondLevelPage {
           res.connected = false;
         });
         return res;
-      },
+      }
     );
   }
   @VoteListPage.didLeave
@@ -118,7 +118,7 @@ export class VoteListPage extends SecondLevelPage {
     return this.loadOutVoteList();
   }
   @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_OUT_VOTE_LIST_ERROR"),
+    VoteListPage.getTranslate("LOAD_OUT_VOTE_LIST_ERROR")
   )
   async loadOutVoteList(refresher?: Refresher) {
     const { out_vote_list_config } = this;
@@ -130,7 +130,7 @@ export class VoteListPage extends SecondLevelPage {
     }
   }
   @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_MORE_OUT_VOTE_LIST_ERROR"),
+    VoteListPage.getTranslate("LOAD_MORE_OUT_VOTE_LIST_ERROR")
   )
   async loadMoreOutVoteList() {
     this.out_vote_list.push(...(await this._loadOutVoteList()));
@@ -144,7 +144,7 @@ export class VoteListPage extends SecondLevelPage {
 
       const { delegates, skip, done } = await this.minService.getVotedDelegates(
         out_vote_list_config.skip,
-        out_vote_list_config.pageSize,
+        out_vote_list_config.pageSize
       );
       out_vote_list_config.skip = skip;
       out_vote_list_config.has_more = !done;
@@ -162,7 +162,7 @@ export class VoteListPage extends SecondLevelPage {
     return this.loadCanVoteList();
   }
   @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_CAN_VOTE_LIST_ERROR"),
+    VoteListPage.getTranslate("LOAD_CAN_VOTE_LIST_ERROR")
   )
   async loadCanVoteList(refresher?: Refresher) {
     const { can_vote_list_config } = this;
@@ -176,7 +176,7 @@ export class VoteListPage extends SecondLevelPage {
     }
   }
   @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_MORE_CAN_VOTE_LIST_ERROR"),
+    VoteListPage.getTranslate("LOAD_MORE_CAN_VOTE_LIST_ERROR")
   )
   async loadMoreCanVoteList() {
     this.can_vote_list.push(...(await this._getCanVoteList()));
@@ -193,7 +193,7 @@ export class VoteListPage extends SecondLevelPage {
         delegates,
       } = await this.minService.getVoteAbleDelegates(
         can_vote_list_config.skip,
-        can_vote_list_config.pageSize,
+        can_vote_list_config.pageSize
       );
 
       can_vote_list_config.skip = skip;
@@ -231,7 +231,7 @@ function cpuAverage(cpus: cpusStatus) {
 export function listenMacStatus(
   mac: MiningMachine,
   cpu_cb?: (cpu_usage: number) => void,
-  memory_cb?: (memory_usage: number, total: number, freeMem: number) => void,
+  memory_cb?: (memory_usage: number, total: number, freeMem: number) => void
 ) {
   const socket = SocketIO(`http://${mac.ip}:${mac.port}/systemInfo`, {
     transports: ["websocket"],
@@ -260,10 +260,10 @@ export function listenMacStatus(
         memory_cb(
           1 - data.memStatus.freeMem / data.memStatus.totalmem,
           data.memStatus.totalmem,
-          data.memStatus.freeMem,
+          data.memStatus.freeMem
         );
       }
-    },
+    }
   );
   socket.emit("systemStatus", {});
   return socket;

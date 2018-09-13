@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar color="transparent">
+    <ion-buttons>
+      <button class="modal-close-button" ion-button (click)="closeModal()">
+        <ion-icon name="ios-arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title>{{'ASSETS-GUIDE'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <ion-slides pager direction="vertical" (ionSlideDidChange)="slideChanged($event)" (ionSlideNextStart)="slideNextStart()" (ionSlideNextEnd)="slideNextEnd()" [class.changing]="_slide_changing">
+    <ion-slide class="s-1">
+      <div class="ani-conatiner"></div>
+      <h1 [innerHTML]="'ASSETS_GUIDE_SLIDE_1'|translate"> </h1>
+      <div class="arrow" (click)="slideToNext()"></div>
+    </ion-slide>
+    <ion-slide class="s-2">
+      <div class="ani-conatiner"></div>
+      <h1 [innerHTML]="'ASSETS_GUIDE_SLIDE_2'|translate"> </h1>
+      <div class="arrow" (click)="slideToNext()"></div>
+    </ion-slide>
+    <ion-slide class="s-3">
+      <div class="ani-conatiner"></div>
+      <h1 [innerHTML]="'ASSETS_GUIDE_SLIDE_3'|translate"> </h1>
+      <div class="arrow" (click)="slideToNext()"></div>
+    </ion-slide>
+    <ion-slide class="s-4">
+      <div class="ani-conatiner"></div>
+      <h1 [innerHTML]="'ASSETS_GUIDE_SLIDE_4'|translate"> </h1>
+      <div class="arrow" (click)="slideToNext()"></div>
+    </ion-slide>
+    <ion-slide class="s-5">
+      <div class="ani-conatiner"></div>
+      <h1 [innerHTML]="'ASSETS_GUIDE_SLIDE_5'|translate"> </h1>
+      <div class="arrow" (click)="slideToNext()"></div>
+    </ion-slide>
+    <ion-slide class="s-6">
+      <div class="ani-conatiner"></div>
+      <div class="ani-conatiner bootstrap-button-container"></div>
+      <!-- <h1 [innerHTML]="'ASSETS_GUIDE_SLIDE_5'|translate"> </h1> -->
+      <!-- <div class="arrow" (click)="slideToNext()"></div> -->
+    </ion-slide>
+  </ion-slides>
+</ion-content>

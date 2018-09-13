@@ -1,4 +1,5 @@
 export interface ContactModel {
+  _id: any;
   address: string;
   username: string;
 }
@@ -10,10 +11,7 @@ export interface ContactProModel extends ContactModel {
   remark?: string;
   image?: Blob;
 }
-export interface ContactModel {
-  address: string;
-  username: string;
-}
+
 export type MyContactResModel<
   CONFIRMED_CONTACT = ContactModel,
   UNCONFIRM_CONTACT = ContactModel

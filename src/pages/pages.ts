@@ -1,5 +1,6 @@
 // The page the user lands on after opening the app and without a session
 export const FirstRunPage = "tutorial";
+export const ScanLinkPeerPage = "scan-link-peer";
 export const LoginPage = "sign-in-and-sign-up";
 
 // The main page the user will see as they use the app over a long period of time.

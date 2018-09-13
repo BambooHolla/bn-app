@@ -24,7 +24,7 @@ export class AccountSettingsPage extends SecondLevelPage {
     public appSetting: AppSettingProvider,
     public loginService: LoginServiceProvider,
     public fetch: AppFetchProvider,
-    public faio: FingerprintAIO,
+    public faio: FingerprintAIO
   ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
@@ -40,7 +40,7 @@ export class AccountSettingsPage extends SecondLevelPage {
     });
 
   @asyncCtrlGenerator.error(() =>
-    AccountSettingsPage.getTranslate("SIGNING_OUT_ERROR"),
+    AccountSettingsPage.getTranslate("SIGNING_OUT_ERROR")
   )
   async quitAccount() {
     return this.loginService.loginOut();
@@ -55,7 +55,7 @@ export class AccountSettingsPage extends SecondLevelPage {
       onNoNeedUpdate: () => {
         this.showSuccessDialog(
           this.getTranslateSync("APP_IS_NEWEST_VERSION"),
-          "v" + AppSettingProvider.APP_VERSION,
+          "v" + AppSettingProvider.APP_VERSION
         );
       },
     });

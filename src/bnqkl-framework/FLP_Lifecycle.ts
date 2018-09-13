@@ -20,13 +20,19 @@ export class FLP_Lifecycle extends FLP_Tool
   instance_id = ++uuid;
   cname = this.constructor.name;
   PAGE_LEVEL = 1;
+  PAGE_STATUS_ENUM = PAGE_STATUS;
   PAGE_STATUS = PAGE_STATUS.UNLOAD;
 
   /** 注册视图层相关的事件
    *  注册后，在leave期间，事件不会触发，但会收集，等再次进入页面的时候按需更新一次
    *  这个函数主要是用来配合ChangeDetectorRef进行手动更新视图用的
    */
-  registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function) {
+  registerViewEvent(
+    emitter: EventEmitter,
+    evetname: string,
+    handle: Function,
+    is_run_when_bind?: boolean
+  ) {
     let should_emit: any = null;
     const proxy_handle = (...args) => {
       if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
@@ -55,6 +61,11 @@ export class FLP_Lifecycle extends FLP_Tool
         should_emit = null;
       }
     });
+    if (is_run_when_bind) {
+      this.event.once("didEnter", () => {
+        handle();
+      });
+    }
   }
 
   /** 广播视图层相关的事件
@@ -65,7 +76,7 @@ export class FLP_Lifecycle extends FLP_Tool
     emitter: EventEmitter,
     evetname: string,
     description?: string,
-    get_args?: Function | any[],
+    get_args?: Function | any[]
   ) {
     const emit = () => {
       if (get_args instanceof Function) {
@@ -80,7 +91,7 @@ export class FLP_Lifecycle extends FLP_Tool
       // 视图处于离线状态，监听视图激活
       const check_id = `${
         this.instance_id
-        }:notifyViewEvent:${evetname}:${description}`;
+      }:notifyViewEvent:${evetname}:${description}`;
       if (!emitter[check_id]) {
         emitter[check_id] = true;
         this.event.once("willEnter", () => {
@@ -142,6 +153,103 @@ export class FLP_Lifecycle extends FLP_Tool
 
   @FLP_Tool.FromGlobal myapp!: any;
   cdRef?: ChangeDetectorRef;
+  markForCheck() {
+    if (this.cdRef) {
+      let one_lock;
+      this.markForCheck = () => {
+        if (one_lock) {
+          return;
+        }
+        /*microtask，把这个任务放到事件循环的最后面来做，避免重复工作*/
+        one_lock = Promise.resolve().then(() => {
+          one_lock = undefined;
+          this._before_markForCheck();
+          this.cdRef!.markForCheck();
+        });
+      };
+      this.markForCheck();
+      return;
+    }
+  }
+  detectChanges() {
+    if (this.cdRef) {
+      let one_lock;
+      this.detectChanges = () => {
+        if (one_lock) {
+          return;
+        }
+        /*microtask，把这个任务放到事件循环的最后面来做，避免重复工作*/
+        one_lock = Promise.resolve().then(() => {
+          one_lock = undefined;
+          this._before_detectChanges();
+          this.cdRef!.detectChanges();
+        });
+      };
+      this.detectChanges();
+      return;
+    }
+  }
+  // 钩子函数
+  _before_markForCheck() {}
+  _before_detectChanges() {}
+
+  static markForCheck(
+    target: any,
+    name: string,
+    descriptor?: PropertyDescriptor
+  ) {
+    if (!descriptor) {
+      let val;
+      descriptor = {
+        get() {
+          return val;
+        },
+        set(v) {
+          if (v !== val) {
+            val = v;
+            this.markForCheck();
+          }
+        },
+      };
+      Object.defineProperty(target, name, descriptor);
+    } else if (descriptor.set) {
+      const srouce_set = descriptor.set;
+      descriptor.set = function(v) {
+        srouce_set.call(this, v);
+        this.markForCheck();
+      };
+    }
+    // return descriptor;
+  }
+  static detectChanges(
+    target: any,
+    name: string,
+    descriptor?: PropertyDescriptor
+  ) {
+    if (!descriptor) {
+      let val;
+      descriptor = {
+        get() {
+          return val;
+        },
+        set(v) {
+          if (v !== val) {
+            val = v;
+            this.detectChanges();
+          }
+        },
+      };
+      Object.defineProperty(target, name, descriptor);
+    } else if (descriptor.set) {
+      const srouce_set = descriptor.set;
+      descriptor.set = function(v) {
+        srouce_set.call(this, v);
+        this.detectChanges();
+      };
+    }
+    // return descriptor;
+  }
+
   ionViewDidEnter() {
     this.PAGE_STATUS = PAGE_STATUS.DID_ENTER;
     if (this.cdRef instanceof ChangeDetectorRef) {
@@ -194,12 +302,12 @@ export class FLP_Lifecycle extends FLP_Tool
   dispatchEvent(
     fire_event_name: "HEIGHT:CHANGED",
     height: number,
-    is_init: boolean,
+    is_init: boolean
   ): void;
   dispatchEvent(
     fire_event_name: "ROUND:CHANGED",
     height: number,
-    is_init: boolean,
+    is_init: boolean
   ): void;
   dispatchEvent(fire_event_name: string, ...args: any[]) {
     console.group(
@@ -233,7 +341,7 @@ export class FLP_Lifecycle extends FLP_Tool
   static afterContentInit(
     target: any,
     name: string,
-    descriptor?: PropertyDescriptor,
+    descriptor?: PropertyDescriptor
   ) {
     FLP_Tool.addProtoArray(target, "afterContentInit", name);
     return descriptor;
@@ -276,18 +384,18 @@ export class FLP_Lifecycle extends FLP_Tool
     return function(
       target: any,
       handle_name: string,
-      descriptor?: PropertyDescriptor,
+      descriptor?: PropertyDescriptor
     ) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
       return descriptor;
     };
   }
   static addEventAfterDidEnter(event_name: string) {
-    const after_did_enter = Symbol.for("addEventAfterDidEnter:" + event_name);
+    const after_did_enter = Symbol("addEventAfterDidEnter:" + event_name);
     return function(
       target: any,
       handle_name: string,
-      descriptor?: PropertyDescriptor,
+      descriptor?: PropertyDescriptor
     ) {
       if (!target[after_did_enter]) {
         // 只执行一次

@@ -16,8 +16,12 @@ export class MaskPipe implements PipeTransform {
       if (type === "address") {
         if (value === this.userInfo.address) {
           return `<span class="address-is-me">${FLP_Tool.getTranslateSync(
-            "ME",
+            "ME"
           )}</span>`;
+        }
+        const TA_address = args[1];
+        if (TA_address && value === TA_address) {
+          return `<span class="address-is-ta">TA</span>`;
         }
         return (
           value.substr(0, 4) +
@@ -25,7 +29,17 @@ export class MaskPipe implements PipeTransform {
           value.substr(-4)
         );
       }
+      if (type === "fulladdress") {
+        if (value === this.userInfo.address) {
+          return `<span class="address-is-me">${FLP_Tool.getTranslateSync(
+            "ME"
+          )}</span>`;
+        }
+      }
       if (type === "ip") {
+        if (value === "publish.ifmchain.org") {
+          return FLP_Tool.getTranslateSync("CREATION_NODE");
+        }
         const ipinfo = value.split(".");
         if (ipinfo.length == 4) {
           ipinfo.splice(1, 2, "<span class='hide-content'>⁎⁎</span>");

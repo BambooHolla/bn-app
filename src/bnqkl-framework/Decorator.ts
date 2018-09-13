@@ -25,6 +25,7 @@ import {
 } from "./FLP_Tool";
 export { formatAndTranslateMessage, translateMessage };
 import { AbortError, PromiseOut } from "./PromiseExtends";
+import { afCtrl } from "./helper";
 
 function getTranslateSync(key: string | string[], interpolateParams?: Object) {
   return window["translate"].instant(key, interpolateParams);
@@ -47,8 +48,8 @@ export function asyncErrorWrapGenerator(
   keep_throw = false,
   dialogGenerator?: (
     params,
-    self: FLP_Tool,
-  ) => Modal | Alert | Promise<Modal> | Promise<Alert>,
+    self: FLP_Tool
+  ) => Modal | Alert | Promise<Modal> | Promise<Alert>
 ) {
   return function asyncErrorWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
@@ -84,12 +85,15 @@ export function asyncErrorWrapGenerator(
             err_msg = err + "";
           }
           console.group("CATCH BY asyncErrorWrapGenerator:");
+          err &&
+            err.CODE &&
+            console.log(`%c${err.CODE}`, "color:red;background:pink");
           console.warn(err);
           console.groupEnd();
           if (hidden_when_page_leaved && page_leaved) {
             console.log(
               "%c不弹出异常提示因为页面的切换 " + (this.cname || ""),
-              "color:yellow",
+              "color:yellow"
             );
             return getErrorFromAsyncerror(keep_throw);
           }
@@ -100,7 +104,7 @@ export function asyncErrorWrapGenerator(
               console.warn(
                 "需要在",
                 target.constructor.name,
-                "中注入 AlertController 依赖",
+                "中注入 AlertController 依赖"
               );
               dialogGenerator = (params: { title: string }) => {
                 return {
@@ -123,6 +127,7 @@ export function asyncErrorWrapGenerator(
           const _dialogGenerator = dialogGenerator;
 
           error_title = translateMessage(error_title, err);
+          err_msg = translateMessage(err_msg, err);
 
           Promise.all([
             error_title,
@@ -136,11 +141,11 @@ export function asyncErrorWrapGenerator(
             ]) => {
               const dialog_opts = Object.assign(
                 {
-                  title: String(error_title),
-                  subTitle: String(err_msg),
+                  title: String(err_msg),
+                  subTitle: String(error_title),
                   buttons: [getTranslateSync("CONFIRM")],
                 },
-                opts,
+                opts
               );
               const present_able = _dialogGenerator(dialog_opts, this);
               Promise.resolve<Modal | Alert>(present_able).then(p => {
@@ -153,7 +158,7 @@ export function asyncErrorWrapGenerator(
                     ERROR_LAYER_MAP.set(p_key, p);
                     p.present();
                     p.onDidDismiss(() => {
-                      FLP_Tool.raf(() => {
+                      afCtrl.raf(() => {
                         ERROR_LAYER_MAP.delete(p_key);
                       });
                     });
@@ -162,7 +167,7 @@ export function asyncErrorWrapGenerator(
                   }
                 }
               });
-            },
+            }
           );
           return getErrorFromAsyncerror(keep_throw);
         });
@@ -175,7 +180,7 @@ export function asyncSuccessWrapGenerator(
   success_msg: any = () => FLP_Tool.getTranslate("SUCCESS"),
   position = "bottom",
   duration = 3000,
-  hidden_when_page_leaved = true,
+  hidden_when_page_leaved = true
 ) {
   return function asyncSuccessWrap(target, name, descriptor) {
     const source_fun = descriptor.value;
@@ -206,7 +211,7 @@ export function asyncSuccessWrapGenerator(
             console.warn(
               "需要在",
               target.constructor.name,
-              "中注入 ToastController 依赖",
+              "中注入 ToastController 依赖"
             );
             alert(String(success_msg));
           } else {
@@ -242,7 +247,7 @@ export function asyncLoadingWrapGenerator(
   check_prop_before_present?: string,
   opts?: LoadingOptions & { dismiss_hanlder_name?: string },
   id?: string,
-  export_to_proto_name?: string,
+  export_to_proto_name?: string
 ) {
   if (id) {
     var id_info = loadingIdLock.get(id);
@@ -263,7 +268,7 @@ export function asyncLoadingWrapGenerator(
       const loadingCtrl: LoadingController = this.loadingCtrl;
       if (!(loadingCtrl instanceof LoadingController)) {
         throw new Error(
-          target.constructor.name + " 缺少 LoadingController 依赖",
+          target.constructor.name + " 缺少 LoadingController 依赖"
         );
       }
       // 创建loading
@@ -276,9 +281,12 @@ export function asyncLoadingWrapGenerator(
       const loadingOpts = Object.assign(
         {
           content: String(loading_msg),
-          cssClass: (this.PAGE_LEVEL | 0) > 1 ? "can-goback" : "",
+          cssClass:
+            (this.PAGE_LEVEL | 0) > 1
+              ? "can-goback blockchain-loading"
+              : "blockchain-loading",
         },
-        opts,
+        opts
       );
       const loading = loadingCtrl.create(loadingOpts);
       if (export_to_proto_name !== undefined) {
@@ -308,7 +316,7 @@ export function asyncLoadingWrapGenerator(
         loading.present();
         const checkLoadingPageRef = () => {
           if (!loading.pageRef()) {
-            return FLP_Tool.raf(checkLoadingPageRef);
+            return afCtrl.raf(checkLoadingPageRef);
           }
           if (
             this.content instanceof Content &&
@@ -316,10 +324,9 @@ export function asyncLoadingWrapGenerator(
           ) {
             const loadingEle = loading.pageRef().nativeElement;
             loadingEle.style.marginTop = this.content._hdrHeight + "px";
-            console.log(loadingEle, this.content._hdrHeight);
           }
         };
-        FLP_Tool.raf(checkLoadingPageRef);
+        afCtrl.raf(checkLoadingPageRef);
       };
       const loading_present = (...args) => {
         if (id_info) {
@@ -377,7 +384,7 @@ export function asyncLoadingWrapGenerator(
           run_loading_present(true);
           this.event.on("didEnter", run_loading_present);
         } else {
-          debugger;
+          // debugger;
         }
       } else {
         console.warn("loading修饰器请与FirstLevelPage或者其子类搭配使用最佳");
@@ -408,7 +415,7 @@ export function autoRetryWrapGenerator(
         max_retry_seconed?: number;
         max_retry_times?: number;
       },
-  onAbort?: Function,
+  onAbort?: Function
 ) {
   var max_retry_seconed = 16;
   var max_retry_times = 5; // 默认最多重试5次
@@ -481,7 +488,7 @@ export function autoRetryWrapGenerator(
   };
 }
 
-export function singleRunWrap(opts: { update_key?: string } = {}) {
+export function singleRunWrap(opts: { lock_prop_key?: string } = {}) {
   return function(target, name, descriptor) {
     const source_fun = descriptor.value;
     var run_lock: PromiseOut<any> | undefined;
@@ -489,8 +496,8 @@ export function singleRunWrap(opts: { update_key?: string } = {}) {
       if (run_lock) {
         return run_lock.promise;
       }
-      if (opts.update_key) {
-        this[opts.update_key] = true;
+      if (opts.lock_prop_key) {
+        this[opts.lock_prop_key] = true;
       }
       run_lock = new PromiseOut();
       const promise = run_lock.promise;
@@ -501,8 +508,8 @@ export function singleRunWrap(opts: { update_key?: string } = {}) {
         run_lock.reject(err);
       } finally {
         run_lock = undefined;
-        if (opts.update_key) {
-          this[opts.update_key] = false;
+        if (opts.lock_prop_key) {
+          this[opts.lock_prop_key] = false;
         }
       }
       return promise;
@@ -512,9 +519,78 @@ export function singleRunWrap(opts: { update_key?: string } = {}) {
   };
 }
 
-export function queneTask() {}
+/** 确保一个时间点内只有一个任务在执行
+ *  这个工具函数，主要是因为在读取数据的同时还要写入数据，所以模拟了原子性，将任务排队。
+ *  还有一种场景，就是注册触发函数，被动触发的函数可能会有多个入口
+ *  ，在一些极端情况下，这些入口可能会被同时触发，这时候就需要将这些任务进行合并
+ */
+export function queneTask(
+  opts: {
+    // 在开始执行的时候，对某个参数进行true赋值
+    lock_prop_key?: string;
+    // 多个任务一起排队时，最多允许几个任务在队列中，自动将后面的任务合并成一个任务
+    // 如果为1，那么意味着如果当前有任务在跑，后面的任务都会使用这个的返回值（等同于singleRunWrap），如果为2，就等于最多有两个在队列，一个在跑，一个在等，其它使用第二个的结果
+    can_mix_queue?: number;
+  } = {}
+) {
+  return function(target, name, descriptor) {
+    const source_fun = descriptor.value;
+    var run_lock: Promise<any> = Promise.resolve();
+    var queue_num = 0;
+    descriptor.value = async function queue(...args) {
+      const { lock_prop_key } = opts;
+      queue_num += 1;
+      if (lock_prop_key) {
+        this[lock_prop_key] = true;
+      }
+      const resolve = res => {
+        if (lock_prop_key) {
+          this[lock_prop_key] = false;
+        }
+        queue_num -= 1;
+        return res;
+      };
+      const reject = err => {
+        throw resolve(err);
+      };
+      // 任务合并
+      if (opts.can_mix_queue && queue_num > opts.can_mix_queue) {
+        return run_lock.then(resolve, reject);
+      }
+      return (run_lock = run_lock
+        .then(per_res => source_fun.apply(this, args))
+        .then(resolve, reject));
+    };
+    descriptor.value.source_fun = source_fun;
+    return descriptor;
+  };
+}
+
+export function tttttap(opts: { times: number } = { times: 5 }) {
+  return function(target, name, descriptor) {
+    var tap_times = 0;
+    var per_tap_time = 0;
+    const source_fun = descriptor.value;
+    descriptor.value = function tttttap(...args) {
+      const cur_tap_time = Date.now();
+      if (cur_tap_time - per_tap_time > 500) {
+        // 两次点击的间隔不能多余半秒，否则重置计数
+        tap_times = 0;
+      }
+      per_tap_time = cur_tap_time;
+      tap_times += 1;
+      if (tap_times === opts.times) {
+        return source_fun.apply(this, args);
+      }
+    };
+    descriptor.value.source_fun = source_fun;
+    return descriptor;
+  };
+}
 
 export const asyncCtrlGenerator = {
+  tttttap: tttttap,
+  queue: queneTask,
   single: singleRunWrap,
   success: asyncSuccessWrapGenerator,
   loading: asyncLoadingWrapGenerator,
@@ -524,7 +600,7 @@ export const asyncCtrlGenerator = {
     error_title?: any,
     opts?: ErrorOptions,
     hidden_when_page_leaved?: boolean,
-    keep_throw?: boolean,
+    keep_throw?: boolean
   ) {
     return asyncErrorWrapGenerator(
       error_title,
@@ -540,10 +616,10 @@ export const asyncCtrlGenerator = {
               params.subTitle +
               "\n" +
               params.message
-            ).trim(),
+            ).trim()
           );
           throw new TypeError(
-            "asyncErrorWrapGenerator must within FLP_TOOL subclass",
+            "asyncErrorWrapGenerator must within FLP_TOOL subclass"
           );
         }
         const buttons = params.buttons;
@@ -559,9 +635,9 @@ export const asyncCtrlGenerator = {
           params.subTitle,
           params.message,
           params.buttons,
-          false,
+          false
         );
-      },
+      }
     );
   },
   warning(
@@ -571,7 +647,7 @@ export const asyncCtrlGenerator = {
       | ((self: FLP_Tool) => AlertOptions)
       | ((self: FLP_Tool) => Promise<AlertOptions>),
     hidden_when_page_leaved?: boolean,
-    keep_throw?: boolean,
+    keep_throw?: boolean
   ) {
     return asyncErrorWrapGenerator(
       error_title,
@@ -592,9 +668,9 @@ export const asyncCtrlGenerator = {
           params.subTitle,
           params.message,
           params.buttons,
-          false,
+          false
         );
-      },
+      }
     );
   },
 };

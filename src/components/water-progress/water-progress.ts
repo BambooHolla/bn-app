@@ -186,7 +186,7 @@ export class WaterProgressComponent extends AniBase {
           return (
             (v * 0.3 +
               Math.sin(
-                ((_step * (j + 1)) / lines.length + xv + j * 2) * Math.PI * 2,
+                ((_step * (j + 1)) / lines.length + xv + j * 2) * Math.PI * 2
               ) *
                 0.7) *
               wave_height +
@@ -216,7 +216,7 @@ export class WaterProgressComponent extends AniBase {
           next_x,
           next_y,
           ((len + 1) / len) * W,
-          base_height,
+          base_height
         );
         ctx.lineTo(W, H);
         ctx.lineTo(0, H);

@@ -21,8 +21,69 @@
     </div>
   </div>
   <div class="news-list">
-    <div class="flag">IFMCHAIN新闻</div>
+
+    <div class="flag-line"><div class="flag">IFMCHAIN新闻</div></div>
     <div class="news-item" *ngFor="let news of news_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
+      <div class="title">{{news.title}}</div>
+      <div class="base-info">
+        <!-- <div class="public-time">
+          {{news.public_time}}
+        </div> -->
+        <div class="author">
+          {{news.author}}
+        </div>
+      </div>
+      <div [ngSwitch]="news.type" class="cover-wrapper" [ngClass]="news.type">
+        <ng-container *ngSwitchCase="'simple-html'">
+          <div class="cover" *ngIf="news.cover_image_url">
+            <img [src]="news.cover_image_url" alt="news.title">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'embed'">
+          <div class="cover" [innerHTML]="news.html">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'video'">
+          <video class="cover" [src]="news.url" [poster]="news.poster" controls="true">
+          </video>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="ee-line"></div>
+
+    <div class="flag-line"><div class="flag">IFMCHAIN发布</div></div>
+    <div class="news-item" *ngFor="let news of video_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
+      <div class="title">{{news.title}}</div>
+      <div class="base-info">
+        <!-- <div class="public-time">
+          {{news.public_time}}
+        </div> -->
+        <div class="author">
+          {{news.author}}
+        </div>
+      </div>
+      <div [ngSwitch]="news.type" class="cover-wrapper" [ngClass]="news.type">
+        <ng-container *ngSwitchCase="'simple-html'">
+          <div class="cover" *ngIf="news.cover_image_url">
+            <img [src]="news.cover_image_url" alt="news.title">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'embed'">
+          <div class="cover" [innerHTML]="news.html">
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchCase="'video'">
+          <video class="cover" [src]="news.url" [poster]="news.poster" controls="true">
+          </video>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="ee-line"></div>
+
+    <div class="flag-line"><div class="flag">IFMCHAIN获奖</div></div>
+    <div class="news-item" *ngFor="let news of award_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
       <div class="base-info">
         <!-- <div class="public-time">
@@ -51,9 +112,12 @@
   </div>
   <div class="footer">
     <ali-icon name="ifm-youjian"></ali-icon>
-    <a href="mailto:ifmteam@ifmchain.com">商务合作：ifmteam@ifmchain.com</a>
-    <a href="mailto:service@ifmchain.com">用户服务：service@ifmchain.com</a>
+    <div class="link-line" (click)="doBusinessCooperation($event)" data-href="mailto:ifmteam@ifmchain.com">
+      <span class="label">商务合作:</span>ifmteam@ifmchain.com</div>
+    <div class="link-line" (click)="doUserService($event)" data-href="mailto:service@ifmchain.com">
+      <span class="label">用户服务:</span>service@ifmchain.com</div>
     <ali-icon name="ifm-shequ"></ali-icon>
-    <a target="_blank" href="http://github.com/ifmchain">开发者社区：github.com/ifmchain</a>
+    <a class="link-line" target="_blank" href="http://github.com/ifmchain">
+      <span class="label">开发者社区:</span>github.com/ifmchain</a>
   </div>
 </ion-content>

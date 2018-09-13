@@ -29,7 +29,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
     // public accountService: AccountServiceProvider,
     public contactService: ContactServiceProvider,
     public viewCtrl: ViewController,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
     // this.auto_header_shadow_when_scroll_down = true;
@@ -89,7 +89,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
         this.isArrayDiff(
           this.unconfirm_contact_list,
           unconfirm_contact_list,
-          contact_parser,
+          contact_parser
         )
       ) {
         this.unconfirm_contact_list = unconfirm_contact_list;
@@ -98,13 +98,13 @@ export class AccountMyContactsPage extends SecondLevelPage {
         this.isArrayDiff(
           this.confirmed_contact_list,
           confirmed_contact_list,
-          contact_parser,
+          contact_parser
         )
       ) {
         this.confirmed_contact_list = confirmed_contact_list;
         // 将已有的联系人进行分组
         const grouped_contact = this.contactService.contactGroup(
-          confirmed_contact_list,
+          confirmed_contact_list
         );
         this.my_contact_list = grouped_contact;
       }
@@ -119,11 +119,11 @@ export class AccountMyContactsPage extends SecondLevelPage {
         this._ignoreUnconfirmContact(contact);
       },
       undefined,
-      true,
+      true
     );
   }
   @asyncCtrlGenerator.error(() =>
-    AccountMyContactsPage.getTranslate("IGNORE_UNCONFIRM_CONTACT_ERROR"),
+    AccountMyContactsPage.getTranslate("IGNORE_UNCONFIRM_CONTACT_ERROR")
   )
   private _ignoreUnconfirmContact(contact: ContactModel) {
     return this.contactService.ignoreContact(contact.address);
@@ -138,7 +138,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
       password,
       contact.address,
       pay_pwd,
-      custom_fee,
+      custom_fee
     );
   }
   @asyncCtrlGenerator.error()
@@ -151,52 +151,52 @@ export class AccountMyContactsPage extends SecondLevelPage {
       password,
       contact.address,
       pay_pwd,
-      custom_fee,
+      custom_fee
     );
   }
   @asyncCtrlGenerator.error(() =>
-    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_ERROR"),
+    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_ERROR")
   )
   @asyncCtrlGenerator.loading(() =>
-    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMITING"),
+    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMITING")
   )
   @asyncCtrlGenerator.success(() =>
-    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_SUCCESS"),
+    AccountMyContactsPage.getTranslate("ADD_CONTACT_SUBMIT_SUCCESS")
   )
   async _addUnconfirmContact(
     password: string,
     address: string,
     pay_pwd?: string,
-    custom_fee?: number,
+    custom_fee?: number
   ) {
     return this.contactService.addContact(
       password,
       address,
       pay_pwd,
-      custom_fee,
+      custom_fee
     );
   }
   @asyncCtrlGenerator.error(() =>
-    AccountMyContactsPage.getTranslate("REMOVE_CONTACT_SUBMIT_ERROR"),
+    AccountMyContactsPage.getTranslate("REMOVE_CONTACT_SUBMIT_ERROR")
   )
   @asyncCtrlGenerator.loading(() =>
-    AccountMyContactsPage.getTranslate("REMOVE_CONTACT_SUBMITING"),
+    AccountMyContactsPage.getTranslate("REMOVE_CONTACT_SUBMITING")
   )
   @asyncCtrlGenerator.success(() =>
-    AccountMyContactsPage.getTranslate("REMOVE_CONTACT_SUBMIT_SUCCESS"),
+    AccountMyContactsPage.getTranslate("REMOVE_CONTACT_SUBMIT_SUCCESS")
   )
   async _removeConfirmedContact(
     password: string,
     address: string,
     pay_pwd?: string,
-    custom_fee?: number,
+    custom_fee?: number
   ) {
     return this.contactService.addContact(
       password,
       address,
       pay_pwd,
       custom_fee,
-      "-",
+      "-"
     );
   }
 
@@ -205,7 +205,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
       this.getTranslateSync("CONFIRM_TO_REMOVE_CONTACT"),
       () => {
         this.removeConfirmedContact(concat);
-      },
+      }
     );
   }
   private _deleteContact(contact: ContactModel) {
@@ -215,7 +215,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   // TODO: 这个页面不根据高度实时刷新，因为可能是一个大列表
   @AccountMyContactsPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error(
-    "更新联系人列表失败，重试次数过多，已停止重试，请检测网络",
+    "更新联系人列表失败，重试次数过多，已停止重试，请检测网络"
   )
   @asyncCtrlGenerator.retry()
   watchHeightChanged() {
@@ -223,30 +223,13 @@ export class AccountMyContactsPage extends SecondLevelPage {
   }
 
   /*隐藏功能*/
-  tap_times = 0;
-  per_tap_time = 0;
-  tryShowUserBalance(address: string) {
-    const cur_tap_time = Date.now();
-    if (cur_tap_time - this.per_tap_time > 500) {
-      // 两次点击的间隔不能多余半秒，否则重置计数
-      this.tap_times = 0;
-    }
-    this.per_tap_time = cur_tap_time;
-    this.tap_times += 1;
-    if (this.tap_times === 5) {
-      try {
-        this.queryUserBalance(address);
-      } catch (err) {
-        alert("配置失败：" + err.message);
-      }
-    }
-  }
+  @asyncCtrlGenerator.tttttap()
   @asyncCtrlGenerator.loading("账户查询中")
-  @asyncCtrlGenerator.loading("账户查询失败")
-  async queryUserBalance(address: string) {
+  @asyncCtrlGenerator.error("账户查询失败")
+  async tryShowUserBalance(address: string) {
     const account = await this.accountService.getAccountByAddress(address);
     await this.showSuccessDialog(
-      (parseFloat(account.balance) / 1e8).toFixed(8),
+      (parseFloat(account.balance) / 1e8).toFixed(8)
     );
   }
 }

@@ -16,7 +16,7 @@ export class FeeInputPage extends FirstLevelPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public viewCtrl: ViewController,
+    public viewCtrl: ViewController
   ) {
     super(navCtrl, navParams);
   }
@@ -70,5 +70,9 @@ export class FeeInputPage extends FirstLevelPage {
       custom_fee: this.formData.custom_fee,
     };
     this.viewCtrl.dismiss(formData);
+  }
+
+  closeDialog() {
+    this.viewCtrl.dismiss();
   }
 }

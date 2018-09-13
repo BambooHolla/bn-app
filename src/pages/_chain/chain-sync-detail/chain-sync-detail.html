@@ -1,0 +1,124 @@
+<ion-header>
+  <ion-navbar color="transparent">
+    <ion-title>{{'CHAIN-SYNC-DETAIL'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="progress-wrapper">
+    <sync-progress-spinner class="spinner"></sync-progress-spinner>
+    <div class="sync-progress-detail">
+      <div class="item sync-blocks">
+        <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
+        </i>
+        </i>
+        <div class="label">{{'SYNC_BLOCKS'|translate}}</div>
+        <div class="progress">
+          <ng-container *ngIf="enable_sync_progress_blocks">
+            {{toFixed(sync_progress_blocks,2,2)}}%
+          </ng-container>
+          <ng-container *ngIf="!enable_sync_progress_blocks">
+            {{'SYNC_DISABLED'|translate}}
+          </ng-container>
+        </div>
+      </div>
+      <div class="item sync-transactions">
+        <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
+        </i>
+        </i>
+        <div class="label">{{'SYNC_TRANSACTIONS'|translate}}</div>
+        <div class="progress">
+          <ng-container *ngIf="enable_sync_progress_transactions">
+            {{toFixed(sync_progress_transactions,2,2)}}%
+          </ng-container>
+          <ng-container *ngIf="!enable_sync_progress_transactions">
+            {{'SYNC_DISABLED'|translate}}
+          </ng-container>
+        </div>
+      </div>
+      <div class="item sync-equitys">
+        <i class="dot"><i class="l1"><i class="l2"><i class="l3"></i></i>
+        </i>
+        </i>
+        <div class="label">{{'SYNC_EQUITYS'|translate}}</div>
+        <div class="progress">
+          <ng-container *ngIf="enable_sync_progress_equitys">
+            {{toFixed(sync_progress_equitys,2,2)}}%
+          </ng-container>
+          <ng-container *ngIf="!enable_sync_progress_equitys">
+            {{'SYNC_DISABLED'|translate}}
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="general-progress">
+      <div class="value">
+        <span class="left"></span>
+        <span class="center">{{general_progress}}</span>
+        <span class="right unit">%</span>
+      </div>
+      <div class="label">{{'GENERAL_PROGRESS'|translate}}</div>
+    </div>
+    <div class="peer-num" (click)="openLinkedPeerList()">
+      <div class="label">{{'NUMBER_OF_PEERS'|translate}}</div>
+      <div class="value">1</div>
+    </div>
+  </div>
+  <div class="extends-info">
+    <div class="top header">
+      <ali-icon name="ifm-start-time"></ali-icon>
+      <ng-container *ngIf="delay_ms">
+        {{'SYNC_DELAY_TIME'|translate}}
+      </ng-container>
+      <ng-container *ngIf="!delay_ms">
+        {{'BLOCKCHAIN_INTEGRITY'|translate}}
+      </ng-container>
+    </div>
+    <div class="center">
+      <ng-container *ngIf="sync_is_verifying_block;else showSyncDelayTimeInfo">
+        <text-gradient [text]="'VERIFYING_BLOCK'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
+      </ng-container>
+      <ng-template #showSyncDelayTimeInfo>
+        <ng-container *ngIf="is_calcing_delay_time;else SyncDelayTimeInfo">
+          <text-gradient [text]="'CALCING_SYNC_DELAY_TIME'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
+        </ng-container>
+        <ng-template #SyncDelayTimeInfo>
+          <ng-container *ngFor="let time_info of sync_delay_time;trackBy:listTrackBy">
+            <div class="value">
+              <!-- {{time_info.value}} -->
+              <text-gradient [text]="time_info.value" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
+            </div>
+            <div class="unit">
+              {{time_info.unit|translate}}
+            </div>
+          </ng-container>
+        </ng-template>
+      </ng-template>
+    </div>
+    <div class="bottom">
+      <div class="left">
+        <div class="label">
+          <ali-icon name="ifm-resize-height"></ali-icon>
+          {{'CURRENT_BLOCKCHAIN_HEIGHT'|translate}}
+        </div>
+        <div class="detail">
+          {{sync_progress_height}}
+        </div>
+      </div>
+      <div class="center"></div>
+      <div class="right">
+        <div class="label">
+          <ali-icon name="ifm-liuliang"></ali-icon>
+          {{'SYNCHRONOUS_TRAFFIC'|translate}}
+        </div>
+        <div class="detail">
+          {{sync_data_flow_info.value}}{{sync_data_flow_info.unit}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <button class="sync-background" (click)="syncInBackground()">
+      <span class="inner">{{'SYNC_BACKGROUND'|translate}}</span>
+    </button>
+  </div>
+</ion-content>

@@ -190,7 +190,7 @@ const createGroupByRefFn = (next, expr, steps) => {
 
       return group_doc;
     },
-    { length: 1 },
+    { length: 1 }
   );
 
   const { ast } = expr;

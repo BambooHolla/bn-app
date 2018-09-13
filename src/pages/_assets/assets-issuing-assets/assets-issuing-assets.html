@@ -1,0 +1,131 @@
+<ion-header [backdrop-blur]=5>
+  <ion-navbar color="transparent">
+    <ion-title>{{'ASSETS-ISSUING-ASSETS'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content #content>
+  <div id="new_assets_form" class="common-form new-assets-form">
+    <div class="logo-wrapper">
+      <div class="assets-logo-shape-wrapper">
+        <button mat-button class="assets-logo-shape logo-uploader" (click)="pickAssetsLogo()">
+          <ng-container *ngIf="!formData.logo;else showLogo">
+            <ali-icon name="ifm-zengjia"></ali-icon>
+          </ng-container>
+          <ng-template #showLogo>
+            <img [src]="domSanitizer.bypassSecurityTrustUrl(formData.logo)" alt="LOGO">
+          </ng-template>
+        </button>
+      </div>
+      <!-- <div class="label">{{'UPLOAD_LOGO_IMAGE'|translate}}</div> -->
+      <div class="delegate-extends">
+        <ng-container *ngIf="!userInfo.isDelegate;else delegateAddress">
+          <button mat-button class="apply-delegate" (click)="applyToAsDelegate()">
+            <span class="left">
+              <span class="icon-wrapper">
+                <ali-icon name="ifm-dagou"></ali-icon>
+              </span>
+            </span>
+            <span class="right">{{'BECOME_A_DELEGATE'|translate}}</span>
+          </button>
+          <div class="tip">{{'BECOME_A_DELEGATE_TIP'|translate}}</div>
+        </ng-container>
+        <ng-template #delegateAddress>
+          <div class="into-delegate-wrapper">
+            <button mat-button class="into-delegate" (click)="routeTo('vote-delegate-detail',{publicKey:userInfo.publicKey})">
+              <span class="left">
+                <span class="icon-wrapper">
+                  <ali-icon name="ifm-kuanggong"></ali-icon>
+                </span>
+              </span>
+              <span class="right">{{userInfo.address}}</span>
+            </button>
+            <button mat-button class="into-delegate">
+              <span class="left">
+                <span class="icon-wrapper">
+                  <ali-icon name="ifm-kuanggong"></ali-icon>
+                </span>
+              </span>
+              <span class="right">{{userInfo.address}}</span>
+            </button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <!-- <div class="mat-container assetName">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETNAME'|translate" [(ngModel)]="formData.assetName" set-input-status="assetName"  [errorStateMatcher]="matFormMatcherFactory('assetName')">
+      </mat-form-field>
+    </div> -->
+    <div class="mat-container abbreviation">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETS_ABBREVIATION'|translate" minlength="3" maxlength="5" [(ngModel)]="formData.abbreviation" set-input-status="abbreviation" [errorStateMatcher]="matFormMatcherFactory('abbreviation')">
+        <mat-error *ngIf="errors?.abbreviation?.WRONG_CHAR">
+          {{errors.abbreviation.WRONG_CHAR|translate}}
+        </mat-error>
+        <mat-error *ngIf="errors?.abbreviation?.TOO_SHORT">
+          {{errors.abbreviation.TOO_SHORT|translate}}
+        </mat-error>
+        <mat-error *ngIf="errors?.abbreviation?.TOO_LONG">
+          {{errors.abbreviation.TOO_LONG|translate}}
+        </mat-error>
+      </mat-form-field>
+      <div class="tip">
+        <ali-icon name="ifm-dialog-warning"></ali-icon>
+        {{'ASSETS_ABBREVIATION_TIP'|translate}}
+      </div>
+    </div>
+    <div class="mat-container genesisAddress">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_ASSETS_GENESISADDRESS'|translate" minlength="34" maxlength="34" [(ngModel)]="formData.genesisAddress" set-input-status="genesisAddress" [errorStateMatcher]="matFormMatcherFactory('genesisAddress')">
+        <button matSuffix mat-icon-button (click)="routeTo('pay-select-my-local-contacts',{auto_return:true,mode:'select-address'})">
+          <ali-icon name="ifm-tongxunlu"></ali-icon>
+        </button>
+        <mat-error *ngIf="errors?.genesisAddress?.WRONG_ADDRESS">
+          {{errors.genesisAddress.WRONG_ADDRESS|translate}}
+        </mat-error>
+      </mat-form-field>
+      <div class="tip">
+        <ali-icon name="ifm-dialog-warning"></ali-icon>
+        {{'ASSETS_GENESISADDRESS_TIP'|translate}}
+      </div>
+    </div>
+    <div class="mat-container expectedIssuedAssets">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'ASSETS_expectedIssuedAssets'|translate" type="number" [(ngModel)]="formData.expectedIssuedAssets" set-input-status="expectedIssuedAssets" [errorStateMatcher]="matFormMatcherFactory('expectedIssuedAssets')">
+        <mat-error *ngIf="errors?.expectedIssuedAssets?.RATE_TOO_LARGE">
+          {{errors.expectedIssuedAssets.WRONG_RANGE|translate}}
+        </mat-error>
+        <mat-hint *ngIf="isCN" align="end">
+          {{'CAPITALIZATION_OF_ASSETS'|translate}}: {{DX(formData.expectedIssuedAssets)}}
+        </mat-hint>
+      </mat-form-field>
+      <div class="tip">
+        <ali-icon name="ifm-dialog-warning"></ali-icon>
+        {{'ASSETS_EXPECTEDISSUEDASSETS_TIP'|translate}}
+      </div>
+    </div>
+    <!-- 密码与手续费 -->
+    <div class="mat-container pwd">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_LOGIN_PASSPHRASE'|translate" type="password" [(ngModel)]="formData.pwd" set-input-status="pwd" [errorStateMatcher]="matFormMatcherFactory('pwd')">
+      </mat-form-field>
+    </div>
+    <div class="mat-container pay_pwd" *ngIf="formData.need_pay_pwd">
+      <mat-form-field>
+        <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_PAY_PASSPHRASE'|translate" type="password" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd" [errorStateMatcher]="matFormMatcherFactory('pay_pwd')">
+        <mat-error *ngIf="errors?.pay_pwd?.VerificationFailure">
+          {{errors.pay_pwd.VerificationFailure|translate}}
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="fee-info" (click)="setFee()">
+      <ali-icon name="ifm-info"></ali-icon>
+      <span class="fee">{{formData.fee|number:'1.8-8'}}
+        <span class="unit">IBT</span></span>
+    </div>
+  </div>
+  <div class="footer">
+    <button mat-button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'ISSUED_IMMEDIATELY'|translate}}</button>
+  </div>
+</ion-content>
+<ion-footer [keyboardAttach]="content"></ion-footer>

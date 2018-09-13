@@ -27,16 +27,16 @@ page-tab-pay {
     }
   }
   .toolbar {
-    height: 5rem;
+    height: 7.8rem;
     display: flex;
-    align-items: center;
-    // justify-content: space-around;
+    align-items: center; // justify-content: space-around;
     flex-shrink: 0;
     flex-grow: 0;
     padding: 0 9%;
+    padding-top: 1rem;
     .tool-item {
-      width: 4.5rem;
-      height: 4.5rem;
+      width: 6rem;
+      height: 6rem;
       flex-shrink: 0;
       flex-grow: 0;
       border-radius: 50%;
@@ -50,7 +50,7 @@ page-tab-pay {
       }
       > ali-icon {
         position: absolute;
-        top: 1.05rem;
+        top: 1.55rem;
         left: 0;
         width: 100%;
         margin: auto;
@@ -72,16 +72,26 @@ page-tab-pay {
     display: flex;
     flex-direction: column;
     align-items: center;
+    &.freezed {
+      opacity: 0.8;
+      > * {
+        pointer-events: none;
+      }
+    }
     > .input-container {
-      width: 92.6829%; // 76
-      margin-top: 0.5rem;
+      // width: 92.6829%; // 76
+      width: 95%;
+      padding-left: 1.5%;
+      padding-right: 1%;
+      margin-top: 1.3rem;
       position: relative;
       display: flex;
       align-items: center;
+      border-bottom: 0.55px solid rgba(#fff, 0.2);
       .left,
       .right {
         /* position: absolute; */
-        font-size: 1.7rem;
+        font-size: 1.9rem;
         color: #fff;
         flex-grow: 0;
         flex-shrink: 0;
@@ -114,16 +124,22 @@ page-tab-pay {
         color: #fff;
         padding: 1rem 0.5rem 0.8rem 1rem;
         /* text-indent: 1.8rem; */
-
-        border-bottom: 0.55px solid rgba(#fff, 0.2);
         &::-webkit-input-placeholder {
           color: rgba(#fff, 0.6);
+        }
+      }
+      &.address {
+        > .right {
+          margin-right: 0;
         }
       }
     }
     > .fee {
       width: 92.6829%; // 76
-      padding: 0.8rem 0.6rem;
+      // padding: 0.8rem 0.6rem;
+      padding: 0 0.6rem;
+      line-height: 3.6rem;
+      height: 3.6rem;
       color: #f6db66;
       font-size: 1.2rem;
       display: flex;
@@ -135,20 +151,26 @@ page-tab-pay {
       > .balance-info {
         margin-left: auto;
         align-self: flex-end;
-        padding: 0.8rem 0.6rem;
+        // padding: 0.8rem 0.6rem;
+        padding: 0rem 0.6rem;
         color: #fff;
         font-size: 1.2rem;
         display: flex;
         align-items: center;
+      }
+      > .unit {
+        padding-left: 0.5rem;
       }
     }
     > .submit-button {
       width: 100%;
       background: #fff;
       border-radius: 0.8rem;
+      margin-top: 0rem;
+      height: 5rem;
       color: #35daeb;
-      font-size: 1.8rem;
-      box-shadow: 0 0.8rem 3rem rgba(99, 99, 99, 0.2);
+      font-size: 2rem;
+      font-weight: lighter; // box-shadow: 0 0.8rem 3rem rgba(99, 99, 99, 0.2);
     }
   }
   .roll-out-logs {
@@ -162,15 +184,15 @@ page-tab-pay {
     > .title {
       flex-grow: 0;
       flex-shrink: 0;
-      height: 3rem;
+      height: 4rem;
       display: flex;
       align-items: center;
       justify-content: flex-start;
       color: #fff;
-      padding: 0 1.2rem;
-      font-size: 1.3rem;
+      padding: 0 1.5rem;
+      font-size: 1.45rem;
       .left {
-        font-size: 2.1rem;
+        font-size: 2.2rem;
       }
       .right {
         font-size: 1.6rem;
@@ -196,7 +218,7 @@ page-tab-pay {
           color: #fff;
           display: flex;
           box-sizing: border-box;
-          padding: 0 1.6rem;
+          padding: 0 1.6rem 0 2rem;
           font-size: 1.2rem;
           font-weight: lighter;
           align-items: center;
@@ -208,6 +230,7 @@ page-tab-pay {
             height: 100%;
             left: 0;
             top: 0;
+            pointer-events: none;
             background: radial-gradient(
               ellipse at center,
               #fff 0%,
@@ -217,8 +240,8 @@ page-tab-pay {
               transparent 18%
             );
             background-repeat: repeat-y;
-            background-size: 0.5rem 0.5rem;
-            background-position: 1.64rem 0.25rem;
+            background-size: 0.6rem 0.6rem;
+            background-position: 2.14rem 0.25rem;
           }
           &:first-child {
             margin-top: -0.6rem;
@@ -234,27 +257,34 @@ page-tab-pay {
             }
           }
           > .create-time {
-            flex: 1.1;
+            flex: 0.9;
             display: flex;
             align-items: center;
             &::before {
               content: " ";
               font-size: 0;
-              height: 0.7rem;
-              width: 0.7rem;
+              height: 0.8rem;
+              width: 0.8rem;
               background-color: #fff;
               border-radius: 50%;
-              margin-right: 0.5rem;
+              margin-right: 0.8rem;
             }
           }
           > .address {
             flex: 1;
-            font-size: 1.3rem;
+            font-size: 1.3rem; // font-family: 'Andale Mono', 'Monaco', 'Courier New';
+            text-align: center;
           }
           > .amount {
             flex: 1;
             font-size: 1.3rem;
             text-align: right;
+            display: flex;
+            /* justify-content: flex-end; */
+            text-align: right;
+            > .unit {
+              width: 3em;
+            }
           }
         }
         .empty {
@@ -304,14 +334,294 @@ page-tab-pay {
     height: 25vh;
     background: linear-gradient(to bottom, rgba(#3cdfdc, 0) 0%, #fcdd64 100%);
     z-index: -1;
-    chain-mesh {
+    .chain-mesh {
+      background-image: url("../assets/imgs/net-circle.png");
+      background-size: 160vw 160vw;
+      background-position: center top;
       width: 100%;
+      height: 100%;
+      opacity: 0.5;
+    }
+  }
+
+  /* 数字资产相关 */
+  .assets-item {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    > .left {
       display: flex;
-      justify-content: center;
-      opacity: 0.4;
-      canvas {
-        width: 160vw !important;
-        height: 160vw !important;
+      align-items: center;
+    }
+    > .right {
+      display: flex;
+      align-items: center;
+    }
+    .assets-logo-shape-wrapper {
+      width: 3rem;
+      height: 3rem;
+    }
+    .abbreviation {
+      color: #fff;
+      padding-left: 1.2rem;
+      font-weight: normal;
+      font-size: 1.6rem;
+    }
+    .balance {
+      font-weight: normal;
+      font-size: 1.7rem;
+      font-weight: lighter;
+      display: flex;
+      align-items: baseline;
+      color: #fff;
+    }
+    .unit {
+      font-size: 1rem;
+      font-weight: lighter;
+      padding-left: 0.3rem;
+      color: #fff;
+    }
+  }
+
+  .selected-assets {
+    height: 4.4rem; // background-color: rgba(#fff, 0.15);
+    border-radius: 0.5rem;
+    &.open-panel {
+      .panel-arrow {
+        > ali-icon {
+          transform: rotate(-90deg);
+        }
+      }
+    }
+    &.open-panel.loading {
+      .panel-arrow {
+        > ali-icon {
+          &.arrow {
+            display: none;
+          }
+          &.loading {
+            display: block;
+          }
+        }
+      }
+    }
+    > .left {
+      // margin-left: 0;
+      position: relative;
+      left: -0.6rem;
+      /* padding-left: 1.2rem; */
+    }
+    .panel-arrow {
+      font-size: 1.15rem;
+      padding-top: 0.6rem;
+      padding-left: 1rem;
+      > ali-icon {
+        font-weight: lighter;
+        transition-duration: 250ms;
+        transform: rotate(90deg);
+        &.arrow {
+          display: block;
+        }
+        &.loading {
+          display: none;
+        }
+      }
+    }
+  }
+
+  /* 数字资产选择面板 */
+  .assets-select-panel-overlayer {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 8;
+    opacity: 0;
+    /* transition-duration: 250ms; */
+    pointer-events: none;
+    padding-top: 20.012px;
+    padding-top: #{constant(safe-area-inset-top)};
+    padding-top: #{env(safe-area-inset-top)};
+    &.android {
+      transition-duration: unset;
+      .assets-select-panel-wrapper {
+        transition-duration: unset;
+        border-radius: 0;
+        box-shadow: unset;
+        backdrop-filter: blur(7px);
+        .assets-select-panel {
+          backdrop-filter: unset;
+        }
+      }
+      .android-shadow-fix-layer {
+        box-shadow: 0 0.4rem 2rem 0.2rem rgba(0, 0, 0, 0.2);
+      }
+    }
+    &.ios {
+      /* IOS 动画会导致渲染问题 */
+      transition-duration: unset;
+    }
+    &.show {
+      pointer-events: all;
+      opacity: 1;
+      .assets-select-panel-wrapper {
+        border-radius: 0.5rem;
+      }
+      .assets-select-panel-wrapper,
+      .android-shadow-fix-layer {
+        transform: scale(1, 1);
+      }
+      .android-shadow-fix-layer {
+        z-index: 9;
+        &::before {
+          /* filter: drop-shadow(-0.1rem -0.1rem 0.2rem rgba(0, 0, 0, 0.3)); */
+          box-shadow: -0rem -0rem 0.2rem rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+    .assets-select-panel-wrapper {
+      &::after {
+        content: " ";
+        position: absolute;
+        width: 0.5rem;
+        height: calc(100% - 2rem);
+        border-left: 0.55px solid rgba(#fff, 0.5);
+        right: 0;
+        top: 1rem;
+      }
+    }
+    .assets-select-panel-wrapper,
+    .android-shadow-fix-layer {
+      transform: scale(1, 0.5);
+      transition-duration: 250ms;
+      transform-origin: center top;
+      box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.2);
+      position: absolute;
+      width: 76vw;
+      top: 29rem;
+      left: 0;
+      min-height: 4rem;
+      max-height: 20rem;
+      margin: 0 12vw;
+      border-radius: 0.5rem;
+      z-index: 10;
+      &::before {
+        content: " ";
+        position: absolute;
+        width: 1.4rem;
+        height: 1.4rem;
+        right: 0.7rem;
+        top: -0.7rem;
+        transform: rotate(45deg);
+        background-color: rgba(101, 221, 234, 0.2);
+        backdrop-filter: blur(5px);
+        /* background-color: #ff0; */
+      }
+      .assets-select-scroll {
+        min-height: 4rem;
+        max-height: 20rem;
+        overflow: auto;
+        backdrop-filter: blur(5px);
+      }
+      .assets-select-panel {
+        /* pointer-events: all; */
+        background-color: rgba(#65ddea, 0.2);
+        padding-left: 1.1rem;
+        /* padding-right: 0.7rem; */
+        display: table;
+        width: 100%;
+        overflow-x: hidden;
+
+        > .assets-item-table-cell {
+          display: table-row;
+          padding-right: 0;
+          > * {
+            display: table-cell;
+            vertical-align: middle;
+          }
+          > .balance {
+            text-align: right;
+            width: 40vw;
+            position: relative;
+            > .text {
+              top: 0;
+              left: 0;
+              width: 100%;
+              text-align: right;
+              position: absolute;
+              overflow: hidden;
+              line-height: 4rem;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+          > .unit {
+            padding-right: 2rem;
+            padding-top: 0.5rem;
+            width: 10%;
+            text-align: right;
+          }
+        }
+      }
+      .assets-item {
+        height: 4rem;
+        padding-left: 0.1rem;
+        padding-right: 1.5rem;
+        border-bottom: 0.55px solid rgba(#fff, 0.5);
+
+        &:last-child {
+          border-bottom: none;
+        }
+        > .right {
+          .unit {
+            min-width: 3.5rem;
+            text-align: right;
+          }
+        }
+      }
+      .no-assets {
+        line-height: 4rem;
+        text-align: center;
+        color: #fff;
+        /* text-shadow: 0 0 0.1rem rgba(#fff, 0.3); */
+        &.loading {
+          height: 4rem;
+          > .loading {
+            display: block;
+          }
+          > .no-own {
+            display: none;
+          }
+        }
+        &:not(.loading) {
+          height: 12rem;
+          > .no-own {
+            display: block;
+          }
+          > .loading {
+            display: none;
+          }
+        }
+        > .no-own {
+          padding-top: 1rem;
+          .no-assets-img {
+            background-image: url("../assets/imgs/tab-pay/no-assets.png");
+            height: 6rem;
+            width: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+          i {
+            font-style: normal;
+            font-weight: normal;
+          }
+        }
+        > .loading {
+        }
       }
     }
   }

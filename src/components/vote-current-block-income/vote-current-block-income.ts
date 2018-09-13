@@ -41,7 +41,7 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
     public navParams: NavParams,
     public blockService: BlockServiceProvider,
     public benefitService: BenefitServiceProvider,
-    cdRef: ChangeDetectorRef,
+    cdRef: ChangeDetectorRef
   ) {
     super(cdRef);
     this.data_refresh_frequency = DATA_REFRESH_FREQUENCY.BY_HEIGHT;

@@ -11,7 +11,9 @@ import {
 import {
   TransactionModel,
   TransactionTypes,
+  TransactionServiceProvider,
 } from "../../../providers/transaction-service/transaction-service";
+import { LocalContactProvider } from "../../../providers/local-contact/local-contact";
 import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
 import {
   MinServiceProvider,
@@ -30,7 +32,9 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public blockService: BlockServiceProvider,
+    public transactionService: TransactionServiceProvider,
     public minService: MinServiceProvider,
+    public localContact: LocalContactProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -49,7 +53,7 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       !this.appSetting.settings._is_show_first_block_remark
     ) {
       this.appSetting.settings._is_show_first_block_remark = await this.waitTipDialogConfirm(
-        "@@FIRST_VIEW_BLOCK_REMARK_TIP",
+        "@@FIRST_VIEW_BLOCK_REMARK_TIP"
       );
     }
     this.show_all_remark = !this.show_all_remark;
@@ -67,24 +71,27 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   async initAndLoadData(block_id?: string) {
     let block: BlockModel | undefined;
     if (!block) {
+      // block_id优先级比较高
       if (typeof block_id === "string") {
         block = await this.blockService.getBlockById(block_id);
       }
     }
     if (!block) {
+      // 内存里头有的直接用内存的
+      block = this.navParams.get("block");
+    }
+    if (!block) {
+      // 是在没有只能根据高度查询了
       const height = this.navParams.get("height");
       if (typeof height === "number") {
         block = await this.blockService.getBlockByHeight(height);
       }
     }
     if (!block) {
-      block = this.navParams.get("block");
-    }
-
-    if (!block) {
       return this.navCtrl.goToRoot({});
     }
     if (this.block_info == block) {
+      this.updateTranLogs();
       return;
     }
     if (block) {
@@ -110,15 +117,25 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   delegate_info?: DelegateModel;
   @asyncCtrlGenerator.error()
   async loadDelegateInfo() {
-    if (this.block_info) {
+    if (
+      this.block_info &&
+      this.block_info.height !== 1 /*创世块账户不是受托人*/
+    ) {
       this.delegate_info = await this.minService.getDelegateInfo(
-        this.block_info.generatorPublicKey,
+        this.block_info.generatorPublicKey
       );
     }
   }
 
+  // 更新已经有的交易列表
+  async updateTranLogs() {
+    this.tran_list = await this.localContact.formatTransactionWithLoclContactNickname(
+      this.tran_list
+    );
+  }
+
   @asyncCtrlGenerator.error(() =>
-    ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR"),
+    ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR")
   )
   // @asyncCtrlGenerator.loading(() =>
   //   ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"), undefined, {
@@ -143,11 +160,13 @@ export class ChainBlockDetailPage extends SecondLevelPage {
       const transaction_list = await this.blockService.getTransactionsInBlock(
         block_info.id,
         tran_list_config.page,
-        tran_list_config.pageSize,
+        tran_list_config.pageSize
       );
       tran_list_config.has_more =
         transaction_list.length === tran_list_config.pageSize;
-      return transaction_list;
+      return this.localContact.formatTransactionWithLoclContactNickname(
+        transaction_list
+      );
     } finally {
       tran_list_config.loading = false;
     }

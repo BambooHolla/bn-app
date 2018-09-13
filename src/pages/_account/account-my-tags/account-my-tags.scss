@@ -1,0 +1,17 @@
+page-account-my-tags {
+  @extend .header-no-border;
+  .common-list{
+  	background-color: #eee;
+  	padding-top: 1rem;
+  	height: 100%;
+  }
+  .common-item{
+  	.right{
+  		flex-direction: row!important;
+  		.contact-num{
+  			padding-right: 1rem;
+  			text-align: right;
+  		}
+  	}
+  }
+}

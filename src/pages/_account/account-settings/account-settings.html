@@ -51,12 +51,16 @@
       <span class="title">{{'AUTO_UPDATE'|translate}}</span>
       <ion-toggle class="left" [(ngModel)]="appSetting.settings.auto_update_app"></ion-toggle>
     </div>
-    <div class="item" (click)="routeTo('settings-net-version')">
-      <span class="title">{{'SETTINGS_NET_VERSION'|translate}}</span>
+    <div class="item" (click)="routeTo('settings-sync-config')">
+      <span class="title">{{'SETTINGS_SYNC_CONFIG'|translate}}</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
     <div class="item" (click)="routeTo('settings-lang')">
       <span class="title">{{'SETTINGS_LANG'|translate}}</span>
+      <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
+    </div>
+    <div class="item" (click)="routeTo('settings-net-version')">
+      <span class="title">{{'SETTINGS_NET_VERSION'|translate}}</span>
       <ali-icon name="ifm-arrow-to-right" class="left"></ali-icon>
     </div>
     <div class="divider"></div>

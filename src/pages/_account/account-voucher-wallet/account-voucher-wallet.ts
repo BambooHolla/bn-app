@@ -36,7 +36,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
     public viewCtrl: ViewController,
     public voucherService: VoucherServiceProvider,
     public transactionService: TransactionServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -72,7 +72,7 @@ export class AccountVoucherWalletPage extends SecondLevelPage {
       const list = await this.voucherService.getVoucherListByOffset(
         page_info.offset,
         page_info.limit,
-        true,
+        true
       );
       page_info.has_more = list.length === page_info.limit;
       page_info.offset += list.length;

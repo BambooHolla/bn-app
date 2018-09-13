@@ -21,7 +21,7 @@ export class PwdInputPage extends FirstLevelPage {
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public transactionService: TransactionServiceProvider,
-    public c: AccountServiceProvider,
+    public c: AccountServiceProvider
   ) {
     super(navCtrl, navParams);
   }
@@ -62,7 +62,7 @@ export class PwdInputPage extends FirstLevelPage {
     ["VerificationFailure", "NeedInput"],
     {
       check_when_empty: true,
-    },
+    }
   )
   check_pay_pwd() {
     if (this.formData.need_pay_pwd) {

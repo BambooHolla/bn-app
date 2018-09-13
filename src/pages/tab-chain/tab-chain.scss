@@ -34,6 +34,83 @@ page-tab-chain {
           justify-content: space-between;
           > .left {
             flex: 1;
+            > .sync-progress {
+              // overflow: hidden;
+              font-size: 1.35rem;
+              font-weight: lighter;
+              text-align: left;
+              transform: translateX(4vw);
+              display: flex;
+              align-items: center;
+
+              &:not(.show) {
+                display: none;
+              }
+              ali-icon {
+                font-size: 2rem;
+                // animation-duration: 1s;
+                transform: translateX(4vw);
+                transform-origin: 51.4% 56.2%;
+              }
+              $dot_size: 2.2rem;
+              $dot_item_size: $dot_size/4;
+              $dot_edge: ($dot_size - $dot_item_size) / 2;
+              .sync-spinner-dots {
+                width: $dot_size;
+                height: $dot_size;
+                position: relative;
+                /* transform: scale(0.66); */
+                > .item {
+                  display: block;
+                  font-size: 0;
+                  overflow: hidden;
+                  position: absolute;
+                  width: $dot_item_size;
+                  height: $dot_item_size;
+                  background-color: rgb(239, 112, 5);
+                  top: -0.1rem;
+                  left: $dot_edge;
+                  border-radius: 50%;
+                  overflow: hidden;
+                  transform-origin: center $dot_size/2;
+                  &.dot-1 {
+                    transform: rotate(45deg * 0);
+                    opacity: 1 * 0.6 * 0.6 * 0.6 * 0.6 * 0.6 * 0.6 * 0.6;
+                  }
+                  &.dot-2 {
+                    transform: rotate(45deg * 1);
+                    opacity: 1 * 0.6 * 0.6 * 0.6 * 0.6 * 0.6 * 0.6;
+                  }
+                  &.dot-3 {
+                    transform: rotate(45deg * 2);
+                    opacity: 1 * 0.6 * 0.6 * 0.6 * 0.6 * 0.6;
+                  }
+                  &.dot-4 {
+                    transform: rotate(45deg * 3);
+                    opacity: 1 * 0.6 * 0.6 * 0.6 * 0.6;
+                  }
+                  &.dot-5 {
+                    transform: rotate(45deg * 4);
+                    opacity: 1 * 0.6 * 0.6 * 0.6;
+                  }
+                  &.dot-6 {
+                    transform: rotate(45deg * 5);
+                    opacity: 1 * 0.6 * 0.6;
+                  }
+                  &.dot-7 {
+                    transform: rotate(45deg * 6);
+                    opacity: 1 * 0.6;
+                  }
+                  &.dot-8 {
+                    transform: rotate(45deg * 7);
+                    opacity: 1;
+                  }
+                }
+              }
+              .progress-value {
+                padding-left: 0.5rem;
+              }
+            }
           }
           > .center {
             flex: 1;
@@ -60,19 +137,24 @@ page-tab-chain {
           text-shadow: 0 0 0.2rem rgba(255, 255, 255, 0.8);
           top: 0;
           text-align: center;
+
+          .title {
+            font-size: 1.5rem;
+            color: inherit;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            ali-icon {
+              font-size: 2rem;
+              margin-right: 0.5rem;
+            }
+          }
           > .trans_num {
             flex: 1;
             > .value {
               font-size: 2.6rem;
               height: 2.7rem;
               color: inherit;
-            }
-            .title {
-              font-size: 1.5rem;
-              color: inherit;
-              ali-icon {
-                font-size: 2rem;
-              }
             }
           }
           > .reward {

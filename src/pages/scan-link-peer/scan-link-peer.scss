@@ -1,0 +1,533 @@
+page-scan-link-peer {
+	> .content {
+		background: linear-gradient(
+			to bottom,
+			#ea423e 0%,
+			#f15a43 50%,
+			#f66a47 75%,
+			#f77349 100%
+		);
+		&::before {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			content: " ";
+			background-image: url("../assets/imgs/net-circle-full-white.png");
+			background-size: 128vh 128vh;
+			background-position: center;
+			/* animation-name: rotate-bg3;
+			animation-timing-function: linear;
+			animation-duration: 280s * 2;
+			animation-iteration-count: infinite; */
+			opacity: 0.4;
+		}
+		> .scroll-content {
+			overflow: hidden;
+		}
+	}
+	.scan-panel {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		height: 100%;
+		justify-content: center;
+		&.link-peer {
+			animation-name: scan--scan-to-link;
+			animation-duration: 0.8s;
+			animation-timing-function: ease-out;
+			animation-fill-mode: forwards;
+
+			mask-image: radial-gradient(
+				circle,
+				#000 0%,
+				#000 30%,
+				transparent 100%
+			);
+			mask-position: center;
+			mask-repeat: no-repeat;
+			@keyframes scan--scan-to-link {
+				from {
+					/* transform: scale(1, 1); */
+					mask-size: 200% 200%;
+				}
+				to {
+					/* transform: scale(1, 0); */
+					mask-size: 100% 0%;
+					display: none;
+				}
+			}
+		}
+		.radar-wrapper {
+			background-image: url("../assets/imgs/net-circle-full-white.png");
+			background-size: 100% 100%;
+			background-repeat: no-repeat;
+			background-position: center;
+			width: 95vw;
+			height: 95vw;
+			position: relative;
+			margin-bottom: 4vw;
+			> peer-radar-scanning {
+				margin: auto;
+				position: relative;
+				top: 5vw;
+				height: 85vw;
+				width: 85vw;
+				opacity: 0.8;
+				mask-image: radial-gradient(
+					circle,
+					#000 0%,
+					#000 30%,
+					transparent 100%
+				);
+			}
+		}
+		> .info {
+			position: relative;
+			top: 1rem;
+			text-align: center;
+			display: inline-block;
+			width: auto;
+			padding: 0.9rem 2rem;
+			border-radius: 2.4rem;
+			font-size: 1.7rem;
+			color: #fff;
+			text-shadow: 0 0.2rem 0.4rem rgba(#000, 0.6);
+			background-color: rgba(#fff, 0.2);
+		}
+	}
+
+	.card-wrapper {
+		position: absolute;
+		top: 0;
+		width: 92vw;
+		height: 84vh;
+		margin: 0 4vw;
+		margin-top: 10vh;
+		border-radius: 1.2rem;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		&.scan-peer {
+			display: none;
+		}
+		&.link-peer {
+			animation-name: link--scan-to-peer;
+			animation-duration: 0.8s;
+			animation-timing-function: ease-out;
+			animation-fill-mode: forwards;
+			animation-delay: 0.8s;
+
+			mask-image: radial-gradient(
+				circle,
+				#000 0%,
+				#000 30%,
+				transparent 100%
+			);
+			mask-size: 100% 0%;
+			mask-position: center;
+			mask-repeat: no-repeat;
+			@keyframes link--scan-to-peer {
+				from {
+					/* transform: scale(1, 1); */
+					mask-size: 100% 0%;
+				}
+				99.9% {
+					mask-size: 300% 300%;
+				}
+				100% {
+					mask: none;
+				}
+			}
+		}
+		.card-title {
+			flex-grow: 0;
+			flex-shrink: 0;
+			height: 23.3vw;
+			background: linear-gradient(
+				to bottom,
+				#fd5d5a 0%,
+				#ff6764 25%,
+				#ff7473 70%,
+				#ff807f 100%
+			);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			> .shield-logo {
+				transform: translate(0.1rem, 0);
+				width: 5.3rem;
+				height: 100%;
+				background-image: url(../assets/imgs/peers/shield.png);
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				filter: drop-shadow(-0.6rem 0 0.8rem rgba(#fff, 0.3));
+			}
+		}
+		.card-content {
+			flex-grow: 1;
+			flex-shrink: 1;
+			background: #fff;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: start;
+			.row {
+				color: #848484;
+				font-weight: lighter;
+				display: flex;
+				align-items: center;
+				> * {
+					text-align: center;
+				}
+				.item-ip {
+					flex-basis: 30%;
+					width: 30%;
+					padding-left: 0.3rem;
+				}
+				.item-height {
+					flex-basis: 20%;
+				}
+				.item-ping {
+					flex-basis: 23%;
+					[name="ifm-loading"] {
+						font-size: 1.6rem;
+					}
+				}
+				.item-linked-number {
+					flex-basis: 15%;
+				}
+				.item-select {
+					flex-basis: 12%;
+					.radio-button {
+						width: 1.7rem;
+						height: 1.7rem;
+						transform: scale(0.9285);
+						color: #4deb99;
+						> input {
+							&:checked + .checked {
+								border: none;
+							}
+						}
+						.checked {
+							border: 0.55px solid #eee;
+						}
+					}
+				}
+			}
+			.table-head {
+				width: 100%;
+				height: 5rem;
+				flex-grow: 0;
+				flex-shrink: 0;
+				font-size: 1.9rem;
+			}
+			.table-list {
+				width: 100%;
+				flex-grow: 1;
+				overflow: scroll;
+				font-size: 1.5rem;
+				> .row {
+					font-weight: 500;
+					min-height: 4rem;
+					padding-top: 0.2rem;
+					padding-bottom: 0.2rem;
+					background-color: #eeeeee;
+					border-bottom: 0.55px solid #ddd;
+					&:last-child {
+						border-bottom: none;
+					}
+					&.link-able {
+						background-color: #fff;
+					}
+					&.selected {
+						position: relative;
+						&::after {
+							opacity: 0.6;
+							content: " ";
+							position: absolute;
+							width: 4rem;
+							height: 4rem;
+							image-rendering: optimizeSpeed;
+							/* STOP SMOOTHING, GIVE ME SPEED */
+							image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+							image-rendering: pixelated;
+							/* Chrome */
+							image-rendering: optimize-contrast; /* CSS3 Proposed */
+							background-image: url("../assets/imgs/peers/shield-light-line.png");
+							background-size: 100% 100%;
+							animation-iteration-count: infinite;
+							animation-timing-function: ease-in-out;
+							animation-duration: 3s;
+							animation-name: selected-peer-lantern;
+							left: -2rem;
+							top: -2rem;
+							@keyframes selected-peer-lantern {
+								0% {
+									transform: translate(0.2vw, 0.2vw);
+								}
+								40% {
+									transform: translate(91.8vw, 0.2vw);
+								}
+								50% {
+									transform: translate(91.8vw, 9.4vw);
+								}
+								90% {
+									transform: translate(0.2vw, 9.4vw);
+								}
+								100% {
+									transform: translate(0.2vw, 0.2vw);
+								}
+							}
+						}
+					}
+				}
+			}
+			.start-link {
+				z-index: 100;
+				flex-shrink: 0;
+				flex-grow: 0;
+				width: 85%;
+				background: #fff;
+				box-shadow: 0 0.3rem 1rem rgba(#333, 0.2),
+					0 0.2rem 0.6rem rgba(#333, 0.5),
+					0 0.1rem 0.3rem rgba(#333, 0.8);
+				border-radius: 6rem;
+				margin-top: auto;
+				margin-bottom: 3rem;
+				position: relative;
+				top: 1.5rem;
+				justify-self: flex-end;
+				font-weight: normal;
+				color: #fe6966;
+				transition-duration: 250ms;
+				&[disabled] {
+					opacity: 1;
+					color: #92504f;
+					background: #eee;
+					box-shadow: 0 0.15rem 0.9rem rgba(#000, 0.2),
+						0 0.075rem 0.5rem rgba(#000, 0.5),
+						0 0.05rem 0.25rem rgba(#000, 0.8);
+				}
+				&.activated {
+					box-shadow: 0 0.4rem 1.2rem rgba(#000, 0.3);
+					top: 1.4rem;
+				}
+			}
+		}
+	}
+	.scan-light-line-wrapper {
+		position: absolute;
+		z-index: 10;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+	.shield-light-line-wrapper {
+		transform: scale(0.2);
+		.shield-light-line {
+			animation-timing-function: linear;
+			background-image: url("../assets/imgs/peers/shield-light-line.png");
+			animation-duration: 3s;
+			background-size: contain;
+			background-position: center;
+			/* width: 92vw;
+      height: 92vw; */
+			@keyframes left-shield-light-line {
+				0% {
+					opacity: 0;
+					transform: translate(0, 3rem) scale(1, 1);
+				}
+				4.5% {
+					transform: translate(-6rem, 8rem) scale(2, 2);
+				}
+				9% {
+					transform: translate(-13rem, 9rem) scale(4, 4);
+				}
+				22.5% {
+					opacity: 1;
+					transform: translate(-13rem, 16rem) scale(3, 3);
+				}
+				30% {
+					transform: translate(-11rem, 23rem) scale(2, 2);
+				}
+				36.5% {
+					transform: translate(-7rem, 29rem) scale(1, 1);
+				}
+				42.5% {
+					transform: translate(-1rem, 33rem) scale(1.5, 1.5);
+				}
+				60% {
+					opacity: 0;
+					transform: translate(0rem, 34rem) scale(2, 2);
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			@keyframes right-shield-light-line {
+				0% {
+					opacity: 0;
+					transform: translate(0, 3rem) scale(1, 1);
+				}
+				4.5% {
+					transform: translate(6rem, 8rem) scale(2, 2);
+				}
+				9% {
+					transform: translate(13rem, 9rem) scale(4, 4);
+				}
+				22.5% {
+					opacity: 1;
+					transform: translate(13rem, 16rem) scale(3, 3);
+				}
+				30% {
+					transform: translate(11rem, 23rem) scale(2, 2);
+				}
+				36.5% {
+					transform: translate(7rem, 29rem) scale(1, 1);
+				}
+				42.5% {
+					transform: translate(1rem, 33rem) scale(1.5, 1.5);
+				}
+				60% {
+					transform: translate(0rem, 34rem) scale(1, 1);
+					opacity: 0;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			&.left {
+				animation-name: left-shield-light-line;
+			}
+			&.right {
+				animation-name: right-shield-light-line;
+			}
+		}
+	}
+	.scan-light-line {
+		animation-duration: 3s;
+		background-image: url("../assets/imgs/peers/scan-light-line.png");
+	}
+	.scan-light-line,
+	.shield-light-line {
+		image-rendering: optimizeSpeed; /* STOP SMOOTHING, GIVE ME SPEED */
+		image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+		image-rendering: pixelated; /* Chrome */
+		image-rendering: optimize-contrast; /* CSS3 Proposed */
+		-ms-interpolation-mode: nearest-neighbor;
+		position: absolute;
+		opacity: 1;
+		transition-duration: 500ms;
+		z-index: 1;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 8rem;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		pointer-events: none;
+		animation-timing-function: linear;
+		animation-iteration-count: infinite;
+		/* mix-blend-mode: multiply; */
+		@keyframes left-scan-top-to-bottom {
+			0% {
+				opacity: 0;
+			}
+			40% {
+				opacity: 0;
+				transform: translate(0, 9.3vw) scale(0.5, 0.5);
+			}
+			50% {
+				opacity: 0.3;
+				transform: translate(0, 9.3vw) scale(1, 0.5);
+			}
+			55% {
+				transform: translate(-50%, 23.3vw) scale(1, 1);
+			}
+			60% {
+				opacity: 1;
+			}
+			70% {
+				opacity: 0;
+				transform: translate(-50%, 80vh) scale(1);
+			}
+			100% {
+				opacity: 0;
+				transform: translate(-50%, 80vh) scale(1);
+			}
+		}
+		@keyframes center-scan-top-to-bottom {
+			0% {
+				opacity: 0;
+			}
+			40% {
+				opacity: 0;
+				transform: translate(0, 9.3vw) scale(0.5, 0.5);
+			}
+			50% {
+				opacity: 0.3;
+				transform: translate(0, 9.3vw) scale(1, 0.5);
+			}
+			55% {
+				transform: translate(0%, 23.3vw) scale(1, 1);
+			}
+			60% {
+				opacity: 1;
+			}
+			70% {
+				opacity: 1;
+				transform: translate(0%, 80vh) scale(1);
+			}
+			100% {
+				opacity: 1;
+				transform: translate(0%, 80vh) scale(1);
+			}
+		}
+		@keyframes right-scan-top-to-bottom {
+			0% {
+				opacity: 0;
+			}
+			40% {
+				opacity: 0;
+				transform: translate(0, 9.3vw) scale(0.5, 0.5);
+			}
+			50% {
+				opacity: 0.3;
+				transform: translate(0, 9.3vw) scale(1, 0.5);
+			}
+			55% {
+				transform: translate(50%, 23.3vw) scale(1, 1);
+				opacity: 0.6;
+			}
+			60% {
+				opacity: 1;
+			}
+			70% {
+				opacity: 0;
+				transform: translate(50%, 80vh) scale(1);
+			}
+			100% {
+				opacity: 0;
+				transform: translate(50%, 80vh) scale(1);
+			}
+		}
+		&.left {
+			animation-name: left-scan-top-to-bottom;
+		}
+		&.center {
+			animation-name: center-scan-top-to-bottom;
+			z-index: 11;
+		}
+		&.right {
+			animation-name: right-scan-top-to-bottom;
+		}
+	}
+	.scaning-finish {
+		.scan-light-line-wrapper {
+			opacity: 0 !important;
+		}
+	}
+}

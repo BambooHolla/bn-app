@@ -24,7 +24,7 @@ export class IframepagePage extends FirstLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    public sanitizer: DomSanitizer,
+    public sanitizer: DomSanitizer
   ) {
     super(navCtrl, navParams);
     this.titleContent = navParams.get("title") || "";
@@ -36,7 +36,7 @@ export class IframepagePage extends FirstLevelPage {
       });
       this.loading.present();
       this.redirect_url = this.sanitizer.bypassSecurityTrustResourceUrl(
-        redirect_url,
+        redirect_url
       );
     }
 

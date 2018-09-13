@@ -1,0 +1,100 @@
+.svg-chart {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  font-size: 20rem;
+
+  .path {
+    fill: none;
+    stroke-width: 42;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-miterlimit: 10;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  .path-bg {
+    stroke: #eee;
+  }
+
+  .path-blue {
+    animation-name: drawPathBlue;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+    stroke: #43c3ff;
+  }
+
+  .path-red {
+    animation-name: drawPathRed;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+    stroke: #fe605e;
+  }
+
+  .path-grey {
+    animation-name: drawPathGrey;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+    stroke: #999;
+  }
+
+  .path-barometer {
+    animation-name: drawPathBarometer;
+    animation-timing-function: linear;
+    animation-duration: 1s;
+  }
+
+  .jump-in-b {
+    animation-name: jumpInB;
+    animation-duration: 1s;
+    transform: center bottom;
+  }
+
+  .jump-in-c {
+    animation-name: jumpInC;
+    animation-duration: 1s;
+    transform: center bottom;
+  }
+
+  @keyframes jumpInB {
+    from {
+      transform: translateY(-229px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes jumpInC {
+    from {
+      transform: translateY(-108px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes drawPathBlue {
+    from {
+      stroke-dashoffset: 1552;
+    }
+  }
+
+  @keyframes drawPathRed {
+    from {
+      stroke-dashoffset: 1118;
+    }
+  }
+
+  @keyframes drawPathGrey {
+    from {
+      stroke-dashoffset: 623;
+    }
+  }
+
+  @keyframes drawPathBarometer {
+    from {
+      stroke-dashoffset: 1211;
+    }
+  }
+}

@@ -4,7 +4,7 @@ const { spawn } = require("child_process");
 const prettier = require("prettier");
 const __project_path = path.resolve(__dirname + "/../") + path.sep;
 const prettierConfig = JSON.parse(
-  fs.readFileSync(__dirname + "/../.prettierrc"),
+  fs.readFileSync(__dirname + "/../.prettierrc")
 );
 
 function connectHandles(...handles) {
@@ -85,7 +85,7 @@ function FilterFilePath(options, pipeHandle) {
           }
           return file_path;
         })
-        .filter(options.filter),
+        .filter(options.filter)
     );
   };
 }
@@ -94,7 +94,7 @@ function FormatFile(options, pipeHandle) {
   const _prettierConfig = Object.assign(
     {},
     prettierConfig,
-    options.prettierConfig,
+    options.prettierConfig
   );
   return function(file_path_list) {
     // pipeHandle(file_path_list.filter(options.filter));
@@ -119,7 +119,7 @@ function FormatFile(options, pipeHandle) {
           try {
             const formatedCode = prettier.format(
               file_content.toString(),
-              _prettierConfig,
+              _prettierConfig
             );
             fs.writeFile(file_path, formatedCode, err => {
               runPipeHandle(err);
@@ -169,7 +169,7 @@ function LogFormat(log) {
   }
   fs.appendFileSync(
     __dirname + "/.format-log.log",
-    new Date().toLocaleString() + ": " + log + "\n",
+    new Date().toLocaleString() + ": " + log + "\n"
   );
 }
 
@@ -182,7 +182,10 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
       FilterFilePath(
         {
           filter: file_path =>
-            file_path.startsWith("src/") && file_path.endsWith(".ts"),
+            file_path.startsWith("src/") &&
+            (file_path.endsWith(".ts") ||
+              (file_path.indexOf("ifmchain-ibt") !== -1 &&
+                file_path.endsWith(".js"))),
         },
         // 格式化文件
         FormatFile(
@@ -192,8 +195,8 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
             },
           },
           // 输出格式化结果
-          LogFormatRes,
-        ),
+          LogFormatRes
+        )
       ),
       //过滤CSS文件
       FilterFilePath(
@@ -209,10 +212,10 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
             },
           },
           // 输出格式化结果
-          LogFormatRes,
-        ),
-      ),
-    ),
+          LogFormatRes
+        )
+      )
+    )
   );
   LogFormat("DIFF");
 } else if (process.argv.indexOf("--all") !== -1) {
@@ -228,7 +231,9 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
           filter: file_path => {
             return (
               file_path.startsWith("src" + path.sep) &&
-              file_path.endsWith(".ts")
+              (file_path.endsWith(".ts") ||
+                (file_path.indexOf("ifmchain-ibt") !== -1 &&
+                  file_path.endsWith(".js")))
             );
           },
         },
@@ -240,8 +245,8 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
             },
           },
           // 输出格式化结果
-          LogFormatRes,
-        ),
+          LogFormatRes
+        )
       ),
       //过滤CSS文件
       FilterFilePath(
@@ -261,10 +266,10 @@ if (process.argv.indexOf("--from-git-diff") !== -1) {
             },
           },
           // 输出格式化结果
-          LogFormatRes,
-        ),
-      ),
-    ),
+          LogFormatRes
+        )
+      )
+    )
   );
   LogFormat("ALL");
 }

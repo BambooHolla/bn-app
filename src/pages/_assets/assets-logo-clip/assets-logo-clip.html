@@ -1,0 +1,53 @@
+<ion-header>
+<!--   <ion-navbar>
+    <ion-title>{{'ASSETS-LOGO-CLIP'|translate}}</ion-title>
+  </ion-navbar> -->
+</ion-header>
+<ion-content>
+  <div class="clip-container">
+    <div class="logo-clip">
+      <clip-assets-logo></clip-assets-logo>
+    </div>
+    <div class="tool-bar">
+      <ng-container *ngIf="is_support_input_color;else useColorPicker">
+        <button mat-icon-button class="tool-item bg-color" (click)="fillBG()">
+          <mat-icon>format_color_fill</mat-icon>
+        </button>
+      </ng-container>
+      <ng-template #useColorPicker>
+        <button mat-icon-button class="tool-item bg-color" [(colorPicker)]="formData.bgcolor" cpPosition="top" (colorPickerChange)="setLogoBg($event)">
+          <mat-icon>format_color_fill</mat-icon>
+        </button>
+      </ng-template>
+      <button mat-icon-button class="tool-item turn-left-90deg" (click)="rotateCounterclockwise()">
+        <mat-icon>rotate_left</mat-icon>
+      </button>
+      <button mat-icon-button class="tool-item turn-right-90deg" (click)="rotateClockwise()">
+        <mat-icon>rotate_right</mat-icon>
+      </button>
+      <!-- <button mat-button class="tool-item reset"></button> -->
+    </div>
+  </div>
+  <div class="preview-container">
+    <button mat-fab class="cancel" (click)="closeModal()">
+      <ali-icon name="ifm-guanbi"></ali-icon>
+    </button>
+    <div class="preview-item small">
+      <div class="assets-logo-shape-wrapper">
+        <div class="assets-logo-shape">
+          <img *ngIf="export_clip_logo_url" [src]="export_clip_logo_url" alt="LOGO-CLIP-PREVIEW">
+        </div>
+      </div>
+    </div>
+    <div class="preview-item large">
+      <div class="assets-logo-shape-wrapper">
+        <div class="assets-logo-shape">
+          <img *ngIf="export_clip_logo_url" [src]="export_clip_logo_url" alt="LOGO-CLIP-PREVIEW">
+        </div>
+      </div>
+    </div>
+    <button mat-fab color="green" class="submit" (click)="exportClip()">
+      <ali-icon name="ifm-dagou"></ali-icon>
+    </button>
+  </div>
+</ion-content>

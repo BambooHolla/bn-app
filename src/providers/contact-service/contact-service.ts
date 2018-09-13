@@ -18,7 +18,6 @@ import {
 } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import { DbCacheProvider } from "../db-cache/db-cache";
-import * as IFM from "ifmchain-ibt";
 import * as TYPE from "./contact.types";
 export * from "./contact.types";
 import pinyin from "tiny-pinyin";
@@ -45,7 +44,7 @@ export class ContactServiceProvider {
     public accountService: AccountServiceProvider,
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
-    public dbCache: DbCacheProvider,
+    public dbCache: DbCacheProvider
   ) {
     this.ifmJs = AppSettingProvider.IFMJS;
     this.addressCheck = this.ifmJs.addressCheck;
@@ -62,7 +61,7 @@ export class ContactServiceProvider {
           following: [],
           success: true,
         };
-        if (navigator.onLine) {
+        if (this.fetch.onLine) {
           // 默认联网获取
           return { reqs: [request_opts], cache };
         }
@@ -91,7 +90,7 @@ export class ContactServiceProvider {
               undefined,
               db,
               { owner_publicKey },
-              "address",
+              "address"
             );
           }
           // const res_followers = mix_res.followers;
@@ -110,14 +109,14 @@ export class ContactServiceProvider {
           return mix_res;
         }
         return cache;
-      },
+      }
     );
   }
   contactModelDiffParser(contact: TYPE.ContactModel) {
     return contact.username + contact.address;
   }
 
-  readonly GET_CONTACT = this.appSetting.APP_URL("/api/contacts");
+  readonly GET_CONTACT = this.appSetting.APP_URL("/api/contacts/");
 
   /**
    * 获取我的联系人，默认返回所有
@@ -235,7 +234,7 @@ export class ContactServiceProvider {
     address_or_username: string,
     secondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee),
-    type: "+" | "-" = "+",
+    type: "+" | "-" = "+"
   ) {
     if (!address_or_username) {
       throw new Error("Parameters cannot find address or username");
@@ -243,7 +242,7 @@ export class ContactServiceProvider {
 
     if (!this.addressCheck.isAddress(address_or_username)) {
       let userAddress = await this.accountService.getAccountByUsername(
-        address_or_username,
+        address_or_username
       );
       address_or_username = userAddress.address;
     }
@@ -281,9 +280,9 @@ export class ContactServiceProvider {
    */
   async searchContact(address?: string, username?: string) {
     if (address) {
-      return await this.accountService.getAccountByAddress;
+      return await this.accountService.getAccountByAddress(address);
     } else if (username) {
-      return await this.accountService.getAccountByUsername;
+      return await this.accountService.getAccountByUsername(username);
     } else {
       return null;
     }
@@ -301,7 +300,7 @@ export class ContactServiceProvider {
     contact_list.forEach(my_contact => {
       try {
         const word = pinyin.convertToPinyin(
-          (my_contact.username || my_contact.address)[0],
+          (my_contact.username || my_contact.address)[0]
         );
         if (!word) {
           unkown_letter.list.push(my_contact);

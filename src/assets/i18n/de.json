@@ -56,6 +56,7 @@
   "ACCOUNT-ABOUT-IBT": "Über IBT",
   "ABOUT_IBT_INFO":
     "IFMChain ist das weltweit erste Produkt der Blockchain 3.0 mit Zugriff auf mobile Endgeräte, IBT ist seine Knoten-Software und steht für Instinct Blockchain Technology.",
+  "//": "account-faq",
   "//": "account-voucher-wallet",
   "//": "sign-in-and-sign-up",
   "LOGINNG": "Netzwerksynchronisierung",
@@ -72,6 +73,7 @@
   "INFORMATION_NOT_SAVE_IN_BLOCKCHAIN":
     "Nur zur Erzeugung von Passwortdaten werden nicht in der Blockchain gespeichert",
   "ALREADY_HAS_PASSPHRASE": "Ich habe bereits ein Passwort",
+  "//": "user-agreement",
   "//": "pwd-input",
   "PLEASE_INPUT_TRANSACTION_FEES": "Bitte geben Sie die Gebühr ein",
   "//": "fee-input",
@@ -175,6 +177,11 @@
   "LOADING_MORE_TRANSACTION_LIST":
     "Laden Sie weitere Blocktransaktionsdatensätze ...",
   "GET_PRE_BLOCK_ID_ERROR": "Fehler beim Abrufen der vorherigen Block-ID",
+  "//": "chain-sync-detail",
+  "CALCING_SYNC_DELAY_TIME": "In der Berechnung",
+  "//": "chain-service-market",
+  "//": "chain-reward-detail",
+  "FORGING_FEES": "Gebühren",
   "//": "chain-transaction-detail",
   "CHAIN-TRANSACTION-DETAIL": "Transaktionsdetails",
   "TRANSACTION_id": "Transaktions-ID",
@@ -188,6 +195,7 @@
   "TRANSCATION_SENDER": "Absender",
   "TRANSCATION_RECIPIENT": "Empfänger",
   "//": "account-my-contacts",
+  "ACCOUNT-MY-CONTACTS": "Mein Kontakt",
   "SCAN_QR_CODE_TO_ADD_CONTACT": "Sweep, um einen Kontakt hinzuzufügen",
   "IGNORE_UNCONFIRM_CONTACT_ERROR": "Fehler beim Übergeben des Kontakts",
   "ADD_CONTACT_SUBMIT_ERROR":
@@ -195,6 +203,16 @@
   "ADD_CONTACT_SUBMITING": "Zustimmen, die Kontaktübergabe hinzuzufügen",
   "ADD_CONTACT_SUBMIT_SUCCESS":
     "Zustimmen, dass Kontakte hinzugefügt werden, um sie erfolgreich zu übermitteln",
+  "SCAN_QRCOED_TO_ADD_CONTACT":
+    "Scannen Sie den Code, um Kontakte hinzuzufügen",
+  "INPUT_ADDRESS_TO_ADD_CONTACT":
+    "Geben Sie die Adresse ein, um den Kontakt hinzuzufügen",
+  "UNCONFIM_CONTACT_LIST": "Warten auf Bestätigungsliste",
+  "NO_CONTACT": "Kein Kontakt",
+  "ADD_CONTACT": "Fügen Sie einen Kontakt hinzu",
+  "//": "account-my-local-contacts",
+  "ACCOUNT-MY-LOCAL-CONTACTS": "Mein Kontakt",
+  "//": "account-my-export-local-contacts",
   "//": "account-contact-detail",
   "//": "account-remark-contact",
   "//": "account-remark-contact-tags",
@@ -204,9 +222,12 @@
   "ACCOUNT-ADD-CONTACT": "Fügen Sie einen Kontakt hinzu",
   "PLEASE_INPUT_IBT_ADDRESS": "Bitte geben Sie die Adresse ein",
   "MY_ACCOUNT_IBT_ADDRESS": "Diese Kontoadresse",
-  "CONFIRM_THEN_ADD": "OK zum Hinzufügen",
   "ADD_CONTACT_ERROR": "Fehler beim Hinzufügen des Kontakts",
   "ADD_CONTACT_SUCCESS": "Fügen Sie den Kontakt erfolgreich hinzu",
+  "//": "account-add-local-contact",
+  "ACCOUNT-ADD-LOCAL-CONTACT": "Fügen Sie einen Kontakt hinzu",
+  "ADD_LOCAL_CONTACT_ERROR": "Fehler beim Hinzufügen des Kontakts",
+  "ADD_LOCAL_CONTACT_SUCCESS": "Fügen Sie den Kontakt erfolgreich hinzu",
   "//": "account-dapp-list",
   "ACCOUNT-DAPP-LIST": "Meine Bewerbung",
   "//": "account-info",
@@ -230,15 +251,6 @@
   "GET_FORGIN_BLOCK_ERROR":
     "Fehler beim Abrufen des vom Client erstellten Blocks",
   "LOADING_MORE_FOGIN_BLOCK_LIST": "Laden Sie schnellere Knoten ...",
-  "//": "account-my-contacts",
-  "ACCOUNT-MY-CONTACTS": "Mein Kontakt",
-  "SCAN_QRCOED_TO_ADD_CONTACT":
-    "Scannen Sie den Code, um Kontakte hinzuzufügen",
-  "INPUT_ADDRESS_TO_ADD_CONTACT":
-    "Geben Sie die Adresse ein, um den Kontakt hinzuzufügen",
-  "UNCONFIM_CONTACT_LIST": "Warten auf Bestätigungsliste",
-  "NO_CONTACT": "Kein Kontakt",
-  "ADD_CONTACT": "Fügen Sie einen Kontakt hinzu",
   "//": "pay-receive",
   "PAY-RECEIVE": "Empfangen",
   "RECENT": "Kürzlich",
@@ -246,6 +258,7 @@
   "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
     "Der eingehende Datensatz konnte nicht aktualisiert werden, zu viele Versuche wurden wiederholt, der Versuch wurde erneut versucht, das Netzwerk wurde überprüft",
   "//": "pay-select-my-contacts",
+  "//": "pay-select-my-local-contacts",
   "//": "pay-offline-receipt",
   "PAY-OFFLINE-RECEIPT": "Offline-Zahlungen",
   "SCAN_TO_RECEIVE": "Scannen, um zu empfangen",
@@ -310,6 +323,7 @@
   "ADD_CUSTOM_PEER_FAIL":
     "Benutzerdefinierte Minenmaschine konnte nicht hinzugefügt werden",
   "CUSTOM_PEER_IS_UNAVAILABLE": "Custom Mine Machine ist nicht verfügbar",
+  "CONFIRM_THEN_ADD": "OK zum Hinzufügen",
   "//": "vote-my-mining-machine",
   "VOTE-MY-MINING-MACHINE": "Meine Bergbaumaschine",
   "MEMORY": "Speicher",
@@ -370,8 +384,6 @@
   "TOTAL_ASSETS": "Gesamtvermögen",
   "CANCEL": "Stornierung",
   "//": "scan-nodes",
-  "ALREADY_SEARCHED": "Gescannt zu",
-  "NODES": "Knoten",
   "//": "pwd-input",
   "PAY_PASSPHRASE": "Zahlungspasswort",
   "PLEASE_INPUT_PAY_PASSPHRASE": "Bitte geben Sie das Zahlungspasswort ein",
@@ -460,6 +472,7 @@
   "PARSE_PICTURE_QRCODE": "QR-Code des Bilds analysieren",
   "QRCODE_PICTURE_PARSE_ERROR":
     "Das QR-Code-Bild konnte nicht analysiert werden",
+  "//": "linked-peer-list",
   "//": "settings-lang",
   "SETTINGS-LANG": "Spracheinstellungen",
   "//": "account-settings",
@@ -537,6 +550,10 @@
   "LINK_PEER_NODE_ERROR": "Knotenverbindung fehlgeschlagen",
   "//": "link-node",
   "SHEILD": "Schild",
+  "START_NOW": "Fang jetzt an",
+  "//": "assets-issuing-assets",
+  "//": "assets-assets-market",
+  "//": "assets-assets-detail",
   "//": "语言包",
   "LANG_zh-cmn-Hans": "Vereinfachtes Chinesisch",
   "LANG_zh-cmn-Hant": "Traditionelles Chinesisch",

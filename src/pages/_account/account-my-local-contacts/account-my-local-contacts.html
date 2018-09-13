@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-navbar color="white">
+    <ion-title (press)="routeTo('account-export-my-local-contacts')">{{'ACCOUNT-MY-LOCAL-CONTACTS'|translate}}</ion-title>
+    <ion-buttons right>
+      <!-- <button [title]="'EXPORT_MY_LOCAL_CONTACTS'|translate" (press)="routeTo('account-export-my-local-contacts')">
+        <ali-icon name="ifm-daochu"></ali-icon>
+      </button> -->
+      <button [title]="'SCAN_QRCOED_TO_ADD_CONTACT'|translate" (click)="routeTo('account-scan-add-contact',{auto_return:true,title:getTranslateSync('SCAN_QR_CODE_TO_ADD_CONTACT'),mode:'try-to-add-local-contact'})">
+        <ali-icon name="ifm-scan"></ali-icon>
+      </button>
+      <button [title]="'INPUT_ADDRESS_TO_ADD_CONTACT'|translate" (click)="routeTo('account-add-local-contact',{auto_return:true})">
+        <ali-icon name="ifm-guanzhu2"></ali-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <!-- <div class="search-bar common-form">
+    <div class="input-container search-contact">
+      <input type="text" [placeholder]="search_placeholder">
+    </div>
+  </div> -->
+  <ion-list class="contact-list list">
+    <!-- <div *ngIf="list_placeholder" class="divider">{{search_placeholder}}</div> -->
+    <ion-item class="mat-item-wrapper">
+      <button class="mat-item-container" mat-button (click)="routeTo('account-my-tags')">
+        <div class="left">
+          <ali-icon name="ifm-biaoqian"></ali-icon>
+        </div>
+        <div class="center">{{'TAGS'|translate}}</div>
+      </button>
+    </ion-item>
+    <ng-container *ngFor="let letter_contacts of grouped_contact_list;trackBy:listTrackBy">
+      <div class="divider">{{letter_contacts.letter}}</div>
+      <ion-item-sliding *ngFor="let contact of letter_contacts.list">
+        <ion-item (click)="routeTo('account-contact-detail', {contact:contact})">
+          <!-- (click)="tryShowUserBalance(contact.address)" -->
+          <div class="left">
+            <div class="username" *ngIf="contact.username">{{contact.username}}</div>
+            <div class="nickname" *ngIf="contact.nickname">{{contact.nickname}}</div>
+            <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
+          </div>
+        </ion-item>
+        <ion-item-options side="right">
+          <button mat-button class="options-item list-remark" (click)="routeTo('account-remark-contact',{contact:contact,auto_return:true})">
+            <span class="inner">{{'SET_REMARK'|translate}}</span>
+          </button>
+          <button mat-button class="options-item list-delete" (click)="confirmToDelete(contact)">
+            <span class="inner">{{'REMOVE'|translate}}</span>
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ng-container>
+  </ion-list>
+  <div class="fast-nav">
+    <ali-icon name="ifm-sousuo"></ali-icon>
+    <div class="item" *ngFor="let letter_contacts of grouped_contact_list">
+      {{letter_contacts.letter}}
+    </div>
+  </div>
+</ion-content>

@@ -3,6 +3,7 @@ import {
   Optional,
   ViewChild,
   ElementRef,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from "@angular/core";
 import {
@@ -30,6 +31,7 @@ import {
 @Component({
   selector: "page-pay-receipt-to-voucher",
   templateUrl: "pay-receipt-to-voucher.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PayReceiptToVoucherPage extends SecondLevelPage {
   constructor(
@@ -39,12 +41,12 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
     public viewCtrl: ViewController,
     @Optional() public tabs: TabsPage,
     public voucherService: VoucherServiceProvider,
-    public cdRef: ChangeDetectorRef,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
   }
 
-  transaction!: TransactionModel;
+  @PayReceiptToVoucherPage.markForCheck transaction!: TransactionModel;
   @PayReceiptToVoucherPage.willEnter
   initData() {
     const transaction = this.navParams.get("transaction") as TransactionModel;
@@ -52,15 +54,20 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
       return this.navCtrl.goToRoot({});
     }
     this.transaction = transaction;
-    this.cdRef.markForCheck();
   }
   /*是否已经在钱包中*/
   already_in_wallet = false;
   @asyncCtrlGenerator.success(
-    "@@SUCCESSFULLY_PUT_THIS_TRANSACTION_IN_TO_VOUCHER_WALLET",
+    "@@SUCCESSFULLY_PUT_THIS_TRANSACTION_IN_TO_VOUCHER_WALLET"
   )
   @asyncCtrlGenerator.error()
   async putIntoVoucherWallet() {
+    if (!this.appSetting.settings._is_first_put_into_voucher) {
+      if (!(await this.waitTipDialogConfirm("@@PUT_INTO_VOUCHER_TIP"))) {
+        return;
+      }
+      this.appSetting.settings._is_first_put_into_voucher = true;
+    }
     if (this.already_in_wallet) {
       this.closeModal();
       return;
@@ -73,8 +80,8 @@ export class PayReceiptToVoucherPage extends SecondLevelPage {
       this.already_in_wallet = true;
       throw new Error(
         this.getTranslateSync(
-          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET",
-        ),
+          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET"
+        )
       );
     }
     this.closeModal();

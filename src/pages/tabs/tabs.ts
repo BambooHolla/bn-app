@@ -15,6 +15,7 @@ import { MyApp } from "../../app/app.component";
 import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import { UserInfoProvider } from "../../providers/user-info/user-info";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 
 import { Tab1Root, Tab2Root, Tab3Root, Tab4Root } from "../pages";
@@ -49,6 +50,7 @@ export class TabsPage extends FLP_Lifecycle {
     public r2: Renderer2,
     public elRef: ElementRef,
     public cdRef: ChangeDetectorRef,
+    public userInfo:UserInfoProvider
   ) {
     super();
     translateService
@@ -129,7 +131,7 @@ export class TabsPage extends FLP_Lifecycle {
     this.selectedTabPageContainer = tabPageContainer;
     this.selectedTabPage = tabPage;
     this.selectedIndex = index;
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
   @TabsPage.afterContentInit
   initTabView() {
@@ -138,10 +140,10 @@ export class TabsPage extends FLP_Lifecycle {
       tabPage => {
         tabPage.event.on(
           "tabs:setBgTransparent",
-          this.setBgTransparent.bind(this),
+          this.setBgTransparent.bind(this)
         );
         tabPage.event.on("tabs:hideTabs", this.hideTabs.bind(this));
-      },
+      }
     );
     // 初始化QueryList对象
     this.pageItemQueryList = (this.elRef
@@ -166,7 +168,7 @@ export class TabsPage extends FLP_Lifecycle {
     } else {
       this._hidden_tabs.delete(key);
     }
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
   getTabsHidden() {
     return this._hidden_tabs.size > 0;
@@ -179,7 +181,7 @@ export class TabsPage extends FLP_Lifecycle {
     } else {
       this._transparent_tabs.delete(key);
     }
-    this.cdRef.markForCheck();
+    this.markForCheck();
   }
   getBgTransparent() {
     return this._transparent_tabs.size > 0;

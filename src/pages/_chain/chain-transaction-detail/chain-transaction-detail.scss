@@ -10,7 +10,7 @@ page-chain-transaction-detail {
     > .common-item {
       font-size: 1.5rem;
       > .left {
-        min-width: 7.6rem;
+        min-width: 9rem;
         flex-direction: column;
         align-items: flex-start;
       }
@@ -20,6 +20,7 @@ page-chain-transaction-detail {
         flex-direction: row;
         > .unit {
           margin-left: 0.3rem;
+          font-size: 1rem;
         }
         > .dapp-name {
           color: #4e4e4e;
@@ -49,8 +50,8 @@ page-chain-transaction-detail {
             }
           }
           > content {
-            /* 	transition-duration: 0.2s;
-						transform: scaleY(1); */
+            /*  transition-duration: 0.2s;
+            transform: scaleY(1); */
             animation: sweep 0.25s ease-in-out;
           }
 
@@ -71,15 +72,23 @@ page-chain-transaction-detail {
               }
             }
             /* > content {
-							transform: scaleY(0);
-						} */
+              transform: scaleY(0);
+            } */
           }
           ::-webkit-details-marker {
-            /* 	direction: ltr;
-						color: gray;
-						margin-left: 0.5ch; */
+            /*  direction: ltr;
+            color: gray;
+            margin-left: 0.5ch; */
             display: none;
           }
+        }
+      }
+      &.sourceIP{
+        >.right{
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          justify-content: center;
         }
       }
     }

@@ -1,0 +1,81 @@
+<ion-header>
+</ion-header>
+<ion-content (click)="forceGoInSignInPage()">
+  <div class="scan-panel" [ngClass]="page_status">
+    <div class="radar-wrapper">
+      <peer-radar-scanning [peer-list]="peer_host_list"></peer-radar-scanning>
+    </div>
+    <div class="info" [hidden]="!peer_list.length">
+      {{'ALREADY_SEARCHED_#NUM#_PEERS' | translate:({num:peer_list.length})}}
+    </div>
+    <div class="info" [hidden]="peer_list.length">
+      {{'SCANING_PEERS' | translate}}
+    </div>
+  </div>
+  <div class="card-wrapper" [ngClass]="page_status">
+    <div class="card-title">
+      <div class="shield-logo" (click)="toggleCanSelectByMyself()" title="{{'SHEILD' | translate}}"></div>
+    </div>
+    <div class="card-content" [class.scaning-finish]="is_scaning_finish">
+      <div class="row table-head">
+        <div class="item-ip">
+          <ali-icon name="ifm-account"></ali-icon>
+        </div>
+        <div class="item-height">
+          <ali-icon name="ifm-jinlingyingcaiwangtubiao32"></ali-icon>
+        </div>
+        <div class="item-ping">
+          <ali-icon name="ifm-delay"></ali-icon>
+        </div>
+        <div class="item-linked-number">
+          <ali-icon name="ifm-wallet2"></ali-icon>
+        </div>
+      </div>
+      <div class="table-list">
+        <div class="row" *ngFor="let node of peer_list" (click)="selectNode(node)" [class.link-able]="node.delay>0" [class.selected]="selected_peer==node&&is_scaning_finish" [attr.data-origin]="node.origin">
+          <div class="item-ip" [innerHTML]="node.ip|mask:'@ip'"></div>
+          <ng-container *ngIf="node.disabled">
+            <div class="item-height">??</div>
+            <div class="item-ping">??</div>
+            <div class="item-linked-number">??</div>
+          </ng-container>
+          <ng-container *ngIf="!node.disabled">
+            <ng-container *ngIf="node.delay<0;else checkingPeerInfo">
+              <div class="item-height">
+                <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+              </div>
+              <div class="item-ping">
+                <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+              </div>
+              <div class="item-linked-number">
+                <ali-icon name="ifm-loading" class="ani-rotate-45deg"></ali-icon>
+              </div>
+            </ng-container>
+            <ng-template #checkingPeerInfo>
+              <div class="item-height">{{node.height}}</div>
+              <div class="item-ping">{{node.delay|number:'1.0-0'}}ms</div>
+              <div class="item-linked-number">{{node.webChannelLinkNum}}</div>
+            </ng-template>
+          </ng-container>
+          <div class="item-select">
+            <button class="radio-button">
+              <input type="radio" name="select-peer-node" [disabled]="!node.delay>0" [value]="node" [(ngModel)]="selected_peer" />
+              <span class="checked"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="scan-light-line-wrapper">
+        <div class="shield-light-line-wrapper">
+          <div class="shield-light-line left"></div>
+          <div class="shield-light-line right"></div>
+        </div>
+        <div class="scan-light-line left"></div>
+        <div class="scan-light-line center"></div>
+        <div class="scan-light-line right"></div>
+      </div>
+      <button *ngIf="can_select_by_myself" class="submit-button start-link" [disabled]="!selected_peer" (click)="linkSelectedNode()">{{'START_NOW'|translate}}</button>
+      <button *ngIf="use_offline_mode" class="submit-button start-link" (click)="useAppWithOffLineMode()">{{'START_WITH_OFFLINE'|translate}}</button>
+    </div>
+  </div>
+</ion-content>

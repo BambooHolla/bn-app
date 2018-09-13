@@ -1,14 +1,17 @@
 import { tryRegisterGlobal } from "../bnqkl-framework/helper";
 import Db from "./gangodb_core/db";
 import Collection from "./gangodb_core/collection";
-const mdb = new Db("ibt", 8, {
+const mdb = new Db("ibt", 20, {
   blocks: ["height", "id"],
   account: ["address", "publicKey"],
   voted_delegate: true,
   voucher: ["timestamp"],
   contact: ["address", "owner_publicKey"],
-  unconfirm_transaction: ["id"],
+  unconfirm_transaction: ["id", "type", "senderId", "timestamp"],
+
   contact_tags: ["owner_publicKey", "contact_ids:multiEntry"],
+  local_contact: ["owner_publicKey", "address"],
+  peers: ["origin"],
 });
 tryRegisterGlobal("mdb", mdb);
 
@@ -22,7 +25,7 @@ const Promise_allNoArray = (async_arr: any) => {
 };
 
 export class Mdb<T> {
-  private db: Collection;
+  db: Collection;
   constructor(public name: string, inMemoryOnly?: boolean) {
     this.db = mdb.collection(name);
   }
@@ -33,6 +36,7 @@ export class Mdb<T> {
   insert(item: T) {
     return this._insert<T>(item);
   }
+  /*批量插入，尽可能地插入*/
   insertMany(list: T[]) {
     const async_arr = list.map(item => ({
       item,
@@ -87,11 +91,11 @@ export class Mdb<T> {
       sort?;
       skip?: number;
       projection?;
-    } = {},
+    } = {}
   ) {
     cursor_operators["limit"] = 1;
     return this.find(query, cursor_operators).then(
-      res => res[0] as T | undefined,
+      res => res[0] as T | undefined
     );
   }
   find(
@@ -101,7 +105,7 @@ export class Mdb<T> {
       skip?: number;
       limit?: number;
       projection?;
-    },
+    }
   ) {
     return new Promise<T[]>((resolve, reject) => {
       const cursor = this.db.find(query);

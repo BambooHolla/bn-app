@@ -41,7 +41,7 @@ export class VoucherServiceProvider {
         sort: { timestamp: desc ? -1 : 1 },
         skip: offset,
         limit,
-      },
+      }
     );
   }
   async addVoucher(tran: VoucherModel) {
@@ -66,7 +66,7 @@ export class VoucherServiceProvider {
           (item.exchange_status === ExchangeStatus.CONFIRMED
             ? 0
             : parseFloat(item.amount)),
-        0,
+        0
       );
     });
   }

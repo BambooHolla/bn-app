@@ -83,7 +83,7 @@ export class PromisePro<T> extends PromiseOut<T> {
 export function autoAbort(
   target,
   name: string,
-  descriptor: PropertyDescriptor,
+  descriptor: PropertyDescriptor
 ) {
   const fun = descriptor.value;
   let _lock: PromisePro<any> | undefined;
@@ -107,8 +107,8 @@ export class DelayPromise<T> extends Promise<T> {
   constructor(
     executor: (
       resolve: (value?: T | PromiseLike<T>) => void,
-      reject: (reason?: any) => void,
-    ) => void,
+      reject: (reason?: any) => void
+    ) => void
   ) {
     var _resolve: any;
     var _reject: any;
@@ -144,3 +144,103 @@ export class DelayPromise<T> extends Promise<T> {
 export const sleep = (ms: number) => {
   return new Promise(cb => setTimeout(cb, ms));
 };
+
+export class ParallelPool<T = any> {
+  constructor(public max_parallel_num = 2) {}
+  private _tasks: Promise<
+    | {
+        assets: T;
+        finally_rm: () => void;
+      }
+    | {
+        error: any;
+        finally_rm: () => void;
+      }
+  >[] = [];
+  private _tasks_executor: (() => Promise<T>)[] = [];
+  addTaskExecutor(
+    executor: () => Promise<T>,
+    opts: { auto_run: true }
+  ): ReturnType<typeof ParallelPool.prototype.waitNext>;
+  addTaskExecutor(
+    executor: () => Promise<T>,
+    opts?: { auto_run?: false }
+  ): undefined;
+  addTaskExecutor(
+    executor: () => Promise<T>,
+    opts: { auto_run?: boolean } = {}
+  ) {
+    this._tasks_executor.push(executor);
+    if (opts.auto_run) {
+      return this.waitNext();
+    }
+  }
+  get is_done() {
+    return this._tasks.length === 0 && this._tasks_executor.length === 0;
+  }
+  get has_next() {
+    return this._tasks.length > 0 || this._tasks_executor.length > 0;
+  }
+  get is_full() {
+    return this._tasks.length >= this.max_parallel_num;
+  }
+  async waitNext() {
+    if (this.has_next) {
+      while (!this.is_full) {
+        const executor = this._tasks_executor.shift();
+        if (!executor) {
+          break;
+        }
+
+        const task = executor();
+        const task_auto_rm = task /*finally*/
+          .then(res => {
+            return { assets: res, finally_rm };
+          })
+          .catch(err => {
+            return { error: err, finally_rm };
+          });
+        const finally_rm = () => {
+          const i = this._tasks.indexOf(task_auto_rm);
+          if (i !== -1) {
+            this._tasks.splice(i, 1);
+          }
+        };
+        this._tasks.push(task_auto_rm);
+      }
+      const result = await Promise.race(this._tasks);
+      const { finally_rm, ...res } = result;
+      finally_rm(); // 移除这个要返回的
+      return res;
+    }
+  }
+  async *yieldResults(opts: {
+    ignore_error?: boolean;
+    skip_when_no_full?: boolean; // 在无法填满并行池的情况下，跳过这次执行
+    yield_num?: number;
+  }) {
+    if (
+      opts.skip_when_no_full &&
+      this._tasks.length + this._tasks_executor.length < this.max_parallel_num
+    ) {
+      return;
+    }
+    let yield_num =
+      typeof opts.yield_num === "number" ? opts.yield_num | 0 : Infinity;
+    while (this.has_next) {
+      if (yield_num <= 0) {
+        break;
+      }
+      yield_num -= 1;
+      const task_result = await this.waitNext();
+      if (task_result) {
+        if ("assets" in task_result) {
+          yield task_result.assets;
+        } else if (opts.ignore_error) {
+          // console.error(task_result.error);
+          throw task_result.error;
+        }
+      }
+    }
+  }
+}

@@ -23,7 +23,7 @@ export class AccountAddContactPage extends SecondLevelPage {
     @Optional() public tabs: TabsPage,
     public user: UserInfoProvider,
     public contactService: ContactServiceProvider,
-    public viewCtrl: ViewController,
+    public viewCtrl: ViewController
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -51,12 +51,12 @@ export class AccountAddContactPage extends SecondLevelPage {
   adding_contact = false;
 
   @asyncCtrlGenerator.error(() =>
-    AccountAddContactPage.getTranslate("ADD_CONTACT_ERROR"),
+    AccountAddContactPage.getTranslate("ADD_CONTACT_ERROR")
   )
   @asyncCtrlGenerator.success(() =>
-    AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS"),
+    AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS")
   )
-  @asyncCtrlGenerator.single({ update_key: "adding_contact" })
+  @asyncCtrlGenerator.single({ lock_prop_key: "adding_contact" })
   async addContacts() {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
       custom_fee: true,
@@ -67,7 +67,7 @@ export class AccountAddContactPage extends SecondLevelPage {
       password,
       address,
       pay_pwd,
-      custom_fee,
+      custom_fee
     );
     this.finishJob();
   }

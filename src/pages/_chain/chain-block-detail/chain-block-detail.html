@@ -6,38 +6,41 @@
 <ion-content #parentContent>
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E5%8C%BA%E5%9D%97%E8%AF%A6%E6%83%85%E7%95%8C%E9%9D%A2.jpg" alt=""> -->
   <div class="block-base-info">
-    <div class="header" (click)="routeTo('vote-delegate-detail',{delegate_info:delegate_info})">
-       <!-- [click-to-copy]="block_info?.generatorId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('BLOCK_generatorId'|translate)}" -->
+    <div class="header" (click)="delegate_info&&routeTo('vote-delegate-detail',{delegate_info:delegate_info})">
       <div class="line">
         <div class="left">
-          <div class="title">
-            <ali-icon name="ifm-feiji"></ali-icon>
-            {{'BLOCK_generatorId'|translate}}
+          <ali-icon name="ifm-feiji"></ali-icon>
+        </div>
+        <div class="left">
+          <div class="line label">
+            <div class="title">
+              {{'BLOCK_generatorId'|translate}}
+            </div>
+            <div class="create-time">
+              <ng-container *ngIf="isShowFullDate(block_info?.timestamp);else showTimeAgo">
+                {{block_info?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD HH:mm"}}
+              </ng-container>
+              <ng-template #showTimeAgo>
+                {{block_info?.timestamp|timestamp|amLocale:localName|amTimeAgo}}
+              </ng-template>
+            </div>
           </div>
-          <div class="create-time">
-            <ng-container *ngIf="isShowFullDate(block_info?.timestamp);else showTimeAgo">
-              {{block_info?.timestamp|timestamp|amDateFormat:"YYYY.MM.DD hh:mm"}}
-            </ng-container>
-            <ng-template #showTimeAgo>
-              {{block_info?.timestamp|timestamp|amLocale:localName|amTimeAgo}}
-            </ng-template>
+          <div class="line address">
+            {{block_info?.generatorId}}
           </div>
         </div>
-      </div>
-      <div class="line address">
-        {{block_info?.generatorId}}
       </div>
     </div>
     <div class="content">
       <div class="line">
         <div class="left reward">
-          <div class="value">{{block_info?.reward|amountEuler|number:"1.0-0"}}</div>
+          <div class="value sf">{{block_info?.reward|amountEuler|number:"1.0-0"}}</div>
           <div class="title">
             <ali-icon name="ifm-reward"></ali-icon>{{'BLOCK_reward'|translate}}
           </div>
         </div>
         <div class="right trans_num">
-          <div class="value">{{block_info?.numberOfTransactions}}</div>
+          <div class="value sf">{{block_info?.numberOfTransactions}}</div>
           <div class="title">
             <ali-icon name="ifm-tran"></ali-icon>{{'BLOCK_numberOfTransactions'|translate}}</div>
         </div>
@@ -53,7 +56,7 @@
       </div>
       <div class="line height">
         <div class="left">
-          <ali-icon name="ifm-resize-height"></ali-icon>
+          <ali-icon name="ifm-memory"></ali-icon>
           {{'BLOCK_blockSize'|translate}}
         </div>
         <div class="right">
@@ -87,7 +90,7 @@
           {{block_info?.id}}
         </div>
       </div>
-      <div class="line block-id">
+      <div class="line block-id" *ngIf="block_info?.previousBlock">
         <div class="left">
           <ali-icon name="ifm-id"></ali-icon>
           {{'BLOCK_pre_block_id'|translate}}
@@ -105,7 +108,9 @@
           <div class="center">
             {{block_info?.remark}}
           </div>
-          <div class="right"><ali-icon name="ifm-arrow-to-right"></ali-icon></div>
+          <div class="right">
+            <ali-icon name="ifm-arrow-to-right"></ali-icon>
+          </div>
         </div>
         <div class="remark-content">
           {{block_info?.remark}}
@@ -131,18 +136,22 @@
         </div>
         <div class="right">
           <div class="from-to">
-            <div class="sender" [innerHTML]="tran.senderUsername?tran.senderUsername:(tran.senderId|mask:'@address')"></div>
-            <ng-container *ngIf="TransactionTypes.SEND == tran.type">
+            <div class="sender" [innerHTML]="(tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address')"></div>
+            <ng-container *ngIf="transactionService.isTransferType(tran.type)">
               <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-              <div class="recipient" [innerHTML]="tran.recipientUsername?tran.recipientUsername:(tran.recipientId|mask:'@address')"></div>
+              <div class="recipient" [innerHTML]="(tran.recipientName)?(tran.recipientName):(tran.recipientId|mask:'@address')"></div>
             </ng-container>
           </div>
-          <div class="amount" *ngIf="TransactionTypes.SEND == tran.type">
+          <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else showFeeOnly">
             {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
+            <span class="unit">{{tran?.assetType||'IBT'}}</span>
           </div>
-          <div class="amount" *ngIf="TransactionTypes.SEND != tran.type">
-            - {{tran?.fee|amountEuler|number:"1.8-8"}}
-          </div>
+          <ng-template #showFeeOnly>
+            <div class="amount">
+              - {{tran?.fee|amountEuler|number:"1.8-8"}}
+              <span class="unit">IBT</span>
+            </div>
+          </ng-template>
         </div>
       </div>
       <div class="empty-list" *ngIf="tran_list.length==0&&tran_list_config.loading==false">

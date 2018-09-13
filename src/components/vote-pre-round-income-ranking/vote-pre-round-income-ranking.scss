@@ -46,6 +46,12 @@ vote-pre-round-income-ranking {
       margin: 0.6rem;
     }
 
+    &.ranking-l-3 {
+      > .ranking-val {
+        transform: scaleX(0.8);
+      }
+    }
+
     &.ranking-1,
     &.ranking-2,
     &.ranking-3 {
@@ -101,6 +107,7 @@ vote-pre-round-income-ranking {
     }
   }
   .rank-info {
+    padding-top: 1.5rem;
     width: 100%;
     flex-grow: 1;
     /* padding: 1rem; */
@@ -170,6 +177,7 @@ vote-pre-round-income-ranking {
       align-items: center;
       padding: 0 2rem;
       border-bottom: 0.55px solid #eeeeee;
+      height: 4.92rem;
 
       .rank-of-me {
         display: none;
@@ -189,8 +197,8 @@ vote-pre-round-income-ranking {
 
       > .ranking-val {
         flex-grow: 0;
-        width: 3rem;
-        height: 3rem;
+        width: 3.6rem;
+        height: 3.6rem;
         margin: 0.5rem;
         border-bottom: 1px solid #eee;
         &.ranking-1,
