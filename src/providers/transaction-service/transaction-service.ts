@@ -767,6 +767,7 @@ export class TransactionServiceProvider {
       recipientId: recipientId,
       publicKey,
       fee: fee.toString(),
+      assetType: "IBT",
     };
     // 数字资产交易
     if (assetType) {
