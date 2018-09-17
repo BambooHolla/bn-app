@@ -101,13 +101,13 @@ export class PeerServiceProvider extends CommonService {
     return all_peers;
   }
 
-  mathPeers(peers: TYPE.LocalPeerModel[]) {}
-
-  /*搜索节点并返回节点检查信息*/
+  /**搜索节点并返回节点检查信息*/
   async *searchAndCheckPeers(
     opts: {
-      /*是否手动检测节点信息*/
+      /**是否手动检测节点信息*/
       manual_check_peers?: boolean;
+      /**需要进行过滤的magic*/
+      trust_magic?: string;
     } = {}
   ) {
     const checked_peer_infos: PromiseType<
@@ -122,7 +122,9 @@ export class PeerServiceProvider extends CommonService {
       if (!is_start_to_check) {
         is_start_to_check = yield peer;
       }
-      parallel_pool.addTaskExecutor(() => this._checkPeer(peer));
+      parallel_pool.addTaskExecutor(() =>
+        this._checkPeer(peer, opts.trust_magic)
+      );
 
       // console.log("peer", peer, is_start_to_check);
       if (is_start_to_check) {
@@ -169,7 +171,7 @@ export class PeerServiceProvider extends CommonService {
       .catch(() => 0);
   }
   /*获取节点检查信息*/
-  async _checkPeer(peer: TYPE.LocalPeerModel) {
+  async _checkPeer(peer: TYPE.LocalPeerModel, trust_magic?: string) {
     const tasks = [
       // 获取最后的六个区块
       this.blockService
@@ -201,6 +203,9 @@ export class PeerServiceProvider extends CommonService {
         tasks as any
       );
       delete peer.disabled;
+      if (trust_magic && peer.magic !== trust_magic) {
+        peer.disabled = true;
+      }
     } catch (err) {
       peer.disabled = true;
     }
@@ -253,7 +258,6 @@ export class PeerServiceProvider extends CommonService {
       (a, b) => b.peers.length - a.peers.length
     );
   }
-
   /**搜索节点*/
   async *searchPeers(
     enter_port_peers = this.peerList, // 初始的节点

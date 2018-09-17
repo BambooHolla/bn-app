@@ -80,6 +80,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   calced_magic_peers_list: PromiseType<
     ReturnType<typeof PeerServiceProvider.prototype.calcPeersMagic>
   > = [];
+  trust_magic = "";
 
   @ScanLinkPeerPage.willEnter
   @asyncCtrlGenerator.single()
@@ -106,7 +107,9 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         }
       } else {
         if (calced_magic_peers_list.length > 1) {
-          this.peerService.peerList = await this.selectEnterPortPeersListByMagic();
+          const { magic, peers } = await this.selectEnterPortPeersListByMagic();
+          this.trust_magic = magic;
+          this.peerService.peerList = peers;
         }
         break;
       }
@@ -115,6 +118,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     /// 开始搜索并计算节点
     this.peer_searcher = this.peerService.searchAndCheckPeers({
       manual_check_peers: true, // 手动控制检查节点：先关闭节点检查，全力搜索节点，等够了，在开始节点检查
+      trust_magic: this.trust_magic,
     });
     /**获取所有次信任节点，目前规则为：必须扫描出所有的次信任节点才能进行下一步*/
     this.all_second_trust_peer_list = await this.peerService.getAllSecondTrustPeers();
@@ -154,7 +158,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
    * TODO: 使用弹出界面的方式，让用户自己手动选择，如果以后有多个入口的话
    */
   async selectEnterPortPeersListByMagic() {
-    return this.calced_magic_peers_list[0].peers;
+    return this.calced_magic_peers_list[0];
   }
 
   /*判断是否可以开始检查节点了*/
