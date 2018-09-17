@@ -815,6 +815,7 @@
   "START_WITH_OFFLINE": "离线模式",
   "ALREADY_SEARCHED_#NUM#_PEERS": "已扫描到{{num}}个节点",
   "SCANING_PEERS": "正在扫描",
+  "THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE":"无可用的入口节点，是否去切换新的入口节点",
 
   "//": "assets-issuing-assets",
   "ASSETS-ISSUING-ASSETS": "生成数字权益合约",

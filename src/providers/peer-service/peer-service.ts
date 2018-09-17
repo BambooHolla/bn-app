@@ -209,6 +209,51 @@ export class PeerServiceProvider extends CommonService {
     return { peer, highest_blocks, lowest_blocks, web_link_num };
   }
 
+  /**计算节点的magic信息*/
+  async calcPeersMagic(peers: TYPE.LocalPeerModel[] = this.peerList) {
+    // 先获取magic信息
+    await Promise.all(
+      peers.map(async peer => {
+        // 如果获取失败了，就忽略这个入口节点
+        const { magic } = await this.fetchPeerMagic(peer.origin).catch(() => ({
+          magic: "",
+        }));
+        peer.magic = magic;
+      })
+    );
+    // 无法正确访问接口的节点直接过滤掉
+    peers = peers.filter(p => p.magic);
+    // 统计magic的权重
+    const origin_peer_map = new Map<string, TYPE.LocalPeerModel>();
+    peers.forEach(p => origin_peer_map.set(p.origin, p));
+    const magic_origin_map = new Map<string, Set<string>>();
+
+    const trust_magic = peers.forEach(p => {
+      let origin_set = magic_origin_map.get(p.magic);
+      if (!origin_set) {
+        magic_origin_map.set(p.magic, (origin_set = new Set()));
+      }
+      origin_set.add(p.origin);
+    });
+
+    const calced_magic_peers_list: {
+      magic: string;
+      peers: TYPE.LocalPeerModel[];
+    }[] = [];
+    for (var [magic, origin_set] of magic_origin_map.entries()) {
+      calced_magic_peers_list.push({
+        magic,
+        peers: [...origin_set].map(
+          origin => origin_peer_map.get(origin) as TYPE.LocalPeerModel
+        ),
+      });
+    }
+    return calced_magic_peers_list.sort(
+      // 逆序排序
+      (a, b) => b.peers.length - a.peers.length
+    );
+  }
+
   /**搜索节点*/
   async *searchPeers(
     enter_port_peers = this.peerList, // 初始的节点
@@ -216,6 +261,7 @@ export class PeerServiceProvider extends CommonService {
     parallel_pool = new ParallelPool<TYPE.LocalPeerModel[]>(4) // 1. 并行池，可以同时执行2个任务
   ): AsyncIterableIterator<TYPE.LocalPeerModel> {
     const self = this; // Generator function 无法与箭头函数混用，所以这里的this必须主动声明在外部。
+
     for (var _p of enter_port_peers) {
       const peer = _p;
       if (!collection_peers.has(peer.origin)) {

@@ -60,7 +60,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 
   @asyncCtrlGenerator.tttttap()
   forceGoInSignInPage() {
-    return this.myapp.openPage(LoginPage, true, '强制进入');
+    return this.myapp.openPage(LoginPage, true, "强制进入");
   }
 
   @ViewChild(PeerRadarScanningComponent)
@@ -77,12 +77,42 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   peer_searcher!: ReturnType<
     typeof PeerServiceProvider.prototype.searchAndCheckPeers
   >;
+  calced_magic_peers_list: PromiseType<
+    ReturnType<typeof PeerServiceProvider.prototype.calcPeersMagic>
+  > = [];
+
   @ScanLinkPeerPage.willEnter
   @asyncCtrlGenerator.single()
+  @asyncCtrlGenerator.error()
   async scanNodes() {
     // 至少要在这个界面上扫描3秒
     const min_time_lock = sleep(3000);
 
+    do {
+      /// 计算节点列表的magic，如果有多个，就让用户手动选择
+      const calced_magic_peers_list = await this.peerService.calcPeersMagic();
+      this.calced_magic_peers_list = calced_magic_peers_list;
+      if (calced_magic_peers_list.length === 0) {
+        throw new Error("@@THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE");
+        const is_route_set_net = await this.waitTipDialogConfirm(
+          "@@THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE",
+          {
+            false_text: "@@RETRY",
+            true_text: "@@YES",
+          }
+        );
+        if (is_route_set_net) {
+          return this.routeTo("settings-net-version");
+        }
+      } else {
+        if (calced_magic_peers_list.length > 1) {
+          this.peerService.peerList = await this.selectEnterPortPeersListByMagic();
+        }
+        break;
+      }
+    } while (true);
+
+    /// 开始搜索并计算节点
     this.peer_searcher = this.peerService.searchAndCheckPeers({
       manual_check_peers: true, // 手动控制检查节点：先关闭节点检查，全力搜索节点，等够了，在开始节点检查
     });
@@ -119,6 +149,14 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     await min_time_lock;
     this.gotoLinkNodes();
   }
+
+  /**从多个入口列表中选择一个
+   * TODO: 使用弹出界面的方式，让用户自己手动选择，如果以后有多个入口的话
+   */
+  async selectEnterPortPeersListByMagic() {
+    return this.calced_magic_peers_list[0].peers;
+  }
+
   /*判断是否可以开始检查节点了*/
   isEnableStartCheckPeers(
     levelMap: any,
@@ -172,7 +210,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     // const peer_searcher = this.navParams.get("peer_searcher"); // 搜索器
     // const peer_list = this.navParams.get("peer_list"); // 已经搜索到的节点
     // const all_second_trust_peer_list = this.navParams.get(
-    // 	"all_second_trust_peer_list"
+    //   "all_second_trust_peer_list"
     // ); // 所有的次信任节点
 
     const {
@@ -248,50 +286,50 @@ export class ScanLinkPeerPage extends FirstLevelPage {
 
             /*
 
-						/// 方差方案
+            /// 方差方案
 
-						const random_select_peer_seed = Math.random();
-						// 算方差
-						const pingjunzhi =
-							selectable_peer_list.reduce(
-								(a, p) => a + p.peer.delay,
-								0
-							) / selectable_peer_list.length;
-						var total_s = 0;
-						var max_s = -Infinity;
-						var min_s = Infinity;
-						const s_list = ([] = selectable_peer_list.map(p => {
-							const s = Math.pow(p.peer.delay - pingjunzhi, 2);
-							total_s += s;
-							max_s = Math.max(max_s, s);
-							min_s = Math.min(min_s, s);
-							return s;
-						}));
-						const mm_s = max_s + min_s;
-						const s_rate_list = s_list
-							.map((s, i) => {
-								return {
-									rate: (mm_s - s) / total_s || 1,
-									pi: selectable_peer_list[i],
-								};
-							})
-							.sort((a, b) => {
-								// 概率高的放前面
-								return b.rate - a.rate;
-							});
-						var random_r = Math.random();
-						var acc_r = 0;
-						const selected_s_rate = s_rate_list.find(s_rate => {
-							acc_r += s_rate.rate;
-							// console.log("random_r,acc_r", random_r, acc_r);
-							return random_r <= acc_r;
-						});
-						if (selected_s_rate) {
-							this.selected_peer = selected_s_rate.pi.peer;
-							this.selected_peer_highest_blocks =
-								selected_s_rate.pi.highest_blocks;
-							this.scrollSelectedPeerIntoView();
-						}*/
+            const random_select_peer_seed = Math.random();
+            // 算方差
+            const pingjunzhi =
+              selectable_peer_list.reduce(
+                (a, p) => a + p.peer.delay,
+                0
+              ) / selectable_peer_list.length;
+            var total_s = 0;
+            var max_s = -Infinity;
+            var min_s = Infinity;
+            const s_list = ([] = selectable_peer_list.map(p => {
+              const s = Math.pow(p.peer.delay - pingjunzhi, 2);
+              total_s += s;
+              max_s = Math.max(max_s, s);
+              min_s = Math.min(min_s, s);
+              return s;
+            }));
+            const mm_s = max_s + min_s;
+            const s_rate_list = s_list
+              .map((s, i) => {
+                return {
+                  rate: (mm_s - s) / total_s || 1,
+                  pi: selectable_peer_list[i],
+                };
+              })
+              .sort((a, b) => {
+                // 概率高的放前面
+                return b.rate - a.rate;
+              });
+            var random_r = Math.random();
+            var acc_r = 0;
+            const selected_s_rate = s_rate_list.find(s_rate => {
+              acc_r += s_rate.rate;
+              // console.log("random_r,acc_r", random_r, acc_r);
+              return random_r <= acc_r;
+            });
+            if (selected_s_rate) {
+              this.selected_peer = selected_s_rate.pi.peer;
+              this.selected_peer_highest_blocks =
+                selected_s_rate.pi.highest_blocks;
+              this.scrollSelectedPeerIntoView();
+            }*/
 
             // this.selected_peer =
             //   selectable_peer_list[
