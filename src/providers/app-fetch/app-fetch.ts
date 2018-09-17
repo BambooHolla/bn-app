@@ -328,19 +328,22 @@ export class AppFetchProvider extends EventEmitter {
         req = httpAdapter[method](reqInfo.url, body, reqInfo.options);
         break;
     }
-    // debugger;
     var req_promise = req.then instanceof Function ? req : req.toPromise();
-    if (
-      httpAdapter === this.wsHttp /*websocket默认提供30s的请求超时*/ ||
-      (isFinite(timeout_ms) && timeout_ms > 0)
-    ) {
+    if (httpAdapter === this.wsHttp) {
+      // websocket默认提供8s的请求超时
+      timeout_ms = 8000;
+    } else {
+      // http 默认提供15s的请求超时
+      timeout_ms = 15000;
+    }
+    if (isFinite(timeout_ms) && timeout_ms > 0) {
       req_promise = Promise.race([
         req_promise,
         new Promise((resolve, reject) =>
           setTimeout(() => {
             // TOOO: 国际化
             reject(new Error("TIME OUT"));
-          }, timeout_ms || 30000)
+          }, timeout_ms || 8000)
         ),
       ]);
     }

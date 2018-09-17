@@ -208,7 +208,7 @@ export class PeerServiceProvider extends CommonService {
     return { peer, highest_blocks, lowest_blocks, web_link_num };
   }
 
-  /*搜索节点*/
+  /**搜索节点*/
   async *searchPeers(
     enter_port_peers = this.peerList, // 初始的节点
     collection_peers = new Map<string, TYPE.LocalPeerModel>(), // 节点去重用的表
@@ -249,12 +249,13 @@ export class PeerServiceProvider extends CommonService {
     yield* recursiveSearch();
   }
 
-  /*获取指定节点的子节点*/
+  /**获取指定节点的子节点*/
   private async _searchPeers(
     enter_port_peer: typeof PeerServiceProvider.prototype.peerList[0],
     collection_peers: Map<string, TYPE.LocalPeerModel>
   ) {
-    const { peers: sec_peers } = await this.fetch
+    // 这个节点可能不工作，所以定一个3s超时的功能
+    const { peers: sec_peers } = await this.fetch.timeout(3000)
       .get<{
         peers: TYPE.PeerModel[];
       }>(this.PEERS_URL.disposableServerUrl(enter_port_peer.origin), {
