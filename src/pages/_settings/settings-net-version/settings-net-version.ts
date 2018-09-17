@@ -6,6 +6,7 @@ import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { AppSettingProvider } from "../../../providers/app-setting/app-setting";
 import { getLatestVersionInfo } from "../../tab-account/checkUpdate";
 import { AppFetchProvider } from "../../../providers/app-fetch/app-fetch";
+import { PeerServiceProvider } from "../../../providers/peer-service/peer-service";
 import { PEER_INFO } from "../../version-update-dialog/version.types";
 
 type PEER_INFO_WITH_VERSION = PEER_INFO & {
@@ -22,7 +23,8 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
-    public fetch: AppFetchProvider
+    public fetch: AppFetchProvider,
+    public peerService: PeerServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
   }
@@ -95,13 +97,18 @@ export class SettingsNetVersionPage extends SecondLevelPage {
           },
           {
             text: await this.getTranslate("CONFIRM"),
-            handler: () => this._changeNetVersion(peer),
+            handler: () => {
+              this._changeNetVersion(peer);
+            },
           },
         ],
       })
       .present();
   }
-  private _changeNetVersion(net_version: PEER_INFO) {
+  @asyncCtrlGenerator.single()
+  @asyncCtrlGenerator.loading()
+  @asyncCtrlGenerator.error()
+  private async _changeNetVersion(net_version: PEER_INFO) {
     localStorage.removeItem("LINK_PEER");
     sessionStorage.removeItem("LINK_PEER");
     if (net_version.config.NET_VERSION === "mainnet") {
@@ -109,6 +116,11 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     } else {
       const aNode = document.createElement("a");
       aNode.href = net_version.config.SERVER_URL;
+      const { magic, sourceIp } = await this.peerService.fetchPeerMagic(
+        net_version.config.SERVER_URL
+      );
+      localStorage.setItem("sourceIp", sourceIp);
+
       localStorage.setItem(
         "PEERS",
         JSON.stringify([
@@ -121,6 +133,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
             ip: aNode.hostname,
             height: 0,
             p2pPort: 19000,
+            magic,
             webPort: 19002,
             delay: -1,
             acc_use_duration: 0,

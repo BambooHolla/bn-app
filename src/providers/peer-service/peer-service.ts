@@ -154,12 +154,13 @@ export class PeerServiceProvider extends CommonService {
       })
       .catch(() => 0);
   }
+  fetchPeerMagic(origin: string) {
+    return this.fetch.get<{ magic: string; sourceIp: string }>(
+      this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true).SYSTEM_BASE_INFO
+    );
+  }
   private _getPeerMagic(peer: TYPE.LocalPeerModel) {
-    return this.fetch
-      .get<any>(
-        this.oneTimeUrl(this.SYSTEM_BASE_INFO, peer.origin, true)
-          .SYSTEM_BASE_INFO
-      )
+    return this.fetchPeerMagic(peer.origin)
       .then(system_base_info => {
         peer.magic = system_base_info.magic;
         localStorage.setItem("sourceIp", system_base_info.sourceIp);
@@ -255,7 +256,8 @@ export class PeerServiceProvider extends CommonService {
     collection_peers: Map<string, TYPE.LocalPeerModel>
   ) {
     // 这个节点可能不工作，所以定一个3s超时的功能
-    const { peers: sec_peers } = await this.fetch.timeout(3000)
+    const { peers: sec_peers } = await this.fetch
+      .timeout(3000)
       .get<{
         peers: TYPE.PeerModel[];
       }>(this.PEERS_URL.disposableServerUrl(enter_port_peer.origin), {
