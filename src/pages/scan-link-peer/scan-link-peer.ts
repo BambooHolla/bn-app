@@ -404,9 +404,9 @@ export class ScanLinkPeerPage extends FirstLevelPage {
             origin: peer.origin,
           }))
         ) {
-          this.peerService.peerDb.insert(peer).catch(console.error);
+          return this.peerService.peerDb.insert(peer).catch(console.error);
         } else {
-          this.peerService.peerDb
+          return this.peerService.peerDb
             .update(
               {
                 origin: peer.origin,
