@@ -4,23 +4,12 @@ import { AppFetchProvider, CommonResponseData } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-import {
-  FLP_Tool,
-  tryRegisterGlobal,
-} from "../../../src/bnqkl-framework/FLP_Tool";
+import { FLP_Tool, tryRegisterGlobal } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
-import {
-  PromisePro,
-  PromiseOut,
-  sleep,
-} from "../../bnqkl-framework/PromiseExtends";
+import { PromisePro, PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 
-import {
-  AppSettingProvider,
-  TB_AB_Generator,
-  HEIGHT_AB_Generator,
-} from "../app-setting/app-setting";
+import { AppSettingProvider, TB_AB_Generator, HEIGHT_AB_Generator } from "../app-setting/app-setting";
 import { TransactionServiceProvider } from "../transaction-service/transaction-service";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as TYPE from "./block.types";
@@ -28,17 +17,14 @@ import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
 import { AppUrl, baseConfig } from "../../bnqkl-framework/helper";
-import {
-  getJsonObjectByteSize,
-  getUTF8ByteSize,
-} from "../../pages/_settings/settings-cache-manage/calcHelper";
-import {
-  DbCacheProvider,
-  HTTP_Method,
-  RequestOptionsWithResult,
-} from "../db-cache/db-cache";
+import { getJsonObjectByteSize, getUTF8ByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
+import { DbCacheProvider, HTTP_Method, RequestOptionsWithResult } from "../db-cache/db-cache";
 import { Mdb } from "../mdb";
 import io from "socket.io-client";
+import { FangoDBFactory, FangoDB } from "fangodb";
+import { DBNumberIndex } from "fangodb/dist/src/db-index-core";
+import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
+
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
 tryRegisterGlobal("socketio", io);
 
@@ -59,7 +45,48 @@ export class BlockServiceProvider extends FLP_Tool {
   }
 
   private _blockDb_inited = new PromisePro();
-  blockDb: Mdb<TYPE.BlockModel>;
+  blockDb!: FangoDB<TYPE.BlockModel>;
+  magic = new PromiseOut<string>();
+
+  /// 关于本地数据库的一些辅助函数
+  private _getHeightIndex(db: FangoDB<TYPE.BlockModel>) {
+    return db.indexs.height.index as DBNumberIndex<string>;
+  }
+  @AOT_Placeholder.Wait("isInited")
+  getLocalLastBlockHeight(blockDB = this.blockDb) {
+    return Promise.resolve(this._getHeightIndex(blockDB).maxInterge);
+  }
+  @AOT_Placeholder.Wait("isInited")
+  async getLocalLastBlock(blockDB = this.blockDb) {
+    const height_index = this._getHeightIndex(blockDB);
+    const last_block_height = height_index.maxInterge;
+    const uid = await height_index.getIndex(last_block_height);
+    if (uid) {
+      return await blockDB.getById(uid);
+    }
+    return this.empty_block;
+  }
+  @AOT_Placeholder.Wait("isInited")
+  checkBlockIdInBlockDB(block_id: string, blockDB = this.blockDb) {
+    return Promise.resolve(blockDB.uids.has(block_id));
+  }
+  is_inited: Promise<any>;
+  private _init_aot = new AOT("init");
+  private async _initService() {
+    this.blockDb = await FangoDBFactory<TYPE.BlockModel>(await this.magic.promise, [
+      {
+        key: "timestamp",
+        type: "number",
+      },
+      {
+        key: "height",
+        type: "number",
+      },
+    ]);
+    this._init_aot.compile(true);
+  }
+
+  _blockDb: Mdb<TYPE.BlockModel>;
 
   oneTimeUrl(app_url: AppUrl, server_url: string, force_network?: boolean) {
     app_url.disposableServerUrl(server_url);
@@ -79,30 +106,26 @@ export class BlockServiceProvider extends FLP_Tool {
     public dbCache: DbCacheProvider
   ) {
     super();
+
+    this._init_aot.autoRegister(this);
+
     tryRegisterGlobal("blockService", this);
     this.ifmJs = AppSettingProvider.IFMJS;
     this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 
     // 安装api服务
-    this.blockDb = dbCache.installDatabase("blocks", []);
+    this._blockDb = dbCache.installDatabase("blocks", []);
     this._blockDb_inited.resolve();
     dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
       "blocks",
       "get",
       this.GET_BLOCK_BY_QUERY,
-      async (db, request_opts) => {
+      async (_, request_opts) => {
         const search = request_opts.reqOptions.search as any;
         if (!search) {
           throw new Error("Parameter verification failed.");
         }
-        let {
-          limit,
-          orderBy,
-          offset,
-          startHeight,
-          endHeight,
-          ...query
-        } = search;
+        let { limit, orderBy, offset, startHeight, endHeight, ...query } = search;
         let may_need_mix_reqs = false;
         if (Number.isFinite(startHeight) && Number.isFinite(endHeight)) {
           query.height = {
@@ -122,7 +145,7 @@ export class BlockServiceProvider extends FLP_Tool {
           const sort_params = orderBy.split(":");
           sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
         }
-        const blocks = await db.find(query, {
+        const blocks = await this.blockDb.find(query, {
           sort,
           limit,
           skip: offset,
@@ -147,25 +170,23 @@ export class BlockServiceProvider extends FLP_Tool {
           return req_res_list[0].result;
         }
       },
-      async (db, mix_res, cache) => {
+      async (_, mix_res, cache) => {
         if (mix_res && mix_res.success) {
           const res_blocks = mix_res.blocks;
           if (res_blocks instanceof Array) {
             const old_blocks =
               cache.blocks instanceof Array
                 ? cache.blocks
-                : await db.find({
+                : await this.blockDb.find({
                     height: { $in: res_blocks.map(b => b.height) },
                   });
-            const unique_height_set = new Set<number>(
-              old_blocks.map(b => b.height)
-            );
+            const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
             const new_blocks = res_blocks
               .filter(block => {
                 return !unique_height_set.has(block.height);
               })
               .map(b => this.formatBlockData(b));
-            await db.insertMany(new_blocks);
+            await this.blockDb.insertMany(new_blocks);
           }
           return mix_res;
         }
@@ -176,9 +197,9 @@ export class BlockServiceProvider extends FLP_Tool {
       "blocks",
       "get",
       this.GET_BLOCK_BY_ID,
-      async (db, request_opts) => {
+      async (_, request_opts) => {
         const query = request_opts.reqOptions.search;
-        const cache_block = await db.findOne(query);
+        const cache_block = await this.blockDb.findOne(query);
         const cache = {
           block: cache_block,
           success: true,
@@ -193,11 +214,11 @@ export class BlockServiceProvider extends FLP_Tool {
           return req_res_list[0].result;
         }
       },
-      async (db, mix_res, cache) => {
+      async (_, mix_res, cache) => {
         if (mix_res) {
           const new_block = mix_res.block;
-          if (!(await db.has({ id: new_block.id }))) {
-            await db.insert(this.formatBlockData(new_block));
+          if (!(await this.checkBlockIdInBlockDB(new_block.id))) {
+            await this.blockDb.insert(this.formatBlockData(new_block));
           }
           cache.block = new_block;
         }
@@ -206,31 +227,28 @@ export class BlockServiceProvider extends FLP_Tool {
     );
 
     // 未连接上websocket前，先使用本地缓存来更新一下高度
-    this.blockDb
-      .findOne({}, { sort: { height: -1 } })
-      .then(local_newest_block => {
-        this._updateHeight(local_newest_block);
-      });
+    this.getLocalLastBlock().then(local_newest_block => {
+      this._updateHeight(local_newest_block);
+    });
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
 
     /// 重新初始化一些同步区块链的状态
     this.appSetting.share_settings.is_syncing_blocks = false;
     this.appSetting.share_settings.sync_is_verifying_block = false;
+
+    // 初始化数据库
+    this.is_inited = this._initService();
   }
 
   @FLP_Tool.FromGlobal peerService!: PeerServiceProvider;
 
   /// TODO: 弃用
-  readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL(
-    "/api/blocks/getLastBlock"
-  );
+  readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL("/api/blocks/getLastBlock");
   readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
   readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
   readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
-  readonly GET_FORGING_BLOCK = this.appSetting.APP_URL(
-    "/api/blocks/getForgingBlocks"
-  );
+  readonly GET_FORGING_BLOCK = this.appSetting.APP_URL("/api/blocks/getForgingBlocks");
   /**第二个块的timestamp*/
   // private _timestamp_from?: number;
   async getLastBlockRefreshInterval() {
@@ -286,22 +304,15 @@ export class BlockServiceProvider extends FLP_Tool {
   private async _updateHeight(last_block?: TYPE.BlockModel) {
     this.lastBlock.refresh("update Height");
     if (!last_block) {
-      last_block = await this.getBlockByHeight(
-        (await this.lastBlock.getPromise()).height
-      );
+      last_block = await this.getBlockByHeight((await this.lastBlock.getPromise()).height);
     }
-    if (
-      this.appSetting.getHeight() === last_block.height &&
-      (await this.lastBlock.getPromise()).id === last_block.id
-    ) {
+    if (this.appSetting.getHeight() === last_block.height && (await this.lastBlock.getPromise()).id === last_block.id) {
       return;
     }
     // 更新缓存中的最新区块
-    if (!(await this.blockDb.has({ id: last_block.id }))) {
+    if (!(await this.checkBlockIdInBlockDB(last_block.id))) {
       // 将最新区块插入到数据库中
-      await this.blockDb
-        .insert(this.formatBlockData(last_block))
-        .catch(err => console.warn("更新最新区块失败", last_block, err));
+      await this.blockDb.insert(this.formatBlockData(last_block)).catch(err => console.warn("更新最新区块失败", last_block, err));
     } else {
       // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
       const heighter_blocks = await this.blockDb.find({
@@ -323,16 +334,9 @@ export class BlockServiceProvider extends FLP_Tool {
       } while (true);
     }
     // 更新轮次计时器
-    this.round_end_time = new Date(
-      Date.now() +
-        this.appSetting.getBlockNumberToRoundEnd(last_block.height) *
-          this.appSetting.BLOCK_UNIT_TIME
-    );
+    this.round_end_time = new Date(Date.now() + this.appSetting.getBlockNumberToRoundEnd(last_block.height) * this.appSetting.BLOCK_UNIT_TIME);
     // 如果同步进度是最新区块的话，那么继续跟进这个进度
-    if (
-      this.appSetting.share_settings.sync_progress_height ===
-      this.appSetting.getHeight()
-    ) {
+    if (this.appSetting.share_settings.sync_progress_height === this.appSetting.getHeight()) {
       this.appSetting.share_settings.sync_progress_height = last_block.height;
     }
     // 更新高度
@@ -379,17 +383,13 @@ export class BlockServiceProvider extends FLP_Tool {
     });
     this.io.on("blocks/change", async data => {
       // 计算流量大小
-      const flow =
-        getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
+      const flow = getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
       this.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
       this.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
       /*更新数据库中的流量使用信息*/
       this.peerService.updatePeerFlow(io_origin, flow);
 
-      console.log(
-        `%c区块更新 ${new Date().toLocaleString()}`,
-        "color:green;background-color:#eee;font-size:1.2rem"
-      );
+      console.log(`%c区块更新 ${new Date().toLocaleString()}`, "color:green;background-color:#eee;font-size:1.2rem");
 
       this._updateHeight(data.lastBlock);
 
@@ -428,20 +428,15 @@ export class BlockServiceProvider extends FLP_Tool {
   private _download_worker?: Worker;
   getDownloadWorker() {
     if (!this._download_worker) {
-      const download_worker = (this._download_worker = new Worker(
-        "./assets/workers/download-block-chain.worker.js"
-      ));
-      this.appSetting.on(
-        "changed@share_settings.enable_sync_progress_blocks",
-        enable_sync_progress_blocks => {
-          const req_id = this._download_req_id_acc++;
-          download_worker.postMessage({
-            cmd: "toggleSyncBlocks",
-            toggle_sync_blocks: enable_sync_progress_blocks,
-            req_id,
-          });
-        }
-      );
+      const download_worker = (this._download_worker = new Worker("./assets/workers/download-block-chain.worker.js"));
+      this.appSetting.on("changed@share_settings.enable_sync_progress_blocks", enable_sync_progress_blocks => {
+        const req_id = this._download_req_id_acc++;
+        download_worker.postMessage({
+          cmd: "toggleSyncBlocks",
+          toggle_sync_blocks: enable_sync_progress_blocks,
+          req_id,
+        });
+      });
     }
     return this._download_worker;
   }
@@ -498,18 +493,14 @@ export class BlockServiceProvider extends FLP_Tool {
             task.resolve();
             break;
           case "process-height":
-            this.appSetting.share_settings.sync_progress_height =
-              msg.data.cursorHeight;
+            this.appSetting.share_settings.sync_progress_height = msg.data.cursorHeight;
             break;
           case "use-flow":
             {
               let flow = (+msg.data.up || 0) + (+msg.data.down || 0);
               this.appSetting.share_settings.sync_data_flow += flow;
               /*更新数据库中的流量使用信息*/
-              this.peerService.updatePeerFlow(
-                AppSettingProvider.SERVER_URL,
-                flow
-              );
+              this.peerService.updatePeerFlow(AppSettingProvider.SERVER_URL, flow);
             }
             break;
           case "progress":
@@ -541,11 +532,7 @@ export class BlockServiceProvider extends FLP_Tool {
     this._sync_lock = res;
     return res;
   }
-  downloadBlockInWorker(
-    startHeight: number,
-    endHeight: number,
-    max_end_height: number
-  ) {
+  downloadBlockInWorker(startHeight: number, endHeight: number, max_end_height: number) {
     // 缺少最新区块，下载补全
     const download_worker = this.getDownloadWorker();
     const req_id = this._download_req_id_acc++;
@@ -574,8 +561,7 @@ export class BlockServiceProvider extends FLP_Tool {
             task.resolve();
             break;
           case "use-flow":
-            this.appSetting.share_settings.sync_data_flow +=
-              (+msg.data.up || 0) + (+msg.data.down || 0);
+            this.appSetting.share_settings.sync_data_flow += (+msg.data.up || 0) + (+msg.data.down || 0);
             break;
           case "progress":
             // console.log("下载中", task_name, msg.data);
@@ -625,10 +611,7 @@ export class BlockServiceProvider extends FLP_Tool {
     });
 
     // 获取目前高度最高的区块
-    const cur_lastBlock = await this.blockDb.findOne(
-      {},
-      { sort: { height: -1 } }
-    );
+    const cur_lastBlock = await this.getLocalLastBlock();
     if (cur_lastBlock) {
       if (cur_lastBlock.height >= lastBlock.height) {
         // TOOD：拜占庭询问区块是否正确，然后进行更新或者拉黑名单的操作
@@ -637,9 +620,7 @@ export class BlockServiceProvider extends FLP_Tool {
       }
     }
 
-    await this.blockDb
-      .insert(block)
-      .catch(err => console.warn(`[${lastBlock.height}]`, err.message));
+    await this.blockDb.insert(block).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
     // 新的输入插入后，就要通知更新区块链
     this.tryEmit("BLOCKCHAIN:CHANGED");
     if (cur_lastBlock) {
@@ -647,11 +628,7 @@ export class BlockServiceProvider extends FLP_Tool {
         const startHeight = cur_lastBlock.height + 1;
         const endHeight = lastBlock.height - 1;
         // 缺少最新区块，下载补全
-        const { task } = await this.downloadBlockInWorker(
-          startHeight,
-          endHeight,
-          lastBlock.height
-        );
+        const { task } = await this.downloadBlockInWorker(startHeight, endHeight, lastBlock.height);
         await task.promise;
       }
     }
@@ -689,33 +666,14 @@ export class BlockServiceProvider extends FLP_Tool {
     remark: "",
   };
 
-  private _getLocalLastBlock() {
-    if (this._blockDb_inited.is_done) {
-      return this.___getLocalLastBlock();
-    } else {
-      return this._blockDb_inited.promise.then(() =>
-        this.___getLocalLastBlock()
-      );
-    }
-  }
-  private ___getLocalLastBlock() {
-    return this.blockDb.findOne({}, { sort: { height: -1 } }).then(
-      b =>
-        b || {
-          ...this.empty_block,
-        }
-    );
-  }
   /**
    * 获取当前区块链的块高度
    * @returns {Promise<any>}
    */
   async getLastBlock() {
     if (this.fetch.onLine) {
-      let last_block = await this.fetch
-        .get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL)
-        .then(res => res.block as TYPE.SingleBlockModel);
-      if (await this.blockDb.has({ id: last_block.id })) {
+      let last_block = await this.fetch.get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL).then(res => res.block as TYPE.SingleBlockModel);
+      if (await this.checkBlockIdInBlockDB(last_block.id)) {
         // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
         const heighter_blocks = await this.blockDb.find({
           height: { $gt: last_block },
@@ -737,7 +695,7 @@ export class BlockServiceProvider extends FLP_Tool {
       }
       return last_block;
     } else {
-      return this._getLocalLastBlock();
+      return this.getLocalLastBlock();
     }
   }
 
@@ -750,8 +708,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param timestamp
    */
   getFullTimestamp(timestamp: number) {
-    const fullTimestamp =
-      (timestamp + AppSettingProvider.seedDateTimestamp) * 1000;
+    const fullTimestamp = (timestamp + AppSettingProvider.seedDateTimestamp) * 1000;
     return fullTimestamp;
   }
 
@@ -761,14 +718,11 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getBlockById(blockId: string) {
-    const data = await this.fetch.get<TYPE.BlockResModel>(
-      this.GET_BLOCK_BY_ID,
-      {
-        search: {
-          id: blockId,
-        },
-      }
-    );
+    const data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_ID, {
+      search: {
+        id: blockId,
+      },
+    });
 
     return data.block;
   }
@@ -839,12 +793,9 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<{}>}
    */
   async getBlocks(query): Promise<TYPE.BlockListResModel> {
-    let data = await this.fetch.get<TYPE.BlockListResModel>(
-      this.GET_BLOCK_BY_QUERY,
-      {
-        search: query,
-      }
-    );
+    let data = await this.fetch.get<TYPE.BlockListResModel>(this.GET_BLOCK_BY_QUERY, {
+      search: query,
+    });
 
     return data;
   }
@@ -853,11 +804,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * 判断当前的块是否延迟，返回块数组
    * @param list
    */
-  blockListHandle(
-    list: TYPE.BlockModel[],
-    per_item?: TYPE.BlockModel,
-    end_item?: TYPE.BlockModel
-  ): TYPE.BlockModel[] {
+  blockListHandle(list: TYPE.BlockModel[], per_item?: TYPE.BlockModel, end_item?: TYPE.BlockModel): TYPE.BlockModel[] {
     const { BLOCK_UNIT_TIME } = this.appSetting;
     const BLOCK_UNIT_SECONED = BLOCK_UNIT_TIME / 1000;
     let i = -1;
@@ -934,17 +881,8 @@ export class BlockServiceProvider extends FLP_Tool {
   /**
    * 获取块中的交易，分页
    */
-  async getTransactionsInBlock(
-    blockId: string,
-    page = 1,
-    pageSize = 10
-  ): Promise<TransactionModel[]> {
-    const data = await this.transactionService.queryTransaction(
-      { blockId },
-      { timestamp: -1 },
-      (page - 1) * pageSize,
-      pageSize
-    );
+  async getTransactionsInBlock(blockId: string, page = 1, pageSize = 10): Promise<TransactionModel[]> {
+    const data = await this.transactionService.queryTransaction({ blockId }, { timestamp: -1 }, (page - 1) * pageSize, pageSize);
 
     return data.transactions;
   }
@@ -1022,22 +960,15 @@ export class BlockServiceProvider extends FLP_Tool {
   }
 
   default_my_forging_pagesize = 20;
-  async getForgingByPage(
-    generatorPublicKey: string,
-    page = 1,
-    pageSize = this.default_my_forging_pagesize
-  ) {
-    const data = await this.fetch.get<TYPE.ForgingBlockResModel>(
-      this.GET_FORGING_BLOCK,
-      {
-        search: {
-          generatorPublicKey,
-          offset: (page - 1) * pageSize,
-          limit: pageSize,
-          orderBy: "height:desc",
-        },
-      }
-    );
+  async getForgingByPage(generatorPublicKey: string, page = 1, pageSize = this.default_my_forging_pagesize) {
+    const data = await this.fetch.get<TYPE.ForgingBlockResModel>(this.GET_FORGING_BLOCK, {
+      search: {
+        generatorPublicKey,
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
+        orderBy: "height:desc",
+      },
+    });
     return data;
   }
   getMyForgingByPage(page?: number, pageSize?: number) {
