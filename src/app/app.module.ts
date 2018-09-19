@@ -266,7 +266,6 @@ const heightLevelModules = [
     VoucherServiceProvider,
     LocalContactProvider,
     AssetsServiceProvider,
-    BlockchainStoreProvider,
   ],
 })
 export class AppModule {}
