@@ -21,7 +21,8 @@ import { getJsonObjectByteSize, getUTF8ByteSize } from "../../pages/_settings/se
 import { DbCacheProvider, HTTP_Method, RequestOptionsWithResult } from "../db-cache/db-cache";
 import { Mdb } from "../mdb";
 import io from "socket.io-client";
-import { FangoDBFactory, FangoDB } from "fangodb";
+import { FangoDB, registerWorkerHandle } from "fangodb";
+import { BlockDBFactory } from "./helper";
 import { DBNumberIndex } from "fangodb/dist/src/db-index-core";
 import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
 
@@ -44,19 +45,23 @@ export class BlockServiceProvider extends FLP_Tool {
     );
   }
 
-  private _blockDb_inited = new PromisePro();
+  private _blockDb_inited = new PromisePro<void>();
   blockDb!: FangoDB<TYPE.BlockModel>;
   magic = new PromiseOut<string>();
+  get isBlockDBInited() {
+    return this._blockDb_inited.promise;
+  }
 
   /// 关于本地数据库的一些辅助函数
+  @AOT_Placeholder.Wait("isBlockDBInited")
   private _getHeightIndex(db: FangoDB<TYPE.BlockModel>) {
     return db.indexs.height.index as DBNumberIndex<string>;
   }
-  @AOT_Placeholder.Wait("isInited")
+  @AOT_Placeholder.Wait("isBlockDBInited")
   getLocalLastBlockHeight(blockDB = this.blockDb) {
     return Promise.resolve(this._getHeightIndex(blockDB).maxInterge);
   }
-  @AOT_Placeholder.Wait("isInited")
+  @AOT_Placeholder.Wait("isBlockDBInited")
   async getLocalLastBlock(blockDB = this.blockDb) {
     const height_index = this._getHeightIndex(blockDB);
     const last_block_height = height_index.maxInterge;
@@ -66,24 +71,17 @@ export class BlockServiceProvider extends FLP_Tool {
     }
     return this.empty_block;
   }
-  @AOT_Placeholder.Wait("isInited")
+  @AOT_Placeholder.Wait("isBlockDBInited")
   checkBlockIdInBlockDB(block_id: string, blockDB = this.blockDb) {
-    return Promise.resolve(blockDB.uids.has(block_id));
+    return blockDB.hasId(block_id);
   }
   is_inited: Promise<any>;
-  private _init_aot = new AOT("init");
+  private _init_block_aot = new AOT("init_block");
   private async _initService() {
-    this.blockDb = await FangoDBFactory<TYPE.BlockModel>(await this.magic.promise, [
-      {
-        key: "timestamp",
-        type: "number",
-      },
-      {
-        key: "height",
-        type: "number",
-      },
-    ]);
-    this._init_aot.compile(true);
+    this.blockDb = await BlockDBFactory(await this.magic.promise);
+    this._blockDb_inited.resolve(this.blockDb.afterInited());
+    await this._blockDb_inited.promise;
+    this._init_block_aot.compile(true);
   }
 
   _blockDb: Mdb<TYPE.BlockModel>;
@@ -107,7 +105,7 @@ export class BlockServiceProvider extends FLP_Tool {
   ) {
     super();
 
-    this._init_aot.autoRegister(this);
+    this._init_block_aot.autoRegister(this);
 
     tryRegisterGlobal("blockService", this);
     this.ifmJs = AppSettingProvider.IFMJS;
@@ -115,7 +113,6 @@ export class BlockServiceProvider extends FLP_Tool {
 
     // 安装api服务
     this._blockDb = dbCache.installDatabase("blocks", []);
-    this._blockDb_inited.resolve();
     dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
       "blocks",
       "get",
@@ -145,6 +142,7 @@ export class BlockServiceProvider extends FLP_Tool {
           const sort_params = orderBy.split(":");
           sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
         }
+        await this.isBlockDBInited;
         const blocks = await this.blockDb.find(query, {
           sort,
           limit,
@@ -174,12 +172,13 @@ export class BlockServiceProvider extends FLP_Tool {
         if (mix_res && mix_res.success) {
           const res_blocks = mix_res.blocks;
           if (res_blocks instanceof Array) {
+            await this.isBlockDBInited;
             const old_blocks =
               cache.blocks instanceof Array
                 ? cache.blocks
                 : await this.blockDb.find({
-                    height: { $in: res_blocks.map(b => b.height) },
-                  });
+                  height: { $in: res_blocks.map(b => b.height) },
+                });
             const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
             const new_blocks = res_blocks
               .filter(block => {
@@ -199,6 +198,7 @@ export class BlockServiceProvider extends FLP_Tool {
       this.GET_BLOCK_BY_ID,
       async (_, request_opts) => {
         const query = request_opts.reqOptions.search;
+        await this.isBlockDBInited;
         const cache_block = await this.blockDb.findOne(query);
         const cache = {
           block: cache_block,
@@ -280,6 +280,7 @@ export class BlockServiceProvider extends FLP_Tool {
   }
   formatBlockData(block: TYPE.BlockModel): TYPE.BlockModel {
     return {
+      magic: block.magic,
       version: block.version,
       timestamp: block.timestamp,
       totalAmount: block.totalAmount,
@@ -350,7 +351,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const self = this;
     const io_origin = AppSettingProvider.SERVER_URL;
     // 不改原型链，只针对当前的这个链接对象进行修改
-    encoder.encode = function(obj, callback) {
+    encoder.encode = function (obj, callback) {
       this[ENCODE_SYMBOL](obj, (buffer_list, ...args) => {
         if (buffer_list instanceof Array) {
           let acc_flow = 0;
@@ -437,6 +438,7 @@ export class BlockServiceProvider extends FLP_Tool {
           req_id,
         });
       });
+      registerWorkerHandle(download_worker);
     }
     return this._download_worker;
   }
@@ -446,7 +448,7 @@ export class BlockServiceProvider extends FLP_Tool {
     req_id: number;
     task: PromiseOut<void>;
   };
-  syncBlockChain(max_end_height: number) {
+  async syncBlockChain(max_end_height: number) {
     if (this._sync_lock) {
       return this._sync_lock;
     }
@@ -457,6 +459,7 @@ export class BlockServiceProvider extends FLP_Tool {
       cmd: "syncBlockChain",
       NET_VERSION: AppSettingProvider.NET_VERSION,
       webio_path: this.fetch.webio.io_url_path,
+      magic: await this.magic.promise,
       max_end_height,
       req_id,
     });
@@ -532,7 +535,7 @@ export class BlockServiceProvider extends FLP_Tool {
     this._sync_lock = res;
     return res;
   }
-  downloadBlockInWorker(startHeight: number, endHeight: number, max_end_height: number) {
+  async downloadBlockInWorker(startHeight: number, endHeight: number, max_end_height: number) {
     // 缺少最新区块，下载补全
     const download_worker = this.getDownloadWorker();
     const req_id = this._download_req_id_acc++;
@@ -541,6 +544,7 @@ export class BlockServiceProvider extends FLP_Tool {
       NET_VERSION: AppSettingProvider.NET_VERSION,
       cmd: "download",
       webio_path: this.fetch.webio.io_url_path,
+      magic: await this.magic.promise,
       startHeight,
       endHeight,
       max_end_height,
@@ -650,7 +654,7 @@ export class BlockServiceProvider extends FLP_Tool {
     height: 0,
     id: "",
     timestamp: 0,
-
+    magic: "",
     version: 0,
     previousBlock: "",
     numberOfTransactions: 0,

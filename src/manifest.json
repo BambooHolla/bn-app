@@ -8,6 +8,9 @@
     "sizes": "512x512",
     "type": "image/png"
   }],
+  "permissions": [
+    "unlimitedStorage"
+  ],
   "background_color": "#4e8ef7",
   "theme_color": "#4e8ef7"
 }

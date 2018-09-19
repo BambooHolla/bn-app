@@ -33,6 +33,16 @@
   <link rel="stylesheet" type="text/css" href="assets/fonts/material-icons.css">
   <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
 <script src="cordova.js"></script><script>APP_VERSION='3.3.1'</script>
+  <script type="text/javascript">
+    window['cordova_ready'] = window['cordova'] ? new Promise(resolve=>{
+    document.addEventListener("deviceready", _ => resolve())
+    }): Promise.resolve();
+  </script>
+  <script>
+    // 强行使用indexed来模拟filesystem api，来突破配额限制
+    delete self["requestFileSystem"];
+    delete self["webkitRequestFileSystem"];
+  </script>
   <!-- <script src='./assets/lib/llqrcode.js'></script> -->
   <!-- un-comment this code to enable service worker
   <script>

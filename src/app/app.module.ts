@@ -1,3 +1,9 @@
+
+import * as ifs from 'idb.filesystem.js';
+// self["webkitRequestFileSystem"] = webkitRequestFileSystem;
+// self["requestFileSystem"] = requestFileSystem;
+console.log('ifs',ifs,self["requestFileSystem"],self["webkitRequestFileSystem"]);
+
 import lazy_links from "./serializer-links";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
@@ -268,4 +274,4 @@ const heightLevelModules = [
     AssetsServiceProvider,
   ],
 })
-export class AppModule {}
+export class AppModule { }

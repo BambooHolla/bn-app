@@ -1,7 +1,8 @@
 import shareProto from "../../src/shareProto";
 import EventEmitter from "eventemitter3";
 import { PromiseOut, sleep } from "../../src/bnqkl-framework/PromiseExtends";
-import { Mdb } from "../../src/providers/mdb";
+// import { Mdb } from "../../src/providers/mdb";
+import { FangoDB, FangoDBWorker } from 'fangodb'
 import { BlockchainVerifier } from "./blockchain-verifier";
 
 import { buf2hex, BlockModel, RangeHelper } from "./helper";
@@ -9,7 +10,7 @@ import { buf2hex, BlockModel, RangeHelper } from "./helper";
 export class BlockChainDownloader extends EventEmitter {
   constructor(
     public webio: SocketIOClient.Socket,
-    public blockDb: Mdb<BlockModel>,
+    public blockDb: FangoDBWorker<BlockModel>,
     public ifmJs: any
   ) {
     super();
@@ -158,7 +159,7 @@ export class BlockChainDownloader extends EventEmitter {
     }
 
     // 数据库插入出错的话，忽略错误，继续往下走
-    await this.blockDb.insertMany(blocks).catch(console.warn);
+    await this.blockDb.fast().insertMany(blocks).catch(console.warn);
 
     // 更改进度
     this.emit(
@@ -303,7 +304,7 @@ export class BlockChainDownloader extends EventEmitter {
     const sync_id = ++this._sync_id_acc;
     const rangeHelper = new RangeHelper(1, max_end_height - 1);
     // 因为现在区块是从1开始下载，所以必然要有1，才需要进行校验，否则直接从头下载到尾
-    if (await this.blockDb.has({ height: 1 })) {
+    if (await this.blockDb.hasIndexKey("height", 1)) {
       this.emit("start-verifier", { ranges: rangeHelper.ranges });
       for await (var _ranges of this.verifier.useableLocalBlocksFinder()) {
         for (var _range of _ranges) {

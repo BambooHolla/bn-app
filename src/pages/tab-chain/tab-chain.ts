@@ -196,7 +196,7 @@ export class TabChainPage extends FirstLevelPage {
     }
     let cg;
     try {
-      const { worker, req_id, task } = this.blockService.syncBlockChain(
+      const { worker, req_id, task } = await this.blockService.syncBlockChain(
         max_end_height
       );
       this._download_task = task;

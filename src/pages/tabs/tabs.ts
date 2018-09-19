@@ -17,8 +17,9 @@ import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { UserInfoProvider } from "../../providers/user-info/user-info";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
+import { BlockServiceProvider } from "../../providers/block-service/block-service";
 
-import { Tab1Root, Tab2Root, Tab3Root, Tab4Root } from "../pages";
+import { Tab1Root, Tab2Root, Tab3Root, Tab4Root, SetNetVersionPage } from "../pages";
 import { TabVotePage } from "../tab-vote/tab-vote";
 import { TabChainPage } from "../tab-chain/tab-chain";
 import { TabPayPage } from "../tab-pay/tab-pay";
@@ -50,7 +51,8 @@ export class TabsPage extends FLP_Lifecycle {
     public r2: Renderer2,
     public elRef: ElementRef,
     public cdRef: ChangeDetectorRef,
-    public userInfo:UserInfoProvider
+    public userInfo: UserInfoProvider,
+    public blockService: BlockServiceProvider
   ) {
     super();
     translateService
@@ -66,6 +68,15 @@ export class TabsPage extends FLP_Lifecycle {
     this.event.on("job-finished", msg => {
       this.selectedTabPage && this.selectedTabPage.tryEmit("job-finished", msg);
     });
+  }
+  @TabsPage.onInit
+  initBlockService() {
+    const magic = localStorage.getItem("MAGIC");
+    if (!magic) {
+      this.navCtrl.setRoot(SetNetVersionPage);
+      return
+    }
+    this.blockService.magic.resolve(magic);
   }
   // 与当前页面共享Ionic生命周期
   @TabsPage.willEnter

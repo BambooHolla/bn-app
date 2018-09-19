@@ -7,7 +7,9 @@ import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { baseConfig, getSocketIOInstance } from "../../bnqkl-framework/helper";
 import { MainPage } from "../pages";
 import { PeerServiceProvider, LocalPeerModel, PEER_LEVEL } from "../../providers/peer-service/peer-service";
-import { BlockServiceProvider, BlockModel } from "../../providers/block-service/block-service";
+import { BlockModel } from "../../providers/block-service/block-service";
+import { BlockDBFactory } from "../../providers/block-service/helper";
+
 import { AppSettingProvider, AppUrl } from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { AniBase, Easing } from "../../components/AniBase";
@@ -33,7 +35,6 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     public peerService: PeerServiceProvider,
     public cdRef: ChangeDetectorRef,
     public eleRef: ElementRef,
-    public blockService: BlockServiceProvider,
     public appFetch: AppFetchProvider,
     public myapp: MyApp
   ) {
@@ -402,14 +403,18 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         }
       })
     );
-    /*保存最高区块信息*/
-    await Promise.all(
-      this.selected_peer_highest_blocks.map(async block => {
-        if (!(await this.blockService.checkBlockIdInBlockDB(block.id))) {
-          this.blockService.blockDb.insert(block).catch(console.error);
-        }
-      })
-    );
+    /// 保存最高区块信息
+    if (this.selected_peer_highest_blocks.length) {
+      const magic = this.selected_peer_highest_blocks[0].magic
+      const blockDB = await BlockDBFactory(magic);
+      await Promise.all(
+        this.selected_peer_highest_blocks.map(async block => {
+          if (!(await blockDB.hasId(block.id))) {
+            await blockDB.insert(block).catch(console.error);
+          }
+        })
+      );
+    }
     /// 尝试连接节点
     await this.peerService.linkPeer(peer);
     return this.myapp.openPage(this.myapp.tryInPage, true, false);

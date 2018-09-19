@@ -2,6 +2,7 @@
 export const FirstRunPage = "tutorial";
 export const ScanLinkPeerPage = "scan-link-peer";
 export const LoginPage = "sign-in-and-sign-up";
+export const SetNetVersionPage = "settings-net-version";
 
 // The main page the user will see as they use the app over a long period of time.
 // Change this if not using tabs

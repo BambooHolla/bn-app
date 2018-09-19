@@ -75,17 +75,17 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     pay_pwd: string;
     fee: number;
   } = {
-    logo: "",
-    abbreviation: "",
-    genesisAddress: "",
-    expectedIssuedAssets: undefined,
+      logo: "",
+      abbreviation: "",
+      genesisAddress: "",
+      expectedIssuedAssets: undefined,
 
-    pwd: "",
-    need_pay_pwd: this.userInfo.hasSecondPwd,
-    pay_pwd: "",
-    fee: parseFloat(this.appSetting.settings.default_fee),
-    // expectedIssuedBlockHeight: undefined,
-  };
+      pwd: "",
+      need_pay_pwd: this.userInfo.hasSecondPwd,
+      pay_pwd: "",
+      fee: parseFloat(this.appSetting.settings.default_fee),
+      // expectedIssuedBlockHeight: undefined,
+    };
 
   ignore_keys = ["logo", "pay_pwd"];
   summary_maxlength = 200;
@@ -170,7 +170,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
   }
 
   @AssetsIssuingAssetsPage.markForCheck
-  lastBlock: SingleBlockModel = { height: 1, timestamp: 0, id: "" };
+  lastBlock: SingleBlockModel = { height: 1, timestamp: 0, id: "", magic: "" };
 
   /**选择资产logo图片*/
   pickAssetsLogo() {
