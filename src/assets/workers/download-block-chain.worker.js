@@ -14552,7 +14552,531 @@ Object.keys(_dbWorker).forEach(function (key) {
     }
   });
 });
-},{"./db":"..\\..\\node_modules\\fangodb\\dist\\src\\db.js","./db-worker":"..\\..\\node_modules\\fangodb\\dist\\src\\db-worker.js"}],"..\\..\\src\\providers\\block-service\\helper.ts":[function(require,module,exports) {
+},{"./db":"..\\..\\node_modules\\fangodb\\dist\\src\\db.js","./db-worker":"..\\..\\node_modules\\fangodb\\dist\\src\\db-worker.js"}],"..\\..\\src\\bnqkl-framework\\BlizzardHash.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+class BlizzardHash {
+    static InitCryptTable() {
+        const cryptTable = new Array(0x500);
+        var seed = 0x00100001;
+        var index1 = 0;
+        var index2 = 0;
+        var i;
+        var temp1;
+        var temp2;
+        for (index1 = 0; index1 < 0x100; index1++) {
+            for (index2 = index1, i = 0; i < 5; i++, index2 += 0x100) {
+                seed = (seed * 125 + 3) % 0x2aaaab;
+                temp1 = (seed & 0xffff) << 0x10;
+                seed = (seed * 125 + 3) % 0x2aaaab;
+                temp2 = seed & 0xffff;
+                cryptTable[index2] = temp1 | temp2;
+            }
+        }
+        return cryptTable;
+    }
+    static hashString(lpszString, dwHashType) {
+        const { cryptTable, cryptTable_length } = BlizzardHash;
+        var seed1 = 0x7fed7fed;
+        var seed2 = 0xeeeeeeee;
+        var ch;
+        for (var i = 0; i < lpszString.length; i += 1) {
+            ch = ((dwHashType << 8) + lpszString.charCodeAt(i)) % cryptTable_length;
+            seed1 = cryptTable[ch] ^ seed1 + seed2;
+            seed2 = ch + seed1 + seed2 + (seed2 << 5) + 3;
+        }
+        return seed1;
+    }
+    static inRangePosition(v) {
+        const { hashRange } = BlizzardHash;
+        return (v - hashRange.min) / hashRange.dis % 1;
+    }
+}
+exports.BlizzardHash = BlizzardHash;
+BlizzardHash.cryptTable = Object.freeze(BlizzardHash.InitCryptTable());
+BlizzardHash.cryptTable_length = BlizzardHash.cryptTable.length;
+BlizzardHash.hashRange = Object.freeze({
+    min: -2147483648,
+    max: 2147483647,
+    dis: Math.pow(2, 32)
+});
+},{}],"..\\..\\src\\bnqkl-framework\\helper.ts":[function(require,module,exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.AOT_Placeholder = exports.AOT = exports.Shim = exports.baseConfig = exports.AppUrl = exports.afCtrl = exports.global = exports.is_dev = undefined;
+
+var _BlizzardHash = require("./BlizzardHash");
+
+Object.keys(_BlizzardHash).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+        enumerable: true,
+        get: function () {
+            return _BlizzardHash[key];
+        }
+    });
+});
+exports.tryRegisterGlobal = tryRegisterGlobal;
+exports.getQueryVariable = getQueryVariable;
+exports.getSocketIOInstance = getSocketIOInstance;
+exports.fileInputEleFactory = fileInputEleFactory;
+
+var _socket = require("socket.io-client");
+
+var _socket2 = _interopRequireDefault(_socket);
+
+var _eventemitter = require("eventemitter3");
+
+var _eventemitter2 = _interopRequireDefault(_eventemitter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const is_dev = exports.is_dev = (() => {
+    const test_fun = function DEV_WITH_FULL_NAME() {};
+    return test_fun.name === "DEV_WITH_FULL_NAME";
+    // return isDevMode();
+})();
+const global = exports.global = typeof self === "object" ? self : window;
+function tryRegisterGlobal(name, obj) {
+    if (is_dev) {
+        return global[name] = obj;
+    }
+}
+
+/*查询从外部进行配置的参数*/
+function getQueryVariable(variable) {
+    var query = location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
+    if (typeof localStorage === "object") {
+        const res = localStorage.getItem(variable);
+        if (typeof res === "string") {
+            return res;
+        }
+    }
+    if (typeof sessionStorage === "object") {
+        const res = sessionStorage.getItem(variable);
+        if (typeof res === "string") {
+            return res;
+        }
+    }
+}
+class WSIOInstance extends _eventemitter2.default {
+    constructor(server_url, nsp = "/web") {
+        super();
+        this.server_url = server_url;
+        this.nsp = nsp;
+        this._onLine = navigator.onLine;
+        this._reconnecting = false;
+    }
+    get io_url_path() {
+        return this.server_url + this.nsp;
+    }
+    get onLine() {
+        return this._onLine;
+    }
+    getOnlineStatus() {
+        if (this.onLine) {
+            return true;
+        }
+        if (this._reconnecting) {
+            return new Promise((resolve, reject) => {
+                this.once("ononline", () => resolve(true));
+                this.once("onoffline", () => resolve(false));
+            });
+        }
+        return false;
+    }
+    get io() {
+        if (!this._io) {
+            const io = (0, _socket2.default)(this.io_url_path, {
+                transports: ["websocket"]
+            });
+            this._io = io;
+            this._io.on("connect", () => {
+                this._reconnecting = false;
+                this._onLine = true;
+                this.emit("ononline");
+            });
+            this._io.on("disconnect", () => {
+                this._reconnecting = false;
+                this._onLine = false;
+                this.emit("onoffline");
+            });
+            this._io.on("connect_error", () => {
+                this._reconnecting = false;
+                this._onLine = false;
+                this.emit("onoffline");
+            });
+            this._io.on("reconnecting", () => {
+                this._reconnecting = true;
+            });
+            // 尝试自动重连，可能一开始服务就不可用，后面才可用的，所以reconnect没法正常工作
+            setInterval(() => {
+                if (io.connected === false) {
+                    io.connect();
+                }
+            }, 1e4);
+        }
+        return this._io;
+    }
+}
+const WSIOInstanceMap = new Map();
+function getSocketIOInstance(server_url, nsp) {
+    const key = server_url + nsp;
+    let ins = WSIOInstanceMap.get(key);
+    if (!ins) {
+        ins = new WSIOInstance(server_url, nsp);
+        WSIOInstanceMap.set(key, ins);
+    }
+    return ins;
+}
+const afCtrl = exports.afCtrl = new class RafController {
+    constructor() {
+        this._raf_id_acc = 0;
+        this._raf_map = {};
+        this._cur_raf_id = null;
+    }
+    _raf_register(callback) {
+        this._raf_map[++this._raf_id_acc] = callback;
+        if (this._cur_raf_id === null) {
+            this._cur_raf_id = this.native_raf(t => {
+                const raf_map = this._raf_map;
+                this._raf_map = {};
+                this._cur_raf_id = null;
+                for (var _id in raf_map) {
+                    const cb = raf_map[_id];
+                    try {
+                        cb(t);
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
+            });
+        }
+        return this._raf_id_acc;
+    }
+    _raf_unregister(id) {
+        delete this._raf_map[id];
+        var has_size = false;
+        for (var _k in this._raf_map) {
+            has_size = true;
+            break;
+        }
+        if (has_size && this._cur_raf_id !== null) {
+            this.native_unraf(this._cur_raf_id);
+            this._cur_raf_id = null;
+        }
+    }
+    native_raf(callback) {
+        const raf = (window["__zone_symbol__requestAnimationFrame"] || window["webkitRequestAnimationFrame"]).bind(window);
+        this.native_raf = raf;
+        return raf(callback);
+    }
+    native_unraf(rafId) {
+        const caf = (window["__zone_symbol__cancelAnimationFrame"] || window["webkitCancelAnimationFrame"]).bind(window);
+        this.native_unraf = caf;
+        return caf(rafId);
+    }
+    raf(callback) {
+        return this._raf_register(callback);
+    }
+    caf(rafId) {
+        return this._raf_unregister(rafId);
+    }
+}();
+/*通用的AppUrl*/
+var BACKEND_VERSION = getQueryVariable("BACKEND_VERSION") || "v3.1.1/";
+class AppUrl {
+    constructor(path) {
+        this.path = path;
+    }
+    static getPathName(url) {
+        return new URL(url).pathname.replace("/api/" + AppUrl.BACKEND_VERSION, "/api/");
+    }
+    toString(query) {
+        const host = (this.disposable_server_url || AppUrl.SERVER_URL) + this.path.replace(/^\/api\//, "/api/" + AppUrl.BACKEND_VERSION);
+        if (query) {
+            let querystring = "?";
+            for (var k in query) {
+                querystring += `${k}=${encodeURIComponent(query[k])}`;
+            }
+            return host + querystring;
+        }
+        return host;
+    }
+    get disposable_server_url() {
+        const res = this._disposable_server_url;
+        this._disposable_server_url = undefined;
+        return res;
+    }
+    disposableServerUrl(server_url) {
+        this._disposable_server_url = server_url;
+        return this;
+    }
+}
+exports.AppUrl = AppUrl;
+AppUrl.SERVER_URL = "http://127.0.0.1";
+AppUrl.BACKEND_VERSION = BACKEND_VERSION;
+/*项目启动的基本环境变量配置参数*/
+const SEED_DATE = [2017, 11, 27, 16, 0, 0, 0];
+const baseConfig = exports.baseConfig = new class BaseConfig extends _eventemitter2.default {
+    constructor() {
+        super(...arguments);
+        this.APP_VERSION = global["APP_VERSION"];
+        this._SERVER_URL = "";
+        //  SERVER_URL = "http://47.104.142.234:6062";
+        this.SEED_DATE = SEED_DATE;
+        this.seedDateTimestamp = Math.floor(Date.UTC(SEED_DATE[0], SEED_DATE[1], SEED_DATE[2], SEED_DATE[3], SEED_DATE[4], SEED_DATE[5], SEED_DATE[6]) / 1000);
+        this.seedDate = new Date(this.seedDateTimestamp * 1000);
+        this.timezoneoffset = -this.seedDate.getTimezoneOffset() * 60;
+        //  SERVER_URL = "http://test1.ifmchain.org:6062";
+        this.SERVER_TIMEOUT = 1000;
+        this.NET_VERSION = getQueryVariable("NET_VERSION") || "mainnet";
+        this.MAGIC = getQueryVariable("MAGIC") || "";
+        this.BLOCK_UNIT_TIME = parseFloat(getQueryVariable("BLOCK_UNIT_TIME") || "") || 128e3;
+        this.SETTING_KEY_PERFIX = "SETTING@";
+    }
+    get SERVER_URL() {
+        return this._SERVER_URL;
+    }
+    set SERVER_URL(v) {
+        AppUrl.SERVER_URL = v;
+        this._SERVER_URL = v;
+        this.emitConfigChanged();
+    }
+    get LATEST_APP_VERSION_URL() {
+        return getQueryVariable("LATEST_APP_VERSION_URL") || "https://www.ifmchain.com/api/app/version/latest";
+    }
+    emitConfigChanged() {
+        if (this._emit_config_changed_lock) {
+            return;
+        }
+        this._emit_config_changed_lock = Promise.resolve().then(() => {
+            this.emit("config-changed");
+            this._emit_config_changed_lock = undefined;
+        });
+    }
+}();
+baseConfig.SERVER_URL = getQueryVariable("SERVER_URL") || "http://publish.ifmchain.org";
+console.log("%cSERVER_URL:", "font-size:2em;color:green;background-color:#DDD", baseConfig.SERVER_URL);
+function fileInputEleFactory(ele_id, accept = "image/*") {
+    const inputEle_id = "qrcodePicker";
+    // 必须把触发函数写在click里头，不然安全角度来说，是无法正常触发的
+    const inputEle = document.getElementById(inputEle_id) || document.createElement("input");
+    if (inputEle.id !== inputEle_id) {
+        inputEle.id = inputEle_id;
+        inputEle.type = "file";
+        inputEle.accept = "image/*";
+        document.body.appendChild(inputEle);
+        inputEle.style.position = "absolute";
+        inputEle.style.zIndex = "-1000";
+        inputEle.style.left = "0";
+        inputEle.style.top = "0";
+        inputEle.style.visibility = "hidden";
+        inputEle.style.width = "0";
+        inputEle.style.height = "0";
+    }
+    return inputEle;
+}
+/**垫片工具*/
+class Shim {
+    constructor(name = "", auto_suffix = "") {
+        this.name = name;
+        this.auto_suffix = auto_suffix;
+        /**是否使用垫片*/
+        this.is_use_shim = false;
+        /**是否进行静态链接*/
+        this.compile_into = false;
+    }
+    By(shim_fun_name) {
+        const self = this;
+        return function shim(target, name, des) {
+            const source_fun = target[name];
+            const shim_name = shim_fun_name === undefined ? name + self.auto_suffix : shim_fun_name;
+            des.value = function (...args) {
+                if (self.compile_into) {
+                    this[name] = self.is_use_shim ? this[shim_name] : source_fun;
+                }
+                if (self.is_use_shim) {
+                    return this[shim_name](...args);
+                } else {
+                    return source_fun.apply(this, ...args);
+                }
+            };
+            des.value.source_fun = source_fun;
+        };
+    }
+    AOT(is_use_shim) {
+        if (this.compile_into) {
+            return false;
+        }
+        this.is_use_shim = is_use_shim;
+        return this.compile_into = true;
+    }
+}
+exports.Shim = Shim; /**用于将一些函数在运行的过程中，跳过一些固有的等待条件，使得运行更快*/
+
+class AOT {
+    constructor(id = "anonymous", default_condition = false) {
+        this.id = id;
+        /**是否进行静态链接*/
+        this.compile_into = false;
+        this.condition = default_condition;
+    }
+    autoRegister(target) {
+        const aot_flags = AOT_Placeholder.GetAOTFlags(target);
+        if (!aot_flags) {
+            return;
+        }
+        for (var aot_flag of aot_flags) {
+            if (aot_flag.type === "Then") {
+                const then_data = aot_flag.data;
+                this.register(target, then_data.prop_name, this.Then(then_data.then_fun_name));
+            } else if (aot_flag.type === "Wait") {
+                const wait_data = aot_flag.data;
+                this.register(target, wait_data.prop_name, this.Wait(wait_data.condition_promise_fun_name, wait_data.skip_if_false));
+            }
+        }
+    }
+    _getPropDescriptor(target, name) {
+        let proto = target;
+        do {
+            if (proto.hasOwnProperty(name)) {
+                return Object.getOwnPropertyDescriptor(proto, name);
+            }
+            proto = Object.getPrototypeOf(proto);
+            if (!proto) {
+                break;
+            }
+        } while (true);
+    }
+    register(target, name, declaration) {
+        const des = this._getPropDescriptor(target, name);
+        if (des) {
+            Object.defineProperty(target, name, declaration(target, name, des));
+        }
+    }
+    /**条件语句*/
+    Then(then_fun_name) {
+        const self = this;
+        return function (target, name, des) {
+            const source_fun = des.value;
+            des.value = function (...args) {
+                const { condition } = self;
+                if (self.compile_into) {
+                    this[name] = condition ? this[then_fun_name] : source_fun;
+                }
+                if (condition) {
+                    return this[then_fun_name](...args);
+                } else {
+                    return source_fun.apply(this, args);
+                }
+            };
+            des.value.source_fun = source_fun;
+            return des;
+        };
+    }
+    /**前置条件*/
+    Wait(condition_promise_fun_name, skip_if_false = false) {
+        const self = this;
+        return function (target, name, des) {
+            const source_fun = des.value;
+            des.value = function (...args) {
+                const { condition } = self;
+                if (self.compile_into) {
+                    if (!condition) {
+                        console.warn(`[${self.id}]`, "AOT-Wait's condition must be true");
+                    }
+                    this[name] = source_fun;
+                } else {
+                    console.warn(`[${self.id}]`, `JIT mode run ${name}`);
+                }
+                if (!condition) {
+                    // 在条件不成立的时候，需要始终进行条件判断的等待
+                    const condition = this[condition_promise_fun_name];
+                    return (condition instanceof Function ? this[condition_promise_fun_name](...args) : Promise.resolve(condition)).then(pre_condition_res => {
+                        if (skip_if_false && !pre_condition_res) {
+                            return;
+                        }
+                        return source_fun.apply(this, args);
+                    });
+                } else {
+                    return source_fun.apply(this, args);
+                }
+            };
+            des.value.source_fun = source_fun;
+            return des;
+        };
+    }
+    compile(condition) {
+        if (this.compile_into) {
+            return false;
+        }
+        this.condition = condition;
+        return this.compile_into = true;
+    }
+}
+exports.AOT = AOT;
+const AOT_FLAGS_CACHE = new WeakMap();
+class AOT_Placeholder {
+    static GetAOTFlags(target) {
+        const aot_flags = [];
+        let proto = target;
+        do {
+            const _flags = AOT_FLAGS_CACHE.get(proto);
+            if (_flags) {
+                aot_flags.push(..._flags);
+            }
+            proto = Object.getPrototypeOf(proto);
+            if (!proto) {
+                break;
+            }
+        } while (true);
+        return aot_flags;
+    }
+    static GetAndSetAOTFlags(target) {
+        let aot_flags = AOT_FLAGS_CACHE.get(target);
+        if (!aot_flags) {
+            aot_flags = [];
+            AOT_FLAGS_CACHE.set(target, aot_flags);
+        }
+        return aot_flags;
+    }
+    static Then(then_fun_name) {
+        return (target, name, des) => {
+            this.GetAndSetAOTFlags(target).push({
+                type: "Then",
+                data: { then_fun_name, prop_name: name }
+            });
+            return des;
+        };
+    }
+    static Wait(condition_promise_fun_name, skip_if_false = false) {
+        return (target, name, des) => {
+            this.GetAndSetAOTFlags(target).push({
+                type: "Wait",
+                data: { condition_promise_fun_name, skip_if_false, prop_name: name }
+            });
+            return des;
+        };
+    }
+}
+exports.AOT_Placeholder = AOT_Placeholder;
+},{"./BlizzardHash":"..\\..\\src\\bnqkl-framework\\BlizzardHash.ts","socket.io-client":"..\\..\\node_modules\\socket.io-client\\lib\\index.js","eventemitter3":"..\\..\\node_modules\\eventemitter3\\index.js"}],"..\\..\\src\\providers\\block-service\\helper.ts":[function(require,module,exports) {
+
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14563,6 +15087,8 @@ exports.BlockDBWorkerFactory = BlockDBWorkerFactory;
 
 var _fangodb = require("fangodb");
 
+var _helper = require("../../bnqkl-framework/helper");
+
 const block_indexs = [{
     key: "timestamp",
     type: "number"
@@ -14571,12 +15097,18 @@ const block_indexs = [{
     type: "number"
 }];
 function BlockDBFactory(dbname) {
-    return (0, _fangodb.FangoDBFactory)(dbname, block_indexs);
+    return (0, _fangodb.FangoDBFactory)(dbname, block_indexs, _helper.global["file"]).then(blockDB => {
+        // 默认使用高度来做为文件名
+        blockDB.idGenerator = item => {
+            return String(item.height);
+        };
+        return blockDB;
+    });
 }
 function BlockDBWorkerFactory(dbname) {
     return (0, _fangodb.FangoDBWorkerFactory)(dbname, block_indexs);
 }
-},{"fangodb":"..\\..\\node_modules\\fangodb\\dist\\src\\index.js"}],"..\\..\\src\\ifmchain-ibt\\lib\\helpers\\configFactory.json":[function(require,module,exports) {
+},{"fangodb":"..\\..\\node_modules\\fangodb\\dist\\src\\index.js","../../bnqkl-framework/helper":"..\\..\\src\\bnqkl-framework\\helper.ts"}],"..\\..\\src\\ifmchain-ibt\\lib\\helpers\\configFactory.json":[function(require,module,exports) {
 module.exports = {
     "NET_VERSION": {
         "mainnet": "mainnet",
