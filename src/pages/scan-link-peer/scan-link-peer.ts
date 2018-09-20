@@ -1,10 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  ElementRef,
-  ViewChild,
-} from "@angular/core";
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { sleep, PromiseType } from "../../bnqkl-framework/PromiseExtends";
@@ -12,19 +6,11 @@ import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { baseConfig, getSocketIOInstance } from "../../bnqkl-framework/helper";
 import { MainPage } from "../pages";
-import {
-  PeerServiceProvider,
-  LocalPeerModel,
-  PEER_LEVEL,
-} from "../../providers/peer-service/peer-service";
-import {
-  BlockServiceProvider,
-  BlockModel,
-} from "../../providers/block-service/block-service";
-import {
-  AppSettingProvider,
-  AppUrl,
-} from "../../providers/app-setting/app-setting";
+import { PeerServiceProvider, LocalPeerModel, PEER_LEVEL } from "../../providers/peer-service/peer-service";
+import { BlockModel } from "../../providers/block-service/block-service";
+import { BlockDBFactory } from "../../providers/block-service/helper";
+
+import { AppSettingProvider, AppUrl } from "../../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { AniBase, Easing } from "../../components/AniBase";
 import { PeerRadarScanningComponent } from "../../components/peer-radar-scanning/peer-radar-scanning";
@@ -49,7 +35,6 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     public peerService: PeerServiceProvider,
     public cdRef: ChangeDetectorRef,
     public eleRef: ElementRef,
-    public blockService: BlockServiceProvider,
     public appFetch: AppFetchProvider,
     public myapp: MyApp
   ) {
@@ -63,8 +48,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     return this.myapp.openPage(LoginPage, true, "强制进入");
   }
 
-  @ViewChild(PeerRadarScanningComponent)
-  peerRadarScanning!: PeerRadarScanningComponent;
+  @ViewChild(PeerRadarScanningComponent) peerRadarScanning!: PeerRadarScanningComponent;
   @ScanLinkPeerPage.willEnter
   startPeerRadarScanning() {
     this.peerRadarScanning.startAnimation();
@@ -74,12 +58,8 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   get peer_host_list() {
     return this.peer_list.map(p => p.ip);
   }
-  peer_searcher!: ReturnType<
-    typeof PeerServiceProvider.prototype.searchAndCheckPeers
-  >;
-  calced_magic_peers_list: PromiseType<
-    ReturnType<typeof PeerServiceProvider.prototype.calcPeersMagic>
-  > = [];
+  peer_searcher!: ReturnType<typeof PeerServiceProvider.prototype.searchAndCheckPeers>;
+  calced_magic_peers_list: PromiseType<ReturnType<typeof PeerServiceProvider.prototype.calcPeersMagic>> = [];
   trust_magic = "";
 
   @ScanLinkPeerPage.willEnter
@@ -95,13 +75,10 @@ export class ScanLinkPeerPage extends FirstLevelPage {
       this.calced_magic_peers_list = calced_magic_peers_list;
       if (calced_magic_peers_list.length === 0) {
         throw new Error("@@THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE");
-        const is_route_set_net = await this.waitTipDialogConfirm(
-          "@@THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE",
-          {
-            false_text: "@@RETRY",
-            true_text: "@@YES",
-          }
-        );
+        const is_route_set_net = await this.waitTipDialogConfirm("@@THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE", {
+          false_text: "@@RETRY",
+          true_text: "@@YES",
+        });
         if (is_route_set_net) {
           return this.routeTo("settings-net-version");
         }
@@ -135,14 +112,8 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         // this._calcPeerPos(peer_searcher_res);
         this.peer_list.push(peer_searcher_res);
         this.markForCheck();
-        levelMap[peer_searcher_res.level] =
-          (levelMap[peer_searcher_res.level] | 0) + 1;
-        if (
-          this.isEnableStartCheckPeers(
-            levelMap,
-            this.all_second_trust_peer_list
-          )
-        ) {
+        levelMap[peer_searcher_res.level] = (levelMap[peer_searcher_res.level] | 0) + 1;
+        if (this.isEnableStartCheckPeers(levelMap, this.all_second_trust_peer_list)) {
           break;
         }
       } else if ("search_done" in peer_searcher_res) {
@@ -162,16 +133,10 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   }
 
   /*判断是否可以开始检查节点了*/
-  isEnableStartCheckPeers(
-    levelMap: any,
-    all_second_trust_peer_list: LocalPeerModel[] = []
-  ) {
+  isEnableStartCheckPeers(levelMap: any, all_second_trust_peer_list: LocalPeerModel[] = []) {
     // if(levelMap[PEER_LEVEL.TRUST]){}
     const second_peer_num = Math.max(all_second_trust_peer_list.length, 4);
-    return (
-      levelMap[PEER_LEVEL.SEC_TRUST] >= second_peer_num ||
-      levelMap[PEER_LEVEL.OTHER] >= 57
-    );
+    return levelMap[PEER_LEVEL.SEC_TRUST] >= second_peer_num || levelMap[PEER_LEVEL.OTHER] >= 57;
   }
   /*进如到共识界面*/
   gotoLinkNodes() {
@@ -205,9 +170,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   // @ScanLinkPeerPage.willEnter
   @asyncCtrlGenerator.error()
   async getNodes() {
-    var calc_res_list:
-      | ReturnType<typeof PeerServiceProvider.calcPeers>
-      | undefined;
+    var calc_res_list: ReturnType<typeof PeerServiceProvider.calcPeers> | undefined;
     /*这个界面至少等待3s*/
     const min_search_time = sleep(3000);
 
@@ -234,9 +197,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     console.log("使用搜索器继续搜索并开始执行节点检查");
     const peer_searcher_res = await this.peer_searcher.next(true);
     // console.log("peer_searcher_res", peer_searcher_res);
-    const peer_info_list = [] as PromiseType<
-      ReturnType<typeof PeerServiceProvider.prototype._checkPeer>
-    >[];
+    const peer_info_list = [] as PromiseType<ReturnType<typeof PeerServiceProvider.prototype._checkPeer>>[];
     for await (var _pi of this.peer_searcher) {
       if ("peer" in _pi) {
         // 如果节点可用
@@ -257,10 +218,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         }
         /*拜占庭检测可连接的节点*/
         peer_info_list.push(checked_peer_info);
-        const check_res = PeerServiceProvider.calcPeers(
-          peer_info_list,
-          all_second_trust_peer_list
-        );
+        const check_res = PeerServiceProvider.calcPeers(peer_info_list, all_second_trust_peer_list);
         calc_res_list = check_res;
         // 随机进行选择
         const random_select_seed = Math.random();
@@ -270,20 +228,11 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         for (var check_item of check_res) {
           acc_random += check_item.rate;
           if (random_select_seed < acc_random) {
-            const selectable_peer_list = check_item.peer_info_list
-              .sort(
-                (a, b) =>
-                  b.highest_blocks[0].height - a.highest_blocks[0].height
-              )
-              .filter((p, i, l) => {
-                return (
-                  p.highest_blocks[0].height === l[0].highest_blocks[0].height
-                );
-              });
+            const selectable_peer_list = check_item.peer_info_list.sort((a, b) => b.highest_blocks[0].height - a.highest_blocks[0].height).filter((p, i, l) => {
+              return p.highest_blocks[0].height === l[0].highest_blocks[0].height;
+            });
             /// 最短延迟方案
-            const min_delay_peer = selectable_peer_list.sort(
-              (a, b) => a.peer.delay - b.peer.delay
-            )[0];
+            const min_delay_peer = selectable_peer_list.sort((a, b) => a.peer.delay - b.peer.delay)[0];
             this.selected_peer = min_delay_peer.peer;
             this.selected_peer_highest_blocks = min_delay_peer.highest_blocks;
             this.scrollSelectedPeerIntoView();
@@ -396,9 +345,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     if (this.selected_peer) {
       return;
     }
-    const fastet_node = this.peer_list
-      .filter(node => node.delay > 0)
-      .sort((a, b) => a.delay - b.delay)[0];
+    const fastet_node = this.peer_list.filter(node => node.delay > 0).sort((a, b) => a.delay - b.delay)[0];
     if (fastet_node) {
       this.selected_peer = fastet_node;
       this.linkNode(fastet_node);
@@ -417,13 +364,10 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     // if (selectedPeerEle) {
     //   selectedPeerEle.scrollIntoView({ behavior: "smooth", block: "center" });
     // }
-    this.selected_peer &&
-      this.scrollIntoView(this.selected_peer, 1200, Easing.Quadratic_Out);
+    this.selected_peer && this.scrollIntoView(this.selected_peer, 1200, Easing.Quadratic_Out);
   }
 
-  storeUseablePeers(
-    calc_res_list: ReturnType<typeof PeerServiceProvider.calcPeers>
-  ) {
+  storeUseablePeers(calc_res_list: ReturnType<typeof PeerServiceProvider.calcPeers>) {
     this.useable_peers = [];
     calc_res_list.forEach(check_item => {
       check_item.peer_info_list.forEach(peer_info => {
@@ -459,14 +403,18 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         }
       })
     );
-    /*保存最高区块信息*/
-    await Promise.all(
-      this.selected_peer_highest_blocks.map(async block => {
-        if (!(await this.blockService.blockDb.has({ id: block.id }))) {
-          this.blockService.blockDb.insert(block).catch(console.error);
-        }
-      })
-    );
+    /// 保存最高区块信息
+    if (this.selected_peer_highest_blocks.length) {
+      const magic = this.selected_peer_highest_blocks[0].magic
+      const blockDB = await BlockDBFactory(magic);
+      await Promise.all(
+        this.selected_peer_highest_blocks.map(async block => {
+          if (!(await blockDB.hasId(block.id))) {
+            await blockDB.insert(block).catch(console.error);
+          }
+        })
+      );
+    }
     /// 尝试连接节点
     await this.peerService.linkPeer(peer);
     return this.myapp.openPage(this.myapp.tryInPage, true, false);
@@ -480,19 +428,13 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   private _scroll_abort?: Function;
   /**滚动到指定节点对应的DOM元素*/
   scrollIntoView(peer: LocalPeerModel, ani_time = 250, easing?) {
-    const ele = document.querySelector(
-      `[data-origin="${peer.origin}"]`
-    ) as HTMLElement;
+    const ele = document.querySelector(`[data-origin="${peer.origin}"]`) as HTMLElement;
     if (ele) {
       if (this._scroll_abort) {
         this._scroll_abort();
       }
       const parentEle = ele.parentElement as HTMLElement;
-      const scrollToTop =
-        ele.offsetTop -
-        parentEle.offsetTop -
-        parentEle.clientHeight / 2 +
-        ele.clientHeight;
+      const scrollToTop = ele.offsetTop - parentEle.offsetTop - parentEle.clientHeight / 2 + ele.clientHeight;
       AniBase.animateNumber(parentEle.scrollTop, scrollToTop, ani_time, easing)(
         (v, abort) => {
           parentEle.scrollTop = v;

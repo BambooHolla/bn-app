@@ -1,6 +1,6 @@
 export * from "./BlizzardHash";
 export const is_dev = (() => {
-  const test_fun = function DEV_WITH_FULL_NAME() {};
+  const test_fun = function DEV_WITH_FULL_NAME() { };
   return test_fun.name === "DEV_WITH_FULL_NAME";
   // return isDevMode();
 })();
@@ -179,7 +179,7 @@ export class AppUrl {
       "/api/"
     );
   }
-  constructor(public path: string) {}
+  constructor(public path: string) { }
   toString(query?) {
     const host =
       (this.disposable_server_url || AppUrl.SERVER_URL) +
@@ -292,7 +292,7 @@ export function fileInputEleFactory(ele_id: string, accept = "image/*") {
 
 /**垫片工具*/
 export class Shim {
-  constructor(public name = "", public auto_suffix = "") {}
+  constructor(public name = "", public auto_suffix = "") { }
   /**是否使用垫片*/
   is_use_shim = false;
   /**是否进行静态链接*/
@@ -303,7 +303,7 @@ export class Shim {
       const source_fun = target[name];
       const shim_name =
         shim_fun_name === undefined ? name + self.auto_suffix : shim_fun_name;
-      des.value = function(...args) {
+      des.value = function (...args) {
         if (self.compile_into) {
           this[name] = self.is_use_shim ? this[shim_name] : source_fun;
         }
@@ -324,26 +324,79 @@ export class Shim {
     return (this.compile_into = true);
   }
 }
+
 /**用于将一些函数在运行的过程中，跳过一些固有的等待条件，使得运行更快*/
 export class AOT {
-  constructor(default_condition = false) {
-    this._condition = default_condition;
+  constructor(public id = "anonymous", default_condition = false) {
+    this.condition = default_condition;
+  }
+  autoRegister(target) {
+    const aot_flags = AOT_Placeholder.GetAOTFlags(target);
+    if (!aot_flags) {
+      return;
+    }
+    for (var aot_flag of aot_flags) {
+      if (aot_flag.type === "Then") {
+        const then_data = aot_flag.data;
+        this.register(
+          target,
+          then_data.prop_name,
+          this.Then(then_data.then_fun_name)
+        );
+      } else if (aot_flag.type === "Wait") {
+        const wait_data = aot_flag.data;
+        this.register(
+          target,
+          wait_data.prop_name,
+          this.Wait(
+            wait_data.condition_promise_fun_name,
+            wait_data.skip_if_false
+          )
+        );
+      }
+    }
+  }
+  private _getPropDescriptor(target: object, name: string) {
+    let proto = target;
+    do {
+      if (proto.hasOwnProperty(name)) {
+        return Object.getOwnPropertyDescriptor(proto, name)
+      }
+      proto = Object.getPrototypeOf(proto);
+      if (!proto) {
+        break
+      }
+    } while (true)
+  }
+  register(
+    target: any,
+    name: string,
+    declaration: (
+      target: any,
+      name: string,
+      des: PropertyDescriptor
+    ) => PropertyDescriptor
+  ) {
+    const des = this._getPropDescriptor(target, name);
+    if (des) {
+      Object.defineProperty(target, name, declaration(target, name, des));
+    }
   }
   /**JIT运行时的条件属性*/
-  private _condition = false;
+  condition: boolean;
   /**是否进行静态链接*/
   compile_into = false;
   /**条件语句*/
   Then(then_fun_name: string) {
     const self = this;
-    return function(target: any, name: string, des: PropertyDescriptor) {
-      const source_fun = target[name];
-      des.value = function(...args) {
-        const { _condition } = self;
+    return function (target: any, name: string, des: PropertyDescriptor) {
+      const source_fun = des.value;
+      des.value = function (...args) {
+        const { condition } = self;
         if (self.compile_into) {
-          this[name] = _condition ? this[then_fun_name] : source_fun;
+          this[name] = condition ? this[then_fun_name] : source_fun;
         }
-        if (_condition) {
+        if (condition) {
           return this[then_fun_name](...args);
         } else {
           return source_fun.apply(this, args);
@@ -356,19 +409,25 @@ export class AOT {
   /**前置条件*/
   Wait(condition_promise_fun_name: string, skip_if_false = false) {
     const self = this;
-    return function(target: any, name: string, des: PropertyDescriptor) {
-      const source_fun = target[name];
-      des.value = function(...args) {
-        const { _condition } = self;
+    return function (target: any, name: string, des: PropertyDescriptor) {
+      const source_fun = des.value;
+      des.value = function (...args) {
+        const { condition } = self;
         if (self.compile_into) {
-          if (!_condition) {
-            console.warn("AOT-Wait's condition must be true");
+          if (!condition) {
+            console.warn(`[${self.id}]`, "AOT-Wait's condition must be true");
           }
           this[name] = source_fun;
+        } else {
+          console.warn(`[${self.id}]`, `JIT mode run ${name}`);
         }
-        if (!_condition) {
+        if (!condition) {
           // 在条件不成立的时候，需要始终进行条件判断的等待
-          this[condition_promise_fun_name](...args).then(pre_condition_res => {
+          const condition = this[condition_promise_fun_name];
+          return (condition instanceof Function
+            ? this[condition_promise_fun_name](...args)
+            : Promise.resolve(condition)
+          ).then(pre_condition_res => {
             if (skip_if_false && !pre_condition_res) {
               return;
             }
@@ -386,7 +445,65 @@ export class AOT {
     if (this.compile_into) {
       return false;
     }
-    this._condition = condition;
+    this.condition = condition;
     return (this.compile_into = true);
+  }
+}
+
+const AOT_FLAGS_CACHE = new WeakMap<object, aot_flag[]>();
+type aot_flag =
+  | {
+    type: "Then";
+    data: { then_fun_name: string; prop_name: string };
+  }
+  | {
+    type: "Wait";
+    data: {
+      condition_promise_fun_name: string;
+      skip_if_false: boolean;
+      prop_name: string;
+    };
+  };
+export class AOT_Placeholder {
+  static GetAOTFlags(target: object) {
+    const aot_flags: aot_flag[] = [];
+    let proto = target;
+    do {
+      const _flags = AOT_FLAGS_CACHE.get(proto);
+      if (_flags) {
+        aot_flags.push(..._flags)
+      }
+      proto = Object.getPrototypeOf(proto);
+      if (!proto) {
+        break
+      }
+    } while (true)
+    return aot_flags
+  }
+  static GetAndSetAOTFlags(target: object) {
+    let aot_flags = AOT_FLAGS_CACHE.get(target);
+    if (!aot_flags) {
+      aot_flags = [];
+      AOT_FLAGS_CACHE.set(target, aot_flags);
+    }
+    return aot_flags;
+  }
+  static Then(then_fun_name: string) {
+    return (target: object, name: string, des: PropertyDescriptor) => {
+      this.GetAndSetAOTFlags(target).push({
+        type: "Then",
+        data: { then_fun_name, prop_name: name },
+      });
+      return des;
+    };
+  }
+  static Wait(condition_promise_fun_name: string, skip_if_false = false) {
+    return (target: object, name: string, des: PropertyDescriptor) => {
+      this.GetAndSetAOTFlags(target).push({
+        type: "Wait",
+        data: { condition_promise_fun_name, skip_if_false, prop_name: name },
+      });
+      return des;
+    };
   }
 }

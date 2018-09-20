@@ -136,5 +136,4 @@
     <plugin name="cordova-plugin-networkinterface" spec="^2.0.0" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
-    <plugin name="flyacts-cordova-plugin-themeablebrowser" spec="^0.2.19" />
 </widget>

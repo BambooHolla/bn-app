@@ -18,6 +18,7 @@ export interface BlockModel extends SingleBlockModel {
 }
 
 export interface SingleBlockModel {
+  magic: string;
   height: number;
   id: string;
   timestamp: number;

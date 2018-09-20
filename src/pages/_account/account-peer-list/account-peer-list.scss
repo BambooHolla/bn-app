@@ -1,13 +1,16 @@
 page-account-peer-list {
   @extend .header-no-border;
-  > .content {
-    > .scroll-content {
+
+  >.content {
+    >.scroll-content {
       background-color: #eeeeee;
     }
   }
+
   .cur-peer-list {
     margin-top: 1rem;
-    > .header {
+
+    >.header {
       background-color: #fff;
       color: #4e4e4e;
       height: 4rem;
@@ -15,7 +18,8 @@ page-account-peer-list {
       display: flex;
       align-items: center;
     }
-    > .row {
+
+    >.row {
       display: flex;
       align-items: center;
       background: #fff;
@@ -23,20 +27,25 @@ page-account-peer-list {
       justify-content: space-around;
       padding: 0;
       position: relative;
+
       &.disabled {
         background-color: #eee;
       }
-      > .item {
+
+      >.item {
         flex: 1;
         text-align: center;
+
         &.ip {
           // padding-left: 1.6rem;
           flex: 2;
         }
+
         &.system-type {
           font-size: 3rem;
         }
       }
+
       .fetching-progress {
         display: none;
         background-color: #FFB74D;
@@ -49,6 +58,7 @@ page-account-peer-list {
         transition-duration: 250ms;
         height: 0.15rem;
         border-radius: 1rem;
+
         &::after {
           content: " ";
           position: absolute;
@@ -67,8 +77,7 @@ page-account-peer-list {
             transparent 75%,
             transparent 100%
           ); */
-          background-image: -webkit-gradient(
-            linear,
+          background-image: -webkit-gradient(linear,
             0 0,
             100% 100%,
             color-stop(0.25, rgba(255, 255, 255, 0.6)),
@@ -77,19 +86,41 @@ page-account-peer-list {
             color-stop(0.5, rgba(255, 255, 255, 0.6)),
             color-stop(0.75, rgba(255, 255, 255, 0.6)),
             color-stop(0.75, transparent),
-            to(transparent)
-          );
+            to(transparent));
           animation: move 2s linear infinite;
         }
       }
+
       &.fetching {
         color: #333;
+
         .fetching-progress {
           display: block;
         }
       }
+
+      &.using {
+        &::after {
+          font-family: "ifmicon";
+          content: "\e614";
+          color: #FFF;
+          font-size: 1.05rem;
+          text-align: right;
+          padding-right: 0.5rem;
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 1.8rem;
+          height: 1.3rem;
+          border-bottom-left-radius: 2rem;
+          background-color: #00aeff;
+          transform: scale(0.9);
+          transform-origin: top right;
+        }
+      }
     }
-    > .table-head {
+
+    >.table-head {
       font-size: 1.9rem;
       // height: 2.6rem;
       background-color: transparent;

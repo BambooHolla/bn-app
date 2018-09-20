@@ -1,4 +1,5 @@
-import { Mdb } from "../../src/providers/mdb";
+// import { Mdb } from "../../src/providers/mdb";
+import { FangoDB, FangoDBWorker } from 'fangodb'
 
 import {
 	buf2hex,
@@ -20,7 +21,7 @@ TODO: 关于冗余数据，因为区块可以重复下载缓存，在验证的�
 export class BlockchainVerifier {
 	constructor(
 		public webio: SocketIOClient.Socket,
-		public blockDb: Mdb<BlockModel>,
+		public blockDb: FangoDBWorker<BlockModel>,
 	) {
 		// super();
 	}
@@ -94,7 +95,7 @@ export class BlockchainVerifier {
 					const source_range = source_block_chain.range();
 					source_block_chain.forEach(b => {
 						// 强行删除
-						delete_range.rm_id_set.add(b["_id"]);
+						delete_range.rm_id_set.add(b.id);
 					});
 					delete_range.startHeight = Math.min(
 						source_range.start,
@@ -281,59 +282,51 @@ export class BlockchainVerifier {
 			cur_query = next_query;
 		} while (true);
 	}
-	/*获取一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
+	/**获取一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
 	private async _IDB_getContinuousBlockChain(
 		from = 1,
 		limit = 1096,
 		linking_blockchains: Set<BlockChain> = new Set(),
 	) {
-		const idb = await this.blockDb.db._db.conn;
-		const trans = idb.transaction(["blocks"], "readwrite");
-		const objectStore = trans.objectStore("blocks");
-		const index = objectStore.index("height");
-		const repeated_block_ids: Set<
-			typeof IDBCursor.prototype.key
-		> = new Set();
-
-		/*预计的最大高度<plan_to*/
+		const range_blocks = await this.blockDb.find({
+			height: { $gte: from }
+		}, { limit });
+		/**预计的最大高度<plan_to*/
 		let plan_to = from + limit + 1;
-		const key_range = IDBKeyRange.lowerBound(from);
-		/*是否已经到数据库的结尾了*/
+		/**是否已经到数据库的结尾了*/
 		let done = true;
-
-		/*会尝试构建多条连续的链，断开的就放到finished（height的差异>=2），还在构建的就放到linking里头*/
+		/**会尝试构建多条连续的链，断开的就放到finished（height的差异>=2），还在构建的就放到linking里头*/
 		const finished_blockchains: Set<BlockChain> = new Set();
-		let per_height: number | undefined;
-		const cursor = await reqCursorLooper<BlockModel>(
-			index.openCursor(key_range),
-			(block, height: number, i) => {
-				if (height >= plan_to) {
-					plan_to = height; // 可能跳了
-					done = false;
-					return false;
-				}
-				let is_linked = false;
-				for (var _bc of linking_blockchains.values()) {
-					const bc = _bc;
-					if (height - bc.last_height > 1) {
-						// height的差异>=2，链已经断开。
-						linking_blockchains.delete(bc);
-						finished_blockchains.add(bc);
-					} else {
-						if (bc.link(block)) {
-							// 如果链入成功，基不需要再处理了
-							is_linked = true;
-							break;
-						}
+		range_blocks.every(block => {
+			const height = block.height;
+			if (height >= plan_to) {
+				plan_to = height; // 可能跳了
+				done = false;
+				return false;
+			}
+			let is_linked = false;
+			for (var _bc of linking_blockchains.values()) {
+				const bc = _bc;
+				if (height - bc.last_height > 1) {
+					// height的差异>=2，链已经断开。
+					linking_blockchains.delete(bc);
+					finished_blockchains.add(bc);
+				} else {
+					if (bc.link(block)) {
+						// 如果链入成功，基不需要再处理了
+						is_linked = true;
+						break;
 					}
 				}
-				if (!is_linked) {
-					// 没有找到可连接的链，新开一条链
-					linking_blockchains.add(new BlockChain(block));
-				}
-				return true;
-			},
-		);
+			}
+			if (!is_linked) {
+				// 没有找到可连接的链，新开一条链
+				linking_blockchains.add(new BlockChain(block));
+			}
+			return true;
+		});
+
+
 		// 如果已经遍历结束，那么把所有的linking放入finished中
 		if (done) {
 			for (var _bc of linking_blockchains.values()) {
@@ -344,38 +337,20 @@ export class BlockchainVerifier {
 		return {
 			linking_blockchains,
 			finished_blockchains,
-			repeated_block_ids,
 			from,
 			plan_to,
 			done,
 		};
 	}
-	/*删除一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
+	/**删除一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
 	private async _IDB_deleteBlocks(
 		start_height: number,
 		end_height: number,
-		keep_id_set: Set<typeof IDBCursor.prototype.key>,
-		rm_id_set: Set<typeof IDBCursor.prototype.key>,
+		keep_id_set: Set<string>,
+		rm_id_set: Set<string>,
 	) {
-		const idb = await this.blockDb.db._db.conn;
-		const trans = idb.transaction(["blocks"], "readwrite");
-		const objectStore = trans.objectStore("blocks");
-		const index = objectStore.index("height");
-		const key_range = IDBKeyRange.bound(start_height, end_height);
-		const del_tasks: Promise<void>[] = [];
-
-		await reqCursorLooper<BlockModel>(
-			index.openCursor(key_range),
-			(block, height: number, cursor, i) => {
-				if (
-					// !keep_id_set.has(block["_id"]) ||
-					rm_id_set.has(block["_id"])
-				) {
-					// del_tasks[del_tasks.length] = reqToPromise(cursor.delete());
-					cursor.delete();
-				}
-				return true;
-			},
-		);
+		for (var rm_id of rm_id_set) {
+			await this.blockDb.fast().removeById(rm_id);
+		}
 	}
 }

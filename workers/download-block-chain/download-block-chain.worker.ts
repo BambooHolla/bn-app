@@ -2,9 +2,11 @@ import "babel-polyfill";
 import socketio from "socket.io-client";
 import { BlockChainDownloader } from "./download-block-chain";
 import { BlockModel } from "./helper";
-import { Mdb } from "../../src/providers/mdb";
+// import { Mdb } from "../../src/providers/mdb";
+import { BlockDBWorkerFactory } from '../../src/providers/block-service/helper'
 import IFM from "../../src/ifmchain-ibt";
 import "core-js/modules/es7.symbol.async-iterator";
+import { PromiseOut } from "../../src/bnqkl-framework/PromiseExtends";
 
 onmessage = async e => {
   const msg = e.data;
@@ -31,10 +33,11 @@ function errorFormat(err) {
   return err instanceof Error ? err.message : err;
 }
 
-const blockChainDownloaderCache = new Map<string, BlockChainDownloader>();
+const blockChainDownloaderCache = new Map<string, Promise<BlockChainDownloader> | BlockChainDownloader>();
 self["blockChainDownloaderCache"] = blockChainDownloaderCache;
-function getBlockChainDownloader(
+async function getBlockChainDownloader(
   NET_VERSION,
+  magic,
   webio_path,
   startHeight: number,
   endHeight: number
@@ -42,28 +45,35 @@ function getBlockChainDownloader(
   const id = `${NET_VERSION} ${webio_path} ${startHeight} ${endHeight}`;
   var blockChainDownloader = blockChainDownloaderCache.get(id);
   if (!blockChainDownloader) {
+    const BlockChainDownloader_task = new PromiseOut<BlockChainDownloader>();
+    blockChainDownloaderCache.set(id, BlockChainDownloader_task.promise.then(res => {
+      blockChainDownloaderCache.set(id, res);
+      return res;
+    }));
     const webio = socketio(webio_path, {
       transports: ["websocket"],
     });
-    const blockDb = new Mdb<BlockModel>("blocks");
+    const blockDb = await BlockDBWorkerFactory(magic);
     const ifmJs = new IFM(NET_VERSION);
-    blockChainDownloader = new BlockChainDownloader(webio, blockDb, ifmJs);
-    blockChainDownloaderCache.set(id, blockChainDownloader);
+    blockChainDownloader = new BlockChainDownloader(webio, blockDb, ifmJs)
+    BlockChainDownloader_task.resolve(blockChainDownloader);
   }
-  return blockChainDownloader;
+  return await blockChainDownloader;
 }
 
 const cmd_handler = {
   async download({
     NET_VERSION,
+    magic,
     webio_path,
     startHeight,
     endHeight,
     max_end_height,
     req_id,
   }) {
-    const blockChainDownloader = getBlockChainDownloader(
+    const blockChainDownloader = await getBlockChainDownloader(
       NET_VERSION,
+      magic,
       webio_path,
       startHeight,
       endHeight
@@ -98,9 +108,16 @@ const cmd_handler = {
       cgs.forEach(cg => cg());
     }
   },
-  async syncBlockChain({ NET_VERSION, webio_path, max_end_height, req_id }) {
-    const blockChainDownloader = getBlockChainDownloader(
+  async syncBlockChain({
+    NET_VERSION,
+    magic,
+    webio_path,
+    max_end_height,
+    req_id
+  }) {
+    const blockChainDownloader = await getBlockChainDownloader(
       NET_VERSION,
+      magic,
       webio_path,
       1,
       max_end_height
@@ -140,7 +157,8 @@ const cmd_handler = {
     }
   },
   async toggleSyncBlocks({ toggle_sync_blocks, req_id }) {
-    for (var downloader of blockChainDownloaderCache.values()) {
+    for (var _downloader_task of blockChainDownloaderCache.values()) {
+      const downloader = await _downloader_task;
       if (toggle_sync_blocks) {
         downloader.resume();
       } else {

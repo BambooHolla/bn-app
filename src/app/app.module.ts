@@ -1,3 +1,9 @@
+
+import * as ifs from 'idb.filesystem.js';
+// self["webkitRequestFileSystem"] = webkitRequestFileSystem;
+// self["requestFileSystem"] = requestFileSystem;
+console.log('ifs',ifs,self["requestFileSystem"],self["webkitRequestFileSystem"]);
+
 import lazy_links from "./serializer-links";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
@@ -118,7 +124,6 @@ import { DbCacheProvider } from "../providers/db-cache/db-cache";
 import { VoucherServiceProvider } from "../providers/voucher-service/voucher-service";
 import { LocalContactProvider } from "../providers/local-contact/local-contact";
 import { AssetsServiceProvider } from "../providers/assets-service/assets-service";
-import { BlockchainStoreProvider } from '../providers/blockchain-store/blockchain-store';
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
@@ -267,7 +272,6 @@ const heightLevelModules = [
     VoucherServiceProvider,
     LocalContactProvider,
     AssetsServiceProvider,
-    BlockchainStoreProvider,
   ],
 })
-export class AppModule {}
+export class AppModule { }

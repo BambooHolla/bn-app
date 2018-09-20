@@ -13,6 +13,7 @@ import {
   LocalPeerModel,
 } from "../../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
+import { baseConfig } from "../../../bnqkl-framework/helper";
 
 @IonicPage({ name: "account-peer-list" })
 @Component({
@@ -29,6 +30,9 @@ export class AccountPeerListPage extends SecondLevelPage {
     public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
+  }
+  get origin(){
+    return baseConfig.SERVER_URL;
   }
   @AccountPeerListPage.markForCheck cur_peer_list: LocalPeerModel[] = [];
   private _cur_peer_map = new Map<string, LocalPeerModel>();
