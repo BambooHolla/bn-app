@@ -131,7 +131,7 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
           assets_extend_info.total_amount) *
         100;
       assets_extend_info.original_frozen_ibts = parseFloat(
-        assets_detail_info.originalFrozenIBTs
+        assets_detail_info.originalFrozenAssets
       );
       this.original_frozen_ibts_pro.resolve(
         assets_extend_info.original_frozen_ibts

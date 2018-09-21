@@ -1,0 +1,159 @@
+<ion-header [backdrop-blur]=0>
+  <ion-navbar color="transparent">
+    <ion-title>{{'SUBCHAIN-ISSUING-SUBCHAIN'|translate}}</ion-title>
+    <ion-buttons end>
+      <button class="modal-close-button" ion-button (click)="closeModal()">
+        <ion-icon name="ios-arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+  <div class="header-nav-bg"></div>
+  <div id="new_subchain_form" class="new-subchain-form">
+    <div class="logo-wrapper">
+      <div class="subchain-logo-shape-wrapper">
+        <button mat-button class="subchain-logo-shape logo-uploader" (click)="pickSubchainLogo()">
+          <ng-container *ngIf="!formData.logo;else showLogo">
+            <ali-icon name="ifm-zengjia"></ali-icon>
+          </ng-container>
+          <ng-template #showLogo>
+            <img [src]="domSanitizer.bypassSecurityTrustUrl(formData.logo)" alt="LOGO">
+          </ng-template>
+        </button>
+      </div>
+    </div>
+    <div class="common-form subchain-base-info">
+      <div class="mat-container name">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_NAME'|translate" min="1" [(ngModel)]="formData.name" set-input-status="name" [errorStateMatcher]="matFormMatcherFactory('name')">
+        </mat-form-field>
+      </div>
+      <div class="mat-container abbreviation">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_ABBREVIATION'|translate" min="1" [(ngModel)]="formData.abbreviation" set-input-status="abbreviation" [errorStateMatcher]="matFormMatcherFactory('abbreviation')">
+        </mat-form-field>
+        <div class="tip">
+          <ali-icon name="ifm-dialog-warning"></ali-icon>
+          {{'SUBCHAIN_ABBREVIATION_TIP'|translate}}
+        </div>
+      </div>
+      <div class="banner-wrapper">
+        <div class="subchain-banner-shape-wrapper">
+          <button mat-button class="subchain-banner-shape banner-uploader" (click)="pickSubchainBanner()">
+            <div class="banner-text" *ngIf="!formData.banner;else showLogo">
+              <ali-icon name="ifm-zengjia"></ali-icon>
+              {{'PICK_SUBCHAIN_BANNER'|translate}}
+            </div>
+            <ng-template #showLogo>
+              <img [src]="domSanitizer.bypassSecurityTrustUrl(formData.banner)" alt="BANNER">
+            </ng-template>
+          </button>
+        </div>
+        <div class="tip">
+          <ali-icon name="ifm-dialog-warning"></ali-icon>
+          {{'SUBCHAIN_BANNER_TIP'|translate}}
+        </div>
+      </div>
+      <div class="mat-container genesis-secret">
+        <mat-form-field>
+          <textarea data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_GENESIS_SECRET'|translate" min="1" [(ngModel)]="formData.genesisSecret" set-input-status="genesisSecret" [errorStateMatcher]="matFormMatcherFactory('genesisSecret')" auto-full-height-textarea></textarea>
+        </mat-form-field>
+        <div class="tip">
+          <ali-icon name="ifm-dialog-warning"></ali-icon>
+          {{'SUBCHAIN_BASE_INFO_TIP'|translate}}
+        </div>
+      </div>
+    </div>
+    <div class="common-form subchain-config">
+      <div class="form-title">
+        <!-- 出块配置 -->
+        <ali-icon name="ifm-configure"></ali-icon>
+        {{'SUBCHAIN_FORGE_BLOCK_CONFIGURATION'|translate}}
+      </div>
+      <div class="mat-container forge-interval">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_FORGE_INTERVAL'|translate" type="number" min="1" [(ngModel)]="formData.forgeInterval" set-input-status="forgeInterval" [errorStateMatcher]="matFormMatcherFactory('forgeInterval')">
+          <span matSuffix>{{'SECOND'|translate}}</span>
+        </mat-form-field>
+      </div>
+      <div class="mat-container mini-fee">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_MINI_FEE'|translate" type="number" min="0" [(ngModel)]="formData.miniFee" set-input-status="miniFee" [errorStateMatcher]="matFormMatcherFactory('miniFee')">
+        </mat-form-field>
+      </div>
+      <div class="mat-container genesis-node-address">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_GENESIS_NODE_ADDRESS'|translate" [(ngModel)]="formData.genesisNodeAddress" set-input-status="genesisNodeAddress" [errorStateMatcher]="matFormMatcherFactory('genesisNodeAddress')">
+        </mat-form-field>
+      </div>
+      <div class="mat-container magic">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_MAGIC'|translate" [(ngModel)]="formData.magic" set-input-status="magic" [errorStateMatcher]="matFormMatcherFactory('magic')">
+        </mat-form-field>
+      </div>
+      <div class="tip">
+        <ali-icon name="ifm-dialog-warning"></ali-icon>
+        {{'SUBCHAIN_FORGE_BLOCK_CONFIGURATION_TIP'|translate}}
+      </div>
+    </div>
+    <div class="common-form reward-per-block">
+      <div class="form-title">
+        <!-- 区块阶梯奖励 -->
+        <ali-icon name="ifm-configure"></ali-icon>
+        {{'SUBCHAIN_REWARDPERBLOCK_CONFIGURATION'|translate}}
+      </div>
+      <div class="reward-block-item" *ngFor="let item of formData.rewardPerBlock;let i = index">
+        <div class="mat-container block-height">
+          <mat-form-field>
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'BLOCK_HEIGHT'|translate" type="number" min="1" [(ngModel)]="item.height" set-input-status="height" />
+          </mat-form-field>
+        </div>
+        <div class="mat-container reward-amount">
+          <mat-form-field>
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_WEB'|translate" type="number" min="1" [(ngModel)]="formData.port.web" set-input-status="port.web" />
+          </mat-form-field>
+        </div>
+        <button mat-icon-button (click)="removeRewardBlockItem(i)">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+      </div>
+      <button mat-button class="new-reward-block-item" (click)="addRewardBlockItem()">
+        <!-- <ali-icon name="ifm-add"></ali-icon> -->
+        <mat-icon>add_circle_outline</mat-icon>
+        {{'ADD_REWARD_BLOCK_ITEM'|translate}}
+      </button>
+    </div>
+    <div class="common-form subchain-config">
+      <div class="form-title">
+        <!-- 搜索端口列表 -->
+        <ali-icon name="ifm-jigouwangluoduankouzizhufuwu"></ali-icon>
+        {{'SUBCHAIN_NET_PORT_CONFIGURATION'|translate}}
+      </div>
+      <div class="mat-container port-web">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_WEB'|translate" type="number" min="1" [(ngModel)]="formData.port.web" set-input-status="port.web" [errorStateMatcher]="matFormMatcherFactory('port.web')">
+        </mat-form-field>
+      </div>
+      <div class="mat-container port-p2p">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_P2P'|translate" type="number" min="1" [(ngModel)]="formData.port.p2p" set-input-status="port.p2p" [errorStateMatcher]="matFormMatcherFactory('port.p2p')">
+        </mat-form-field>
+      </div>
+      <div class="mat-container port-p2pfortrs">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_P2PFORTRS'|translate" type="number" min="1" [(ngModel)]="formData.port.p2pForTrs" set-input-status="port.p2pForTrs" [errorStateMatcher]="matFormMatcherFactory('port.p2pForTrs')">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="agree-user-agreement" [class.agreed]="formData.agree_user_aggreement" (click)="toggleAgreement()">
+      <div class="checkbox">
+        <ali-icon name="ifm-dagou"></ali-icon>
+      </div>
+      {{'AGREE_TO_THE_USER_AGREEMENT_OF_SUBCHAIN'|translate}}
+    </div>
+    <button mat-button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'ISSUED_IMMEDIATELY'|translate}}</button>
+  </div>
+</ion-content>

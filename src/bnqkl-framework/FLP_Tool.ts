@@ -14,20 +14,14 @@ import {
   LoadingOptions,
 } from "ionic-angular";
 import { PromiseOut } from "./PromiseExtends";
-import {
-  is_dev,
-  tryRegisterGlobal,
-  global,
-  getSocketIOInstance,
-  afCtrl,
-  baseConfig,
-} from "./helper";
+import { is_dev, tryRegisterGlobal, global, getSocketIOInstance, afCtrl, baseConfig } from "./helper";
 export { is_dev, tryRegisterGlobal, global };
 import { getErrorFromAsyncerror, isErrorFromAsyncerror } from "./const";
 import { Toast } from "@ionic-native/toast";
 
 export class FLP_Tool {
   constructor() {}
+  UNIT = "IBT";
   // 全局弹出层控制器
   @FLP_Tool.FromGlobal actionSheetCtrl!: ActionSheetController;
   @FLP_Tool.FromGlobal alertCtrl!: AlertController;
@@ -68,11 +62,7 @@ export class FLP_Tool {
     } else {
       const toastCtrl: ToastController = this.toastCtrl;
       if (!(toastCtrl instanceof ToastController)) {
-        console.warn(
-          "需要在",
-          this.constructor.name,
-          "中注入 ToastController 依赖"
-        );
+        console.warn("需要在", this.constructor.name, "中注入 ToastController 依赖");
         alert(String(msg));
       } else {
         Promise.resolve(msg).then(message => {
@@ -109,11 +99,7 @@ export class FLP_Tool {
     return false;
   }
 
-  static translateError(
-    target: any,
-    name: string,
-    descriptor: PropertyDescriptor
-  ) {
+  static translateError(target: any, name: string, descriptor: PropertyDescriptor) {
     const hidden_prop_name = `-G-${name}-`;
     const source_fun = descriptor.value;
     const throwTranslateError = err => {
@@ -163,11 +149,7 @@ export class FLP_Tool {
     });
   }
   netWorkConnection = FLP_Tool.netWorkConnection;
-  isArrayDiff<T>(
-    source_list: T[],
-    target_list: T[],
-    item_parser: (item: T) => string | number
-  ) {
+  isArrayDiff<T>(source_list: T[], target_list: T[], item_parser: (item: T) => string | number) {
     if (source_list.length !== target_list.length) {
       return true;
     }
@@ -175,12 +157,7 @@ export class FLP_Tool {
       return item_parser(source_item) !== item_parser(target_list[i]);
     });
   }
-  async showConfirmDialog(
-    message: string,
-    ok_handle?: Function,
-    cancel_handle?: Function,
-    auto_open = true
-  ) {
+  async showConfirmDialog(message: string, ok_handle?: Function, cancel_handle?: Function, auto_open = true) {
     const dialog = this.modalCtrl.create(
       "custom-dialog",
       {
@@ -233,8 +210,7 @@ export class FLP_Tool {
     if (auto_open) {
       await dialog.present();
     }
-    const getComponentInstance = () =>
-      dialog && dialog.overlay && dialog.overlay["instance"];
+    const getComponentInstance = () => dialog && dialog.overlay && dialog.overlay["instance"];
     return Object.assign(dialog, {
       setTitle(new_title: string) {
         const instance = getComponentInstance();
@@ -301,41 +277,14 @@ export class FLP_Tool {
     );
     return res.promise;
   }
-  async showWarningDialog(
-    title: string,
-    subTitle?: string,
-    message?: string,
-    buttons?: any[],
-    auto_open = true
-  ) {
-    return this._showCustomDialog(
-      { title, iconType: "warning", subTitle, message, buttons },
-      auto_open
-    );
+  async showWarningDialog(title: string, subTitle?: string, message?: string, buttons?: any[], auto_open = true) {
+    return this._showCustomDialog({ title, iconType: "warning", subTitle, message, buttons }, auto_open);
   }
-  async showSuccessDialog(
-    title: string,
-    subTitle?: string,
-    message?: string,
-    buttons?: any[],
-    auto_open = true
-  ) {
-    return this._showCustomDialog(
-      { title, iconType: "success", subTitle, message, buttons },
-      auto_open
-    );
+  async showSuccessDialog(title: string, subTitle?: string, message?: string, buttons?: any[], auto_open = true) {
+    return this._showCustomDialog({ title, iconType: "success", subTitle, message, buttons }, auto_open);
   }
-  showErrorDialog(
-    title: string,
-    subTitle?: string,
-    message?: string,
-    buttons?: any[],
-    auto_open = true
-  ) {
-    return this._showCustomDialog(
-      { title, iconType: "error", subTitle, message, buttons },
-      auto_open
-    );
+  showErrorDialog(title: string, subTitle?: string, message?: string, buttons?: any[], auto_open = true) {
+    return this._showCustomDialog({ title, iconType: "error", subTitle, message, buttons }, auto_open);
   }
   private _isIOS?: boolean;
   get isIOS() {
@@ -383,10 +332,7 @@ export class FLP_Tool {
     return localName == "zh-cn" || localName == "zh-tw";
   }
 
-  private async _showCustomLoadingDialog(
-    msg,
-    opts: { auto_open?: boolean } & LoadingOptions
-  ) {
+  private async _showCustomLoadingDialog(msg, opts: { auto_open?: boolean } & LoadingOptions) {
     const dialog = this.loadingCtrl.create({
       content: await translateMessage(msg),
       cssClass: opts.cssClass,
@@ -424,9 +370,7 @@ export class FLP_Tool {
     num = parseFloat(num) || 0;
     var res = num.toFixed(fix_to);
     if (pre_fix) {
-      res = ("0".repeat(pre_fix - 1) + res).substr(
-        -Math.max(res.length, fix_to ? fix_to + pre_fix + 1 : pre_fix)
-      );
+      res = ("0".repeat(pre_fix - 1) + res).substr(-Math.max(res.length, fix_to ? fix_to + pre_fix + 1 : pre_fix));
     }
     return res;
   }
@@ -439,11 +383,7 @@ export class FLP_Tool {
   }
   isFinite = isFinite;
 
-  static FromGlobal(
-    target: any,
-    name: string,
-    descriptor?: PropertyDescriptor
-  ) {
+  static FromGlobal(target: any, name: string, descriptor?: PropertyDescriptor) {
     if (!descriptor) {
       const hidden_prop_name = `-G-${name}-`;
       descriptor = {
@@ -459,11 +399,7 @@ export class FLP_Tool {
       Object.defineProperty(target, name, descriptor);
     }
   }
-  static FromNavParams(
-    target: any,
-    name: string,
-    descriptor?: PropertyDescriptor
-  ) {
+  static FromNavParams(target: any, name: string, descriptor?: PropertyDescriptor) {
     if (!descriptor) {
       const hidden_prop_name = `-P-${name}-`;
       descriptor = {
@@ -473,9 +409,7 @@ export class FLP_Tool {
           if (hidden_prop_name in this) {
             return this[hidden_prop_name];
           } else {
-            this.navParams &&
-              this.navParams.get instanceof Function &&
-              this.navParams.get(name);
+            this.navParams && this.navParams.get instanceof Function && this.navParams.get(name);
           }
         },
         set(v) {
@@ -501,10 +435,7 @@ export class FLP_Tool {
     return this.translate.instant(key, interpolateParams);
   }
   static getTranslateSync(key: string | string[], interpolateParams?: Object) {
-    return (window["translate"] as TranslateService).instant(
-      key,
-      interpolateParams
-    );
+    return (window["translate"] as TranslateService).instant(key, interpolateParams);
   }
   static getProtoArray = getProtoArray;
   static addProtoArray = addProtoArray;
@@ -555,9 +486,7 @@ export function translateMessage(message: any, arg?: any, self?: FLP_Tool) {
 }
 
 // 存储在原型链上的数据（字符串）集合
-const CLASS_PROTO_ARRAYDATA_POOL = (window[
-  "CLASS_PROTO_ARRAYDATA_POOL"
-] = new Map<string | Symbol, classProtoArraydata>());
+const CLASS_PROTO_ARRAYDATA_POOL = (window["CLASS_PROTO_ARRAYDATA_POOL"] = new Map<string | Symbol, classProtoArraydata>());
 const PA_ID_KEY =
   "@PAID:" +
   Math.random()
@@ -591,9 +520,7 @@ export function addProtoArray(target: any, key: string, value: any) {
     CLASS_PROTO_ARRAYDATA_POOL.set(key, CLASS_PROTO_ARRAYDATA);
   }
 
-  const pa_id = target.hasOwnProperty(PA_ID_KEY)
-    ? target[PA_ID_KEY]
-    : (target[PA_ID_KEY] = "#" + PA_ID_VALUE++);
+  const pa_id = target.hasOwnProperty(PA_ID_KEY) ? target[PA_ID_KEY] : (target[PA_ID_KEY] = "#" + PA_ID_VALUE++);
   var arr_data = CLASS_PROTO_ARRAYDATA.get(pa_id);
   if (!arr_data) {
     arr_data = [value];
@@ -608,9 +535,7 @@ export function removeProtoArray(target: any, key: string, value: any) {
     return;
   }
 
-  const pa_id = target.hasOwnProperty(PA_ID_KEY)
-    ? target[PA_ID_KEY]
-    : (target[PA_ID_KEY] = "#" + PA_ID_VALUE++);
+  const pa_id = target.hasOwnProperty(PA_ID_KEY) ? target[PA_ID_KEY] : (target[PA_ID_KEY] = "#" + PA_ID_VALUE++);
   var arr_data = CLASS_PROTO_ARRAYDATA.get(pa_id);
   if (!arr_data) {
     return;

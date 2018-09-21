@@ -20,7 +20,7 @@ export type AssetsPersonalModel = AssetsBaseModel & {
 };
 export type AssetsDetailModel = AssetsBaseModel & {
   remainAssets: string;
-  originalFrozenIBTs: string;
+  originalFrozenAssets: string;
 };
 // export type AssetsModel = AssetsBaseModel & {
 //   logo?: string;

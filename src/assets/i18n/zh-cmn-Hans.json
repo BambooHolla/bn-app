@@ -18,10 +18,8 @@
   "EMPTY_LIST": "空列表",
   "TESTNET_FLAG": "测试网络",
   "MORE": "更多",
-  "MINING_INCOME_#AMOUNT#IBT":
-    "参与IFMChain共识并贡献设备获得权益奖励：{{amount}}个IBT",
-  "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT":
-    "参与IFMChain共识并贡献设备{{times}}次获得权益奖励共：{{amount}}个IBT",
+  "MINING_INCOME_#AMOUNT#IBT": "参与IFMChain共识并贡献设备获得权益奖励：{{amount}}个IBT",
+  "MULTI#TIMES#_MINING_INCOME_#AMOUNT#IBT": "参与IFMChain共识并贡献设备{{times}}次获得权益奖励共：{{amount}}个IBT",
   "ME": "我",
   "NEED_INPUT_#FORM_KEY#": "请填写“{{form_key}}”",
   "COZY_TIPS": "温馨提示",
@@ -64,8 +62,7 @@
 
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "关于IBT",
-  "ABOUT_IBT_INFO":
-    "IFMChain是全球首款可接入移动终端的区块链3.0产品，IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
+  "ABOUT_IBT_INFO": "IFMChain是全球首款可接入移动终端的区块链3.0产品，IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
   "BUSINESS_COOPERATION_TIP":
     "当您需要将您的产品、服务、业务接入IFMChain，利用IFMChain的独有优势提升您的竞争力时，请通过邮件告诉我们。在邮件中，请尽可能的把您和您所处行业的背景、您遇到的问题、您的初步想法、您的名片尽可能的描述清楚，这样有助于我们初步评估是否可以帮助到您。行业第一个应用，往往成为该行业标杆。",
   "USER_SERVICE_TIP":
@@ -97,12 +94,10 @@
   "PLEASE_INPUT_CODE": "请输入常用密码",
   "INFORMATION_NOT_SAVE_IN_BLOCKCHAIN": "仅用于生成密码数据不会保存在区块链上",
   "ALREADY_HAS_PASSPHRASE": "我已有密码 立即开始",
-  "RGISTER_PWD_TIP":
-    "您的密码已生成，为了防止您遗忘密码，建议您现在就到备忘录粘贴。",
+  "RGISTER_PWD_TIP": "您的密码已生成，为了防止您遗忘密码，建议您现在就到备忘录粘贴。",
   "COPY_NOW": "立即复制",
   "CANCEL_COPY": "不保存",
-  "LOGIN_PWD_TIP":
-    "请确认您的密码已经保存，由于区块链去中心的特性，您的密码一旦丢失，将无法找回。请再次确认已保存？",
+  "LOGIN_PWD_TIP": "请确认您的密码已经保存，由于区块链去中心的特性，您的密码一旦丢失，将无法找回。请再次确认已保存？",
   "SAVE_NOW": "现在保存",
   "PWD_TOO_SHORT_TIP":
     "由于区块链去中心的特性，任何黑客都可以不受限制地对您的密码进行暴力破解。基于现有的计算机的计算能力，您的密码至少要设置24位以上双字节字符，才能保证基本安全。建议您使用“生成新密码”来获得安全的密码。",
@@ -127,8 +122,7 @@
 
   "//": "tab-account",
   "MY_CONTACTS": "我的关注",
-  "MY_LOCAL_CONTACTS_TIP":
-    "这里关注的信息仅存储在您的本地设备上，当您更换设备时或卸载后，关注信息将丢失，建议您随时备份您的关注信息。",
+  "MY_LOCAL_CONTACTS_TIP": "这里关注的信息仅存储在您的本地设备上，当您更换设备时或卸载后，关注信息将丢失，建议您随时备份您的关注信息。",
   "PEER_LIST": "网络节点",
   "MY_TRANSACTION": "我的交易",
   "ASSETS_MARKET": "权益市场",
@@ -139,14 +133,11 @@
   "ABOUT_IBT": "关于IBT",
   "GET_LATEST_APP_VERSION_INFO_ERROR": "获取最新版本应用信息失败",
   "WELCOME_TO_DOWNLOAD_IBT_APP": "欢迎下载IBT应用",
-  "SHARE_APP_TIP":
-    "这里将把IBT的下载链接分享到其它社交平台，您的好友可以通过您分享的链接下载并安装IBT。您可以点击“更多”分享到更多的社交平台",
+  "SHARE_APP_TIP": "这里将把IBT的下载链接分享到其它社交平台，您的好友可以通过您分享的链接下载并安装IBT。您可以点击“更多”分享到更多的社交平台",
   "SHOW_INCOME_IBT_NOTICE_TIP": "您是否需要在每次收到IBT时通知？",
-  "AFTER_SHOW_INCOME_IBT_NOTICE_TIP":
-    "本通知为本机节点根据IFMChain网络数据生成的通知，如果您关闭了IBT节点将无法接收通知，请知悉。",
+  "AFTER_SHOW_INCOME_IBT_NOTICE_TIP": "本通知为本机节点根据IFMChain网络数据生成的通知，如果您关闭了IBT节点将无法接收通知，请知悉。",
   "NO_NOTICE_ME": "不通知",
-  "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP":
-    "为了进一步保护您的资产安全，请设置支付密码，支付密码将为您的资产安全提供更进一步的保护",
+  "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP": "为了进一步保护您的资产安全，请设置支付密码，支付密码将为您的资产安全提供更进一步的保护",
   "NOT_SET": "不设置",
   "SET_NOW": "立即设置",
 
@@ -192,8 +183,7 @@
 
   "//": "tab-vote",
   "AUTO_MINING_NEED_INPUT_PAY_PWD": "启动自动挖矿需要确认支付密码",
-  "AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT":
-    "设置支付密码后自动挖矿需要重新输入支付密码",
+  "AFTER_CHANGE_PAY_PWD_AUTO_MINING_NEED_REINPUT": "设置支付密码后自动挖矿需要重新输入支付密码",
   "TAP_GOLD_BUTTON_THEN_AUTO_MINING": "按下金色按钮 开启自动挖矿",
   "START_AUTO_VOTE_ERROR": "开启自动挖矿失败",
   "AUTO_VOTE_ERROR": "自动挖矿失败",
@@ -202,10 +192,8 @@
   "VOTE_INCOME_HISTORY": "历史挖矿收益",
   "START_VOTE_VERIFY": "开启挖矿校验",
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
-  "VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP":
-    "即将对本地区块进行检验，这需要消耗大量的计算能力，可能导致部分型号的设备发热，检验结束后发热的设备将不再发热。",
-  "BEFORE_DOWNLOAD_TIP":
-    "即将同步区块链数据，第一次同步可能需要较长时间，在这个过程中您依然可以进行其它操作",
+  "VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP": "即将对本地区块进行检验，这需要消耗大量的计算能力，可能导致部分型号的设备发热，检验结束后发热的设备将不再发热。",
+  "BEFORE_DOWNLOAD_TIP": "即将同步区块链数据，第一次同步可能需要较长时间，在这个过程中您依然可以进行其它操作",
   "FIRST_MINGING_TIP":
     "在IFMChain中，所谓挖矿就是将您当前设备的计算能力、存储能力、通信能力贡献给IFMChain区块链网络，网络中其它节点可以通过IFMChain的共识协议使用您设备的计算能力、存储能力和通信能力，当您的设备开始参与贡献后，IFMChain区块链将会给您发放凭证，作为您曾经做过贡献的证明，将作为您未来使用区块链的权益，这个权益凭证就是您的挖矿收益。",
 
@@ -262,8 +250,7 @@
   "BLOCK_TRANSACTION_LIST_IS_EMPTY": "本区块无交易",
   "LOADING_MORE_TRANSACTION_LIST": "加载更多区块交易记录中……",
   "GET_PRE_BLOCK_ID_ERROR": "获取前块ID出错",
-  "FIRST_VIEW_BLOCK_REMARK_TIP":
-    "该备注信息由锻造区块的矿工填写，请注意分辨内容。",
+  "FIRST_VIEW_BLOCK_REMARK_TIP": "该备注信息由锻造区块的矿工填写，请注意分辨内容。",
 
   "//": "chain-sync-detail",
   "CHAIN-SYNC-DETAIL": "同步数据",
@@ -365,8 +352,7 @@
   "ADD_REMARK_PHONE_NUMBER": "添加电话号码",
   "ADD_MORE_INFORMATION_REMARKS": "添加更多备注信息",
   "ADD_REAMRK_PHOTO": "添加名片或相关图片",
-  "REMAKR_ONLY_SAVE_ON_LOCAL_TIP":
-    "备注信息保存在本机上，更换设备时备注信息需要重新设置",
+  "REMAKR_ONLY_SAVE_ON_LOCAL_TIP": "备注信息保存在本机上，更换设备时备注信息需要重新设置",
   "CONTACT_REMARK_SAVE_FAIL": "地址备注信息保存失败",
   "CONTACT_REMARK_SAVE_SUCCESS": "地址备注信息保存成功",
 
@@ -374,8 +360,7 @@
   "ACCOUNT-REMARK-CONTACT-TAGS": "添加标签",
   "ALL_TAGS": "所有标签",
   "INPUT_NEW_TAG_NAME": "输入标签",
-  "TAG_NAME_OVER_RANGE_#MAX#_#NUM#":
-    "标签最多支持{{max}}个字，已经超过{{num}}个字",
+  "TAG_NAME_OVER_RANGE_#MAX#_#NUM#": "标签最多支持{{max}}个字，已经超过{{num}}个字",
 
   "//": "account-news-detail",
   "ACCOUNT-NEWS-DETAIL": "动态详情",
@@ -425,8 +410,7 @@
   "PAY-RECEIVE": "接收",
   "RECENT": "最近",
   "LOADING_MORE_RECIVE_LIST": "加载更多转入记录中……",
-  "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
-    "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
+  "UPDATE_RECIVE_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK": "更新转入记录失败，重试次数过多，已停止重试，请检测网络",
 
   "//": "pay-select-my-contacts",
   "PAY-SELECT-MY-CONTACTS": "选择联系人",
@@ -496,8 +480,7 @@
   "PLEACE_INPUT_DELEGATE_PWD": "请输入矿机账户密钥",
   "PEER_UNABLE": "矿机不可用",
   "FETCHING_PEER_INFO": "获取矿机信息中……",
-  "THE_DELEGATE'S_PASSPHRASE_DOES_NOT_MATCH_THE_EXISTING_PUBLICKEY":
-    "只有矿机的主人才可以启动矿机",
+  "THE_DELEGATE'S_PASSPHRASE_DOES_NOT_MATCH_THE_EXISTING_PUBLICKEY": "只有矿机的主人才可以启动矿机",
   "DELEGATE_NAME": "矿机账户名",
   "DELEGATE_ADDRESS": "矿机账户地址",
   "ADD_MINING_MACHINE_FAIL": "添加矿机失败",
@@ -523,8 +506,7 @@
   "AUTOMATICALLY_USE_THE_BEST_FEE": "自动采用最佳手续费",
   "MINING_MAX_TRANSACTION_FEE:": "挖矿累计最大手续费：",
   "DEFAULT_FEE_SET_SUCCESS": "默认手续费设置成功",
-  "USE_THE_AVERAGE_FEE_OF_THE_PREVIOUS_ROUND_AS_THE_BEST_FEE":
-    "使用上一轮的平均手续费作为最佳手续费",
+  "USE_THE_AVERAGE_FEE_OF_THE_PREVIOUS_ROUND_AS_THE_BEST_FEE": "使用上一轮的平均手续费作为最佳手续费",
 
   "//": "typeCode",
   "//": "SEND",
@@ -610,16 +592,13 @@
   "YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW": "您还未设置转账手续费，现在就设置？",
   "FIRST_TRANSFER_TIP":
     "确认转出操作从本地成功转出后，一般都会在区块链网络上得到确认。但可能出现网络上数据暂时还未达成一致的情况，其它节点并不会接受您的转出交易，此时您的转出将不会成功，而此时您并不会接收到任何失败的通知。您可以通过“我的”-“我的交易”-“已确认交易”确认交易的状态。",
-  "NOT_ENOUGH_BALANCE_TO_TRANGER_TIP":
-    "您当前余额不足，您确认继续提交转账交易到区块链网络中吗？",
-  "TRANSFER_WILL_BA_ABANDON_TIP":
-    "您的转账交易在网络中被拒绝时，将会被直接丢弃，而不会收到任何通知，请知悉",
+  "NOT_ENOUGH_BALANCE_TO_TRANGER_TIP": "您当前余额不足，您确认继续提交转账交易到区块链网络中吗？",
+  "TRANSFER_WILL_BA_ABANDON_TIP": "您的转账交易在网络中被拒绝时，将会被直接丢弃，而不会收到任何通知，请知悉",
   "TRANSFER_SUBMIT_ERROR": "转账广播失败",
   "SUBMIT_TRANSFER_TITLE": "广播转账交易",
   "TRANSFER_SUBMITING": "转账广播中",
   "TRANSFER_SUBMIT_SUCCESS": "转账交易已广播",
-  "TRANSFER_UPDATE_ERROR":
-    "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
+  "TRANSFER_UPDATE_ERROR": "更新转出记录失败，重试次数过多，已停止重试，请检测网络",
   "PAYMENT": "支付",
   "PLEASE_INPUT_ADDRESS": "请输入地址",
   "PLEASE_INPUT_AMOUNT": "请输入数量",
@@ -631,8 +610,7 @@
   "LOADING_OUT_COME_RECORED": "加载更多转出记录中……",
   "SHOW_TRANSFER_RECEIPT_FAIL": "转账收据打印失败",
   "COULD_NOT_FOUND_TRANSFER": "找不到指定转账交易",
-  "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT":
-    "这笔交易凭证的接收人不是当前账户",
+  "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT": "这笔交易凭证的接收人不是当前账户",
   "TRANSFER_DESTINATION_CAN_NOT_BE_YOURSELF": "转账目标不能是自己",
   "TRANSFER_ADDRESS_IS_MALFORMED": "转账地址格式有误",
   "OFFLINE_TRANFER_TIP":
@@ -676,8 +654,7 @@
   "UNCONFIRM_TRANSACTIONS": "未确认交易",
   "LOAD_MORE_CONFIRMED_TRANSACTION_LIST_ERROR": "加载更多已确认交易列表失败",
   "LOAD_MORE_UNCONFIRM_TRANSACTION_LIST_ERROR": "加载更多未确认交易列表失败",
-  "UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK":
-    "更新交易记录失败，重试次数过多，已停止重试，请检测网络",
+  "UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK": "更新交易记录失败，重试次数过多，已停止重试，请检测网络",
   "CONFIRMED_TRANSACTION_LIST_IS_EMPTY": "已确认交易列表为空",
   "UNCONFIRM_TRANSACTION_LIST_IS_EMPTY": "未确认交易列表为空",
   "LOADING_UNCONFIRM_TRANSACTION_LIST": "加载未确认交易列表中……",
@@ -815,7 +792,37 @@
   "START_WITH_OFFLINE": "离线模式",
   "ALREADY_SEARCHED_#NUM#_PEERS": "已扫描到{{num}}个节点",
   "SCANING_PEERS": "正在扫描",
-  "THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE":"无可用的入口节点，是否去切换新的入口节点",
+  "THE_ENTER_PORT_PEERS_IS_NOT_AVAILABLE": "无可用的入口节点，是否去切换新的入口节点",
+
+  "//": "subchain-issuing-subchain",
+  "SUBCHAIN-ISSUING-SUBCHAIN": "创建新世界",
+
+  "PLEASE_INPUT_SUBCHAIN_NAME": "请输入子链名称",
+  "SUBCHAIN_ABBREVIATION_TIP": "子链的英文简称为2到5个大写英语字母，不能与现有区块链重名，不能与任何区块链重名；名称一旦设置将永远无法修改。",
+  "PLEASE_INPUT_SUBCHAIN_ABBREVIATION": "请输入子链资产名称",
+  "PICK_SUBCHAIN_BANNER": "添加子链banner",
+  "SUBCHAIN_BANNER_TIP": "建议图片尺寸比例：750×240px；建议图片格式：jpg",
+  "PLEASE_INPUT_SUBCHAIN_GENESIS_SECRET": "请输入创世受托人密码",
+  "SUBCHAIN_BASE_INFO_TIP": "接受地址为您的资产发行程后，用于接受全部资产的账户；这个账户至少需要给您的当前发行账户至少进行过一笔转账交易。",
+
+  "SUBCHAIN_FORGE_BLOCK_CONFIGURATION": "出块配置",
+  "PLEASE_INPUT_SUBCHAIN_FORGE_INTERVAL": "请输入产块时间周期",
+  "SECOND": "秒",
+  "PLEASE_INPUT_SUBCHAIN_MINI_FEE": "请输入最小手续费",
+  "PLEASE_INPUT_SUBCHAIN_GENESIS_NODE_ADDRESS": "请输入创世节点地址",
+  "PLEASE_INPUT_SUBCHAIN_MAGIC": "请输入网络魔法标识",
+  "SUBCHAIN_FORGE_BLOCK_CONFIGURATION_TIP": "输入区块自定义区块周期、最小手续费、创世节点地址、网络魔法标识",
+
+  "SUBCHAIN_REWARDPERBLOCK_CONFIGURATION": "区块阶梯奖励",
+  "ADD_REWARD_BLOCK_ITEM": "添加新的阶梯",
+
+  "SUBCHAIN_NET_PORT_CONFIGURATION": "搜索端口列表",
+  "PLEASE_INPUT_SUBCHAIN_PORT_WEB": "请输入WEB端口",
+  "PLEASE_INPUT_SUBCHAIN_PORT_P2P": "请输入P2P端口",
+  "PLEASE_INPUT_SUBCHAIN_PORT_P2PFORTRS": "请输入交易转发端口",
+
+  "AGREE_TO_THE_USER_AGREEMENT_OF_SUBCHAIN": "同意《用户协议》",
+  "SUBMIT_SUBCHAIN": "立即生成",
 
   "//": "assets-issuing-assets",
   "ASSETS-ISSUING-ASSETS": "生成数字权益合约",
@@ -823,7 +830,6 @@
   "ASSETS_abbreviation": "英文简写",
   "ASSETS_summary": "权益描述",
   "ASSETS_rate": "置换比例",
-  "ASSETS_expectedFrozenIBTs": "初始冻结IBT数量",
   "ASSETS_expectedIssuedAssets": "生成数量",
   "CAPITALIZATION_OF_ASSETS": "资产大写",
   "ASSETS_applyAssetBlockHeight": "权益发起时的区块高度",
@@ -834,20 +840,15 @@
   "RATE_TOO_SMALL": "置换比例太小",
   "RATE_TOO_LARGE": "置换比例太大",
   "expectedIssuedAssets_RANGE_ERROR": "生成权益数量有误",
-  "expectedFrozenIBTs_RANGE_ERROR": "计划募集的IBT数量有误",
   "EXPECTEDISSUEDBLOCKHEIGHT_RANGE_ERROR": "生成高度过低",
   "PLEASE_PICK_AN_IMAGE_AS_ASSETS_LOGO": "请选择一张图片作为权益LOGO",
   "GENESIS_DESTINATION_CAN_NOT_BE_YOURSELF": "权益接收账户不能是生成权益的账户",
   "GENESIS_ADDRESS_IS_MALFORMED": "权益接收账户有误",
   "BECOME_A_DELEGATE": "申请成为矿工",
-  "BECOME_A_DELEGATE_TIP":
-    "申请成为矿工后再生成数字权益合约，可以在未来通过挖矿的形式带来冻结IBT数量的增加。",
-  "ASSETS_ABBREVIATION_TIP":
-    "资产的英文简称为2到5个大写英语字母，不能与现有资产重名，不能与任何国家法币重名；名称一旦设置将永远无法修改。",
-  "ASSETS_GENESISADDRESS_TIP":
-    "接收地址为您的资产生成成功后，用于接收全部资产的账户；这个账户至少需要给您的当前生成账户至少进行过一笔转账交易。",
-  "ASSETS_EXPECTEDISSUEDASSETS_TIP":
-    "生成数量为您的即将生成的数字权益总量；不能少于您冻结的IBT数量，也不能超过5000倍您冻结的IBT数量这个数量必须为正整数。",
+  "BECOME_A_DELEGATE_TIP": "申请成为矿工后再生成数字权益合约，可以在未来通过挖矿的形式带来冻结IBT数量的增加。",
+  "ASSETS_ABBREVIATION_TIP": "资产的英文简称为2到5个大写英语字母，不能与现有资产重名，不能与任何国家法币重名；名称一旦设置将永远无法修改。",
+  "ASSETS_GENESISADDRESS_TIP": "接收地址为您的资产生成成功后，用于接收全部资产的账户；这个账户至少需要给您的当前生成账户至少进行过一笔转账交易。",
+  "ASSETS_EXPECTEDISSUEDASSETS_TIP": "生成数量为您的即将生成的数字权益总量；不能少于您冻结的IBT数量，也不能超过5000倍您冻结的IBT数量这个数量必须为正整数。",
 
   "//": "assets-logo-clip",
   "ASSETS-LOGO-CLIP": "图标裁剪",
@@ -874,14 +875,10 @@
 
   "//": "assets-guide",
   "ASSETS-GUIDE": "权益合约创建说明",
-  "ASSETS_GUIDE_SLIDE_1":
-    "<b>任何地址</b>都可以通过资产合约在区块链上生成新的数字资产权益。",
-  "ASSETS_GUIDE_SLIDE_2":
-    "地址IBT数量必须大于等于<b>10万</b>个才能完成资产合约的生成。",
-  "ASSETS_GUIDE_SLIDE_3":
-    "地址上<b>所有IBT将以资产合约的形式冻结</b>在区链上保障新数字资产权益生成。",
-  "ASSETS_GUIDE_SLIDE_4":
-    "区块链上冻结的IBT<b>只能由资产合约生成的新数字资产权益赎回</b>，赎回多少比例IBT，即销毁多少比例新的数字资产权益。",
+  "ASSETS_GUIDE_SLIDE_1": "<b>任何地址</b>都可以通过资产合约在区块链上生成新的数字资产权益。",
+  "ASSETS_GUIDE_SLIDE_2": "地址IBT数量必须大于等于<b>10万</b>个才能完成资产合约的生成。",
+  "ASSETS_GUIDE_SLIDE_3": "地址上<b>所有IBT将以资产合约的形式冻结</b>在区链上保障新数字资产权益生成。",
+  "ASSETS_GUIDE_SLIDE_4": "区块链上冻结的IBT<b>只能由资产合约生成的新数字资产权益赎回</b>，赎回多少比例IBT，即销毁多少比例新的数字资产权益。",
   "ASSETS_GUIDE_SLIDE_5": "新的数字资产权益<b>被销毁赎回后将无法恢复</b>",
 
   "//": "assets-my-assets-list",
@@ -1296,8 +1293,7 @@
   "C_1097": "错误处理dapp消息",
   "C_1098": "错误处理dapp请求",
   "C_1099": "请求太多了",
-  "C_1100":
-    "出于安全目的，同时在块中，不允许两个交易具有完全相同的收件人，交易金额和费用",
+  "C_1100": "出于安全目的，同时在块中，不允许两个交易具有完全相同的收件人，交易金额和费用",
   "C_1101": "太多的请求",
   "C_1102": "设置错误代码",
   "C_1103": "旧公钥不匹配",

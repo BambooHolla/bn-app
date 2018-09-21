@@ -79,8 +79,8 @@ export class AssetsServiceProvider {
       if ("remainAssets" in res) {
         res.remainAssets = parseFloat(res.remainAssets);
       }
-      if ("originalFrozenIBTs" in res) {
-        res.originalFrozenIBTs = parseFloat(res.originalFrozenIBTs);
+      if ("originalFrozenAssets" in res) {
+        res.originalFrozenAssets = parseFloat(res.originalFrozenAssets);
       }
       if (logo) {
         const logo_blob = this.jpgBase64ToBlob(logo);
