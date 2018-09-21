@@ -109,21 +109,25 @@ page-subchain-issuing-subchain {
 
 			.subchain-logo-shape-wrapper {
 				position: relative;
-				left: 32.5vw;
-				top: 20vw;
-				width: 35vw;
-				height: 35vw;
+				left: 33.5vw;
+				top: 21vw;
+				width: 33vw;
+				height: 33vw;
 				background-image: url("../assets/imgs/net-circle-full-white.png");
 				background-size: 100% 100%;
 				.subchain-logo-shape {
-					position: relative;
+					position: absolute;
 					left: 1.75vw;
 					top: 1.75vw;
-					width: 31.5vw;
-					height: 31.5vw;
+					width: 29.5vw;
+					height: 29.5vw;
 					border-radius: 50%;
 					overflow: hidden;
 					background-color: #fff;
+					ali-icon{
+						font-size: 4rem;
+						color: #ddd;
+					}
 				}
 			}
 		}
