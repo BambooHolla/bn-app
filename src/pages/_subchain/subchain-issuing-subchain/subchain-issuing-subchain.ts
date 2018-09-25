@@ -73,6 +73,8 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		super(navCtrl, navParams, true, tabs);
 	}
 
+	// TODO: @SubchainIssuingSubchainPage.propMarkForCheck([])
+	// TODO: @SubchainIssuingSubchainPage.propDetectChanges([])
 	formData: IssuingSubchainFormData = {
 		name: "",
 		abbreviation: "",
