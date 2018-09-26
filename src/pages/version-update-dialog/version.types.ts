@@ -5,6 +5,7 @@ export type PEER_INFO = {
     NET_VERSION: string;
     BLOCK_UNIT_TIME: string | number;
     HIDE_FLAG?: string;
+    FORCE_SCAN?:boolean
   };
 };
 export type LATEST_VERSION_INFO = {

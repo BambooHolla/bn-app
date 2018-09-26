@@ -31,16 +31,12 @@ export class SettingsNetVersionPage extends SecondLevelPage {
   private _net_version?: string;
   get net_version() {
     if (!this._net_version) {
-      this._net_version = `${AppSettingProvider.NET_VERSION}|${
-        AppSettingProvider.SERVER_URL
-      }|${AppSettingProvider.BLOCK_UNIT_TIME}`;
+      this._net_version = `${AppSettingProvider.NET_VERSION}|${AppSettingProvider.SERVER_URL}|${AppSettingProvider.BLOCK_UNIT_TIME}`;
     }
     return this._net_version;
   }
   peerToNetVersion(peer: PEER_INFO) {
-    return `${peer.config.NET_VERSION}|${peer.config.SERVER_URL}|${
-      peer.config.BLOCK_UNIT_TIME
-    }`;
+    return `${peer.config.NET_VERSION}|${peer.config.SERVER_URL}|${peer.config.BLOCK_UNIT_TIME}`;
   }
   default_peer_list: PEER_INFO_WITH_VERSION[] = this.formatPeerList([
     {
@@ -53,9 +49,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     },
   ]);
   formatPeerList(peer_list: PEER_INFO[]): PEER_INFO_WITH_VERSION[] {
-    return peer_list.map(peer =>
-      Object.assign(peer, { net_version: this.peerToNetVersion(peer) })
-    );
+    return peer_list.map(peer => Object.assign(peer, { net_version: this.peerToNetVersion(peer) }));
   }
   peer_list: PEER_INFO_WITH_VERSION[] = [];
   @SettingsNetVersionPage.willEnter
@@ -72,10 +66,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     // 或者直接拿默认配置的
     this.peer_list = ls_peer_list || this.default_peer_list.slice();
     // 在从网络上下载最新的配置并缓存
-    const config = await getLatestVersionInfo(
-      this.fetch,
-      this.translate.currentLang
-    );
+    const config = await getLatestVersionInfo(this.fetch, this.translate.currentLang);
     if (config && config.peer_list) {
       this.peer_list = this.formatPeerList(config.peer_list);
       // 保存到缓存中
@@ -111,14 +102,12 @@ export class SettingsNetVersionPage extends SecondLevelPage {
   private async _changeNetVersion(net_version: PEER_INFO) {
     localStorage.removeItem("LINK_PEER");
     sessionStorage.removeItem("LINK_PEER");
-    if (net_version.config.NET_VERSION === "mainnet") {
+    if (net_version.config.NET_VERSION === "mainnet" && !net_version.config.FORCE_SCAN) {
       localStorage.removeItem("PEERS");
     } else {
       const aNode = document.createElement("a");
       aNode.href = net_version.config.SERVER_URL;
-      const { magic, sourceIp } = await this.peerService.fetchPeerMagic(
-        net_version.config.SERVER_URL
-      );
+      const { magic, sourceIp } = await this.peerService.fetchPeerMagic(net_version.config.SERVER_URL);
       localStorage.setItem("sourceIp", sourceIp);
 
       localStorage.setItem(
@@ -176,19 +165,12 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     if (ls_json) {
       try {
         const try_adds = ls_json.split(".");
-        if (
-          try_adds.length <= 4 &&
-          try_adds.every(add => parseInt(add).toString() == add)
-        ) {
+        if (try_adds.length <= 4 && try_adds.every(add => parseInt(add).toString() == add)) {
           const footer_adds = Array(3)
             .concat(try_adds)
             .slice(-4);
-          const adds = "192.168.16."
-            .split(".")
-            .map((add, i) => footer_adds[i] || add);
-          ls_json = `{"LATEST_APP_VERSION_URL": "http://${adds.join(
-            "."
-          )}:8180/api/app/version/latest"}`;
+          const adds = "192.168.16.".split(".").map((add, i) => footer_adds[i] || add);
+          ls_json = `{"LATEST_APP_VERSION_URL": "http://${adds.join(".")}:8180/api/app/version/latest"}`;
         }
         const ls = JSON.parse(ls_json);
         this._importLS(ls);
