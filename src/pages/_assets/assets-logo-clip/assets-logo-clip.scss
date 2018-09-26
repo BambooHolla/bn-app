@@ -13,7 +13,7 @@ page-assets-logo-clip {
 				.logo-clip {
 					flex-grow: 1;
 					position: relative;
-					> clip-assets-logo {
+					> * {
 						position: absolute;
 						width: 100%;
 						height: 100%;

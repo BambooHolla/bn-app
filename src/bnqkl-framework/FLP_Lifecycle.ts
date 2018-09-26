@@ -1,9 +1,4 @@
-import {
-  OnInit,
-  AfterContentInit,
-  OnDestroy,
-  ChangeDetectorRef,
-} from "@angular/core";
+import { OnInit, AfterContentInit, OnDestroy, ChangeDetectorRef } from "@angular/core";
 import { PAGE_STATUS } from "./const";
 import EventEmitter from "eventemitter3";
 import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
@@ -13,8 +8,7 @@ type propCheckerInputArg = ((prop: string | number | symbol) => boolean) | Array
 
 var uuid = 0;
 
-export class FLP_Lifecycle extends FLP_Tool
-  implements OnInit, AfterContentInit, OnDestroy {
+export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit, OnDestroy {
   constructor() {
     super();
     console.log(this.cname, this);
@@ -30,12 +24,7 @@ export class FLP_Lifecycle extends FLP_Tool
    *  注册后，在leave期间，事件不会触发，但会收集，等再次进入页面的时候按需更新一次
    *  这个函数主要是用来配合ChangeDetectorRef进行手动更新视图用的
    */
-  registerViewEvent(
-    emitter: EventEmitter,
-    evetname: string,
-    handle: Function,
-    is_run_when_bind?: boolean
-  ) {
+  registerViewEvent(emitter: EventEmitter, evetname: string, handle: Function, is_run_when_bind?: boolean) {
     let should_emit: any = null;
     const proxy_handle = (...args) => {
       if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
@@ -75,12 +64,7 @@ export class FLP_Lifecycle extends FLP_Tool
    *  和registerViewEvent相反，用来发布通知：
    *  和直接使用emitter.emit不同的是，如果视图处于离线状态，emit并不会触发
    */
-  notifyViewEvent(
-    emitter: EventEmitter,
-    evetname: string,
-    description?: string,
-    get_args?: Function | any[]
-  ) {
+  notifyViewEvent(emitter: EventEmitter, evetname: string, description?: string, get_args?: Function | any[]) {
     const emit = () => {
       if (get_args instanceof Function) {
         emitter.emit(evetname, ...get_args());
@@ -92,9 +76,7 @@ export class FLP_Lifecycle extends FLP_Tool
     };
     if (this.PAGE_STATUS != PAGE_STATUS.DID_ENTER) {
       // 视图处于离线状态，监听视图激活
-      const check_id = `${
-        this.instance_id
-        }:notifyViewEvent:${evetname}:${description}`;
+      const check_id = `${this.instance_id}:notifyViewEvent:${evetname}:${description}`;
       if (!emitter[check_id]) {
         emitter[check_id] = true;
         this.event.once("willEnter", () => {
@@ -193,14 +175,10 @@ export class FLP_Lifecycle extends FLP_Tool
     }
   }
   // 钩子函数
-  _before_markForCheck() { }
-  _before_detectChanges() { }
+  _before_markForCheck() {}
+  _before_detectChanges() {}
 
-  static markForCheck(
-    target: any,
-    name: string,
-    descriptor?: PropertyDescriptor
-  ) {
+  static markForCheck(target: any, name: string, descriptor?: PropertyDescriptor) {
     if (!descriptor) {
       let val;
       descriptor = {
@@ -217,18 +195,14 @@ export class FLP_Lifecycle extends FLP_Tool
       Object.defineProperty(target, name, descriptor);
     } else if (descriptor.set) {
       const srouce_set = descriptor.set;
-      descriptor.set = function (v) {
+      descriptor.set = function(v) {
         srouce_set.call(this, v);
         this.markForCheck();
       };
     }
     // return descriptor;
   }
-  static detectChanges(
-    target: any,
-    name: string,
-    descriptor?: PropertyDescriptor
-  ) {
+  static detectChanges(target: any, name: string, descriptor?: PropertyDescriptor) {
     if (!descriptor) {
       let val;
       descriptor = {
@@ -245,18 +219,16 @@ export class FLP_Lifecycle extends FLP_Tool
       Object.defineProperty(target, name, descriptor);
     } else if (descriptor.set) {
       const srouce_set = descriptor.set;
-      descriptor.set = function (v) {
+      descriptor.set = function(v) {
         srouce_set.call(this, v);
         this.detectChanges();
       };
     }
     // return descriptor;
   }
-  private static _propsHasCheckGenerator(
-    props: propCheckerInputArg
-  ) {
+  private static _propsHasCheckGenerator(props: propCheckerInputArg) {
     if (props instanceof Function) {
-      return props
+      return props;
     }
     if (typeof props === "string") {
       if (props === "*") {
@@ -265,54 +237,42 @@ export class FLP_Lifecycle extends FLP_Tool
     }
     if (props instanceof Array) {
       const propset = new Set(props);
-      return (prop: string | number | symbol) =>
-        propset.has(prop);
+      return (prop: string | number | symbol) => propset.has(prop);
     }
     return () => false;
   }
-  static propMarkForCheck(props: propCheckerInputArg, default_val?) {
+  private static _propMarkForCheckOrDetectChanges(props: propCheckerInputArg, exec) {
     const has_checker = this._propsHasCheckGenerator(props);
-    return (
-      self: FLP_Lifecycle,
-      name: string,
-      descriptor?: PropertyDescriptor
-    ) => {
-      const getProxyObj = (obj) => new Proxy(obj, {
-        set(target: any, key: string | number | symbol, value: any, receiver: any) {
-          if (has_checker(key)) {
-            self.markForCheck();
-          }
-          return Reflect.set(target, key, value, receiver);
-        }
-      });
+    return (target: FLP_Lifecycle, name: string, descriptor?: PropertyDescriptor) => {
+      const getProxyObj = (self, obj) =>
+        new Proxy(obj, {
+          set(obj: any, key: string | number | symbol, value: any, receiver: any) {
+            if (has_checker(key)) {
+              exec(self);
+            }
+            return Reflect.set(obj, key, value, receiver);
+          },
+        });
       if (descriptor) {
-        descriptor.value = getProxyObj(descriptor.value);
+        descriptor.value = getProxyObj(target, descriptor.value);
       } else {
-        self[name] = getProxyObj(default_val || {});
+        let p;
+        Object.defineProperty(target, name, {
+          get() {
+            return p;
+          },
+          set(v) {
+            p = getProxyObj(this, v);
+          },
+        });
       }
-    }
+    };
   }
-  static propDetectChanges(props: propCheckerInputArg, default_val?) {
-    const has_checker = this._propsHasCheckGenerator(props);
-    return (
-      self: FLP_Lifecycle,
-      name: string,
-      descriptor?: PropertyDescriptor
-    ) => {
-      const getProxyObj = (obj) => new Proxy(obj, {
-        set(target: any, key: string | number | symbol, value: any, receiver: any) {
-          if (has_checker(key)) {
-            self.detectChanges();
-          }
-          return Reflect.set(target, key, value, receiver);
-        }
-      });
-      if (descriptor) {
-        descriptor.value = getProxyObj(descriptor.value);
-      } else {
-        self[name] = getProxyObj(default_val || {});
-      }
-    }
+  static propMarkForCheck(props: propCheckerInputArg) {
+    return this._propMarkForCheckOrDetectChanges(props, self => self.markForCheck());
+  }
+  static propDetectChanges(props: propCheckerInputArg) {
+    return this._propMarkForCheckOrDetectChanges(props, self => self.detectChanges());
   }
 
   ionViewDidEnter() {
@@ -364,23 +324,10 @@ export class FLP_Lifecycle extends FLP_Tool
     this.tryEmit("didLeave");
   }
   dispatchEvent(fire_event_name: string, ...args: any[]): void;
-  dispatchEvent(
-    fire_event_name: "HEIGHT:CHANGED",
-    height: number,
-    is_init: boolean
-  ): void;
-  dispatchEvent(
-    fire_event_name: "ROUND:CHANGED",
-    height: number,
-    is_init: boolean
-  ): void;
+  dispatchEvent(fire_event_name: "HEIGHT:CHANGED", height: number, is_init: boolean): void;
+  dispatchEvent(fire_event_name: "ROUND:CHANGED", height: number, is_init: boolean): void;
   dispatchEvent(fire_event_name: string, ...args: any[]) {
-    console.group(
-      `%cdispatchEvent %cfire_event_name %c${this.cname}`,
-      "color:blue;",
-      "color:inherit;",
-      "color:green;"
-    );
+    console.group(`%cdispatchEvent %cfire_event_name %c${this.cname}`, "color:blue;", "color:inherit;", "color:green;");
     for (var { handle_name, event_name } of this._on_evnet_funs) {
       if (event_name === fire_event_name) {
         try {
@@ -395,73 +342,53 @@ export class FLP_Lifecycle extends FLP_Tool
 
   // 生命周期 修饰器
   // 这里只保存属性名，在调用的时候就能获取到最终被其它修饰器修饰完的属性值
-  @FLP_Lifecycle.cacheFromProtoArray("onInit")
-  private _oninit_funs!: Set<string>;
+  @FLP_Lifecycle.cacheFromProtoArray("onInit") private _oninit_funs!: Set<string>;
   static onInit(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "onInit", name);
     return descriptor;
   }
-  @FLP_Lifecycle.cacheFromProtoArray("afterContentInit")
-  private _aftercontentinit_funs!: Set<string>;
-  static afterContentInit(
-    target: any,
-    name: string,
-    descriptor?: PropertyDescriptor
-  ) {
+  @FLP_Lifecycle.cacheFromProtoArray("afterContentInit") private _aftercontentinit_funs!: Set<string>;
+  static afterContentInit(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "afterContentInit", name);
     return descriptor;
   }
-  @FLP_Lifecycle.cacheFromProtoArray("onDestory")
-  private _ondestory_funs!: Set<string>;
+  @FLP_Lifecycle.cacheFromProtoArray("onDestory") private _ondestory_funs!: Set<string>;
   static onDestory(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "onDestory", name);
     return descriptor;
   }
-  @FLP_Lifecycle.cacheFromProtoArray("willEnter")
-  private _will_enter_funs!: Set<string>;
+  @FLP_Lifecycle.cacheFromProtoArray("willEnter") private _will_enter_funs!: Set<string>;
   static willEnter(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "willEnter", name);
     return descriptor;
   }
-  @FLP_Lifecycle.fromProtoArray("didEnter")
-  private _did_enter_funs!: Set<string>;
+  @FLP_Lifecycle.fromProtoArray("didEnter") private _did_enter_funs!: Set<string>;
   static didEnter(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "didEnter", name);
     return descriptor;
   }
-  @FLP_Lifecycle.cacheFromProtoArray("willLeave")
-  private _will_leave_funs!: Set<string>;
+  @FLP_Lifecycle.cacheFromProtoArray("willLeave") private _will_leave_funs!: Set<string>;
   static willLeave(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "willLeave", name);
     return descriptor;
   }
-  @FLP_Lifecycle.cacheFromProtoArray("didLeave")
-  private _did_leave_funs!: Set<string>;
+  @FLP_Lifecycle.cacheFromProtoArray("didLeave") private _did_leave_funs!: Set<string>;
   static didLeave(target: any, name: string, descriptor?: PropertyDescriptor) {
     FLP_Tool.addProtoArray(target, "didLeave", name);
     return descriptor;
   }
 
   // 因为增加了addEventAfterDidEnter这类延迟注册的操作，所以需要实时计算onEvent
-  @FLP_Lifecycle.fromProtoArray("onEvent")
-  private _on_evnet_funs!: Set<{ handle_name: string; event_name: string }>;
+  @FLP_Lifecycle.fromProtoArray("onEvent") private _on_evnet_funs!: Set<{ handle_name: string; event_name: string }>;
   static addEvent(event_name: string) {
-    return function (
-      target: any,
-      handle_name: string,
-      descriptor?: PropertyDescriptor
-    ) {
+    return function(target: any, handle_name: string, descriptor?: PropertyDescriptor) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
       return descriptor;
     };
   }
   static addEventAfterDidEnter(event_name: string) {
     const after_did_enter = Symbol("addEventAfterDidEnter:" + event_name);
-    return function (
-      target: any,
-      handle_name: string,
-      descriptor?: PropertyDescriptor
-    ) {
+    return function(target: any, handle_name: string, descriptor?: PropertyDescriptor) {
       if (!target[after_did_enter]) {
         // 只执行一次
         let added = false;
@@ -483,7 +410,7 @@ export class FLP_Lifecycle extends FLP_Tool
     return (target: FLP_Lifecycle, name: string) => {
       const cache_key = `-AU-${name}-`;
       if (!target[cache_key]) {
-        target[cache_key] = function () {
+        target[cache_key] = function() {
           if (this[name]) {
             this[name].unsubscribe();
             this[name] = null;
@@ -505,10 +432,7 @@ export class FLP_Lifecycle extends FLP_Tool
       const cache_key = `-PA-${name}-`;
       Object.defineProperty(target, name, {
         get() {
-          return (
-            this[cache_key] ||
-            (this[cache_key] = FLP_Tool.getProtoArray(this, key))
-          );
+          return this[cache_key] || (this[cache_key] = FLP_Tool.getProtoArray(this, key));
         },
       });
     };

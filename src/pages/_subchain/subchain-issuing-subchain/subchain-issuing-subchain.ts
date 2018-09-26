@@ -19,12 +19,12 @@ type IssuingSubchainFormData_port = {
 	web: number;
 	p2p: number;
 	p2pForTrs: number;
-}
+};
 type IssuingSubchainFormData_rewardPerBlock = {
 	height: number;
 	reward: string;
 }[];
-type IssuingSubchainFormData_delegatesSecret = string[]
+type IssuingSubchainFormData_delegatesSecret = string[];
 
 type IssuingSubchainFormData = {
 	name: string;
@@ -78,16 +78,13 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
-	@SubchainIssuingSubchainPage.propMarkForCheck("*")
-	formData_port: IssuingSubchainFormData_port = {} as any;
-	@SubchainIssuingSubchainPage.propMarkForCheck("*")
-	formData_rewardPerBlock: IssuingSubchainFormData_rewardPerBlock = []
-	@SubchainIssuingSubchainPage.propMarkForCheck("*")
-	formData_delegatesSecret: IssuingSubchainFormData_delegatesSecret = []
+	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_port: IssuingSubchainFormData_port = {} as any;
+	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_rewardPerBlock: IssuingSubchainFormData_rewardPerBlock = [];
+	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_delegatesSecret: IssuingSubchainFormData_delegatesSecret = [];
 	@SubchainIssuingSubchainPage.propMarkForCheck("*")
 	// @SubchainIssuingSubchainPage.propDetectChanges([])
 	formData: IssuingSubchainFormData = (() => {
-		const self = this
+		const self = this;
 		return {
 			name: "",
 			abbreviation: "",
@@ -104,14 +101,14 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 			offset: 1,
 
 			get port() {
-				return self.formData_port
+				return self.formData_port;
 			},
 			get rewardPerBlock() {
-				return self.formData_rewardPerBlock
+				return self.formData_rewardPerBlock;
 			},
 			genesisSecret: "",
 			get delegatesSecret() {
-				return self.formData_delegatesSecret
+				return self.formData_delegatesSecret;
 			},
 
 			/// 交易所需基本信息
@@ -125,7 +122,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		} as any;
 	})();
 	ignore_keys = ["logo", "banner", "pay_pwd", "rewardPerBlock"];
-	/// 
+	///
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "name", ["WRONG_RANGE"])
 	check_name() {
 		const res: any = {};
@@ -155,12 +152,12 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		const res: any = {};
 		const { forgeInterval } = this.formData;
 		if (!Number.isFinite(forgeInterval)) {
-			res.WRONG_NUMBER = "FORGEINTERVAL_SHOULD_BE_AN_NUMBER"
+			res.WRONG_NUMBER = "FORGEINTERVAL_SHOULD_BE_AN_NUMBER";
 		} else {
 			if (forgeInterval <= 0) {
-				res.WRONG_RANGE = "FORGEINTERVAL_TOO_SMALL"
+				res.WRONG_RANGE = "FORGEINTERVAL_TOO_SMALL";
 			} else if (forgeInterval > 1e3 * 60 * 60 * 24) {
-				res.WRONG_RANGE = "FORGEINTERVAL_TOO_LARGE"
+				res.WRONG_RANGE = "FORGEINTERVAL_TOO_LARGE";
 			}
 		}
 		return res;
@@ -169,17 +166,17 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	check_miniFee() {
 		const res: any = {};
 		const { miniFee } = this.formData;
-		const miniFee_num = +(miniFee);
+		const miniFee_num = +miniFee;
 		if (!Number.isFinite(miniFee_num)) {
-			res.WRONG_NUMBER = "MINIFEE_SHOULD_BE_AN_NUMBER"
+			res.WRONG_NUMBER = "MINIFEE_SHOULD_BE_AN_NUMBER";
 		} else {
 			if (miniFee_num < 0.00000001) {
-				res.WRONG_RANGE = "MINIFEE_TOO_SMALL"
+				res.WRONG_RANGE = "MINIFEE_TOO_SMALL";
 			} else if (miniFee_num > 1e3) {
-				res.WRONG_RANGE = "MINIFEE_TOO_LARGE"
+				res.WRONG_RANGE = "MINIFEE_TOO_LARGE";
 			}
 		}
-		return res
+		return res;
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "genesisNodeAddress", ["WRONG_NUMBER", "WRONG_RANGE"])
 	check_genesisNodeAddress() {
@@ -192,8 +189,8 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	}
 	/**
 	 * 通用的端口检测代码
-	 * @param port 
-	 * @param res 
+	 * @param port
+	 * @param res
 	 */
 	private _port_checker(port: number, WRONG_PORT_RANGE_CODE: string, res: any = {}) {
 		if (port <= 0 || port >= 65535) {
@@ -203,19 +200,19 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "searchPort", ["WRONG_PORT_RANGE"])
 	check_searchPort() {
-		return this._port_checker(this.formData.searchPort, "SEARCH_PORT_IN_WRONG_RANGE")
+		return this._port_checker(this.formData.searchPort, "SEARCH_PORT_IN_WRONG_RANGE");
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "port.web", ["WRONG_PORT_RANGE"])
 	check_port_web() {
-		return this._port_checker(this.formData_port.web, "WEB_PORT_IN_WRONG_RANGE")
+		return this._port_checker(this.formData_port.web, "WEB_PORT_IN_WRONG_RANGE");
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "port.p2p", ["WRONG_PORT_RANGE"])
 	check_port_p2p() {
-		return this._port_checker(this.formData_port.p2p, "P2P_PORT_IN_WRONG_RANGE")
+		return this._port_checker(this.formData_port.p2p, "P2P_PORT_IN_WRONG_RANGE");
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "port.p2pForTrs", ["WRONG_PORT_RANGE"])
 	check_port_p2pForTrs() {
-		return this._port_checker(this.formData_port.p2pForTrs, "P2PFORTRS_PORT_IN_WRONG_RANGE")
+		return this._port_checker(this.formData_port.p2pForTrs, "P2PFORTRS_PORT_IN_WRONG_RANGE");
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "magic", ["WRONG_RANGE"])
 	check_magic() {
@@ -238,9 +235,11 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		const res: any = {};
 		const { rewardPerBlock } = this.formData;
 		// TODO: check rewardPerBlock
-		if (rewardPerBlock.some(info => {
-			return (info.height < 0 || parseFloat(info.reward) < 0);
-		})) {
+		if (
+			rewardPerBlock.some(info => {
+				return info.height < 0 || parseFloat(info.reward) < 0;
+			})
+		) {
 			res.ITEM_WRONG_RANGE = "REWARDPERBLOCK_SOME_ITEM_IS_IN_WRONG_RANGE";
 		}
 		return res;
@@ -250,7 +249,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		const res: any = {};
 		const { genesisSecret } = this.formData;
 		if (genesisSecret.length > 256) {
-			res.WRONG_RANGE = "GENESISSECRET_TOO_LONG"
+			res.WRONG_RANGE = "GENESISSECRET_TOO_LONG";
 		}
 		return res;
 	}
@@ -258,23 +257,20 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	check_delegatesSecret() {
 		const res: any = {};
 		const { delegatesSecret } = this.formData;
-		if (delegatesSecret.some(secret => {
-			return secret.length > 256;
-		})) {
+		if (
+			delegatesSecret.some(secret => {
+				return secret.length > 256;
+			})
+		) {
 			res.ITEM_WRONG_RANGE = "DELEGATESSECRET_SOME_ITEM_IS_TOO_LONG";
 		}
 		return res;
 	}
 	/**校验支付密码*/
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "pay_pwd", [
-		"VerificationFailure",
-		"NeedInput",
-	])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "pay_pwd", ["VerificationFailure", "NeedInput"])
 	check_pay_pwd() {
 		if (this.formData.pay_pwd) {
-			if (
-				!this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
-			) {
+			if (!this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)) {
 				return {
 					VerificationFailure: "PAY_PWD_VERIFICATION_FAILURE",
 				};
@@ -301,8 +297,8 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		this.formData.agree_user_aggreement = !this.formData.agree_user_aggreement;
 	}
 
-	pickSubchainLogo() {
-		const inputEle = fileInputEleFactory("pickSubchainLogoPicker");
+	private _pickImage(ele_id: string, to_formData_key: string, clip_type: string) {
+		const inputEle = fileInputEleFactory(ele_id);
 		inputEle.value = "";
 		const clickEvent = new MouseEvent("click", {
 			view: window,
@@ -311,31 +307,31 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		});
 		inputEle.onchange = e => {
 			if (inputEle.files && inputEle.files[0]) {
-				this.formData.logo = URL.createObjectURL(inputEle.files[0]);
+				const clip_dialog = this.modalCtrl.create("assets-logo-clip", {
+					clip_type,
+					logo_url: URL.createObjectURL(inputEle.files[0]),
+					auto_return: true,
+				});
+				clip_dialog.present();
+				clip_dialog.onWillDismiss(data => {
+					if (data && data.logo_url) {
+						this.formData[to_formData_key] = data.logo_url;
+						inputEle.value = "";
+					}
+				});
 			} else {
 				console.log("没有选择文件，代码不应该运行到这里");
 			}
-		}
-		inputEle.dispatchEvent(clickEvent);
-	}
-	pickSubchainBanner(){
-		const inputEle = fileInputEleFactory("pickSubchainBannerPicker");
-		inputEle.value = "";
-		const clickEvent = new MouseEvent("click", {
-			view: window,
-			bubbles: true,
-			cancelable: true,
-		});
-		inputEle.onchange = e => {
-			if (inputEle.files && inputEle.files[0]) {
-				this.formData.banner = URL.createObjectURL(inputEle.files[0]);
-			} else {
-				console.log("没有选择文件，代码不应该运行到这里");
-			}
-		}
+		};
 		inputEle.dispatchEvent(clickEvent);
 	}
 
+	pickSubchainLogo() {
+		return this._pickImage("pickSubchainLogoPicker", "logo", "subchain_logo");
+	}
+	pickSubchainBanner() {
+		return this._pickImage("pickSubchainBannerPicker", "banner", "subchain_banner");
+	}
 
 	get canSubmit() {
 		const canSubmit = super.canSubmit;
@@ -346,14 +342,14 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		}
 		return canSubmit;
 	}
-	private _cache_base64_map = new Map<string, { url: string, base64: Promise<string> }>();
+	private _cache_base64_map = new Map<string, { url: string; base64: Promise<string> }>();
 	getCacheBase64(type: "logo" | "banner", url: string) {
 		let cache = this._cache_base64_map.get(type);
 		if (!cache || cache.url !== url) {
 			cache = {
 				url,
-				base64: this.subchainService.imageUrlToJpegBase64(url, true)
-			}
+				base64: this.subchainService.imageUrlToJpegBase64(url, true),
+			};
 			this._cache_base64_map.set(type, cache);
 		}
 		return cache.base64;
@@ -366,20 +362,25 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	@asyncCtrlGenerator.success()
 	async submit() {
 		const { formData } = this;
-		await this.subchainService.addSubchain({
-			name: formData.name,
-			abbreviation: formData.abbreviation,
-			logo: await this.getCacheBase64("logo", formData.logo),
-			banner: await this.getCacheBase64("banner", formData.banner),
-			forgeInterval: formData.forgeInterval,
-			miniFee: formData.miniFee,
-			genesisNodeAddress: formData.genesisNodeAddress,
-			searchPort: formData.searchPort,
-			magic: formData.magic,
-			offset: formData.offset,
-			port: formData.port,
-			rewardPerBlock: formData.rewardPerBlock,
-		}, formData.fee, formData.pwd, formData.pay_pwd);
+		await this.subchainService.addSubchain(
+			{
+				name: formData.name,
+				abbreviation: formData.abbreviation,
+				logo: await this.getCacheBase64("logo", formData.logo),
+				banner: await this.getCacheBase64("banner", formData.banner),
+				forgeInterval: formData.forgeInterval,
+				miniFee: formData.miniFee,
+				genesisNodeAddress: formData.genesisNodeAddress,
+				searchPort: formData.searchPort,
+				magic: formData.magic,
+				offset: formData.offset,
+				port: formData.port,
+				rewardPerBlock: formData.rewardPerBlock,
+			},
+			formData.fee,
+			formData.pwd,
+			formData.pay_pwd
+		);
 		this.finishJob();
 	}
 }

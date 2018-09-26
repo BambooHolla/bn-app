@@ -1,10 +1,4 @@
-import {
-	Component,
-	ViewChild,
-	ElementRef,
-	ChangeDetectionStrategy,
-	OnDestroy,
-} from "@angular/core";
+import { Component, ViewChild, ElementRef, ChangeDetectionStrategy, OnDestroy } from "@angular/core";
 
 import { AniBase, Easing, formatImage } from "../AniBase";
 import * as PIXI from "pixi.js";
@@ -28,8 +22,7 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 	}
 
 	_init() {
-		const canvasNode: HTMLCanvasElement =
-			this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
+		const canvasNode: HTMLCanvasElement = this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
 		return super._init();
 	}
 
@@ -44,13 +37,9 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 			if (!canvasNode) {
 				throw new Error("call init first");
 			}
-			const w = canvasNode.parentElement
-				? canvasNode.parentElement.clientWidth
-				: canvasNode.clientWidth;
+			const w = canvasNode.parentElement ? canvasNode.parentElement.clientWidth : canvasNode.clientWidth;
 
-			const h = canvasNode.parentElement
-				? canvasNode.parentElement.clientHeight
-				: canvasNode.clientHeight;
+			const h = canvasNode.parentElement ? canvasNode.parentElement.clientHeight : canvasNode.clientHeight;
 
 			this.app = ClipAssetsLogoComponent.PIXIAppbuilder({
 				view: canvasNode,
@@ -75,12 +64,7 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 		const W_2 = W / 2;
 		const H_2 = H / 2;
 
-		const {
-			logo_container,
-			mask_container,
-			mask_layer_drawer,
-			mask_layer_shape,
-		} = this;
+		const { logo_container, mask_container, mask_layer_drawer, mask_layer_shape } = this;
 		// 绘制顶部遮罩
 		mask_container.beginFill(0x999999, 0.9);
 		mask_container.drawRect(0, 0, W, H);
@@ -100,19 +84,14 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 			// mask_layer.cacheAsBitmap = false;
 			mask_layer_shape.width = W;
 			mask_layer_shape.height = H;
-			const min_wh_scale = Math.min(
-				mask_layer_shape.scale.x,
-				mask_layer_shape.scale.y
-			);
+			const min_wh_scale = Math.min(mask_layer_shape.scale.x, mask_layer_shape.scale.y);
 			mask_layer_shape.scale.x = min_wh_scale;
 			mask_layer_shape.scale.y = min_wh_scale;
 
 			mask_layer_shape.x = (W - mask_layer_shape.width) / 2;
 			mask_layer_shape.y = (H - mask_layer_shape.height) / 2;
 			// mask_layer.cacheAsBitmap = true;
-			const mask_container_mask = new PIXI.Sprite(
-				mask_layer_drawer.generateCanvasTexture()
-			);
+			const mask_container_mask = new PIXI.Sprite(mask_layer_drawer.generateCanvasTexture());
 
 			if (mask_container.mask) {
 				mask_container.mask.destroy();
@@ -142,16 +121,10 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 	// mask_edge_white_inner_shape = PIXI.Sprite.from(
 	// 	"./assets/assets-logo-shape-b-large.jpg"
 	// );
-	mask_edge_outter_shape = PIXI.Sprite.from(
-		"./assets/imgs/assets/assets-logo-shape-w-large.jpg"
-	);
-	mask_edge_inner_shape = PIXI.Sprite.from(
-		"./assets/imgs/assets/assets-logo-shape-b-large.png"
-	);
 	mask_layer_drawer = new PIXI.Graphics();
-	mask_layer_shape = PIXI.Sprite.from(
-		"./assets/imgs/assets/assets-logo-shape-b-large.jpg"
-	);
+	mask_edge_outter_shape = PIXI.Sprite.from("./assets/imgs/assets/assets-logo-shape-w-large.jpg");
+	mask_edge_inner_shape = PIXI.Sprite.from("./assets/imgs/assets/assets-logo-shape-b-large.png");
+	mask_layer_shape = PIXI.Sprite.from("./assets/imgs/assets/assets-logo-shape-b-large.jpg");
 
 	white_edge_size = 0.1; // 白边的百分比
 
@@ -195,9 +168,7 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 			if (is_mask_edge_drawer_done.size !== 0) {
 				return;
 			}
-			const mask_edge_mask = new PIXI.Sprite(
-				mask_edge_drawer.generateCanvasTexture()
-			);
+			const mask_edge_mask = new PIXI.Sprite(mask_edge_drawer.generateCanvasTexture());
 
 			mask_edge_container.addChild(mask_edge_mask);
 			mask_edge_container.mask = mask_edge_mask;
@@ -206,20 +177,13 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 
 		//outter
 		const init_mask_edge_outter_shape = () => {
-			if (
-				mask_edge_outter_shape.texture.width <= 1 ||
-				is_mask_edge_drawer_done.has("inner") ||
-				!is_mask_edge_drawer_done.has("outter")
-			) {
+			if (mask_edge_outter_shape.texture.width <= 1 || is_mask_edge_drawer_done.has("inner") || !is_mask_edge_drawer_done.has("outter")) {
 				return;
 			}
 
 			mask_edge_outter_shape.width = W;
 			mask_edge_outter_shape.height = H;
-			const min_wh_scale = Math.min(
-				mask_edge_outter_shape.scale.x,
-				mask_edge_outter_shape.scale.y
-			);
+			const min_wh_scale = Math.min(mask_edge_outter_shape.scale.x, mask_edge_outter_shape.scale.y);
 			mask_edge_outter_shape.scale.x = min_wh_scale;
 			mask_edge_outter_shape.scale.y = min_wh_scale;
 
@@ -230,28 +194,17 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 			// console.log("outter done");
 			init_mask_edge_drawer();
 		};
-		mask_edge_outter_shape.texture.on(
-			"update",
-			init_mask_edge_outter_shape
-		);
+		mask_edge_outter_shape.texture.on("update", init_mask_edge_outter_shape);
 
 		const init_mask_edge_inner_shape = () => {
-			if (
-				mask_edge_outter_shape.texture.width <= 1 ||
-				!is_mask_edge_drawer_done.has("inner")
-			) {
+			if (mask_edge_outter_shape.texture.width <= 1 || !is_mask_edge_drawer_done.has("inner")) {
 				return;
 			}
 
 			mask_edge_inner_shape.width = W;
 			mask_edge_inner_shape.height = H;
-			const min_wh_scale = Math.min(
-				mask_edge_inner_shape.scale.x,
-				mask_edge_inner_shape.scale.y
-			);
-			mask_edge_inner_shape.scale.set(
-				min_wh_scale * (1 - white_edge_size)
-			);
+			const min_wh_scale = Math.min(mask_edge_inner_shape.scale.x, mask_edge_inner_shape.scale.y);
+			mask_edge_inner_shape.scale.set(min_wh_scale * (1 - white_edge_size));
 
 			mask_edge_inner_shape.x = (W - mask_edge_inner_shape.width) / 2;
 			mask_edge_inner_shape.y = (H - mask_edge_inner_shape.height) / 2;
@@ -301,30 +254,20 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 				return;
 			}
 
-			if (
-				e.data.pointerType === "touch" &&
-				"touches" in e.data.originalEvent &&
-				e.data.originalEvent.touches.length === 2
-			) {
+			if (e.data.pointerType === "touch" && "touches" in e.data.originalEvent && e.data.originalEvent.touches.length === 2) {
 				/// 缩放
 				status = OpType.resize;
 				const point_1 = e.data.originalEvent.touches[0];
 				const point_2 = e.data.originalEvent.touches[1];
 				init_point_1 = new PIXI.Point(point_1.clientX, point_1.clientY);
 				init_point_2 = new PIXI.Point(point_2.clientX, point_2.clientY);
-				resize_distance = Math.sqrt(
-					Math.pow(init_point_2.x - init_point_1.x, 2) +
-						Math.pow(init_point_2.y - init_point_1.y, 2)
-				);
+				resize_distance = Math.sqrt(Math.pow(init_point_2.x - init_point_1.x, 2) + Math.pow(init_point_2.y - init_point_1.y, 2));
 				resize_init_scale = this.logo.scale.x;
 			} else {
 				/// 移动
 				status = OpType.move;
 				init_point_1 = e.data.global.clone();
-				move_init_point = new PIXI.Point(
-					this.logo.position.x,
-					this.logo.position.y
-				);
+				move_init_point = new PIXI.Point(this.logo.position.x, this.logo.position.y);
 			}
 		};
 		const move_handle = (e: PIXI.interaction.InteractionEvent) => {
@@ -335,10 +278,7 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 				const current_point = e.data.global.clone();
 				const diff_x = current_point.x - init_point_1.x;
 				const diff_y = current_point.y - init_point_1.y;
-				this.logo.position.set(
-					move_init_point.x + diff_x,
-					move_init_point.y + diff_y
-				);
+				this.logo.position.set(move_init_point.x + diff_x, move_init_point.y + diff_y);
 				// 边界限制
 				if (this.logo.position.x < 0) {
 					this.logo.position.x = 0;
@@ -362,16 +302,9 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 				const point_2 = e.data.originalEvent.touches[1];
 				init_point_1 = new PIXI.Point(point_1.clientX, point_1.clientY);
 				init_point_2 = new PIXI.Point(point_2.clientX, point_2.clientY);
-				const current_distance = Math.sqrt(
-					Math.pow(init_point_2.x - init_point_1.x, 2) +
-						Math.pow(init_point_2.y - init_point_1.y, 2)
-				);
-				const diff_scale =
-					(current_distance - resize_distance) / resize_rule;
-				const target_scale = Math.max(
-					resize_init_scale + diff_scale,
-					0
-				);
+				const current_distance = Math.sqrt(Math.pow(init_point_2.x - init_point_1.x, 2) + Math.pow(init_point_2.y - init_point_1.y, 2));
+				const diff_scale = (current_distance - resize_distance) / resize_rule;
+				const target_scale = Math.max(resize_init_scale + diff_scale, 0);
 				this.logo.scale.set(target_scale);
 				// 缩放限制
 				if (this.logo.height < this.min_size) {
@@ -455,12 +388,7 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 				this._rotation_aborter();
 				this._rotation_aborter = undefined;
 			}
-			AniBase.animateNumber(
-				logo.rotation,
-				this._target_rotation,
-				250,
-				Easing.Quadratic_Out
-			)(
+			AniBase.animateNumber(logo.rotation, this._target_rotation, 250, Easing.Quadratic_Out)(
 				(v, abort) => {
 					logo.rotation = v;
 					this._rotation_aborter = abort;
@@ -497,9 +425,7 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 		logo_container.endFill();
 	}
 
-	clip_layer_shape = PIXI.Sprite.from(
-		"./assets/imgs/assets/assets-logo-shape-w-large.jpg"
-	);
+	clip_layer_shape = PIXI.Sprite.from("./assets/imgs/assets/assets-logo-shape-w-large.jpg");
 
 	// export_layer = new PIXI.Container();
 	private static _clip_renderer?: PIXI.CanvasRenderer;
@@ -541,27 +467,29 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 			clip_layer_shape.y = mask_layer_shape.y;
 		}*/
 
-		const clip_renderer = ClipAssetsLogoComponent.getClipRenderer(
-			mask_layer_shape.width,
-			mask_layer_shape.height
-		);
+		const clip_renderer = ClipAssetsLogoComponent.getClipRenderer(mask_layer_shape.width, mask_layer_shape.height);
 
-		const export_base64 /*this.app.renderer.extract*/ = clip_renderer.extract.base64(
-			this.logo_container
-		);
+		const export_base64 /*this.app.renderer.extract*/ = clip_renderer.extract.base64(this.logo_container);
 		// this.logo_container.mask = null;
 		// this.logo_container.removeChild(clip_layer_shape);
 
 		const size = Math.max(mask_layer_shape.width, mask_layer_shape.height);
+		const { view_width, view_height } = this.getClipSize(size);
 		// return export_base64;
 		return (await formatImage(export_base64, {
 			format: "image/png",
-			view_width: size,
-			view_height: size,
+			view_width,
+			view_height,
 			size: `100%`,
-			position: `0 ${mask_layer_shape.y}`,
+			position: `${(size - view_width) / 2} ${mask_layer_shape.y + (size - view_height) / 2}`,
 			target_encode: "base64",
 		})) as string;
+	}
+	getClipSize(size: number) {
+		return {
+			view_width: size,
+			view_height: size,
+		};
 	}
 	async exportClipBolb() {
 		const export_base64 = await this.exportClipBase64();
@@ -575,11 +503,7 @@ export class ClipAssetsLogoComponent extends AniBase implements OnDestroy {
 		const byteCharacters = atob(b64Data);
 		const byteArrays: Uint8Array[] = [];
 
-		for (
-			var offset = 0;
-			offset < byteCharacters.length;
-			offset += sliceSize
-		) {
+		for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
 			const slice = byteCharacters.slice(offset, offset + sliceSize);
 
 			const byteNumbers = new Array(slice.length);

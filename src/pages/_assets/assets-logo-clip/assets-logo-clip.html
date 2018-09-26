@@ -6,7 +6,7 @@
 <ion-content>
   <div class="clip-container">
     <div class="logo-clip">
-      <clip-assets-logo></clip-assets-logo>
+      <ng-template #clipComponent></ng-template>
     </div>
     <div class="tool-bar">
       <ng-container *ngIf="is_support_input_color;else useColorPicker">

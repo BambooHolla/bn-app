@@ -597,7 +597,7 @@ export async function formatImage(
   }
 ) {
   format_canvas.width = opts.view_width;
-  format_canvas.height = opts.view_width;
+  format_canvas.height = opts.view_height;
   const ctx = format_canvas.getContext("2d");
   if (!ctx) {
     throw new Error("not support 2d canvas");

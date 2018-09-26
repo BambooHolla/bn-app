@@ -1,19 +1,12 @@
-
-import * as ifs from 'idb.filesystem.js';
+import * as ifs from "idb.filesystem.js";
 // self["webkitRequestFileSystem"] = webkitRequestFileSystem;
 // self["requestFileSystem"] = requestFileSystem;
-console.log('ifs',ifs,self["requestFileSystem"],self["webkitRequestFileSystem"]);
+console.log("ifs", ifs, self["requestFileSystem"], self["webkitRequestFileSystem"]);
 
 import lazy_links from "./serializer-links";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { HttpModule } from "@angular/http";
-import {
-  ErrorHandler,
-  NgModule,
-  InjectionToken,
-  APP_INITIALIZER,
-  NgZone,
-} from "@angular/core";
+import { ErrorHandler, NgModule, InjectionToken, APP_INITIALIZER, NgZone } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import {
   BrowserAnimationsModule,
@@ -42,7 +35,7 @@ import { EmailComposer } from "@ionic-native/email-composer";
 import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerModule } from "ngx-color-picker";
 import {
   MatFormFieldModule,
   MatInputModule,
@@ -53,23 +46,12 @@ import {
   MatIconModule,
   MatChipsModule,
 } from "@angular/material";
-import {
-  IonicErrorHandler,
-  IonicModule,
-  DeepLinkConfigToken,
-  Config,
-  UrlSerializer,
-  App,
-  IonicApp,
-} from "ionic-angular";
+import { IonicErrorHandler, IonicModule, DeepLinkConfigToken, Config, UrlSerializer, App, IonicApp } from "ionic-angular";
 // import { IonicApp } from "ionic-angular/components/app/app-root";
 // import { ClickBlock } from "ionic-angular/components/app/click-block";
 // import { OverlayPortal } from "ionic-angular/components/app/overlay-portal";
 import { setupPreloading } from "ionic-angular/util/module-loader";
-import {
-  ModuleLoader,
-  provideModuleLoader,
-} from "ionic-angular/util/module-loader";
+import { ModuleLoader, provideModuleLoader } from "ionic-angular/util/module-loader";
 import { setupUrlSerializer } from "ionic-angular/navigation/url-serializer";
 // import { MyIonicModule as IonicModule  } from "./module";
 
@@ -119,12 +101,16 @@ import { VoteMyContributionComponent } from "../components/vote-my-contribution/
 import { VotePreRoundIncomeRateComponent } from "../components/vote-pre-round-income-rate/vote-pre-round-income-rate";
 import { VotePreRoundIncomeRankingComponent } from "../components/vote-pre-round-income-ranking/vote-pre-round-income-ranking";
 
+import { ClipAssetsLogoComponent } from "../components/clip-assets-logo/clip-assets-logo";
+import { ClipSubchainLogoComponent } from "../components/clip-subchain-logo/clip-subchain-logo";
+import { ClipSubchainBannerComponent } from "../components/clip-subchain-banner/clip-subchain-banner";
+
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { DbCacheProvider } from "../providers/db-cache/db-cache";
 import { VoucherServiceProvider } from "../providers/voucher-service/voucher-service";
 import { LocalContactProvider } from "../providers/local-contact/local-contact";
 import { AssetsServiceProvider } from "../providers/assets-service/assets-service";
-import { SubchainServiceProvider } from '../providers/subchain-service/subchain-service';
+import { SubchainServiceProvider } from "../providers/subchain-service/subchain-service";
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
@@ -143,23 +129,13 @@ export function customDeepLinkConfig(deepLinkConfig) {
   ];
   if (deepLinkConfig && deepLinkConfig.links) {
     const static_links_name_set = new Set(static_links.map(link => link.name));
-    deepLinkConfig.links = deepLinkConfig.links.filter(
-      link => !static_links_name_set.has(link.name as string)
-    );
+    deepLinkConfig.links = deepLinkConfig.links.filter(link => !static_links_name_set.has(link.name as string));
     deepLinkConfig.links.push(...static_links);
   }
   return deepLinkConfig;
 }
 
-const pages = [
-  MyApp,
-  UserAgreementPage,
-  CustomDialogPage,
-  TutorialPage,
-  SignInAndSignUpPage,
-  TabsPage,
-  CoverTabsCtrlModelPage,
-];
+const pages = [MyApp, UserAgreementPage, CustomDialogPage, TutorialPage, SignInAndSignUpPage, TabsPage, CoverTabsCtrlModelPage];
 const heightLevelModules = [
   VoteCurrentBlockIncomeComponent,
   VoteIncomeTrendComponent,
@@ -222,7 +198,7 @@ const heightLevelModules = [
     MatChipsModule,
   ],
   bootstrap: [IonicApp],
-  entryComponents: pages,
+  entryComponents: [ClipAssetsLogoComponent, ClipSubchainLogoComponent, ClipSubchainBannerComponent, ...pages],
   providers: [
     AndroidPermissions,
     BarcodeScanner,
@@ -276,4 +252,4 @@ const heightLevelModules = [
     SubchainServiceProvider,
   ],
 })
-export class AppModule { }
+export class AppModule {}
