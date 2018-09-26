@@ -68,7 +68,7 @@ import { commonFontFamily, iconFontFamily } from "./helper";
 export class ChainListComponent extends AniBase {
   @FLP_Tool.FromGlobal translate!: TranslateService;
   @ViewChild("canvas") canvasRef!: ElementRef;
-  devicePixelRatio = Math.ceil(Math.sqrt(window.devicePixelRatio));
+  // devicePixelRatio = Math.ceil(Math.sqrt(window.devicePixelRatio));
 
   constructor(public blockService: BlockServiceProvider) {
     super();
