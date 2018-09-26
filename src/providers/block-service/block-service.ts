@@ -25,6 +25,7 @@ import { FangoDB, registerWorkerHandle } from "fangodb";
 import { BlockDBFactory } from "./helper";
 import { DBNumberIndex } from "fangodb/dist/src/db-index-core";
 import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
+import { DownloadBlockChainMaster } from "./download-block-chain.fack-worker";
 
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
 tryRegisterGlobal("socketio", io);
@@ -177,8 +178,8 @@ export class BlockServiceProvider extends FLP_Tool {
               cache.blocks instanceof Array
                 ? cache.blocks
                 : await this.blockDb.find({
-                  height: { $in: res_blocks.map(b => b.height) },
-                });
+                    height: { $in: res_blocks.map(b => b.height) },
+                  });
             const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
             const new_blocks = res_blocks
               .filter(block => {
@@ -351,7 +352,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const self = this;
     const io_origin = AppSettingProvider.SERVER_URL;
     // 不改原型链，只针对当前的这个链接对象进行修改
-    encoder.encode = function (obj, callback) {
+    encoder.encode = function(obj, callback) {
       this[ENCODE_SYMBOL](obj, (buffer_list, ...args) => {
         if (buffer_list instanceof Array) {
           let acc_flow = 0;
@@ -426,10 +427,10 @@ export class BlockServiceProvider extends FLP_Tool {
     // 安装未处理交易的预估
     this._listenUnconfirmTransaction();
   }
-  private _download_worker?: Worker;
+  private _download_worker?: DownloadBlockChainMaster;
   getDownloadWorker() {
     if (!this._download_worker) {
-      const download_worker = (this._download_worker = new Worker("./assets/workers/download-block-chain.worker.js"));
+      const download_worker = (this._download_worker = new DownloadBlockChainMaster());
       this.appSetting.on("changed@share_settings.enable_sync_progress_blocks", enable_sync_progress_blocks => {
         const req_id = this._download_req_id_acc++;
         download_worker.postMessage({
@@ -438,13 +439,13 @@ export class BlockServiceProvider extends FLP_Tool {
           req_id,
         });
       });
-      registerWorkerHandle(download_worker);
+      // registerWorkerHandle(download_worker);
     }
     return this._download_worker;
   }
   private _download_req_id_acc = 0;
   private _sync_lock?: {
-    worker: Worker;
+    worker: DownloadBlockChainMaster;
     req_id: number;
     task: PromiseOut<void>;
   };
@@ -523,6 +524,7 @@ export class BlockServiceProvider extends FLP_Tool {
         }
       }
     };
+    download_worker;
     download_worker.addEventListener("message", onmessage);
     cg = () => download_worker.removeEventListener("message", onmessage);
     // 不论如何都将监听函数移除掉

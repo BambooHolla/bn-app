@@ -4,7 +4,7 @@ import { BlockChainDownloader } from "./download-block-chain";
 import { BlockModel } from "./helper";
 // import { Mdb } from "../../src/providers/mdb";
 import { BlockDBWorkerFactory } from '../../src/providers/block-service/helper'
-import IFM from "../../src/ifmchain-ibt";
+import { IfmchainCore } from "ifmchain-js-core";
 import "core-js/modules/es7.symbol.async-iterator";
 import { PromiseOut } from "../../src/bnqkl-framework/PromiseExtends";
 
@@ -54,7 +54,7 @@ async function getBlockChainDownloader(
       transports: ["websocket"],
     });
     const blockDb = await BlockDBWorkerFactory(magic);
-    const ifmJs = new IFM(NET_VERSION);
+    const ifmJs = new IfmchainCore(NET_VERSION);
     blockChainDownloader = new BlockChainDownloader(webio, blockDb, ifmJs)
     BlockChainDownloader_task.resolve(blockChainDownloader);
   }
