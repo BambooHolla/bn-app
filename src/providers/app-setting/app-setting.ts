@@ -23,6 +23,7 @@ import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
 export { AppUrl };
 import * as IFM from "../../ifmchain-ibt";
+import { IfmchainCore } from 'ifmchain-js-core';
 
 @Injectable()
 export class AppSettingProvider extends CommonService {
@@ -38,6 +39,7 @@ export class AppSettingProvider extends CommonService {
   static readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
   readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
   static readonly IFMJS = IFM(AppSettingProvider.NET_VERSION);
+  static readonly IFMJSCORE = new IfmchainCore(AppSettingProvider.NET_VERSION);
   static readonly HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
     AppSettingProvider.SERVER_URL,
     AppSettingProvider.SERVER_TIMEOUT

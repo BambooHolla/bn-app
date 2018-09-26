@@ -41,11 +41,11 @@
       <div class="banner-wrapper">
         <div class="subchain-banner-shape-wrapper">
           <button mat-button class="subchain-banner-shape banner-uploader" (click)="pickSubchainBanner()">
-            <div class="banner-text" *ngIf="!formData.banner;else showLogo">
+            <div class="banner-text" *ngIf="!formData.banner;else showBanner">
               <ali-icon name="ifm-zengjia"></ali-icon>
               {{'PICK_SUBCHAIN_BANNER'|translate}}
             </div>
-            <ng-template #showLogo>
+            <ng-template #showBanner>
               <img [src]="domSanitizer.bypassSecurityTrustUrl(formData.banner)" alt="BANNER">
             </ng-template>
           </button>

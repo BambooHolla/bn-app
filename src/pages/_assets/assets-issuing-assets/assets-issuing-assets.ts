@@ -152,7 +152,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     return res;
   }
 
-  /**校验支付密码数量*/
+  /**校验支付密码*/
   @AssetsIssuingAssetsPage.setErrorTo("errors", "pay_pwd", [
     "VerificationFailure",
     "NeedInput",

@@ -16,7 +16,6 @@ import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
-import * as promisify from "es6-promisify";
 import { Mdb } from "../mdb";
 // const { TransactionTypes } = TYPE;
 export * from "./transaction.types";
@@ -24,6 +23,7 @@ export * from "./transaction.types";
 @Injectable()
 export class TransactionServiceProvider {
   ifmJs = AppSettingProvider.IFMJS;
+  IFMJSCORE = AppSettingProvider.IFMJSCORE;
   transaction: any;
   // block: any;
   TransactionTypes = TYPE.TransactionTypes;
@@ -126,6 +126,8 @@ export class TransactionServiceProvider {
       //数字资产转账
       case this.TransactionTypes.TRANSFER_ASSET:
         return "assets/tx";
+      case this.TransactionTypes.ISSUE_SUBCHAIN:
+        return "subchain/tx";
     }
   }
 
@@ -235,7 +237,7 @@ export class TransactionServiceProvider {
     const transaction = await new Promise<TYPE.TransactionModel>(
       (resolve, reject) => {
         try {
-          this.ifmJs.transaction.createTransaction(txData, (err, res) => {
+          this.IFMJSCORE.createTransaction(txData, (err, res) => {
             if (err) {
               return reject(err);
             }

@@ -8,6 +8,9 @@ import { PAGE_STATUS } from "./const";
 import EventEmitter from "eventemitter3";
 import { FLP_Tool, tryRegisterGlobal } from "./FLP_Tool";
 // import { MyApp } from "../app/app.component";
+
+type propCheckerInputArg = ((prop: string | number | symbol) => boolean) | Array<string | number | symbol> | string;
+
 var uuid = 0;
 
 export class FLP_Lifecycle extends FLP_Tool
@@ -91,7 +94,7 @@ export class FLP_Lifecycle extends FLP_Tool
       // 视图处于离线状态，监听视图激活
       const check_id = `${
         this.instance_id
-      }:notifyViewEvent:${evetname}:${description}`;
+        }:notifyViewEvent:${evetname}:${description}`;
       if (!emitter[check_id]) {
         emitter[check_id] = true;
         this.event.once("willEnter", () => {
@@ -190,8 +193,8 @@ export class FLP_Lifecycle extends FLP_Tool
     }
   }
   // 钩子函数
-  _before_markForCheck() {}
-  _before_detectChanges() {}
+  _before_markForCheck() { }
+  _before_detectChanges() { }
 
   static markForCheck(
     target: any,
@@ -214,7 +217,7 @@ export class FLP_Lifecycle extends FLP_Tool
       Object.defineProperty(target, name, descriptor);
     } else if (descriptor.set) {
       const srouce_set = descriptor.set;
-      descriptor.set = function(v) {
+      descriptor.set = function (v) {
         srouce_set.call(this, v);
         this.markForCheck();
       };
@@ -242,12 +245,74 @@ export class FLP_Lifecycle extends FLP_Tool
       Object.defineProperty(target, name, descriptor);
     } else if (descriptor.set) {
       const srouce_set = descriptor.set;
-      descriptor.set = function(v) {
+      descriptor.set = function (v) {
         srouce_set.call(this, v);
         this.detectChanges();
       };
     }
     // return descriptor;
+  }
+  private static _propsHasCheckGenerator(
+    props: propCheckerInputArg
+  ) {
+    if (props instanceof Function) {
+      return props
+    }
+    if (typeof props === "string") {
+      if (props === "*") {
+        return () => true;
+      }
+    }
+    if (props instanceof Array) {
+      const propset = new Set(props);
+      return (prop: string | number | symbol) =>
+        propset.has(prop);
+    }
+    return () => false;
+  }
+  static propMarkForCheck(props: propCheckerInputArg, default_val?) {
+    const has_checker = this._propsHasCheckGenerator(props);
+    return (
+      self: FLP_Lifecycle,
+      name: string,
+      descriptor?: PropertyDescriptor
+    ) => {
+      const getProxyObj = (obj) => new Proxy(obj, {
+        set(target: any, key: string | number | symbol, value: any, receiver: any) {
+          if (has_checker(key)) {
+            self.markForCheck();
+          }
+          return Reflect.set(target, key, value, receiver);
+        }
+      });
+      if (descriptor) {
+        descriptor.value = getProxyObj(descriptor.value);
+      } else {
+        self[name] = getProxyObj(default_val || {});
+      }
+    }
+  }
+  static propDetectChanges(props: propCheckerInputArg, default_val?) {
+    const has_checker = this._propsHasCheckGenerator(props);
+    return (
+      self: FLP_Lifecycle,
+      name: string,
+      descriptor?: PropertyDescriptor
+    ) => {
+      const getProxyObj = (obj) => new Proxy(obj, {
+        set(target: any, key: string | number | symbol, value: any, receiver: any) {
+          if (has_checker(key)) {
+            self.detectChanges();
+          }
+          return Reflect.set(target, key, value, receiver);
+        }
+      });
+      if (descriptor) {
+        descriptor.value = getProxyObj(descriptor.value);
+      } else {
+        self[name] = getProxyObj(default_val || {});
+      }
+    }
   }
 
   ionViewDidEnter() {
@@ -381,7 +446,7 @@ export class FLP_Lifecycle extends FLP_Tool
   @FLP_Lifecycle.fromProtoArray("onEvent")
   private _on_evnet_funs!: Set<{ handle_name: string; event_name: string }>;
   static addEvent(event_name: string) {
-    return function(
+    return function (
       target: any,
       handle_name: string,
       descriptor?: PropertyDescriptor
@@ -392,7 +457,7 @@ export class FLP_Lifecycle extends FLP_Tool
   }
   static addEventAfterDidEnter(event_name: string) {
     const after_did_enter = Symbol("addEventAfterDidEnter:" + event_name);
-    return function(
+    return function (
       target: any,
       handle_name: string,
       descriptor?: PropertyDescriptor
@@ -418,7 +483,7 @@ export class FLP_Lifecycle extends FLP_Tool
     return (target: FLP_Lifecycle, name: string) => {
       const cache_key = `-AU-${name}-`;
       if (!target[cache_key]) {
-        target[cache_key] = function() {
+        target[cache_key] = function () {
           if (this[name]) {
             this[name].unsubscribe();
             this[name] = null;
