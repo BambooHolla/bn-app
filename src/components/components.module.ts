@@ -28,7 +28,9 @@ import { SimpleSectorComponent } from "./simple-sector/simple-sector";
 import { ClipAssetsLogoComponent } from "./clip-assets-logo/clip-assets-logo";
 import { TextMgComponent } from "./text-mg/text-mg";
 import { ChartComponent } from "./chart/chart.component";
-import { CommonModule } from '@angular/common';  
+import { CommonModule } from '@angular/common';
+import { ClipSubchainLogoComponent } from './clip-subchain-logo/clip-subchain-logo';
+import { ClipSubchainBannerComponent } from './clip-subchain-banner/clip-subchain-banner';  
 
 @NgModule({
     declarations: [
@@ -61,6 +63,8 @@ import { CommonModule } from '@angular/common';
         ClipAssetsLogoComponent,
         TextMgComponent,
         ChartComponent,
+    ClipSubchainLogoComponent,
+    ClipSubchainBannerComponent,
     ],
     imports: [CommonModule],
     exports: [
@@ -93,6 +97,8 @@ import { CommonModule } from '@angular/common';
         ClipAssetsLogoComponent,
         TextMgComponent,
         ChartComponent,
+    ClipSubchainLogoComponent,
+    ClipSubchainBannerComponent,
     ],
 })
 export class ComponentsModule {}
