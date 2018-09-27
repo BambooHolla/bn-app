@@ -148,12 +148,6 @@ export class BlockCard extends PIXI.Graphics {
 	toggleFooterContainerMask(show = this._show_footer_container_mask) {
 		this._show_footer_container_mask = show;
 		const is_show = show && this.interactive;
-		// const res_aplha = is_show ? 1 : 0;
-		// if (this.footer_container_mask.alpha !== res_aplha) {
-		//   // this.footer_container.cacheAsBitmap = false;
-		//   this.footer_container_mask.alpha = res_aplha;
-		//   // this.footer_container.cacheAsBitmap = true;
-		// }
 
 		if (is_show) {
 			if (!this.filters || this.filters.length !== 1) {
@@ -162,19 +156,6 @@ export class BlockCard extends PIXI.Graphics {
 		} else {
 			this.filters = null;
 		}
-		// const shadow_filter_alpha = is_show ? 0.4 : 0.2;
-		// if (this.shadow_filter.alpha !== shadow_filter_alpha) {
-		//   this.filters = [];
-
-		//   const old_cacheAsBitmap = this.shadown.cacheAsBitmap;
-		//   if (old_cacheAsBitmap) {
-		//     this.shadown.cacheAsBitmap = false;
-		//     this.shadow_filter.alpha = shadow_filter_alpha;
-		//     this.shadown.cacheAsBitmap = true;
-		//   } else {
-		//     this.shadow_filter.alpha = shadow_filter_alpha;
-		//   }
-		// }
 	}
 	shadown = new PIXI.Graphics();
 
@@ -440,21 +421,6 @@ export class BlockCard extends PIXI.Graphics {
 
 	private _cache_as_bitmap_ti?: number;
 	setCacheAsBitmap(v: boolean) {
-		// if (v === true) {
-		// 	if (this._cache_as_bitmap_ti) {
-		// 		return;
-		// 	} else {
-		// 		this._cache_as_bitmap_ti = afCtrl.raf(() => {
-		// 			this._cache_as_bitmap_ti = undefined;
-		// 			this.cacheAsBitmap = true;
-		// 		});
-		// 	}
-		// } else {
-		// 	if (this._cache_as_bitmap_ti) {
-		// 		afCtrl.caf(this._cache_as_bitmap_ti);
-		// 		this._cache_as_bitmap_ti = undefined;
-		// 	}
-		// 	this.cacheAsBitmap = false;
-		// }
+
 	}
 }

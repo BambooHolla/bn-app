@@ -288,6 +288,12 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   is_show_extend_info = false;
   extend_info?: AccountModel;
+  get extend_info_reward(){
+    if(this.extend_info){
+      return parseFloat(this.extend_info.votingReward)+parseFloat(this.extend_info.forgingReward);
+    }
+    return 0;
+  }
   /*隐藏功能*/
   @asyncCtrlGenerator.tttttap() // 这个要放第一个
   @asyncCtrlGenerator.error()

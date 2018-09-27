@@ -9,6 +9,7 @@ export type AccountModel = {
   isDelegate: number;
   username: string;
   votingReward: string;
+  forgingReward: string;
 };
 export type AccountResModel = {
   account: AccountModel;
