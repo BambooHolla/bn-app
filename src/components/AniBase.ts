@@ -162,7 +162,7 @@ export class AniBase extends EventEmitter {
     this.__UPDATER_ID__ !== null && this.caf(this.__UPDATER_ID__);
     this.__UPDATER_ID__ = this.raf(() => {
       this.force_update = false;
-      this.__UPDATER_ID__;
+      this.__UPDATER_ID__ = null;
     });
   }
   _update(t, diff_t) {
