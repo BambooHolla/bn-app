@@ -13,10 +13,10 @@ const block_indexs: any = [
 ];
 export function BlockDBFactory(dbname: string) {
 	return FangoDBFactory<BlockModel>(dbname, block_indexs, global["file"]).then(blockDB => {
-		// 默认使用高度来做为文件名
-		blockDB.filenameGenerator = (uid, item) => {
-			return item.height + ".data";
-		};
+		// // 默认使用高度来做为文件名
+		// blockDB.filenameGenerator = (uid, item) => {
+		// 	return item.height + ".data";
+		// };
 		return blockDB;
 	});
 }
