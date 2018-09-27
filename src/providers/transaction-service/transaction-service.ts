@@ -4,12 +4,7 @@ import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
-import {
-  AppSettingProvider,
-  ROUND_AB_Generator,
-  HEIGHT_AB_Generator,
-  AsyncBehaviorSubject,
-} from "../app-setting/app-setting";
+import { AppSettingProvider, ROUND_AB_Generator, HEIGHT_AB_Generator, AsyncBehaviorSubject } from "../app-setting/app-setting";
 import { AlertController } from "ionic-angular";
 import { UserInfoProvider } from "../user-info/user-info";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
@@ -46,9 +41,7 @@ export class TransactionServiceProvider {
     public user: UserInfoProvider
   ) {
     tryRegisterGlobal("transactionService", this);
-    this.transaction = this.ifmJs.Api(
-      AppSettingProvider.HTTP_PROVIDER
-    ).transaction;
+    this.transaction = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).transaction;
     // this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
     this.nacl_factory = this.ifmJs.nacl_factory;
     this.Crypto = this.ifmJs.crypto;
@@ -59,19 +52,11 @@ export class TransactionServiceProvider {
     this.addresssCheck = this.ifmJs.addressCheck;
   }
 
-  readonly UNCONFIRMED = this.appSetting.APP_URL(
-    "/api/transactions/unconfirmed"
-  );
-  readonly GET_TRANSACTIONS_BY_ID = this.appSetting.APP_URL(
-    "/api/transactions/get"
-  );
-  readonly GET_TIMESTAMP = this.appSetting.APP_URL(
-    "/api/transactions/getslottime"
-  );
+  readonly UNCONFIRMED = this.appSetting.APP_URL("/api/transactions/unconfirmed");
+  readonly GET_TRANSACTIONS_BY_ID = this.appSetting.APP_URL("/api/transactions/get");
+  readonly GET_TIMESTAMP = this.appSetting.APP_URL("/api/transactions/getslottime");
   readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions/");
-  readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL(
-    "/api/transactions/query"
-  );
+  readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions/query");
   readonly GET_SOURCE_IP = this.appSetting.APP_URL("/api/system/sourceIp");
 
   getTransactionLink(type) {
@@ -133,17 +118,12 @@ export class TransactionServiceProvider {
 
   /**是否是转账交易*/
   isTransferType(type: TYPE.TransactionTypes) {
-    return (
-      type === TYPE.TransactionTypes.TRANSFER_ASSET ||
-      type === TYPE.TransactionTypes.SEND
-    );
+    return type === TYPE.TransactionTypes.TRANSFER_ASSET || type === TYPE.TransactionTypes.SEND;
   }
 
   /**是否是转账交易*/
   isShowAmountType(type: TYPE.TransactionTypes) {
-    return (
-      this.isTransferType(type) || type === TYPE.TransactionTypes.DESTORY_ASSET
-    );
+    return this.isTransferType(type) || type === TYPE.TransactionTypes.DESTORY_ASSET;
   }
 
   /**
@@ -152,14 +132,11 @@ export class TransactionServiceProvider {
    * @returns {Promise<any>}
    */
   async getTransactionById(id: string) {
-    let data = await this.fetch.get<{ transaction: TYPE.TransactionModel }>(
-      this.GET_TRANSACTIONS_BY_ID,
-      {
-        search: {
-          id: id,
-        },
-      }
-    );
+    let data = await this.fetch.get<{ transaction: TYPE.TransactionModel }>(this.GET_TRANSACTIONS_BY_ID, {
+      search: {
+        id: id,
+      },
+    });
 
     return data.transaction;
   }
@@ -188,8 +165,10 @@ export class TransactionServiceProvider {
     };
   }
 
-  getSourceIp() {
-    if (this.fetch.onLine) {
+  private _source_ip_cache_io_id = "";
+  getSourceIp(force_update?: boolean) {
+    if (this.fetch.onLine && (force_update || this._source_ip_cache_io_id !== this.fetch.io.id)) {
+      this._source_ip_cache_io_id !== this.fetch.io.id; // 同一个ws连接中，ip不变，id也不会变，除非断开重连，那么可能会发生IP变动
       return Promise.race([
         this.fetch.get<{ sourceIp: string }>(this.GET_SOURCE_IP).then(data => {
           localStorage.setItem("sourceIp", data.sourceIp);
@@ -203,16 +182,11 @@ export class TransactionServiceProvider {
   }
 
   async createTransaction(txData) {
-    if (
-      txData.secondSecret &&
-      txData.type !== this.TransactionTypes.SIGNATURE
-    ) {
+    if (txData.secondSecret && txData.type !== this.TransactionTypes.SIGNATURE) {
       let secondPwd = txData.secondSecret;
       let is_second_true = this.verifySecondPassphrase(secondPwd);
       if (!is_second_true) {
-        throw this.fetch.ServerResError.getI18nError(
-          "Second passphrase verified error"
-        );
+        throw this.fetch.ServerResError.getI18nError("Second passphrase verified error");
       }
     }
     if (typeof txData.fee === "number") {
@@ -223,9 +197,7 @@ export class TransactionServiceProvider {
       throw this.fetch.ServerResError.getI18nError("validate error");
     }
     //获取url，获取类型
-    let transactionUrl = this.appSetting.APP_URL(
-      "/api/" + this.getTransactionLink(txData.type)
-    );
+    let transactionUrl = this.appSetting.APP_URL("/api/" + this.getTransactionLink(txData.type));
 
     //时间戳加入转账对象
     txData.timestamp = (await this.getTimestamp()).timestamp;
@@ -234,20 +206,18 @@ export class TransactionServiceProvider {
     txData.magic = AppSettingProvider.MAGIC;
 
     //生成转账        await上层包裹的函数需要async
-    const transaction = await new Promise<TYPE.TransactionModel>(
-      (resolve, reject) => {
-        try {
-          this.IFMJSCORE.createTransaction(txData, (err, res) => {
-            if (err) {
-              return reject(err);
-            }
-            resolve(res);
-          });
-        } catch (err) {
-          reject(err);
-        }
+    const transaction = await new Promise<TYPE.TransactionModel>((resolve, reject) => {
+      try {
+        this.IFMJSCORE.createTransaction(txData, (err, res) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(res);
+        });
+      } catch (err) {
+        reject(err);
       }
-    );
+    });
 
     return { transactionUrl, transaction };
   }
@@ -258,9 +228,7 @@ export class TransactionServiceProvider {
    * @returns {Promise<boolean>}
    */
   async putTransaction(txData) {
-    const { transactionUrl, transaction } = await this.createTransaction(
-      txData
-    );
+    const { transactionUrl, transaction } = await this.createTransaction(txData);
     if (await this.unTxDb.findOne({ id: transaction.id })) {
       // 重复交易不发送
       return { success: true, transactionId: transaction.id };
@@ -268,19 +236,11 @@ export class TransactionServiceProvider {
     await this.unTxDb.insert(transaction).catch(err => {
       console.warn;
     });
-    return this.fetch.put<TYPE.putTransactionReturn>(
-      transactionUrl,
-      transaction
-    );
+    return this.fetch.put<TYPE.putTransactionReturn>(transactionUrl, transaction);
   }
   async putThirdTransaction(transaction: TYPE.TransactionModel) {
-    let transactionUrl = this.appSetting.APP_URL(
-      "/api/" + this.getTransactionLink(transaction.type)
-    );
-    return this.fetch.put<TYPE.putTransactionReturn>(
-      transactionUrl,
-      transaction
-    );
+    let transactionUrl = this.appSetting.APP_URL("/api/" + this.getTransactionLink(transaction.type));
+    return this.fetch.put<TYPE.putTransactionReturn>(transactionUrl, transaction);
   }
 
   /**
@@ -300,10 +260,7 @@ export class TransactionServiceProvider {
         return false;
       }
 
-      if (
-        (txData.type === this.TransactionTypes.SEND && !txData.recipientId) ||
-        (txData.type === this.TransactionTypes.SEND && !txData.amount)
-      ) {
+      if ((txData.type === this.TransactionTypes.SEND && !txData.recipientId) || (txData.type === this.TransactionTypes.SEND && !txData.amount)) {
         console.error("tx is send and recipient is null");
         return false;
       }
@@ -322,10 +279,7 @@ export class TransactionServiceProvider {
    */
   verifySecondPassphrase(secondPassphrase: string) {
     try {
-      var secondPublic = this.formatSecondPassphrase(
-        this.user.publicKey,
-        secondPassphrase
-      );
+      var secondPublic = this.formatSecondPassphrase(this.user.publicKey, secondPassphrase);
     } catch (err) {
       return false;
     }
@@ -375,28 +329,14 @@ export class TransactionServiceProvider {
     secondKeypair.privateKey = this.Buff.from(secondKeypair.signSk);
     return secondKeypair;
   }
-  async getUserTransactions(
-    address: string,
-    page = 1,
-    pageSize = 10,
-    in_or_out?: "in" | "out" | "or",
-    type?: TYPE.TransactionTypes | "all"
-  ) {
+  async getUserTransactions(address: string, page = 1, pageSize = 10, in_or_out?: "in" | "out" | "or", type?: TYPE.TransactionTypes | "all") {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
-    if (
-      address === this.user.address &&
-      in_or_out === "in" &&
-      offset + limit <= this.default_user_in_transactions_pageSize
-    ) {
+    if (address === this.user.address && in_or_out === "in" && offset + limit <= this.default_user_in_transactions_pageSize) {
       const list = await this.myInTransactions.getPromise();
       return list.slice(offset, offset + limit);
     }
-    if (
-      address === this.user.address &&
-      in_or_out === "out" &&
-      offset + limit <= this.default_user_out_transactions_pageSize
-    ) {
+    if (address === this.user.address && in_or_out === "out" && offset + limit <= this.default_user_out_transactions_pageSize) {
       const list = await this.myOutTransactions.getPromise();
       return list.slice(offset, offset + limit);
     }
@@ -471,50 +411,26 @@ export class TransactionServiceProvider {
   }
   // 默认缓存10条
   default_user_in_transactions_pageSize = 10;
-  default_user_in_transactions_type = [
-    TYPE.TransactionTypes.SEND,
-    TYPE.TransactionTypes.TRANSFER_ASSET,
-  ];
+  default_user_in_transactions_type = [TYPE.TransactionTypes.SEND, TYPE.TransactionTypes.TRANSFER_ASSET];
   myInTransactions!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
   @HEIGHT_AB_Generator("myInTransactions", true)
   myInTransactions_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactions(
-        this.user.address,
-        0,
-        this.default_user_in_transactions_pageSize,
-        "in",
-        this.default_user_in_transactions_type
-      )
+      this._getUserTransactions(this.user.address, 0, this.default_user_in_transactions_pageSize, "in", this.default_user_in_transactions_type)
     );
   }
   default_user_out_transactions_pageSize = 10;
-  default_user_out_transactions_type = [
-    TYPE.TransactionTypes.SEND,
-    TYPE.TransactionTypes.TRANSFER_ASSET,
-  ];
+  default_user_out_transactions_type = [TYPE.TransactionTypes.SEND, TYPE.TransactionTypes.TRANSFER_ASSET];
   myOutTransactions!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
   @HEIGHT_AB_Generator("myOutTransactions", true)
   myOutTransactions_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactions(
-        this.user.address,
-        0,
-        this.default_user_out_transactions_pageSize,
-        "out",
-        this.default_user_out_transactions_type
-      )
+      this._getUserTransactions(this.user.address, 0, this.default_user_out_transactions_pageSize, "out", this.default_user_out_transactions_type)
     );
   }
 
   /// 上一轮的交易
-  async getUserTransactionsPreRound(
-    address: string,
-    page = 1,
-    pageSize = 10,
-    in_or_out: "in" | "out",
-    type?: TYPE.TransactionTypes | TYPE.TransactionTypes[]
-  ) {
+  async getUserTransactionsPreRound(address: string, page = 1, pageSize = 10, in_or_out: "in" | "out", type?: TYPE.TransactionTypes | TYPE.TransactionTypes[]) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
     if (
@@ -536,11 +452,8 @@ export class TransactionServiceProvider {
       return list.slice(offset, offset + limit);
     }
     const cur_round = this.appSetting.getRound();
-    const per_round_start_height = this.appSetting.getRoundStartHeight(
-      cur_round - 1
-    );
-    const pre_round_end_height =
-      this.appSetting.getRoundStartHeight(cur_round) - 1;
+    const per_round_start_height = this.appSetting.getRoundStartHeight(cur_round - 1);
+    const pre_round_end_height = this.appSetting.getRoundStartHeight(cur_round) - 1;
     return this._getUserTransactions(address, offset, limit, in_or_out, type, {
       height: { $lte: pre_round_end_height, $gte: per_round_start_height },
     });
@@ -563,16 +476,9 @@ export class TransactionServiceProvider {
     const cur_round = this.appSetting.getRound();
     const startHeight = this.appSetting.getRoundStartHeight(cur_round - 1);
     const endHeight = this.appSetting.getRoundStartHeight(cur_round) - 1;
-    const transactions = await this._getUserTransactions(
-      address,
-      offset,
-      limit,
-      in_or_out,
-      type,
-      {
-        startHeight,
-      }
-    );
+    const transactions = await this._getUserTransactions(address, offset, limit, in_or_out, type, {
+      startHeight,
+    });
 
     return transactions.filter(tran => tran.height <= endHeight);
   }
@@ -580,13 +486,7 @@ export class TransactionServiceProvider {
   @HEIGHT_AB_Generator("myInTransactionsPreRound", true)
   myInTransactionsPreRound_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactionsPreRound(
-        this.user.address,
-        0,
-        this.default_user_in_transactions_pageSize,
-        "in",
-        this.TransactionTypes.SEND
-      )
+      this._getUserTransactionsPreRound(this.user.address, 0, this.default_user_in_transactions_pageSize, "in", this.TransactionTypes.SEND)
     );
   }
   myOutTransactionsPreRound!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
@@ -595,21 +495,9 @@ export class TransactionServiceProvider {
     return promise_pro.follow(
       Promise.all([
         // 接收的转账
-        this._getUserTransactionsPreRound(
-          this.user.address,
-          0,
-          this.default_user_out_transactions_pageSize,
-          "out",
-          this.TransactionTypes.SEND
-        ),
+        this._getUserTransactionsPreRound(this.user.address, 0, this.default_user_out_transactions_pageSize, "out", this.TransactionTypes.SEND),
         // 投票
-        this._getUserTransactionsPreRound(
-          this.user.address,
-          0,
-          this.default_user_out_transactions_pageSize,
-          "in",
-          this.TransactionTypes.VOTE
-        ),
+        this._getUserTransactionsPreRound(this.user.address, 0, this.default_user_out_transactions_pageSize, "in", this.TransactionTypes.VOTE),
       ]).then(([get_trans, vote_trans]) => {
         return get_trans.concat(vote_trans);
       })
@@ -619,37 +507,23 @@ export class TransactionServiceProvider {
   /**
    * 使用Mongodb语句查询交易
    */
-  async queryTransaction(
-    query,
-    order,
-    offset?: number,
-    limit?: number,
-    select?
-  ) {
-    return this.fetch.get<TYPE.QueryTransactionsResModel>(
-      this.QUERY_TRANSACTIONS,
-      {
-        search: {
-          query: JSON.stringify(query),
-          order: JSON.stringify(order),
-          select: select && JSON.stringify(select),
-          limit,
-          offset,
-        },
-      }
-    );
+  async queryTransaction(query, order, offset?: number, limit?: number, select?) {
+    return this.fetch.get<TYPE.QueryTransactionsResModel>(this.QUERY_TRANSACTIONS, {
+      search: {
+        query: JSON.stringify(query),
+        order: JSON.stringify(order),
+        select: select && JSON.stringify(select),
+        limit,
+        offset,
+      },
+    });
   }
 
   /**
    * 使用Mongodb语句查询交易，通过page,pageSize风格的进行查询
    */
   queryTransactionsByPages(query, order, page = 1, pageSize = 10) {
-    return this.queryTransaction(
-      query,
-      order,
-      (page - 1) * pageSize,
-      pageSize
-    ).then(data => data.transactions);
+    return this.queryTransaction(query, order, (page - 1) * pageSize, pageSize).then(data => data.transactions);
   }
 
   /**
@@ -663,19 +537,11 @@ export class TransactionServiceProvider {
       limit: limit,
     };
 
-    const data = await this.fetch.get<TYPE.QueryTransactionsResModel>(
-      this.UNCONFIRMED,
-      { search: query }
-    );
+    const data = await this.fetch.get<TYPE.QueryTransactionsResModel>(this.UNCONFIRMED, { search: query });
     return data.transactions;
   }
 
-  getLocalUnconfirmed(
-    offset = 0,
-    pageSize = 10,
-    sort?,
-    senderId = this.user.address
-  ) {
+  getLocalUnconfirmed(offset = 0, pageSize = 10, sort?, senderId = this.user.address) {
     return this.unTxDb.find(
       {
         senderId,
@@ -690,23 +556,13 @@ export class TransactionServiceProvider {
   /**
    * 获取本地的未确认交易，并确保已经被处理
    */
-  async getLocalUnconfirmedAndCheck(
-    offset = 0,
-    pageSize = 10,
-    sort?,
-    senderId = this.user.address
-  ) {
+  async getLocalUnconfirmedAndCheck(offset = 0, pageSize = 10, sort?, senderId = this.user.address) {
     const res_checkd_tra_list: TYPE.TransactionModel[] = [];
 
     const ids = new Set<string>();
     const rm_untra_ids = new Set();
     do {
-      const tra_list = await this.getLocalUnconfirmed(
-        offset,
-        pageSize,
-        sort,
-        senderId
-      );
+      const tra_list = await this.getLocalUnconfirmed(offset, pageSize, sort, senderId);
       if (!this.fetch.onLine) {
         // 断网的情况下直接返回
         return tra_list;
@@ -787,22 +643,8 @@ export class TransactionServiceProvider {
    * @param recipientId 接收人
    * TODO:全部判断地址是否正确
    */
-  async transfer(
-    recipientId,
-    amount,
-    fee = parseFloat(this.appSetting.settings.default_fee),
-    password,
-    secondSecret,
-    assetType?
-  ) {
-    const txData = this.createTxData(
-      recipientId,
-      amount,
-      fee,
-      password,
-      secondSecret,
-      assetType
-    );
+  async transfer(recipientId, amount, fee = parseFloat(this.appSetting.settings.default_fee), password, secondSecret, assetType?) {
+    const txData = this.createTxData(recipientId, amount, fee, password, secondSecret, assetType);
 
     const responseData = await this.putTransaction(txData);
     return {
