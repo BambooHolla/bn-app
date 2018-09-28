@@ -9,6 +9,7 @@ import {
 } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { IsIOS } from "../../bnqkl-framework/helper";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
@@ -47,7 +48,7 @@ export class AppSettingProvider extends CommonService {
   static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
   static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
 
-  isIOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+  isIOS = IsIOS();
 
   APP_URL(path: string) {
     return new AppUrl(path);
