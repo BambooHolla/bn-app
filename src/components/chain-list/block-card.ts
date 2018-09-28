@@ -137,19 +137,19 @@ export class BlockCard extends PIXI.Graphics {
 	toggleFooterContainerMask(show = this._show_footer_container_mask) {
 		this._show_footer_container_mask = show;
 		const is_show = show && this.interactive;
-		if (this.disabled_filters) {
-			if (is_show) {
-				this.alpha = 0.8;
-			} else {
-				this.alpha = 1;
-			}
-		} else {
+		if (this.shadow_filter) {
 			if (is_show) {
 				if (!this.filters || this.filters.length !== 1) {
 					this.filters = [this.shadow_filter];
 				}
 			} else {
 				this.filters = null;
+			}
+		} else {
+			if (is_show) {
+				this.alpha = 0.8;
+			} else {
+				this.alpha = 1;
 			}
 		}
 	}
@@ -219,7 +219,7 @@ export class BlockCard extends PIXI.Graphics {
 			text.x += ((min_content_width - text.width) / 2) * left_or_right;
 		}
 	}
-	shadow_filter: PIXI.filters.DropShadowFilter;
+	shadow_filter?: PIXI.filters.DropShadowFilter;
 	height_content = new PIXI.Text("", this.style_header_content);
 	tran_num_content = new PIXI.Text("", this.style_header_content);
 	height_label = new PIXI.Text("", this.style_header_label);
