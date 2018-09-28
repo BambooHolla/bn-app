@@ -233,9 +233,7 @@ export class TransactionServiceProvider {
       // 重复交易不发送
       return { success: true, transactionId: transaction.id };
     }
-    await this.unTxDb.insert(transaction).catch(err => {
-      console.warn;
-    });
+    await this.unTxDb.insert(transaction).catch(console.warn);
     return this.fetch.put<TYPE.putTransactionReturn>(transactionUrl, transaction);
   }
   async putThirdTransaction(transaction: TYPE.TransactionModel) {
