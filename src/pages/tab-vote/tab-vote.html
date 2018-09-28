@@ -27,7 +27,7 @@
       </div>
       <div class="assets-info" *ngIf="show_mining_history">
         <div class="balance" (click)="routeTo('vote-income-logs')">
-          <text-gradient [text]="miningReward|amountEuler|number:'1.8-8'" from="#f8846f" to="#ffc85e" direction="to right"></text-gradient>
+          <text-mg [text]="miningReward|amountEuler|number:'1.8-8'" from="#f8846f" to="#ffc85e" direction="to right"></text-mg>
         </div>
         <div class="history-logs" (click)="routeTo('vote-income-logs')">
           <a class="linker">{{'VOTE_INCOME_HISTORY' | translate}}</a>
@@ -61,15 +61,9 @@
       </div>
       <div class="ani-wrapper" [class.show-big-fall-icon]="is_show.show_big_fall_icon" #aniWrapper (click)="stopMin()">
         <satellite-css class="ani-progress" [class.show]="is_show.satellite_pixi"></satellite-css>
-        <!-- <div class="ani-progress satellite-css" [class.show]="is_show.satellite_pixi"></div> -->
         <buddha-glow class="ani-glow" [class.show]="is_show.buddha_glow"></buddha-glow>
         <fall-coins class="ani-fall-coins" [class.show]="is_show.fall_coins"></fall-coins>
         <countdown class="ani-countdown" [end-data]="blockService.round_end_time" [class.show]="is_show.countdown"></countdown>
-        <!-- <div class="wakuang-person" [ngClass]="page_status">
-          <audio #coinMining autoplay loop preload>
-            <source src="assets/sounds/mining.wav" type="audio/wav" />
-          </audio>
-        </div> -->
         <mining-person class="ani-mining-person" [class.show]="is_show.mining_person"></mining-person>
         <div class="ani-container">
         </div>

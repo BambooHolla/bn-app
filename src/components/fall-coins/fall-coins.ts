@@ -84,6 +84,7 @@ export class FallCoinsComponent extends AniBase {
     }
     if (!this.app) {
       this.app = this.PIXIAppbuilder({
+        forceCanvas: true,
         antialias: true,
         transparent: true,
         view: canvasNode,

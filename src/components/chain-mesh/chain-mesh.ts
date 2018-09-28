@@ -15,7 +15,7 @@ import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 export const loader = new PIXI.loaders.Loader();
 export const _load_resource_promiseout = new PromiseOut<
   PIXI.loaders.ResourceDictionary
->();
+  >();
 export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 for (var i = 0; i < FRAMES_NUM; i += 1) {
@@ -84,6 +84,7 @@ export class ChainMeshComponent extends AniBase {
     }
     if (!this.app) {
       this.app = this.PIXIAppbuilder({
+        forceCanvas: true,
         antialias: true,
         transparent: true,
         view: canvasNode,

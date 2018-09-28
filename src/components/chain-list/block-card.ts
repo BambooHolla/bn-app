@@ -151,7 +151,7 @@ export class BlockCard extends PIXI.Graphics {
 
 		if (is_show) {
 			if (!this.filters || this.filters.length !== 1) {
-				this.filters = [this.shadow_filter];
+				// this.filters = [this.shadow_filter];
 			}
 		} else {
 			this.filters = null;
