@@ -53,6 +53,9 @@ export class ChainListComponent extends AniBase {
   // devicePixelRatio = Math.ceil(Math.sqrt(window.devicePixelRatio));
 
   is_ios = IsIOS();
+  get isForceCanvas() {
+    return this.app!.renderer.type !== PIXI.RENDERER_TYPE.WEBGL;
+  }
   constructor(public blockService: BlockServiceProvider) {
     super();
     this.on("init-start", this.initPixiApp.bind(this));
@@ -104,7 +107,7 @@ export class ChainListComponent extends AniBase {
         width: (this.renderer_width = this.pt(document.body.clientWidth)),
         height: (this.renderer_height = this.pt(document.body.clientHeight)),
         transparent: true,
-        antialias: true,
+        antialias: false,
         autoStart: true,
         // backgroundColor: 0xffffff,
       });
@@ -618,7 +621,7 @@ export class ChainListComponent extends AniBase {
     if (height % 57 === 0) {
       let { _useable_over_blockcard } = this;
       if (!_useable_over_blockcard) {
-        _useable_over_blockcard = new OverBlockCard(this.item_width, this.item_height, height, undefined, this.is_ios);
+        _useable_over_blockcard = new OverBlockCard(this.item_width, this.item_height, height, undefined, this.isForceCanvas);
         this._init_block_card_bind(_useable_over_blockcard);
         this._useable_over_blockcard = _useable_over_blockcard;
       }
@@ -638,7 +641,7 @@ export class ChainListComponent extends AniBase {
       return cache;
     }
     // 新区块
-    const block_card = new BlockCard(this.item_width, this.item_height, height, undefined, this.is_ios);
+    const block_card = new BlockCard(this.item_width, this.item_height, height, undefined, this.isForceCanvas);
     this._init_block_card_bind(block_card);
     return block_card;
   }

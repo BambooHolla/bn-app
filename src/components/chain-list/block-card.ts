@@ -45,7 +45,7 @@ export class BlockCard extends PIXI.Graphics {
 		Object.assign(this._label_config, v);
 		this.drawLabels();
 	}
-	constructor(public W: number, public H: number, chain_height: number, block?: BlockModel | Promise<BlockModel>) {
+	constructor(public W: number, public H: number, chain_height: number, block?: BlockModel | Promise<BlockModel>, public disabled_filters?: boolean) {
 		super();
 		// console.log("NNNNNN");
 		this.beginFill(0xffffff, 0);
@@ -73,16 +73,19 @@ export class BlockCard extends PIXI.Graphics {
 			bg.x = s_l;
 			bg.y = s_t;
 			shadown.addChild(bg);
-			// const glow_filter = new PIXI.filters.GlowFilter();
-			const shadow_filter = new PIXI.filters.DropShadowFilter();
-			shadow_filter.alpha = 0.2;
-			shadow_filter.blur = W * 0.005 * 2;
-			shadow_filter.rotation = 90;
-			shadow_filter.quality = 5;
-			shadow_filter.distance = W * 0.01;
-			// shadow_filter.shadowOnly = true;
-			shadow_filter.color = 0x0;
-			this.shadow_filter = shadow_filter;
+
+			if (!this.disabled_filters) {
+				// const glow_filter = new PIXI.filters.GlowFilter();
+				const shadow_filter = new PIXI.filters.DropShadowFilter();
+				shadow_filter.alpha = 0.2;
+				shadow_filter.blur = W * 0.005 * 2;
+				shadow_filter.rotation = 90;
+				shadow_filter.quality = 5;
+				shadow_filter.distance = W * 0.01;
+				// shadow_filter.shadowOnly = true;
+				shadow_filter.color = 0x0;
+				this.shadow_filter = shadow_filter;
+			}
 
 			this.addChild(shadown);
 		}
@@ -133,17 +136,21 @@ export class BlockCard extends PIXI.Graphics {
 	private _show_footer_container_mask = true;
 	toggleFooterContainerMask(show = this._show_footer_container_mask) {
 		this._show_footer_container_mask = show;
-		if (isIOS) {
-			return;
-		}
 		const is_show = show && this.interactive;
-
-		if (is_show) {
-			if (!this.filters || this.filters.length !== 1) {
-				this.filters = [this.shadow_filter];
+		if (this.disabled_filters) {
+			if (is_show) {
+				this.alpha = 0.8;
+			} else {
+				this.alpha = 1;
 			}
 		} else {
-			this.filters = null;
+			if (is_show) {
+				if (!this.filters || this.filters.length !== 1) {
+					this.filters = [this.shadow_filter];
+				}
+			} else {
+				this.filters = null;
+			}
 		}
 	}
 	shadown = new PIXI.Graphics();
