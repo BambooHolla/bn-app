@@ -1,26 +1,12 @@
-import {
-  ViewChild,
-  Component,
-  Optional,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from "@angular/core";
+import { ViewChild, Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { fileInputEleFactory } from "../../../bnqkl-framework/helper";
 import { TabsPage } from "../../tabs/tabs";
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  ViewController,
-} from "ionic-angular";
-import {
-  BlockServiceProvider,
-  SingleBlockModel,
-} from "../../../providers/block-service/block-service";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import { BlockServiceProvider, SingleBlockModel } from "../../../providers/block-service/block-service";
 import { AssetsServiceProvider } from "../../../providers/assets-service/assets-service";
 import { MatAutocomplete } from "@angular/material";
 import { formatImage } from "../../../components/AniBase";
@@ -49,10 +35,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
     this.event.on("job-finished", async ({ id, data }) => {
       console.log("job-finished", id, data);
-      if (
-        id === "pay-select-my-contacts" ||
-        id === "pay-select-my-local-contacts"
-      ) {
+      if (id === "pay-select-my-contacts" || id === "pay-select-my-local-contacts") {
         this.formData.genesisAddress = data.address;
         this.markForCheck();
       }
@@ -75,17 +58,17 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     pay_pwd: string;
     fee: number;
   } = {
-      logo: "",
-      abbreviation: "",
-      genesisAddress: "",
-      expectedIssuedAssets: undefined,
+    logo: "",
+    abbreviation: "",
+    genesisAddress: "",
+    expectedIssuedAssets: undefined,
 
-      pwd: "",
-      need_pay_pwd: this.userInfo.hasSecondPwd,
-      pay_pwd: "",
-      fee: parseFloat(this.appSetting.settings.default_fee),
-      // expectedIssuedBlockHeight: undefined,
-    };
+    pwd: "",
+    need_pay_pwd: this.userInfo.hasSecondPwd,
+    pay_pwd: "",
+    fee: parseFloat(this.appSetting.settings.default_fee),
+    // expectedIssuedBlockHeight: undefined,
+  };
 
   ignore_keys = ["logo", "pay_pwd"];
   summary_maxlength = 200;
@@ -99,11 +82,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 
   /// 表单校验
   /**校验数字资产英文简写*/
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "abbreviation", [
-    "TOO_SHORT",
-    "TOO_LONG",
-    "WRONG_CHAR",
-  ])
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "abbreviation", ["TOO_SHORT", "TOO_LONG", "WRONG_CHAR"])
   check_abbreviation() {
     const res: any = {};
     const { abbreviation } = this.formData;
@@ -123,9 +102,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     return res;
   }
   /**校验数字接受地址简写*/
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "genesisAddress", [
-    "WRONG_ADDRESS",
-  ])
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "genesisAddress", ["WRONG_ADDRESS"])
   check_genesisAddress() {
     const res: any = {};
     const { genesisAddress } = this.formData;
@@ -137,9 +114,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     return res;
   }
   /**校验资产发行数量*/
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedAssets", [
-    "WRONG_RANGE",
-  ])
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "expectedIssuedAssets", ["WRONG_RANGE"])
   check_expectedIssuedAssets() {
     const res: any = {};
     const { expectedIssuedAssets } = this.formData;
@@ -153,15 +128,10 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
   }
 
   /**校验支付密码*/
-  @AssetsIssuingAssetsPage.setErrorTo("errors", "pay_pwd", [
-    "VerificationFailure",
-    "NeedInput",
-  ])
+  @AssetsIssuingAssetsPage.setErrorTo("errors", "pay_pwd", ["VerificationFailure", "NeedInput"])
   check_pay_pwd() {
     if (this.formData.pay_pwd) {
-      if (
-        !this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
-      ) {
+      if (!this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)) {
         return {
           VerificationFailure: "PAY_PWD_VERIFICATION_FAILURE",
         };
@@ -169,8 +139,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     }
   }
 
-  @AssetsIssuingAssetsPage.markForCheck
-  lastBlock: SingleBlockModel = { height: 1, timestamp: 0, id: "", magic: "" };
+  @AssetsIssuingAssetsPage.markForCheck lastBlock: SingleBlockModel = { height: 1, timestamp: 0, id: "", magic: "" };
 
   /**选择资产logo图片*/
   pickAssetsLogo() {
@@ -210,18 +179,10 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     const { custom_fee, password, pay_pwd } = await this.getUserPassword({
       custom_fee: true,
     });
-    await this._sendToDelegateTx(
-      (custom_fee || this.appSetting.settings.default_fee).toString(),
-      password,
-      pay_pwd
-    );
+    await this._sendToDelegateTx((custom_fee || this.appSetting.settings.default_fee).toString(), password, pay_pwd);
   }
   @asyncCtrlGenerator.loading()
-  private async _sendToDelegateTx(
-    fee: string,
-    secret: string,
-    secondSecret?: string
-  ) {
+  private async _sendToDelegateTx(fee: string, secret: string, secondSecret?: string) {
     await this.transactionService.putTransaction({
       type: this.transactionService.TransactionTypes.DELEGATE,
       secondSecret,
@@ -230,9 +191,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
       fee,
       asset: {
         delegate: {
-          ...(this.userInfo.username
-            ? { username: this.userInfo.username }
-            : {}),
+          ...(this.userInfo.username ? { username: this.userInfo.username } : {}),
           publicKey: this.userInfo.publicKey,
         },
       },
@@ -250,8 +209,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     n = parseInt(n) || 0;
     n += "";
     unit = unit.substr(unit.length - n.length);
-    for (var i = 0; i < n.length; i++)
-      str += "零壹贰叁肆伍陆柒捌玖"[n[i]] + unit[i];
+    for (var i = 0; i < n.length; i++) str += "零壹贰叁肆伍陆柒捌玖"[n[i]] + unit[i];
     return str
       .replace(/零(千|百|拾|角)/g, "零")
       .replace(/(零)+/g, "零")
@@ -279,21 +237,17 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
   async submit() {
     const { formData, _cache_logo_base64 } = this;
     if (!formData.logo) {
-      await this.showWarningDialog(
-        await this.translateMessage("@@PLEASE_PICK_AN_IMAGE_AS_ASSETS_LOGO")
-      );
+      await this.showWarningDialog(await this.translateMessage("@@PLEASE_PICK_AN_IMAGE_AS_ASSETS_LOGO"));
       return;
     }
     if (_cache_logo_base64[0] !== formData.logo) {
       _cache_logo_base64[0] = formData.logo;
-      _cache_logo_base64[1] = await this.assetsService.imageUrlToJpegBase64(
-        formData.logo,
-        true
-      );
+      _cache_logo_base64[1] = await this.assetsService.imageUrlToJpegBase64(formData.logo, true);
     }
 
     await this.assetsService.addAssets(
       {
+        sourceMagic: await this.blockService.magic.promise,
         logo: _cache_logo_base64[1],
         abbreviation: formData.abbreviation.toUpperCase(),
         genesisAddress: formData.genesisAddress,
