@@ -99,6 +99,7 @@ export class MinServiceProvider extends FLP_Tool {
   readonly DELEGATES = this.appSetting.APP_URL("/api/accounts/delegates");
   readonly MY_RANK = this.appSetting.APP_URL("/api/accounts/myProfitRanking");
   readonly ALL_RANK = this.appSetting.APP_URL("/api/accounts/profitRanking");
+  readonly COUNT_BALANCE_DETAILS = this.appSetting.APP_URL("/api/accounts/countBalanceDetails");
   readonly TOTAL_VOTE = this.appSetting.APP_URL("/api/delegates/getTotalVote");
   readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
   readonly SYSTEM_WEBSOCKETLINKNUM = this.appSetting.APP_URL("/api/system/websocketLink");
@@ -239,6 +240,8 @@ export class MinServiceProvider extends FLP_Tool {
     return vote_res;
   }
 
+  /**每轮默认投出的数量*/
+  default_round_vote_num = 57;
   /**
    * 自动投票
    */
@@ -265,7 +268,7 @@ export class MinServiceProvider extends FLP_Tool {
     // 获取可投的账户
     const { delegates: voteable_delegates } =
       // 如果已经投过票了，自动投票模式下不会提供可投的57票
-      voted_delegate_list.length !== 0 ? { delegates: [] } : await this.getVoteAbleDelegates(0, 57, this.userInfo.address);
+      voted_delegate_list.length !== 0 ? { delegates: [] } : await this.getVoteAbleDelegates(0, this.default_round_vote_num, this.userInfo.address);
     if (voteable_delegates.length || true) {
       // 有票可投时才需要输入要密码
       var title: string | undefined;
@@ -546,6 +549,24 @@ export class MinServiceProvider extends FLP_Tool {
       })
     );
   }
+
+  /**获取指定用户在高度范围内的挖矿收益*/
+  countAccountBalanceDetails(
+    address: string,
+    search: {
+      startHeight?: number;
+      endHeight?: number;
+      /**TODO: add BalanceDetailType enum*/
+      type?: number;
+    }
+  ) {
+    return this.fetch
+      .get<{ countBalanceDetails: string }>(this.COUNT_BALANCE_DETAILS, {
+        search: { ...search, address },
+      })
+      .then(data => data.countBalanceDetails);
+  }
+
   /**
    * 获取上一轮的投资回报率
    * 从rank中获取上一轮的收益，从上一轮的交易中获取手续费

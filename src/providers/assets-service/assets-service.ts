@@ -7,16 +7,21 @@ import * as TYPE from "./assets.types";
 export * from "./assets.types";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { AsyncBehaviorSubject } from "../../bnqkl-framework/RxExtends";
+import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { AccountServiceProvider } from "../account-service/account-service";
 
 @Injectable()
-export class AssetsServiceProvider {
+export class AssetsServiceProvider extends FLP_Tool {
   constructor(
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
-    public domSanitizer: DomSanitizer
+    public domSanitizer: DomSanitizer,
+    public accountService: AccountServiceProvider
   ) {
+    super();
     tryRegisterGlobal("assetsService", this);
   }
   readonly GET_ASSETS_POSSESSOR = this.appSetting.APP_URL("/api/assets/assetsPossessor");
@@ -80,6 +85,41 @@ export class AssetsServiceProvider {
   }
   getAssetsByAbbreviation(abbreviation: string) {
     return this.getAssets({ abbreviation }).then(list => list[0] as TYPE.AssetsDetailModelWithLogoSafeUrl | undefined);
+  }
+  /**获取数字资产的转化成IBT的比例*/
+  async getAssetsToIBTRate(assets_info: TYPE.AssetsBaseModel) {
+    const assets_query = {
+      abbreviation: assets_info.abbreviation,
+    };
+    const [assets, issusingAccount] = await Promise.all([
+      this.getAssets(assets_query).then(list => list[0]),
+      await this.accountService.getAccountByAddress(assets_info.address),
+    ]);
+    if (!assets) {
+      throw new Error(this.getTranslateSync("ASSETS_NOT_FOUND#ABBREVIATION#", assets_query));
+    }
+    return parseFloat(issusingAccount.balance) / parseFloat(assets["remainAssets"]);
+  }
+  async getAssetsToIBTRateByCache(assets_info: TYPE.AssetsBaseModel) {
+    const my_assets_rate_map = await this.myAssetsRateMap.getPromise();
+    if (!my_assets_rate_map.has(assets_info.abbreviation)) {
+      const rate = await this.getAssetsToIBTRate(assets_info);
+      my_assets_rate_map.set(assets_info.abbreviation, rate);
+    }
+    return my_assets_rate_map.get(assets_info.abbreviation) as number;
+  }
+
+  myAssetsRateMap!: AsyncBehaviorSubject<Map<string, number>>;
+  @HEIGHT_AB_Generator("myAssetsRateMap")
+  myAssetsRateMap_Executor(promise_pro: PromisePro<Map<string, number>>) {
+    return promise_pro.follow(
+      (async () => {
+        const my_assets_list = await this.myAssetsList.getPromise();
+        const res = new Map<string, number>();
+        await Promise.all(my_assets_list.map(assets_info => this.getAssetsToIBTRate(assets_info).then(rate => res.set(assets_info.abbreviation, rate))));
+        return res;
+      })()
+    );
   }
 
   /**我的账户的所有资产*/
