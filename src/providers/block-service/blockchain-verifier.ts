@@ -1,17 +1,7 @@
 // import { Mdb } from "../../src/providers/mdb";
-import { FangoDB, FangoDBWorker } from 'fangodb'
+import { FangoDB, FangoDBWorker } from "fangodb";
 
-import {
-	buf2hex,
-	hex2buf,
-	BlockModel,
-	BlockListResModel,
-	reqToPromise,
-	reqCursorLooper,
-	BlockChain,
-	SKETCHY_CHECK_RES,
-	Range,
-} from "./helper";
+import { buf2hex, hex2buf, BlockModel, BlockListResModel, reqToPromise, reqCursorLooper, BlockChain, SKETCHY_CHECK_RES, Range } from "./helper";
 
 /*
 区块链验证模块中直接耦合了删除错误数据。
@@ -19,10 +9,7 @@ import {
 TODO: 关于冗余数据，因为区块可以重复下载缓存，在验证的过程中，会查出重复的区块链数据并删除*/
 
 export class BlockchainVerifier {
-	constructor(
-		public webio: SocketIOClient.Socket,
-		public blockDb: FangoDBWorker<BlockModel>,
-	) {
+	constructor(public webio: SocketIOClient.Socket, public blockDb: FangoDBWorker<BlockModel>) {
 		// super();
 	}
 	ioRequest<T>(path, query) {
@@ -51,9 +38,7 @@ export class BlockchainVerifier {
 			const blockchains = [..._blockchains.values()];
 			const check_tasks = blockchains.map(bc => {
 				// TODO: 目前没有提供单区块校验的接口，所以先直接设定为扔掉这个数据
-				return bc.size === 1
-					? Promise.resolve(bc.slice(0, 0))
-					: this.checkBlockChain(bc);
+				return bc.size === 1 ? Promise.resolve(bc.slice(0, 0)) : this.checkBlockChain(bc);
 			});
 			// 准备清除数据库的工作
 			const delete_range = {
@@ -69,23 +54,11 @@ export class BlockchainVerifier {
 				if (to_keep_save_block_chain.size) {
 					const useable_range = to_keep_save_block_chain.range();
 					usable_ranges.push(useable_range);
-					if (
-						to_keep_save_block_chain.size ===
-						source_block_chain.size
-					) {
+					if (to_keep_save_block_chain.size === source_block_chain.size) {
 						// 这条数据链是完整的！！
-						console.log(
-							"%cLOCAL GOOD CHAIN",
-							"color:darkgreen;",
-							useable_range,
-						);
+						console.log("%cLOCAL GOOD CHAIN", "color:darkgreen;", useable_range);
 					} else {
-						console.log(
-							"%cLOCAL INCOMPLETE CHAIN",
-							"color:darkorange;",
-							useable_range,
-							source_block_chain.range(),
-						);
+						console.log("%cLOCAL INCOMPLETE CHAIN", "color:darkorange;", useable_range, source_block_chain.range());
 					}
 					// // 把要保留的id存起来
 					// to_keep_save_block_chain.forEach(b =>
@@ -97,35 +70,15 @@ export class BlockchainVerifier {
 						// 强行删除
 						delete_range.rm_id_set.add(b.id);
 					});
-					delete_range.startHeight = Math.min(
-						source_range.start,
-						delete_range.startHeight,
-					);
-					delete_range.endHeight = Math.max(
-						source_range.end,
-						delete_range.endHeight,
-					);
-					console.log(
-						"%cLOCAL BAD CHAIN",
-						"color:darkred;",
-						source_range,
-					);
+					delete_range.startHeight = Math.min(source_range.start, delete_range.startHeight);
+					delete_range.endHeight = Math.max(source_range.end, delete_range.endHeight);
+					console.log("%cLOCAL BAD CHAIN", "color:darkred;", source_range);
 				}
 			}
 			// 尝试进行删除无用数据
 			if (delete_range.endHeight >= delete_range.startHeight) {
-				console.log(
-					"尝试移除",
-					delete_range.startHeight,
-					delete_range.endHeight,
-					"范围内有问题的数据",
-				);
-				await this._IDB_deleteBlocks(
-					delete_range.startHeight,
-					delete_range.endHeight,
-					delete_range.keep_id_set,
-					delete_range.rm_id_set,
-				);
+				console.log("尝试移除", delete_range.startHeight, delete_range.endHeight, "范围内有问题的数据");
+				await this._IDB_deleteBlocks(delete_range.startHeight, delete_range.endHeight, delete_range.keep_id_set, delete_range.rm_id_set);
 			}
 			yield usable_ranges;
 		}
@@ -153,12 +106,8 @@ export class BlockchainVerifier {
 				let may_be_right_index = checkResult - 1 - 1;
 				const start_height = blocks[0].height;
 				while (may_be_right_index >= 0) {
-					const may_be_right_block = await this.getBlockByHeight(
-						start_height + may_be_right_index,
-					);
-					if (
-						may_be_right_block.id === blocks[may_be_right_index].id
-					) {
+					const may_be_right_block = await this.getBlockByHeight(start_height + may_be_right_index);
+					if (may_be_right_block.id === blocks[may_be_right_index].id) {
 						res.to = may_be_right_index + 1;
 					}
 					may_be_right_index -= 1;
@@ -172,10 +121,7 @@ export class BlockchainVerifier {
 		const res = { from: 0, to: 0 };
 		// 先校验全部
 		const start_block = blocks[0];
-		const all_checkResult = await this._bigRangeCheckBlocks(
-			start_block,
-			blocks[blocks.length - 1],
-		);
+		const all_checkResult = await this._bigRangeCheckBlocks(start_block, blocks[blocks.length - 1]);
 		if (all_checkResult === SKETCHY_CHECK_RES.NO) {
 			// 全错
 		} else if (all_checkResult === SKETCHY_CHECK_RES.YES) {
@@ -184,41 +130,25 @@ export class BlockchainVerifier {
 		} else {
 			// 半错
 			if (blocks.length > 135) {
-				const start_half_blocks = blocks.slice(
-					0,
-					(blocks.length / 2) | 0,
-				);
-				const start_half_res = await this._loop_bigRangeCheckBlocks(
-					start_half_blocks,
-				);
+				const start_half_blocks = blocks.slice(0, (blocks.length / 2) | 0);
+				const start_half_res = await this._loop_bigRangeCheckBlocks(start_half_blocks);
 				if (start_half_res.to === start_half_blocks.length) {
 					//前半部分全对，检测后半部分，最后一个就不用测验了，直接扔掉
-					const end_half_blocks = blocks.slice(
-						start_half_blocks.length,
-						blocks.length - 1,
-					);
-					const end_half_res = await this._loop_bigRangeCheckBlocks(
-						end_half_blocks,
-					);
+					const end_half_blocks = blocks.slice(start_half_blocks.length, blocks.length - 1);
+					const end_half_res = await this._loop_bigRangeCheckBlocks(end_half_blocks);
 					res.to = start_half_blocks.length + end_half_res.to;
 				} else {
 					// 前半部分有错，直接返回结果
 					Object.assign(res, start_half_res);
 				}
 			} else {
-				Object.assign(
-					res,
-					await this._loop_smallRangeCheckBlocks(blocks),
-				);
+				Object.assign(res, await this._loop_smallRangeCheckBlocks(blocks));
 			}
 		}
 		return res;
 	}
 	/*大范围校验区块*/
-	private _bigRangeCheckBlocks(
-		start_block: BlockModel,
-		end_block: BlockModel,
-	) {
+	private _bigRangeCheckBlocks(start_block: BlockModel, end_block: BlockModel) {
 		const v = new DataView(new ArrayBuffer(80 /*8+8+32+32*/));
 		// 注入height1-startHeight
 		v.setFloat64(0, start_block.height, true);
@@ -230,18 +160,13 @@ export class BlockchainVerifier {
 		b.set(id1_buf, 16);
 		const id2_buf = hex2buf(end_block.id);
 		b.set(id2_buf, 16 + id1_buf.length);
-		return this.ioRequest<{ checkResult: SKETCHY_CHECK_RES }>(
-			"get/api/blocks/sketchyCheck",
-			b.buffer,
-		)
+		return this.ioRequest<{ checkResult: SKETCHY_CHECK_RES }>("get/api/blocks/sketchyCheck", b.buffer)
 			.then(res => res.checkResult)
 			.catch(() => SKETCHY_CHECK_RES.NO);
 	}
 	/*小范围校验区块*/
 	private _smallRangeCheckBlocks(blocks: BlockModel[], n = 0) {
-		const v = new DataView(
-			new ArrayBuffer(blocks.length + 9 /*8(height)+1(n)*/),
-		);
+		const v = new DataView(new ArrayBuffer(blocks.length + 9 /*8(height)+1(n)*/));
 		v.setFloat64(0, blocks[0].height, true);
 		v.setUint8(8, n);
 
@@ -249,10 +174,7 @@ export class BlockchainVerifier {
 			v.setUint8(9 + i, parseInt(b.id.substr(n, 2)));
 		});
 
-		return this.ioRequest<{ checkResult: number }>(
-			"get/api/blocks/preciseCheck",
-			v.buffer,
-		).then(res => res.checkResult);
+		return this.ioRequest<{ checkResult: number }>("get/api/blocks/preciseCheck", v.buffer).then(res => res.checkResult);
 	}
 	/*获取所有的碎片区块链*/
 	private async *continuousBlockChainGenerator() {
@@ -260,11 +182,7 @@ export class BlockchainVerifier {
 		let from = 1;
 		const limit = 1096;
 		const getQueryTask = async (linking_blockchains?: Set<BlockChain>) => {
-			const task = await this._IDB_getContinuousBlockChain(
-				from,
-				limit,
-				linking_blockchains,
-			);
+			const task = await this._IDB_getContinuousBlockChain(from, limit, linking_blockchains);
 			from = task.plan_to;
 			return task;
 		};
@@ -276,21 +194,20 @@ export class BlockchainVerifier {
 			if (cur_query.done) {
 				break;
 			}
-			const next_query = await getQueryTask(
-				cur_query.linking_blockchains,
-			);
+			const next_query = await getQueryTask(cur_query.linking_blockchains);
 			cur_query = next_query;
 		} while (true);
 	}
 	/**获取一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
-	private async _IDB_getContinuousBlockChain(
-		from = 1,
-		limit = 1096,
-		linking_blockchains: Set<BlockChain> = new Set(),
-	) {
-		const range_blocks = await this.blockDb.find({
-			height: { $gte: from }
-		}, { limit });
+	private async _IDB_getContinuousBlockChain(from = 1, limit = 1096, linking_blockchains: Set<BlockChain> = new Set()) {
+		const range_blocks: BlockModel[] = [];
+		for (var i = from; range_blocks.length < limit; i += 1) {
+			const item = await this.blockDb.getItemByIndexVal("height", i);
+			if (item) {
+				range_blocks.push(item);
+			}
+		}
+
 		/**预计的最大高度<plan_to*/
 		let plan_to = from + limit + 1;
 		/**是否已经到数据库的结尾了*/
@@ -326,7 +243,6 @@ export class BlockchainVerifier {
 			return true;
 		});
 
-
 		// 如果已经遍历结束，那么把所有的linking放入finished中
 		if (done) {
 			for (var _bc of linking_blockchains.values()) {
@@ -343,12 +259,7 @@ export class BlockchainVerifier {
 		};
 	}
 	/**删除一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
-	private async _IDB_deleteBlocks(
-		start_height: number,
-		end_height: number,
-		keep_id_set: Set<string>,
-		rm_id_set: Set<string>,
-	) {
+	private async _IDB_deleteBlocks(start_height: number, end_height: number, keep_id_set: Set<string>, rm_id_set: Set<string>) {
 		for (var rm_id of rm_id_set) {
 			await this.blockDb.fast().removeById(rm_id);
 		}

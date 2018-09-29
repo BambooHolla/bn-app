@@ -68,7 +68,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const last_block_height = height_index.maxInterge;
     const uid = await height_index.getIndex(last_block_height);
     if (uid) {
-      return await blockDB.getById(uid);
+      return (await blockDB.getById(uid)) || this.empty_block;
     }
     return this.empty_block;
   }
