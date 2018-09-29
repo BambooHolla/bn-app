@@ -1,5 +1,5 @@
 import { FangoDBFactory, FangoDBWorkerFactory } from "fangodb";
-import { global } from "../../bnqkl-framework/helper";
+import { global, IsIOS } from "../../bnqkl-framework/helper";
 import { BlockModel, BlockListResModel } from "./block.types";
 const block_indexs: any = [
 	{
@@ -12,7 +12,7 @@ const block_indexs: any = [
 	},
 ];
 export function BlockDBFactory(dbname: string) {
-	return FangoDBFactory<BlockModel>(dbname, block_indexs, global["file"]).then(blockDB => {
+	return FangoDBFactory<BlockModel>(dbname, block_indexs, IsIOS() ? global["file"] : undefined/*Android系统使用indexeddb，corsswalk不支持file插件*/).then(blockDB => {
 		// // 默认使用高度来做为文件名
 		// blockDB.filenameGenerator = (uid, item) => {
 		// 	return item.height + ".data";

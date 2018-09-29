@@ -52,19 +52,19 @@ export class TutorialPage extends FirstLevelPage {
             class: "slide-1",
             title: values.TUTORIAL_SLIDE2_TITLE,
             description: values.TUTORIAL_SLIDE2_DESCRIPTION,
-            image: "assets/imgs/tutorial/2.jpg",
+            image: "assets/imgs/tutorial/1.jpg",
           },
           {
             class: "slide-2",
             title: values.TUTORIAL_SLIDE3_TITLE,
             description: values.TUTORIAL_SLIDE3_DESCRIPTION,
-            image: "assets/imgs/tutorial/3.jpg",
+            image: "assets/imgs/tutorial/2.jpg",
           },
           {
             class: "slide-0",
             title: values.TUTORIAL_SLIDE1_TITLE,
             description: values.TUTORIAL_SLIDE1_DESCRIPTION,
-            image: "assets/imgs/tutorial/1.jpg",
+            image: "assets/imgs/tutorial/3.jpg",
           },
         ];
       });

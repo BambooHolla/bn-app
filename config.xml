@@ -25,6 +25,8 @@
     <preference name="orientation" value="portrait" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <preference name="loadUrlTimeoutValue" value="60000" />
+    <preference name="AndroidPersistentFileLocation" value="Internal" />
+    <preference name="AndroidExtraFilesystems" value="files,cache, sdcard, cache-external, files-external" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
