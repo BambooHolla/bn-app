@@ -1,10 +1,5 @@
 import { FLP_Lifecycle } from "./FLP_Lifecycle";
-import {
-  NavController,
-  NavOptions,
-  NavParams,
-  ViewController,
-} from "ionic-angular";
+import { NavController, NavOptions, NavParams, ViewController } from "ionic-angular";
 import { asyncCtrlGenerator } from "./Decorator";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { PAGE_STATUS } from "./const";
@@ -51,8 +46,7 @@ export class FLP_Route extends FLP_Lifecycle {
     this._job_res = data;
   }
   finishJob(
-    remove_view_after_finish: boolean = this.navParams.get("auto_return") ||
-      this.navParams.get("remove_view_after_finish"),
+    remove_view_after_finish: boolean = this.navParams.get("auto_return") || this.navParams.get("remove_view_after_finish"),
     time: number = this.navParams.get("auto_return_time")
   ) {
     this.navParams.data["is_finish_job"] = true;
@@ -73,9 +67,7 @@ export class FLP_Route extends FLP_Lifecycle {
             viewCtrl.dismiss(this._job_res);
           }
         } else {
-          console.warn(
-            "使用remove_view_after_finish必须注入viewCtrl: ViewController对象"
-          );
+          console.warn("使用remove_view_after_finish必须注入viewCtrl: ViewController对象");
           this.PAGE_STATUS === PAGE_STATUS.DID_ENTER && this.navCtrl.pop();
         }
       }, time);
@@ -98,14 +90,10 @@ export class FLP_Route extends FLP_Lifecycle {
    *  内置了跳转拦截的功能，需要通过registerRouteToBeforeCheck来注册拦截检测器
    */
   routeTo(path: string, ...args: any[]): Promise<any>;
-  @asyncCtrlGenerator.loading(
-    FLP_Route.jump_loading_message,
-    "hide_jump_loading",
-    {
-      showBackdrop: false,
-      cssClass: "can-tap blockchain-loading",
-    }
-  )
+  @asyncCtrlGenerator.loading(FLP_Route.jump_loading_message, "hide_jump_loading", {
+    showBackdrop: false,
+    cssClass: "can-tap blockchain-loading",
+  })
   @asyncCtrlGenerator.error(FLP_Route.jump_error_title)
   async routeTo(path: string, params?: any, opts?: any, force = false) {
     if (this.current_routeTo_page === path && !force) {
@@ -119,12 +107,7 @@ export class FLP_Route extends FLP_Lifecycle {
       FLP_Route.jump_loading_message.msg = "@@PLEASE_WAIT";
       FLP_Route.jump_error_title.title = "@@SWITCH_PAGE_ERROR";
       // 开始执行
-      const checkInfo = await FLP_Route.doRouteToBeforeCheck(
-        this,
-        path,
-        params,
-        opts
-      );
+      const checkInfo = await FLP_Route.doRouteToBeforeCheck(this, path, params, opts);
       if (checkInfo.preventDefault) {
         console.log("页面发生重定向");
         return;
@@ -148,12 +131,7 @@ export class FLP_Route extends FLP_Lifecycle {
   }
 
   // @FLP_Route.FromNavParams ignore_check_set_real_info: string;
-  static registerRouteToBeforeCheck(
-    match: string | string[] | RouteToBeforeCheck_Match,
-    checker: RouteToBeforeCheck_Checker,
-    weight = 0,
-    name?: string
-  ) {
+  static registerRouteToBeforeCheck(match: string | string[] | RouteToBeforeCheck_Match, checker: RouteToBeforeCheck_Checker, weight = 0, name?: string) {
     if (typeof match === "string") {
       const match_path = match;
       match = path => match_path === path;
@@ -171,19 +149,10 @@ export class FLP_Route extends FLP_Lifecycle {
     this.ROUTE_TO_BEFORE_CHECK_LIST.sort((a, b) => a.weight - b.weight);
   }
   static ROUTE_TO_BEFORE_CHECK_LIST: Array<RouteToBeforeCheck> = [];
-  static async doRouteToBeforeCheck(
-    self: FLP_Route,
-    path: string,
-    params?: any,
-    opts?: any
-  ) {
+  static async doRouteToBeforeCheck(self: FLP_Route, path: string, params?: any, opts?: any) {
     const to_next_params = {};
     let preventDefault = false;
-    for (
-      var i = 0, C: RouteToBeforeCheck;
-      (C = this.ROUTE_TO_BEFORE_CHECK_LIST[i]);
-      i += 1
-    ) {
+    for (var i = 0, C: RouteToBeforeCheck; (C = this.ROUTE_TO_BEFORE_CHECK_LIST[i]); i += 1) {
       const check_label = `CHECK ${i + 1}:${C.name || "NO-NAME"}`;
       console.time(check_label);
       if (C.match(path, params, opts)) {
@@ -327,7 +296,8 @@ FLP_Route.registerRouteToBeforeCheck(
           }
           runed = true;
 
-          window.removeEventListener("focus", onCancel);
+          window.removeEventListener("touchstart", onCancel);
+          window.removeEventListener("pointerdown", onCancel);
           err ? reject(err) : resolve(res);
         };
         inputEle.onchange = e => {
@@ -339,15 +309,14 @@ FLP_Route.registerRouteToBeforeCheck(
           }
         };
         const onCancel = () => {
-          setTimeout(() => {
-            if (inputEle.files && !inputEle.files.length) {
-              // cancel select;
-              console.log("取消了文件选择");
-              cbWrap(null);
-            }
-          }, 250);
+          if (inputEle.files && !inputEle.files.length) {
+            // cancel select;
+            console.log("取消了文件选择");
+            cbWrap(null);
+          }
         };
-        window.addEventListener("focus", onCancel);
+        window.addEventListener("touchstart", onCancel);
+        window.addEventListener("pointerdown", onCancel);
         inputEle.onerror = cbWrap;
       });
       if (image_url) {
@@ -385,11 +354,7 @@ type RouteToBeforeCheck = {
   checker: RouteToBeforeCheck_Checker;
   weight: number;
 };
-type RouteToBeforeCheck_Match = (
-  path: string,
-  params?: any,
-  opts?: any
-) => boolean;
+type RouteToBeforeCheck_Match = (path: string, params?: any, opts?: any) => boolean;
 type RouteToBeforeCheck_Checker = (
   self: FLP_Route,
   to_next_params: any,
