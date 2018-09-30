@@ -201,15 +201,15 @@ export class BlockchainVerifier {
 	/**获取一定范围内的碎片区块链数据，这里使用indexDb的原生写法*/
 	private async _IDB_getContinuousBlockChain(from = 1, limit = 1096, linking_blockchains: Set<BlockChain> = new Set()) {
 		const range_blocks: BlockModel[] = [];
-		for (var i = from; range_blocks.length < limit; i += 1) {
+		/**预计的最大高度<plan_to*/
+		let plan_to = from + limit + 1;
+		for (var i = from; range_blocks.length < limit && i < plan_to; i += 1) {
 			const item = await this.blockDb.getItemByIndexVal("height", i);
 			if (item) {
 				range_blocks.push(item);
 			}
 		}
 
-		/**预计的最大高度<plan_to*/
-		let plan_to = from + limit + 1;
 		/**是否已经到数据库的结尾了*/
 		let done = true;
 		/**会尝试构建多条连续的链，断开的就放到finished（height的差异>=2），还在构建的就放到linking里头*/
