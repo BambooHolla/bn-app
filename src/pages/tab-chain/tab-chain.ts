@@ -29,6 +29,7 @@ import {
   BlockListResModel,
   UnconfirmBlockModel,
 } from "../../providers/block-service/block-service";
+import { BlockchainVerifier } from "../../providers/block-service/blockchain-verifier";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { Subscription } from "rxjs/Subscription";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
@@ -59,6 +60,13 @@ export class TabChainPage extends FirstLevelPage {
       this.unconfirm_block = expect_block;
     });
     // this.registerViewEvent(this)
+  }
+
+  bv() {
+    const db = this.blockService.blockDb;
+    db['fast'] = () => db;
+    const bv = new BlockchainVerifier(this.fetch.webio.io, this.blockService.blockDb as any);
+    return bv;
   }
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
@@ -277,7 +285,7 @@ export class TabChainPage extends FirstLevelPage {
         (this.progressCircle
           .nativeElement as HTMLElement).style.transform = `rotate(${
           this._progressCircle_rotate
-        }deg)`;
+          }deg)`;
       });
       this.cdRef.detectChanges;
     }
@@ -306,5 +314,5 @@ export class TabChainPage extends FirstLevelPage {
   showVerifierLoading() {
     // this.loadingCtrl.create("")
   }
-  closeVerifierLoading() {}
+  closeVerifierLoading() { }
 }

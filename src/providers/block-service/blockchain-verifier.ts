@@ -203,7 +203,11 @@ export class BlockchainVerifier {
 		const range_blocks: BlockModel[] = [];
 		/**预计的最大高度<plan_to*/
 		let plan_to = from + limit + 1;
-		for (var i = from; range_blocks.length < limit && i < plan_to; i += 1) {
+		for (var i = from; range_blocks.length < limit; i += 1) {
+			const max_height = await this.blockDb.getNumberIndexMaxInterge("height");
+			if (i > max_height) {
+				break;
+			}
 			const item = await this.blockDb.getItemByIndexVal("height", i);
 			if (item) {
 				range_blocks.push(item);

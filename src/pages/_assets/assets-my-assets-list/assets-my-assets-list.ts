@@ -73,8 +73,26 @@ export class AssetsMyAssetsListPage extends SecondLevelPage {
       this._loadIssuedAssetsList().then(
         list => (this.my_issued_assets_list = list)
       ),
-      this._loadMyAssetsList().then(list => (this.my_assets_list = list)),
+      this._loadMyAssetsList().then(list => (this.my_assets_list = list)).then(() => this.updateMyAssetsTotalUSD()),
     ]);
+  }
+  @AssetsMyAssetsListPage.addEventAfterDidEnter("HEIGHT:CHANGED")
+  @asyncCtrlGenerator.error()
+  async updateMyAssetsTotalUSD() {
+    const my_assets_rate_map = await this.assetsService.myAssetsRateMap.getPromise();
+    let assets_total_ibt = 0;
+    for (var _assets_info of this.my_assets_list) {
+      const assets_info = _assets_info;
+      const rate = (my_assets_rate_map.has(assets_info.abbreviation)
+        ? my_assets_rate_map.get(assets_info.abbreviation)
+        : (await this.assetsService.getAssetsToIBTRate(assets_info))) || 0;
+      assets_total_ibt += rate * parseFloat(assets_info["hodingAssets"]) || 0;
+    }
+    this._assets_to_ibt = assets_total_ibt;
+  }
+  _assets_to_ibt = 0;
+  get myTotalUSD() {
+    return this.userInfo.ibtToUSD(parseFloat(this.userInfo.balance) + this._assets_to_ibt);
   }
 
   private async _loadIssuedAssetsList() {

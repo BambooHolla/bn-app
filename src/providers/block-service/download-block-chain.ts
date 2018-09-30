@@ -218,7 +218,7 @@ export class BlockChainDownloader extends EventEmitter {
     }
 
     // 数据库插入出错的话，忽略错误，继续往下走
-    await this.blockDb.insertMany(blocks).catch(console.warn);
+    await this.blockDb.insertMany(blocks,{replace:true}).catch(console.warn);
 
     // 更改进度
     this.emit("progress", ((cur_end_height + 1) / total) * 100);
