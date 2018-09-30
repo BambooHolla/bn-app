@@ -75,17 +75,17 @@
     </div>
     <div class="center">
       <ng-container *ngIf="sync_is_verifying_block;else showSyncDelayTimeInfo">
-        <text-gradient [text]="'VERIFYING_BLOCK'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
+        <text-mg [text]="'VERIFYING_BLOCK'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-mg>
       </ng-container>
       <ng-template #showSyncDelayTimeInfo>
         <ng-container *ngIf="is_calcing_delay_time;else SyncDelayTimeInfo">
-          <text-gradient [text]="'CALCING_SYNC_DELAY_TIME'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
+          <text-mg [text]="'CALCING_SYNC_DELAY_TIME'|translate" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-mg>
         </ng-container>
         <ng-template #SyncDelayTimeInfo>
           <ng-container *ngFor="let time_info of sync_delay_time;trackBy:listTrackBy">
             <div class="value">
               <!-- {{time_info.value}} -->
-              <text-gradient [text]="time_info.value" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-gradient>
+              <text-mg [text]="time_info.value" from="#f9a561" to="#fccd51" fontSize="10.5vw" fontWeight="600" [no-trim-blank]="true"></text-mg>
             </div>
             <div class="unit">
               {{time_info.unit|translate}}

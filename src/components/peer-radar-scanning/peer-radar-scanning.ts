@@ -51,6 +51,7 @@ export class PeerRadarScanningComponent extends AniBase {
           : canvasNode.clientHeight
       );
       this.app = PeerRadarScanningComponent.PIXIAppbuilder({
+        forceCanvas: true,
         view: canvasNode,
         width: pt(size),
         height: pt(size),

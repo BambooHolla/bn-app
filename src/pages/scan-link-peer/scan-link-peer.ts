@@ -216,81 +216,31 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         if (checked_peer_info.peer.disabled) {
           continue;
         }
-        /*拜占庭检测可连接的节点*/
         peer_info_list.push(checked_peer_info);
-        const check_res = PeerServiceProvider.calcPeers(peer_info_list, all_second_trust_peer_list);
-        calc_res_list = check_res;
-        // 随机进行选择
-        const random_select_seed = Math.random();
+      }
+    }
 
-        console.log("CR", check_res, random_select_seed);
-        let acc_random = 0;
-        for (var check_item of check_res) {
-          acc_random += check_item.rate;
-          if (random_select_seed < acc_random) {
-            const selectable_peer_list = check_item.peer_info_list.sort((a, b) => b.highest_blocks[0].height - a.highest_blocks[0].height).filter((p, i, l) => {
-              return p.highest_blocks[0].height === l[0].highest_blocks[0].height;
-            });
-            /// 最短延迟方案
-            const min_delay_peer = selectable_peer_list.sort((a, b) => a.peer.delay - b.peer.delay)[0];
-            this.selected_peer = min_delay_peer.peer;
-            this.selected_peer_highest_blocks = min_delay_peer.highest_blocks;
-            this.scrollSelectedPeerIntoView();
+    /*拜占庭检测可连接的节点*/
+    const check_res = PeerServiceProvider.calcPeers(peer_info_list, all_second_trust_peer_list);
+    calc_res_list = check_res;
+    // 随机进行选择
+    const random_select_seed = Math.random();
 
-            /*
+    console.log("CR", check_res, random_select_seed);
+    let acc_random = 0;
+    for (var check_item of check_res) {
+      acc_random += check_item.rate;
+      if (random_select_seed < acc_random) {
+        const selectable_peer_list = check_item.peer_info_list.sort((a, b) => b.highest_blocks[0].height - a.highest_blocks[0].height).filter((p, i, l) => {
+          return p.highest_blocks[0].height === l[0].highest_blocks[0].height;
+        });
+        /// 最短延迟方案
+        const min_delay_peer = selectable_peer_list.sort((a, b) => a.peer.delay - b.peer.delay)[0];
+        this.selected_peer = min_delay_peer.peer;
+        this.selected_peer_highest_blocks = min_delay_peer.highest_blocks;
+        this.scrollSelectedPeerIntoView();
 
-            /// 方差方案
-
-            const random_select_peer_seed = Math.random();
-            // 算方差
-            const pingjunzhi =
-              selectable_peer_list.reduce(
-                (a, p) => a + p.peer.delay,
-                0
-              ) / selectable_peer_list.length;
-            var total_s = 0;
-            var max_s = -Infinity;
-            var min_s = Infinity;
-            const s_list = ([] = selectable_peer_list.map(p => {
-              const s = Math.pow(p.peer.delay - pingjunzhi, 2);
-              total_s += s;
-              max_s = Math.max(max_s, s);
-              min_s = Math.min(min_s, s);
-              return s;
-            }));
-            const mm_s = max_s + min_s;
-            const s_rate_list = s_list
-              .map((s, i) => {
-                return {
-                  rate: (mm_s - s) / total_s || 1,
-                  pi: selectable_peer_list[i],
-                };
-              })
-              .sort((a, b) => {
-                // 概率高的放前面
-                return b.rate - a.rate;
-              });
-            var random_r = Math.random();
-            var acc_r = 0;
-            const selected_s_rate = s_rate_list.find(s_rate => {
-              acc_r += s_rate.rate;
-              // console.log("random_r,acc_r", random_r, acc_r);
-              return random_r <= acc_r;
-            });
-            if (selected_s_rate) {
-              this.selected_peer = selected_s_rate.pi.peer;
-              this.selected_peer_highest_blocks =
-                selected_s_rate.pi.highest_blocks;
-              this.scrollSelectedPeerIntoView();
-            }*/
-
-            // this.selected_peer =
-            //   selectable_peer_list[
-            //     (selectable_peer_list.length * Math.random()) | 0
-            //   ].peer;
-            break;
-          }
-        }
+        break;
       }
     }
 

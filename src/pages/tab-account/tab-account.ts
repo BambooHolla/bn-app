@@ -34,7 +34,11 @@ export class TabAccountPage extends FirstLevelPage {
       this.checkAndroidUpdate();
     });
   }
+  private _force_has_balance = false;
   get hasBalance() {
+    if(this._force_has_balance){
+      return true;
+    }
     if (this._my_assets_list && this._my_assets_list.length > 0) {
       return true;
     }
@@ -139,5 +143,11 @@ export class TabAccountPage extends FirstLevelPage {
       this.appSetting.settings._is_show_first_local_contacts_tip = await this.waitTipDialogConfirm("@@MY_LOCAL_CONTACTS_TIP");
     }
     return this.routeTo("account-my-local-contacts");
+  }
+
+  /// 隐藏功能
+  @asyncCtrlGenerator.tttttap()
+  tryTogglaHiddenItems(){
+    this._force_has_balance = !this._force_has_balance;
   }
 }

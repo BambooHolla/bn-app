@@ -9,7 +9,7 @@
       </button>
     </div>
     <div class="assets-info">
-      <div class="ibt-value">
+      <div class="ibt-value" (click)="tryTogglaHiddenItems()">
         <ali-icon name="ifm-coins"></ali-icon>
         <span class="value" (click)="toggleAmountView()">{{amountViewer(userInfo.balance|amountEuler|number:"1.8-8")}}</span>
         <span class="unit">IBT</span>
