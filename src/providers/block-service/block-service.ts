@@ -677,7 +677,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getLastBlock() {
-    if (this.fetch.onLine) {
+    if (await this.fetch.webio.getOnlineStatus()) {
       let last_block = await this.fetch.get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL).then(res => res.block as TYPE.SingleBlockModel);
       if (await this.checkBlockIdInBlockDB(last_block.id)) {
         // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
