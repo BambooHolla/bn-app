@@ -71,7 +71,7 @@ export class TabChainPage extends FirstLevelPage {
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
-  @ViewChild(ChainMeshComponent) chainMesh!: ChainMeshComponent;
+  @ViewChild(ChainMeshComponent) chainMesh?: ChainMeshComponent;
   @TabChainPage.markForCheck unconfirm_block?: UnconfirmBlockModel;
   // 在应用启动的时候就需要进行一次数据加载
   @TabChainPage.onInit
