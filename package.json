@@ -6,11 +6,10 @@
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
-    "build": "node --max_old_space_size=8000 /usr/bin/npm run ionic:build",
-    "ios-build": "node --max_old_space_size=8000 /usr/local/bin/npm run ionic:build",
+    "build": "ionic-app-scripts build",
     "lint": "ionic-app-scripts lint",
     "worker:1": "cd workers/download-block-chain & parcel watch download-block-chain.worker.ts --no-source-maps --no-hmr --out-dir ../../src/assets/workers",
-    "ionic:build": "ionic-app-scripts build --prod",
+    "ionic:build": "ionic-app-scripts build --max_old_space_size=8000",
     "ionic:serve": "ionic-app-scripts serve",
     "format:diff": "node scripts/format.js --from-git-diff",
     "format:all": "node scripts/format.js --all",
