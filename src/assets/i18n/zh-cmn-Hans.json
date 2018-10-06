@@ -141,6 +141,7 @@
   "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP": "为了进一步保护您的资产安全，请设置支付密码，支付密码将为您的资产安全提供更进一步的保护",
   "NOT_SET": "不设置",
   "SET_NOW": "立即设置",
+  "FETCH_MY_ASSETS_LIST_ERROR": "获取数字权益列表失败",
 
   "//": "share-app-panel",
   "SHARE_TO": "分享到",

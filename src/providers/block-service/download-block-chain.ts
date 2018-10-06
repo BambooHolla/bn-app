@@ -1,6 +1,6 @@
-import shareProto from "../../src/shareProto";
+import shareProto from "../../shareProto";
 import EventEmitter from "eventemitter3";
-import { PromiseOut, sleep } from "../../src/bnqkl-framework/PromiseExtends";
+import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 // import { Mdb } from "../../src/providers/mdb";
 import { FangoDB, FangoDBWorker } from "fangodb";
 import { BlockchainVerifier } from "./blockchain-verifier";
@@ -218,7 +218,7 @@ export class BlockChainDownloader extends EventEmitter {
     }
 
     // 数据库插入出错的话，忽略错误，继续往下走
-    await this.blockDb.insertMany(blocks).catch(console.warn);
+    await this.blockDb.insertMany(blocks,{replace:true}).catch(console.warn);
 
     // 更改进度
     this.emit("progress", ((cur_end_height + 1) / total) * 100);

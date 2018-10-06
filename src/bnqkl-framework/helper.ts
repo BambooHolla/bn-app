@@ -1,6 +1,7 @@
 export * from "./BlizzardHash";
+export const IsIOS = () => !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 export const is_dev = (() => {
-  const test_fun = function DEV_WITH_FULL_NAME() { };
+  const test_fun = function DEV_WITH_FULL_NAME() {};
   return test_fun.name === "DEV_WITH_FULL_NAME";
   // return isDevMode();
 })();
@@ -144,18 +145,12 @@ export const afCtrl = new class RafController {
   }
   private _cur_raf_id: number | null = null;
   native_raf(callback) {
-    const raf = (
-      window["__zone_symbol__requestAnimationFrame"] ||
-      window["webkitRequestAnimationFrame"]
-    ).bind(window);
+    const raf = (window["__zone_symbol__requestAnimationFrame"] || window["webkitRequestAnimationFrame"]).bind(window);
     this.native_raf = raf;
     return raf(callback);
   }
   native_unraf(rafId) {
-    const caf = (
-      window["__zone_symbol__cancelAnimationFrame"] ||
-      window["webkitCancelAnimationFrame"]
-    ).bind(window);
+    const caf = (window["__zone_symbol__cancelAnimationFrame"] || window["webkitCancelAnimationFrame"]).bind(window);
     this.native_unraf = caf;
     return caf(rafId);
   }
@@ -174,16 +169,11 @@ export class AppUrl {
   static SERVER_URL = "http://127.0.0.1";
   static BACKEND_VERSION = BACKEND_VERSION;
   static getPathName(url: string) {
-    return new URL(url).pathname.replace(
-      "/api/" + AppUrl.BACKEND_VERSION,
-      "/api/"
-    );
+    return new URL(url).pathname.replace("/api/" + AppUrl.BACKEND_VERSION, "/api/");
   }
-  constructor(public path: string) { }
+  constructor(public path: string) {}
   toString(query?) {
-    const host =
-      (this.disposable_server_url || AppUrl.SERVER_URL) +
-      this.path.replace(/^\/api\//, "/api/" + AppUrl.BACKEND_VERSION);
+    const host = (this.disposable_server_url || AppUrl.SERVER_URL) + this.path.replace(/^\/api\//, "/api/" + AppUrl.BACKEND_VERSION);
     if (query) {
       let querystring = "?";
       for (var k in query) {
@@ -221,31 +211,17 @@ export const baseConfig = new class BaseConfig extends EventEmitter {
   }
   //  SERVER_URL = "http://47.104.142.234:6062";
   SEED_DATE = SEED_DATE;
-  seedDateTimestamp = Math.floor(
-    Date.UTC(
-      SEED_DATE[0],
-      SEED_DATE[1],
-      SEED_DATE[2],
-      SEED_DATE[3],
-      SEED_DATE[4],
-      SEED_DATE[5],
-      SEED_DATE[6]
-    ) / 1000
-  );
+  seedDateTimestamp = Math.floor(Date.UTC(SEED_DATE[0], SEED_DATE[1], SEED_DATE[2], SEED_DATE[3], SEED_DATE[4], SEED_DATE[5], SEED_DATE[6]) / 1000);
   seedDate: Date = new Date(this.seedDateTimestamp * 1000);
   timezoneoffset = -this.seedDate.getTimezoneOffset() * 60;
   //  SERVER_URL = "http://test1.ifmchain.org:6062";
   SERVER_TIMEOUT = 1000;
   NET_VERSION = getQueryVariable("NET_VERSION") || "mainnet";
   MAGIC = getQueryVariable("MAGIC") || "";
-  BLOCK_UNIT_TIME =
-    parseFloat(getQueryVariable("BLOCK_UNIT_TIME") || "") || 128e3;
+  BLOCK_UNIT_TIME = parseFloat(getQueryVariable("BLOCK_UNIT_TIME") || "") || 128e3;
 
   get LATEST_APP_VERSION_URL() {
-    return (
-      getQueryVariable("LATEST_APP_VERSION_URL") ||
-      "https://www.ifmchain.com/api/app/version/latest"
-    );
+    return getQueryVariable("LATEST_APP_VERSION_URL") || "https://www.ifmchain.com/api/app/version/latest";
   }
   SETTING_KEY_PERFIX = "SETTING@";
 
@@ -260,20 +236,13 @@ export const baseConfig = new class BaseConfig extends EventEmitter {
     });
   }
 }();
-baseConfig.SERVER_URL =
-  getQueryVariable("SERVER_URL") || "http://publish.ifmchain.org";
+baseConfig.SERVER_URL = getQueryVariable("SERVER_URL") || "http://publish.ifmchain.org";
 
-console.log(
-  "%cSERVER_URL:",
-  "font-size:2em;color:green;background-color:#DDD",
-  baseConfig.SERVER_URL
-);
+console.log("%cSERVER_URL:", "font-size:2em;color:green;background-color:#DDD", baseConfig.SERVER_URL);
 export function fileInputEleFactory(ele_id: string, accept = "image/*") {
   const inputEle_id = "qrcodePicker";
   // 必须把触发函数写在click里头，不然安全角度来说，是无法正常触发的
-  const inputEle =
-    (document.getElementById(inputEle_id) as HTMLInputElement) ||
-    document.createElement("input");
+  const inputEle = (document.getElementById(inputEle_id) as HTMLInputElement) || document.createElement("input");
   if (inputEle.id !== inputEle_id) {
     inputEle.id = inputEle_id;
     inputEle.type = "file";
@@ -292,7 +261,7 @@ export function fileInputEleFactory(ele_id: string, accept = "image/*") {
 
 /**垫片工具*/
 export class Shim {
-  constructor(public name = "", public auto_suffix = "") { }
+  constructor(public name = "", public auto_suffix = "") {}
   /**是否使用垫片*/
   is_use_shim = false;
   /**是否进行静态链接*/
@@ -301,9 +270,8 @@ export class Shim {
     const self = this;
     return function shim(target: any, name: string, des: PropertyDescriptor) {
       const source_fun = target[name];
-      const shim_name =
-        shim_fun_name === undefined ? name + self.auto_suffix : shim_fun_name;
-      des.value = function (...args) {
+      const shim_name = shim_fun_name === undefined ? name + self.auto_suffix : shim_fun_name;
+      des.value = function(...args) {
         if (self.compile_into) {
           this[name] = self.is_use_shim ? this[shim_name] : source_fun;
         }
@@ -338,21 +306,10 @@ export class AOT {
     for (var aot_flag of aot_flags) {
       if (aot_flag.type === "Then") {
         const then_data = aot_flag.data;
-        this.register(
-          target,
-          then_data.prop_name,
-          this.Then(then_data.then_fun_name)
-        );
+        this.register(target, then_data.prop_name, this.Then(then_data.then_fun_name));
       } else if (aot_flag.type === "Wait") {
         const wait_data = aot_flag.data;
-        this.register(
-          target,
-          wait_data.prop_name,
-          this.Wait(
-            wait_data.condition_promise_fun_name,
-            wait_data.skip_if_false
-          )
-        );
+        this.register(target, wait_data.prop_name, this.Wait(wait_data.condition_promise_fun_name, wait_data.skip_if_false));
       }
     }
   }
@@ -360,23 +317,15 @@ export class AOT {
     let proto = target;
     do {
       if (proto.hasOwnProperty(name)) {
-        return Object.getOwnPropertyDescriptor(proto, name)
+        return Object.getOwnPropertyDescriptor(proto, name);
       }
       proto = Object.getPrototypeOf(proto);
       if (!proto) {
-        break
+        break;
       }
-    } while (true)
+    } while (true);
   }
-  register(
-    target: any,
-    name: string,
-    declaration: (
-      target: any,
-      name: string,
-      des: PropertyDescriptor
-    ) => PropertyDescriptor
-  ) {
+  register(target: any, name: string, declaration: (target: any, name: string, des: PropertyDescriptor) => PropertyDescriptor) {
     const des = this._getPropDescriptor(target, name);
     if (des) {
       Object.defineProperty(target, name, declaration(target, name, des));
@@ -389,9 +338,9 @@ export class AOT {
   /**条件语句*/
   Then(then_fun_name: string) {
     const self = this;
-    return function (target: any, name: string, des: PropertyDescriptor) {
+    return function(target: any, name: string, des: PropertyDescriptor) {
       const source_fun = des.value;
-      des.value = function (...args) {
+      des.value = function(...args) {
         const { condition } = self;
         if (self.compile_into) {
           this[name] = condition ? this[then_fun_name] : source_fun;
@@ -409,9 +358,9 @@ export class AOT {
   /**前置条件*/
   Wait(condition_promise_fun_name: string, skip_if_false = false) {
     const self = this;
-    return function (target: any, name: string, des: PropertyDescriptor) {
+    return function(target: any, name: string, des: PropertyDescriptor) {
       const source_fun = des.value;
-      des.value = function (...args) {
+      des.value = function(...args) {
         const { condition } = self;
         if (self.compile_into) {
           if (!condition) {
@@ -424,10 +373,7 @@ export class AOT {
         if (!condition) {
           // 在条件不成立的时候，需要始终进行条件判断的等待
           const condition = this[condition_promise_fun_name];
-          return (condition instanceof Function
-            ? this[condition_promise_fun_name](...args)
-            : Promise.resolve(condition)
-          ).then(pre_condition_res => {
+          return (condition instanceof Function ? this[condition_promise_fun_name](...args) : Promise.resolve(condition)).then(pre_condition_res => {
             if (skip_if_false && !pre_condition_res) {
               return;
             }
@@ -453,17 +399,17 @@ export class AOT {
 const AOT_FLAGS_CACHE = new WeakMap<object, aot_flag[]>();
 type aot_flag =
   | {
-    type: "Then";
-    data: { then_fun_name: string; prop_name: string };
-  }
+      type: "Then";
+      data: { then_fun_name: string; prop_name: string };
+    }
   | {
-    type: "Wait";
-    data: {
-      condition_promise_fun_name: string;
-      skip_if_false: boolean;
-      prop_name: string;
+      type: "Wait";
+      data: {
+        condition_promise_fun_name: string;
+        skip_if_false: boolean;
+        prop_name: string;
+      };
     };
-  };
 export class AOT_Placeholder {
   static GetAOTFlags(target: object) {
     const aot_flags: aot_flag[] = [];
@@ -471,14 +417,14 @@ export class AOT_Placeholder {
     do {
       const _flags = AOT_FLAGS_CACHE.get(proto);
       if (_flags) {
-        aot_flags.push(..._flags)
+        aot_flags.push(..._flags);
       }
       proto = Object.getPrototypeOf(proto);
       if (!proto) {
-        break
+        break;
       }
-    } while (true)
-    return aot_flags
+    } while (true);
+    return aot_flags;
   }
   static GetAndSetAOTFlags(target: object) {
     let aot_flags = AOT_FLAGS_CACHE.get(target);

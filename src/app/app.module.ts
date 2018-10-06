@@ -1,4 +1,5 @@
-import * as ifs from "idb.filesystem.js";
+// 强行使用indexed来模拟filesystem api，来突破配额限制
+import * as ifs from "idb.filesystem";
 // self["webkitRequestFileSystem"] = webkitRequestFileSystem;
 // self["requestFileSystem"] = requestFileSystem;
 console.log("ifs", ifs, self["requestFileSystem"], self["webkitRequestFileSystem"]);

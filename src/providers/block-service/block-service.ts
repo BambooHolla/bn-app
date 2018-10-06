@@ -25,6 +25,7 @@ import { FangoDB, registerWorkerHandle } from "fangodb";
 import { BlockDBFactory } from "./helper";
 import { DBNumberIndex } from "fangodb/dist/src/db-index-core";
 import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
+import { DownloadBlockChainMaster } from "./download-block-chain.fack-worker";
 
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
 tryRegisterGlobal("socketio", io);
@@ -67,7 +68,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const last_block_height = height_index.maxInterge;
     const uid = await height_index.getIndex(last_block_height);
     if (uid) {
-      return await blockDB.getById(uid);
+      return (await blockDB.getById(uid)) || this.empty_block;
     }
     return this.empty_block;
   }
@@ -177,15 +178,15 @@ export class BlockServiceProvider extends FLP_Tool {
               cache.blocks instanceof Array
                 ? cache.blocks
                 : await this.blockDb.find({
-                  height: { $in: res_blocks.map(b => b.height) },
-                });
+                    height: { $in: res_blocks.map(b => b.height) },
+                  });
             const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
             const new_blocks = res_blocks
               .filter(block => {
                 return !unique_height_set.has(block.height);
               })
               .map(b => this.formatBlockData(b));
-            await this.blockDb.insertMany(new_blocks);
+            await this.blockDb.insertMany(new_blocks,{replace:true});
           }
           return mix_res;
         }
@@ -218,7 +219,7 @@ export class BlockServiceProvider extends FLP_Tool {
         if (mix_res) {
           const new_block = mix_res.block;
           if (!(await this.checkBlockIdInBlockDB(new_block.id))) {
-            await this.blockDb.insert(this.formatBlockData(new_block));
+            await this.blockDb.insert(this.formatBlockData(new_block),{replace:true});
           }
           cache.block = new_block;
         }
@@ -313,7 +314,7 @@ export class BlockServiceProvider extends FLP_Tool {
     // 更新缓存中的最新区块
     if (!(await this.checkBlockIdInBlockDB(last_block.id))) {
       // 将最新区块插入到数据库中
-      await this.blockDb.insert(this.formatBlockData(last_block)).catch(err => console.warn("更新最新区块失败", last_block, err));
+      await this.blockDb.insert(this.formatBlockData(last_block),{replace:true}).catch(err => console.warn("更新最新区块失败", last_block, err));
     } else {
       // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
       const heighter_blocks = await this.blockDb.find({
@@ -351,7 +352,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const self = this;
     const io_origin = AppSettingProvider.SERVER_URL;
     // 不改原型链，只针对当前的这个链接对象进行修改
-    encoder.encode = function (obj, callback) {
+    encoder.encode = function(obj, callback) {
       this[ENCODE_SYMBOL](obj, (buffer_list, ...args) => {
         if (buffer_list instanceof Array) {
           let acc_flow = 0;
@@ -426,10 +427,10 @@ export class BlockServiceProvider extends FLP_Tool {
     // 安装未处理交易的预估
     this._listenUnconfirmTransaction();
   }
-  private _download_worker?: Worker;
+  private _download_worker?: DownloadBlockChainMaster;
   getDownloadWorker() {
     if (!this._download_worker) {
-      const download_worker = (this._download_worker = new Worker("./assets/workers/download-block-chain.worker.js"));
+      const download_worker = (this._download_worker = new DownloadBlockChainMaster());
       this.appSetting.on("changed@share_settings.enable_sync_progress_blocks", enable_sync_progress_blocks => {
         const req_id = this._download_req_id_acc++;
         download_worker.postMessage({
@@ -438,13 +439,13 @@ export class BlockServiceProvider extends FLP_Tool {
           req_id,
         });
       });
-      registerWorkerHandle(download_worker);
+      // registerWorkerHandle(download_worker);
     }
     return this._download_worker;
   }
   private _download_req_id_acc = 0;
   private _sync_lock?: {
-    worker: Worker;
+    worker: DownloadBlockChainMaster;
     req_id: number;
     task: PromiseOut<void>;
   };
@@ -523,6 +524,7 @@ export class BlockServiceProvider extends FLP_Tool {
         }
       }
     };
+    download_worker;
     download_worker.addEventListener("message", onmessage);
     cg = () => download_worker.removeEventListener("message", onmessage);
     // 不论如何都将监听函数移除掉
@@ -624,7 +626,7 @@ export class BlockServiceProvider extends FLP_Tool {
       }
     }
 
-    await this.blockDb.insert(block).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
+    await this.blockDb.insert(block,{replace:true}).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
     // 新的输入插入后，就要通知更新区块链
     this.tryEmit("BLOCKCHAIN:CHANGED");
     if (cur_lastBlock) {
@@ -675,7 +677,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @returns {Promise<any>}
    */
   async getLastBlock() {
-    if (this.fetch.onLine) {
+    if (await this.fetch.webio.getOnlineStatus()) {
       let last_block = await this.fetch.get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL).then(res => res.block as TYPE.SingleBlockModel);
       if (await this.checkBlockIdInBlockDB(last_block.id)) {
         // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块

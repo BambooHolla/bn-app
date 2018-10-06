@@ -1,22 +1,9 @@
 import { Component, Optional } from "@angular/core";
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  ViewController,
-} from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
-import {
-  TransactionServiceProvider,
-  TransactionTypes,
-  TransactionModel,
-} from "../../../providers/transaction-service/transaction-service";
-import {
-  LocalContactModel,
-  LocalContactProvider,
-  TagModel,
-} from "../../../providers/local-contact/local-contact";
+import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "../../../providers/transaction-service/transaction-service";
+import { LocalContactModel, LocalContactProvider, TagModel } from "../../../providers/local-contact/local-contact";
 import { AccountModel } from "../../../providers/account-service/account-service";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
@@ -41,10 +28,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.event.on("job-finished", ({ id, data }) => {
       switch (id) {
         case "account-remark-contact":
-          if (
-            this.contact &&
-            data.updated_contact.address === this.contact.address
-          ) {
+          if (this.contact && data.updated_contact.address === this.contact.address) {
             this.contact = data.updated_contact;
             if (data.tag_names) {
               this.contact_tag_names = data.tag_names;
@@ -56,8 +40,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       }
     });
   }
-  @AccountContactDetailPage.markForCheck
-  contact?: LocalContactModel | AccountModel;
+  @AccountContactDetailPage.markForCheck contact?: LocalContactModel | AccountModel;
   @AccountContactDetailPage.markForCheck contact_tag_names: string[] = [];
   get mainname() {
     const { contact } = this;
@@ -91,17 +74,13 @@ export class AccountContactDetailPage extends SecondLevelPage {
       this._is_back_from_child_page = false;
       return;
     }
-    const contact: LocalContactModel | undefined = this.navParams.get(
-      "contact"
-    );
+    const contact: LocalContactModel | undefined = this.navParams.get("contact");
     const account: AccountModel | undefined = this.navParams.get("account");
     this.contact = contact || account;
     if (!this.contact) {
       const account_string: string | undefined = this.navParams.get("address");
       if (account_string) {
-        this.contact = await this.accountService.getAccountByAddress(
-          account_string
-        );
+        this.contact = await this.accountService.getAccountByAddress(account_string);
       }
     }
     if (!this.contact) {
@@ -144,9 +123,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       return;
     }
     const tag_ids = this.contact.tags;
-    const contact_tags = await Promise.all(
-      tag_ids.map(tag_id => this.localContact.tag_db.findOne({ _id: tag_id }))
-    );
+    const contact_tags = await Promise.all(tag_ids.map(tag_id => this.localContact.tag_db.findOne({ _id: tag_id })));
     const tag_names = [] as string[];
     contact_tags.forEach(contact => {
       if (contact) {
@@ -179,10 +156,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     await this.checkIsMyContact();
   }
 
-  contact_metched_map = new Map<
-    string,
-    Promise<string | undefined> | LocalContactModel | undefined
-  >();
+  contact_metched_map = new Map<string, Promise<string | undefined> | LocalContactModel | undefined>();
   transaction_list: (TransactionModel & {
     senderNickname?: string;
     recipientNickname?: string;
@@ -202,12 +176,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       }
       const contact = this.contact;
       const list = await Promise.all(
-        (await this.transactionService.getUserTransactions(
-          contact.address,
-          transaction_config.page,
-          transaction_config.pageSize,
-          "or"
-        ))
+        (await this.transactionService.getUserTransactions(contact.address, transaction_config.page, transaction_config.pageSize, "or"))
           // 查询本地联系人
           .map(async trs => {
             const nicknames = await Promise.all(
@@ -232,13 +201,11 @@ export class AccountContactDetailPage extends SecondLevelPage {
                   }
                 }
 
-                const task = this.localContact
-                  .findContact(address)
-                  .then(account => {
-                    const nickanme = account && account.nickname;
-                    this.contact_metched_map.set(address, account);
-                    return nickanme;
-                  });
+                const task = this.localContact.findContact(address).then(account => {
+                  const nickanme = account && account.nickname;
+                  this.contact_metched_map.set(address, account);
+                  return nickanme;
+                });
                 this.contact_metched_map.set(address, task);
 
                 return await task;
@@ -288,6 +255,12 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   is_show_extend_info = false;
   extend_info?: AccountModel;
+  get extend_info_reward() {
+    if (this.extend_info) {
+      return (parseFloat(this.extend_info.votingReward) || 0) + (parseFloat(this.extend_info.forgingReward) || 0);
+    }
+    return 0;
+  }
   /*隐藏功能*/
   @asyncCtrlGenerator.tttttap() // 这个要放第一个
   @asyncCtrlGenerator.error()
@@ -296,9 +269,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     if (!this.contact) {
       throw new Error("没有联系人");
     }
-    const accountInfo = await this.accountService.getAccountByAddress(
-      this.contact.address
-    );
+    const accountInfo = await this.accountService.getAccountByAddress(this.contact.address);
     this.extend_info = accountInfo;
     this.is_show_extend_info = true;
     this.markForCheck();
@@ -339,19 +310,14 @@ export class AccountContactDetailPage extends SecondLevelPage {
     await this._remarkAllContacts(contact, base_name);
   }
   @asyncCtrlGenerator.loading("批量备注中……")
-  private async _remarkAllContacts(
-    contact: LocalContactModel,
-    base_name: string
-  ) {
+  private async _remarkAllContacts(contact: LocalContactModel, base_name: string) {
     await this.tryGetAllTrans();
     const all_tags = await this.localContact.getTags();
     const all_tags_map = all_tags.reduce((map, tag) => {
       map.set(tag.name, tag);
       return map;
     }, new Map<string, TagModel>());
-    const tags = contact.tags
-      .map(tagname => all_tags_map.get(tagname))
-      .filter(v => v) as TagModel[];
+    const tags = contact.tags.map(tagname => all_tags_map.get(tagname)).filter(v => v) as TagModel[];
     const tags_name = tags.map(t => t.name);
     for (var [address, local_contact] of this.contact_metched_map.entries()) {
       if (!local_contact) {

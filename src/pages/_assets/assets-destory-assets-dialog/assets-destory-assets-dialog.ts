@@ -1,25 +1,8 @@
-import {
-	Component,
-	Optional,
-	ViewChild,
-	ElementRef,
-	ChangeDetectorRef,
-	ChangeDetectionStrategy,
-} from "@angular/core";
-import {
-	IonicPage,
-	NavController,
-	NavParams,
-	Refresher,
-	Content,
-	ViewController,
-} from "ionic-angular";
+import { Component, Optional, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
+import { IonicPage, NavController, NavParams, Refresher, Content, ViewController } from "ionic-angular";
 import { FirstLevelPage } from "../../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
-import {
-	AssetsServiceProvider,
-	AssetsPersonalModelWithLogoSafeUrl,
-} from "../../../providers/assets-service/assets-service";
+import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from "../../../providers/assets-service/assets-service";
 type buttonOptions = {
 	text: string;
 	handler?: Function;
@@ -61,9 +44,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 	formData: { amount?: number } = {
 		amount: undefined,
 	};
-	@AssetsDestoryAssetsDialogPage.setErrorTo("errors", "amount", [
-		"RANGE_ERROR",
-	])
+	@AssetsDestoryAssetsDialogPage.setErrorTo("errors", "amount", ["RANGE_ERROR"])
 	check_amount() {
 		const res: any = {};
 		let { amount } = this.formData;
@@ -96,9 +77,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 			return;
 		}
 		const my_assets_list = await this.assetsService.myAssetsList.getPromise();
-		const new_assets_info = my_assets_list.find(
-			assets => assets.abbreviation === assets_info.abbreviation
-		);
+		const new_assets_info = my_assets_list.find(assets => assets.abbreviation === assets_info.abbreviation);
 		if (!new_assets_info) {
 			return;
 		}
@@ -109,26 +88,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 	rate = 1;
 	@asyncCtrlGenerator.error()
 	async getRate() {
-		const assets_query = {
-			abbreviation: this.assets_info.abbreviation,
-		};
-		const [assets, issusingAccount] = await Promise.all([
-			this.assetsService.getAssets(assets_query).then(list => list[0]),
-			await this.accountService.getAccountByAddress(
-				this.assets_info.address
-			),
-		]);
-		if (!assets) {
-			throw new Error(
-				this.getTranslateSync(
-					"ASSETS_NOT_FOUND#ABBREVIATION#",
-					assets_query
-				)
-			);
-		}
-		this.rate =
-			parseFloat(issusingAccount.balance) /
-			parseFloat(assets["remainAssets"]);
+		return this.assetsService.getAssetsToIBTRateByCache(this.assets_info).then(rate => (this.rate = rate));
 	}
 
 	closeDialog() {
@@ -157,13 +117,7 @@ export class AssetsDestoryAssetsDialogPage extends FirstLevelPage {
 		const { password, pay_pwd, custom_fee } = await this.getUserPassword({
 			custom_fee: true,
 		});
-		await this.assetsService.destoryAssets(
-			this.assets_info,
-			this.formData.amount as number,
-			custom_fee,
-			password,
-			pay_pwd
-		);
+		await this.assetsService.destoryAssets(this.assets_info, this.formData.amount as number, custom_fee, password, pay_pwd);
 		return this.closeDialog();
 	}
 }

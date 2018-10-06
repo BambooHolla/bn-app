@@ -8,7 +8,7 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content #content>
   <div class="header-nav-bg"></div>
   <div id="new_subchain_form" class="new-subchain-form">
     <div class="logo-wrapper">
@@ -157,3 +157,4 @@
     <button mat-button class="submit-button" [disabled]="!canSubmit" (click)="submit()">{{'ISSUED_IMMEDIATELY'|translate}}</button>
   </div>
 </ion-content>
+<ion-footer [keyboardAttach]="content"></ion-footer>

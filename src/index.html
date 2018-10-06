@@ -32,7 +32,7 @@
   <link rel="stylesheet" type="text/css" href="assets/fonts/SF Compact Display.css">
   <link rel="stylesheet" type="text/css" href="assets/fonts/material-icons.css">
   <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
-<script src="cordova.js"></script><script>APP_VERSION='3.3.1'</script>
+<script src="cordova.js"></script><script>APP_VERSION='3.3.2'</script>
   <script type="text/javascript">
     window['cordova_ready'] = window['cordova'] ? new Promise(resolve=>{
     document.addEventListener("deviceready", _ => resolve())
@@ -42,6 +42,13 @@
     // 强行使用indexed来模拟filesystem api，来突破配额限制
     delete self["requestFileSystem"];
     delete self["webkitRequestFileSystem"];
+    // FileReader会被Angular的垫片给重写了 ，所以这里将原生的FileReader暴露出来，确保idb.filesystem与fangodb可用。
+    window.__native_FileReader__ = window.FileReader;
+    // if(window.FileReader){
+    //   const fr = window.FileReader;
+    //   // 不可被篡改
+    //   Object.defineProperty(window,'FileReader',{get(){return fr},set(v){},configurable:false})
+    // }
   </script>
   <!-- <script src='./assets/lib/llqrcode.js'></script> -->
   <!-- un-comment this code to enable service worker

@@ -1,14 +1,13 @@
 import * as PIXI from "pixi.js";
 import * as PIXI_Filters from "pixi-filters";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import { afCtrl } from "../../bnqkl-framework/helper";
+import { afCtrl, IsIOS } from "../../bnqkl-framework/helper";
 import { TranslateService } from "@ngx-translate/core";
-import {
-	BlockModel,
-	BlockServiceProvider,
-} from "../../providers/block-service/block-service";
+import { BlockModel, BlockServiceProvider } from "../../providers/block-service/block-service";
 import { getLabelWidth, commonFontFamily, iconFontFamily } from "./helper";
 import { AniBase, ifmicon_font_ready } from "../AniBase";
+
+const isIOS = IsIOS();
 
 export class BlockCard extends PIXI.Graphics {
 	@FLP_Tool.FromGlobal translate!: TranslateService;
@@ -46,12 +45,7 @@ export class BlockCard extends PIXI.Graphics {
 		Object.assign(this._label_config, v);
 		this.drawLabels();
 	}
-	constructor(
-		public W: number,
-		public H: number,
-		chain_height: number,
-		block?: BlockModel | Promise<BlockModel>
-	) {
+	constructor(public W: number, public H: number, chain_height: number, block?: BlockModel | Promise<BlockModel>, public disabled_filters?: boolean) {
 		super();
 		// console.log("NNNNNN");
 		this.beginFill(0xffffff, 0);
@@ -79,16 +73,19 @@ export class BlockCard extends PIXI.Graphics {
 			bg.x = s_l;
 			bg.y = s_t;
 			shadown.addChild(bg);
-			// const glow_filter = new PIXI.filters.GlowFilter();
-			const shadow_filter = new PIXI.filters.DropShadowFilter();
-			shadow_filter.alpha = 0.2;
-			shadow_filter.blur = W * 0.005 * 2;
-			shadow_filter.rotation = 90;
-			shadow_filter.quality = 5;
-			shadow_filter.distance = W * 0.01;
-			// shadow_filter.shadowOnly = true;
-			shadow_filter.color = 0x0;
-			this.shadow_filter = shadow_filter;
+
+			if (!this.disabled_filters) {
+				// const glow_filter = new PIXI.filters.GlowFilter();
+				const shadow_filter = new PIXI.filters.DropShadowFilter();
+				shadow_filter.alpha = 0.2;
+				shadow_filter.blur = W * 0.005 * 2;
+				shadow_filter.rotation = 90;
+				shadow_filter.quality = 5;
+				shadow_filter.distance = W * 0.01;
+				// shadow_filter.shadowOnly = true;
+				shadow_filter.color = 0x0;
+				this.shadow_filter = shadow_filter;
+			}
 
 			this.addChild(shadown);
 		}
@@ -123,58 +120,38 @@ export class BlockCard extends PIXI.Graphics {
 		this.updateBlockModel(chain_height, block);
 		// this.drawLabels();
 
-		this.translate
-			.stream([
-				"HEIGHT",
-				"TRANSACTION_AMOUNT",
-				"TOTALAMOUNT",
-				"FEE",
-				"CHECK_BLOCK",
-			])
-			.subscribe(values => {
-				const label_config = {
-					height: "\ue674 " + values["HEIGHT"],
-					tran_num: "\ue604 " + values["TRANSACTION_AMOUNT"],
-					total_amount: "\ue629 " + values["TOTALAMOUNT"],
-					total_fee: "\ue67a " + values["FEE"],
-					view_block_detail: values["CHECK_BLOCK"],
-					view_block_detail_icon: "\ue600",
-				};
-				this.label_config = label_config;
-				this.emit("refresh-frame-in-async");
-			});
+		this.translate.stream(["HEIGHT", "TRANSACTION_AMOUNT", "TOTALAMOUNT", "FEE", "CHECK_BLOCK"]).subscribe(values => {
+			const label_config = {
+				height: "\ue674 " + values["HEIGHT"],
+				tran_num: "\ue604 " + values["TRANSACTION_AMOUNT"],
+				total_amount: "\ue629 " + values["TOTALAMOUNT"],
+				total_fee: "\ue67a " + values["FEE"],
+				view_block_detail: values["CHECK_BLOCK"],
+				view_block_detail_icon: "\ue600",
+			};
+			this.label_config = label_config;
+			this.emit("refresh-frame-in-async");
+		});
 	}
 	private _show_footer_container_mask = true;
 	toggleFooterContainerMask(show = this._show_footer_container_mask) {
 		this._show_footer_container_mask = show;
 		const is_show = show && this.interactive;
-		// const res_aplha = is_show ? 1 : 0;
-		// if (this.footer_container_mask.alpha !== res_aplha) {
-		//   // this.footer_container.cacheAsBitmap = false;
-		//   this.footer_container_mask.alpha = res_aplha;
-		//   // this.footer_container.cacheAsBitmap = true;
-		// }
-
-		if (is_show) {
-			if (!this.filters || this.filters.length !== 1) {
-				this.filters = [this.shadow_filter];
+		if (this.shadow_filter) {
+			if (is_show) {
+				if (!this.filters || this.filters.length !== 1) {
+					this.filters = [this.shadow_filter];
+				}
+			} else {
+				this.filters = null;
 			}
 		} else {
-			this.filters = null;
+			if (is_show) {
+				this.alpha = 0.8;
+			} else {
+				this.alpha = 1;
+			}
 		}
-		// const shadow_filter_alpha = is_show ? 0.4 : 0.2;
-		// if (this.shadow_filter.alpha !== shadow_filter_alpha) {
-		//   this.filters = [];
-
-		//   const old_cacheAsBitmap = this.shadown.cacheAsBitmap;
-		//   if (old_cacheAsBitmap) {
-		//     this.shadown.cacheAsBitmap = false;
-		//     this.shadow_filter.alpha = shadow_filter_alpha;
-		//     this.shadown.cacheAsBitmap = true;
-		//   } else {
-		//     this.shadow_filter.alpha = shadow_filter_alpha;
-		//   }
-		// }
 	}
 	shadown = new PIXI.Graphics();
 
@@ -235,18 +212,14 @@ export class BlockCard extends PIXI.Graphics {
 		};
 	}
 	/*模拟 text-align: center*/
-	private _textAlignCenter(
-		text: PIXI.Text,
-		vw: number,
-		left_or_right: 1 | -1
-	) {
+	private _textAlignCenter(text: PIXI.Text, vw: number, left_or_right: 1 | -1) {
 		const { W } = this;
 		const min_content_width = W * vw;
 		if (text.width < min_content_width) {
 			text.x += ((min_content_width - text.width) / 2) * left_or_right;
 		}
 	}
-	shadow_filter: PIXI.filters.DropShadowFilter;
+	shadow_filter?: PIXI.filters.DropShadowFilter;
 	height_content = new PIXI.Text("", this.style_header_content);
 	tran_num_content = new PIXI.Text("", this.style_header_content);
 	height_label = new PIXI.Text("", this.style_header_label);
@@ -258,10 +231,7 @@ export class BlockCard extends PIXI.Graphics {
 
 	footer_container = new PIXI.Container();
 	view_block_detail_label = new PIXI.Text("", this.style_footer_label);
-	view_block_detail_label_icon = new PIXI.Text(
-		"",
-		this.style_footer_label_icon
-	);
+	view_block_detail_label_icon = new PIXI.Text("", this.style_footer_label_icon);
 
 	drawLabels() {
 		this.setCacheAsBitmap(false);
@@ -313,16 +283,11 @@ export class BlockCard extends PIXI.Graphics {
 			// 查看区块
 			view_block_detail_label.text = label_config.view_block_detail;
 			view_block_detail_label.y = (h - W * 0.038) / 2;
-			view_block_detail_label.x =
-				w * 0.48 - getLabelWidth(view_block_detail_label) / 2;
+			view_block_detail_label.x = w * 0.48 - getLabelWidth(view_block_detail_label) / 2;
 			// ->
-			view_block_detail_label_icon.text =
-				label_config.view_block_detail_icon;
+			view_block_detail_label_icon.text = label_config.view_block_detail_icon;
 			view_block_detail_label_icon.y = (h - W * 0.1) / 2;
-			view_block_detail_label_icon.x =
-				view_block_detail_label.x +
-				getLabelWidth(view_block_detail_label) +
-				w * 0.01;
+			view_block_detail_label_icon.x = view_block_detail_label.x + getLabelWidth(view_block_detail_label) + w * 0.01;
 			// footer_container.cacheAsBitmap = true;
 			this.toggleFooterContainerMask(false);
 		}
@@ -330,10 +295,7 @@ export class BlockCard extends PIXI.Graphics {
 		this.setCacheAsBitmap(!this._can_tap);
 	}
 	private _checkRegisterDrawBlockModel = () => false;
-	updateBlockModel(
-		height: number,
-		block: BlockModel | Promise<BlockModel> | undefined
-	) {
+	updateBlockModel(height: number, block: BlockModel | Promise<BlockModel> | undefined) {
 		let no_same_height = height !== this.chain_height;
 		if (no_same_height) {
 			this.chain_height = height;
@@ -381,11 +343,7 @@ export class BlockCard extends PIXI.Graphics {
 
 		this.setCacheAsBitmap(!this._can_tap);
 	}
-	drawBlockModel(block: {
-		numberOfTransactions: number | string;
-		totalAmount: string;
-		totalFee: string;
-	}) {
+	drawBlockModel(block: { numberOfTransactions: number | string; totalAmount: string; totalFee: string }) {
 		this.setCacheAsBitmap(false);
 		const {
 			H,
@@ -408,11 +366,8 @@ export class BlockCard extends PIXI.Graphics {
 			this._textAlignCenter(tran_num_content, 0.16, -1);
 		}
 		{
-			total_amount_content.text = AniBase.amountToString(
-				block.totalAmount
-			);
-			total_amount_content.x =
-				right_base_line - total_amount_content.width;
+			total_amount_content.text = AniBase.amountToString(block.totalAmount);
+			total_amount_content.x = right_base_line - total_amount_content.width;
 			total_amount_content.y = H * 0.59;
 		}
 		{
@@ -439,22 +394,5 @@ export class BlockCard extends PIXI.Graphics {
 	}
 
 	private _cache_as_bitmap_ti?: number;
-	setCacheAsBitmap(v: boolean) {
-		// if (v === true) {
-		// 	if (this._cache_as_bitmap_ti) {
-		// 		return;
-		// 	} else {
-		// 		this._cache_as_bitmap_ti = afCtrl.raf(() => {
-		// 			this._cache_as_bitmap_ti = undefined;
-		// 			this.cacheAsBitmap = true;
-		// 		});
-		// 	}
-		// } else {
-		// 	if (this._cache_as_bitmap_ti) {
-		// 		afCtrl.caf(this._cache_as_bitmap_ti);
-		// 		this._cache_as_bitmap_ti = undefined;
-		// 	}
-		// 	this.cacheAsBitmap = false;
-		// }
-	}
+	setCacheAsBitmap(v: boolean) {}
 }

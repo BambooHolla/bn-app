@@ -1,17 +1,9 @@
-import {
-  Component,
-  Optional,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from "@angular/core";
+import { Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
-import {
-  PeerServiceProvider,
-  LocalPeerModel,
-} from "../../../providers/peer-service/peer-service";
+import { PeerServiceProvider, LocalPeerModel } from "../../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { baseConfig } from "../../../bnqkl-framework/helper";
 
@@ -31,7 +23,7 @@ export class AccountPeerListPage extends SecondLevelPage {
   ) {
     super(navCtrl, navParams, true, tabs);
   }
-  get origin(){
+  get origin() {
     return baseConfig.SERVER_URL;
   }
   @AccountPeerListPage.markForCheck cur_peer_list: LocalPeerModel[] = [];
@@ -86,10 +78,7 @@ export class AccountPeerListPage extends SecondLevelPage {
     const min_wait_time = sleep(5000); // 至少每5秒要更新一次数据
     this._watchPeerInfoFetching = this._watchPeerInfoFetching.bind(this);
     this.event.on("fetch-peers-info", this._watchPeerInfoFetching);
-    for await (var _pi of this.peerService.updateUseablePeersInfo(
-      this.cur_peer_list,
-      this.event
-    )) {
+    for await (var _pi of this.peerService.updateUseablePeersInfo(this.cur_peer_list, this.event)) {
       if (this.PAGE_STATUS >= this.PAGE_STATUS_ENUM.WILL_LEAVE) {
         break;
       }
@@ -101,7 +90,7 @@ export class AccountPeerListPage extends SecondLevelPage {
 
   async forceTogglePeer(peer: LocalPeerModel) {
     if (
-      await this.waitTipDialogConfirm("确定要切换到这个节点？", {
+      await this.waitTipDialogConfirm(`确定要切换到这个节点(${peer.ip})？`, {
         false_text: "@@CANCEL",
         true_text: "@@OK",
       })

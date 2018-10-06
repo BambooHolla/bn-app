@@ -45,7 +45,7 @@
     <div class="extends-info">
       <div class="left total-income">
         <div class="amount">
-          {{userInfo.votingReward|amountEuler|number:'1.8-8'}}
+          {{userInfo.miningReward|amountEuler|number:'1.8-8'}}
           <div class="unit">IBT</div>
         </div>
         <div class="label">
@@ -56,7 +56,7 @@
       <div class="divider"></div>
       <div class="right total-fee">
         <div class="amount">
-          {{userInfo.votingReward|amountEuler|number:'1.8-8'}}
+          {{userInfo.paidFee|amountEuler|number:'1.8-8'}}
           <div class="unit">IBT</div>
         </div>
         <div class="label">
@@ -72,7 +72,7 @@
       {{'TOTAL_VALUE'|translate}}
     </div>
     <div class="amount">
-      <text-mg [text]="userInfo.dollar|amountEuler|number:'1.8-8'" from="#ff5d5b" to="#ff9b75" fontSize="2.5rem" fontWeight="500"></text-mg>
+      <text-mg [text]="myTotalUSD|amountEuler|number:'1.8-8'" from="#ff5d5b" to="#ff9b75" fontSize="2.5rem" fontWeight="500"></text-mg>
       <div class="unit">USD</div>
     </div>
   </div>

@@ -1,19 +1,9 @@
 import * as PIXI from "pixi.js";
 type TrendPointData = [number, number];
-import {
-	calcOutterNearRange,
-	calcRangeScale,
-	ObjectOptionsType,
-} from "./helper";
+import { calcOutterNearRange, calcRangeScale, ObjectOptionsType } from "./helper";
 import { AniBase } from "../../AniBase";
 
-const commonFontFamily = [
-	"-apple-system",
-	"SF Compact Display",
-	"Helvetica Neue",
-	"Roboto",
-	"sans-serif",
-];
+const commonFontFamily = ["-apple-system", "SF Compact Display", "Helvetica Neue", "Roboto", "sans-serif"];
 const iconFontFamily = ["ifmicon", ...commonFontFamily];
 
 export class TrendSlide extends PIXI.Graphics {
@@ -26,15 +16,9 @@ export class TrendSlide extends PIXI.Graphics {
 		opts?: {
 			title_icon?: string;
 			devicePixelRatio?: number;
-			title_style?: ObjectOptionsType<
-				typeof TrendSlide.prototype.title_style
-			>;
-			chart_line_style?: ObjectOptionsType<
-				typeof TrendSlide.prototype.chart_line_style
-			>;
-			auxiliary_text_style?: ObjectOptionsType<
-				typeof TrendSlide.prototype.auxiliary_text_style
-			>;
+			title_style?: ObjectOptionsType<typeof TrendSlide.prototype.title_style>;
+			chart_line_style?: ObjectOptionsType<typeof TrendSlide.prototype.chart_line_style>;
+			auxiliary_text_style?: ObjectOptionsType<typeof TrendSlide.prototype.auxiliary_text_style>;
 		}
 	) {
 		super();
@@ -45,13 +29,11 @@ export class TrendSlide extends PIXI.Graphics {
 			if (opts.title_icon) {
 				this.title_icon_content = opts.title_icon;
 			}
-			["title_style", "chart_line_style", "auxiliary_text_style"].forEach(
-				key => {
-					if (key in opts) {
-						this[key] = Object.assign(this[key], opts[key]);
-					}
+			["title_style", "chart_line_style", "auxiliary_text_style"].forEach(key => {
+				if (key in opts) {
+					this[key] = Object.assign(this[key], opts[key]);
 				}
-			);
+			});
 		}
 	}
 	devicePixelRatio = window.devicePixelRatio;
@@ -126,10 +108,7 @@ export class TrendSlide extends PIXI.Graphics {
 			const x_coo_diff = x_coo_max - x_coo_min;
 			const y_coo_diff = y_coo_max - y_coo_min;
 			this._point_list = this.data.map(([x_val, y_val]) => {
-				return new PIXI.Point(
-					((x_val - x_coo_min) / x_coo_diff) * chart_width,
-					(1 - (y_val - y_coo_min) / y_coo_diff) * chart_height
-				);
+				return new PIXI.Point(((x_val - x_coo_min) / x_coo_diff) * chart_width, (1 - (y_val - y_coo_min) / y_coo_diff) * chart_height);
 			});
 			this._data_dirty = false;
 		}
@@ -167,38 +146,20 @@ export class TrendSlide extends PIXI.Graphics {
 	}
 	/**绘制标题*/
 	drawTitle() {
-		const {
-			title_content,
-			title_style,
-			title_icon_content,
-			title_icon_style,
-			padding,
-		} = this;
+		const { title_content, title_style, title_icon_content, title_icon_style, padding } = this;
 		let { titleText, titleIconText } = this;
 
 		if (!titleIconText) {
-			this.titleIconText = titleIconText = new PIXI.Text(
-				title_icon_content,
-				title_icon_style
-			);
+			this.titleIconText = titleIconText = new PIXI.Text(title_icon_content, title_icon_style);
 			this.addChild(titleIconText);
 			titleIconText.position.set(padding.left, padding.top);
 		} else {
 			titleIconText.text = title_icon_content;
 		}
 		if (!titleText) {
-			this.titleText = titleText = new PIXI.Text(
-				title_content,
-				title_style
-			);
+			this.titleText = titleText = new PIXI.Text(title_content, title_style);
 			this.addChild(titleText);
-			titleText.position.set(
-				padding.left +
-					(titleIconText
-						? titleIconText.x + titleIconText.width / 2
-						: 0),
-				padding.top
-			);
+			titleText.position.set(padding.left + (titleIconText ? titleIconText.x + titleIconText.width / 2 : 0), padding.top);
 		} else {
 			titleText.text = this.title_content;
 		}
@@ -217,16 +178,7 @@ export class TrendSlide extends PIXI.Graphics {
 	// protected _mesh_left = 0;
 	/**绘制坐标轴*/
 	drawCoordinate() {
-		const {
-			data,
-			view_height,
-			view_width,
-			coo_text_style,
-			padding,
-			coo_line_style,
-			chartLine,
-			DESTORY_ABLE_SYMBOL,
-		} = this;
+		const { data, view_height, view_width, coo_text_style, padding, coo_line_style, chartLine, DESTORY_ABLE_SYMBOL } = this;
 		const x_data = data.map(d => d[0]);
 		const y_data = data.map(d => d[1]);
 		const [y_coo_max, y_coo_min] = calcOutterNearRange(y_data, {
@@ -253,21 +205,13 @@ export class TrendSlide extends PIXI.Graphics {
 				}
 			});
 		}
-		const mesh_height =
-			this.view_height -
-			coordinateMesh.y -
-			coo_text_style.fontSize * 2 -
-			padding.bottom;
+		const mesh_height = this.view_height - coordinateMesh.y - coo_text_style.fontSize * 2 - padding.bottom;
 
 		let max_y_text: PIXI.Text | undefined;
 		/// 绘制Y轴的刻度
 		{
 			// 算出坐标文字以及其对应的位置
-			const scale_list = calcRangeScale(
-				y_coo_max,
-				y_coo_min,
-				mesh_height / (coo_text_style.fontSize * 1.5)
-			);
+			const scale_list = calcRangeScale(y_coo_max, y_coo_min, mesh_height / (coo_text_style.fontSize * 1.5));
 			// console.log(scale_list);
 			let max_width = 0;
 			let text_height = 0;
@@ -308,22 +252,11 @@ export class TrendSlide extends PIXI.Graphics {
 			height_icon_text.x = coo_x_left - coo_text_style.fontSize * 0.3;
 			height_icon_text.y = pos_y - coo_text_style.fontSize * 0.15;
 			coordinateMesh.addChildAt(height_icon_text, 0);
-			const height_icon_right =
-				coo_x_left +
-				height_icon_text.width -
-				coo_text_style.fontSize * 0.3;
+			const height_icon_right = coo_x_left + height_icon_text.width - coo_text_style.fontSize * 0.3;
 			const coo_x_width = view_width - padding.right - height_icon_right;
 
 			// 算出坐标文字以及其对应的位置
-			const scale_list = calcRangeScale(
-				x_coo_max,
-				x_coo_min,
-				coo_x_width /
-					(coo_text_style.fontSize *
-						0.6 *
-						x_coo_max.toString().length *
-						2)
-			);
+			const scale_list = calcRangeScale(x_coo_max, x_coo_min, coo_x_width / (coo_text_style.fontSize * 0.6 * x_coo_max.toString().length * 2));
 
 			for (var i = 0; i < scale_list.length; i += 1) {
 				const scale_item = scale_list[i];
@@ -332,10 +265,7 @@ export class TrendSlide extends PIXI.Graphics {
 				const t = new PIXI.Text(val.toString(), coo_text_style);
 				t[DESTORY_ABLE_SYMBOL] = true;
 				const text_width = t.width;
-				t.x =
-					height_icon_right +
-					pos_rate * coo_x_width -
-					pos_rate * text_width;
+				t.x = height_icon_right + pos_rate * coo_x_width - pos_rate * text_width;
 				t.y = pos_y;
 				coordinateMesh.addChildAt(t, 0);
 			}
@@ -344,11 +274,7 @@ export class TrendSlide extends PIXI.Graphics {
 		}
 		/// 绘制坐标轴线
 		{
-			coordinateMesh.lineStyle(
-				coo_line_style.width,
-				coo_line_style.fill,
-				coo_line_style.alpha
-			);
+			coordinateMesh.lineStyle(coo_line_style.width, coo_line_style.fill, coo_line_style.alpha);
 			coordinateMesh.moveTo(coo_x_left, 0);
 			const x_coo_y = mesh_height + coo_text_style.fontSize / 2;
 			coordinateMesh.lineTo(coo_x_left, x_coo_y);
@@ -358,12 +284,7 @@ export class TrendSlide extends PIXI.Graphics {
 		{
 			coordinateMesh.lineStyle(0);
 			coordinateMesh.beginFill(0x0, 0);
-			coordinateMesh.drawRect(
-				0,
-				0,
-				view_width,
-				this.view_height - coordinateMesh.y
-			);
+			coordinateMesh.drawRect(0, 0, view_width, this.view_height - coordinateMesh.y);
 			coordinateMesh.endFill();
 		}
 
@@ -383,14 +304,8 @@ export class TrendSlide extends PIXI.Graphics {
 	chartLineGradientCover?: PIXI.Sprite;
 	private _chartLineGradientCanvasTexture?: HTMLCanvasElement;
 
-	getChartLineGradientColor(
-		x: number,
-		y?: number
-	): Uint8Array | Uint8ClampedArray {
-		const {
-			_chartLineGradientCanvasTexture,
-			chartLineGradientCover,
-		} = this;
+	getChartLineGradientColor(x: number, y?: number): Uint8Array | Uint8ClampedArray {
+		const { _chartLineGradientCanvasTexture, chartLineGradientCover } = this;
 
 		if (!chartLineGradientCover || !_chartLineGradientCanvasTexture) {
 			throw new Error("chartLineGradientCover not init");
@@ -399,9 +314,7 @@ export class TrendSlide extends PIXI.Graphics {
 		if (x > width || x < 0) {
 			throw new RangeError("getChartLineGradientColor:x range error");
 		}
-		const pos_x = Math.floor(
-			(x / width) * _chartLineGradientCanvasTexture.width
-		);
+		const pos_x = Math.floor((x / width) * _chartLineGradientCanvasTexture.width);
 		const ctx = _chartLineGradientCanvasTexture.getContext("2d");
 		if (!ctx) {
 			throw new Error("2d ctx not found, should not happend");
@@ -426,11 +339,7 @@ export class TrendSlide extends PIXI.Graphics {
 		chartLine.clear();
 		chartLine.lineStyle(chart_line_width, 0x000000, 1);
 		// chartLine.nativeLines = true;
-		for (
-			var i = -1, len = point_list.length, next_x, next_y;
-			i < len;
-			i += 1
-		) {
+		for (var i = -1, len = point_list.length, next_x, next_y; i < len; i += 1) {
 			const x = next_x;
 			const y = next_y;
 			const next_point = point_list[i + 1];
@@ -440,9 +349,11 @@ export class TrendSlide extends PIXI.Graphics {
 			}
 			// console.log(next_point);
 			if (i === 0) {
-				chartLine.moveTo(x, y);
+				chartLine.moveTo(x, chart_height + chart_line_width);
+				chartLine.lineTo(x, y);
 			} else if (i === len) {
 				chartLine.lineTo(x, y);
+				chartLine.lineTo(x, chart_height + chart_line_width);
 			} else if (i > 0) {
 				// 因为要精准定位坐标轴，所以这里暂时无法用曲线
 				// chartLine.lineTo(x, y);
@@ -468,14 +379,7 @@ export class TrendSlide extends PIXI.Graphics {
 				const ctrl_1_y = pre_point.y;
 				const ctrl_2_x = unit_diff_x * 3 + pre_point.x;
 				const ctrl_2_y = y;
-				chartLine.bezierCurveTo(
-					ctrl_1_x,
-					ctrl_1_y,
-					ctrl_2_x,
-					ctrl_2_y,
-					x,
-					y
-				);
+				chartLine.bezierCurveTo(ctrl_1_x, ctrl_1_y, ctrl_2_x, ctrl_2_y, x, y);
 			}
 		}
 		chartLine.moveTo(0, 0);
@@ -494,14 +398,8 @@ export class TrendSlide extends PIXI.Graphics {
 			throw new Error("coordinateMesh not init");
 		}
 		if (!chartLineGradientCover) {
-			this._chartLineGradientCanvasTexture = AniBase.createLinearGradient(
-				chart_width / 2,
-				0,
-				this.chart_line_style.gradient
-			);
-			this.chartLineGradientCover = chartLineGradientCover = PIXI.Sprite.from(
-				this._chartLineGradientCanvasTexture
-			);
+			this._chartLineGradientCanvasTexture = AniBase.createLinearGradient(chart_width / 2, 0, this.chart_line_style.gradient);
+			this.chartLineGradientCover = chartLineGradientCover = PIXI.Sprite.from(this._chartLineGradientCanvasTexture);
 			chartLineGradientCover.height = chart_height;
 			chartLineGradientCover.width = chart_width + r * 2;
 			coordinateMesh.addChild(chartLineGradientCover);
@@ -517,13 +415,10 @@ export class TrendSlide extends PIXI.Graphics {
 		let pre_tap_point: PIXI.Point | undefined;
 		if (!coordinateMesh.interactive) {
 			coordinateMesh.interactive = true;
-			coordinateMesh.on(
-				"pointerdown",
-				(e: PIXI.interaction.InteractionEvent) => {
-					pre_tap_point = e.data.global.clone();
-					drawAuxiliaryLineByPoint(pre_tap_point);
-				}
-			);
+			coordinateMesh.on("pointerdown", (e: PIXI.interaction.InteractionEvent) => {
+				pre_tap_point = e.data.global.clone();
+				drawAuxiliaryLineByPoint(pre_tap_point);
+			});
 		} else if (pre_tap_point) {
 			drawAuxiliaryLineByPoint(pre_tap_point);
 		}
@@ -532,19 +427,8 @@ export class TrendSlide extends PIXI.Graphics {
 	private _auxiliaryLineGradientMask?: PIXI.Sprite;
 	private _auxiliaryText?: PIXI.Text;
 	protected _drawAuxiliaryLine(x: number, y: number) {
-		let {
-			_auxiliaryLine: auxiliaryLine,
-			_auxiliaryLineGradientMask: auxiliaryLineGradientMask,
-			_auxiliaryText: auxiliaryText,
-		} = this;
-		const {
-			chartLine,
-			coordinateMesh,
-			chart_line_width,
-			chartLineGradientCover,
-			point_list,
-			padding,
-		} = this;
+		let { _auxiliaryLine: auxiliaryLine, _auxiliaryLineGradientMask: auxiliaryLineGradientMask, _auxiliaryText: auxiliaryText } = this;
+		const { chartLine, coordinateMesh, chart_line_width, chartLineGradientCover, point_list, padding } = this;
 		if (!chartLineGradientCover) {
 			throw new Error("chartLineGradientCover not init");
 		}
@@ -565,21 +449,14 @@ export class TrendSlide extends PIXI.Graphics {
 		/// 初始化辅助线遮罩
 		if (!auxiliaryLineGradientMask) {
 			auxiliaryLineGradientMask = this._auxiliaryLineGradientMask = PIXI.Sprite.from(
-				AniBase.createLinearGradient(0, this.view_height / 2, [
-					[0, "#FFF"],
-					[0.7, "#666"],
-					[1, "#333"],
-				])
+				AniBase.createLinearGradient(0, this.view_height / 2, [[0, "#FFF"], [0.7, "#666"], [1, "#333"]])
 			);
 			auxiliaryLine.mask = auxiliaryLineGradientMask;
 			auxiliaryLine.addChild(auxiliaryLineGradientMask);
 		}
 		/// 初始化辅助文字
 		if (!auxiliaryText) {
-			auxiliaryText = this._auxiliaryText = new PIXI.Text(
-				"",
-				this.auxiliary_text_style
-			);
+			auxiliaryText = this._auxiliaryText = new PIXI.Text("", this.auxiliary_text_style);
 			this.addChild(auxiliaryText);
 			auxiliaryText.y = padding.top;
 		}
@@ -610,9 +487,7 @@ export class TrendSlide extends PIXI.Graphics {
 		// 基于这个临近点，寻找最佳临近点
 		{
 			const near_range_r = this.pt(20); // 寻找x轴上，在这个范围为半径内的点
-			const unit_diff_x =
-				(point_list[point_list.length - 1].x - point_list[0].x) /
-				point_list.length;
+			const unit_diff_x = (point_list[point_list.length - 1].x - point_list[0].x) / point_list.length;
 			const near_range_index = Math.floor(near_range_r / unit_diff_x);
 			const sort_able_point_list: {
 				diff_i: number;
@@ -621,11 +496,7 @@ export class TrendSlide extends PIXI.Graphics {
 				dis: number;
 			}[] = [];
 			for (
-				var i = Math.max(0, near_point_index - near_range_index),
-					max_index = Math.min(
-						point_list.length - 1,
-						near_point_index + near_range_index
-					);
+				var i = Math.max(0, near_point_index - near_range_index), max_index = Math.min(point_list.length - 1, near_point_index + near_range_index);
 				i <= max_index;
 				i += 1
 			) {
@@ -634,9 +505,7 @@ export class TrendSlide extends PIXI.Graphics {
 					diff_i: Math.abs(i - near_range_index),
 					index: i,
 					point,
-					dis: Math.sqrt(
-						Math.pow(point.x - x, 2) + Math.pow(point.y - y, 2)
-					),
+					dis: Math.sqrt(Math.pow(point.x - x, 2) + Math.pow(point.y - y, 2)),
 				});
 			}
 			// 排序
@@ -654,11 +523,7 @@ export class TrendSlide extends PIXI.Graphics {
 
 		/// 绘制圆圈
 		{
-			auxiliaryLine.lineStyle(
-				chart_line_width / 2,
-				(r << 16) + (g << 8) + b,
-				a / 255
-			);
+			auxiliaryLine.lineStyle(chart_line_width / 2, (r << 16) + (g << 8) + b, a / 255);
 			auxiliaryLine.beginFill(0xffffff, 1);
 			auxiliaryLine.drawCircle(0, 0, chart_line_width * 1.5);
 			auxiliaryLine.endFill();
@@ -674,10 +539,7 @@ export class TrendSlide extends PIXI.Graphics {
 				v_line_height = end_y - start_y;
 			}
 		}
-		auxiliaryLine.position.set(
-			chartLine.x + near_point.x,
-			chartLine.y + near_point.y
-		);
+		auxiliaryLine.position.set(chartLine.x + near_point.x, chartLine.y + near_point.y);
 		/// 改变遮罩的形态
 		{
 			const ring_R = chart_line_width * 2 + chart_line_width / 2;
@@ -689,8 +551,7 @@ export class TrendSlide extends PIXI.Graphics {
 		{
 			const itemData = this.data[near_point_index];
 			auxiliaryText.text = `${itemData[1]} ; ${itemData[0]}`;
-			auxiliaryText.x =
-				this.view_width - auxiliaryText.width - this.padding.right;
+			auxiliaryText.x = this.view_width - auxiliaryText.width - this.padding.right;
 		}
 	}
 }

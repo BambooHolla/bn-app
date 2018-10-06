@@ -268,7 +268,8 @@ page-tab-chain {
     align-items: center;
     transform: translateZ(0);
     &.loading {
-      visibility: hidden;
+      // visibility: hidden;
+      opacity: 0.4;
     }
   }
 }

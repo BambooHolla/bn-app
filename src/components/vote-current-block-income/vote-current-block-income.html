@@ -20,21 +20,21 @@
   <div class="info-item">
     <div class="title">{{'CURRENT_ROUND'|translate}}</div>
     <div class="val">
-      <text-gradient [text]="cur_round_income_info.round" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600"></text-gradient>
+      <text-mg [text]="cur_round_income_info.round" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600"></text-mg>
     </div>
   </div>
   <div class="info-item">
     <div class="title">{{'MY_BLOCKS'|translate}}</div>
     <div class="val">
-      <text-gradient [text]="cur_round_income_info.block_num" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
-      </text-gradient>
+      <text-mg [text]="cur_round_income_info.block_num" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
+      </text-mg>
     </div>
   </div>
   <div class="info-item">
     <div class="title">{{'RECENT_BENEFIT'|translate}}</div>
     <div class="val">
-      <text-gradient [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
-      </text-gradient>
+      <text-mg [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="1.7rem" fontWeight="600">
+      </text-mg>
     </div>
   </div>
 </div>
@@ -44,7 +44,7 @@
       {{'CURRENT_ROUND'|translate}}
     </div>
     <div class="value">
-      <text-gradient [text]="cur_round_income_info.round" from="#f78464" to="#fecc49" fontSize="2rem" fontWeight="600"></text-gradient>
+      <text-mg [text]="cur_round_income_info.round" from="#f78464" to="#fecc49" fontSize="2rem" fontWeight="600"></text-mg>
     </div>
   </div>
   <div class="my-block-list">
@@ -98,7 +98,7 @@
       {{'RECENT_BENEFIT'|translate}}
     </div>
     <div class="value">
-      <text-gradient [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="2rem" fontWeight="600"></text-gradient>
+      <text-mg [text]="cur_round_income_info.recent_income_amount|amountEuler|number:'1.8-8'" from="#f78464" to="#fecc49" fontSize="2rem" fontWeight="600"></text-mg>
     </div>
   </div>
 </div>

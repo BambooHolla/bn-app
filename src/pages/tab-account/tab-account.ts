@@ -1,13 +1,10 @@
-import {
-  Component,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
 import { IonicPage, NavController, NavParams } from "ionic-angular";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { UserInfoProvider } from "../../providers/user-info/user-info";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
+import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from "../../providers/assets-service/assets-service";
 
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
@@ -26,7 +23,8 @@ export class TabAccountPage extends FirstLevelPage {
     public navParams: NavParams,
     public fetch: AppFetchProvider,
     public cdRef: ChangeDetectorRef,
-    public voucherService: VoucherServiceProvider
+    public voucherService: VoucherServiceProvider,
+    public assetsService: AssetsServiceProvider
   ) {
     super(navCtrl, navParams);
     this.registerViewEvent(this.userInfo, "changed", () => {
@@ -36,51 +34,40 @@ export class TabAccountPage extends FirstLevelPage {
       this.checkAndroidUpdate();
     });
   }
+  private _force_has_balance = false;
   get hasBalance() {
+    if(this._force_has_balance){
+      return true;
+    }
+    if (this._my_assets_list && this._my_assets_list.length > 0) {
+      return true;
+    }
     return parseFloat(this.userInfo.balance) !== 0;
   }
-  /*监听账户余额增加 */
-  // @TabAccountPage.autoUnsubscribe({ ignore_did_leve: true })
-  // private _user_balance_grow_up_sub?: Subscription;
-  // @TabAccountPage.onInit
-  // watchUserBalanceGrowUp() {
-  //   const per_balances_map = new Map();
-  //   this._user_balance_grow_up_sub = this.appSetting.user_token.subscribe(
-  //     async () => {
-  //       const user = this.appSetting.getUserToken();
-  //       if (!this.userInfo.is_from_network) {
-  //         per_balances_map.delete(user.address);
-  //         return;
-  //       }
-  //       if (per_balances_map.has(user.address)) {
-  //         const pre_balance: string = per_balances_map.get(user.address);
-  //         const cur_balance: string = user.balance;
-  //         // if(cur_balance!==pre_balance&&)
-  //       }
-  //       per_balances_map.set(user.address, user.balance);
-  //     },
-  //   );
-  // }
+
+  /// 获取其它数字资产，如果有其它数字资产，说明这个账户有过一些活动记录，那么当作有账户余额的账户来提供更多的功能
+  private _my_assets_list?: AssetsPersonalModelWithLogoSafeUrl[];
+  @TabAccountPage.willEnter
+  @TabAccountPage.addEvent("HEIGHT:CHANGED")
+  @asyncCtrlGenerator.error("@@FETCH_MY_ASSETS_LIST_ERROR")
+  private async _checkHasAssetsBalance() {
+    this._my_assets_list = await this.assetsService.myAssetsList.getPromise();
+  }
+
   @TabAccountPage.didEnter
   async isShowMiningIncomeNotice() {
     /// 开启收益提醒
     if (!this.appSetting.settings._is_first_balance_grow_up_notice) {
       this.appSetting.settings._is_first_balance_grow_up_notice = true;
-      let res = await this.waitTipDialogConfirm(
-        "@@SHOW_INCOME_IBT_NOTICE_TIP",
-        {
-          true_text: "@@YES_I_NEED",
-        }
-      );
+      let res = await this.waitTipDialogConfirm("@@SHOW_INCOME_IBT_NOTICE_TIP", {
+        true_text: "@@YES_I_NEED",
+      });
       this.appSetting.settings.mining_income_notice = res;
       if (res) {
-        res = await this.waitTipDialogConfirm(
-          "@@AFTER_SHOW_INCOME_IBT_NOTICE_TIP",
-          {
-            true_text: "@@OK_I_KNOWN",
-            false_text: "@@NO_NOTICE_ME",
-          }
-        );
+        res = await this.waitTipDialogConfirm("@@AFTER_SHOW_INCOME_IBT_NOTICE_TIP", {
+          true_text: "@@OK_I_KNOWN",
+          false_text: "@@NO_NOTICE_ME",
+        });
       }
       this.appSetting.settings.mining_income_notice = res;
     }
@@ -88,23 +75,15 @@ export class TabAccountPage extends FirstLevelPage {
     if (
       !this.userInfo.isFreezed &&
       !this.userInfo.hasSecondPwd &&
-      !sessionStorage.getItem(
-        "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP"
-      ) &&
+      !sessionStorage.getItem("TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP") &&
       parseFloat(this.userInfo.balance) / 1e8 >= 10
     ) {
-      sessionStorage.setItem(
-        "TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP",
-        "true"
-      );
+      sessionStorage.setItem("TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP", "true");
       if (
-        await this.waitTipDialogConfirm(
-          "@@TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP",
-          {
-            true_text: "@@SET_NOW",
-            false_text: "@@NOT_SET",
-          }
-        )
+        await this.waitTipDialogConfirm("@@TOO_MANY_IBT_SHOULD_SET_THE_PAYMENT_PASSWORD_TIP", {
+          true_text: "@@SET_NOW",
+          false_text: "@@NOT_SET",
+        })
       ) {
         return this.routeTo("settings-set-pay-pwd", { auto_return: true });
       }
@@ -115,19 +94,14 @@ export class TabAccountPage extends FirstLevelPage {
 
   async openSharePanel() {
     if (!this.appSetting.settings._is_fisrt_show_share_app) {
-      this.appSetting.settings._is_fisrt_show_share_app = await this.waitTipDialogConfirm(
-        "@@SHARE_APP_TIP"
-      );
+      this.appSetting.settings._is_fisrt_show_share_app = await this.waitTipDialogConfirm("@@SHARE_APP_TIP");
     }
     var message = await this.getTranslate("WELCOME_TO_DOWNLOAD_IBT_APP");
     var web_link = "https://www.ifmchain.com/downloadv2.0.html";
     var image_url;
     if (this.app_version_info) {
       message = this.app_version_info.share_message || message;
-      web_link =
-        this.app_version_info.share_link ||
-        this.app_version_info.download_link_web ||
-        web_link;
+      web_link = this.app_version_info.share_link || this.app_version_info.download_link_web || web_link;
       image_url = this.app_version_info.share_image_url || image_url;
     }
     this.modalCtrl
@@ -166,10 +140,14 @@ export class TabAccountPage extends FirstLevelPage {
   /*跳转到我的本地的关注并显示提示*/
   async routeToMyContacts() {
     if (!this.appSetting.settings._is_show_first_local_contacts_tip) {
-      this.appSetting.settings._is_show_first_local_contacts_tip = await this.waitTipDialogConfirm(
-        "@@MY_LOCAL_CONTACTS_TIP"
-      );
+      this.appSetting.settings._is_show_first_local_contacts_tip = await this.waitTipDialogConfirm("@@MY_LOCAL_CONTACTS_TIP");
     }
     return this.routeTo("account-my-local-contacts");
+  }
+
+  /// 隐藏功能
+  @asyncCtrlGenerator.tttttap()
+  tryTogglaHiddenItems(){
+    this._force_has_balance = !this._force_has_balance;
   }
 }

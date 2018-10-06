@@ -18,8 +18,11 @@ export class UserInfoProvider extends EventEmitter {
   get balance() {
     return this._balance;
   }
+  ibtToUSD(ibt: number) {
+    return (ibt * 50) || 0;
+  }
   get usd() {
-    return parseFloat(this.balance) * 50;
+    return this.ibtToUSD(parseFloat(this.balance));
   }
   get dollar() {
     return this.usd;
@@ -59,6 +62,14 @@ export class UserInfoProvider extends EventEmitter {
   get paidFee() {
     return this._userInfo.paidFee;
   }
+
+  get miningReward() {
+    return (
+      (parseFloat(this._userInfo.votingReward) || 0) +
+      (parseFloat(this._userInfo.forgingReward) || 0)
+    );
+  }
+
   constructor(public storage: Storage) {
     super();
   }

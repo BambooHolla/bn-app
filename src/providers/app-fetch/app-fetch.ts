@@ -330,11 +330,11 @@ export class AppFetchProvider extends EventEmitter {
     }
     var req_promise = req.then instanceof Function ? req : req.toPromise();
     if (httpAdapter === this.wsHttp) {
-      // websocket默认提供8s的请求超时
-      timeout_ms = 8000;
+      // websocket默认提供3s的请求超时
+      timeout_ms = 3000;
     } else {
-      // http 默认提供15s的请求超时
-      timeout_ms = 15000;
+      // http 默认提供4.5s的请求超时
+      timeout_ms = 4500;
     }
     if (isFinite(timeout_ms) && timeout_ms > 0) {
       req_promise = Promise.race([

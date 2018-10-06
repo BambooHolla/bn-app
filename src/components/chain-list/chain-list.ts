@@ -1,26 +1,12 @@
-import {
-  Component,
-  ViewChild,
-  ElementRef,
-  OnInit,
-  AfterViewInit,
-  OnDestroy,
-  Input,
-  Output,
-  ChangeDetectionStrategy,
-  EventEmitter,
-} from "@angular/core";
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, Input, Output, ChangeDetectionStrategy, EventEmitter } from "@angular/core";
 import { AniBase, ifmicon_font_ready } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import { afCtrl } from "../../bnqkl-framework/helper";
+import { afCtrl, IsIOS } from "../../bnqkl-framework/helper";
 import * as PIXI from "pixi.js";
 import * as PIXI_Filters from "pixi-filters";
 import { TranslateService } from "@ngx-translate/core";
-import {
-  BlockModel,
-  BlockServiceProvider,
-} from "../../providers/block-service/block-service";
+import { BlockModel, BlockServiceProvider } from "../../providers/block-service/block-service";
 import { BlockCard } from "./block-card";
 import { GoldBlockCard } from "./block-card.gold";
 import { OverBlockCard } from "./block-card.over";
@@ -38,9 +24,7 @@ type BlockItem = {
 };
 
 export const loader = new PIXI.loaders.Loader();
-export const _load_resource_promiseout = new PromiseOut<
-  PIXI.loaders.ResourceDictionary
->();
+export const _load_resource_promiseout = new PromiseOut<PIXI.loaders.ResourceDictionary>();
 export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 loader.add("block_card_blue_bg", "assets/imgs/tab-chain/block-card-blue.png");
@@ -52,11 +36,9 @@ loader.onError.add(err => {
   _load_resource_promiseout.reject(err);
 });
 loader.load((loader, resources) => {
-  ifmicon_font_ready
-    .catch(err => console.error("ifmicon font check error!", err))
-    .then(() => {
-      _load_resource_promiseout.resolve(resources);
-    });
+  ifmicon_font_ready.catch(err => console.error("ifmicon font check error!", err)).then(() => {
+    _load_resource_promiseout.resolve(resources);
+  });
 });
 
 import { commonFontFamily, iconFontFamily } from "./helper";
@@ -70,14 +52,17 @@ export class ChainListComponent extends AniBase {
   @ViewChild("canvas") canvasRef!: ElementRef;
   // devicePixelRatio = Math.ceil(Math.sqrt(window.devicePixelRatio));
 
+  is_ios = IsIOS();
+  get isForceCanvas() {
+    return this.app!.renderer.type !== PIXI.RENDERER_TYPE.WEBGL;
+  }
   constructor(public blockService: BlockServiceProvider) {
     super();
     this.on("init-start", this.initPixiApp.bind(this));
   }
 
   _init() {
-    const canvasNode: HTMLCanvasElement =
-      this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
+    const canvasNode: HTMLCanvasElement = this.canvasNode || (this.canvasNode = this.canvasRef.nativeElement);
     // this.ctx = this.canvasNode.getContext("2d");
     return super._init();
   }
@@ -117,11 +102,12 @@ export class ChainListComponent extends AniBase {
         throw new Error("call init first");
       }
       this.app = ChainListComponent.PIXIAppbuilder({
+        forceCanvas: this.is_ios,
         view: canvasNode,
         width: (this.renderer_width = this.pt(document.body.clientWidth)),
         height: (this.renderer_height = this.pt(document.body.clientHeight)),
         transparent: true,
-        antialias: true,
+        antialias: false,
         autoStart: true,
         // backgroundColor: 0xffffff,
       });
@@ -151,21 +137,9 @@ export class ChainListComponent extends AniBase {
     }
   }
   private _calcMaxViewHeight() {
-    if (
-      this.renderer_height &&
-      this.max_chain_height &&
-      this.renderer_started
-    ) {
-      this.max_view_height = Math.max(
-        this.renderer_height,
-        this.max_chain_height * this.item_height +
-          this.view_padding_top +
-          this.list_padding_bottom
-      );
-      if (
-        this._isInTouch() === false &&
-        -this._getListViewY() < this.item_height * 2
-      ) {
+    if (this.renderer_height && this.max_chain_height && this.renderer_started) {
+      this.max_view_height = Math.max(this.renderer_height, this.max_chain_height * this.item_height + this.view_padding_top + this.list_padding_bottom);
+      if (this._isInTouch() === false && -this._getListViewY() < this.item_height * 2) {
         // 刷新参数
         this._init_scroll({ no_refresh: true });
         // 使用动画的方式滚动到第一个块
@@ -485,11 +459,7 @@ export class ChainListComponent extends AniBase {
         },
         getData: () => {
           return get30MinRangeBlockList(this.max_chain_height).then(
-            block_list =>
-              block_list.map(block => [
-                block.height,
-                block.numberOfTransactions,
-              ]) as [number, number][]
+            block_list => block_list.map(block => [block.height, block.numberOfTransactions]) as [number, number][]
           );
         },
       },
@@ -507,11 +477,7 @@ export class ChainListComponent extends AniBase {
         },
         getData: () => {
           return get30MinRangeBlockList(this.max_chain_height).then(
-            block_list =>
-              block_list.map(block => [
-                block.height,
-                parseFloat(block.totalAmount) / 1e8,
-              ]) as [number, number][]
+            block_list => block_list.map(block => [block.height, parseFloat(block.totalAmount) / 1e8]) as [number, number][]
           );
         },
       },
@@ -549,25 +515,12 @@ export class ChainListComponent extends AniBase {
   }
   private _pre_render_info = "";
   /**计算出目前在视野中的blockModel以及对应的坐标*/
-  private _calcInViewBlockItems(
-    y = this._getListViewY(),
-    force_render?: boolean
-  ) {
-    const {
-      item_height,
-      renderer_height,
-      view_padding_top,
-      max_chain_height,
-      list,
-      list_cache,
-      _pre_render_info,
-    } = this;
+  private _calcInViewBlockItems(y = this._getListViewY(), force_render?: boolean) {
+    const { item_height, renderer_height, view_padding_top, max_chain_height, list, list_cache, _pre_render_info } = this;
 
     const abs_y = -y;
     /// 需要跳过的blocks
-    const skip_chain_num = Math.floor(
-      Math.max(abs_y - view_padding_top, 0) / item_height
-    );
+    const skip_chain_num = Math.floor(Math.max(abs_y - view_padding_top, 0) / item_height);
     const skip_y = view_padding_top + skip_chain_num * item_height;
     const view_end_y = abs_y + renderer_height;
     const diff_y = view_end_y - skip_y;
@@ -575,8 +528,7 @@ export class ChainListComponent extends AniBase {
     /// 计算需要显示在屏幕中的元素
     const from_chain_height = max_chain_height - skip_chain_num;
 
-    const cur_render_info =
-      from_chain_height + "," + abs_y.toFixed(1) + "," + renderer_height;
+    const cur_render_info = from_chain_height + "," + abs_y.toFixed(1) + "," + renderer_height;
     // console.log(cur_render_info, _pre_render_info)
     if (cur_render_info === _pre_render_info && !force_render) {
       // console.log("tiaozhen")
@@ -627,10 +579,7 @@ export class ChainListComponent extends AniBase {
     /// 将剩余的放入内存重用区
     for (var chain_height in list_cache) {
       // console.log("add to cg cache", chain_height);
-      this._addUserableBlockCard(
-        chain_height,
-        list_cache[chain_height].cardView
-      );
+      this._addUserableBlockCard(chain_height, list_cache[chain_height].cardView);
     }
 
     this.list = new_list;
@@ -672,11 +621,7 @@ export class ChainListComponent extends AniBase {
     if (height % 57 === 0) {
       let { _useable_over_blockcard } = this;
       if (!_useable_over_blockcard) {
-        _useable_over_blockcard = new OverBlockCard(
-          this.item_width,
-          this.item_height,
-          height
-        );
+        _useable_over_blockcard = new OverBlockCard(this.item_width, this.item_height, height, undefined, this.isForceCanvas);
         this._init_block_card_bind(_useable_over_blockcard);
         this._useable_over_blockcard = _useable_over_blockcard;
       }
@@ -696,7 +641,7 @@ export class ChainListComponent extends AniBase {
       return cache;
     }
     // 新区块
-    const block_card = new BlockCard(this.item_width, this.item_height, height);
+    const block_card = new BlockCard(this.item_width, this.item_height, height, undefined, this.isForceCanvas);
     this._init_block_card_bind(block_card);
     return block_card;
   }
@@ -719,12 +664,7 @@ export class ChainListComponent extends AniBase {
   }>();
   private _useable_cardchain_cache: CardChain[] = [];
   private *_getUsebaleCardChainGenerator(num) {
-    const {
-      _useable_cardchain_cache,
-      chain_view,
-      item_width,
-      item_height,
-    } = this;
+    const { _useable_cardchain_cache, chain_view, item_width, item_height } = this;
     const len = Math.max(num, _useable_cardchain_cache.length);
     for (var i = 0; i < num; i += 1) {
       var cardchain = _useable_cardchain_cache[i];
