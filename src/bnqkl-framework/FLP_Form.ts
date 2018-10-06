@@ -1,11 +1,6 @@
 import { FLP_Route } from "./FLP_Route";
 import { FLP_Tool } from "./FLP_Tool";
-import {
-  NavController,
-  NavOptions,
-  NavParams,
-  ViewController,
-} from "ionic-angular";
+import { NavController, NavOptions, NavParams, ViewController } from "ionic-angular";
 import { getErrorFromAsyncerror, translateMessage } from "./Decorator";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
@@ -35,10 +30,18 @@ export class FLP_Form extends FLP_Route {
     error_keys: string[],
     extends_opts: {
       check_when_empty?: boolean;
-      formData_key?: string;
+      formData_key_path?: string;
     } = {}
   ) {
-    const formData_key = extends_opts.formData_key || "formData";
+    const getformDataValue = self => {
+      const formData_key_path = (extends_opts.formData_key_path || `formData.${key}`).split(".");
+      let res = self;
+      while (formData_key_path.length) {
+        const prop = formData_key_path.shift() as string;
+        res = res[prop];
+      }
+      return res;
+    };
     return (target: any, name: string, descriptor: PropertyDescriptor) => {
       const error_checks_col = target._error_checks_col;
       if (!(key in error_checks_col)) {
@@ -49,7 +52,7 @@ export class FLP_Form extends FLP_Route {
       const source_fun = descriptor.value;
       descriptor.value = function(...args) {
         var res;
-        if (!extends_opts.check_when_empty && !this[formData_key][key]) {
+        if (!extends_opts.check_when_empty && !getformDataValue(this)) {
           // ignore check
         } else {
           res = source_fun.apply(this, args);
@@ -122,11 +125,7 @@ export class FLP_Form extends FLP_Route {
     return (
       !this.hasError(this.errors) &&
       Object.keys(this.formData).every(k => {
-        return (
-          this.ignore_keys.indexOf(k) !== -1 ||
-          this.formData[k] ||
-          typeof this.formData[k] === "boolean"
-        );
+        return this.ignore_keys.indexOf(k) !== -1 || this.formData[k] || typeof this.formData[k] === "boolean";
       })
     );
   }
@@ -179,12 +178,7 @@ export class FLP_Form extends FLP_Route {
   @FLP_Form.FromGlobal userInfo!: UserInfoProvider;
   @FLP_Form.FromGlobal appSetting!: AppSettingProvider;
 
-  @asyncCtrlGenerator.error(
-    () => FLP_Form.getTranslate("PAY_INPUT_ERROR"),
-    undefined,
-    undefined,
-    true
-  )
+  @asyncCtrlGenerator.error(() => FLP_Form.getTranslate("PAY_INPUT_ERROR"), undefined, undefined, true)
   async getUserPassword(
     opts: {
       title?: string;
@@ -252,9 +246,7 @@ export class FLP_Form extends FLP_Route {
             if (current_fee && isFinite(current_fee)) {
               resolve({ custom_fee: current_fee }); //返回默认值
             } else {
-              console.warn(
-                new Error(this.getTranslateSync("FEE_INPUT_CANCEL"))
-              );
+              console.warn(new Error(this.getTranslateSync("FEE_INPUT_CANCEL")));
               reject(getErrorFromAsyncerror(false));
             }
           }
@@ -283,17 +275,9 @@ export class FLP_Form extends FLP_Route {
     // 找空的字段
     if (!this.canSubmit) {
       for (var form_key in this.formData) {
-        if (
-          !(
-            this.ignore_keys.indexOf(form_key) !== -1 ||
-            this.formData[form_key] ||
-            typeof this.formData[form_key] === "boolean"
-          )
-        ) {
+        if (!(this.ignore_keys.indexOf(form_key) !== -1 || this.formData[form_key] || typeof this.formData[form_key] === "boolean")) {
           return this.getTranslateSync("NEED_INPUT_#FORM_KEY#", {
-            form_key: await translateMessage(
-              this.formDataKeyI18nMap[form_key] || form_key
-            ),
+            form_key: await translateMessage(this.formDataKeyI18nMap[form_key] || form_key),
           });
         }
       }

@@ -24,7 +24,7 @@ type IssuingSubchainFormData_rewardPerBlock = {
 	height: number;
 	reward: string;
 }[];
-type IssuingSubchainFormData_delegatesSecret = string[];
+type IssuingSubchainFormData_delegatesSecret = { secret: string }[];
 
 type IssuingSubchainFormData = {
 	name: string;
@@ -34,7 +34,7 @@ type IssuingSubchainFormData = {
 	banner: string;
 
 	forgeInterval: number;
-	miniFee: string;
+	miniFee: number;
 
 	genesisNodeAddress: string;
 	searchPort: number;
@@ -80,7 +80,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	}
 	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_port: IssuingSubchainFormData_port = {} as any;
 	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_rewardPerBlock: IssuingSubchainFormData_rewardPerBlock = [];
-	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_delegatesSecret: IssuingSubchainFormData_delegatesSecret = [];
+	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_delegatesSecret: IssuingSubchainFormData_delegatesSecret = [{ secret: "" }];
 	@SubchainIssuingSubchainPage.propMarkForCheck("*")
 	// @SubchainIssuingSubchainPage.propDetectChanges([])
 	formData: IssuingSubchainFormData = (() => {
@@ -96,7 +96,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 			miniFee: "",
 
 			genesisNodeAddress: "",
-			// searchPort: number;
+			searchPort: undefined,
 			magic: "",
 			offset: 1,
 
@@ -122,42 +122,54 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		} as any;
 	})();
 	ignore_keys = ["logo", "banner", "pay_pwd", "rewardPerBlock"];
+
+	@asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
+	async setFee() {
+		const { custom_fee } = await this.getCustomFee(this.formData.fee);
+		this.formData.fee = custom_fee;
+		this.markForCheck();
+	}
 	///
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "name", ["WRONG_RANGE"])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "name", ["WRONG_RANGE", "WRONG_CHAR"])
 	check_name() {
 		const res: any = {};
 		const { name } = this.formData;
 		if (name.length > 36) {
-			res.WRONG_RANGE = "NAME_TOO_LONG";
+			res.WRONG_RANGE = "SUBCHAIN_NAME_TOO_LONG";
 		}
+		if (/\s/.test(name)) {
+			res.WRONG_CHAR = "SUBCHAIN_NAME_HAS_WRONG_CHAR";
+		}
+		return res;
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "abbreviation", ["WRONG_RANGE", "WRONG_CHAR"])
 	check_abbreviation() {
 		const res: any = {};
 		const { abbreviation } = this.formData;
 		if (abbreviation.length > 5) {
-			res.WRONG_RANGE = "ABBREVIATION_TOO_LONG";
+			res.WRONG_RANGE = "SUBCHAIN_ABBREVIATION_IS_TOO_LONG";
 		} else if (abbreviation.length < 2) {
-			res.WRONG_RANGE = "ABBREVIATION_TOO_SHORT";
+			res.WRONG_RANGE = "SUBCHAIN_ABBREVIATION_IS_TOO_SHORT";
 		}
 		for (var i = 0; i < abbreviation.length; i += 1) {
 			if (!/[a-zA-Z]/.test(abbreviation[i])) {
-				res.WRONG_CHAR = "ABBREVIATION_WRONG_CHAR";
+				res.WRONG_CHAR = "SUBCHAIN_ABBREVIATION_HAS_WRONG_CHAR";
 				break;
 			}
 		}
+		return res;
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "forgeInterval", ["WRONG_NUMBER", "WRONG_RANGE"])
 	check_forgeInterval() {
 		const res: any = {};
 		const { forgeInterval } = this.formData;
 		if (!Number.isFinite(forgeInterval)) {
-			res.WRONG_NUMBER = "FORGEINTERVAL_SHOULD_BE_AN_NUMBER";
+			res.WRONG_NUMBER = "SUBCHAIN_FORGEINTERVAL_SHOULD_BE_AN_NUMBER";
 		} else {
 			if (forgeInterval <= 0) {
-				res.WRONG_RANGE = "FORGEINTERVAL_TOO_SMALL";
+				res.WRONG_RANGE = "SUBCHAIN_FORGEINTERVAL_IS_TOO_SMALL";
 			} else if (forgeInterval > 1e3 * 60 * 60 * 24) {
-				res.WRONG_RANGE = "FORGEINTERVAL_TOO_LARGE";
+				res.WRONG_RANGE = "SUBCHAIN_FORGEINTERVAL_IS_TOO_LARGE";
 			}
 		}
 		return res;
@@ -168,22 +180,22 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		const { miniFee } = this.formData;
 		const miniFee_num = +miniFee;
 		if (!Number.isFinite(miniFee_num)) {
-			res.WRONG_NUMBER = "MINIFEE_SHOULD_BE_AN_NUMBER";
+			res.WRONG_NUMBER = "SUBCHAIN_MINIFEE_SHOULD_BE_AN_NUMBER";
 		} else {
 			if (miniFee_num < 0.00000001) {
-				res.WRONG_RANGE = "MINIFEE_TOO_SMALL";
+				res.WRONG_RANGE = "SUBCHAIN_MINIFEE_IS_TOO_SMALL";
 			} else if (miniFee_num > 1e3) {
-				res.WRONG_RANGE = "MINIFEE_TOO_LARGE";
+				res.WRONG_RANGE = "SUBCHAIN_MINIFEE_IS_TOO_LARGE";
 			}
 		}
 		return res;
 	}
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "genesisNodeAddress", ["WRONG_NUMBER", "WRONG_RANGE"])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "genesisNodeAddress", ["WRONG_URL"])
 	check_genesisNodeAddress() {
 		const res: any = {};
 		const { genesisNodeAddress } = this.formData;
-		if (!this.transactionService.isAddressCorrect(genesisNodeAddress)) {
-			res.WRONG_ADDRESS = "GENESIS_NODE_ADDRESS_IS_MALFORMED";
+		if (!((genesisNodeAddress.startsWith("http://") || genesisNodeAddress.startsWith("https://")) && genesisNodeAddress.includes("."))) {
+			res.WRONG_URL = "GENESIS_NODE_ADDRESS_IS_MALFORMED";
 		}
 		return res;
 	}
@@ -202,15 +214,15 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	check_searchPort() {
 		return this._port_checker(this.formData.searchPort, "SEARCH_PORT_IN_WRONG_RANGE");
 	}
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "port.web", ["WRONG_PORT_RANGE"])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "port_web", ["WRONG_PORT_RANGE"], { formData_key_path: "formData.port.web" })
 	check_port_web() {
 		return this._port_checker(this.formData_port.web, "WEB_PORT_IN_WRONG_RANGE");
 	}
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "port.p2p", ["WRONG_PORT_RANGE"])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "port_p2p", ["WRONG_PORT_RANGE"], { formData_key_path: "formData.port.p2p" })
 	check_port_p2p() {
 		return this._port_checker(this.formData_port.p2p, "P2P_PORT_IN_WRONG_RANGE");
 	}
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "port.p2pForTrs", ["WRONG_PORT_RANGE"])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "port_p2pForTrs", ["WRONG_PORT_RANGE"], { formData_key_path: "formData.port.p2pForTrs" })
 	check_port_p2pForTrs() {
 		return this._port_checker(this.formData_port.p2pForTrs, "P2PFORTRS_PORT_IN_WRONG_RANGE");
 	}
@@ -230,39 +242,59 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		// TODO: what is offset
 		return res;
 	}
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "offset", ["ITEM_WRONG_RANGE"])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "rewardPerBlock", ["WRONG_HEIGHT", "WRONG_REWARD", "WRONG_INDEX"])
 	check_rewardPerBlock() {
 		const res: any = {};
 		const { rewardPerBlock } = this.formData;
-		// TODO: check rewardPerBlock
+
+		let wrong_index = -1;
 		if (
-			rewardPerBlock.some(info => {
-				return info.height < 0 || parseFloat(info.reward) < 0;
+			rewardPerBlock.some((info, i) => {
+				wrong_index = i;
+				return !(isFinite(info.height) && info.height > 0);
 			})
 		) {
-			res.ITEM_WRONG_RANGE = "REWARDPERBLOCK_SOME_ITEM_IS_IN_WRONG_RANGE";
+			// 检测高度是否正确
+			res.WRONG_INDEX = wrong_index;
+			res.WRONG_HEIGHT = "REWARDPERBLOCK_ITEM_HEIGHT_WRONG";
+		} else if (
+			rewardPerBlock.some((info, i) => {
+				wrong_index = i;
+				const reward_num = parseFloat(info.reward);
+				return !(isFinite(reward_num) && reward_num >= 0);
+			})
+		) {
+			// 检测奖励是否正确
+			res.WRONG_INDEX = wrong_index;
+			res.WRONG_REWARD = "REWARDPERBLOCK_ITEM_REWARD_WRONG";
 		}
 		return res;
 	}
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "genesisSecret", ["WRONG_RANGE"])
+	private ifmchainJsCoreKeypair = this.transactionService.IFMJSCORE.keypair();
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "genesisSecret", ["WRONG_SECRET"])
 	check_genesisSecret() {
 		const res: any = {};
 		const { genesisSecret } = this.formData;
 		if (genesisSecret.length > 256) {
-			res.WRONG_RANGE = "GENESISSECRET_TOO_LONG";
+			if (!this.ifmchainJsCoreKeypair.isValidSecret(genesisSecret)) {
+				res.WRONG_SECRET = "GENESISSECRET_IS_WRONG_SECRET";
+			}
 		}
 		return res;
 	}
-	@SubchainIssuingSubchainPage.setErrorTo("errors", "delegatesSecret", ["ITEM_WRONG_RANGE"])
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "delegatesSecret", ["ITEM_WRONG_SECRET", "WRONG_INDEX"])
 	check_delegatesSecret() {
 		const res: any = {};
 		const { delegatesSecret } = this.formData;
+		let wrong_index = -1;
 		if (
-			delegatesSecret.some(secret => {
-				return secret.length > 256;
+			delegatesSecret.some((item, i) => {
+				wrong_index = i;
+				return item.secret.length === 0 || !this.ifmchainJsCoreKeypair.isValidSecret(item.secret);
 			})
 		) {
-			res.ITEM_WRONG_RANGE = "DELEGATESSECRET_SOME_ITEM_IS_TOO_LONG";
+			res.WRONG_INDEX = wrong_index;
+			res.ITEM_WRONG_SECRET = "DELEGATESSECRET_SOME_ITEM_IS_WRONG_SECRET";
 		}
 		return res;
 	}
@@ -290,6 +322,17 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 			height: pre.height + 1,
 			reward: pre.reward,
 		});
+	}
+	/**移除指定矿工密钥*/
+	removeDelegatesSecretItem(i: number) {
+		this.formData.delegatesSecret.splice(i, 1);
+		if (this.formData.delegatesSecret.length === 0) {
+			this.addDelegatesSecretItem(); // 至少需要一个矿工
+		}
+	}
+	/**增加新的矿工密钥*/
+	addDelegatesSecretItem() {
+		this.formData.delegatesSecret.push({ secret: "" });
 	}
 
 	/**切换同意用户协议*/
@@ -340,6 +383,12 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 				return !!this.formData.pay_pwd;
 			}
 		}
+		if (!this.formData.agree_user_aggreement) {
+			return false;
+		}
+		if (this.formData.delegatesSecret.length == 0) {
+			return false;
+		}
 		return canSubmit;
 	}
 	private _cache_base64_map = new Map<string, { url: string; base64: Promise<string> }>();
@@ -362,20 +411,23 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	@asyncCtrlGenerator.success()
 	async submit() {
 		const { formData } = this;
+		this.subchainService.transactionService.IFMJSCORE.keypair;
 		await this.subchainService.addSubchain(
 			{
 				name: formData.name,
-				abbreviation: formData.abbreviation,
+				abbreviation: formData.abbreviation.toUpperCase(),
 				logo: await this.getCacheBase64("logo", formData.logo),
 				banner: await this.getCacheBase64("banner", formData.banner),
 				forgeInterval: formData.forgeInterval,
-				miniFee: formData.miniFee,
+				miniFee: (formData.miniFee * 1e8).toString(),
 				genesisNodeAddress: formData.genesisNodeAddress,
 				searchPort: formData.searchPort,
 				magic: formData.magic,
 				offset: formData.offset,
 				port: formData.port,
 				rewardPerBlock: formData.rewardPerBlock,
+				genesisSecret: formData.genesisSecret,
+				delegatesSecret: formData.delegatesSecret.map(item => item.secret),
 			},
 			formData.fee,
 			formData.pwd,

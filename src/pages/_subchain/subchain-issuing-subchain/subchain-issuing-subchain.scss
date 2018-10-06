@@ -1,300 +1,364 @@
 page-subchain-issuing-subchain {
-	@extend .header-no-border;
-	> .header {
-		.toolbar-ios {
-			.back-button {
-				.button-inner {
-					.back-button-icon {
-						&::before {
-							color: #fff;
-						}
-					}
-				}
-			}
-			.toolbar-title-ios {
-				color: #fff;
-			}
-			.bar-buttons {
-				ali-icon {
-					color: #fff;
-				}
-			}
-		}
-	}
+  @extend .header-no-border;
 
-	.header-nav-bg {
-		background-image: url("../assets/imgs/subchain/issuing/header-bg-fixed.png");
-		background-size: cover;
-		background-position: center bottom;
-		background-repeat: no-repeat;
-		position: fixed;
-		top: 0;
-		z-index: 9;
-		box-sizing: content-box;
-		width: 100%;
-		height: 4rem + 2rem;
-		padding-top: 20.012px;
-		padding-top: #{constant(safe-area-inset-top)};
-		padding-top: #{env(safe-area-inset-top)};
-	}
+  > .header {
+    .toolbar-ios {
+      .back-button {
+        .button-inner {
+          .back-button-icon {
+            &::before {
+              color: #fff;
+            }
+          }
+        }
+      }
 
-	.new-subchain-form {
-		position: absolute;
-		padding-bottom: 30vw;
-		background-image: linear-gradient(to bottom, #10171f 0%, #1e61a9 50%, #10171f 100%);
-		top: 0;
-		top: #{constant(safe-area-inset-top)};
-		top: #{env(safe-area-inset-top)};
-		.tip {
-			color: #bcbcbc;
-			text-indent: 2.6rem;
-			position: relative;
-			font-size: 1.3rem;
-			line-height: 1.6rem;
-			> ali-icon {
-				text-indent: 0;
-				position: absolute;
-				left: 0.1rem;
-				top: 0.2rem;
-			}
-		}
-		.mat-container {
-			color: #fff;
-			.mat-input-element {
-				caret-color: #fff;
-				color: #fff;
-			}
-			.mat-input-placeholder {
-				color: #bcbcbc;
-			}
-			.mat-form-field-ripple {
-				background-color: #fff;
-			}
-			.mat-form-field-underline {
-				background-color: rgba(#fff, 0.5);
-			}
-			.mat-form-field-wrapper {
-				// padding-bottom: 1.3rem;
-			}
-			> .mat-focused {
-				.mat-form-field-label {
-					color: #fff;
-				}
-			}
-			> .mat-focused + .tip {
-				color: #fff;
+      .toolbar-title-ios {
+        color: #fff;
+      }
 
-				ali-icon {
-					color: #5ae3e2;
-				}
-			}
-		}
-		.mat-input-placeholder {
-			text-indent: 1rem;
-		}
+      .bar-buttons {
+        ali-icon {
+          color: #fff;
+        }
+      }
+    }
+  }
 
-		.mat-form-field-should-float {
-			.mat-input-placeholder {
-				text-indent: 0rem;
-			}
-		}
+  .header-nav-bg {
+    background-image: url("../assets/imgs/subchain/issuing/header-bg-fixed.png");
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    position: fixed;
+    top: 0;
+    z-index: 9;
+    box-sizing: content-box;
+    width: 100%;
+    height: 4rem + 2rem;
+    padding-top: 20.012px;
+    padding-top: #{constant(safe-area-inset-top)};
+    padding-top: #{env(safe-area-inset-top)};
+  }
 
-		.logo-wrapper {
-			position: relative;
-			z-index: 10;
-			height: 64.13333vw;
-			width: 100vw;
-			background-size: 100% 100%;
-			background-image: url("../assets/imgs/subchain/issuing/header-bg.png");
+  .new-subchain-form {
+    position: absolute;
+    padding-bottom: 30vw;
+    background-image: linear-gradient(to bottom, #10171f 0%, #1e61a9 50%, #10171f 100%);
+    top: 0;
+    top: #{constant(safe-area-inset-top)};
+    top: #{env(safe-area-inset-top)};
 
-			.subchain-logo-shape-wrapper {
-				position: relative;
-				left: 33.5vw;
-				top: 21vw;
-				width: 33vw;
-				height: 33vw;
-				background-image: url("../assets/imgs/net-circle-full-white.png");
-				background-size: 100% 100%;
-				.subchain-logo-shape {
-					position: absolute;
-					left: 1.75vw;
-					top: 1.75vw;
-					width: 29.5vw;
-					height: 29.5vw;
-					border-radius: 50%;
-					overflow: hidden;
-					background-color: #fff;
-					padding: 0;
-					ali-icon{
-						font-size: 4rem;
-						color: #ddd;
-					}
-				}
-			}
-		}
+    .tip {
+      color: #bcbcbc;
+      text-indent: 2.6rem;
+      position: relative;
+      font-size: 1.3rem;
+      line-height: 1.6rem;
 
-		.common-form {
-			position: relative;
-			z-index: 5;
-			width: 92vw;
-			margin-left: 4vw;
-			margin-top: 1rem;
-			padding: 5vw;
-			background-color: rgba(#fff, 0.1);
-			color: #fff;
-			> .form-title {
-				display: flex;
-				align-items: center;
-				font-size: 1.6rem;
-				font-weight: bolder;
-				color: #fff;
-				margin-bottom: 2rem;
-				ali-icon {
-					font-size: 2rem;
-					margin-right: 0.4rem;
-				}
-			}
+      > ali-icon {
+        text-indent: 0;
+        position: absolute;
+        left: 0.1rem;
+        top: 0.2rem;
+      }
+    }
 
-			&.subchain-base-info {
-				padding-top: 10vw;
-				margin-top: -5vw;
-			}
-			.mat-container {
-				margin-bottom: 1.5rem;
-			}
-			/* BANNER */
-			.banner-wrapper {
-				width: 100%;
-				position: relative;
-				margin-bottom: 2rem;
-				.subchain-banner-shape-wrapper {
-					border: 0.55px solid #fff;
-					width: 100%;
-					padding-bottom: 32%;
-					position: relative;
-					background-color: rgba(#fff, 0.1);
-				}
-				.subchain-banner-shape {
-					position: absolute;
-					width: 100%;
-					height: 100%;
-					top: 0;
-					left: 0;
-					overflow: hidden;
-					padding: 0;
-				}
-				.banner-text {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					justify-content: center;
-					color: #dcdcdc;
-					opacity: 0.5;
-					font-size: 2.4rem;
-					ali-icon {
-						font-size: 4rem;
-					}
-				}
-				> .tip {
-					margin-top: 1rem;
-				}
-			}
-			/* 受托人密码 */
-			.genesis-secret {
-				.mat-input-infix {
-					&::after {
-						margin-top: 0.5rem;
-						content: " ";
-						top: 0;
-						left: 0;
-						display: block;
-						position: absolute;
-						width: 100%;
-						height: 100%;
-						background: linear-gradient(to bottom, rgba(#fff, 0.5) 0%, rgba(#fff, 0.5) 2%, transparent 2%, transparent 100%);
-						background-size: 100% 4rem;
-						background-position: 0 3rem;
-						background-attachment: local;
-						z-index: 0;
-						pointer-events: none;
-					}
-					textarea {
-						line-height: 4rem;
-						min-height: 14rem;
-						resize: none;
-						overflow: hidden;
-					}
-				}
-				.mat-form-field-underline {
-					display: none;
-				}
-			}
-		}
-		.reward-per-block {
-			.reward-block-item {
-				display: flex;
-				width: 100%;
-				flex-direction: row;
-				align-items: center;
-				justify-content: space-between;
-				> .block-height,
-				> .reward-amount {
-					width: 45%;
-					padding-right: 5%;
-					> mat-form-field {
-						width: 100%;
-					}
-				}
-				> button {
-					width: 10%;
-				}
-			}
-		}
-	}
-	.footer {
-		position: fixed;
-		z-index: 15;
-		bottom: 0;
-		width: 100%;
-		left: 0;
-		padding: 1rem 0 2rem 0;
-		backdrop-filter: blur(2px);
+    .mat-container {
+      color: #fff;
 
-		color: #fff;
-		> .agree-user-agreement {
-			padding-left: 3rem;
-			padding-bottom: 1.5rem;
-			font-size: 1.16rem;
-			display: flex;
-			align-items: center;
-			.checkbox {
-				width: 1.6rem;
-				height: 1.6rem;
-				overflow: hidden;
-				background-color: rgba(#999, 0.4);
-				/* background-color: rgba(#666, 0.8); */
-				border-radius: 50%;
-				font-size: 1rem;
-				text-align: center;
-				line-height: 1.4rem;
-				transform: scale(0.75);
-				color: transparent;
-				transition-duration: 500ms;
-				margin-right: 0.3rem;
-			}
-			&.agreed {
-				.checkbox {
-					color: #fff;
-				}
-			}
-		}
-		> button {
-			margin: 0 auto;
-			background: linear-gradient(to bottom, rgba(#02e5f6, 1), rgba(#01acdd, 1));
-			&[disabled] {
-				opacity: 0.8;
-				filter: grayscale(0.6);
-			}
-		}
-	}
+      .mat-input-element {
+        caret-color: #fff;
+        color: #fff;
+      }
+
+      .mat-input-placeholder {
+        color: #bcbcbc;
+      }
+
+      .mat-form-field-ripple {
+        background-color: #fff;
+      }
+
+      .mat-form-field-underline {
+        background-color: rgba(#fff, 0.5);
+      }
+
+      .mat-form-field-wrapper {
+        // padding-bottom: 1.3rem;
+      }
+
+      > .mat-focused {
+        .mat-form-field-label {
+          color: #fff;
+        }
+      }
+
+      > .mat-focused + .tip {
+        color: #fff;
+
+        ali-icon {
+          color: #5ae3e2;
+        }
+      }
+    }
+
+    .mat-input-placeholder {
+      text-indent: 1rem;
+    }
+
+    .mat-form-field-should-float {
+      .mat-input-placeholder {
+        text-indent: 0rem;
+      }
+    }
+
+    .logo-wrapper {
+      position: relative;
+      z-index: 10;
+      height: 64.13333vw;
+      width: 100vw;
+      background-size: 100% 100%;
+      background-image: url("../assets/imgs/subchain/issuing/header-bg.png");
+
+      .subchain-logo-shape-wrapper {
+        position: relative;
+        left: 33.5vw;
+        top: 21vw;
+        width: 33vw;
+        height: 33vw;
+        background-image: url("../assets/imgs/net-circle-full-white.png");
+        background-size: 100% 100%;
+
+        .subchain-logo-shape {
+          position: absolute;
+          left: 1.75vw;
+          top: 1.75vw;
+          width: 29.5vw;
+          height: 29.5vw;
+          border-radius: 50%;
+          overflow: hidden;
+          background-color: #fff;
+          padding: 0;
+
+          ali-icon {
+            font-size: 4rem;
+            color: #ddd;
+          }
+        }
+      }
+    }
+
+    .common-form {
+      position: relative;
+      z-index: 5;
+      width: 92vw;
+      margin-left: 4vw;
+      margin-top: 1rem;
+      padding: 5vw;
+      background-color: rgba(#fff, 0.1);
+      color: #fff;
+
+      > .form-title {
+        display: flex;
+        align-items: center;
+        font-size: 1.6rem;
+        font-weight: bolder;
+        color: #fff;
+        margin-bottom: 2rem;
+
+        ali-icon {
+          font-size: 2rem;
+          margin-right: 0.4rem;
+        }
+      }
+
+      &.subchain-base-info {
+        padding-top: 10vw;
+        margin-top: -5vw;
+      }
+
+      .mat-container {
+        margin-bottom: 1.5rem;
+      }
+
+      /* BANNER */
+      .banner-wrapper {
+        width: 100%;
+        position: relative;
+        margin-bottom: 2rem;
+
+        .subchain-banner-shape-wrapper {
+          border: 0.55px solid #fff;
+          width: 100%;
+          padding-bottom: 32%;
+          position: relative;
+          background-color: rgba(#fff, 0.1);
+        }
+
+        .subchain-banner-shape {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          overflow: hidden;
+          padding: 0;
+        }
+
+        .banner-text {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: #dcdcdc;
+          opacity: 0.5;
+          font-size: 2.4rem;
+
+          ali-icon {
+            font-size: 4rem;
+          }
+        }
+
+        > .tip {
+          margin-top: 1rem;
+        }
+      }
+
+      /* 受托人密码 */
+      .genesis-secret {
+        .mat-input-infix {
+          &::after {
+            margin-top: 0.5rem;
+            content: " ";
+            top: 0;
+            left: 0;
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(#fff, 0.5) 0%, rgba(#fff, 0.5) 2%, transparent 2%, transparent 100%);
+            background-size: 100% 4rem;
+            background-position: 0 3rem;
+            background-attachment: local;
+            z-index: 0;
+            pointer-events: none;
+          }
+
+          textarea {
+            line-height: 4rem;
+            min-height: 14rem;
+            resize: none;
+            overflow: hidden;
+          }
+        }
+
+        .mat-form-field-underline {
+          display: none;
+        }
+      }
+
+      .abbreviation {
+        input {
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .reward-per-block {
+      .reward-block-item {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        > .block-height,
+        > .reward-amount {
+          width: 45%;
+          padding-right: 5%;
+
+          > mat-form-field {
+            width: 100%;
+          }
+        }
+
+        > button {
+          width: 10%;
+        }
+      }
+    }
+    .delegates-secret {
+      .delegates-secret-item {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        > .delegate-secret {
+          width: 90%;
+          padding-right: 5%;
+          > mat-form-field {
+            width: 100%;
+          }
+        }
+
+        > button {
+          width: 10%;
+        }
+      }
+    }
+  }
+
+  .footer {
+    position: fixed;
+    z-index: 15;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    padding: 1rem 0 2rem 0;
+    backdrop-filter: blur(2px);
+
+    color: #fff;
+
+    > .agree-user-agreement {
+      padding-left: 3rem;
+      padding-bottom: 1.5rem;
+      font-size: 1.16rem;
+      display: flex;
+      align-items: center;
+
+      .checkbox {
+        width: 1.6rem;
+        height: 1.6rem;
+        overflow: hidden;
+        background-color: rgba(#999, 0.4);
+        /* background-color: rgba(#666, 0.8); */
+        border-radius: 50%;
+        font-size: 1rem;
+        text-align: center;
+        line-height: 1.4rem;
+        transform: scale(0.75);
+        color: transparent;
+        transition-duration: 500ms;
+        margin-right: 0.3rem;
+      }
+
+      &.agreed {
+        .checkbox {
+          color: #fff;
+        }
+      }
+    }
+
+    > button {
+      margin: 0 auto;
+      background: linear-gradient(to bottom, rgba(#02e5f6, 1), rgba(#01acdd, 1));
+
+      &[disabled] {
+        opacity: 0.8;
+        filter: grayscale(0.6);
+      }
+    }
+  }
 }
