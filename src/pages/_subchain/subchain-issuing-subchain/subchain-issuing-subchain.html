@@ -27,11 +27,23 @@
       <div class="mat-container name">
         <mat-form-field>
           <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_NAME'|translate" min="1" [(ngModel)]="formData.name" set-input-status="name" [errorStateMatcher]="matFormMatcherFactory('name')">
+          <mat-error *ngIf="errors?.name?.WRONG_RANGE">
+            {{errors.name.WRONG_RANGE|translate}}
+          </mat-error>
+          <mat-error *ngIf="errors?.name?.WRONG_CHAR">
+            {{errors.name.WRONG_CHAR|translate}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="mat-container abbreviation">
         <mat-form-field>
           <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_ABBREVIATION'|translate" min="1" [(ngModel)]="formData.abbreviation" set-input-status="abbreviation" [errorStateMatcher]="matFormMatcherFactory('abbreviation')">
+          <mat-error *ngIf="errors?.abbreviation?.WRONG_CHAR">
+            {{errors.abbreviation.WRONG_CHAR|translate}}
+          </mat-error>
+          <mat-error *ngIf="errors?.abbreviation?.WRONG_RANGE">
+            {{errors.abbreviation.WRONG_RANGE|translate}}
+          </mat-error>
         </mat-form-field>
         <div class="tip">
           <ali-icon name="ifm-dialog-warning"></ali-icon>
@@ -58,6 +70,9 @@
       <div class="mat-container genesis-secret">
         <mat-form-field>
           <textarea data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_GENESIS_SECRET'|translate" min="1" [(ngModel)]="formData.genesisSecret" set-input-status="genesisSecret" [errorStateMatcher]="matFormMatcherFactory('genesisSecret')" auto-full-height-textarea></textarea>
+          <mat-error *ngIf="errors?.genesisSecret?.WRONG_SECRET">
+            {{errors.genesisSecret.WRONG_SECRET|translate}}
+          </mat-error>
         </mat-form-field>
         <div class="tip">
           <ali-icon name="ifm-dialog-warning"></ali-icon>
@@ -75,21 +90,39 @@
         <mat-form-field>
           <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_FORGE_INTERVAL'|translate" type="number" min="1" [(ngModel)]="formData.forgeInterval" set-input-status="forgeInterval" [errorStateMatcher]="matFormMatcherFactory('forgeInterval')">
           <span matSuffix>{{'SECOND'|translate}}</span>
+          <mat-error *ngIf="errors?.forgeInterval?.WRONG_RANGE">
+            {{errors.forgeInterval.WRONG_RANGE|translate}}
+          </mat-error>
+          <mat-error *ngIf="errors?.forgeInterval?.WRONG_NUMBER">
+            {{errors.forgeInterval.WRONG_NUMBER|translate}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="mat-container mini-fee">
         <mat-form-field>
           <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_MINI_FEE'|translate" type="number" min="0" [(ngModel)]="formData.miniFee" set-input-status="miniFee" [errorStateMatcher]="matFormMatcherFactory('miniFee')">
+          <mat-error *ngIf="errors?.miniFee?.WRONG_RANGE">
+            {{errors.miniFee.WRONG_RANGE|translate}}
+          </mat-error>
+          <mat-error *ngIf="errors?.miniFee?.WRONG_NUMBER">
+            {{errors.miniFee.WRONG_NUMBER|translate}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="mat-container genesis-node-address">
         <mat-form-field>
           <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_GENESIS_NODE_ADDRESS'|translate" [(ngModel)]="formData.genesisNodeAddress" set-input-status="genesisNodeAddress" [errorStateMatcher]="matFormMatcherFactory('genesisNodeAddress')">
+          <mat-error *ngIf="errors?.genesisNodeAddress?.WRONG_URL">
+            {{errors.genesisNodeAddress.WRONG_URL|translate}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="mat-container magic">
         <mat-form-field>
           <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_MAGIC'|translate" [(ngModel)]="formData.magic" set-input-status="magic" [errorStateMatcher]="matFormMatcherFactory('magic')">
+          <mat-error *ngIf="errors?.magic?.WRONG_RANGE">
+            {{errors.magic.WRONG_RANGE|translate}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="tip">
@@ -106,12 +139,18 @@
       <div class="reward-block-item" *ngFor="let item of formData.rewardPerBlock;let i = index">
         <div class="mat-container block-height">
           <mat-form-field>
-            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'BLOCK_HEIGHT'|translate" type="number" min="1" [(ngModel)]="item.height" set-input-status="height" />
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'REWARDPERBLOCK_BLOCK_HEIGHT'|translate" type="number" min="1" [(ngModel)]="item.height" set-input-status="rewardPerBlock" [errorStateMatcher]="matFormMatcherFactory('rewardPerBlock')"/>
+            <mat-error *ngIf="errors?.rewardPerBlock?.WRONG_INDEX==i && errors?.rewardPerBlock?.WRONG_HEIGHT">
+              {{errors.rewardPerBlock.WRONG_HEIGHT|translate}}
+            </mat-error>
           </mat-form-field>
         </div>
         <div class="mat-container reward-amount">
           <mat-form-field>
-            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_WEB'|translate" type="number" min="1" [(ngModel)]="formData.port.web" set-input-status="port.web" />
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'REWARDPERBLOCK_BLOCK_REWARD'|translate" type="number" min="0" [(ngModel)]="item.reward" set-input-status="rewardPerBlock" [errorStateMatcher]="matFormMatcherFactory('rewardPerBlock')"/>
+            <mat-error *ngIf="errors?.rewardPerBlock?.WRONG_INDEX==i && errors?.rewardPerBlock?.WRONG_REWARD">
+              {{errors.rewardPerBlock.WRONG_REWARD|translate}}
+            </mat-error>
           </mat-form-field>
         </div>
         <button mat-icon-button (click)="removeRewardBlockItem(i)">
@@ -130,20 +169,83 @@
         <ali-icon name="ifm-jigouwangluoduankouzizhufuwu"></ali-icon>
         {{'SUBCHAIN_NET_PORT_CONFIGURATION'|translate}}
       </div>
+      <div class="mat-container search-port">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_SEARCH_PORT'|translate" type="number" min="1" [(ngModel)]="formData.searchPort" set-input-status="searchPort" [errorStateMatcher]="matFormMatcherFactory('searchPort')">
+          <mat-error *ngIf="errors?.searchPort?.WRONG_PORT_RANGE">
+            {{errors.searchPort.WRONG_PORT_RANGE|translate}}
+          </mat-error>
+        </mat-form-field>
+      </div>
       <div class="mat-container port-web">
         <mat-form-field>
-          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_WEB'|translate" type="number" min="1" [(ngModel)]="formData.port.web" set-input-status="port.web" [errorStateMatcher]="matFormMatcherFactory('port.web')">
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_WEB'|translate" type="number" min="1" [(ngModel)]="formData.port.web" set-input-status="port_web" [errorStateMatcher]="matFormMatcherFactory('port_web')">
+          <mat-error *ngIf="errors?.port_web?.WRONG_PORT_RANGE">
+            {{errors.port_web.WRONG_PORT_RANGE|translate}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="mat-container port-p2p">
         <mat-form-field>
-          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_P2P'|translate" type="number" min="1" [(ngModel)]="formData.port.p2p" set-input-status="port.p2p" [errorStateMatcher]="matFormMatcherFactory('port.p2p')">
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_P2P'|translate" type="number" min="1" [(ngModel)]="formData.port.p2p" set-input-status="port_p2p" [errorStateMatcher]="matFormMatcherFactory('port_p2p')">
+          <mat-error *ngIf="errors?.port_p2p?.WRONG_PORT_RANGE">
+            {{errors.port_p2p.WRONG_PORT_RANGE|translate}}
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="mat-container port-p2pfortrs">
         <mat-form-field>
-          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_P2PFORTRS'|translate" type="number" min="1" [(ngModel)]="formData.port.p2pForTrs" set-input-status="port.p2pForTrs" [errorStateMatcher]="matFormMatcherFactory('port.p2pForTrs')">
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'PLEASE_INPUT_SUBCHAIN_PORT_P2PFORTRS'|translate" type="number" min="1" [(ngModel)]="formData.port.p2pForTrs" set-input-status="port_p2pForTrs" [errorStateMatcher]="matFormMatcherFactory('port_p2pForTrs')">
+          <mat-error *ngIf="errors?.port_p2pForTrs?.WRONG_PORT_RANGE">
+            {{errors.port_p2pForTrs.WRONG_PORT_RANGE|translate}}
+          </mat-error>
         </mat-form-field>
+      </div>
+    </div>
+    <div class="common-form delegates-secret">
+      <div class="form-title">
+        <!-- 初始化的委托人集合 -->
+        <ali-icon name="ifm-kuanggong"></ali-icon>
+        {{'SUBCHAIN_DELEGATES_SECRET_CONFIGURATION'|translate}}
+      </div>
+      <div class="delegates-secret-item" *ngFor="let item of formData.delegatesSecret;let i = index">
+        <div class="mat-container delegate-secret">
+          <mat-form-field>
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput [placeholder]="'DELEGATESSECRET_SECRET'|translate" [(ngModel)]="item.secret" set-input-status="delegatesSecret" [errorStateMatcher]="matFormMatcherFactory('delegatesSecret')"/>
+            <mat-error *ngIf="errors?.delegatesSecret?.WRONG_INDEX==i && errors?.delegatesSecret?.ITEM_WRONG_SECRET">
+              {{errors.delegatesSecret.ITEM_WRONG_SECRET|translate}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <button mat-icon-button (click)="removeDelegatesSecretItem(i)">
+          <mat-icon>remove_circle_outline</mat-icon>
+        </button>
+      </div>
+      <button mat-button class="new-delegates-secret-item" (click)="addDelegatesSecretItem()">
+        <!-- <ali-icon name="ifm-add"></ali-icon> -->
+        <mat-icon>add_circle_outline</mat-icon>
+        {{'ADD_DELEGATES_SECRET_ITEM'|translate}}
+      </button>
+    </div>
+    <div class="common-form sign-data">
+      <!-- 密码与手续费 -->
+      <div class="mat-container pwd">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_LOGIN_PASSPHRASE'|translate" type="password" [(ngModel)]="formData.pwd" set-input-status="pwd" [errorStateMatcher]="matFormMatcherFactory('pwd')">
+        </mat-form-field>
+      </div>
+      <div class="mat-container pay_pwd" *ngIf="formData.need_pay_pwd">
+        <mat-form-field>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_assets_form" matInput [placeholder]="'PLEASE_INPUT_PAY_PASSPHRASE'|translate" type="password" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd" [errorStateMatcher]="matFormMatcherFactory('pay_pwd')">
+          <mat-error *ngIf="errors?.pay_pwd?.VerificationFailure">
+            {{errors.pay_pwd.VerificationFailure|translate}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="fee-info" (click)="setFee()">
+        <ali-icon name="ifm-info"></ali-icon>
+        <span class="fee">{{formData.fee|number:'1.8-8'}}
+          <span class="unit">IBT</span></span>
       </div>
     </div>
   </div>

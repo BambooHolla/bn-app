@@ -8,10 +8,10 @@ export const playSound: typeof PIXI.sound.play = (...args) =>
 
 addSound("scan-success", "assets/sounds/wx-scanner.wav");
 addSound("coinSingle", "assets/sounds/coinSingle.wav");
-playSound("coinSingle", {
-  muted: true,
-  volume: 0,
-});
+// playSound("coinSingle", {
+//   muted: true,
+//   volume: 0,
+// });
 // addSound("coinSoundFew", "assets/sounds/coinFew.wav");
 // addSound("coinSoundMore", "assets/sounds/coinMore.wav");
 // addSound("coinSoundMuch", "assets/sounds/coinMuch.wav");

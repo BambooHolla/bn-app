@@ -384,7 +384,7 @@ page-sign-in-and-sign-up {
       background: #fff;
       color: #00c5f2;
       .inner {
-        background-image: linear-gradient(top, #02e5f6 20%, #01acdd 80%);
+        background-image: linear-gradient(to bottom, #02e5f6 20%, #01acdd 80%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
@@ -414,7 +414,7 @@ page-sign-in-and-sign-up {
       flex-grow: 1;
       flex-shrink: 1;
       background: linear-gradient(
-        right,
+        to left,
         rgba(#fff, 0.5) 0%,
         rgba(#fff, 0.5) 20%,
         transparent 20%,
