@@ -21,10 +21,10 @@ semicircular-progress-bar {
     mask-repeat: no-repeat;
     mask-position: top;
     > .bg-bar.semicircular-progress-bar {
-      background: linear-gradient(left, #83d6f7, #73f5e0);
+      background: linear-gradient(to right, #83d6f7, #73f5e0);
     }
     > .progress-bar.semicircular-progress-bar {
-      background: linear-gradient(left, #ff5a5b, #fca178);
+      background: linear-gradient(to right, #ff5a5b, #fca178);
       transition-duration: 250ms;
       /* 	animation-iteration-count: infinite;
 			animation-name: ani-rotate-circle;

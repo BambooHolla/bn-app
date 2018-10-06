@@ -47,12 +47,14 @@ import {
   MatIconModule,
   MatChipsModule,
 } from "@angular/material";
-import { IonicErrorHandler, IonicModule, DeepLinkConfigToken, Config, UrlSerializer, App, IonicApp } from "ionic-angular";
+import { IonicErrorHandler } from 'ionic-angular/util/ionic-error-handler'
+import { IonicModule } from 'ionic-angular/module'
+import { DeepLinkConfigToken, UrlSerializer } from 'ionic-angular/navigation/url-serializer'
+import { App } from "ionic-angular/components/app/app"
+import { IonicApp } from "ionic-angular/components/app/app-root"
 // import { IonicApp } from "ionic-angular/components/app/app-root";
 // import { ClickBlock } from "ionic-angular/components/app/click-block";
 // import { OverlayPortal } from "ionic-angular/components/app/overlay-portal";
-import { setupPreloading } from "ionic-angular/util/module-loader";
-import { ModuleLoader, provideModuleLoader } from "ionic-angular/util/module-loader";
 import { setupUrlSerializer } from "ionic-angular/navigation/url-serializer";
 // import { MyIonicModule as IonicModule  } from "./module";
 
@@ -253,4 +255,4 @@ const heightLevelModules = [
     SubchainServiceProvider,
   ],
 })
-export class AppModule {}
+export class AppModule { }
