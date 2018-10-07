@@ -275,10 +275,8 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	check_genesisSecret() {
 		const res: any = {};
 		const { genesisSecret } = this.formData;
-		if (genesisSecret.length > 256) {
-			if (!this.ifmchainJsCoreKeypair.isValidSecret(genesisSecret)) {
-				res.WRONG_SECRET = "GENESISSECRET_IS_WRONG_SECRET";
-			}
+		if (!this.ifmchainJsCoreKeypair.isValidSecret(genesisSecret.trim())) {
+			res.WRONG_SECRET = "GENESISSECRET_IS_WRONG_SECRET";
 		}
 		return res;
 	}
@@ -290,7 +288,8 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		if (
 			delegatesSecret.some((item, i) => {
 				wrong_index = i;
-				return item.secret.length === 0 || !this.ifmchainJsCoreKeypair.isValidSecret(item.secret);
+				const delegateSecret = item.secret.trim();
+				return delegateSecret.length === 0 || !this.ifmchainJsCoreKeypair.isValidSecret(delegateSecret);
 			})
 		) {
 			res.WRONG_INDEX = wrong_index;
