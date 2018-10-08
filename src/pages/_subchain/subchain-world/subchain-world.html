@@ -1,0 +1,18 @@
+<!--
+  Generated template for the SubchainWorldPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>信用时代</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ul class="common-list">
+    <li class="common-item" *ngFor="let subchain_item of subchain_list;let i = index" (click)="routeToSubchainGateway(subchain_item, $event)">
+      假的子链: {{subchain_item.abbreviation}}
+    </li>
+  </ul>
+</ion-content>

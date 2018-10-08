@@ -33,6 +33,7 @@ type IssuingSubchainFormData = {
 	logo: string;
 	banner: string;
 
+	generateTotalAmount: string;
 	forgeInterval: number;
 	miniFee: number;
 
@@ -92,6 +93,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 			logo: "",
 			banner: "",
 
+			generateTotalAmount: undefined,
 			forgeInterval: 128,
 			miniFee: "",
 
@@ -155,6 +157,22 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 			if (!/[a-zA-Z]/.test(abbreviation[i])) {
 				res.WRONG_CHAR = "SUBCHAIN_ABBREVIATION_HAS_WRONG_CHAR";
 				break;
+			}
+		}
+		return res;
+	}
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "generateTotalAmount", ["WRONG_NUMBER", "WRONG_RANGE"])
+	check_generateTotalAmount() {
+		const res: any = {};
+		const { generateTotalAmount } = this.formData;
+		const generateTotalAmount_num = parseFloat(generateTotalAmount);
+		if (!Number.isFinite(generateTotalAmount_num)) {
+			res.WRONG_NUMBER = "SUBCHAIN_GENERATETOTALAMOUNT_SHOULD_BE_AN_NUMBER";
+		} else {
+			if (generateTotalAmount_num < 0) {
+				res.WRONG_RANGE = "SUBCHAIN_GENERATETOTALAMOUNT_IS_TOO_SMALL";
+			} else if (generateTotalAmount_num > Number.MAX_SAFE_INTEGER) {
+				res.WRONG_RANGE = "SUBCHAIN_GENERATETOTALAMOUNT_IS_TOO_LARGE";
 			}
 		}
 		return res;

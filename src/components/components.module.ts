@@ -30,7 +30,8 @@ import { TextMgComponent } from "./text-mg/text-mg";
 import { ChartComponent } from "./chart/chart.component";
 import { CommonModule } from '@angular/common';
 import { ClipSubchainLogoComponent } from './clip-subchain-logo/clip-subchain-logo';
-import { ClipSubchainBannerComponent } from './clip-subchain-banner/clip-subchain-banner';  
+import { ClipSubchainBannerComponent } from './clip-subchain-banner/clip-subchain-banner';
+import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';  
 
 @NgModule({
     declarations: [
@@ -65,6 +66,7 @@ import { ClipSubchainBannerComponent } from './clip-subchain-banner/clip-subchai
         ChartComponent,
     ClipSubchainLogoComponent,
     ClipSubchainBannerComponent,
+    SwirlGatewayComponent,
     ],
     imports: [CommonModule],
     exports: [
@@ -99,6 +101,7 @@ import { ClipSubchainBannerComponent } from './clip-subchain-banner/clip-subchai
         ChartComponent,
     ClipSubchainLogoComponent,
     ClipSubchainBannerComponent,
+    SwirlGatewayComponent,
     ],
 })
 export class ComponentsModule {}

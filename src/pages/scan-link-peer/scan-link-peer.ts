@@ -14,7 +14,6 @@ import { AppSettingProvider, AppUrl } from "../../providers/app-setting/app-sett
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { AniBase, Easing } from "../../components/AniBase";
 import { PeerRadarScanningComponent } from "../../components/peer-radar-scanning/peer-radar-scanning";
-import * as IFM from "ifmchain-ibt";
 import { MyApp } from "../../app/app.component";
 import { LoginPage } from "../pages";
 
