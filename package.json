@@ -130,6 +130,7 @@
     "node-xlsx": "^0.11.2",
     "pre-commit": "^1.2.2",
     "prettier": "^1.13.6",
+    "should": "^13.2.3",
     "tsickle": "^0.32.0",
     "typescript": "^2.9.2",
     "xlsx": "^0.12.3"
