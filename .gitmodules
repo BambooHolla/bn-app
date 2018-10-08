@@ -1,0 +1,12 @@
+[submodule "src/ifmchain-js-core"]
+	path = src/ifmchain-js-core
+	url = ssh://192.168.18.21:22/tfs/DefaultCollection/IFMChainEngine/_git/ifmchain-js-core
+[submodule "src/fangodb"]
+	path = src/fangodb
+	url = ssh://192.168.18.21:22/tfs/DefaultCollection/IFMChainEngine/_git/fangodb
+[submodule "src/peer-scanner"]
+	path = src/peer-scanner
+	url = ssh://192.168.18.21:22/tfs/DefaultCollection/IFMChainEngine/_git/peer-scanner
+[submodule "src/gangodb_core"]
+	path = src/gangodb_core
+	url = ssh://192.168.18.21:22/tfs/DefaultCollection/IFMChainEngine/_git/gangodb_core
