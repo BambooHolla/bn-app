@@ -16,9 +16,6 @@ import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 // import socketio from "socket.io-client";
 import { getSocketIOInstance, baseConfig } from "../../bnqkl-framework/helper";
 
-// IOS 10.3开始支持fetch，所以这里就不需要垫片了
-// import "whatwg-fetch"; // 导入标准的fetch接口，确保ifmchain-ibt库的正常执行
-
 export class ServerResError extends Error {
   static translateAndParseErrorMessage(
     message?: string,

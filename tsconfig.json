@@ -18,7 +18,9 @@
     "node_modules",
     "src/**/*.spec.ts",
     "src/workers/**/*.ts",
-    "src/**/__tests__/*.ts"
+    "src/**/__tests__/*.ts",
+    "test/**/*.ts",
+    "**/test/**/*.ts"
   ],
   "compileOnSave": false,
   "atom": {

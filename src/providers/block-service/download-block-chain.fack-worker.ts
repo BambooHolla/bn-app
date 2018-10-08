@@ -3,7 +3,7 @@ import { BlockChainDownloader } from "./download-block-chain";
 import { BlockModel } from "./helper";
 // import { Mdb } from "../../src/providers/mdb";
 import { BlockDBFactory } from "../../providers/block-service/helper";
-import { IfmchainCore } from "ifmchain-js-core";
+import { IfmchainCore } from "../../ifmchain-js-core/src";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { EventEmitter } from "eventemitter3";
 

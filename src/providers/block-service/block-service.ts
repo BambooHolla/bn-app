@@ -21,9 +21,9 @@ import { getJsonObjectByteSize, getUTF8ByteSize } from "../../pages/_settings/se
 import { DbCacheProvider, HTTP_Method, RequestOptionsWithResult } from "../db-cache/db-cache";
 import { Mdb } from "../mdb";
 import io from "socket.io-client";
-import { FangoDB, registerWorkerHandle } from "fangodb";
+import { FangoDB, registerWorkerHandle } from "../../fangodb";
 import { BlockDBFactory } from "./helper";
-import { DBNumberIndex } from "fangodb/dist/src/db-index-core";
+import { DBNumberIndex } from "../../fangodb/src/db-index-core";
 import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
 import { DownloadBlockChainMaster } from "./download-block-chain.fack-worker";
 
@@ -34,8 +34,6 @@ export * from "./block.types";
 
 @Injectable()
 export class BlockServiceProvider extends FLP_Tool {
-  ifmJs: any;
-  block: any;
   private _io?: SocketIOClient.Socket;
   get io() {
     return (
@@ -109,8 +107,6 @@ export class BlockServiceProvider extends FLP_Tool {
     this._init_block_aot.autoRegister(this);
 
     tryRegisterGlobal("blockService", this);
-    this.ifmJs = AppSettingProvider.IFMJS;
-    this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
 
     // 安装api服务
     this._blockDb = dbCache.installDatabase("blocks", []);

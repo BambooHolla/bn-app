@@ -1,4 +1,4 @@
-import { FangoDBFactory, FangoDBWorkerFactory } from "fangodb";
+import { FangoDBFactory, FangoDBWorkerFactory } from "../../fangodb";
 import { global, IsIOS } from "../../bnqkl-framework/helper";
 import { BlockModel, BlockListResModel } from "./block.types";
 const block_indexs: any = [

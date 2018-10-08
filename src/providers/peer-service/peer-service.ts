@@ -57,7 +57,6 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
 export class PeerServiceProvider extends CommonService {
   peerDb = new Mdb<TYPE.LocalPeerModel>("peers");
   static DEFAULT_TIMEOUT = 2000;
-  ifmJs = AppSettingProvider.IFMJS;
   peerList = PEERS;
   constructor(
     public http: HttpClient,

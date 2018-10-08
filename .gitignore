@@ -42,3 +42,6 @@ package-lock.json
 
 output-json
 output-xlsx
+
+.ifmchain-ibt
+.fangodb_core

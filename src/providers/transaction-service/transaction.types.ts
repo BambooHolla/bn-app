@@ -40,4 +40,4 @@ export type QueryTransactionsResModel = {
   transactions: TransactionModel[];
   count: number;
 };
-export { TransactionTypes } from 'ifmchain-js-core'
+export { transactionTypes as TransactionTypes } from '../../ifmchain-js-core/src';

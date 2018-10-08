@@ -363,10 +363,10 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
     const { formData } = this;
     /// 校验
     if (formData.publicKey) {
-      const keypair = this.transactionService.keypairService.create(
+      const keypair_publicKey = this.transactionService.keypair.create(
         formData.delegate_pwd
       );
-      if (formData.publicKey !== keypair.publicKey.toString("hex")) {
+      if (formData.publicKey !== keypair_publicKey) {
         // 这台设备已经存在了，校验公钥是否匹配
         throw new Error(
           this.getTranslateSync(

@@ -21,7 +21,6 @@ import { Mdb } from "../mdb";
 
 @Injectable()
 export class MinServiceProvider extends FLP_Tool {
-  ifmJs: any;
   TransactionTypes = TransactionTypes;
   allMinersInfo?: {
     list: TYPE.DelegateModel[];
@@ -44,7 +43,6 @@ export class MinServiceProvider extends FLP_Tool {
     public loginService: LoginServiceProvider
   ) {
     super();
-    this.ifmJs = AppSettingProvider.IFMJS;
     // this._auto_vote_register.getPromise();
     this.loginService.loginStatus.distinctUntilChanged().subscribe(is_login => {
       this._auto_vote_sub && this._auto_vote_sub.unsubscribe();

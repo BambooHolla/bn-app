@@ -30,7 +30,6 @@ import { SocialSharing } from "@ionic-native/social-sharing";
   // animations: [LoginFormInOut, RegisterFormInOut],
 })
 export class SignInAndSignUpPage extends FirstLevelPage {
-  ifmJs = AppSettingProvider.IFMJS;
   TransactionTypes = TransactionTypes;
   constructor(
     public navCtrl: NavController,
