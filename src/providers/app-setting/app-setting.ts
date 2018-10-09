@@ -2,11 +2,8 @@ import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
-import { Platform } from "ionic-angular";
-import {
-  AsyncBehaviorSubject,
-  Executor,
-} from "../../bnqkl-framework/RxExtends";
+import { Platform } from "ionic-angular/index";
+import { AsyncBehaviorSubject, Executor } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { IsIOS } from "../../bnqkl-framework/helper";
@@ -15,16 +12,11 @@ import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
 import PIXI_SOUND from "pixi-sound";
-import {
-  afCtrl,
-  baseConfig,
-  getQueryVariable,
-} from "../../bnqkl-framework/helper";
+import { afCtrl, baseConfig, getQueryVariable } from "../../bnqkl-framework/helper";
 import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
 export { AppUrl };
-import * as IFM from "../../ifmchain-ibt";
-import { IfmchainCore } from 'ifmchain-js-core';
+import { IfmchainCore } from "../../ifmchain-js-core/src";
 
 @Injectable()
 export class AppSettingProvider extends CommonService {
@@ -39,12 +31,7 @@ export class AppSettingProvider extends CommonService {
   static readonly NET_VERSION = baseConfig.NET_VERSION;
   static readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
   readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
-  static readonly IFMJS = IFM(AppSettingProvider.NET_VERSION);
   static readonly IFMJSCORE = new IfmchainCore(AppSettingProvider.NET_VERSION);
-  static readonly HTTP_PROVIDER = new AppSettingProvider.IFMJS.HttpProvider(
-    AppSettingProvider.SERVER_URL,
-    AppSettingProvider.SERVER_TIMEOUT
-  );
   static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
   static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
 
@@ -54,11 +41,7 @@ export class AppSettingProvider extends CommonService {
     return new AppUrl(path);
   }
 
-  constructor(
-    public http: Http,
-    public user: UserInfoProvider,
-    public translate: TranslateService
-  ) {
+  constructor(public http: Http, public user: UserInfoProvider, public translate: TranslateService) {
     super();
     console.log("Hello AppSettingProvider Provider");
 
@@ -93,9 +76,7 @@ export class AppSettingProvider extends CommonService {
       const get_settings_key = () => {
         return (
           this.user.address &&
-          `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${
-            AppSettingProvider.NET_VERSION
-          }|${AppSettingProvider.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
+          `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${AppSettingProvider.NET_VERSION}|${AppSettingProvider.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
         );
       };
       const getUserSettings = () => {
@@ -112,10 +93,7 @@ export class AppSettingProvider extends CommonService {
           }
           // 进行初始化写入
           if (should_write_in) {
-            localStorage.setItem(
-              settings_key,
-              JSON.stringify((settings = { ...default_settings }))
-            );
+            localStorage.setItem(settings_key, JSON.stringify((settings = { ...default_settings })));
           }
         }
         return settings;
@@ -158,9 +136,7 @@ export class AppSettingProvider extends CommonService {
     {
       const default_share_settings = { ...this.share_settings };
       const get_share_settings_key = () => {
-        return `SHARE:${AppSettingProvider.SETTING_KEY_PERFIX}:${
-          AppSettingProvider.NET_VERSION
-        }|${AppSettingProvider.BLOCK_UNIT_TIME}`; //${AppSettingProvider.SERVER_URL}|;
+        return `SHARE:${AppSettingProvider.SETTING_KEY_PERFIX}:${AppSettingProvider.NET_VERSION}|${AppSettingProvider.BLOCK_UNIT_TIME}`; //${AppSettingProvider.SERVER_URL}|;
       };
       const shareSettingCtrl = (() => {
         const settings_key = get_share_settings_key();
@@ -217,10 +193,7 @@ export class AppSettingProvider extends CommonService {
     }
     // 省电模式
     {
-      this.on(
-        "changed@setting.power_saving_mode",
-        is_save => (this.settings.animation_switch = !is_save)
-      );
+      this.on("changed@setting.power_saving_mode", is_save => (this.settings.animation_switch = !is_save));
     }
 
     // 动画开关对动画的控制
@@ -269,11 +242,7 @@ export class AppSettingProvider extends CommonService {
     // 触发配置
     this.account_address.distinctUntilChanged().subscribe(() => {
       const cur_setting = { ...this.settings };
-      console.log(
-        "%c新用户登录，配置重新生效",
-        "color:purple;font-size:1.6em;",
-        cur_setting
-      );
+      console.log("%c新用户登录，配置重新生效", "color:purple;font-size:1.6em;", cur_setting);
       for (var k in cur_setting) {
         this.settings[k] = cur_setting[k];
       }
@@ -339,9 +308,7 @@ export class AppSettingProvider extends CommonService {
       this.user.initUserInfo(obj);
       obj = JSON.stringify(obj);
     } else {
-      throw new TypeError(
-        "user token must be an object:{address,password,balance,fee}"
-      );
+      throw new TypeError("user token must be an object:{address,password,balance,fee}");
     }
     localStorage.setItem(this.USER_TOKEN_STORE_KEY, obj);
     this._setUserToken(this.getUserToken());
@@ -531,9 +498,7 @@ export function TB_AB_Generator(
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
-      let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from })
-      );
+      let refresh_time = calcExpiryTime(Object.assign({}, expiry_time_opts, { from }));
       const do_refresh = () => {
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
@@ -547,10 +512,7 @@ export function TB_AB_Generator(
       if (time_out < 0) {
         const time_span_val = +refresh_time - +from;
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
-        refresh_time = new Date(
-          +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
-        );
+        refresh_time = new Date(+refresh_time + ((Math.abs(time_out) / time_span_val) | 0) * time_span_val);
         do_refresh();
       } else {
         setTimeout(do_refresh, time_out);
@@ -562,25 +524,19 @@ export function TB_AB_Generator(
       get() {
         if (!_v) {
           if (!(this.appSetting instanceof AppSettingProvider)) {
-            throw new Error(
-              `${
-                this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`
-            );
+            throw new Error(`${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`);
           }
-          (this.appSetting as AppSettingProvider).account_address
-            .distinctUntilChanged()
-            .subscribe(token => {
-              if (need_token && !token) {
-                return;
-              }
-              if (!_v) {
-                _v = new AsyncBehaviorSubject(executor.bind(this));
-                expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
-              } else {
-                _v.refresh(target_prop_name);
-              }
-            });
+          (this.appSetting as AppSettingProvider).account_address.distinctUntilChanged().subscribe(token => {
+            if (need_token && !token) {
+              return;
+            }
+            if (!_v) {
+              _v = new AsyncBehaviorSubject(executor.bind(this));
+              expiry_time_opts && timeout_auto_refresh(expiry_time_opts.from);
+            } else {
+              _v.refresh(target_prop_name);
+            }
+          });
         }
         return _v;
       },
@@ -609,9 +565,7 @@ export function HEIGHT_AB_Generator(
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
-      let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from })
-      );
+      let refresh_time = calcExpiryTime(Object.assign({}, expiry_time_opts, { from }));
       const do_refresh = () => {
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
@@ -625,10 +579,7 @@ export function HEIGHT_AB_Generator(
       if (time_out < 0) {
         const time_span_val = +refresh_time - +from;
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
-        refresh_time = new Date(
-          +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
-        );
+        refresh_time = new Date(+refresh_time + ((Math.abs(time_out) / time_span_val) | 0) * time_span_val);
         do_refresh();
       } else {
         setTimeout(do_refresh, time_out);
@@ -641,11 +592,7 @@ export function HEIGHT_AB_Generator(
         if (!_v) {
           const appSetting: AppSettingProvider = this.appSetting;
           if (!(appSetting instanceof AppSettingProvider)) {
-            throw new Error(
-              `${
-                this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`
-            );
+            throw new Error(`${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`);
           }
           const runner = height_or_token => {
             if (!height_or_token) {
@@ -689,9 +636,7 @@ export function ROUND_AB_Generator(
     var executor: Executor<any> = descriptor.value;
     let _v: AsyncBehaviorSubject<any>;
     const timeout_auto_refresh = (from: Date) => {
-      let refresh_time = calcExpiryTime(
-        Object.assign({}, expiry_time_opts, { from })
-      );
+      let refresh_time = calcExpiryTime(Object.assign({}, expiry_time_opts, { from }));
       const do_refresh = () => {
         if (_v) {
           console.log(target_prop_name, "过期，强制刷新");
@@ -705,10 +650,7 @@ export function ROUND_AB_Generator(
       if (time_out < 0) {
         const time_span_val = +refresh_time - +from;
         // 将refresh_time推进到一个合适的值，确保下一次执行timeout_auto_refresh，得到的time_out正好>=0
-        refresh_time = new Date(
-          +refresh_time +
-            ((Math.abs(time_out) / time_span_val) | 0) * time_span_val
-        );
+        refresh_time = new Date(+refresh_time + ((Math.abs(time_out) / time_span_val) | 0) * time_span_val);
         do_refresh();
       } else {
         setTimeout(do_refresh, time_out);
@@ -721,11 +663,7 @@ export function ROUND_AB_Generator(
         if (!_v) {
           const appSetting: AppSettingProvider = this.appSetting;
           if (!(appSetting instanceof AppSettingProvider)) {
-            throw new Error(
-              `${
-                this.constructor.name
-              } 需要注入依赖： (appSetting)AppSettingProvider`
-            );
+            throw new Error(`${this.constructor.name} 需要注入依赖： (appSetting)AppSettingProvider`);
           }
           const runner = height_or_token => {
             if (!height_or_token) {

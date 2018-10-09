@@ -1,5 +1,5 @@
 // import { Mdb } from "../../src/providers/mdb";
-import { FangoDB, FangoDBWorker } from "fangodb";
+import { FangoDB, FangoDBWorker } from "../../fangodb";
 
 import { buf2hex, hex2buf, BlockModel, BlockListResModel, reqToPromise, reqCursorLooper, BlockChain, SKETCHY_CHECK_RES, Range } from "./helper";
 

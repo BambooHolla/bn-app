@@ -7,7 +7,7 @@ import {
   NavController,
   NavParams,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { UserInfoProvider } from "../../../providers/user-info/user-info";
 import { LocalContactProvider } from "../../../providers/local-contact/local-contact";
 

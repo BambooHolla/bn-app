@@ -1,5 +1,5 @@
 import { Component, Optional } from "@angular/core";
-import { Config, IonicPage, NavController, NavParams } from "ionic-angular";
+import { Config, IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";

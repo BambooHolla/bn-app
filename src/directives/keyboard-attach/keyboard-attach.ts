@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input } from "@angular/core";
-import { Content, Platform } from "ionic-angular";
+import { Content, Platform } from "ionic-angular/index";
 import { Keyboard } from "@ionic-native/keyboard";
 import { Subscription } from "rxjs/Subscription";
 

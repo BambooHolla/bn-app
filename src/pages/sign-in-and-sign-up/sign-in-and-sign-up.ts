@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
@@ -30,7 +30,6 @@ import { SocialSharing } from "@ionic-native/social-sharing";
   // animations: [LoginFormInOut, RegisterFormInOut],
 })
 export class SignInAndSignUpPage extends FirstLevelPage {
-  ifmJs = AppSettingProvider.IFMJS;
   TransactionTypes = TransactionTypes;
   constructor(
     public navCtrl: NavController,

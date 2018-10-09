@@ -4,7 +4,7 @@ import { AppFetchProvider } from "../app-fetch/app-fetch";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject, Subscription } from "rxjs";
-import { AlertController } from "ionic-angular";
+import { AlertController } from "ionic-angular/index";
 import { AppSettingProvider, ROUND_AB_Generator, HEIGHT_AB_Generator, TB_AB_Generator, AsyncBehaviorSubject } from "../app-setting/app-setting";
 import { LoginServiceProvider } from "../login-service/login-service";
 import { AccountServiceProvider } from "../account-service/account-service";
@@ -21,7 +21,6 @@ import { Mdb } from "../mdb";
 
 @Injectable()
 export class MinServiceProvider extends FLP_Tool {
-  ifmJs: any;
   TransactionTypes = TransactionTypes;
   allMinersInfo?: {
     list: TYPE.DelegateModel[];
@@ -44,7 +43,6 @@ export class MinServiceProvider extends FLP_Tool {
     public loginService: LoginServiceProvider
   ) {
     super();
-    this.ifmJs = AppSettingProvider.IFMJS;
     // this._auto_vote_register.getPromise();
     this.loginService.loginStatus.distinctUntilChanged().subscribe(is_login => {
       this._auto_vote_sub && this._auto_vote_sub.unsubscribe();

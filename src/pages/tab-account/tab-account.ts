@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { UserInfoProvider } from "../../providers/user-info/user-info";

@@ -7,7 +7,7 @@ import {
   Refresher,
   Content,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { SocialSharing } from "@ionic-native/social-sharing";

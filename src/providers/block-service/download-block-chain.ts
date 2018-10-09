@@ -2,14 +2,13 @@ import shareProto from "../../shareProto";
 import EventEmitter from "eventemitter3";
 import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 // import { Mdb } from "../../src/providers/mdb";
-import { FangoDB, FangoDBWorker } from "fangodb";
+import { FangoDB, FangoDBWorker } from "../../fangodb";
 import { BlockchainVerifier } from "./blockchain-verifier";
-import { IfmchainCore } from "ifmchain-js-core";
 
 import { buf2hex, BlockModel, RangeHelper } from "./helper";
 
 export class BlockChainDownloader extends EventEmitter {
-  constructor(public webio: SocketIOClient.Socket, public blockDb: FangoDBWorker<BlockModel>, public ifmJs: IfmchainCore) {
+  constructor(public webio: SocketIOClient.Socket, public blockDb: FangoDBWorker<BlockModel>, public ifmJs: import("../../ifmchain-js-core/src").IfmchainCore) {
     super();
   }
   verifier = new BlockchainVerifier(this.webio, this.blockDb);
@@ -218,7 +217,7 @@ export class BlockChainDownloader extends EventEmitter {
     }
 
     // 数据库插入出错的话，忽略错误，继续往下走
-    await this.blockDb.insertMany(blocks,{replace:true}).catch(console.warn);
+    await this.blockDb.insertMany(blocks, { replace: true }).catch(console.warn);
 
     // 更改进度
     this.emit("progress", ((cur_end_height + 1) / total) * 100);

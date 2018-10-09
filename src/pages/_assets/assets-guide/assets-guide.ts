@@ -18,7 +18,7 @@ import {
 	NavParams,
 	ViewController,
 	Slides,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import {
 	AssetsServiceProvider,
 	AssetsBaseModel,

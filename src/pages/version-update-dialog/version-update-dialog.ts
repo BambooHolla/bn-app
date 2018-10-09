@@ -14,7 +14,7 @@ import {
   Refresher,
   Content,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { LATEST_VERSION_INFO } from "./version.types";

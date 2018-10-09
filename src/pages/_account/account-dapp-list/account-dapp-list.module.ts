@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { IonicPageModule } from "ionic-angular";
+import { IonicPageModule } from "ionic-angular/index";
 import { AccountDappListPage } from "./account-dapp-list";
 import { TranslateModule } from "@ngx-translate/core";
 

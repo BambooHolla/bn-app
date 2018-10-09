@@ -1,3 +1,8 @@
+## 结构介绍与安装
+### 子项目
+对于子项目，不使用npm进行安装，而是使用`git add submodule`的方式将源码放置到src目录下，并直接引用子项目中的ts源文件，而不是编译出来的js文件来进行编译。
+同时，需要在主项目的package.json中，使用`file:`来声明依赖，这样在`npm install`的时候能将子项目的依赖一并安装到主项目的`node_modules`中。所以子项目内不能进行`npm install`，确保统一使用主项目的`node_modules`，否则很容易照成依赖重复引发冗余代码，以及ts定义文件重复声明报错等问题。
+
 ## Table of Contents
 
 2. [Pages](#pages)

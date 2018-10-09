@@ -5,7 +5,7 @@ import {
   CommonResponseData,
   ServerResError,
 } from "../app-fetch/app-fetch";
-import { Platform } from "ionic-angular";
+import { Platform } from "ionic-angular/index";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject, Subscription } from "rxjs";
@@ -35,7 +35,6 @@ import { CommonService } from "../commonService";
 
 @Injectable()
 export class BenefitServiceProvider extends CommonService {
-  ifmJs: any;
   // benefitList: TYPE.BenefitModel[] = [];
   // benefitBlockHeight?: number;
   constructor(
@@ -52,7 +51,6 @@ export class BenefitServiceProvider extends CommonService {
     public platform: Platform
   ) {
     super();
-    this.ifmJs = AppSettingProvider.IFMJS;
     this.loginService.loginStatus
       .distinctUntilChanged()
       .subscribe(isLogined => {

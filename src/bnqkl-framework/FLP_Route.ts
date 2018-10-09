@@ -1,5 +1,5 @@
 import { FLP_Lifecycle } from "./FLP_Lifecycle";
-import { NavController, NavOptions, NavParams, ViewController } from "ionic-angular";
+import { NavController, NavOptions, NavParams, ViewController } from "ionic-angular/index";
 import { asyncCtrlGenerator } from "./Decorator";
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { PAGE_STATUS } from "./const";

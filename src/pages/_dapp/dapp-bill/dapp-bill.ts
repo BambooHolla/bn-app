@@ -1,7 +1,7 @@
 import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 
 /**
  * Generated class for the DappBillPage page.

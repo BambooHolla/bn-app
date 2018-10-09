@@ -1,5 +1,5 @@
 import { Component, Optional, ViewChild, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
-import { IonicPage, NavController, NavParams, Refresher, Content, ViewController } from "ionic-angular";
+import { IonicPage, NavController, NavParams, Refresher, Content, ViewController } from "ionic-angular/index";
 import { FirstLevelPage } from "../../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from "../../../providers/assets-service/assets-service";

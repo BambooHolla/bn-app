@@ -6,7 +6,7 @@ import {
   NavController,
   NavParams,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 // import { KjuaQrcodeComponent } from "../../../components/kjua-qrcode/kjua-qrcode";
 
 @IonicPage({ name: "account-info" })

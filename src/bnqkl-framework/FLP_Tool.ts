@@ -12,7 +12,7 @@ import {
   ToastController,
   ModalController,
   LoadingOptions,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { PromiseOut } from "./PromiseExtends";
 import { is_dev, tryRegisterGlobal, global, getSocketIOInstance, afCtrl, baseConfig } from "./helper";
 export { is_dev, tryRegisterGlobal, global };

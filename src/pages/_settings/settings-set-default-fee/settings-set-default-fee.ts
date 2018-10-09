@@ -2,7 +2,7 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 
 @IonicPage({ name: "settings-set-default-fee" })
 @Component({

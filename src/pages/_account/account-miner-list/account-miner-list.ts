@@ -8,7 +8,7 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import {
   MinServiceProvider,
   DelegateModel,

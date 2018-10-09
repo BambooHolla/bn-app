@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { IonicPageModule } from "ionic-angular";
+import { IonicPageModule } from "ionic-angular/index";
 import { PwdInputPage } from "./pwd-input";
 import { DirectivesModule } from "../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";

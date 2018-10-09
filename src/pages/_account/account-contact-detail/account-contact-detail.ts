@@ -1,5 +1,5 @@
 import { Component, Optional } from "@angular/core";
-import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "../../../providers/transaction-service/transaction-service";

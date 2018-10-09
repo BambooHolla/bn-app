@@ -12,7 +12,7 @@ import {
   NavParams,
   ViewController,
   AlertOptions,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { playSound, addSound } from "../../../components/sound";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
 import {

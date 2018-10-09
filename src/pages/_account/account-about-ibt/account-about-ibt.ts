@@ -13,7 +13,7 @@ import {
   NavController,
   NavParams,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { NewsProvider } from "../../../providers/news/news";
 import { AppSettingProvider } from "../../../providers/app-setting/app-setting";
 

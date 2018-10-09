@@ -1,6 +1,6 @@
 import { tryRegisterGlobal } from "../bnqkl-framework/helper";
-import Db from "./gangodb_core/db";
-import Collection from "./gangodb_core/collection";
+import Db from "../gangodb_core/src/db";
+import Collection from "../gangodb_core/src/collection";
 const mdb = new Db("ibt", 20, {
   blocks: ["height", "id"],
   account: ["address", "publicKey"],

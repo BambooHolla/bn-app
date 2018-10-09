@@ -47,16 +47,15 @@ export enum LocalContactGroupMethod {
 }
 export type TransactionWithLoclContactNicknameModel = PromiseType<
   ReturnType<
-    typeof LocalContactProvider.prototype.formatTransactionWithLoclContactNickname
+  typeof LocalContactProvider.prototype.formatTransactionWithLoclContactNickname
   >
->;
+  >;
 
 @Injectable()
 export class LocalContactProvider extends EventEmitter {
   contact_db = new Mdb<TYPE.LocalContactModel>("local_contact");
   tag_db = new Mdb<TYPE.TagModel>("contact_tags");
-  addressCheck;
-  ifmJs;
+  get addressCheck() { return AppSettingProvider.IFMJSCORE.address() };
 
   constructor(
     public accountService: AccountServiceProvider,
@@ -64,8 +63,6 @@ export class LocalContactProvider extends EventEmitter {
     public appSetting: AppSettingProvider
   ) {
     super();
-    this.ifmJs = AppSettingProvider.IFMJS;
-    this.addressCheck = this.ifmJs.addressCheck;
   }
   getLocalContacts(owner_publicKey = this.userInfo.publicKey) {
     return this.contact_db.find({
@@ -87,7 +84,7 @@ export class LocalContactProvider extends EventEmitter {
     const findTask = new Map<
       string,
       ReturnType<typeof LocalContactProvider.prototype.findContact>
-    >();
+      >();
     return Promise.all(
       transaction_list.map(async trs => {
         let sender_finder_task:
@@ -138,7 +135,7 @@ export class LocalContactProvider extends EventEmitter {
     const findTask = new Map<
       string,
       ReturnType<typeof LocalContactProvider.prototype.findContact>
-    >();
+      >();
     return Promise.all(
       benefit_list.map(async benefit => {
         let finder_task = findTask.get(benefit.address);
@@ -157,15 +154,14 @@ export class LocalContactProvider extends EventEmitter {
     );
   }
   /*搜索联系人*/
-  async searchContact(address_or_username: string) {
-    let contact: AccountModel;
-    if (!this.addressCheck.isAddress(address_or_username)) {
-      return await this.accountService
-        .getAccountByUsername(address_or_username)
+  searchContact(address_or_username: string) {
+    if (this.addressCheck.isAddress(address_or_username)) {
+      return this.accountService
+        .getAccountByAddress(address_or_username)
         .catch(err => null);
     } else {
       return this.accountService
-        .getAccountByAddress(address_or_username)
+        .getAccountByUsername(address_or_username)
         .catch(err => null);
     }
   }
@@ -346,7 +342,7 @@ export class LocalContactProvider extends EventEmitter {
     try {
       const parse_data = JSON.parse(export_data.substr(protocol_index + 3));
       import_contacts = parse_data.C;
-    } catch (err) {}
+    } catch (err) { }
     if (!import_contacts) {
       throw new Error("@@LOCAL_CONTACTS_PARSE_ERROR");
     }

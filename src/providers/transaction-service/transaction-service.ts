@@ -5,31 +5,22 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider, ROUND_AB_Generator, HEIGHT_AB_Generator, AsyncBehaviorSubject } from "../app-setting/app-setting";
-import { AlertController } from "ionic-angular";
+import { AlertController } from "ionic-angular/index";
 import { UserInfoProvider } from "../user-info/user-info";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import { Mdb } from "../mdb";
-// const { TransactionTypes } = TYPE;
 export * from "./transaction.types";
 
 @Injectable()
 export class TransactionServiceProvider {
-  ifmJs = AppSettingProvider.IFMJS;
   IFMJSCORE = AppSettingProvider.IFMJSCORE;
-  transaction: any;
+  get addresssCheck() { return this.IFMJSCORE.address() }
+  get keypair() { return this.IFMJSCORE.keypair() }
   // block: any;
   TransactionTypes = TYPE.TransactionTypes;
-  nacl_factory: any;
-  Buff: any;
-  Crypto: any;
-  md5: any;
-  sha: any;
-  nacl: any;
-  keypairService: any;
-  addresssCheck: any;
   unTxDb = new Mdb<TYPE.TransactionModel>("unconfirm_transaction");
   constructor(
     public http: HttpClient,
@@ -41,15 +32,6 @@ export class TransactionServiceProvider {
     public user: UserInfoProvider
   ) {
     tryRegisterGlobal("transactionService", this);
-    this.transaction = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).transaction;
-    // this.block = this.ifmJs.Api(AppSettingProvider.HTTP_PROVIDER).block;
-    this.nacl_factory = this.ifmJs.nacl_factory;
-    this.Crypto = this.ifmJs.crypto;
-    this.Buff = this.ifmJs.Buff;
-    // this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
-    // this.sha = this.Crypto.createHash("sha256"); //Crypto.createHash('sha256');
-    this.keypairService = this.ifmJs.keypairHelper; //For verify passphrase
-    this.addresssCheck = this.ifmJs.addressCheck;
   }
 
   readonly UNCONFIRMED = this.appSetting.APP_URL("/api/transactions/unconfirmed");
@@ -276,17 +258,7 @@ export class TransactionServiceProvider {
    * @param: secondPassphrase 输入的二次密码
    */
   verifySecondPassphrase(secondPassphrase: string) {
-    try {
-      var secondPublic = this.formatSecondPassphrase(this.user.publicKey, secondPassphrase);
-    } catch (err) {
-      return false;
-    }
-    console.log(secondPublic.publicKey.toString("hex"));
-    if (secondPublic.publicKey.toString("hex") === this.user.secondPublicKey) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.IFMJSCORE.keypair().validSecretPassphrase(this.user.publicKey, this.user.secondPublicKey, secondPassphrase)
   }
 
   /**
@@ -295,37 +267,8 @@ export class TransactionServiceProvider {
    * @param secondSecret
    * @returns {any}
    */
-  formatSecondPassphrase(publicKey, secondSecret) {
-    //设置
-    if (!this.nacl) {
-      this.nacl_factory.instantiate(tmpNacl => {
-        this.nacl = tmpNacl;
-      });
-    }
-
-    let reg = /^[^\s]+$/;
-    if (!reg.test(secondSecret)) {
-      throw new TypeError("Second Secret cannot contain spaces");
-    }
-
-    let pattern = /^[^\u4e00-\u9fa5]+$/;
-    if (!pattern.test(secondSecret)) {
-      throw new TypeError("Second Secret cannot contain Chinese characters");
-    }
-
-    let md5Second =
-      publicKey.toString().trim() +
-      "-" +
-      this.Crypto.createHash("md5")
-        .update(secondSecret.toString().trim())
-        .digest("hex");
-    let secondHash = this.Crypto.createHash("sha256")
-      .update(md5Second, "utf-8")
-      .digest();
-    let secondKeypair = this.nacl.crypto_sign_seed_keypair(secondHash);
-    secondKeypair.publicKey = this.Buff.from(secondKeypair.signPk);
-    secondKeypair.privateKey = this.Buff.from(secondKeypair.signSk);
-    return secondKeypair;
+  formatSecondPassphrase(publicKey: string, secondSecret: string) {
+    return this.IFMJSCORE.keypair().createSecretPassphrase(publicKey, secondSecret);
   }
   async getUserTransactions(address: string, page = 1, pageSize = 10, in_or_out?: "in" | "out" | "or", type?: TYPE.TransactionTypes | "all") {
     const offset = (page - 1) * pageSize;
@@ -665,19 +608,15 @@ export class TransactionServiceProvider {
    * @param passphrase
    */
   async verifyPassphrase(passphrase) {
-    let keypair = this.keypairService.create(passphrase);
-    if (this.user.publicKey === keypair.publicKey.toString("hex")) {
-      return true;
-    } else {
-      return false;
-    }
+    const publicKey = this.keypair.create(passphrase);
+    return this.user.publicKey === publicKey;
   }
 
   /**
    * 判断地址是否正确
    * @param address
    */
-  isAddressCorrect(address): boolean {
+  isAddressCorrect(address) {
     return this.addresssCheck.isAddress(address);
   }
 }

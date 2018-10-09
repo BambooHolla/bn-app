@@ -6,7 +6,7 @@ import { AppFetchProvider } from "../../../providers/app-fetch/app-fetch";
 import { PeerServiceProvider } from "../../../providers/peer-service/peer-service";
 import { TransactionServiceProvider } from "../../../providers/transaction-service/transaction-service";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { NetworkInterface } from "@ionic-native/network-interface";
 import SocketIO from "socket.io-client";
 window["SocketIO"] = SocketIO;
@@ -363,10 +363,10 @@ export class VoteAddMiningMachinePage extends SecondLevelPage {
     const { formData } = this;
     /// 校验
     if (formData.publicKey) {
-      const keypair = this.transactionService.keypairService.create(
+      const keypair_publicKey = this.transactionService.keypair.create(
         formData.delegate_pwd
       );
-      if (formData.publicKey !== keypair.publicKey.toString("hex")) {
+      if (formData.publicKey !== keypair_publicKey) {
         // 这台设备已经存在了，校验公钥是否匹配
         throw new Error(
           this.getTranslateSync(

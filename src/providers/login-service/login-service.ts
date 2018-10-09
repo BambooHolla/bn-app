@@ -16,7 +16,7 @@ import {
   tryRegisterGlobal,
 } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
-import { AlertController } from "ionic-angular";
+import { AlertController } from "ionic-angular/index";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 
@@ -28,8 +28,10 @@ export type UserModel = {
 @Injectable()
 export class LoginServiceProvider extends FLP_Tool {
   loginStatus: Observable<boolean>;
-  ifmJs: any;
-  Mnemonic: any;
+  get keypair() { return AppSettingProvider.IFMJSCORE.keypair() };
+  /**用于生成随机语句 */
+  get Mnemonic() { return AppSettingProvider.IFMJSCORE.keypair().Mnemonic }
+  get addressCheck() { return AppSettingProvider.IFMJSCORE.address() }
   constructor(
     public http: Http,
     public appSetting: AppSettingProvider,
@@ -47,9 +49,6 @@ export class LoginServiceProvider extends FLP_Tool {
       // console.log("USER TOKEN:", val);
       return !!val;
     });
-    this.ifmJs = AppSettingProvider.IFMJS;
-    //用于生成随机语句
-    this.Mnemonic = this.ifmJs.Mnemonic;
 
     // 当登录的用户发生变化的时候，安装用户数据更新
     this.appSetting.user_token.distinctUntilChanged().subscribe(v => {
@@ -125,11 +124,8 @@ export class LoginServiceProvider extends FLP_Tool {
   async doLogin(password: string, savePwd = true) {
     // 这里的登录不再请求服务器，而是直接返回空的账户数据，等进入到页面后再去同步账户数据
     if (this.checkAccountLoginAble(password)) {
-      const keypair = this.ifmJs.keypairHelper.create(password);
-      const publicKey = keypair.publicKey.toString("hex");
-      const address = this.ifmJs.addressCheck.generateBase58CheckAddress(
-        publicKey
-      );
+      const publicKey = this.keypair.create(password);
+      const address = this.addressCheck.generateAddress(publicKey);
       FLP_Tool.netWorkConnection().then(async () => {
         var fail = true;
         do {

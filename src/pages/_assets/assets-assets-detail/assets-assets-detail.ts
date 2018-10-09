@@ -3,7 +3,7 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep, PromisePro } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { AssetsServiceProvider, AssetsPossessorModel, AssetsModelWithLogoSafeUrl } from "../../../providers/assets-service/assets-service";
 import { BenefitServiceProvider, BenefitModel } from "../../../providers/benefit-service/benefit-service";
 import { MinServiceProvider } from "../../../providers/min-service/min-service";

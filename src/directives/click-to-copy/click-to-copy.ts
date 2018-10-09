@@ -1,7 +1,7 @@
 import { Directive, Input, ElementRef } from "@angular/core";
 import { Clipboard } from "@ionic-native/clipboard";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import { ToastController } from "ionic-angular";
+import { ToastController } from "ionic-angular/index";
 
 @Directive({
   selector: "[click-to-copy]", // Attribute selector

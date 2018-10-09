@@ -8,7 +8,7 @@ import {
   Loading,
   ViewController,
   Navbar,
-} from "ionic-angular";
+} from "ionic-angular/index";
 
 @IonicPage({ name: "iframepage" })
 @Component({

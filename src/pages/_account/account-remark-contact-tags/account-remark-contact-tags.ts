@@ -11,7 +11,7 @@ import {
   NavController,
   NavParams,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 // import { AccountServiceProvider } from "../../../providers/account-service/account-service";

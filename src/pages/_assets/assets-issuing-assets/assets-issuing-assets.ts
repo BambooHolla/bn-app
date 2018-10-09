@@ -5,7 +5,7 @@ import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { fileInputEleFactory } from "../../../bnqkl-framework/helper";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { BlockServiceProvider, SingleBlockModel } from "../../../providers/block-service/block-service";
 import { AssetsServiceProvider } from "../../../providers/assets-service/assets-service";
 import { MatAutocomplete } from "@angular/material";

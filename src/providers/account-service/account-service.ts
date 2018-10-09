@@ -22,15 +22,8 @@ import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 // TODO：接入Token管理，将用户相关的数据使用内存进行缓存。改进用户相关的数据请求。@Gaubee
 @Injectable()
 export class AccountServiceProvider {
-  ifmJs = AppSettingProvider.IFMJS;
-  Mnemonic = this.ifmJs.Mnemonic;
-  account = AppSettingProvider.IFMJS.Api(AppSettingProvider.HTTP_PROVIDER)
-    .account;
   TransactionTypes = TransactionTypes;
-  nacl_factory = this.ifmJs.nacl_factory;
-  Buff = this.ifmJs.Buff;
-  keypair = this.ifmJs.keypairHelper;
-  Crypto = this.ifmJs.crypto;
+  get keypair() { return AppSettingProvider.IFMJSCORE.keypair(); }
   md5: any;
   sha: any;
   nacl: any;
@@ -205,7 +198,7 @@ export class AccountServiceProvider {
       );
     }
     const accountData: any = {
-      type: this.ifmJs.transactionTypes.USERNAME,
+      type: TransactionTypes.USERNAME,
       secret,
       publicKey: this.user.userInfo.publicKey,
       fee: fee.toString(),
@@ -236,9 +229,7 @@ export class AccountServiceProvider {
    * @param lang 默认语言
    */
   generateCryptoPassword(options: object, lang: string) {
-    let password = this.keypair.generatePassPhraseWithInfo(options, lang);
-
-    return password;
+    return this.keypair.generatePassphrase(lang, options);
   }
 
   getAccountPreRoundProfits(address: string, page: number, pageSize: number) {

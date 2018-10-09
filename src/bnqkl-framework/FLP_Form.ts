@@ -1,6 +1,6 @@
 import { FLP_Route } from "./FLP_Route";
 import { FLP_Tool } from "./FLP_Tool";
-import { NavController, NavOptions, NavParams, ViewController } from "ionic-angular";
+import { NavController, NavOptions, NavParams, ViewController } from "ionic-angular/index";
 import { getErrorFromAsyncerror, translateMessage } from "./Decorator";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";

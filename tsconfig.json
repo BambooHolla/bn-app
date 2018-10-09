@@ -18,7 +18,10 @@
     "node_modules",
     "src/**/*.spec.ts",
     "src/workers/**/*.ts",
-    "src/**/__tests__/*.ts"
+    "src/**/__tests__/*.ts",
+    "test/**/*.ts",
+    "**/test/**/*.ts",
+    "src/ifmchain-js-core/src/test/**/*.ts"
   ],
   "compileOnSave": false,
   "atom": {

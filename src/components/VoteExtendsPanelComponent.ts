@@ -11,7 +11,7 @@ import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { UserInfoProvider } from "../providers/user-info/user-info";
 import { FLP_Tool, tryRegisterGlobal } from "../bnqkl-framework/FLP_Tool";
 import { Subscription } from "rxjs/Subscription";
-import { AlertController, ToastController } from "ionic-angular";
+import { AlertController, ToastController } from "ionic-angular/index";
 import EventEmitter from "eventemitter3";
 import { asyncCtrlGenerator } from "../bnqkl-framework/Decorator";
 

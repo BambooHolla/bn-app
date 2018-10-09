@@ -2,7 +2,7 @@ import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
 import { versionToNumber } from "../version-update-dialog/version-update-dialog";
-import { ModalController } from "ionic-angular";
+import { ModalController } from "ionic-angular/index";
 export async function getLatestVersionInfo(
   fetch: AppFetchProvider,
   lang: string

@@ -5,7 +5,7 @@ import { WaterProgressComponent } from "../../../components/water-progress/water
 import { BytesPipe } from "../../../pipes/bytes/bytes";
 
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { Storage } from "@ionic/storage";
 
 import { getUTF8ByteSize } from "./calcHelper";

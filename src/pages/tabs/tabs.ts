@@ -10,7 +10,7 @@ import {
   QueryList,
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { IonicPage, NavController, Tabs } from "ionic-angular";
+import { IonicPage, NavController, Tabs } from "ionic-angular/index";
 import { MyApp } from "../../app/app.component";
 import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
