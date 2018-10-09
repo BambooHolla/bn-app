@@ -1,5 +1,5 @@
 import { ViewChild, Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
-import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";

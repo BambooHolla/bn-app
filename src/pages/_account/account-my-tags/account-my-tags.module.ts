@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { IonicPageModule } from "ionic-angular";
+import { IonicPageModule } from "ionic-angular/index";
 import { AccountMyTagsPage } from "./account-my-tags";
 import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from "../../../pipes/pipes.module";

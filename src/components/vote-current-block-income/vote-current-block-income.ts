@@ -5,7 +5,7 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { RankModel } from "../../providers/min-service/min-service";
-import { NavController, NavParams } from "ionic-angular";
+import { NavController, NavParams } from "ionic-angular/index";
 import {
   BlockServiceProvider,
   BlockModel,

@@ -8,7 +8,7 @@ import {
   NavController,
   NavParams,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 
 @IonicPage({ name: "account-news-detail" })
 @Component({

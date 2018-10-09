@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { IonicPageModule } from "ionic-angular";
+import { IonicPageModule } from "ionic-angular/index";
 import { SettingsCacheManagePage } from "./settings-cache-manage";
 import { TranslateModule } from "@ngx-translate/core";
 import { PipesModule } from "../../../pipes/pipes.module";

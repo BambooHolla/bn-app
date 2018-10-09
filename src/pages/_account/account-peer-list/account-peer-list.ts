@@ -2,7 +2,7 @@ import { Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from 
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { PeerServiceProvider, LocalPeerModel } from "../../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { baseConfig } from "../../../bnqkl-framework/helper";

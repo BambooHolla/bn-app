@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { IonicPageModule } from "ionic-angular";
+import { IonicPageModule } from "ionic-angular/index";
 import { AccountAddLocalContactPage } from "./account-add-local-contact";
 import { ComponentsModule } from "../../../components/components.module";
 import { DirectivesModule } from "../../../directives/directives.module";

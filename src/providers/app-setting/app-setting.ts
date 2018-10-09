@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
 import "rxjs/add/operator/map";
 import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
-import { Platform } from "ionic-angular";
+import { Platform } from "ionic-angular/index";
 import { AsyncBehaviorSubject, Executor } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";

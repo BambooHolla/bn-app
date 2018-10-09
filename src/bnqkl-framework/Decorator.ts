@@ -9,7 +9,7 @@ import {
   ToastController,
   Modal,
   Alert,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import {
   PAGE_STATUS,
   getErrorFromAsyncerror,

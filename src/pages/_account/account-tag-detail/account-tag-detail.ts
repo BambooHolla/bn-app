@@ -15,7 +15,7 @@ import {
 	NavController,
 	NavParams,
 	ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import {
 	LocalContactProvider,
 	TagModel,

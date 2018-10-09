@@ -8,7 +8,7 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { PromisePro } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular";
+import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular/index";
 import {
   BlockServiceProvider,
   BlockModel,

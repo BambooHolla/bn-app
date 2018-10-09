@@ -28,7 +28,7 @@ import {
   ToastController,
   ModalController,
   LoadingOptions,
-} from "ionic-angular";
+} from "ionic-angular/index";
 
 import { AndroidPermissions } from "@ionic-native/android-permissions";
 import { FirstRunPage, ScanLinkPeerPage, LoginPage, MainPage } from "../pages/pages";

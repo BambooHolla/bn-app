@@ -6,7 +6,7 @@ import {
   NavParams,
   Platform,
   Slides,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { MyApp } from "../../app/app.component";
 import { ScanLinkPeerPage } from "../../pages/pages";

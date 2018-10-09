@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";

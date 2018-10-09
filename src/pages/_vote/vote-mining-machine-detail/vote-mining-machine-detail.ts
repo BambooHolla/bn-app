@@ -10,7 +10,7 @@ import {
 import { PeerServiceProvider } from "../../../providers/peer-service/peer-service";
 import { TransactionServiceProvider } from "../../../providers/transaction-service/transaction-service";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams } from "ionic-angular";
+import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { MiningMachine } from "../types";
 import { listenMacStatus } from "../vote-list/vote-list";
 

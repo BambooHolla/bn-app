@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit, OnDestroy, Renderer2 } from "@angular/core";
-import { Content } from "ionic-angular";
+import { Content } from "ionic-angular/index";
 import { Subscription } from "rxjs/Subscription";
 
 @Directive({

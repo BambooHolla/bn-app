@@ -14,7 +14,7 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
-import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { AssetsServiceProvider, AssetsBaseModel, AssetsModelWithLogoSafeUrl } from "../../../providers/assets-service/assets-service";
 import { ClipAssetsLogoComponent } from "../../../components/clip-assets-logo/clip-assets-logo";
 import { ClipSubchainLogoComponent } from "../../../components/clip-subchain-logo/clip-subchain-logo";

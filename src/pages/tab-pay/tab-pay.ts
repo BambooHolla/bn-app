@@ -9,7 +9,7 @@ import {
   NavParams,
   Refresher,
   InfiniteScroll,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
 import {

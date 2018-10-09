@@ -1,6 +1,6 @@
 import { FirstLevelPage } from "./FirstLevelPage";
 import { TabsPage } from "../pages/tabs/tabs";
-import { NavController, NavParams } from "ionic-angular";
+import { NavController, NavParams } from "ionic-angular/index";
 
 export class SecondLevelPage extends FirstLevelPage {
   PAGE_LEVEL = 2;

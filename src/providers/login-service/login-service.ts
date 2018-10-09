@@ -16,7 +16,7 @@ import {
   tryRegisterGlobal,
 } from "../../../src/bnqkl-framework/FLP_Tool";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
-import { AlertController } from "ionic-angular";
+import { AlertController } from "ionic-angular/index";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 

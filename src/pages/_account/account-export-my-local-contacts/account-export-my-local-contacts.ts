@@ -9,7 +9,7 @@ import {
   NavController,
   NavParams,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { FLP_Tool } from "../../../bnqkl-framework/FLP_Tool";
 import { PromiseType } from "../../../bnqkl-framework/PromiseExtends";

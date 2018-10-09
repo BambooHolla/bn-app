@@ -5,7 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject } from "rxjs";
 import { AppSettingProvider, ROUND_AB_Generator, HEIGHT_AB_Generator, AsyncBehaviorSubject } from "../app-setting/app-setting";
-import { AlertController } from "ionic-angular";
+import { AlertController } from "ionic-angular/index";
 import { UserInfoProvider } from "../user-info/user-info";
 import { tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import { sleep } from "../../bnqkl-framework/PromiseExtends";

@@ -13,7 +13,7 @@ import {
   NavController,
   NavParams,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 
 @IonicPage({ name: "chain-service-market" })
 @Component({

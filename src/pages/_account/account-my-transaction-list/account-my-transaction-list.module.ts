@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { IonicPageModule } from "ionic-angular";
+import { IonicPageModule } from "ionic-angular/index";
 import { AccountMyTransactionListPage } from "./account-my-transaction-list";
 import { MomentModule } from "angular2-moment";
 import { ComponentsModule } from "../../../components/components.module";

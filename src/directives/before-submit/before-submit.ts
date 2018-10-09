@@ -8,7 +8,7 @@ import {
 import { Clipboard } from "@ionic-native/clipboard";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { formatAndTranslateMessage } from "../../bnqkl-framework/Decorator";
-import { ToastController } from "ionic-angular";
+import { ToastController } from "ionic-angular/index";
 import { TranslateService } from "@ngx-translate/core";
 
 @Directive({

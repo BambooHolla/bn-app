@@ -7,7 +7,7 @@ import {
   Header,
   Content,
   ScrollEvent,
-} from "ionic-angular";
+} from "ionic-angular/index";
 
 import { asyncCtrlGenerator } from "./Decorator";
 import { PAGE_STATUS } from "./const";

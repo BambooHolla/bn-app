@@ -6,7 +6,7 @@ import {
   Refresher,
   Content,
   ViewController,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";

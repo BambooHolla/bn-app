@@ -8,7 +8,7 @@ import {
   NavParams,
   Refresher,
   Content,
-} from "ionic-angular";
+} from "ionic-angular/index";
 import {
   TransactionServiceProvider,
   TransactionTypes,

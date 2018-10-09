@@ -5,7 +5,7 @@ import {
   CommonResponseData,
   ServerResError,
 } from "../app-fetch/app-fetch";
-import { Platform } from "ionic-angular";
+import { Platform } from "ionic-angular/index";
 import { TranslateService } from "@ngx-translate/core";
 import { Storage } from "@ionic/storage";
 import { Observable, BehaviorSubject, Subscription } from "rxjs";
