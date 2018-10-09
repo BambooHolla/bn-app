@@ -9,7 +9,7 @@
     "build": "NODE_OPTIONS=\"--max-old-space-size=8000\" ionic-app-scripts build --prod",
     "lint": "ionic-app-scripts lint",
     "worker:1": "cd workers/download-block-chain & parcel watch download-block-chain.worker.ts --no-source-maps --no-hmr --out-dir ../../src/assets/workers",
-    "ionic:build": "ionic-app-scripts build --max_old_space_size=8000",
+    "ionic:build": "NODE_OPTIONS=\"--max-old-space-size=8000\" ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
     "format:diff": "node scripts/format.js --from-git-diff",
     "format:all": "node scripts/format.js --all",
