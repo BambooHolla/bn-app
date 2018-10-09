@@ -68,7 +68,7 @@ export class PwdInputPage extends FirstLevelPage {
     if (this.formData.need_pay_pwd) {
       if (this.formData.pay_pwd) {
         if (
-          !this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)
+          !this.transactionService.verifySecondPassphrase(this.formData.password, this.formData.pay_pwd)
         ) {
           return {
             VerificationFailure: "@@PAY_PWD_VERIFICATION_FAILURE",

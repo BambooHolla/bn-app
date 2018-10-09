@@ -35,6 +35,7 @@ import { FirstRunPage, ScanLinkPeerPage, LoginPage, MainPage } from "../pages/pa
 import { AccountServiceProvider } from "../providers/account-service/account-service";
 import { AppSettingProvider } from "../providers/app-setting/app-setting";
 import { AppFetchProvider } from "../providers/app-fetch/app-fetch";
+import { BlockServiceProvider } from "../providers/block-service/block-service";
 import { MinServiceProvider } from "../providers/min-service/min-service";
 import { LoginServiceProvider } from "../providers/login-service/login-service";
 import { BenefitServiceProvider } from "../providers/benefit-service/benefit-service";
@@ -56,7 +57,7 @@ if (global["cordova"] && global["cordova"].plugins && global["cordova"].plugins.
   }
 }
 // 强行让SecondLevelPage编译进来
-(function noop(x) {})(SecondLevelPage);
+(function noop(x) { })(SecondLevelPage);
 
 enum FAIO_CHECK {
   Login,
@@ -81,6 +82,7 @@ export class MyApp implements OnInit {
     public loginService: LoginServiceProvider,
     public appSetting: AppSettingProvider,
     public appFetch: AppFetchProvider,
+    public blockService: BlockServiceProvider,
     public minService: MinServiceProvider,
     public storage: Storage,
     public keyboard: Keyboard,
@@ -111,6 +113,7 @@ export class MyApp implements OnInit {
     global["userInfo"] = userInfo;
     global["appSetting"] = appSetting;
     global["appFetch"] = appFetch;
+    global["blockService"] = blockService;
     global["minService"] = minService;
     global["peerService"] = peerService;
     global["file"] = file;
@@ -343,13 +346,13 @@ export class MyApp implements OnInit {
         loading_content !== false &&
         (loading_content
           ? this.loadingCtrl.create(
-              Object.assign(
-                {
-                  content: loading_content || "",
-                },
-                loading_opts
-              )
+            Object.assign(
+              {
+                content: loading_content || "",
+              },
+              loading_opts
             )
+          )
           : this.loadingCtrl.create(loading_opts));
       await (loadinger && loadinger.present());
       try {
@@ -503,7 +506,7 @@ function onresize() {
 }
 onresize();
 global.addEventListener("resize", onresize);
-global["importLS"] = function(o) {
+global["importLS"] = function (o) {
   for (var k in o) {
     localStorage.setItem(k, o[k]);
   }

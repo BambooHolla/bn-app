@@ -19,7 +19,6 @@ import { Mdb } from "../mdb";
 import { DbCacheProvider } from "../db-cache/db-cache";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 
-// TODO：接入Token管理，将用户相关的数据使用内存进行缓存。改进用户相关的数据请求。@Gaubee
 @Injectable()
 export class AccountServiceProvider {
   TransactionTypes = TransactionTypes;

@@ -44,12 +44,14 @@ export class RippleTransition extends PageTransition {
 
         const touchPos: { x: number; y: number } | undefined = enteringView.getNavParams().get("touchPos");
         if (touchPos) {
+          enteringContent.syncPlay
           enteringContent.beforeStyles({
             transformOrigin: `${touchPos.x}px ${touchPos.y}px`,
             // position: "absolute",
             // left: `${touchPos.x}px`,
             // top: `${touchPos.y}px`,
           });
+          // enteringContent.fromTo("transformOrigin",)
           enteringContent.fromTo("transform", `translateX(0px) translateY(0px);`, ` translateX(${-touchPos.x}px) translateY(${-touchPos.y}px)`, false);
         }
         enteringContent.fromTo(WIDTH, SIZE_NONE, SIZE_FULL, true);

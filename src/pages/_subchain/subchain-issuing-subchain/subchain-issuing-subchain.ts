@@ -319,7 +319,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "pay_pwd", ["VerificationFailure", "NeedInput"])
 	check_pay_pwd() {
 		if (this.formData.pay_pwd) {
-			if (!this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)) {
+			if (!this.transactionService.verifySecondPassphrase(this.formData.pwd, this.formData.pay_pwd)) {
 				return {
 					VerificationFailure: "PAY_PWD_VERIFICATION_FAILURE",
 				};

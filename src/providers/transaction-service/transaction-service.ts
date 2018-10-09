@@ -165,9 +165,7 @@ export class TransactionServiceProvider {
 
   async createTransaction(txData) {
     if (txData.secondSecret && txData.type !== this.TransactionTypes.SIGNATURE) {
-      let secondPwd = txData.secondSecret;
-      let is_second_true = this.verifySecondPassphrase(secondPwd);
-      if (!is_second_true) {
+      if (!this.verifySecondPassphrase(txData.secret, txData.secondSecret)) {
         throw this.fetch.ServerResError.getI18nError("Second passphrase verified error");
       }
     }
@@ -257,8 +255,8 @@ export class TransactionServiceProvider {
    * 验证支付密码
    * @param: secondPassphrase 输入的二次密码
    */
-  verifySecondPassphrase(secondPassphrase: string) {
-    return this.IFMJSCORE.keypair().validSecretPassphrase(this.user.publicKey, this.user.secondPublicKey, secondPassphrase)
+  verifySecondPassphrase(secret: string, secondSecret: string) {
+    return this.IFMJSCORE.keypair().validSecretPassphrase(secret, secondSecret, this.user.secondPublicKey)
   }
 
   /**

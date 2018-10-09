@@ -106,8 +106,6 @@ export class BlockServiceProvider extends FLP_Tool {
 
     this._init_block_aot.autoRegister(this);
 
-    tryRegisterGlobal("blockService", this);
-
     // 安装api服务
     this._blockDb = dbCache.installDatabase("blocks", []);
     dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(

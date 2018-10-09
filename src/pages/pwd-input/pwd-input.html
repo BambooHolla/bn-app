@@ -14,7 +14,7 @@
         <div class="left">
           <div class="label">{{'PAY_PASSPHRASE' | translate}}</div>
         </div>
-        <input type="password" placeholder="{{'PLEASE_INPUT_PAY_PASSPHRASE' | translate}}" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd">
+        <input type="password" placeholder="{{'PLEASE_INPUT_PAY_PASSPHRASE' | translate}}" [(ngModel)]="formData.pay_pwd" set-input-status="pay_pwd" [watch-input-keys]="['password']">
       </div>
       <div class="input-container" *ngIf="!formData.have_password">
         <div class="left">

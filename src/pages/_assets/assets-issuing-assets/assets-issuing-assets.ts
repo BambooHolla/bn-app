@@ -58,17 +58,17 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
     pay_pwd: string;
     fee: number;
   } = {
-    logo: "",
-    abbreviation: "",
-    genesisAddress: "",
-    expectedIssuedAssets: undefined,
+      logo: "",
+      abbreviation: "",
+      genesisAddress: "",
+      expectedIssuedAssets: undefined,
 
-    pwd: "",
-    need_pay_pwd: this.userInfo.hasSecondPwd,
-    pay_pwd: "",
-    fee: parseFloat(this.appSetting.settings.default_fee),
-    // expectedIssuedBlockHeight: undefined,
-  };
+      pwd: "",
+      need_pay_pwd: this.userInfo.hasSecondPwd,
+      pay_pwd: "",
+      fee: parseFloat(this.appSetting.settings.default_fee),
+      // expectedIssuedBlockHeight: undefined,
+    };
 
   ignore_keys = ["logo", "pay_pwd"];
   summary_maxlength = 200;
@@ -131,7 +131,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
   @AssetsIssuingAssetsPage.setErrorTo("errors", "pay_pwd", ["VerificationFailure", "NeedInput"])
   check_pay_pwd() {
     if (this.formData.pay_pwd) {
-      if (!this.transactionService.verifySecondPassphrase(this.formData.pay_pwd)) {
+      if (!this.transactionService.verifySecondPassphrase(this.formData.pwd, this.formData.pay_pwd)) {
         return {
           VerificationFailure: "PAY_PWD_VERIFICATION_FAILURE",
         };
