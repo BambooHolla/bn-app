@@ -113,6 +113,7 @@ export class FLP_Route extends FLP_Lifecycle {
         return;
       }
       params = Object.assign(checkInfo.to_next_params, params);
+      opts = Object.assign(checkInfo.to_next_opts, opts);
       return await this._navCtrlPush(path, params, opts);
     } finally {
       this.current_routeTo_page = "";
@@ -151,17 +152,23 @@ export class FLP_Route extends FLP_Lifecycle {
   static ROUTE_TO_BEFORE_CHECK_LIST: Array<RouteToBeforeCheck> = [];
   static async doRouteToBeforeCheck(self: FLP_Route, path: string, params?: any, opts?: any) {
     const to_next_params = {};
+    const to_next_opts = {};
     let preventDefault = false;
     for (var i = 0, C: RouteToBeforeCheck; (C = this.ROUTE_TO_BEFORE_CHECK_LIST[i]); i += 1) {
       const check_label = `CHECK ${i + 1}:${C.name || "NO-NAME"}`;
       console.time(check_label);
       if (C.match(path, params, opts)) {
         if (
-          await C.checker(self, to_next_params, {
-            path,
-            params,
-            opts,
-          })
+          await C.checker(self,
+            {
+              to_next_params,
+              to_next_opts,
+            },
+            {
+              path,
+              params,
+              opts,
+            })
         ) {
           i = Infinity;
           preventDefault = true;
@@ -172,6 +179,7 @@ export class FLP_Route extends FLP_Lifecycle {
     return {
       preventDefault,
       to_next_params,
+      to_next_opts,
     };
   }
 
@@ -236,7 +244,7 @@ for (var key in QRCODE_GET_WAY) {
 
 FLP_Route.registerRouteToBeforeCheck(
   ["account-scan-add-contact"],
-  async (self, to_next_params, { path, params, opts }) => {
+  async (self, { to_next_params, to_next_opts }, { path, params, opts }) => {
     var result: QRCODE_GET_WAY;
     var inputEle: HTMLInputElement;
     const actionSheet = self.actionSheetCtrl.create({
@@ -334,15 +342,20 @@ FLP_Route.registerRouteToBeforeCheck(
 );
 FLP_Route.registerRouteToBeforeCheck(
   ["assets-issuing-assets"],
-  async (self, to_next_params, { path, params, opts }) => {
-    // self._navCtrlPush('assets-guide',{
-    //   auto_return:true
-    // })
+  async (self, { to_next_params, to_next_opts }, { path, params, opts }) => {
+    if (params && params.ignore_route_aop) {
+      return false;
+    }
     const guideModal = self.modalCtrl.create("assets-guide");
     guideModal.present();
-    return !(await new Promise(resolve => {
+    const data = await new Promise<any>(resolve => {
       guideModal.onWillDismiss(resolve);
-    }));
+    });
+    if (data) {
+      to_next_params.touchPos = data.touchPos;
+      to_next_opts.animation = "ripple-transition";
+    }
+    return !data;
   },
   0,
   "引导用户进入资产发行说明页面"

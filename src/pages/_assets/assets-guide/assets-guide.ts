@@ -101,8 +101,8 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 		if (!ani_ins) {
 			const ele = (this.elementRef
 				.nativeElement as HTMLElement).querySelector(
-				`.s-${index + 1} .ani-conatiner`
-			);
+					`.s-${index + 1} .ani-conatiner`
+				);
 			if (!ele) {
 				throw new Error(
 					`slide ${index} init error, container not found.`
@@ -165,22 +165,34 @@ export class AssetsGuidePage extends SecondLevelPage implements OnDestroy {
 			name: `bootstrap button`, // Name for future reference. Optional.
 		});
 		this._lottie_ins_map.set("bootstrap-button", ani_btn);
+		let touchPos: any;
 		ani_btn.addEventListener("DOMLoaded", () => {
 			const btn_ele = btn_container.querySelector("g");
 			if (btn_ele) {
 				let is_played = false;
-				btn_ele.addEventListener("click", () => {
-					if (is_played) {
-						return;
-					}
-					is_played = true;
-					ani_btn.play();
+				btn_ele.addEventListener("click", (e: MouseEvent) => {
+					touchPos = { x: e.clientX, y: e.clientY };
+
+					this.routeTo('assets-issuing-assets', {
+						ignore_route_aop: true,
+						touchPos
+					}, { animation: "ripple-transition" }).then(() => {
+						this.finishJob(true, 1);
+					});
+
+					// if (is_played) {
+					// 	return;
+					// }
+					// is_played = true;
+					// ani_btn.play();
 				});
 			}
 		});
 		ani_btn.addEventListener("complete", () => {
 			// this.routeTo('assets-issusing-assets',{force_route_in:true})
-			this.jobRes(true);
+			this.jobRes({
+				touchPos
+			});
 			this.finishJob(true, 1);
 		});
 	}

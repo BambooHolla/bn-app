@@ -46,10 +46,12 @@ export class SubchainWorldPage extends SecondLevelPage {
 		}
 		this.routeTo(
 			"subchain-gateway",
-			{ touchPos },
+			{
+				touchPos,
+				register_back_animation: true,
+			},
 			{
 				animation: "ripple-transition",
-				touchPos,
 			}
 		);
 	}

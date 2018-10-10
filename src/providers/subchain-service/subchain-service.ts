@@ -51,7 +51,7 @@ export class SubchainServiceProvider {
         issueSubchain: {
           address,
           publicKey,
-          ...JSON.parse(JSON.stringify(subchainInfo))
+          ...JSON.parse(JSON.stringify(subchainInfo))// 去除引用关系
         },
       },
     };

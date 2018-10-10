@@ -12,10 +12,11 @@ const POP_SYMBOL = Symbol.for("nav.pop");
 function getTouchPosAndCircleR(view: ViewController) {
   const W = document.body.clientWidth;
   const H = document.body.clientHeight;
+  const navParams = view.getNavParams()
   const touchPos: {
     x: number;
     y: number;
-  } = view.getNavParams().get("touchPos") || {
+  } = navParams.get("touchPos") || {
     x: W / 2,
     y: H / 2,
   };
@@ -27,7 +28,8 @@ function getTouchPosAndCircleR(view: ViewController) {
 
   return {
     touchPos,
-    circleR: R
+    circleR: R,
+    isBackAni: navParams.get("register_back_animation")
   }
 }
 
@@ -41,8 +43,6 @@ export class RippleTransition extends PageTransition {
     const opts = this.opts;
 
     this.duration(opts.duration && isPresent(opts.duration) ? opts.duration : DURATION);
-    this.easing('')
-
 
     const backDirection = opts.direction === "back";
 
@@ -62,19 +62,23 @@ export class RippleTransition extends PageTransition {
       } else {
         // 前进模式
 
-        const { touchPos, circleR } = getTouchPosAndCircleR(enteringView);
+        const { touchPos, circleR, isBackAni } = getTouchPosAndCircleR(enteringView);
         enteringContent.fromTo(CLIP_PATH, `circle(0% at ${touchPos.x}px ${touchPos.y}px)`, `circle(${circleR}px at ${touchPos.x}px ${touchPos.y}px)`, true);
 
         // 改写pop
         if (!enteringView._nav[POP_SYMBOL]) {
           enteringView._nav[POP_SYMBOL] = enteringView._nav.pop;
         }
-        enteringView._nav.pop = (opts?, done?) => {
-          opts = Object.assign({
-            animation: "ripple-transition",
-            duration: this.getDuration(),
-          }, opts);
-          return enteringView._nav[POP_SYMBOL](opts, done);
+        if (isBackAni) {
+          enteringView._nav.pop = (opts?, done?) => {
+            opts = Object.assign({
+              animation: "ripple-transition",
+              duration: this.getDuration(),
+            }, opts);
+            // 一次性动画注册
+            enteringView._nav.pop = enteringView._nav[POP_SYMBOL];
+            return enteringView._nav.pop(opts, done);
+          }
         }
       }
     }
