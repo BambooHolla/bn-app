@@ -5,11 +5,31 @@ import { ViewController } from "ionic-angular/navigation/view-controller";
 import { ElementRef } from "@angular/core";
 
 const DURATION = 500;
-const WIDTH = "width";
-const HEIGHT = "height";
-const BORDER_RADIUS = "border-radius";
-const SIZE_NONE = "0vmax";
-const SIZE_FULL = "100vmax";
+const CLIP_PATH = "-webkit-clip-path";
+const SHOW_BACK_BTN_CSS = "show-back-button";
+const POP_SYMBOL = Symbol.for("nav.pop");
+
+function getTouchPosAndCircleR(view: ViewController) {
+  const W = document.body.clientWidth;
+  const H = document.body.clientHeight;
+  const touchPos: {
+    x: number;
+    y: number;
+  } = view.getNavParams().get("touchPos") || {
+    x: W / 2,
+    y: H / 2,
+  };
+  const right = W - touchPos.x;
+  const bottom = H - touchPos.y;
+  const max_x = Math.max(right, touchPos.x);
+  const max_y = Math.max(bottom, touchPos.y);
+  const R = Math.sqrt(max_x * max_x + max_y * max_y);
+
+  return {
+    touchPos,
+    circleR: R
+  }
+}
 
 export class RippleTransition extends PageTransition {
   init() {
@@ -20,43 +40,42 @@ export class RippleTransition extends PageTransition {
 
     const opts = this.opts;
 
-    console.log(opts);
-
     this.duration(opts.duration && isPresent(opts.duration) ? opts.duration : DURATION);
+    this.easing('')
+
 
     const backDirection = opts.direction === "back";
-    const baseStyle = {
-      transformOrigin: "center",
-      maxWidth: "100vw",
-      boxShadow: "0 0 1rem rgba(0,0,0,0.3)",
-    };
 
     if (enteringView) {
+
       const enteringPageEle: HTMLElement = enteringView.pageRef().nativeElement;
 
       const enteringContent = new Animation(this.plt, enteringPageEle);
+      const enteringBackButton = new Animation(this.plt,
+        enteringPageEle.querySelector("ion-navbar .back-button")
+      );
       this.add(enteringContent);
+      this.add(enteringBackButton);
+      enteringBackButton.beforeAddClass(SHOW_BACK_BTN_CSS);
 
       if (backDirection) {
       } else {
         // 前进模式
-        enteringContent.beforeStyles({ borderRadius: SIZE_FULL, ...baseStyle });
 
-        const touchPos: { x: number; y: number } | undefined = enteringView.getNavParams().get("touchPos");
-        if (touchPos) {
-          enteringContent.syncPlay
-          enteringContent.beforeStyles({
-            transformOrigin: `${touchPos.x}px ${touchPos.y}px`,
-            // position: "absolute",
-            // left: `${touchPos.x}px`,
-            // top: `${touchPos.y}px`,
-          });
-          // enteringContent.fromTo("transformOrigin",)
-          enteringContent.fromTo("transform", `translateX(0px) translateY(0px);`, ` translateX(${-touchPos.x}px) translateY(${-touchPos.y}px)`, false);
+        const { touchPos, circleR } = getTouchPosAndCircleR(enteringView);
+        enteringContent.fromTo(CLIP_PATH, `circle(0% at ${touchPos.x}px ${touchPos.y}px)`, `circle(${circleR}px at ${touchPos.x}px ${touchPos.y}px)`, true);
+
+        // 改写pop
+        if (!enteringView._nav[POP_SYMBOL]) {
+          enteringView._nav[POP_SYMBOL] = enteringView._nav.pop;
         }
-        enteringContent.fromTo(WIDTH, SIZE_NONE, SIZE_FULL, true);
-        enteringContent.fromTo(HEIGHT, SIZE_NONE, SIZE_FULL, true);
-        enteringContent.fromTo(BORDER_RADIUS, SIZE_FULL, SIZE_NONE, true);
+        enteringView._nav.pop = (opts?, done?) => {
+          opts = Object.assign({
+            animation: "ripple-transition",
+            duration: this.getDuration(),
+          }, opts);
+          return enteringView._nav[POP_SYMBOL](opts, done);
+        }
       }
     }
 
@@ -64,25 +83,19 @@ export class RippleTransition extends PageTransition {
       const leavingPageEle: HTMLElement = leavingView.pageRef().nativeElement;
 
       const leavingContent = new Animation(this.plt, leavingPageEle);
+      const leavingBackButton = new Animation(this.plt,
+        leavingPageEle.querySelector("ion-navbar .back-button")
+      );
       this.add(leavingContent);
+      this.add(leavingBackButton);
+      leavingBackButton.beforeRemoveClass(SHOW_BACK_BTN_CSS);
 
       if (backDirection) {
         // 返回模式
-        leavingContent.beforeStyles({ borderRadius: SIZE_NONE, ...baseStyle });
 
-        const touchPos: { x: number; y: number } | undefined = enteringView.getNavParams().get("touchPos");
-        if (touchPos) {
-          leavingContent.beforeStyles({
-            transformOrigin: `${touchPos.x}px ${touchPos.y}px`,
-            // position: "absolute",
-            // left: `${touchPos.x}px`,
-            // top: `${touchPos.y}px`,
-          });
-          leavingContent.fromTo("transform", ` translateX(${-touchPos.x}px) translateY(${-touchPos.y}px)`, `translateX(0px) translateY(0px);`, false);
-        }
-        leavingContent.fromTo(WIDTH, SIZE_FULL, SIZE_NONE, true);
-        leavingContent.fromTo(HEIGHT, SIZE_FULL, SIZE_NONE, true);
-        leavingContent.fromTo(BORDER_RADIUS, SIZE_NONE, SIZE_FULL, true);
+        const { touchPos, circleR } = getTouchPosAndCircleR(enteringView);
+
+        leavingContent.fromTo(CLIP_PATH, `circle(${circleR}px at ${touchPos.x}px ${touchPos.y}px)`, `circle(0% at ${touchPos.x}px ${touchPos.y}px)`, true);
       }
     }
   }

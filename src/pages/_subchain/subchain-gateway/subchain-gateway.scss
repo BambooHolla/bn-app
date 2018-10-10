@@ -1,19 +1,23 @@
 page-subchain-gateway {
-	@extend .header-no-border;
-	> .header {
-		width: 100vw;
-		overflow: hidden;
-	}
-	> .content {
-		width: 100vw;
-		height: 100vh;
-		overflow: hidden;
-		.gateway-canvas {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100vw;
-			height: 100vh;
-		}
-	}
+  @extend .header-no-border;
+
+  >.header {
+    width: 100vw;
+    overflow: hidden;
+  }
+
+  >.content {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(to bottom, green 0%, blue 100%);
+
+    .gateway-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+  }
 }

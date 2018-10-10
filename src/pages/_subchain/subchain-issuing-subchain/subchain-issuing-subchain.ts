@@ -330,11 +330,14 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	/**移除指定阶梯*/
 	removeRewardBlockItem(i: number) {
 		this.formData.rewardPerBlock.splice(i, 1);
+		if(this.formData.rewardPerBlock.length === 0){
+			this.addRewardBlockItem();
+		}
 	}
 	/**增加新的阶梯*/
 	addRewardBlockItem() {
 		const { rewardPerBlock } = this.formData;
-		const pre = rewardPerBlock[rewardPerBlock.length - 1] || { height: 0, reward: 0 };
+		const pre = rewardPerBlock[rewardPerBlock.length - 1] || { height: this.formData.offset, reward: 0 };
 		rewardPerBlock.push({
 			height: pre.height + 1,
 			reward: pre.reward,
