@@ -283,34 +283,38 @@ page-subchain-issuing-subchain {
             input {
               text-align: center;
             }
-            &.range-from {
-              width: calc(50% + 1.5rem);
 
-              .split-symbol {
-                padding-right: 0.5rem;
-              }
+            &.range-from,
+            &.range-end {
+              width: calc(50% - 0.8rem);
             }
-            &.range-from-text{
+
+            &.split-symbol {
+              width: 1.6rem;
+              text-align: center;
+            }
+
+            &.range-from-text {
               display: flex;
               justify-content: space-between;
               align-items: center;
               padding: 0rem 0 0.5rem 0;
               border-bottom: 1px dashed rgba(#FFF, 0.5);
-              >.from-value{
+
+              >.from-value {
                 flex: 1;
                 text-align: center;
               }
             }
-            &.range-end {
-              width: calc(50% - 1.5rem);
-            }
-            &.range-end-text{
+
+            &.range-end-text {
               display: flex;
               justify-content: space-between;
               align-items: center;
               padding: 0rem 0 0.5rem 0;
               border-bottom: 1px dashed rgba(#FFF, 0.5);
-              >.end-value{
+
+              >.end-value {
                 flex: 1;
                 text-align: center;
               }
@@ -323,6 +327,10 @@ page-subchain-issuing-subchain {
 
           >mat-form-field {
             width: 100%;
+
+            input {
+              text-align: center;
+            }
           }
         }
 
@@ -331,7 +339,7 @@ page-subchain-issuing-subchain {
           padding-right: 5%;
         }
 
-        >button {
+        >.remove-reward-block-item-button {
           width: 10%;
         }
       }

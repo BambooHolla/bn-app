@@ -113,7 +113,7 @@
 
   "//": "pwd-input",
   "PLEASE_INPUT_TRANSACTION_FEES": "请输入手续费",
-  "PAY_PWD_VERIFICATION_FAILURE": "支付密码输入错误",
+  "PAY_PWD_VERIFICATION_FAILURE": "支付密码或者主密码输入错误",
 
   "//": "fee-input",
   "USER_HAS_NO_BALANCE": "账户余额不足",
@@ -932,6 +932,7 @@
   "LANG_ko": "韩文",
 
   "//": "来自服务端或者provider的错误",
+  "invalid passphrase": "主密码错误",
   "not enough balance": "没有足够的IBT",
   "account already has username": "您已经设置了用户名",
   "change username error": "用户名设置出错",

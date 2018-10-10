@@ -100,18 +100,3 @@ export class RippleTransition extends PageTransition {
     }
   }
 }
-
-function getPageContentRef(page: ViewController) {
-  if (page["_top_ion_content_element_ref"]) {
-    return page["_top_ion_content_element_ref"];
-  }
-  const pageEle = page.pageRef().nativeElement as HTMLElement;
-  var c_ele = pageEle.firstElementChild;
-  while (c_ele) {
-    if (c_ele.tagName.toUpperCase() === "ION-CONTENT") {
-      return (page["_top_ion_content_element_ref"] = new ElementRef(c_ele));
-    }
-    c_ele = c_ele.nextElementSibling;
-  }
-  return page.contentRef();
-}

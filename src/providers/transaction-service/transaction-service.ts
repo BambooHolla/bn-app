@@ -154,6 +154,7 @@ export class TransactionServiceProvider {
       return Promise.race([
         this.fetch.get<{ sourceIp: string }>(this.GET_SOURCE_IP).then(data => {
           localStorage.setItem("sourceIp", data.sourceIp);
+          this._source_ip_cache_io_id = this.fetch.io.id;
           return data.sourceIp;
         }),
         sleep(5e3).then(() => ""),
@@ -186,18 +187,7 @@ export class TransactionServiceProvider {
     txData.magic = AppSettingProvider.MAGIC;
 
     //生成转账        await上层包裹的函数需要async
-    const transaction = await new Promise<TYPE.TransactionModel>((resolve, reject) => {
-      try {
-        this.IFMJSCORE.createTransaction(txData, (err, res) => {
-          if (err) {
-            return reject(err);
-          }
-          resolve(res);
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
+    const transaction: TYPE.TransactionModel = await this.IFMJSCORE.createTransactionAsync(txData);
 
     return { transactionUrl, transaction };
   }

@@ -80,7 +80,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		super(navCtrl, navParams, true, tabs);
 	}
 	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_port: IssuingSubchainFormData_port = {} as any;
-	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_rewardPerBlock: IssuingSubchainFormData_rewardPerBlock = [];
+	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_rewardPerBlock: IssuingSubchainFormData_rewardPerBlock = [{ height: 2, reward: "0" }];
 	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_delegatesSecret: IssuingSubchainFormData_delegatesSecret = [{ secret: "" }];
 	@SubchainIssuingSubchainPage.propMarkForCheck("*")
 	// @SubchainIssuingSubchainPage.propDetectChanges([])
@@ -257,19 +257,22 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	check_offset() {
 		const res: any = {};
 		const { offset } = this.formData;
-		// TODO: what is offset
+		if (!(isFinite(offset) && offset >= 1)) {
+			res.WRONG_RANGE = "SUBCHAIN_OFFSET_IN_WRONG_RANGE";
+		}
 		return res;
 	}
 	@SubchainIssuingSubchainPage.setErrorTo("errors", "rewardPerBlock", ["WRONG_HEIGHT", "WRONG_REWARD", "WRONG_INDEX"])
 	check_rewardPerBlock() {
 		const res: any = {};
 		const { rewardPerBlock } = this.formData;
+		const offset = this.formData.offset = Math.max(rewardPerBlock[0].height - 1, 1);
 
 		let wrong_index = -1;
 		if (
 			rewardPerBlock.some((info, i) => {
 				wrong_index = i;
-				return !(isFinite(info.height) && info.height > 0);
+				return !(isFinite(info.height) && info.height > offset);
 			})
 		) {
 			// 检测高度是否正确
@@ -330,7 +333,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	/**移除指定阶梯*/
 	removeRewardBlockItem(i: number) {
 		this.formData.rewardPerBlock.splice(i, 1);
-		if(this.formData.rewardPerBlock.length === 0){
+		if (this.formData.rewardPerBlock.length === 0) {
 			this.addRewardBlockItem();
 		}
 	}
@@ -438,6 +441,7 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 				abbreviation: formData.abbreviation.toUpperCase(),
 				logo: await this.getCacheBase64("logo", formData.logo),
 				banner: await this.getCacheBase64("banner", formData.banner),
+				generateTotalAmount: formData.generateTotalAmount,
 				forgeInterval: formData.forgeInterval,
 				miniFee: (formData.miniFee * 1e8).toString(),
 				genesisNodeAddress: formData.genesisNodeAddress,
@@ -446,12 +450,12 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 				offset: formData.offset,
 				port: formData.port,
 				rewardPerBlock: formData.rewardPerBlock,
-				genesisSecret: formData.genesisSecret,
-				delegatesSecret: formData.delegatesSecret.map(item => item.secret),
+				genesisSecret: formData.genesisSecret.trim(),
+				delegatesSecret: formData.delegatesSecret.map(item => item.secret.trim()),
 			},
 			formData.fee,
-			formData.pwd,
-			formData.pay_pwd
+			formData.pwd.trim(),
+			formData.pay_pwd.trim()
 		);
 		this.finishJob();
 	}

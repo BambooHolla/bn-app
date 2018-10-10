@@ -12,7 +12,7 @@ export class SubchainServiceProvider {
     public transactionService: TransactionServiceProvider,
     public fetch: AppFetchProvider,
     private _assetsService: AssetsServiceProvider
-  ) {}
+  ) { }
   imageUrlToJpegBase64 = this._assetsService.imageUrlToJpegBase64;
   addSubchain(
     subchainInfo: {
@@ -20,6 +20,7 @@ export class SubchainServiceProvider {
       abbreviation: string;
       logo: string;
       banner: string;
+      generateTotalAmount: string;
       forgeInterval: number;
       miniFee: string;
       genesisNodeAddress: string;
@@ -50,7 +51,7 @@ export class SubchainServiceProvider {
         issueSubchain: {
           address,
           publicKey,
-          ...subchainInfo,
+          ...JSON.parse(JSON.stringify(subchainInfo))
         },
       },
     };

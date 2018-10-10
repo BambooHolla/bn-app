@@ -96,7 +96,7 @@
       <div class="mat-container generate-total-amount">
         <mat-form-field>
           <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
-            [placeholder]="'PLEASE_INPUT_SUBCHAIN_FORGE_INTERVAL'|translate" type="number" min="0" [(ngModel)]="formData.generateTotalAmount"
+            [placeholder]="'PLEASE_INPUT_GENERATE_TOTAL_AMOUNT'|translate" type="number" min="0" [(ngModel)]="formData.generateTotalAmount"
             set-input-status="generateTotalAmount" [errorStateMatcher]="matFormMatcherFactory('generateTotalAmount')">
           <mat-error *ngIf="errors?.generateTotalAmount?.WRONG_RANGE">
             {{errors.generateTotalAmount.WRONG_RANGE|translate}}
@@ -135,9 +135,9 @@
       </div>
       <div class="mat-container genesis-node-address">
         <mat-form-field>
-          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
-            [placeholder]="'PLEASE_INPUT_SUBCHAIN_GENESIS_NODE_ADDRESS'|translate" [(ngModel)]="formData.genesisNodeAddress"
-            set-input-status="genesisNodeAddress" [errorStateMatcher]="matFormMatcherFactory('genesisNodeAddress')">
+          <mat-label>{{'PLEASE_INPUT_SUBCHAIN_GENESIS_NODE_ADDRESS'|translate}}</mat-label>
+          <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput placeholder="http(s)://"
+            [(ngModel)]="formData.genesisNodeAddress" set-input-status="genesisNodeAddress" [errorStateMatcher]="matFormMatcherFactory('genesisNodeAddress')">
           <mat-error *ngIf="errors?.genesisNodeAddress?.WRONG_URL">
             {{errors.genesisNodeAddress.WRONG_URL|translate}}
           </mat-error>
@@ -164,40 +164,69 @@
         <ali-icon name="ifm-jietijiangli"></ali-icon>
         {{'SUBCHAIN_REWARDPERBLOCK_CONFIGURATION'|translate}}
       </div>
+      <div class="reward-block-item">
+        <div class="mat-container block-height">
+          <div class="range-item range-from range-from-text">
+            <div class="from-value">1</div>
+          </div>
+          <div class="split-symbol">~</div>
+          <!-- <div class="range-item range-end range-end-text">
+            <div class="end-value">{{formData.offset}}</div>
+          </div> -->
+          <mat-form-field class="range-item range-end">
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
+              [placeholder]="'SUBCHAIN_OFFSET'|translate" type="number" min="1" [(ngModel)]="formData.offset"
+              set-input-status="offset" [errorStateMatcher]="matFormMatcherFactory('offset')" />
+            <mat-error *ngIf="errors?.offset?.WRONG_INDEX==i && errors?.offset?.WRONG_HEIGHT">
+              {{errors.offset.WRONG_HEIGHT|translate}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="mat-container reward-amount">
+          <mat-form-field>
+            <input matInput value="0" disabled />
+          </mat-form-field>
+        </div>
+        <button mat-icon-button class="remove-reward-block-item-button" disabled>
+          <!-- <mat-icon>remove_circle_outline</mat-icon> -->
+        </button>
+      </div>
       <div class="reward-block-item" *ngFor="let item of formData.rewardPerBlock;let i = index">
         <div class="mat-container block-height">
+          <mat-form-field class="range-item range-from">
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
+              [placeholder]="'REWARDPERBLOCK_BLOCK_HEIGHT'|translate" type="number" [min]="formData.offset+1"
+              [(ngModel)]="item.height" set-input-status="rewardPerBlock" [errorStateMatcher]="matFormMatcherFactory('rewardPerBlock')" />
+            <mat-error *ngIf="errors?.rewardPerBlock?.WRONG_INDEX==i && errors?.rewardPerBlock?.WRONG_HEIGHT">
+              {{errors.rewardPerBlock.WRONG_HEIGHT|translate}}
+            </mat-error>
+          </mat-form-field>
+          <div class="split-symbol">~</div>
           <ng-container *ngIf="i<formData.rewardPerBlock.length-1;else viewLastestRange">
-            <mat-form-field class="range-item range-from" *ngIf="i==0;else viewRangeItemStart">
+            <!-- <mat-form-field class="range-item range-from" *ngIf="i==0;else viewRangeItemStart">
               <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
-                [placeholder]="'SUBCHAIN_OFFSET'|translate" type="number" min="1" [(ngModel)]="formData.offset" set-input-status="offset"
-                [errorStateMatcher]="matFormMatcherFactory('offset')" />
-              <span class="split-symbol" matSuffix>~</span>
+                [placeholder]="'SUBCHAIN_OFFSET'|translate" type="number" min="1" [(ngModel)]="formData.offset"
+                set-input-status="offset" [errorStateMatcher]="matFormMatcherFactory('offset')" />
             </mat-form-field>
             <ng-template #viewRangeItemStart>
               <div class="range-item range-from range-from-text">
                 <div class="from-value">{{formData.rewardPerBlock[i-1].height}}</div>
                 <div class="split-symbol">~</div>
               </div>
-            </ng-template>
-            <mat-form-field class="range-item range-end">
+            </ng-template> -->
+            <!-- <mat-form-field class="range-item range-end">
               <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
                 [placeholder]="'REWARDPERBLOCK_BLOCK_HEIGHT'|translate" type="number" min="1" [(ngModel)]="item.height"
                 set-input-status="rewardPerBlock" [errorStateMatcher]="matFormMatcherFactory('rewardPerBlock')" />
               <mat-error *ngIf="errors?.rewardPerBlock?.WRONG_INDEX==i && errors?.rewardPerBlock?.WRONG_HEIGHT">
                 {{errors.rewardPerBlock.WRONG_HEIGHT|translate}}
               </mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
+            <div class="range-item range-end range-end-text">
+              <div class="end-value">{{formData.rewardPerBlock[i+1].height}}</div>
+            </div>
           </ng-container>
           <ng-template #viewLastestRange>
-            <mat-form-field class="range-item range-from">
-              <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
-                [placeholder]="'REWARDPERBLOCK_BLOCK_HEIGHT'|translate" type="number" min="1" [(ngModel)]="item.height"
-                set-input-status="rewardPerBlock" [errorStateMatcher]="matFormMatcherFactory('rewardPerBlock')" />
-              <span class="split-symbol" matSuffix>~</span>
-              <mat-error *ngIf="errors?.rewardPerBlock?.WRONG_INDEX==i && errors?.rewardPerBlock?.WRONG_HEIGHT">
-                {{errors.rewardPerBlock.WRONG_HEIGHT|translate}}
-              </mat-error>
-            </mat-form-field>
             <div class="range-item range-end range-end-text">
               <div class="end-value">∞</div>
             </div>
@@ -213,7 +242,7 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <button mat-icon-button (click)="removeRewardBlockItem(i)">
+        <button mat-icon-button class="remove-reward-block-item-button" (click)="removeRewardBlockItem(i)">
           <mat-icon>remove_circle_outline</mat-icon>
         </button>
       </div>
