@@ -14,6 +14,8 @@ import { TransactionServiceProvider } from "../../../providers/transaction-servi
 
 import { PwdInputPage } from "../../pwd-input/pwd-input";
 import { SubchainServiceProvider } from "../../../providers/subchain-service/subchain-service";
+import { LoginServiceProvider } from "../../../providers/login-service/login-service";
+import { SocialSharing } from "@ionic-native/social-sharing";
 
 type IssuingSubchainFormData_port = {
 	web: number;
@@ -56,6 +58,8 @@ type IssuingSubchainFormData = {
 
 	/// 其它页面上需要的一些数据
 	agree_user_aggreement: boolean;
+	add_delegates_num: number;
+	is_mutil_add_delegates: boolean;
 };
 
 @IonicPage({ name: "subchain-issuing-subchain" })
@@ -75,13 +79,15 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 		public assetsService: AssetsServiceProvider,
 		public transactionService: TransactionServiceProvider,
 		public domSanitizer: DomSanitizer,
-		public subchainService: SubchainServiceProvider
+		public subchainService: SubchainServiceProvider,
+		public loginService: LoginServiceProvider,
+		public socialSharing: SocialSharing
 	) {
 		super(navCtrl, navParams, true, tabs);
 	}
 	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_port: IssuingSubchainFormData_port = {} as any;
-	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_rewardPerBlock: IssuingSubchainFormData_rewardPerBlock = [{ height: 2, reward: "0" }];
-	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_delegatesSecret: IssuingSubchainFormData_delegatesSecret = [{ secret: "" }];
+	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_rewardPerBlock: IssuingSubchainFormData_rewardPerBlock = [];
+	@SubchainIssuingSubchainPage.propMarkForCheck("*") formData_delegatesSecret: IssuingSubchainFormData_delegatesSecret = [];
 	@SubchainIssuingSubchainPage.propMarkForCheck("*")
 	// @SubchainIssuingSubchainPage.propDetectChanges([])
 	formData: IssuingSubchainFormData = (() => {
@@ -121,9 +127,16 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 
 			/// 其它页面上需要的一些数据
 			agree_user_aggreement: false,
+			add_delegates_num: 1,
+			is_mutil_add_delegates: false
 		} as any;
 	})();
-	ignore_keys = ["logo", "banner", "pay_pwd", "rewardPerBlock"];
+	ignore_keys = ["logo", "banner", "pay_pwd", "rewardPerBlock", "is_mutil_add_delegates", "mutil_add_delegates"];
+	@SubchainIssuingSubchainPage.willEnter
+	initForm() {
+		this.addRewardBlockItem();
+		this.addDelegatesSecretItem();
+	}
 
 	@asyncCtrlGenerator.error("@@FEE_INPUT_ERROR")
 	async setFee() {
@@ -329,6 +342,18 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 			}
 		}
 	}
+	/**校验批量增加委托人的数量 */
+	@SubchainIssuingSubchainPage.setErrorTo("errors", "add_delegates_num", ["WRONG_RANGE"])
+	check_add_delegates_num() {
+		const res: any = {};
+		const add_num = Math.floor(this.formData.add_delegates_num);
+		if (!(this.isFinite(add_num)
+			&& add_num > 0
+			&& add_num < Number.MAX_SAFE_INTEGER)) {
+			res.WRONG_RANGE = "MUTIL_ADD_DELEGATES_NUM_IS_IN_WRONG_RANGE"
+		}
+		return res;
+	}
 
 	/**移除指定阶梯*/
 	removeRewardBlockItem(i: number) {
@@ -350,12 +375,36 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	removeDelegatesSecretItem(i: number) {
 		this.formData.delegatesSecret.splice(i, 1);
 		if (this.formData.delegatesSecret.length === 0) {
-			this.addDelegatesSecretItem(); // 至少需要一个矿工
+			this.addDelegatesSecretItem(false); // 至少需要一个矿工
 		}
 	}
+	toggleIsMutilAddDelegates(){
+		this.formData.is_mutil_add_delegates = !this.formData.is_mutil_add_delegates;
+	}
 	/**增加新的矿工密钥*/
-	addDelegatesSecretItem() {
-		this.formData.delegatesSecret.push({ secret: "" });
+	addDelegatesSecretItem(
+		is_mutil = this.formData.is_mutil_add_delegates,
+		add_num = this.formData.add_delegates_num,
+	) {
+		if (is_mutil) {
+			if (typeof add_num === "number"
+				&& this.isFinite(add_num)
+				&& add_num > 0
+				&& add_num < Number.MAX_SAFE_INTEGER) {
+				for (var i = 0; i < add_num; i += 1) {
+					this.addDelegatesSecretItem(false);
+				}
+			}
+			return;
+		}
+		this.formData.delegatesSecret.push({
+			secret: this.loginService.generateNewPassphrase({}, "en")
+		});
+	}
+	saveDelegates() {
+		const text = this.formData_delegatesSecret.map(item => item.secret).join("\n\n");
+		// this.clipboard.copy(text);
+		this.socialSharing.share(text);
 	}
 
 	/**切换同意用户协议*/

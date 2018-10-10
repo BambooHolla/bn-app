@@ -209,8 +209,7 @@ export class LoginServiceProvider extends FLP_Tool {
     email?: string;
     mark?: string;
     pwd?: string;
-  }) {
-    const currentLang = this.translateService.currentLang;
+  }, currentLang = this.translateService.currentLang) {
     if (currentLang.indexOf("zh-") === 0) {
       return this.accountService.generateCryptoPassword(params, "cn");
     } else {

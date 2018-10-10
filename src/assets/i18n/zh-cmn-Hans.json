@@ -63,10 +63,8 @@
   "//": "account-about-ibt",
   "ACCOUNT-ABOUT-IBT": "关于IBT",
   "ABOUT_IBT_INFO": "IFMChain是全球首款可接入移动终端的区块链3.0产品，IBT是其节点软件，也是Instinct Blockchain Technology的缩写。",
-  "BUSINESS_COOPERATION_TIP":
-    "当您需要将您的产品、服务、业务接入IFMChain，利用IFMChain的独有优势提升您的竞争力时，请通过邮件告诉我们。在邮件中，请尽可能的把您和您所处行业的背景、您遇到的问题、您的初步想法、您的名片尽可能的描述清楚，这样有助于我们初步评估是否可以帮助到您。行业第一个应用，往往成为该行业标杆。",
-  "USER_SERVICE_TIP":
-    "当您需要技术支持时，请通过邮件告诉给我们。在邮件中，请尽可能的把您遇到的问题、您的想法、您的目的描述清楚，并附上截屏、视频等辅助理解的文件，我们会尽可能的帮助您，或直接在下一个版本中改进问题。",
+  "BUSINESS_COOPERATION_TIP": "当您需要将您的产品、服务、业务接入IFMChain，利用IFMChain的独有优势提升您的竞争力时，请通过邮件告诉我们。在邮件中，请尽可能的把您和您所处行业的背景、您遇到的问题、您的初步想法、您的名片尽可能的描述清楚，这样有助于我们初步评估是否可以帮助到您。行业第一个应用，往往成为该行业标杆。",
+  "USER_SERVICE_TIP": "当您需要技术支持时，请通过邮件告诉给我们。在邮件中，请尽可能的把您遇到的问题、您的想法、您的目的描述清楚，并附上截屏、视频等辅助理解的文件，我们会尽可能的帮助您，或直接在下一个版本中改进问题。",
   "SEND_EMAIL": "发邮件",
 
   "//": "account-faq",
@@ -99,8 +97,7 @@
   "CANCEL_COPY": "不保存",
   "LOGIN_PWD_TIP": "请确认您的密码已经保存，由于区块链去中心的特性，您的密码一旦丢失，将无法找回。请再次确认已保存？",
   "SAVE_NOW": "现在保存",
-  "PWD_TOO_SHORT_TIP":
-    "由于区块链去中心的特性，任何黑客都可以不受限制地对您的密码进行暴力破解。基于现有的计算机的计算能力，您的密码至少要设置24位以上双字节字符，才能保证基本安全。建议您使用“生成新密码”来获得安全的密码。",
+  "PWD_TOO_SHORT_TIP": "由于区块链去中心的特性，任何黑客都可以不受限制地对您的密码进行暴力破解。基于现有的计算机的计算能力，您的密码至少要设置24位以上双字节字符，才能保证基本安全。建议您使用“生成新密码”来获得安全的密码。",
   "GO_GENERATOR_NEW_PWD": "立即生成新密码",
   "KEEP_USE_SHORT_PWD": "继续使用",
   "ALREADY_SAVED": "我已保存",
@@ -196,8 +193,7 @@
   "WATING_VOTE_CONFIRM": "等待进入挖矿中",
   "VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP": "即将对本地区块进行检验，这需要消耗大量的计算能力，可能导致部分型号的设备发热，检验结束后发热的设备将不再发热。",
   "BEFORE_DOWNLOAD_TIP": "即将同步区块链数据，第一次同步可能需要较长时间，在这个过程中您依然可以进行其它操作",
-  "FIRST_MINGING_TIP":
-    "在IFMChain中，所谓挖矿就是将您当前设备的计算能力、存储能力、通信能力贡献给IFMChain区块链网络，网络中其它节点可以通过IFMChain的共识协议使用您设备的计算能力、存储能力和通信能力，当您的设备开始参与贡献后，IFMChain区块链将会给您发放凭证，作为您曾经做过贡献的证明，将作为您未来使用区块链的权益，这个权益凭证就是您的挖矿收益。",
+  "FIRST_MINGING_TIP": "在IFMChain中，所谓挖矿就是将您当前设备的计算能力、存储能力、通信能力贡献给IFMChain区块链网络，网络中其它节点可以通过IFMChain的共识协议使用您设备的计算能力、存储能力和通信能力，当您的设备开始参与贡献后，IFMChain区块链将会给您发放凭证，作为您曾经做过贡献的证明，将作为您未来使用区块链的权益，这个权益凭证就是您的挖矿收益。",
 
   "//": "cur-round-income-amount",
   "CUR-ROUND-INCOME-AMOUNT": "本轮挖矿收益",
@@ -433,8 +429,7 @@
   "PUT_INTO_VOUCHER_WALLET": "放入离线权益",
   "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET": "该权益已收入",
   "SUCCESSFULLY_PUT_THIS_TRANSACTION_IN_TO_VOUCHER_WALLET": "成功收入权益",
-  "PUT_INTO_VOUCHER_TIP":
-    "当支付方处于离线状态时，可以通过离线支付向您支付权益，这份权益只有在您兑现完成后才可以使用，您可以在未来任意时间进行兑现。需要注意的是，在您完成兑现前，支付方可以通过转移账户权益的方式让该笔交易无法兑现，所以请及时兑现。",
+  "PUT_INTO_VOUCHER_TIP": "当支付方处于离线状态时，可以通过离线支付向您支付权益，这份权益只有在您兑现完成后才可以使用，您可以在未来任意时间进行兑现。需要注意的是，在您完成兑现前，支付方可以通过转移账户权益的方式让该笔交易无法兑现，所以请及时兑现。",
 
   "//": "vote-list",
   "VOTE-LIST": "投票",
@@ -573,8 +568,7 @@
   "SET_PAY_PWD_SUBMIT_ERROR": "设置支付密码广播失败",
   "SET_PAY_PWD_SUBMIT_SUCCESS": "设置支付密码广播成功",
   "TWO_PWD_NOT_SAME": "输入的两次密码不相同",
-  "AFTER_SET_PAY_PWD_TIP":
-    "支付密码的设置将在当前交易被确认后生效，生效后的支付密码只能在当前轮结束后才能再次修改。支付密码是保护您资产安全的最后保障，请不要将支付密码告诉任何人，更不要写下或记录到任何地方。",
+  "AFTER_SET_PAY_PWD_TIP": "支付密码的设置将在当前交易被确认后生效，生效后的支付密码只能在当前轮结束后才能再次修改。支付密码是保护您资产安全的最后保障，请不要将支付密码告诉任何人，更不要写下或记录到任何地方。",
 
   "//": "account-set-username",
   "ACCOUNT-SET-USERNAME": "设置用户名",
@@ -592,8 +586,7 @@
   "TRANSFER_FEE": "转账手续费",
   "TOO_LITTLE_TRANSFER_AMOUNT": "转账额度过低",
   "YOU_NEED_SET_TRANSFER_FEE-SET_IT_NOW": "您还未设置转账手续费，现在就设置？",
-  "FIRST_TRANSFER_TIP":
-    "确认转出操作从本地成功转出后，一般都会在区块链网络上得到确认。但可能出现网络上数据暂时还未达成一致的情况，其它节点并不会接受您的转出交易，此时您的转出将不会成功，而此时您并不会接收到任何失败的通知。您可以通过“我的”-“我的交易”-“已确认交易”确认交易的状态。",
+  "FIRST_TRANSFER_TIP": "确认转出操作从本地成功转出后，一般都会在区块链网络上得到确认。但可能出现网络上数据暂时还未达成一致的情况，其它节点并不会接受您的转出交易，此时您的转出将不会成功，而此时您并不会接收到任何失败的通知。您可以通过“我的”-“我的交易”-“已确认交易”确认交易的状态。",
   "NOT_ENOUGH_BALANCE_TO_TRANGER_TIP": "您当前余额不足，您确认继续提交转账交易到区块链网络中吗？",
   "TRANSFER_WILL_BA_ABANDON_TIP": "您的转账交易在网络中被拒绝时，将会被直接丢弃，而不会收到任何通知，请知悉",
   "TRANSFER_SUBMIT_ERROR": "转账广播失败",
@@ -615,8 +608,7 @@
   "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT": "这笔交易凭证的接收人不是当前账户",
   "TRANSFER_DESTINATION_CAN_NOT_BE_YOURSELF": "转账目标不能是自己",
   "TRANSFER_ADDRESS_IS_MALFORMED": "转账地址格式有误",
-  "OFFLINE_TRANFER_TIP":
-    "当网络没有可用网络时，您依然可以使用IBT进行支付，此时的支付将直接点对点的在双方之间进行。离线支付完成后，需要您将离线权益进行兑现后才能进行使用，在兑现前对方都可以将该离线权益进行删除，从而撤销该笔交易",
+  "OFFLINE_TRANFER_TIP": "当网络没有可用网络时，您依然可以使用IBT进行支付，此时的支付将直接点对点的在双方之间进行。离线支付完成后，需要您将离线权益进行兑现后才能进行使用，在兑现前对方都可以将该离线权益进行删除，从而撤销该笔交易",
   "NO_ASSETS": "未拥有其它数字权益",
   "LOADING_ASSETS": "载入中",
   "ASSETS_LIST_UPDATE_ERROR": "权益列表更新出错",
@@ -808,6 +800,7 @@
   "SUBCHAIN_BASE_INFO_TIP": "接受地址为您的资产发行程后，用于接受全部资产的账户；这个账户至少需要给您的当前发行账户至少进行过一笔转账交易。",
 
   "SUBCHAIN_FORGE_BLOCK_CONFIGURATION": "出块配置",
+  "PLEASE_INPUT_GENERATE_TOTAL_AMOUNT": "请输入创世账户的初始权益",
   "PLEASE_INPUT_SUBCHAIN_FORGE_INTERVAL": "请输入产块时间周期",
   "SECOND": "秒",
   "PLEASE_INPUT_SUBCHAIN_MINI_FEE": "请输入最小手续费",
@@ -817,11 +810,21 @@
 
   "SUBCHAIN_REWARDPERBLOCK_CONFIGURATION": "区块阶梯奖励",
   "ADD_REWARD_BLOCK_ITEM": "增加新的阶梯",
+  "SUBCHAIN_OFFSET": "预留高度",
+  "REWARDPERBLOCK_BLOCK_HEIGHT": "起点高度",
+  "REWARDPERBLOCK_BLOCK_REWARD": "奖励权益",
 
   "SUBCHAIN_NET_PORT_CONFIGURATION": "搜索端口列表",
+  "PLEASE_INPUT_SUBCHAIN_SEARCH_PORT": "请输入节点搜索端口",
   "PLEASE_INPUT_SUBCHAIN_PORT_WEB": "请输入WEB端口",
   "PLEASE_INPUT_SUBCHAIN_PORT_P2P": "请输入P2P端口",
   "PLEASE_INPUT_SUBCHAIN_PORT_P2PFORTRS": "请输入交易转发端口",
+
+  "SUBCHAIN_DELEGATES_SECRET_CONFIGURATION": "初始委托人密钥配置",
+  "PLEASE_INPUT_DELEGATESSECRET_SECRET": "请输入委托人密钥",
+  "ADD_DELEGATES_SECRET_ITEM": "增加新的委托人",
+  "ADD_DELEGATES_SECRET_LIST": "批量增加委托人",
+  "PLEASE_INPUT_DELEGATES_SECRET_NUM": "请输入批量增加的数量",
 
   "AGREE_TO_THE_USER_AGREEMENT_OF_SUBCHAIN": "同意《用户协议》",
   "SUBMIT_SUBCHAIN": "立即生成",

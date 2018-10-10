@@ -64,6 +64,12 @@ page-subchain-issuing-subchain {
       }
     }
 
+    .mat-stroked-button {
+      .mat-button-wrapper {
+        display: flex;
+        align-items: center;
+      }
+    }
     .mat-container {
       color: #fff;
 
@@ -101,6 +107,7 @@ page-subchain-issuing-subchain {
           color: #5ae3e2;
         }
       }
+
     }
 
     .mat-input-placeholder {
@@ -360,11 +367,35 @@ page-subchain-issuing-subchain {
           >mat-form-field {
             width: 100%;
           }
+
+          .prefix {
+            min-width: 1.4rem;
+            display: inline-block;
+            text-align: right;
+          }
         }
 
         >button {
           width: 10%;
         }
+      }
+
+      .delegates-secret-toolbar {
+        .button-list {
+
+          display: flex;
+          // align-items: center;
+          justify-content: space-between;
+
+          >button {}
+        }
+        .mutil-add-delegates{
+          padding-top: 1rem;
+        }
+
+        // .new-delegates-secret-item,.new-delegates-secret-list{
+        //   display: inline-block;
+        // }
       }
     }
   }

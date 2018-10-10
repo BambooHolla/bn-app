@@ -203,25 +203,6 @@
           </mat-form-field>
           <div class="split-symbol">~</div>
           <ng-container *ngIf="i<formData.rewardPerBlock.length-1;else viewLastestRange">
-            <!-- <mat-form-field class="range-item range-from" *ngIf="i==0;else viewRangeItemStart">
-              <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
-                [placeholder]="'SUBCHAIN_OFFSET'|translate" type="number" min="1" [(ngModel)]="formData.offset"
-                set-input-status="offset" [errorStateMatcher]="matFormMatcherFactory('offset')" />
-            </mat-form-field>
-            <ng-template #viewRangeItemStart>
-              <div class="range-item range-from range-from-text">
-                <div class="from-value">{{formData.rewardPerBlock[i-1].height}}</div>
-                <div class="split-symbol">~</div>
-              </div>
-            </ng-template> -->
-            <!-- <mat-form-field class="range-item range-end">
-              <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
-                [placeholder]="'REWARDPERBLOCK_BLOCK_HEIGHT'|translate" type="number" min="1" [(ngModel)]="item.height"
-                set-input-status="rewardPerBlock" [errorStateMatcher]="matFormMatcherFactory('rewardPerBlock')" />
-              <mat-error *ngIf="errors?.rewardPerBlock?.WRONG_INDEX==i && errors?.rewardPerBlock?.WRONG_HEIGHT">
-                {{errors.rewardPerBlock.WRONG_HEIGHT|translate}}
-              </mat-error>
-            </mat-form-field> -->
             <div class="range-item range-end range-end-text">
               <div class="end-value">{{formData.rewardPerBlock[i+1].height}}</div>
             </div>
@@ -246,7 +227,7 @@
           <mat-icon>remove_circle_outline</mat-icon>
         </button>
       </div>
-      <button mat-button class="new-reward-block-item" (click)="addRewardBlockItem()">
+      <button mat-stroked-button color="primary" class="new-reward-block-item" (click)="addRewardBlockItem()">
         <!-- <ali-icon name="ifm-add"></ali-icon> -->
         <mat-icon>add_circle_outline</mat-icon>
         {{'ADD_REWARD_BLOCK_ITEM'|translate}}
@@ -309,8 +290,10 @@
         <div class="mat-container delegate-secret">
           <mat-form-field>
             <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
-              [placeholder]="'DELEGATESSECRET_SECRET'|translate" [(ngModel)]="item.secret" set-input-status="delegatesSecret"
-              [errorStateMatcher]="matFormMatcherFactory('delegatesSecret')" />
+              [placeholder]="'PLEASE_INPUT_DELEGATESSECRET_SECRET'|translate" [(ngModel)]="item.secret"
+              set-input-status="delegatesSecret" [errorStateMatcher]="matFormMatcherFactory('delegatesSecret')" />
+            <span matPrefix class="prefix">{{i+1}}.</span>
+            <mat-icon matSuffix (click)="item.secret = ''">clear</mat-icon>
             <mat-error *ngIf="errors?.delegatesSecret?.WRONG_INDEX==i && errors?.delegatesSecret?.ITEM_WRONG_SECRET">
               {{errors.delegatesSecret.ITEM_WRONG_SECRET|translate}}
             </mat-error>
@@ -320,11 +303,31 @@
           <mat-icon>remove_circle_outline</mat-icon>
         </button>
       </div>
-      <button mat-button class="new-delegates-secret-item" (click)="addDelegatesSecretItem()">
-        <!-- <ali-icon name="ifm-add"></ali-icon> -->
-        <mat-icon>add_circle_outline</mat-icon>
-        {{'ADD_DELEGATES_SECRET_ITEM'|translate}}
-      </button>
+      <div class="delegates-secret-toolbar">
+        <div class="button-list">
+          <button mat-stroked-button color="primary" class="new-delegates-secret-item" (click)="addDelegatesSecretItem()">
+            <!-- <ali-icon name="ifm-add"></ali-icon> -->
+            <mat-icon>add_circle_outline</mat-icon>
+            {{(formData.is_mutil_add_delegates?'ADD_DELEGATES_SECRET_LIST':'ADD_DELEGATES_SECRET_ITEM')|translate}}
+          </button>
+          <button mat-icon-button class="new-delegates-secret-list" [class.is-mutli]="formData.is_mutil_add_delegates" (click)="toggleIsMutilAddDelegates()">
+            <mat-icon>playlist_add</mat-icon>
+          </button>
+          <button mat-icon-button (click)="saveDelegates()">
+            <mat-icon>save</mat-icon>
+          </button>
+        </div>
+        <div class="mat-container mutil-add-delegates" *ngIf="formData.is_mutil_add_delegates">
+          <mat-form-field>
+            <input data-keyboard-view-position="height" data-keyboard-move-node="new_subchain_form" matInput
+              [placeholder]="'PLEASE_INPUT_DELEGATES_SECRET_NUM'|translate" [(ngModel)]="formData.add_delegates_num"
+              set-input-status="add_delegates_num" [errorStateMatcher]="matFormMatcherFactory('add_delegates_num')" min="1" type="number"/>
+            <mat-error *ngIf="errors?.add_delegates_num?.WRONG_RANGE">
+              {{errors.add_delegates_num.WRONG_RANGE|translate}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
     </div>
     <div class="common-form sign-data">
       <!-- 密码与手续费 -->
