@@ -131,8 +131,13 @@ page-tab-account {
       background-color: #fff;
       padding: 0.6rem 1.8rem;
       height: 5.56rem;
+    }
+    .nav-item,
+    .mat-button-wrapper {
+      width: 100%;
       display: flex;
       align-items: center;
+      font-weight: normal;
       > .left {
         color: #fe7c7b;
         font-size: 2.2rem;

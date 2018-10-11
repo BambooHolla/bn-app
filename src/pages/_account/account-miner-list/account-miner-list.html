@@ -15,12 +15,12 @@
         <ali-icon name="ifm-arrow-dot-dot"></ali-icon>
       </div>
     </div>
-    <div class="common-item" *ngFor="let minter of show_cur_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
-      <div class="left">
+    <button mat-button class="common-item" *ngFor="let minter of show_cur_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
+      <div class="line">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
         <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
       </div>
-    </div>
+    </button>
   </div>
   <div class="common-list can-rank-list" *ngIf="can_minter_rank_list?.length">
     <div class="header">
@@ -32,12 +32,12 @@
         <ali-icon name="ifm-arrow-dot-dot"></ali-icon>
       </div>
     </div>
-    <div class="common-item" *ngFor="let minter of show_can_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
-      <div class="left">
+    <button mat-button class="common-item" *ngFor="let minter of show_can_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
+      <div class="line">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
         <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
       </div>
-    </div>
+    </button>
   </div>
 <!--   <div class="common-list cur-peer-list">
     <div class="header">

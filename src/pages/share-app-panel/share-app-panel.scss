@@ -35,6 +35,7 @@ page-share-app-panel {
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
+        padding: 0;
         padding-bottom: 3.5rem;
         padding-top: 1rem;
         .row {
@@ -44,18 +45,23 @@ page-share-app-panel {
           align-items: center;
           justify-content: space-around;
           flex-wrap: wrap;
-          > .item {
+          .mat-button-wrapper {
+            font-weight: normal;
+          }
+          .item {
+            padding: 0;
             flex: 1;
             flex-shrink: 0;
             flex-grow: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            line-height: unset;
             &.disabled {
               filter: grayscale(1);
               opacity: 0.8;
             }
-            > .icon {
+            .icon {
               width: 5.3rem;
               &.more {
                 width: 5.3rem;
@@ -68,7 +74,7 @@ page-share-app-panel {
                 text-align: center;
               }
             }
-            > .label {
+            .label {
               color: #7a7a7a;
               padding-top: 1rem;
             }
@@ -88,11 +94,14 @@ page-share-app-panel {
       display: block;
       width: 12vw;
       height: 12vw;
+      min-width: unset;
+      min-height: unset;
       border-radius: 50%;
+      overflow: hidden;
       background: none;
       text-align: center;
       padding: 0;
-      line-height: 12vw;
+      // line-height: 12vw;
       &.close-button {
         animation-delay: 500ms;
         background-color: #bab8b9;

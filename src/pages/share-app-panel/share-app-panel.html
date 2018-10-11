@@ -7,21 +7,21 @@
     </div>
     <div class="grid">
       <div class="row">
-        <div class="item" *ngFor="let s of shareItems_line1" [class.disabled]="s.disabled" (click)="shareVia(s)">
+        <button mat-button class="item" *ngFor="let s of shareItems_line1" [class.disabled]="s.disabled" (click)="shareVia(s)">
           <div class="icon"><img [src]="'assets/imgs/share-app-panel/'+s.logo+'.png'" [alt]="s.title"></div>
-          <div class="label">{{s.title|translate}}</div>
-        </div>
+            <div class="label">{{s.title|translate}}</div>
+        </button>
       </div>
       <div class="row">
-        <div class="item" *ngFor="let s of shareItems_line2" [class.disabled]="s.disabled" (click)="shareVia(s)">
+        <button mat-button class="item" *ngFor="let s of shareItems_line2" [class.disabled]="s.disabled" (click)="shareVia(s)">
           <div class="icon"><img [src]="'assets/imgs/share-app-panel/'+s.logo+'.png'" [alt]="s.title"></div>
-          <div class="label">{{s.title|translate}}</div>
-        </div>
+            <div class="label">{{s.title|translate}}</div>
+        </button>
       </div>
     </div>
   </div>
   <div class="footer-buttons">
-    <button class="close-button animated bounceIn" (click)="closeModal()">
+    <button mat-button class="close-button animated bounceIn" (click)="closeModal()">
       <ali-icon name="ifm-guanbi"></ali-icon>
     </button>
   </div>

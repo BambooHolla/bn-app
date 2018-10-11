@@ -4,6 +4,7 @@ import { SettingsSetPayPwdPage } from "./settings-set-pay-pwd";
 import { ComponentsModule } from "../../../components/components.module";
 import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
+import { MatButtonModule } from "@angular/material";
 
 @NgModule({
   declarations: [SettingsSetPayPwdPage],
@@ -12,6 +13,7 @@ import { TranslateModule } from "@ngx-translate/core";
     ComponentsModule,
     DirectivesModule,
     TranslateModule,
+    MatButtonModule,
   ],
 })
 export class SettingsSetPayPwdPageModule {}

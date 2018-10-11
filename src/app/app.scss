@@ -322,5 +322,13 @@ ion-app.app-root {
   .mat-button-focus-overlay {
     background-color: rgba(#76e5de, 0.12);
   }
+  .red-ripple{
+    .mat-ripple-element {
+      background-color: rgba(#ff5a5a, 0.1);
+    }
+    .mat-button-focus-overlay {
+      background-color: rgba(#ff5a5a, 0.12);
+    }
+  }
 }
 

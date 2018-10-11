@@ -6,22 +6,30 @@ import { FLP_Tool, tryRegisterGlobal } from "../../bnqkl-framework/FLP_Tool";
 import { TransactionModel } from "../../providers/transaction-service/transaction-service";
 import { TimestampPipe } from "../../pipes/timestamp/timestamp";
 
-export const loader = new PIXI.loaders.Loader();
-export const _load_resource_promiseout = new PromiseOut<PIXI.loaders.ResourceDictionary>();
-loader.add("ticke_bg", "assets/imgs/tab-pay/offline/ticket-bg.png");
-loader.add("time_clock", "assets/imgs/tab-pay/offline/time-clock.png");
-loader.onError.add(err => {
-  _load_resource_promiseout.reject(err);
-});
-loader.load((loader, resources) => {
-  _load_resource_promiseout.resolve(resources);
-});
-
 const TICKET_W = 712;
 const TICKET_H = 330;
 type RenderMode = "canvas" | "html";
 
 class OfflineTransactionTicketDrawer extends AniBase {
+  private static _is_inited_loader = false;
+  private static _loader = new PIXI.loaders.Loader();
+  private static _load_resource_promiseout = new PromiseOut<PIXI.loaders.ResourceDictionary>();
+  static getResourceLoaderPromise() {
+    const { _load_resource_promiseout, _loader } = this;
+    if (!this._is_inited_loader) {
+      this._is_inited_loader = true;
+      _loader.add("ticke_bg", "assets/imgs/tab-pay/offline/ticket-bg.png");
+      _loader.add("time_clock", "assets/imgs/tab-pay/offline/time-clock.png");
+      _loader.onError.add(err => {
+        _load_resource_promiseout.reject(err);
+      });
+      _loader.load((loader, resources) => {
+        _load_resource_promiseout.resolve(resources);
+      });
+    }
+    return this._load_resource_promiseout.promise;
+  }
+
   _transaction?: TransactionModel;
   private _render_task_lock;
   drawTransaction(v: TransactionModel): Promise<Blob> {
@@ -30,7 +38,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
     return this._render_task_lock;
   }
   private async _drawTransaction(v: TransactionModel) {
-    await _load_resource_promiseout.promise;
+    await OfflineTransactionTicketDrawer.getResourceLoaderPromise();
     this._transaction = v;
     this.drawTicket();
     // return new Promise<Blob | null>(resolve => {
@@ -74,11 +82,11 @@ class OfflineTransactionTicketDrawer extends AniBase {
         autoStart: true,
       });
     }
-    const resources = await _load_resource_promiseout.promise;
+    const resources = await OfflineTransactionTicketDrawer.getResourceLoaderPromise();
     this.drawTicket(resources);
   }
 
-  drawTicket(resources = loader.resources) {
+  drawTicket(resources = OfflineTransactionTicketDrawer._loader.resources) {
     const { app, _transaction: transaction } = this;
     if (!app || !transaction) {
       return;
@@ -313,7 +321,9 @@ export class OfflineTransactionTicketComponent extends OfflineTransactionTicketD
     this._transaction = v;
     if (v && this.mode === "canvas") {
       console.log("draw tick", v);
-      this.drawTransaction(v); /*.then(blob => {
+      this.drawTransaction(
+        v
+      ); /*.then(blob => {
         this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
           URL.createObjectURL(blob),
         );

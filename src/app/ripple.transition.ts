@@ -43,6 +43,7 @@ export class RippleTransition extends PageTransition {
     const opts = this.opts;
 
     this.duration(opts.duration && isPresent(opts.duration) ? opts.duration : DURATION);
+    this.easing("ease-in");
 
     const backDirection = opts.direction === "back";
 

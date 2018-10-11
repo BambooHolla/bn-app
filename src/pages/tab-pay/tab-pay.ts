@@ -77,6 +77,9 @@ export class TabPayPage extends FirstLevelPage {
       throw new Error("@@FREEZED_ACCOUNT_COULD_NOT_TRANFER");
     }
   }
+  get webio_onLine(){
+    return this.webio.onLine && !localStorage.getItem("OFFLINE_TRS")
+  }
 
   @asyncCtrlGenerator.error()
   async receiptOfflineTransaction(tran: TransactionModel) {
@@ -84,7 +87,7 @@ export class TabPayPage extends FirstLevelPage {
       throw new Error(this.getTranslateSync("THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT"));
     }
     // todo: check voucher is my
-    if (this.webio.onLine) {
+    if (this.webio_onLine) {
       await this.putThirdTransaction(tran);
     } else {
       await this.showReceiptToVoucher(tran);
@@ -219,7 +222,7 @@ export class TabPayPage extends FirstLevelPage {
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
     });
-    let online = this.webio.onLine && !localStorage.getItem("OFFLINE_TRS");
+    let online = this.webio_onLine;
     if (online) {
       // try {
       const { transfer } = await this._submit(password, pay_pwd, this.formData.transfer_fee);

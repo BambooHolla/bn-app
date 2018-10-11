@@ -58,8 +58,8 @@ page-account-miner-list {
         }
       }
     }
-    > .common-item {
-      > .left {
+    > .common-item,.mat-button-wrapper {
+      >.line {
         display: flex;
         flex-direction: row;
         align-items: center;
