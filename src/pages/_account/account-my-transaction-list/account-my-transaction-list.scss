@@ -120,15 +120,20 @@ page-account-my-transaction-list {
     }
   }
   .item {
-    width: 100%;
     min-height: 5.62rem;
     border-bottom: 0.55px solid #e5e5e5;
     flex-shrink: 0;
     flex-grow: 0;
     padding: 0.6rem 2rem;
+  }
+  .item,
+  .mat-button-wrapper {
+    font-weight: normal;
+    width: 100%;
     display: flex;
     align-items: center;
     font-size: 1.35rem;
+    line-height: normal;
     > .left {
       height: 100%;
       display: flex;
@@ -218,7 +223,7 @@ page-account-my-transaction-list {
       background-color: #c1c1c1;
     }
     .options-item {
-      color: #FFF;
+      color: #fff;
       border-radius: 0;
       .inner {
         font-size: 1.5rem;

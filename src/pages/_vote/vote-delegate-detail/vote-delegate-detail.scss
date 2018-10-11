@@ -118,6 +118,10 @@ page-vote-delegate-detail {
       display: flex;
       justify-content: space-around;
       font-size: 1.4rem;
+    }
+    .row,
+    .mat-button-wrapper {
+      width: 100%;
       > .item {
         display: flex;
         flex-direction: column;

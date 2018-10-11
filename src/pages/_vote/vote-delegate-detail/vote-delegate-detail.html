@@ -52,7 +52,7 @@
     </div>
     <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[255,133,112,0.3]}">
       <div class="common-list">
-        <div class="common-item row" *ngFor="let block of forgin_block_list" (click)="routeTo('chain-block-detail', {block:block})">
+        <button mat-button class="common-item row" *ngFor="let block of forgin_block_list" (click)="routeTo('chain-block-detail', {block:block})">
           <div class="item">
             {{block.timestamp|timestamp|amDateFormat:"YYYY.MM.DD"}}
           </div>
@@ -68,7 +68,7 @@
           <div class="item">
             {{block.numberOfTransactions}}
           </div>
-        </div>
+        </button>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreBlockList())" [enabled]="page_info.hasMore">
         <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_FOGIN_BLOCK_LIST'|translate"></ion-infinite-scroll-content>

@@ -98,17 +98,17 @@
     </div>
   </div>
   <div class="common-list detail-info">
-    <div class="common-item sender" (click)="routeToDetail(transaction?.senderId)">
-      <div class="left">
+    <button mat-button class="common-item sender" (click)="routeToDetail(transaction?.senderId)">
+      <div class="line-left">
         <div class="title">{{'TRANSCATION_SENDER'|translate}}</div>
         <div class="content" [innerHTML]="sender_contact?.nickname||(transaction?.senderId|mask:'@fulladdress')"></div>
       </div>
-    </div>
-    <div class="common-item receiver" *ngIf="transaction?.recipientId" (click)="routeToDetail(transaction?.recipientId)">
-      <div class="left">
+    </button>
+    <button mat-button class="common-item receiver" *ngIf="transaction?.recipientId" (click)="routeToDetail(transaction?.recipientId)">
+      <div class="line-left">
         <div class="title">{{'TRANSCATION_RECIPIENT'|translate}}</div>
         <div class="content" [innerHTML]="recipient_contact?.nickname||(transaction?.recipientId|mask:'@fulladdress')"></div>
       </div>
-    </div>
+    </button>
   </div>
 </ion-content>

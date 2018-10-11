@@ -6,16 +6,18 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
 import { MomentModule } from "angular2-moment";
+import { MatButtonModule } from "@angular/material";
 
 @NgModule({
-  declarations: [AccountContactDetailPage],
-  imports: [
-    IonicPageModule.forChild(AccountContactDetailPage),
-    ComponentsModule,
-    PipesModule,
-    DirectivesModule,
-    TranslateModule,
-    MomentModule,
-  ],
+	declarations: [AccountContactDetailPage],
+	imports: [
+		IonicPageModule.forChild(AccountContactDetailPage),
+		ComponentsModule,
+		PipesModule,
+		DirectivesModule,
+		TranslateModule,
+		MomentModule,
+		MatButtonModule,
+	],
 })
 export class AccountContactDetailPageModule {}

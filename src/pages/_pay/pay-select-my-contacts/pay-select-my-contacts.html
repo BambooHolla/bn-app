@@ -7,12 +7,12 @@
   <div class="contact-list list">
     <ng-container *ngFor="let letter_contacts of my_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
-      <div class="item" *ngFor="let contact of letter_contacts.list" (click)="tapContact(contact)">
+      <button mat-button class="item" *ngFor="let contact of letter_contacts.list" (click)="tapContact(contact)">
         <div class="left">
           <div class="username" *ngIf="contact.username">{{contact.username}}</div>
           <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
         </div>
-      </div>
+      </button>
     </ng-container>
     <div class="divider" *ngIf="!loading_my_contact_list&&my_contact_list.length==0">
       <i>{{'NO_CONTACT'|translate}}</i>

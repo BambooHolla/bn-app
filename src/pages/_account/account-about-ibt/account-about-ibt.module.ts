@@ -4,6 +4,7 @@ import { AccountAboutIbtPage } from "./account-about-ibt";
 import { ComponentsModule } from "../../../components/components.module";
 import { DirectivesModule } from "../../../directives/directives.module";
 import { TranslateModule } from "@ngx-translate/core";
+import { MatButtonModule } from "@angular/material";
 
 @NgModule({
   declarations: [AccountAboutIbtPage],
@@ -12,6 +13,7 @@ import { TranslateModule } from "@ngx-translate/core";
     TranslateModule,
     DirectivesModule,
     ComponentsModule,
+    MatButtonModule
   ],
 })
 export class AccountAboutIbtPageModule {}

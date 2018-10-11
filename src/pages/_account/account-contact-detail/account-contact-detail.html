@@ -74,7 +74,7 @@
         <ali-icon name="ifm-tran-history"></ali-icon>
         {{'TRANSACTION_LOGS'|translate}}
       </div>
-      <div class="tran-item common-item" *ngFor="let tran of transaction_list;trackBy:listTrackBy" (click)="goToTransactionDetail(tran)">
+      <button mat-button class="tran-item common-item" *ngFor="let tran of transaction_list;trackBy:listTrackBy" (click)="goToTransactionDetail(tran)">
         <div class="left">
           <div class="tran-type">
             {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
@@ -98,7 +98,7 @@
             - {{tran?.fee|amountEuler|number:"1.8-8"}}
           </div>
         </div>
-      </div>
+      </button>
       <div class="empty-list" *ngIf="transaction_list.length==0&&transaction_config.loading==false">
         <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST
     '|translate">

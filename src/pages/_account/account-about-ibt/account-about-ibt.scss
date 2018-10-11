@@ -1,5 +1,5 @@
 page-account-about-ibt {
-  >.header {
+  > .header {
     color: #fff;
 
     .back-button {
@@ -17,8 +17,8 @@ page-account-about-ibt {
 
   @extend .header-no-border;
 
-  >.content {
-    >.scroll-content {
+  > .content {
+    > .scroll-content {
       background-color: #f0f0f0;
       margin-top: 0 !important;
       /* position: relative; */
@@ -43,16 +43,16 @@ page-account-about-ibt {
     padding-top: #{constant(safe-area-inset-top)};
     padding-top: #{env(safe-area-inset-top)};
 
-    >* {
+    > * {
       flex: 1;
     }
 
-    >.center {
+    > .center {
       flex: 2;
       text-align: center;
     }
 
-    >.left {
+    > .left {
       transform: translateX(1.6vw);
 
       .back-button {
@@ -75,8 +75,7 @@ page-account-about-ibt {
     width: 100vw;
     height: 71vw; // 已知的图片比例
     background-position: center center;
-    background-image: url(../assets/imgs/about-ibt/header-bg.jpg),
-      linear-gradient(to bottom, rgba(#ff5e60, 0) 0%, rgba(#ff5e60, 0.1) 70%, #ff5e60 100%);
+    background-image: url(../assets/imgs/about-ibt/header-bg.jpg), linear-gradient(to bottom, rgba(#ff5e60, 0) 0%, rgba(#ff5e60, 0.1) 70%, #ff5e60 100%);
     background-size: cover;
     background-blend-mode: lighten;
     background-repeat: no-repeat;
@@ -115,29 +114,26 @@ page-account-about-ibt {
     // margin-top: calc(4rem + #{env(safe-area-inset-top)});
     height: 71vw; // 已知的图片比例
     z-index: 3;
-    background: linear-gradient(to bottom,
-      transparent 0%,
-      rgba(#ff5e60, 0.6) 60%,
-      #ff5e60 100%);
+    background: linear-gradient(to bottom, transparent 0%, rgba(#ff5e60, 0.6) 60%, #ff5e60 100%);
 
-    >.info-wrapper {
+    > .info-wrapper {
       text-align: center;
 
-      >.info {
+      > .info {
         transform: scale(1);
 
-        >.version-info {
+        > .version-info {
           padding: 0;
           text-align: center;
           font-size: 1.25rem;
         }
 
-        >.logo {
+        > .logo {
           width: 6.8rem;
           margin-top: 1.5rem;
         }
 
-        >div {
+        > div {
           color: #fff;
           padding: 1.2rem;
           text-align: left;
@@ -190,8 +186,16 @@ page-account-about-ibt {
       padding: 1.2rem 1.5rem;
       padding-bottom: 2.2rem;
       border-bottom: 1px #f2f2f2 solid;
+      .mat-button-wrapper {
+        line-height: unset;
+        width: 100%;
+        font-weight: normal;
+        white-space: normal;
+        text-align: left;
+      }
 
       .title {
+        line-height: 1.8rem;
         font-size: 1.8rem;
         font-weight: 600;
         color: #7b7b7b;
@@ -199,12 +203,13 @@ page-account-about-ibt {
 
       .base-info {
         font-size: 1.4rem;
+        line-height: 1.4rem;
         color: #7b7b7b;
         font-weight: lighter;
         display: flex;
         padding: 0.6rem 0 0.8rem 0;
 
-        >* {
+        > * {
           margin-right: 0.7rem;
         }
       }
@@ -215,8 +220,9 @@ page-account-about-ibt {
         max-height: 21rem;
         overflow: hidden;
         box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.3);
+        line-height: 0;
 
-        >iframe {
+        > iframe {
           max-width: 100%;
           max-height: fit-content;
         }
@@ -260,7 +266,7 @@ page-account-about-ibt {
       width: 100%;
       display: flex;
 
-      >.label {
+      > .label {
         width: 39%;
         padding-right: 0.8rem;
         text-align: right;

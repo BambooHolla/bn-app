@@ -83,8 +83,8 @@ page-chain-transaction-detail {
           }
         }
       }
-      &.sourceIP{
-        >.right{
+      &.sourceIP {
+        > .right {
           display: flex;
           flex-direction: column;
           align-items: flex-end;
@@ -100,8 +100,13 @@ page-chain-transaction-detail {
       padding-top: 1.2rem;
       padding-bottom: 1.2rem;
       font-size: 1.5rem;
-      > .left {
-        width: 100%;
+    }
+    .common-item,
+    .mat-button-wrapper {
+      width: 100%;
+      font-weight: normal;
+      > .line-left {
+        text-align: left;
         min-width: 7.6rem;
         flex-direction: column;
         align-items: flex-start;

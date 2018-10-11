@@ -119,6 +119,37 @@ export class FLP_Route extends FLP_Lifecycle {
       this.current_routeTo_page = "";
     }
   }
+  async rippleRouteTo(e: MouseEvent | TouchEvent, path: string, params?: any, opts?: any, force = false) {
+    const touchPos = {
+      x: 0,
+      y: 0,
+    };
+    if ("touches" in e) {
+      const touchPoint = e.touches[0];
+      touchPos.x = touchPoint.clientX;
+      touchPos.y = touchPoint.clientY;
+    } else {
+      touchPos.x = e.clientX;
+      touchPos.y = e.clientY;
+    }
+    return this.routeTo(
+      path,
+      Object.assign(
+        {
+          touchPos,
+          register_back_animation: true,
+        },
+        params
+      ),
+      Object.assign(
+        {
+          animation: "ripple-transition",
+        },
+        opts
+      ),
+      force
+    );
+  }
   async routeToThenElse(condition, then_path, else_path) {
     if (condition instanceof Promise) {
       condition = await condition;
@@ -159,7 +190,8 @@ export class FLP_Route extends FLP_Lifecycle {
       console.time(check_label);
       if (C.match(path, params, opts)) {
         if (
-          await C.checker(self,
+          await C.checker(
+            self,
             {
               to_next_params,
               to_next_opts,
@@ -168,7 +200,8 @@ export class FLP_Route extends FLP_Lifecycle {
               path,
               params,
               opts,
-            })
+            }
+          )
         ) {
           i = Infinity;
           preventDefault = true;

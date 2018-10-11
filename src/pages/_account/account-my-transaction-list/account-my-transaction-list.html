@@ -16,7 +16,7 @@
 </ion-header>
 <ion-content>
   <ion-content class="confimed-page" [class.show]="TranSubPage.CONFIRMED===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
-    <div class="item" *ngFor="let tran of confirmed_transaction_list;trackBy:commonTrackBy('id')" (click)="routeToTransactionDetail(tran)">
+    <button mat-button class="item" *ngFor="let tran of confirmed_transaction_list;trackBy:commonTrackBy('id')" (click)="routeToTransactionDetail(tran)">
       <!--       <div class="left">
         <div class="from-to">
           <div class="sender" [innerHTML]="tran.senderName?tran.senderName:(tran.senderId|mask:'@address')"></div>
@@ -71,7 +71,7 @@
           </div>
         </ng-template>
       </div>
-    </div>
+    </button>
     <div class="empty-list" *ngIf="confirmed_transaction_list.length==0&&confirmed_transaction_config.loading==false">
       <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST
 '|translate">
@@ -92,7 +92,7 @@
     <ion-list class="contact-list list">
       <ion-item-sliding *ngFor="let tran of unconfirm_transaction_list;trackBy:commonTrackBy('id')" [class.removed]="tran.__remove">
         <ion-item (click)="routeToTransactionDetail(tran)">
-          <div class="item">
+          <button mat-button class="item">
             <div class="left">
               <div class="from-to">
                 <div class="sender" [innerHTML]="tran.senderName?tran.senderName:(tran.senderId|mask:'@address')"></div>
@@ -121,7 +121,7 @@
                 </div>
               </ng-template>
             </div>
-          </div>
+          </button>
         </ion-item>
         <ion-item-options side="right">
           <button mat-button class="options-item list-delete" (click)="confirmToDelete(tran)">

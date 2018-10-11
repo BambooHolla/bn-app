@@ -23,7 +23,7 @@
   <div class="news-list">
 
     <div class="flag-line"><div class="flag">IFMCHAIN新闻</div></div>
-    <div class="news-item" *ngFor="let news of news_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
+    <button mat-button class="news-item" *ngFor="let news of news_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
       <div class="base-info">
         <!-- <div class="public-time">
@@ -48,12 +48,12 @@
           </video>
         </ng-container>
       </div>
-    </div>
+    </button>
 
     <div class="ee-line"></div>
 
     <div class="flag-line"><div class="flag">IFMCHAIN发布</div></div>
-    <div class="news-item" *ngFor="let news of video_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
+    <button mat-button class="news-item" *ngFor="let news of video_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
       <div class="base-info">
         <!-- <div class="public-time">
@@ -78,12 +78,12 @@
           </video>
         </ng-container>
       </div>
-    </div>
+    </button>
 
     <div class="ee-line"></div>
 
     <div class="flag-line"><div class="flag">IFMCHAIN获奖</div></div>
-    <div class="news-item" *ngFor="let news of award_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
+    <button mat-button class="news-item" *ngFor="let news of award_list" (click)="news.type!='video'&&routeTo('account-news-detail',{news:news})">
       <div class="title">{{news.title}}</div>
       <div class="base-info">
         <!-- <div class="public-time">
@@ -108,7 +108,7 @@
           </video>
         </ng-container>
       </div>
-    </div>
+    </button>
   </div>
   <div class="footer">
     <ali-icon name="ifm-youjian"></ali-icon>
