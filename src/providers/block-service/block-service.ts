@@ -990,7 +990,7 @@ export class BlockServiceProvider extends FLP_Tool {
   myForgingCount_Executor(promise_pro) {
     return promise_pro.follow(
       this.minService.myDelegateInfo.getPromise().then(delegate => {
-        return delegate ? delegate.producedblocks : 0;
+        return (delegate && delegate.producedblocks) || 0;
       })
     );
   }

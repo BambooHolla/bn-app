@@ -1,14 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  ElementRef,
-  OnInit,
-  AfterViewInit,
-  OnDestroy,
-  Input,
-  Output,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, Input, Output, ChangeDetectionStrategy } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { AniBase } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
@@ -17,9 +7,7 @@ import { TransactionModel } from "../../providers/transaction-service/transactio
 import { TimestampPipe } from "../../pipes/timestamp/timestamp";
 
 export const loader = new PIXI.loaders.Loader();
-export const _load_resource_promiseout = new PromiseOut<
-  PIXI.loaders.ResourceDictionary
->();
+export const _load_resource_promiseout = new PromiseOut<PIXI.loaders.ResourceDictionary>();
 loader.add("ticke_bg", "assets/imgs/tab-pay/offline/ticket-bg.png");
 loader.add("time_clock", "assets/imgs/tab-pay/offline/time-clock.png");
 loader.onError.add(err => {
@@ -38,9 +26,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
   private _render_task_lock;
   drawTransaction(v: TransactionModel): Promise<Blob> {
     // 将任务进行排队
-    this._render_task_lock = Promise.resolve(this._render_task_lock).then(() =>
-      this._drawTransaction(v)
-    );
+    this._render_task_lock = Promise.resolve(this._render_task_lock).then(() => this._drawTransaction(v));
     return this._render_task_lock;
   }
   private async _drawTransaction(v: TransactionModel) {
@@ -48,10 +34,10 @@ class OfflineTransactionTicketDrawer extends AniBase {
     this._transaction = v;
     this.drawTicket();
     // return new Promise<Blob | null>(resolve => {
-    // 	this.raf(() => {
-    // 		this.canvasNode.toBlob(resolve);
-    // 	});
-    // 	// this.app&&this.app.renderer.extract.image()
+    //   this.raf(() => {
+    //     this.canvasNode.toBlob(resolve);
+    //   });
+    //   // this.app&&this.app.renderer.extract.image()
     // });
   }
 
@@ -80,7 +66,8 @@ class OfflineTransactionTicketDrawer extends AniBase {
       }
       this.app = this.PIXIAppbuilder({
         antialias: true,
-        transparent: true,
+        transparent: false,
+        backgroundColor: 0xffffff,
         view: canvasNode,
         height: pt(clientHeight),
         width: pt(clientWidth),
@@ -113,30 +100,20 @@ class OfflineTransactionTicketDrawer extends AniBase {
         fontSize,
       });
 
-      const username = new PIXI.Text(
-        this.usernameToString(
-          transaction.senderUsername || transaction.senderId
-        ),
-        {
-          fill: 0x2d90ab,
-          fontSize,
-        }
-      );
+      const username = new PIXI.Text(this.usernameToString(transaction.senderUsername || transaction.senderId), {
+        fill: 0x2d90ab,
+        fontSize,
+      });
 
       const timeFontSize = fontSize * 0.7;
       const clock_icon = new PIXI.Sprite(resources.time_clock.texture);
       clock_icon.width = timeFontSize;
       clock_icon.height = timeFontSize;
-      const time = new PIXI.Text(
-        this.timestampToString(transaction.timestamp),
-        {
-          fill: 0x2d90ab,
-          fontSize: timeFontSize,
-        }
-      );
-      const maxHeight = Math.max(
-        ...[label, username, clock_icon, time].map(item => item.height)
-      );
+      const time = new PIXI.Text(this.timestampToString(transaction.timestamp), {
+        fill: 0x2d90ab,
+        fontSize: timeFontSize,
+      });
+      const maxHeight = Math.max(...[label, username, clock_icon, time].map(item => item.height));
 
       // 开始布局
 
@@ -200,13 +177,10 @@ class OfflineTransactionTicketDrawer extends AniBase {
       let tran_line_x_offset = 0;
       {
         const label_fontSize = W * 0.024;
-        const label = new PIXI.Text(
-          FLP_Tool.getTranslateSync("TRANSACTION_ID"),
-          {
-            fontSize: label_fontSize,
-            fill: 0x2d90ab,
-          }
-        );
+        const label = new PIXI.Text(FLP_Tool.getTranslateSync("TRANSACTION_ID"), {
+          fontSize: label_fontSize,
+          fill: 0x2d90ab,
+        });
         label.x = baseSpan;
         tran_line_x_offset = -label.width;
         tran_line.addChild(label);
@@ -226,9 +200,7 @@ class OfflineTransactionTicketDrawer extends AniBase {
       center.addChild(tran_line);
 
       ///
-      const max_width = Math.max(
-        ...[banner, amount_line, tran_line].map(item => item.width)
-      );
+      const max_width = Math.max(...[banner, amount_line, tran_line].map(item => item.width));
       banner.x = max_width / 2 - banner.width / 2;
       amount_line.x = max_width / 2 - amount_line.width / 2;
       tran_line.x = max_width / 2 - tran_line.width / 2;
@@ -244,21 +216,14 @@ class OfflineTransactionTicketDrawer extends AniBase {
     const remark = new PIXI.Container();
     {
       const fontSize = W * 0.03;
-      const label = new PIXI.Text(
-        FLP_Tool.getTranslateSync("POSTSCRIPT") + ":",
-        {
-          fontSize,
-          fill: 0xffffff,
-        }
-      );
+      const label = new PIXI.Text(FLP_Tool.getTranslateSync("POSTSCRIPT") + ":", {
+        fontSize,
+        fill: 0xffffff,
+      });
       label.x = baseSpan;
       remark.addChild(label);
 
-      const formatedRemark = this.remarkToString(
-        transaction.remark,
-        fontSize,
-        W - label.width - baseSpan * 4
-      );
+      const formatedRemark = this.remarkToString(transaction.remark, fontSize, W - label.width - baseSpan * 4);
       const text = new PIXI.Text(formatedRemark, {
         fontSize,
         fill: 0xffffff,
@@ -303,17 +268,9 @@ class OfflineTransactionTicketDrawer extends AniBase {
       return;
     }
     const center_index = (id.length / 2) | 0;
-    return (
-      id.substr(0, center_index) +
-      (mode === "html" ? "<br>" : "\n") +
-      id.substr(center_index)
-    );
+    return id.substr(0, center_index) + (mode === "html" ? "<br>" : "\n") + id.substr(center_index);
   }
-  remarkToString(
-    remark: string | undefined,
-    fontSize: number,
-    maxWidth: number
-  ) {
+  remarkToString(remark: string | undefined, fontSize: number, maxWidth: number) {
     if (!remark) {
       return "";
     }
@@ -356,13 +313,11 @@ export class OfflineTransactionTicketComponent extends OfflineTransactionTicketD
     this._transaction = v;
     if (v && this.mode === "canvas") {
       console.log("draw tick", v);
-      this.drawTransaction(
-        v
-      ); /*.then(blob => {
-				this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
-					URL.createObjectURL(blob),
-				);
-			});*/
+      this.drawTransaction(v); /*.then(blob => {
+        this.image_url = this.domSanitizer.bypassSecurityTrustUrl(
+          URL.createObjectURL(blob),
+        );
+      });*/
     }
     // return this.canvasNode.toDataURL();
   }
@@ -375,9 +330,9 @@ export class OfflineTransactionTicketComponent extends OfflineTransactionTicketD
   }
 
   // timestampToString = OfflineTransactionTicketDrawer.prototype
-  // 	.timestampToString;
+  //   .timestampToString;
   // usernameToString = OfflineTransactionTicketDrawer.prototype
-  // 	.usernameToString;
+  //   .usernameToString;
   // amountToString = OfflineTransactionTicketDrawer.prototype.amountToString;
   // tidToString = OfflineTransactionTicketDrawer.prototype.tidToString;
   // remarkToString = OfflineTransactionTicketDrawer.prototype.remarkToString;

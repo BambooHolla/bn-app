@@ -1,39 +1,15 @@
-import {
-  Component,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from "@angular/core";
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  Refresher,
-  InfiniteScroll,
-} from "ionic-angular/index";
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
+import { IonicPage, NavController, NavParams, Refresher, InfiniteScroll } from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
-import {
-  asyncCtrlGenerator,
-  formatAndTranslateMessage,
-} from "../../bnqkl-framework/Decorator";
+import { asyncCtrlGenerator, formatAndTranslateMessage } from "../../bnqkl-framework/Decorator";
 import { Subscription } from "rxjs/Subscription";
-import {
-  AssetsServiceProvider,
-  AssetsModelWithLogoSafeUrl,
-  AssetsPersonalModelWithLogoSafeUrl,
-} from "../../providers/assets-service/assets-service";
+import { AssetsServiceProvider, AssetsModelWithLogoSafeUrl, AssetsPersonalModelWithLogoSafeUrl } from "../../providers/assets-service/assets-service";
 
 // import { Network } from '@ionic-native/network';
 
-import {
-  TransactionServiceProvider,
-  TransactionTypes,
-  TransactionModel,
-} from "../../providers/transaction-service/transaction-service";
-import {
-  VoucherServiceProvider,
-  ExchangeStatus,
-} from "../../providers/voucher-service/voucher-service";
+import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "../../providers/transaction-service/transaction-service";
+import { VoucherServiceProvider, ExchangeStatus } from "../../providers/voucher-service/voucher-service";
 
 function generateRollOutLog(len = 20, from = Date.now()) {
   return Array.from(Array(len)).map(_ => {
@@ -60,10 +36,7 @@ export class TabPayPage extends FirstLevelPage {
     this.enable_timeago_clock = true;
     this.event.on("job-finished", async ({ id, data }) => {
       console.log("job-finished", id, data);
-      if (
-        id === "pay-select-my-contacts" ||
-        id === "pay-select-my-local-contacts"
-      ) {
+      if (id === "pay-select-my-contacts" || id === "pay-select-my-local-contacts") {
         this.formData.transfer_address = data.address;
         this.markForCheck();
       }
@@ -93,9 +66,7 @@ export class TabPayPage extends FirstLevelPage {
   @TabPayPage.willEnter
   tryResetTransferFee() {
     if (this.formData.transfer_fee === 0) {
-      this.formData.transfer_fee = parseFloat(
-        this.appSetting.settings.default_fee
-      );
+      this.formData.transfer_fee = parseFloat(this.appSetting.settings.default_fee);
     }
   }
 
@@ -110,11 +81,7 @@ export class TabPayPage extends FirstLevelPage {
   @asyncCtrlGenerator.error()
   async receiptOfflineTransaction(tran: TransactionModel) {
     if (tran.recipientId !== this.userInfo.address) {
-      throw new Error(
-        this.getTranslateSync(
-          "THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT"
-        )
-      );
+      throw new Error(this.getTranslateSync("THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT"));
     }
     // todo: check voucher is my
     if (this.webio.onLine) {
@@ -132,11 +99,7 @@ export class TabPayPage extends FirstLevelPage {
     };
     if (!(await this.voucherService.addVoucher(voucher))) {
       // 已经存在了，不重复操作
-      throw new Error(
-        this.getTranslateSync(
-          "THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET"
-        )
-      );
+      throw new Error(this.getTranslateSync("THIS_TRANSACTION_IS_ALREADY_IN_YOUR_VOUCHER_WALLET"));
     } else {
       await this.transactionService.putThirdTransaction(tran);
       // 将凭证的状态改成已经提交
@@ -188,9 +151,7 @@ export class TabPayPage extends FirstLevelPage {
     }
   }
 
-  private _check_total_amount(
-    user_balance = parseFloat(this.selected_assets.hodingAssets) / 1e8
-  ) {
+  private _check_total_amount(user_balance = parseFloat(this.selected_assets.hodingAssets) / 1e8) {
     if (user_balance === 0) {
       return {
         NoBalance: "@@USER_HAS_NO_BALANCE",
@@ -204,11 +165,7 @@ export class TabPayPage extends FirstLevelPage {
       };
     }
   }
-  @TabPayPage.setErrorTo("errors", "transfer_amount", [
-    "NoBalance",
-    "NoEnoughBalance",
-    "ErrorRange",
-  ])
+  @TabPayPage.setErrorTo("errors", "transfer_amount", ["NoBalance", "NoEnoughBalance", "ErrorRange"])
   check_transfer_amount() {
     const { transfer_amount, transfer_fee } = this.formData;
 
@@ -219,11 +176,7 @@ export class TabPayPage extends FirstLevelPage {
     }
     // return this._check_total_amount(user_balance);
   }
-  @TabPayPage.setErrorTo("errors", "transfer_fee", [
-    "NoBalance",
-    "NoEnoughBalance",
-    "ErrorRange",
-  ])
+  @TabPayPage.setErrorTo("errors", "transfer_fee", ["NoBalance", "NoEnoughBalance", "ErrorRange"])
   check_transfer_fee() {
     const { transfer_amount, transfer_fee } = this.formData;
 
@@ -248,13 +201,10 @@ export class TabPayPage extends FirstLevelPage {
     }
     if (this._check_total_amount()) {
       if (
-        !(await this.waitTipDialogConfirm(
-          "@@NOT_ENOUGH_BALANCE_TO_TRANGER_TIP",
-          {
-            true_text: "@@CONTINUE",
-            false_text: "@@CANCEL",
-          }
-        ))
+        !(await this.waitTipDialogConfirm("@@NOT_ENOUGH_BALANCE_TO_TRANGER_TIP", {
+          true_text: "@@CONTINUE",
+          false_text: "@@CANCEL",
+        }))
       ) {
         return;
       } else if (
@@ -269,14 +219,10 @@ export class TabPayPage extends FirstLevelPage {
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SUBMIT_TRANSFER_TITLE",
     });
-    let online = this.webio.onLine;
+    let online = this.webio.onLine && !localStorage.getItem("OFFLINE_TRS");
     if (online) {
       // try {
-      const { transfer } = await this._submit(
-        password,
-        pay_pwd,
-        this.formData.transfer_fee
-      );
+      const { transfer } = await this._submit(password, pay_pwd, this.formData.transfer_fee);
       await this.showTransferReceipt(transfer);
       this.resetFormData();
       // } catch (err) {
@@ -294,16 +240,8 @@ export class TabPayPage extends FirstLevelPage {
       }
       // 离线凭证
       const { transfer_address, transfer_amount } = this.formData;
-      const txData = this.transactionService.createTxData(
-        transfer_address.trim(),
-        transfer_amount,
-        this.formData.transfer_fee,
-        password,
-        pay_pwd
-      );
-      const { transaction } = await this.transactionService.createTransaction(
-        txData
-      );
+      const txData = this.transactionService.createTxData(transfer_address.trim(), transfer_amount, this.formData.transfer_fee, password, pay_pwd);
+      const { transaction } = await this.transactionService.createTransaction(txData);
       this.resetFormData();
       this.routeTo("pay-offline-receipt", { transaction });
     }
@@ -345,15 +283,9 @@ export class TabPayPage extends FirstLevelPage {
     delete this.formData.transfer_amount;
     this.markForCheck();
   }
-  @asyncCtrlGenerator.error(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR")
-  )
-  @asyncCtrlGenerator.loading(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMITING")
-  )
-  @asyncCtrlGenerator.success(() =>
-    TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS")
-  )
+  @asyncCtrlGenerator.error(() => TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"))
+  @asyncCtrlGenerator.loading(() => TabPayPage.getTranslate("TRANSFER_SUBMITING"))
+  @asyncCtrlGenerator.success(() => TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS"))
   _submit(password: string, pay_pwd?: string, custom_fee?: number) {
     const { transfer_address, transfer_amount } = this.formData;
     return this.transactionService.transfer(
@@ -362,9 +294,7 @@ export class TabPayPage extends FirstLevelPage {
       custom_fee,
       password,
       pay_pwd,
-      this.selected_assets === this.ibt_assets
-        ? undefined
-        : this.selected_assets.abbreviation
+      this.selected_assets === this.ibt_assets ? undefined : this.selected_assets.abbreviation
     );
   }
 
@@ -396,20 +326,13 @@ export class TabPayPage extends FirstLevelPage {
     roll_out_config.page += 1;
     const list = await this._getUserTransactions();
 
-    this.roll_out_logs
-      ? this.roll_out_logs.push(...list)
-      : (this.roll_out_logs = list);
+    this.roll_out_logs ? this.roll_out_logs.push(...list) : (this.roll_out_logs = list);
   }
   private async _getUserTransactions() {
     const { roll_out_config } = this;
     roll_out_config.loading = true;
     try {
-      const list = await this.transactionService.getUserTransactions(
-        this.userInfo.address,
-        roll_out_config.page,
-        roll_out_config.pageSize,
-        "out"
-      );
+      const list = await this.transactionService.getUserTransactions(this.userInfo.address, roll_out_config.page, roll_out_config.pageSize, "out");
       roll_out_config.has_more = list.length >= roll_out_config.pageSize;
       return list;
     } finally {
@@ -418,9 +341,7 @@ export class TabPayPage extends FirstLevelPage {
   }
 
   @TabPayPage.addEvent("HEIGHT:CHANGED")
-  @asyncCtrlGenerator.error(() =>
-    TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR")
-  )
+  @asyncCtrlGenerator.error(() => TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR"))
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {
     return this.loadRollOutLogs();
@@ -444,8 +365,7 @@ export class TabPayPage extends FirstLevelPage {
     return ibtAssets as AssetsPersonalModelWithLogoSafeUrl;
   })();
   @TabPayPage.markForCheck selected_assets = this.ibt_assets;
-  @TabPayPage.markForCheck
-  selectable_assets_list: AssetsPersonalModelWithLogoSafeUrl[] = [];
+  @TabPayPage.markForCheck selectable_assets_list: AssetsPersonalModelWithLogoSafeUrl[] = [];
 
   /**资产选择面板是否打开*/
   @TabPayPage.markForCheck is_assets_select_panel_open = false;
@@ -487,9 +407,7 @@ export class TabPayPage extends FirstLevelPage {
   // @asyncCtrlGenerator.error()
   private _updateSelectedAssets() {
     const { selected_assets } = this;
-    const new_selected_assets = this.selectable_assets_list.find(
-      assets => assets.abbreviation === selected_assets.abbreviation
-    );
+    const new_selected_assets = this.selectable_assets_list.find(assets => assets.abbreviation === selected_assets.abbreviation);
     this.selected_assets = new_selected_assets || this.ibt_assets;
   }
 
