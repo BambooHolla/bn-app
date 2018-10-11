@@ -77,7 +77,7 @@
         <div class="title">{{'SHARE_APP'|translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </div>
-      <div *ngIf="hasBalance" class="nav-item" (click)="routeTo('subchain-issuing-subchain')">
+      <div *ngIf="_force_show_hidden" class="nav-item" (click)="routeTo('subchain-issuing-subchain')">
         <ali-icon class="left" name="ifm-shiliangzhinengduixiang7"></ali-icon>
         <div class="title">{{'SUBCHAIN_GATEWAY'|translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
