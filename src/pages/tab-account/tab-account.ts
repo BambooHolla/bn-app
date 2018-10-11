@@ -34,9 +34,9 @@ export class TabAccountPage extends FirstLevelPage {
       this.checkAndroidUpdate();
     });
   }
-  private _force_has_balance = false;
+  private _force_show_hidden = false;
   get hasBalance() {
-    if(this._force_has_balance){
+    if(this._force_show_hidden){
       return true;
     }
     if (this._my_assets_list && this._my_assets_list.length > 0) {
@@ -148,6 +148,6 @@ export class TabAccountPage extends FirstLevelPage {
   /// 隐藏功能
   @asyncCtrlGenerator.tttttap()
   tryTogglaHiddenItems(){
-    this._force_has_balance = !this._force_has_balance;
+    this._force_show_hidden = !this._force_show_hidden;
   }
 }

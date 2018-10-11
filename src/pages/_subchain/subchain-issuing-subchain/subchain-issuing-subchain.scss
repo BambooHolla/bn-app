@@ -70,12 +70,17 @@ page-subchain-issuing-subchain {
         align-items: center;
       }
     }
+
     .mat-container {
       color: #fff;
 
       .mat-input-element {
         caret-color: #fff;
         color: #fff;
+
+        &::placeholder {
+          color: #bcbcbc;
+        }
       }
 
       .mat-input-placeholder {
@@ -389,7 +394,8 @@ page-subchain-issuing-subchain {
 
           >button {}
         }
-        .mutil-add-delegates{
+
+        .mutil-add-delegates {
           padding-top: 1rem;
         }
 
@@ -400,7 +406,7 @@ page-subchain-issuing-subchain {
     }
   }
 
-  .footer {
+  .footer-bar {
     position: fixed;
     z-index: 15;
     bottom: 0;
