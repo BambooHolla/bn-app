@@ -180,7 +180,7 @@ export class BlockServiceProvider extends FLP_Tool {
                 return !unique_height_set.has(block.height);
               })
               .map(b => this.formatBlockData(b));
-            await this.blockDb.insertMany(new_blocks,{replace:true});
+            await this.blockDb.insertMany(new_blocks, { replace: true });
           }
           return mix_res;
         }
@@ -213,7 +213,7 @@ export class BlockServiceProvider extends FLP_Tool {
         if (mix_res) {
           const new_block = mix_res.block;
           if (!(await this.checkBlockIdInBlockDB(new_block.id))) {
-            await this.blockDb.insert(this.formatBlockData(new_block),{replace:true});
+            await this.blockDb.insert(this.formatBlockData(new_block), { replace: true });
           }
           cache.block = new_block;
         }
@@ -308,7 +308,7 @@ export class BlockServiceProvider extends FLP_Tool {
     // 更新缓存中的最新区块
     if (!(await this.checkBlockIdInBlockDB(last_block.id))) {
       // 将最新区块插入到数据库中
-      await this.blockDb.insert(this.formatBlockData(last_block),{replace:true}).catch(err => console.warn("更新最新区块失败", last_block, err));
+      await this.blockDb.insert(this.formatBlockData(last_block), { replace: true }).catch(err => console.warn("更新最新区块失败", last_block, err));
     } else {
       // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
       const heighter_blocks = await this.blockDb.find({
@@ -450,6 +450,13 @@ export class BlockServiceProvider extends FLP_Tool {
     const download_worker = this.getDownloadWorker();
     const req_id = this._download_req_id_acc++;
     let cg;
+    const sync_progress_height = this.appSetting.share_settings.sync_progress_height;
+    const local_last_block = await this.blockDb.getItemByIndexVal("height", sync_progress_height);
+    let need_verifier = false;
+    if (local_last_block) {
+      const server_last_block = await this.getBlockByHeight(sync_progress_height, true);
+      need_verifier = server_last_block.id !== local_last_block.id;
+    }
     download_worker.postMessage({
       cmd: "syncBlockChain",
       NET_VERSION: AppSettingProvider.NET_VERSION,
@@ -457,6 +464,7 @@ export class BlockServiceProvider extends FLP_Tool {
       magic: await this.magic.promise,
       max_end_height,
       req_id,
+      need_verifier,
     });
     const task_name = `同步区块链至:${max_end_height}`;
     const task = new PromiseOut<void>();
@@ -620,7 +628,7 @@ export class BlockServiceProvider extends FLP_Tool {
       }
     }
 
-    await this.blockDb.insert(block,{replace:true}).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
+    await this.blockDb.insert(block, { replace: true }).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
     // 新的输入插入后，就要通知更新区块链
     this.tryEmit("BLOCKCHAIN:CHANGED");
     if (cur_lastBlock) {
@@ -732,8 +740,8 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {number} height
    * @returns {Promise<any>}
    */
-  async getBlockByHeight(height: number): Promise<TYPE.BlockModel> {
-    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
+  async getBlockByHeight(height: number, force_network?: boolean): Promise<TYPE.BlockModel> {
+    let data = await this.fetch.forceNetwork(force_network).get<any>(this.GET_BLOCK_BY_QUERY, {
       search: {
         height: height,
       },

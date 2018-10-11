@@ -223,7 +223,7 @@ export const baseConfig = new class BaseConfig extends EventEmitter {
   get LATEST_APP_VERSION_URL() {
     return getQueryVariable("LATEST_APP_VERSION_URL") || "https://www.ifmchain.com/api/app/version/latest";
   }
-  SETTING_KEY_PERFIX = "SETTING@";
+  SETTING_KEY_PERFIX = "SETTING@" + this.MAGIC + "#";
 
   private _emit_config_changed_lock?: Promise<void>;
   emitConfigChanged() {

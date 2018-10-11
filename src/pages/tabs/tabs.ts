@@ -1,18 +1,9 @@
-import {
-  Component,
-  ViewChild,
-  OnInit,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-  ElementRef,
-  Renderer2,
-  ContentChildren,
-  QueryList,
-} from "@angular/core";
+import { Component, ViewChild, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, Renderer2, ContentChildren, QueryList } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { IonicPage, NavController, Tabs } from "ionic-angular/index";
 import { MyApp } from "../../app/app.component";
 import { FLP_Lifecycle } from "../../bnqkl-framework/FLP_Lifecycle";
+import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { UserInfoProvider } from "../../providers/user-info/user-info";
@@ -55,14 +46,12 @@ export class TabsPage extends FLP_Lifecycle {
     public blockService: BlockServiceProvider
   ) {
     super();
-    translateService
-      .stream(["TAB1_TITLE", "TAB2_TITLE", "TAB3_TITLE", "TAB4_TITLE"])
-      .subscribe(values => {
-        this.tab1Title = values["TAB1_TITLE"];
-        this.tab2Title = values["TAB2_TITLE"];
-        this.tab3Title = values["TAB3_TITLE"];
-        this.tab4Title = values["TAB4_TITLE"];
-      });
+    translateService.stream(["TAB1_TITLE", "TAB2_TITLE", "TAB3_TITLE", "TAB4_TITLE"]).subscribe(values => {
+      this.tab1Title = values["TAB1_TITLE"];
+      this.tab2Title = values["TAB2_TITLE"];
+      this.tab3Title = values["TAB3_TITLE"];
+      this.tab4Title = values["TAB4_TITLE"];
+    });
 
     // 由于里头的tabPage不是真实的page，所以这些东西需要模拟传递
     this.event.on("job-finished", msg => {
@@ -70,11 +59,14 @@ export class TabsPage extends FLP_Lifecycle {
     });
   }
   @TabsPage.onInit
-  initBlockService() {
+  async initBlockService() {
     const magic = localStorage.getItem("MAGIC");
     if (!magic) {
       this.navCtrl.setRoot(SetNetVersionPage);
-      return
+      return;
+    }
+    if (this.isIOS) {
+      await sleep(2000);
     }
     this.blockService.magic.resolve(magic);
   }
@@ -116,9 +108,7 @@ export class TabsPage extends FLP_Lifecycle {
       return;
     }
     const tabPageContainer = this.pageItemQueryList[index];
-    const tabPage = [this.voteTab, this.chainTab, this.payTab, this.accountTab][
-      index
-    ];
+    const tabPage = [this.voteTab, this.chainTab, this.payTab, this.accountTab][index];
     const perTabPage = this.selectedTabPage;
     // 没有pertabpage，说明处于初始化状态，就不需要手动触发这些事件了
     if (perTabPage) {
@@ -147,18 +137,12 @@ export class TabsPage extends FLP_Lifecycle {
   @TabsPage.afterContentInit
   initTabView() {
     // 初始化组件的监听
-    [this.voteTab, this.chainTab, this.payTab, this.accountTab].forEach(
-      tabPage => {
-        tabPage.event.on(
-          "tabs:setBgTransparent",
-          this.setBgTransparent.bind(this)
-        );
-        tabPage.event.on("tabs:hideTabs", this.hideTabs.bind(this));
-      }
-    );
+    [this.voteTab, this.chainTab, this.payTab, this.accountTab].forEach(tabPage => {
+      tabPage.event.on("tabs:setBgTransparent", this.setBgTransparent.bind(this));
+      tabPage.event.on("tabs:hideTabs", this.hideTabs.bind(this));
+    });
     // 初始化QueryList对象
-    this.pageItemQueryList = (this.elRef
-      .nativeElement as HTMLElement).querySelectorAll(".page-item-container");
+    this.pageItemQueryList = (this.elRef.nativeElement as HTMLElement).querySelectorAll(".page-item-container");
     for (var i = 0; i < this.pageItemQueryList.length; i += 1) {
       const pageContainerNode = this.pageItemQueryList[i];
       pageContainerNode.style.display = "none";
