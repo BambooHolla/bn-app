@@ -352,18 +352,18 @@ export class ScanLinkPeerPage extends FirstLevelPage {
         }
       })
     );
-    /// 保存最高区块信息
-    if (this.selected_peer_highest_blocks.length) {
-      const magic = this.selected_peer_highest_blocks[0].magic
-      const blockDB = await BlockDBFactory(magic);
-      await Promise.all(
-        this.selected_peer_highest_blocks.map(async block => {
-          if (!(await blockDB.hasId(block.id))) {
-            await blockDB.insert(block).catch(console.error);
-          }
-        })
-      );
-    }
+    // /// 保存最高区块信息
+    // if (this.selected_peer_highest_blocks.length) {
+    //   const magic = this.selected_peer_highest_blocks[0].magic
+    //   const blockDB = await BlockDBFactory(magic);
+    //   await Promise.all(
+    //     this.selected_peer_highest_blocks.map(async block => {
+    //       if (!(await blockDB.hasId(block.id))) {
+    //         await blockDB.insert(block).catch(console.error);
+    //       }
+    //     })
+    //   );
+    // }
     /// 尝试连接节点
     await this.peerService.linkPeer(peer);
     return this.myapp.openPage(this.myapp.tryInPage, true, false);
