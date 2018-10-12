@@ -231,9 +231,9 @@ export class BlockChainDownloader extends EventEmitter {
 
   private _sync_id_acc = 0;
   /*同步截止高度的区块链*/
-  async syncFullBlockchain(/*range_list:Range[],*/ max_end_height: number, need_verifier?: boolean) {
+  async syncFullBlockchain(/*range_list:Range[],*/ max_end_height: number,from_height =1, need_verifier?: boolean) {
     const sync_id = ++this._sync_id_acc;
-    const rangeHelper = new RangeHelper(1, max_end_height - 1);
+    const rangeHelper = new RangeHelper(from_height, max_end_height - 1);
     // 因为现在区块是从1开始下载，所以必然要有1，才需要进行校验，否则直接从头下载到尾
     if (need_verifier && (await this.blockDb.hasIndexKey("height", 1))) {
       this.emit("start-verifier", { ranges: rangeHelper.ranges });

@@ -92,7 +92,7 @@ class DownloadBlockChainWorker extends EventEmitter {
           cgs.forEach(cg => cg());
         }
       },
-      async syncBlockChain({ NET_VERSION, magic, webio_path, max_end_height, req_id,need_verifier }) {
+      async syncBlockChain({ NET_VERSION, magic, webio_path, max_end_height, req_id, need_verifier, from_height }) {
         const blockChainDownloader = await getBlockChainDownloader(NET_VERSION, magic, webio_path, 1, max_end_height);
 
         // 事件注册
@@ -123,7 +123,7 @@ class DownloadBlockChainWorker extends EventEmitter {
         const downloader = blockChainDownloader;
         try {
           // 开始同步区块链
-          return await blockChainDownloader.syncFullBlockchain(max_end_height,need_verifier);
+          return await blockChainDownloader.syncFullBlockchain(max_end_height, from_height, need_verifier);
         } finally {
           cgs.forEach(cg => cg());
         }

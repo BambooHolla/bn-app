@@ -465,6 +465,7 @@ export class BlockServiceProvider extends FLP_Tool {
       max_end_height,
       req_id,
       need_verifier,
+      from_height:sync_progress_height
     });
     const task_name = `同步区块链至:${max_end_height}`;
     const task = new PromiseOut<void>();
