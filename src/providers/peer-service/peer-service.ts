@@ -158,7 +158,7 @@ export class PeerServiceProvider extends CommonService {
       // 获取最后的六个区块
       this.blockService
         .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
-        .getBlocks({ orderBy: "height:desc", limit: 6 })
+        .getBlocks({ orderBy: "height:desc", limit: 6 }, true)
         .then(res => {
           peer.height = res.blocks[0].height;
           return res.blocks;
@@ -166,7 +166,7 @@ export class PeerServiceProvider extends CommonService {
       // 获取最前的六个区块
       this.blockService
         .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
-        .getBlocks({ orderBy: "height:asc", limit: 6 })
+        .getBlocks({ orderBy: "height:asc", limit: 6 }, true)
         .then(res => res.blocks),
       this._getPeerWebsocketLinkNum(peer),
       this._getPeerMagic(peer),
