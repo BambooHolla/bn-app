@@ -165,6 +165,6 @@ export class AssetsAssetsTransactionListPage extends SecondLevelPage {
 	private _is_from_child = false;
 	routeToAssetsTransaction(transaction: TransactionModel) {
 		this._is_from_child = true;
-		this.routeTo("chain-transaction-detail", { transaction });
+		this.routeTo("chain-transaction-detail", { transaction, ripple_theme: "red-ripple" });
 	}
 }

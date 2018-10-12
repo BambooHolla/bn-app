@@ -1,18 +1,9 @@
-import {
-  Component,
-  Optional,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from "@angular/core";
+import { Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular/index";
-import {
-  TransactionServiceProvider,
-  TransactionTypes,
-  TransactionModel,
-} from "../../../providers/transaction-service/transaction-service";
+import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "../../../providers/transaction-service/transaction-service";
 import { LocalContactProvider } from "../../../providers/local-contact/local-contact";
 
 enum TranSubPage {
@@ -29,8 +20,7 @@ enum TranSubPage {
 export class AccountMyTransactionListPage extends SecondLevelPage {
   TransactionTypes = TransactionTypes;
   TranSubPage = TranSubPage;
-  @AccountMyTransactionListPage.markForCheck
-  current_page = TranSubPage.CONFIRMED;
+  @AccountMyTransactionListPage.markForCheck current_page = TranSubPage.CONFIRMED;
   gotoSubPage(page: TranSubPage) {
     if (page in TranSubPage) {
       console.warn(`${page} no via page`);
@@ -58,8 +48,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
 
   /// 已经确认的交易
 
-  @AccountMyTransactionListPage.markForCheck
-  confirmed_transaction_list: TransactionModel[] = [];
+  @AccountMyTransactionListPage.markForCheck confirmed_transaction_list: TransactionModel[] = [];
   confirmed_transaction_config = {
     loading: false,
     has_more: true,
@@ -78,9 +67,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
   /**更新已确认的交易列表中本地联系人的名字*/
   @AccountMyTransactionListPage.willEnter
   async updateConfirmTransactionList() {
-    this.confirmed_transaction_list = await this.localContact.formatTransactionWithLoclContactNickname(
-      this.confirmed_transaction_list
-    );
+    this.confirmed_transaction_list = await this.localContact.formatTransactionWithLoclContactNickname(this.confirmed_transaction_list);
   }
 
   @asyncCtrlGenerator.error("@@LOAD_MORE_CONFIRMED_TRANSACTION_LIST_ERROR")
@@ -104,8 +91,7 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
         "or",
         "all"
       );
-      confirmed_transaction_config.has_more =
-        list.length >= confirmed_transaction_config.pageSize;
+      confirmed_transaction_config.has_more = list.length >= confirmed_transaction_config.pageSize;
       return this.localContact.formatTransactionWithLoclContactNickname(list);
     } finally {
       confirmed_transaction_config.loading = false;
@@ -116,17 +102,12 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
   private _is_from_child = false;
   /**跳转到交易详情页面*/
   routeToTransactionDetail(tran: TransactionModel) {
-    this.unconfirm_transaction_list = this.unconfirm_transaction_list.filter(
-      trs => !trs["__remove"]
-    );
-    return this.routeTo("chain-transaction-detail", { transaction: tran }).then(
-      () => (this._is_from_child = true)
-    );
+    this.unconfirm_transaction_list = this.unconfirm_transaction_list.filter(trs => !trs["__remove"]);
+    return this.routeTo("chain-transaction-detail", { transaction: tran, ripple_theme: "red-ripple" }).then(() => (this._is_from_child = true));
   }
 
   /// 还未确认的交易
-  @AccountMyTransactionListPage.markForCheck
-  unconfirm_transaction_list: TransactionModel[] = [];
+  @AccountMyTransactionListPage.markForCheck unconfirm_transaction_list: TransactionModel[] = [];
   unconfirm_transaction_config = {
     loading: false,
     has_more: true,
@@ -148,16 +129,13 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
   /**更新未确认的交易列表中本地联系人的名字*/
   @AccountMyTransactionListPage.willEnter
   async updateUnconfirmTransactionList() {
-    this.unconfirm_transaction_list = await this.localContact.formatTransactionWithLoclContactNickname(
-      this.unconfirm_transaction_list
-    );
+    this.unconfirm_transaction_list = await this.localContact.formatTransactionWithLoclContactNickname(this.unconfirm_transaction_list);
   }
 
   @asyncCtrlGenerator.error("@@LOAD_MORE_UNCONFIRM_TRANSACTION_LIST_ERROR")
   async loadMoreUnconfirmTransactionList() {
     const { unconfirm_transaction_config } = this;
-    unconfirm_transaction_config.offset +=
-      unconfirm_transaction_config.pageSize;
+    unconfirm_transaction_config.offset += unconfirm_transaction_config.pageSize;
     const list = await this._getUserUnconfirmTransactions();
 
     this.unconfirm_transaction_list.push(...list);
@@ -168,15 +146,10 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
     unconfirm_transaction_config.loading = true;
     this.markForCheck();
     try {
-      const list = await this.transactionService.getLocalUnconfirmedAndCheck(
-        unconfirm_transaction_config.offset,
-        unconfirm_transaction_config.pageSize,
-        {
-          timestamp: -1,
-        }
-      );
-      unconfirm_transaction_config.has_more =
-        list.length >= unconfirm_transaction_config.pageSize;
+      const list = await this.transactionService.getLocalUnconfirmedAndCheck(unconfirm_transaction_config.offset, unconfirm_transaction_config.pageSize, {
+        timestamp: -1,
+      });
+      unconfirm_transaction_config.has_more = list.length >= unconfirm_transaction_config.pageSize;
       return this.localContact.formatTransactionWithLoclContactNickname(list);
     } finally {
       unconfirm_transaction_config.loading = false;
@@ -225,14 +198,9 @@ export class AccountMyTransactionListPage extends SecondLevelPage {
 
   /// 自动更新
   @AccountMyTransactionListPage.addEvent("HEIGHT:CHANGED")
-  @asyncCtrlGenerator.error(
-    "@@UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK"
-  )
+  @asyncCtrlGenerator.error("@@UPDATE_TRANSACTION_FAILED-TOO_MANY_RETRIES-HAS_STOPPED_RETRY-PLEASE_CHECK_THE_NETWORK")
   @asyncCtrlGenerator.retry()
   watchHeightChanged() {
-    return Promise.all([
-      this.loadConfirmedTransactionList(),
-      this.loadUnconfirmTransactionList(),
-    ]);
+    return Promise.all([this.loadConfirmedTransactionList(), this.loadUnconfirmTransactionList()]);
   }
 }

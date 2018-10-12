@@ -290,7 +290,7 @@ export class AssetsAssetsDetailPage extends SecondLevelPage {
   private _is_from_child = false;
   /**跳转到交易详情页面*/
   routeToTransactionDetail(tran: TransactionModel) {
-    return this.routeTo("chain-transaction-detail", { transaction: tran }).then(() => (this._is_from_child = true));
+    return this.routeTo("chain-transaction-detail", { transaction: tran, ripple_theme: "red-ripple" }).then(() => (this._is_from_child = true));
   }
 
   @AssetsAssetsDetailPage.addEvent("HEIGHT:CHANGED")
