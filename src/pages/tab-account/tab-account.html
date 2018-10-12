@@ -1,7 +1,7 @@
 <ion-header>
   <!-- 我的 -->
 </ion-header>
-<ion-content [class.freezed]="userInfo.isFreezed">
+<ion-content [class.freezed]="userInfo.isFreezed" class="red-ripple">
   <div class="account-header">
     <div class="toolbar">
       <button (click)="routeTo('account-settings')">
@@ -26,37 +26,37 @@
   <div class="nav-list">
     <common-wave-bg class="bg"></common-wave-bg>
     <div class="nav-scroll-container">
-      <!-- <div class="nav-item red-ripple" (click)="routeTo('assets-assets-market')">
+      <!-- <div class="nav-item" (click)="routeTo('assets-assets-market')">
         <ali-icon class="left" name="ifm-shiliangzhinengduixiang2"></ali-icon>
         <div class="title">{{'ASSETS_MARKET' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </div> -->
-      <button mat-button *ngIf="hasBalance" class="nav-item red-ripple" (click)="routeTo('assets-my-assets-list')">
+      <button mat-button *ngIf="hasBalance" class="nav-item" (click)="routeTo('assets-my-assets-list')">
         <ali-icon class="left" name="ifm-shiliangzhinengduixiang3"></ali-icon>
         <div class="title">{{'MY_ASSETS_LIST' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </button>
-      <button mat-button class="nav-item red-ripple" (click)="routeToMyContacts()">
+      <button mat-button class="nav-item" (click)="routeToMyContacts()">
         <ali-icon class="left" name="ifm-guanzhu1"></ali-icon>
         <div class="title">{{'MY_CONTACTS' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </button>
-      <button mat-button *ngIf="hasBalance" class="nav-item red-ripple" (click)="routeTo('account-peer-list')">
+      <button mat-button *ngIf="hasBalance" class="nav-item" (click)="routeTo('account-peer-list')">
         <ali-icon class="left" name="ifm--target-"></ali-icon>
         <div class="title">{{'PEER_LIST' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </button>
-      <!-- <div class="nav-item red-ripple">
+      <!-- <div class="nav-item">
       <ali-icon class="left" name="ifm-apps"></ali-icon>
       <div class="title">应用市场</div>
       <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
     </div> -->
-      <button mat-button *ngIf="hasBalance" class="nav-item red-ripple" (click)="routeTo('account-my-transaction-list')">
+      <button mat-button *ngIf="hasBalance" class="nav-item" (click)="routeTo('account-my-transaction-list')">
         <ali-icon class="left" name="ifm-tran-history"></ali-icon>
         <div class="title">{{'MY_TRANSACTION' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </button>
-      <button mat-button class="nav-item red-ripple" (click)="routeTo('account-voucher-wallet')">
+      <button mat-button class="nav-item" (click)="routeTo('account-voucher-wallet')">
         <ali-icon class="left" name="ifm-zhinengpingzheng"></ali-icon>
         <div class="title">{{'VOUCHER_WALLET' | translate}}</div>
         <div class="right">
@@ -66,23 +66,23 @@
           <ali-icon name="ifm-arrow-to-right"></ali-icon>
         </div>
       </button>
-      <!-- <div class="nav-item red-ripple"></div> -->
-      <button mat-button *ngIf="hasBalance" class="nav-item red-ripple" (click)="routeTo('account-miner-list')">
+      <!-- <div class="nav-item"></div> -->
+      <button mat-button *ngIf="hasBalance" class="nav-item" (click)="routeTo('account-miner-list')">
         <ali-icon class="left" name="ifm-auction"></ali-icon>
         <div class="title">{{'MINER_LIST' | translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </button>
-      <button mat-button class="nav-item red-ripple" (click)="openSharePanel()">
+      <button mat-button class="nav-item" (click)="openSharePanel()">
         <ali-icon class="left" name="ifm-share"></ali-icon>
         <div class="title">{{'SHARE_APP'|translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </button>
-      <button mat-button *ngIf="_force_show_hidden" class="nav-item red-ripple" (click)="routeTo('subchain-issuing-subchain')">
+      <button mat-button *ngIf="_force_show_hidden" class="nav-item" (click)="routeTo('subchain-issuing-subchain')">
         <ali-icon class="left" name="ifm-shiliangzhinengduixiang7"></ali-icon>
         <div class="title">{{'SUBCHAIN_GATEWAY'|translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>
       </button>
-      <button mat-button class="nav-item red-ripple" (click)="routeTo('account-about-ibt')">
+      <button mat-button class="nav-item" (click)="routeTo('account-about-ibt')">
         <ali-icon class="left" name="ifm-about-ibt"></ali-icon>
         <div class="title">{{'ABOUT_IBT'|translate}}</div>
         <ali-icon class="right" name="ifm-arrow-to-right"></ali-icon>

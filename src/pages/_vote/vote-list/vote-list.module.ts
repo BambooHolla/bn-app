@@ -6,16 +6,10 @@ import { PipesModule } from "../../../pipes/pipes.module";
 import { DirectivesModule } from "../../../directives/directives.module";
 import { MomentModule } from "angular2-moment";
 import { TranslateModule } from "@ngx-translate/core";
+import { MatButtonModule } from "@angular/material";
 
 @NgModule({
-  declarations: [VoteListPage],
-  imports: [
-    IonicPageModule.forChild(VoteListPage),
-    ComponentsModule,
-    PipesModule,
-    DirectivesModule,
-    MomentModule,
-    TranslateModule,
-  ],
+	declarations: [VoteListPage],
+	imports: [IonicPageModule.forChild(VoteListPage), ComponentsModule, PipesModule, DirectivesModule, MomentModule, TranslateModule, MatButtonModule],
 })
 export class VoteListPageModule {}

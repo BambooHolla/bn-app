@@ -3,7 +3,7 @@
     <ion-title>{{'ASSETS-ASSETS-MARKET'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content class="red-ripple">
   <mat-grid-list [cols]="card_grid_view_style.cols" [rowHeight]="card_grid_view_style.rowHeight">
     <mat-grid-tile *ngFor="let item of assets_list" [ngClass]="card_grid_view_style.cssClass">
       <div class="assets-card-wrapper">

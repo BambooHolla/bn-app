@@ -36,10 +36,10 @@
               <input [(ngModel)]="customPeer.port" (ngChange)="onPeerChange()"/>
           </div>
           <div class="buttons">
-            <button class="cancel-button" (click)="customInputPeer()">
+            <button mat-button class="cancel-button" (click)="customInputPeer()">
               {{'CANCEL'|translate}}
             </button>
-            <button class="confirm-button" (click)="confirmCustomPeer()">
+            <button mat-button class="confirm-button" (click)="confirmCustomPeer()">
               {{'CONFIRM_THEN_ADD'|translate}}
             </button>
           </div>
@@ -58,10 +58,10 @@
           </div>
         </div>
         <div class="bottom-bar">
-          <button class="progress-button" [disabled]="!selectPeer" (click)="goToFillFormPage()">
+          <button mat-button class="progress-button" [disabled]="!selectPeer" (click)="goToFillFormPage()">
             {{'NET_STEP'|translate}}
           </button>
-          <button class="custom-input-peer" [class.ani-hidden]="is_custom_input_peer" (click)="customInputPeer()">
+          <button mat-button class="custom-input-peer" [class.ani-hidden]="is_custom_input_peer" (click)="customInputPeer()">
             {{'CUSTOM_INPUT_PEER'|translate}}
           </button>
         </div>
@@ -103,7 +103,7 @@
           </div>
         </div>
         <div class="bottom-bar">
-          <button class="progress-button" [disabled]="!canSubmit" (click)="confirmAddMachine()">
+          <button mat-button class="progress-button" [disabled]="!canSubmit" (click)="confirmAddMachine()">
             {{'START_UP_MINING'|translate}}
           </button>
         </div>

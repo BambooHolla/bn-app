@@ -14,8 +14,8 @@
     </div>
   </div>
 </ion-header>
-<ion-content>
-  <ion-content class="in-vote-content" [class.show]="InOutSubPage.IN_VOTE===current_page">
+<ion-content class="red-ripple">
+  <ion-content class="in-vote-content red-ripple" [class.show]="InOutSubPage.IN_VOTE===current_page">
     <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8A%95%E7%A5%A8-%E6%88%91%E5%BE%97%E7%9A%84%E7%A5%A8.jpg" alt=""> -->
     <div class="common-list" [class.empty]="!my_mining_machine.length">
       <div class="no-mills">
@@ -24,7 +24,7 @@
           {{'NO_MINING_MACHINE'|translate}}
         </div>
       </div>
-      <div class="common-item" *ngFor="let mac of my_mining_machine;index as i" (click)="routeTo('vote-mining-machine-detail',{mac:mac})" [class.disbaled]="!mac.connected">
+      <button mat-button class="common-item" *ngFor="let mac of my_mining_machine;index as i" (click)="routeTo('vote-mining-machine-detail',{mac:mac})" [class.disbaled]="!mac.connected">
         <div class="item-header">
           <div class="left">
             <ali-icon name="ifm-mac-address"></ali-icon>
@@ -59,9 +59,9 @@
             <div class="label">{{'VOTES'|translate}}</div>
           </div>
         </div>
-      </div>
+      </button>
       <div class="bottom-fixed" [class.has-list-item]="my_mining_machine.length">
-        <button class="submit-button" (click)="routeTo('vote-add-mining-machine')">
+        <button mat-button class="submit-button" (click)="routeTo('vote-add-mining-machine')">
           <div class="inner-text">
             {{'ADD_MINING_MACHINE'|translate}}
           </div>
@@ -69,21 +69,21 @@
       </div>
     </div>
   </ion-content>
-  <ion-content class="out-vote-content" [class.show]="InOutSubPage.OUT_VOTE===current_page">
+  <ion-content class="out-vote-content red-ripple" [class.show]="InOutSubPage.OUT_VOTE===current_page">
     <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/%E6%8A%95%E7%A5%A8-%E6%88%91%E7%A5%A8%E7%9A%84%E6%8A%95.jpg" alt=""> -->
     <ion-slides pager>
       <ion-slide>
-        <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+        <ion-content class="red-ripple" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
           <ion-refresher (ionRefresh)="loadOutVoteList($event)">
             <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_OUT_VOTE_LIST'|translate"></ion-refresher-content>
           </ion-refresher>
           <div class="common-list">
-            <div class="common-item" *ngFor="let vote of out_vote_list" (click)="routeTo('vote-delegate-detail',{delegate_info:vote})">
+            <button mat-button class="common-item" *ngFor="let vote of out_vote_list" (click)="routeTo('vote-delegate-detail',{delegate_info:vote})">
               <div class="left" [innerHTML]="vote.username||(vote.address|mask:'@address')"></div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>
-            </div>
+            </button>
           </div>
           <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreOutVoteList())" [enabled]="out_vote_list_config.has_more">
             <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_OUT_VOTE_LIST'|translate"></ion-infinite-scroll-content>
@@ -91,17 +91,17 @@
         </ion-content>
       </ion-slide>
       <ion-slide>
-        <ion-content [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
+        <ion-content class="red-ripple" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
           <ion-refresher (ionRefresh)="loadCanVoteList($event)">
             <ion-refresher-content [pullingText]="'PULLING_REFRESH_LIST'|translate" [refreshingText]="'LOADING_CAN_VOTE_LIST'|translate"></ion-refresher-content>
           </ion-refresher>
           <div class="common-list">
-            <div class="common-item" *ngFor="let vote of can_vote_list" (click)="routeTo('vote-delegate-detail',{delegate_info:vote,page:'vote'})">
+            <button mat-button class="common-item" *ngFor="let vote of can_vote_list" (click)="routeTo('vote-delegate-detail',{delegate_info:vote,page:'vote'})">
               <div class="left" [innerHTML]="vote.username||(vote.address|mask:'@address')"></div>
               <div class="right">
                 <ali-icon name="ifm-arrow-to-right"></ali-icon>
               </div>
-            </div>
+            </button>
           </div>
           <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreCanVoteList())" [enabled]="can_vote_list_config.has_more">
             <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_CAN_VOTE_LIST'|translate"></ion-infinite-scroll-content>

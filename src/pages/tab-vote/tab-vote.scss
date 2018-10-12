@@ -1006,4 +1006,12 @@ page-tab-vote {
       }
     }
   }
+
+  .caikuang-button{
+    transform-origin: left bottom;
+    transition-duration: 250ms;
+    &:active{
+      transform: rotate(24deg);
+    }
+  }
 }

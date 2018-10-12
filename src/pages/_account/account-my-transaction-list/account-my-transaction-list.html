@@ -14,7 +14,7 @@
     </div>
   </div>
 </ion-header>
-<ion-content>
+<ion-content class="red-ripple">
   <ion-content class="confimed-page" [class.show]="TranSubPage.CONFIRMED===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
     <button mat-button class="item" *ngFor="let tran of confirmed_transaction_list;trackBy:commonTrackBy('id')" (click)="routeToTransactionDetail(tran)">
       <!--       <div class="left">

@@ -311,8 +311,7 @@ ion-loading.blockchain-loading {
 ion-app.app-root {
   font-family: -apple-system, "SF Compact Display", "Helvetica Neue", "Roboto", sans-serif;
 }
-ion-app.app-root,
-.blue-ripple,
+ion-app.app-root .blue-ripple,
 button.submit-button.blue-ripple {
   .mat-ripple-element {
     background-color: rgba(#76e5de, 0.1);
@@ -321,11 +320,49 @@ button.submit-button.blue-ripple {
     background-color: rgba(#76e5de, 0.12);
   }
 }
-.red-ripple {
+ion-app.app-root .red-ripple,
+button.submit-button.red-ripple {
   .mat-ripple-element {
     background-color: rgba(#ff5a5a, 0.1);
   }
   .mat-button-focus-overlay {
     background-color: rgba(#ff5a5a, 0.12);
+  }
+}
+
+ion-app.app-root .white-ripple,
+button.submit-button.white-ripple {
+  .mat-ripple-element {
+    background-color: rgba(#fff, 0.1);
+  }
+  .mat-button-focus-overlay {
+    background-color: rgba(#fff, 0.12);
+  }
+}
+
+ion-app.app-root .dark-ripple,
+button.submit-button.dark-ripple,
+ion-app.app-root .black-ripple,
+button.submit-button.black-ripple {
+  .mat-ripple-element {
+    background-color: rgba(#000, 0.1);
+  }
+  .mat-button-focus-overlay {
+    background-color: rgba(#000, 0.12);
+  }
+}
+
+ion-app.app-root {
+  .mat-button:hover,
+  .mat-stroked-button:hover {
+    .mat-button-focus-overlay {
+      opacity: 0;
+    }
+  }
+  .mat-button:active,
+  .mat-stroked-button:active {
+    .mat-button-focus-overlay {
+      opacity: 1;
+    }
   }
 }

@@ -57,6 +57,10 @@ page-share-app-panel {
             flex-direction: column;
             align-items: center;
             line-height: unset;
+            transition-duration: 125ms;
+            &:active {
+              transform: scale(0.9);
+            }
             &.disabled {
               filter: grayscale(1);
               opacity: 0.8;
@@ -89,6 +93,10 @@ page-share-app-panel {
     width: 100%;
     bottom: 26%;
     left: 0;
+    transition-duration: 125ms;
+    &:active {
+      transform: scale(1.1);
+    }
     > button {
       margin: 0 auto;
       display: block;

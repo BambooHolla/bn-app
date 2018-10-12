@@ -1,7 +1,7 @@
 import { tryRegisterGlobal } from "../bnqkl-framework/helper";
 import Db from "../gangodb_core/src/db";
 import Collection from "../gangodb_core/src/collection";
-const mdb = new Db("ibt", 20, {
+const mdb = new Db("ibt", 21, {
   blocks: ["height", "id"],
   account: ["address", "publicKey"],
   voted_delegate: true,
@@ -11,7 +11,7 @@ const mdb = new Db("ibt", 20, {
 
   contact_tags: ["owner_publicKey", "contact_ids:multiEntry"],
   local_contact: ["owner_publicKey", "address"],
-  peers: ["origin"],
+  peers: ["origin", "magic"],
 });
 tryRegisterGlobal("mdb", mdb);
 
@@ -46,9 +46,7 @@ export class Mdb<T> {
     let per_task = Promise.resolve([]);
     for (var async_item of async_arr) {
       const _per_task = per_task;
-      per_task = async_item.task
-        .catch(error => errs.push({ error, item: async_item.item }))
-        .then(() => _per_task);
+      per_task = async_item.task.catch(error => errs.push({ error, item: async_item.item })).then(() => _per_task);
     }
     if (errs.length) {
       console.error(errs);
@@ -94,9 +92,7 @@ export class Mdb<T> {
     } = {}
   ) {
     cursor_operators["limit"] = 1;
-    return this.find(query, cursor_operators).then(
-      res => res[0] as T | undefined
-    );
+    return this.find(query, cursor_operators).then(res => res[0] as T | undefined);
   }
   find(
     query,

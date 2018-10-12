@@ -4,6 +4,7 @@ import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { PeerServiceProvider, LocalPeerModel } from "../../../providers/peer-service/peer-service";
+import { AppSettingProvider } from "../../../providers/app-setting/app-setting";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { baseConfig } from "../../../bnqkl-framework/helper";
 
@@ -30,7 +31,7 @@ export class AccountPeerListPage extends SecondLevelPage {
   private _cur_peer_map = new Map<string, LocalPeerModel>();
   @AccountPeerListPage.willEnter
   async initPeerList() {
-    this.cur_peer_list = await this.peerService.getPeersLocal();
+    this.cur_peer_list = await this.peerService.getPeersLocal({ magic: AppSettingProvider.MAGIC });
     this.cur_peer_list.map(peer => {
       this._cur_peer_map.set(peer.origin, peer);
     });

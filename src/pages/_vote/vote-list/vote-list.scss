@@ -125,9 +125,12 @@ page-vote-list {
         background-repeat: no-repeat;
         background-position: top right;
         background-size: auto 100%;
+      }
+      .common-item,.mat-button-wrapper{
         display: flex;
         flex-direction: column;
         padding: 0;
+        
         /* color: #707070; */
         > .item-header {
           width: 100%;
@@ -229,6 +232,7 @@ page-vote-list {
           }
         }
       }
+
       > .bottom-fixed {
         position: fixed;
         width: 100%;
@@ -239,7 +243,7 @@ page-vote-list {
         &.has-list-item {
           background-color: rgba(0, 0, 0, 0.2);
           > .submit-button {
-            > .inner-text {
+            .inner-text {
               @extend .clip-text;
             }
           }
@@ -249,7 +253,11 @@ page-vote-list {
           margin: 0;
           background: #fff;
           padding: 0;
-          > .inner-text {
+          .mat-button-wrapper{
+            height: 100%;
+          }
+          .inner-text {
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;

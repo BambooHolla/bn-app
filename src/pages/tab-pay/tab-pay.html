@@ -107,7 +107,7 @@
       <span class="unit">IBT</span>
       <div *ngIf="selected_assets!=ibt_assets" class="balance-info">{{'BALANCE' | translate}}：{{amountViewer(userInfo.balance|amountEuler|number:'1.8-8')}}</div>
     </div>
-    <button mat-button class="submit-button blue-ripple" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()" (un-submit)="helpSubmit($event)">{{'SUBMIT_TRANSFER' | translate}}</button>
+    <button mat-button class="submit-button black-ripple" [class.disabled]="!canSubmit" [before-submit]="trySubmit" (do-submit)="submit()" (un-submit)="helpSubmit($event)">{{'SUBMIT_TRANSFER' | translate}}</button>
   </div>
   <div class="roll-out-logs">
     <div class="title">

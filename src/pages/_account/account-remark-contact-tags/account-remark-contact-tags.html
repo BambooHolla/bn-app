@@ -3,7 +3,7 @@
     <ion-title>{{'ACCOUNT-REMARK-CONTACT-TAGS'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content class="red-ripple">
   <div class="selected-tags tag-list">
     <div class="tag-item" *ngFor="let tag of used_tags" (click)="selectThenRemoveTag(tag)" [class.selected]="tag.name==selected_tag?.name">
       <span class="inner">{{tag.name}}</span>

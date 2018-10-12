@@ -3,7 +3,7 @@
     <ion-title>{{'ACCOUNT-MY-EXPORT-LOCAL-CONTACTS'|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content class="red-ripple">
   <ng-container *ngIf="!is_exporting;else Exporting">
     <kjua-qrcode (click)="tryShowHiddenButtons()" class="qrcode" [text]="export_data" [size]="600" fill="#000" [rounded]="80"></kjua-qrcode>
   </ng-container>

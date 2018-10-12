@@ -10,17 +10,9 @@ import { UserInfoProvider } from "../user-info/user-info";
 import { LoginServiceProvider } from "../login-service/login-service";
 type BlockServiceProvider = import("../block-service/block-service").BlockServiceProvider;
 import { MinServiceProvider } from "../min-service/min-service";
-import {
-  ParallelPool,
-  PromiseType,
-  PromiseOut,
-} from "../../bnqkl-framework/PromiseExtends";
+import { ParallelPool, PromiseType, PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import {
-  getQueryVariable,
-  baseConfig,
-  getSocketIOInstance,
-} from "../../bnqkl-framework/helper";
+import { getQueryVariable, baseConfig, getSocketIOInstance } from "../../bnqkl-framework/helper";
 import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { CommonService } from "../commonService";
 import { Mdb } from "../mdb";
@@ -77,19 +69,16 @@ export class PeerServiceProvider extends CommonService {
   readonly PEERS_QUERY_URL = this.appSetting.APP_URL("/api/peers/get");
   readonly FORGING_ENABLE = this.appSetting.APP_URL("/forging/enable");
   readonly SYSTEM_RUNTIME = this.appSetting.APP_URL(`/api/system/runtime`);
-  readonly SYSTEM_BASE_INFO = this.appSetting.APP_URL(
-    `/api/system/systemBaseInfo`
-  );
+  readonly SYSTEM_BASE_INFO = this.appSetting.APP_URL(`/api/system/systemBaseInfo`);
 
   /*获取所有次信任节点*/
   async getAllSecondTrustPeers() {
-    const trust_peer_list = this.peerList.filter(
-      peer => peer.level === TYPE.PEER_LEVEL.TRUST
-    );
+    const trust_peer_list = this.peerList.filter(peer => peer.level === TYPE.PEER_LEVEL.TRUST);
     const col = new Map<string, TYPE.LocalPeerModel>();
-    return (await Promise.all(
-      trust_peer_list.map(trust_peer => this._searchPeers(trust_peer, col))
-    )).reduce((res_list, peer_list) => res_list.concat(peer_list), []);
+    return (await Promise.all(trust_peer_list.map(trust_peer => this._searchPeers(trust_peer, col)))).reduce(
+      (res_list, peer_list) => res_list.concat(peer_list),
+      []
+    );
   }
 
   async getAllPeers() {
@@ -109,9 +98,7 @@ export class PeerServiceProvider extends CommonService {
       trust_magic?: string;
     } = {}
   ) {
-    const checked_peer_infos: PromiseType<
-      ReturnType<typeof PeerServiceProvider.prototype._checkPeer>
-    >[] = [];
+    const checked_peer_infos: PromiseType<ReturnType<typeof PeerServiceProvider.prototype._checkPeer>>[] = [];
     const parallel_pool = new ParallelPool<typeof checked_peer_infos[0]>(4);
     /*是否开启检测节点信息*/
     let is_start_to_check = !opts.manual_check_peers;
@@ -121,9 +108,7 @@ export class PeerServiceProvider extends CommonService {
       if (!is_start_to_check) {
         is_start_to_check = yield peer;
       }
-      parallel_pool.addTaskExecutor(() =>
-        this._checkPeer(peer, opts.trust_magic)
-      );
+      parallel_pool.addTaskExecutor(() => this._checkPeer(peer, opts.trust_magic));
 
       // console.log("peer", peer, is_start_to_check);
       if (is_start_to_check) {
@@ -156,9 +141,7 @@ export class PeerServiceProvider extends CommonService {
       .catch(() => 0);
   }
   fetchPeerMagic(origin: string) {
-    return this.fetch.get<{ magic: string; sourceIp: string }>(
-      this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true).SYSTEM_BASE_INFO
-    );
+    return this.fetch.get<{ magic: string; sourceIp: string }>(this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true).SYSTEM_BASE_INFO);
   }
   private _getPeerMagic(peer: TYPE.LocalPeerModel) {
     return this.fetchPeerMagic(peer.origin)
@@ -198,9 +181,7 @@ export class PeerServiceProvider extends CommonService {
       const end_time = performance.now();
       peer.delay = end_time - start_time;
 
-      [highest_blocks, lowest_blocks, web_link_num] = await Promise.all<any>(
-        tasks as any
-      );
+      [highest_blocks, lowest_blocks, web_link_num] = await Promise.all<any>(tasks as any);
       delete peer.disabled;
       if (trust_magic && peer.magic !== trust_magic) {
         peer.disabled = true;
@@ -247,9 +228,7 @@ export class PeerServiceProvider extends CommonService {
     for (var [magic, origin_set] of magic_origin_map.entries()) {
       calced_magic_peers_list.push({
         magic,
-        peers: [...origin_set].map(
-          origin => origin_peer_map.get(origin) as TYPE.LocalPeerModel
-        ),
+        peers: [...origin_set].map(origin => origin_peer_map.get(origin) as TYPE.LocalPeerModel),
       });
     }
     return calced_magic_peers_list.sort(
@@ -291,19 +270,14 @@ export class PeerServiceProvider extends CommonService {
     for (var _ep of enter_port_peers) {
       const enter_port_peer = _ep;
       // 向并行池中添加任务
-      parallel_pool.addTaskExecutor(() =>
-        this._searchPeers(enter_port_peer, collection_peers)
-      );
+      parallel_pool.addTaskExecutor(() => this._searchPeers(enter_port_peer, collection_peers));
       yield* recursiveSearch(true);
     }
     yield* recursiveSearch();
   }
 
   /**获取指定节点的子节点*/
-  private async _searchPeers(
-    enter_port_peer: typeof PeerServiceProvider.prototype.peerList[0],
-    collection_peers: Map<string, TYPE.LocalPeerModel>
-  ) {
+  private async _searchPeers(enter_port_peer: typeof PeerServiceProvider.prototype.peerList[0], collection_peers: Map<string, TYPE.LocalPeerModel>) {
     // 这个节点可能不工作，所以定一个3s超时的功能
     const { peers: sec_peers } = await this.fetch
       .timeout(3000)
@@ -316,10 +290,7 @@ export class PeerServiceProvider extends CommonService {
     const next_level = TYPE.getNextPeerLevel(enter_port_peer.level);
     const res = [] as TYPE.LocalPeerModel[];
     sec_peers.forEach(sec_peer_info => {
-      if (
-        sec_peer_info.state === 1 &&
-        !sec_peer_info.port.toString().endsWith("04")
-      ) {
+      if (sec_peer_info.state === 1 && !sec_peer_info.port.toString().endsWith("04")) {
         const webPort = sec_peer_info.webPort || sec_peer_info.port + 2;
         const origin = "http://" + sec_peer_info.ip + ":" + webPort;
         if (collection_peers.has(origin)) {
@@ -354,8 +325,8 @@ export class PeerServiceProvider extends CommonService {
    * 获取可用节点
    * 从未保存过时返回空数组
    */
-  async getPeersLocal() {
-    const peers = (await this.peerDb.find({})) as TYPE.LocalPeerModel[];
+  async getPeersLocal(query = {}) {
+    const peers = (await this.peerDb.find(query)) as TYPE.LocalPeerModel[];
     return peers.length ? peers : PEERS;
   }
 
@@ -373,10 +344,7 @@ export class PeerServiceProvider extends CommonService {
     const fetch_task = new PromiseOut<{ success: boolean; webPort: number }>();
 
     const xhr = new XMLHttpRequest();
-    xhr.open(
-      "GET",
-      `http://${ip}:${port}/api/${AppUrl.BACKEND_VERSION}system/portInfo`
-    );
+    xhr.open("GET", `http://${ip}:${port}/api/${AppUrl.BACKEND_VERSION}system/portInfo`);
     xhr.send();
     setTimeout(() => {
       xhr.abort();
@@ -410,14 +378,9 @@ export class PeerServiceProvider extends CommonService {
     all_second_trust_peer_list: TYPE.LocalPeerModel[] = []
   ) {
     // const second_peer_num = Math.max(all_second_trust_peer_list.length, 4);
-    const peer_info_level_map = new Map<
-      TYPE.PEER_LEVEL,
-      typeof peer_info_list
-    >();
+    const peer_info_level_map = new Map<TYPE.PEER_LEVEL, typeof peer_info_list>();
     peer_info_list.forEach(peer_info => {
-      const list =
-        peer_info_level_map.get(peer_info.peer.level) ||
-        ([] as typeof peer_info_list);
+      const list = peer_info_level_map.get(peer_info.peer.level) || ([] as typeof peer_info_list);
       list.push(peer_info);
       peer_info_level_map.set(peer_info.peer.level, list);
     });
@@ -430,11 +393,7 @@ export class PeerServiceProvider extends CommonService {
     })[] = [];
     let total_rate_base = 0;
     peer_info_level_map.forEach((peer_info_list, level) => {
-      const res = PeerServiceProvider._calcLeveledPeerInfoList(
-        peer_info_list,
-        level,
-        all_second_trust_peer_list
-      );
+      const res = PeerServiceProvider._calcLeveledPeerInfoList(peer_info_list, level, all_second_trust_peer_list);
       if (res) {
         let score = 0;
         if (level === TYPE.PEER_LEVEL.TRUST) {
@@ -486,31 +445,23 @@ export class PeerServiceProvider extends CommonService {
     peer_info_list.forEach(peer_info => {
       const first_block = peer_info.lowest_blocks[0];
       if (first_block) {
-        const peer_list =
-          peer_first_block_map.get(first_block.id) ||
-          ([] as typeof peer_info_list);
+        const peer_list = peer_first_block_map.get(first_block.id) || ([] as typeof peer_info_list);
         peer_list.push(peer_info);
         peer_first_block_map.set(first_block.id, peer_list);
       }
     });
-    for (var f_peer_info_list of [...peer_first_block_map.values()].sort(
-      (a, b) => b.length - a.length
-    )) {
+    for (var f_peer_info_list of [...peer_first_block_map.values()].sort((a, b) => b.length - a.length)) {
       // if (level === TYPE.PEER_LEVEL.SEC_TRUST && f_peer_info_list.length >= 4) {
       // 拜占庭最后的几个区块
       const peer_last_block_map = new Map<string, typeof f_peer_info_list>();
       f_peer_info_list.forEach(peer_info => {
         peer_info.highest_blocks.forEach(high_block => {
-          const peer_list =
-            peer_last_block_map.get(high_block.id) ||
-            ([] as typeof f_peer_info_list);
+          const peer_list = peer_last_block_map.get(high_block.id) || ([] as typeof f_peer_info_list);
           peer_list.push(peer_info);
           peer_last_block_map.set(high_block.id, peer_list);
         });
       });
-      for (var h_peer_info_list of [...peer_last_block_map.values()].sort(
-        (a, b) => b.length - a.length
-      )) {
+      for (var h_peer_info_list of [...peer_last_block_map.values()].sort((a, b) => b.length - a.length)) {
         return h_peer_info_list;
         /// PS: 暂时停止拜占庭，直接使用最高的
         /* if (
@@ -555,23 +506,16 @@ export class PeerServiceProvider extends CommonService {
     return "ifm-unknown-system";
   }
   async *updateUseablePeersInfo(useablePeers: TYPE.LocalPeerModel[], emiter?) {
-    const fetch_peer_infos: PromiseType<
-      ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfoAndUpdate>
-    >[] = [];
+    const fetch_peer_infos: PromiseType<ReturnType<typeof PeerServiceProvider.prototype.fetchPeersInfoAndUpdate>>[] = [];
     const parallel_pool = new ParallelPool<typeof fetch_peer_infos[0]>(4);
     for (var i = 0; i < useablePeers.length; i += 1) {
       const peer = useablePeers[i];
-      parallel_pool.addTaskExecutor(() =>
-        this.fetchPeersInfoAndUpdate(peer, emiter)
-      );
+      parallel_pool.addTaskExecutor(() => this.fetchPeersInfoAndUpdate(peer, emiter));
     }
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
-  private async fetchPeersInfoAndUpdate(
-    peer: TYPE.LocalPeerModel,
-    emiter?: { emit: any }
-  ) {
+  private async fetchPeersInfoAndUpdate(peer: TYPE.LocalPeerModel, emiter?: { emit: any }) {
     let finished_task_num = 0;
     const emit_progress = emiter
       ? (v = finished_task_num) => {
@@ -586,15 +530,11 @@ export class PeerServiceProvider extends CommonService {
     const common_cache_handler = () => {
       peer.disabled = true;
     };
-    const get_platform_task = this.fetch
-      .get<any>(
-        this.oneTimeUrl(this.SYSTEM_RUNTIME, peer.origin, true).SYSTEM_RUNTIME
-      )
-      .then(runtime => {
-        peer.platform = runtime.data.System.platform;
-        emit_progress(finished_task_num + 1);
-        return runtime;
-      });
+    const get_platform_task = this.fetch.get<any>(this.oneTimeUrl(this.SYSTEM_RUNTIME, peer.origin, true).SYSTEM_RUNTIME).then(runtime => {
+      peer.platform = runtime.data.System.platform;
+      emit_progress(finished_task_num + 1);
+      return runtime;
+    });
     const get_linknum_task = this._getPeerWebsocketLinkNum(peer).then(res => {
       emit_progress(finished_task_num + 1);
       return res;
@@ -611,12 +551,7 @@ export class PeerServiceProvider extends CommonService {
       emit_progress(finished_task_num + 1);
       return res;
     });
-    const tasks = [
-      get_platform_task,
-      get_linknum_task,
-      get_lastblock_task,
-      get_system_base_info,
-    ];
+    const tasks = [get_platform_task, get_linknum_task, get_lastblock_task, get_system_base_info];
     emit_progress(0);
 
     let runtime;
@@ -651,10 +586,7 @@ export class PeerServiceProvider extends CommonService {
     };
   }
 
-  private _update_peer_flow_lock = new Map<
-    string,
-    { acc_flow: number; lock: Promise<void> }
-  >();
+  private _update_peer_flow_lock = new Map<string, { acc_flow: number; lock: Promise<void> }>();
   async updatePeerFlow(origin: string, flow: number) {
     let lock_info = this._update_peer_flow_lock.get(origin);
     if (!lock_info) {
@@ -705,9 +637,7 @@ export class PeerServiceProvider extends CommonService {
       return false;
     }
     if (await this.fetch.webio.getOnlineStatus()) {
-      return this.fetch
-        .get<any>(this.SYSTEM_BASE_INFO)
-        .then(info => info.magic === local_magic);
+      return this.fetch.get<any>(this.SYSTEM_BASE_INFO).then(info => info.magic === local_magic);
     } else {
       // 没网络的情况下，直接默认成功
       return true;
