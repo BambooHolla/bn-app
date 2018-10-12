@@ -250,7 +250,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
   // 进入到交易详情页面
   goToTransactionDetail(tran: TransactionModel) {
     this._is_back_from_child_page = true;
-    return this.routeTo("chain-transaction-detail", { transaction: tran });
+    return this.routeTo("chain-transaction-detail", { transaction: tran, ripple_theme: "red-ripple" });
   }
 
   is_show_extend_info = false;
