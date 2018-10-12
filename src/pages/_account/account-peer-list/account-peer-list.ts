@@ -30,6 +30,7 @@ export class AccountPeerListPage extends SecondLevelPage {
   @AccountPeerListPage.markForCheck cur_peer_list: LocalPeerModel[] = [];
   private _cur_peer_map = new Map<string, LocalPeerModel>();
   @AccountPeerListPage.willEnter
+  @asyncCtrlGenerator.loading()
   async initPeerList() {
     this.cur_peer_list = await this.peerService.getPeersLocal({ magic: AppSettingProvider.MAGIC });
     this.cur_peer_list.map(peer => {
@@ -98,5 +99,11 @@ export class AccountPeerListPage extends SecondLevelPage {
     ) {
       return this.peerService.linkPeer(peer);
     }
+  }
+
+  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.success("开始刷新节点信息")
+  tryForceRefresh() {
+    return this.loopUpdatePeerList();
   }
 }
