@@ -1,34 +1,11 @@
-import {
-  Component,
-  ElementRef,
-  ViewChild,
-  ViewChildren,
-  Renderer2,
-  AfterViewChecked,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from "@angular/core";
-import {
-  Loading,
-  IonicPage,
-  NavController,
-  NavParams,
-  ViewController,
-  ScrollEvent,
-  InfiniteScroll,
-} from "ionic-angular/index";
+import { Component, ElementRef, ViewChild, ViewChildren, Renderer2, AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
+import { Loading, IonicPage, NavController, NavParams, ViewController, ScrollEvent, InfiniteScroll } from "ionic-angular/index";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { getQueryVariable } from "../../bnqkl-framework/helper";
 import { PAGE_STATUS } from "../../bnqkl-framework/const";
-import {
-  BlockServiceProvider,
-  BlockModel,
-  SingleBlockModel,
-  BlockListResModel,
-  UnconfirmBlockModel,
-} from "../../providers/block-service/block-service";
+import { BlockServiceProvider, BlockModel, SingleBlockModel, BlockListResModel, UnconfirmBlockModel } from "../../providers/block-service/block-service";
 // import { BlockchainVerifier } from "../../providers/block-service/blockchain-verifier";
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { Subscription } from "rxjs/Subscription";
@@ -53,21 +30,11 @@ export class TabChainPage extends FirstLevelPage {
     public fetch: AppFetchProvider
   ) {
     super(navCtrl, navParams);
-    // this.auto_header_shadow_when_scroll_down = true;
-    // this.auto_header_progress_when_scrol_down = true;
 
     this.blockService.event.on("EXPECTBLOCK:CHANGED", expect_block => {
       this.unconfirm_block = expect_block;
     });
-    // this.registerViewEvent(this)
   }
-
-  // bv() {
-  //   const db = this.blockService.blockDb;
-  //   db['fast'] = () => db;
-  //   const bv = new BlockchainVerifier(this.fetch.webio.io, this.blockService.blockDb as any);
-  //   return bv;
-  // }
 
   unconfirm_block_mesh_thit = 0xa4a2a3;
 
@@ -82,6 +49,9 @@ export class TabChainPage extends FirstLevelPage {
     const unconfirm_block = await this.blockService.expectBlockInfo.getPromise();
     this.unconfirm_block = unconfirm_block;
     this.chainMesh && this.chainMesh.forceRenderOneFrame();
+    if (this._renderer_started && unconfirm_block.height > 1) {
+      this.chain_list_view_able = true;
+    }
     return unconfirm_block.height;
   }
 
@@ -96,20 +66,20 @@ export class TabChainPage extends FirstLevelPage {
   @ViewChild("fixedHeader") fixedHeader!: ElementRef;
   @ViewChild(ChainListComponent) chainList!: ChainListComponent;
   @TabChainPage.markForCheck chain_list_view_able = false;
+  private _renderer_started = false;
   @TabChainPage.onInit
   checkChainListViewAble() {
     if (!(this.chain_list_view_able = this.chainList.renderer_started)) {
       this.chainList.once("renderer-started", () => {
-        this.chain_list_view_able = true;
+        this._renderer_started = true;
+        this.chain_list_view_able = this.unconfirm_block ? this.unconfirm_block.height > 1 : false;
       });
     }
   }
 
   @TabChainPage.didEnter
   initChainListPaddingTop() {
-    this.chainList.list_padding_top = this.chainList.pt(
-      this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/
-    );
+    this.chainList.list_padding_top = this.chainList.pt(this.fixedHeader.nativeElement.clientHeight + 12 /*1rem*/);
   }
 
   pullToTop() {
@@ -130,9 +100,7 @@ export class TabChainPage extends FirstLevelPage {
   // })
   @TabChainPage.onInit
   async checkBlockchainComplete() {
-    if (
-      !(await this.appSetting.afterShareSettings("enable_sync_progress_blocks"))
-    ) {
+    if (!(await this.appSetting.afterShareSettings("enable_sync_progress_blocks"))) {
       return;
     }
     await this.netWorkConnection();
@@ -204,9 +172,7 @@ export class TabChainPage extends FirstLevelPage {
     }
     let cg;
     try {
-      const { worker, req_id, task } = await this.blockService.syncBlockChain(
-        max_end_height
-      );
+      const { worker, req_id, task } = await this.blockService.syncBlockChain(max_end_height);
       this._download_task = task;
       // this._download_worker = worker;
       const onmessage = async e => {
@@ -225,9 +191,7 @@ export class TabChainPage extends FirstLevelPage {
             case "start-verifier":
               if (!this.appSetting.settings.is_known_verifier_will_heat_up) {
                 this.appSetting.settings.is_known_verifier_will_heat_up = true;
-                await this.waitTipDialogConfirm(
-                  "@@VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP"
-                ).then(v => {
+                await this.waitTipDialogConfirm("@@VERIFIER_BLOCKCHAIN_WILL_HEAT_UP_TIP").then(v => {
                   this.appSetting.settings.is_known_verifier_will_heat_up = v;
                 });
               }
@@ -239,11 +203,7 @@ export class TabChainPage extends FirstLevelPage {
               firstAutoOpenChainSyncDetail();
               break;
             case "error":
-              this.showErrorDialog(
-                this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"),
-                "",
-                msg.data
-              );
+              this.showErrorDialog(this.getTranslateSync("SYNC_BLOCKCHAIN_ERROR"), "", msg.data);
               break;
           }
         }
@@ -282,10 +242,7 @@ export class TabChainPage extends FirstLevelPage {
       this._pre_progressCircle_ani_time = performance.now();
       this._progressCircle_rotate = (this._progressCircle_rotate + 45) % 360;
       this.raf(() => {
-        (this.progressCircle
-          .nativeElement as HTMLElement).style.transform = `rotate(${
-          this._progressCircle_rotate
-          }deg)`;
+        (this.progressCircle.nativeElement as HTMLElement).style.transform = `rotate(${this._progressCircle_rotate}deg)`;
       });
       this.cdRef.detectChanges;
     }
@@ -314,5 +271,5 @@ export class TabChainPage extends FirstLevelPage {
   showVerifierLoading() {
     // this.loadingCtrl.create("")
   }
-  closeVerifierLoading() { }
+  closeVerifierLoading() {}
 }
