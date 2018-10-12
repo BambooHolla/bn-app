@@ -34,13 +34,13 @@
     <ng-container *ngFor="let letter_contacts of grouped_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
       <ion-item-sliding *ngFor="let contact of letter_contacts.list">
-        <ion-item (click)="routeTo('account-contact-detail', {contact:contact})">
+        <ion-item class="contact-item" (click)="routeTo('account-contact-detail', {contact:contact})">
           <!-- (click)="tryShowUserBalance(contact.address)" -->
-          <div class="left">
+          <button mat-button class="contact-item-inner">
             <div class="username" *ngIf="contact.username">{{contact.username}}</div>
             <div class="nickname" *ngIf="contact.nickname">{{contact.nickname}}</div>
             <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>
-          </div>
+          </button>
         </ion-item>
         <ion-item-options side="right">
           <button mat-button class="options-item list-remark" (click)="routeTo('account-remark-contact',{contact:contact,auto_return:true})">

@@ -56,6 +56,15 @@ page-account-my-local-contacts {
     ion-item-options {
       border-bottom: none !important;
     }
+    .mat-button-wrapper {
+      align-items: center;
+      font-weight: normal;
+      line-height: normal;
+      word-spacing: normal;
+      white-space: normal;
+      font-size: unset;
+      text-align: left;
+    }
     .mat-item-wrapper {
       padding: 0;
       > .item-inner {
@@ -78,6 +87,17 @@ page-account-my-local-contacts {
             font-size: 2rem;
           }
         }
+      }
+    }
+    .contact-item {
+      padding: 0;
+      ion-label{
+        margin: 0;
+        height: 100%;
+      }
+      .contact-item-inner {
+        width: 100%;
+        height: 100%;
       }
     }
   }

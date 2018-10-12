@@ -90,14 +90,16 @@
           {{block_info?.id}}
         </div>
       </div>
-      <div class="line block-id" *ngIf="block_info?.previousBlock">
-        <div class="left">
-          <ali-icon name="ifm-id"></ali-icon>
-          {{'BLOCK_pre_block_id'|translate}}
-        </div>
-        <div class="right" (click)="toPerBlock()">
-          {{block_info?.previousBlock}}
-        </div>
+      <div class="line block-id pre-block-id" *ngIf="block_info?.previousBlock">
+        <button mat-button class="to-per-block" (click)="toPerBlock()">
+          <div class="left">
+            <ali-icon name="ifm-id"></ali-icon>
+            {{'BLOCK_pre_block_id'|translate}}
+          </div>
+          <div class="right">
+            {{block_info?.previousBlock}}
+          </div>
+        </button>
       </div>
       <div class="line extend-data" *ngIf="block_info?.remark" [class.show-all]="show_all_remark" (click)="toggleShowAllRemark()">
         <div class="label">
@@ -124,8 +126,8 @@
       {{'BLOCK_transactions'|translate}}
     </div>
     <!-- TODO: 对于自己的交易，优化显示效果 -->
-    <div class="list">
-      <div class="item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
+    <div class="common-list">
+      <button mat-button class="common-item" *ngFor="let tran of tran_list" (click)="routeTo('chain-transaction-detail', {transaction:tran})">
         <div class="left">
           <div class="tran-type">
             {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
@@ -153,7 +155,7 @@
             </div>
           </ng-template>
         </div>
-      </div>
+      </button>
       <div class="empty-list" *ngIf="tran_list.length==0&&tran_list_config.loading==false">
         <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST'|translate" />
         <div class="message">{{'BLOCK_TRANSACTION_LIST_IS_EMPTY'|translate}}</div>

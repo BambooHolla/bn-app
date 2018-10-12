@@ -105,11 +105,7 @@ page-chain-block-detail {
             height: 3rem;
             padding-bottom: 1rem;
             overflow: hidden;
-            mask-image: linear-gradient(
-              to bottom,
-              rgba(#000, 1) 0%,
-              rgba(#000, 0) 100%
-            );
+            mask-image: linear-gradient(to bottom, rgba(#000, 1) 0%, rgba(#000, 0) 100%);
           }
         }
       }
@@ -180,27 +176,52 @@ page-chain-block-detail {
           }
         }
       }
-      > .block-id {
+      > .block-id,
+      .to-per-block .mat-button-wrapper {
         > .left {
           flex-shrink: 0;
           flex-grow: 0;
           width: 8.5rem;
           justify-content: flex-start;
+          text-align: left;
         }
         > .right {
           // width: 70%;
+          flex: 1;
           flex-shrink: 1;
           flex-grow: 1;
           word-break: break-all;
           text-align: right;
           font-size: 1.4rem;
+          display: block;
+        }
+      }
+      .pre-block-id {
+        padding: 0 !important;
+      }
+      .to-per-block {
+        width: 100%;
+        height: 100%;
+        padding: 0 !important;
+        display: block;
+        .mat-button-wrapper {
+          padding-left: 2rem;
+          padding-right: 2rem;
+          overflow: hidden;
+          width: 100%;
+          font-weight: normal;
+          line-height: normal;
+          word-spacing: normal;
+          white-space: normal;
+          font-size: unset;
         }
       }
 
       > .height,
       > .confirm-num,
       > .fee,
-      > .block-id {
+      > .block-id,
+      .to-per-block .mat-button-wrapper {
         min-height: 12.22vw;
         display: flex;
         align-items: center;
@@ -245,7 +266,7 @@ page-chain-block-detail {
         margin-right: 0.5rem;
       }
     }
-    > .list {
+    > .common-list {
       background-color: #fff;
       width: 100%;
       flex-grow: 1;
@@ -266,13 +287,15 @@ page-chain-block-detail {
         pointer-events: none;
       }
 
-      > .item {
+      > .common-item {
         width: 100%;
         min-height: 4.92rem;
         border-bottom: 0.55px solid #e5e5e5;
         flex-shrink: 0;
         flex-grow: 0;
         padding: 0.6rem 2rem;
+      }
+      .common-item,.mat-button-wrapper {
         display: flex;
         align-items: center;
         font-size: 1.35rem;
@@ -317,6 +340,7 @@ page-chain-block-detail {
             font-weight: lighter;
           }
         }
+
       }
       > .empty-list {
         width: 100%;
