@@ -344,7 +344,7 @@ export class FLP_Tool {
   }
   /*系统级别的加载动画*/
   async showLogoLoading(msg, auto_open = true) {
-    this._showCustomLoadingDialog(msg, {
+    return this._showCustomLoadingDialog(msg, {
       auto_open,
       cssClass: "logo-loading",
     });

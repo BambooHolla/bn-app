@@ -28,6 +28,7 @@ import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
 import { DownloadBlockChainMaster } from "./download-block-chain.fack-worker";
 
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
+type LocalPeerModel = import("../peer-service/peer-service").LocalPeerModel;
 tryRegisterGlobal("socketio", io);
 
 export * from "./block.types";
@@ -387,7 +388,36 @@ export class BlockServiceProvider extends FLP_Tool {
 
       console.log(`%c区块更新 ${new Date().toLocaleString()}`, "color:green;background-color:#eee;font-size:1.2rem");
 
-      this._updateHeight(data.lastBlock);
+      const lastBlock: TYPE.BlockModel = data.lastBlock;
+      const current_height = this.appSetting.getHeight();
+      if (lastBlock.height < current_height) {
+        this.showConfirmDialog("所连的节点似乎脱离共识，是否选择自动连接新的节点？", async () => {
+          const dialog = await this.showLogoLoading("快速查询可用节点中……");
+          const useablePeers = await this.peerService.getPeersLocal({ magic: await this.magic });
+          const prepare_num = 10; // Math.max(57,Math.floor(useablePeers.length/2)+1); // 最多准备10个节点来选择
+          const prepare_peer_list: LocalPeerModel[] = [];
+          for await (var _peer of this.peerService.fastMatchUseablePeer(useablePeers)) {
+            const peer = _peer;
+            if (peer.height > current_height) {
+              prepare_peer_list.push(peer);
+              if (prepare_peer_list.length > prepare_num) {
+                break;
+              }
+            }
+          }
+          prepare_peer_list.sort((a, b) => {
+            const h_dif = b.height - a.height;
+            if (h_dif === 0) {
+              return a.delay - b.delay;
+            }
+            return h_dif;
+          });
+          await this.peerService.linkPeer(prepare_peer_list[0]);
+          this._updateHeight();
+          dialog.dismiss();
+        });
+      }
+      this._updateHeight(lastBlock);
 
       // 更新预期交易区块
       this._expectblock_uncommited = 0;
@@ -465,7 +495,7 @@ export class BlockServiceProvider extends FLP_Tool {
       max_end_height,
       req_id,
       need_verifier,
-      from_height:sync_progress_height
+      from_height: sync_progress_height,
     });
     const task_name = `同步区块链至:${max_end_height}`;
     const task = new PromiseOut<void>();
@@ -801,8 +831,8 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param {{}} query  查询的条件，对象存在
    * @returns {Promise<{}>}
    */
-  async getBlocks(query): Promise<TYPE.BlockListResModel> {
-    let data = await this.fetch.get<TYPE.BlockListResModel>(this.GET_BLOCK_BY_QUERY, {
+  async getBlocks(query, force_network?: boolean): Promise<TYPE.BlockListResModel> {
+    let data = await this.fetch.forceNetwork(force_network).get<TYPE.BlockListResModel>(this.GET_BLOCK_BY_QUERY, {
       search: query,
     });
 
@@ -870,13 +900,17 @@ export class BlockServiceProvider extends FLP_Tool {
   async getBlocksByRange(
     startHeight: number,
     endHeight: number,
-    sort: 1 | -1 = 1 // 默认增序
+    sort: 1 | -1 = 1, // 默认增序
+    force_network?: boolean
   ) {
-    const res = await this.getBlocks({
-      startHeight,
-      endHeight,
-      orderBy: sort === 1 ? "height:asc" : "height:desc",
-    });
+    const res = await this.getBlocks(
+      {
+        startHeight,
+        endHeight,
+        orderBy: sort === 1 ? "height:asc" : "height:desc",
+      },
+      force_network
+    );
 
     return res.blocks;
   }

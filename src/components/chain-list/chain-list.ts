@@ -449,6 +449,21 @@ export class ChainListComponent extends AniBase {
       }
       return cache_data;
     };
+    const get100BlockList = async (height: number) => {
+      if (_cahce_height !== height) {
+        _cahce_height = height;
+        const block_num = 100;
+        const startHeight = Math.max(height - block_num, 1);
+        const endHeight = Math.max(height, startHeight + 1);
+        cache_data = this.blockService.getBlocksByRange(
+          startHeight,
+          endHeight,
+          1, //从小到大
+          await this.blockService.fetch.webio.getOnlineStatus()
+        );
+      }
+      return cache_data;
+    };
 
     const slide_args_list = [
       {
@@ -458,7 +473,7 @@ export class ChainListComponent extends AniBase {
           title_icon: "\ue653",
         },
         getData: () => {
-          return get30MinRangeBlockList(this.max_chain_height).then(
+          return get100BlockList(this.max_chain_height).then(
             block_list => block_list.map(block => [block.height, block.numberOfTransactions]) as [number, number][]
           );
         },
@@ -476,7 +491,7 @@ export class ChainListComponent extends AniBase {
           },
         },
         getData: () => {
-          return get30MinRangeBlockList(this.max_chain_height).then(
+          return get100BlockList(this.max_chain_height).then(
             block_list => block_list.map(block => [block.height, parseFloat(block.totalAmount) / 1e8]) as [number, number][]
           );
         },

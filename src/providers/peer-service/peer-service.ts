@@ -515,6 +515,24 @@ export class PeerServiceProvider extends CommonService {
 
     yield* parallel_pool.yieldResults({ ignore_error: true });
   }
+  async *fastMatchUseablePeer(useablePeers: TYPE.LocalPeerModel[]) {
+    const parallel_pool = new ParallelPool<TYPE.LocalPeerModel>(6);
+    for (var i = 0; i < useablePeers.length; i += 1) {
+      const peer = useablePeers[i];
+      parallel_pool.addTaskExecutor(async () => {
+        const start_time = performance.now();
+        try {
+          const lastBlock = await this.blockService.oneTimeUrl(this.blockService.GET_LAST_BLOCK_URL, peer.origin, true).getLastBlock();
+          peer.height = lastBlock.height;
+        } catch (err) {
+          const end_time = performance.now();
+          peer.delay = end_time - start_time;
+        }
+        return peer;
+      });
+    }
+    yield* parallel_pool.yieldResults({ ignore_error: true });
+  }
   private async fetchPeersInfoAndUpdate(peer: TYPE.LocalPeerModel, emiter?: { emit: any }) {
     let finished_task_num = 0;
     const emit_progress = emiter
@@ -590,7 +608,7 @@ export class PeerServiceProvider extends CommonService {
   async updatePeerFlow(origin: string, flow: number) {
     let lock_info = this._update_peer_flow_lock.get(origin);
     if (!lock_info) {
-      const interval_task = sleep(1000); //每一秒只能操作一次，不然数据库压力太大
+      const interval_task = sleep(10000); //每10秒只能操作一次，不然数据库压力太大
       const li = {
         acc_flow: 0,
         lock: this._updatePeerFlow(origin, flow)

@@ -8,14 +8,14 @@
     </ion-buttons> -->
   </ion-navbar>
 </ion-header>
-<ion-content>
+<ion-content class="red-ripple">
   <!-- <img src="file:///C:/Users/gaube/Documents/ifm/_design/ifm-app-v2/jpg/IFMCHAIN%E9%92%B1%E5%8C%85app-%E5%8E%86%E5%8F%B2%E6%8C%96%E7%9F%BF%E6%94%B6%E7%9B%8A%E8%A1%A8.jpg" alt=""> -->
 
   <div class="common-list">
     <div class="common-item" *ngIf="income_log_list.length==0 && !income_log_list_config.loading">
       <i>{{'EMPTY_LIST'|translate}}</i>
     </div>
-    <div class="common-item" *ngFor="let log of income_log_list" (click)="routeToBlockDetail(log)">
+    <button mat-button class="common-item" *ngFor="let log of income_log_list" (click)="routeToBlockDetail(log)">
       <div class="left">
         <div class="time-ago">
           {{log.timestamp|timestamp|amLocale:localName|amTimeAgo}}
@@ -28,7 +28,7 @@
         <div class="title">+{{log.amount|amountEuler|number:"1.8-8"}}</div>
         <!-- <div class="sub-title">123.13221312</div> -->
       </div>
-    </div>
+    </button>
   </div>
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreIncomeLogList())" [enabled]="income_log_list_config.hasMore">
     <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_VOTE_INCOME_LIST'|translate"></ion-infinite-scroll-content>

@@ -7,9 +7,14 @@ page-vote-income-logs {
   }
   .common-list {
     margin-top: 1rem;
-    > .common-item {
+    > .common-item,
+    .mat-button-wrapper {
       > .left {
         align-items: flex-start;
+        text-align: left;
+        > * {
+          width: 100%;
+        }
       }
       > .right {
         > .title {
