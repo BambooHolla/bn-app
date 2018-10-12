@@ -39,7 +39,7 @@ export class AccountPeerListPage extends SecondLevelPage {
     if (sessionStorage.getItem("STOP_UPDATE_PEER_LIST") !== "true") {
       sessionStorage.setItem("STOP_UPDATE_PEER_LIST", "true");
       // 更新节点信息
-      return this.loopUpdatePeerList();
+      this.loopUpdatePeerList();
     }
   }
 
