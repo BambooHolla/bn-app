@@ -4,10 +4,7 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { TransactionModel } from "../../../providers/transaction-service/transaction-service";
-import {
-  LocalContactProvider,
-  LocalContactModel,
-} from "../../../providers/local-contact/local-contact";
+import { LocalContactProvider, LocalContactModel } from "../../../providers/local-contact/local-contact";
 import { Buffer } from "buffer";
 import { City, translateCity } from "../../../datx";
 
@@ -26,15 +23,20 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     }
     return this._city_data;
   }
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    @Optional() public tabs: TabsPage,
-    public localContact: LocalContactProvider
-  ) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, @Optional() public tabs: TabsPage, public localContact: LocalContactProvider) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
+
+  ripple_theme = "blue-ripple";
+  @ChainTransactionDetailPage.willEnter
+  initRippleTheme() {
+    const ripple_theme = this.navParams.get("ripple_theme");
+    if (ripple_theme) {
+      this.ripple_theme = ripple_theme;
+    }
+  }
+
   transaction?: TransactionModel;
   transaction_ip_country = "";
   @ChainTransactionDetailPage.willEnter
@@ -53,11 +55,9 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
       }
       const city_info = city.findSync(transaction["sourceIP"]);
       if (city_info) {
-        translateCity(city_info[0], k => this.getTranslateSync(k)).then(
-          translated_city => {
-            this.transaction_ip_country = translated_city;
-          }
-        );
+        translateCity(city_info[0], k => this.getTranslateSync(k)).then(translated_city => {
+          this.transaction_ip_country = translated_city;
+        });
       }
     });
 
@@ -76,24 +76,20 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     }
     const tasks: Promise<any>[] = [];
     if (transaction.recipientId) {
-      tasks[tasks.length] = this.localContact
-        .findContact(transaction.recipientId)
-        .then(v => {
-          if (v) {
-            this.recipient_contact = v;
-            this.contact_metched_map.set(v.address, v);
-          }
-        });
+      tasks[tasks.length] = this.localContact.findContact(transaction.recipientId).then(v => {
+        if (v) {
+          this.recipient_contact = v;
+          this.contact_metched_map.set(v.address, v);
+        }
+      });
     }
     if (transaction.senderId) {
-      tasks[tasks.length] = this.localContact
-        .findContact(transaction.senderId)
-        .then(v => {
-          if (v) {
-            this.sender_contact = v;
-            this.contact_metched_map.set(v.address, v);
-          }
-        });
+      tasks[tasks.length] = this.localContact.findContact(transaction.senderId).then(v => {
+        if (v) {
+          this.sender_contact = v;
+          this.contact_metched_map.set(v.address, v);
+        }
+      });
     }
     await Promise.all(tasks);
   }
