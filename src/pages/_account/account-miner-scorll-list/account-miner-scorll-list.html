@@ -5,19 +5,19 @@
 </ion-header>
 <ion-content class="red-ripple">
   <div class="common-list cur-rank-list">
-    <div class="common-item" *ngFor="let minter of cur_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
-      <div class="left">
+    <button mat-button class="common-item" *ngFor="let minter of cur_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
+      <div class="left-line">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
         <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
       </div>
-    </div>
+    </button>
   </div>
   <div class="common-list can-rank-list">
-    <div class="common-item" *ngFor="let minter of can_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
-      <div class="left">
+    <button mat-button class="common-item" *ngFor="let minter of can_minter_rank_list" (click)="routeTo('vote-delegate-detail',{delegate_info:minter})">
+      <div class="left-line">
         <div class="No" [attr.no]="minter.No">{{minter.No}}</div>
         <div class="address" [innerHTML]="minter.address|mask:'@address'"></div>
       </div>
-    </div>
+    </button>
   </div>
 </ion-content>

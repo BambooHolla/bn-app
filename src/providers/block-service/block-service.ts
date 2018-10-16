@@ -26,6 +26,8 @@ import { BlockDBFactory } from "./helper";
 import { DBNumberIndex } from "../../fangodb/src/db-index-core";
 import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
 import { DownloadBlockChainMaster } from "./download-block-chain.fack-worker";
+import * as IDB_KV from "idb-keyval";
+self["IDB_KV"] = IDB_KV;
 
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
 type LocalPeerModel = import("../peer-service/peer-service").LocalPeerModel;
@@ -339,6 +341,7 @@ export class BlockServiceProvider extends FLP_Tool {
     // 更新高度
     this.appSetting.setHeight(last_block.height);
   }
+  private _reselect_peer_model;
   bindIOBlockChange() {
     const encoder = this.io.io["encoder"];
     const ENCODE_SYMBOL = Symbol.for("encode");
@@ -390,9 +393,9 @@ export class BlockServiceProvider extends FLP_Tool {
 
       const lastBlock: TYPE.BlockModel = data.lastBlock;
       const current_height = this.appSetting.getHeight();
-      if (lastBlock.height < current_height) {
-        this.showConfirmDialog("所连的节点似乎脱离共识，是否选择自动连接新的节点？", async () => {
-          const dialog = await this.showLogoLoading("快速查询可用节点中……");
+      if (lastBlock.height < current_height && !this._reselect_peer_model) {
+        const reselect_peer_model = await this.showConfirmDialog("所连的节点似乎脱离共识，是否选择自动连接新的节点？", async () => {
+          const dialog = await this.showLogoLoading("快速查询可用节点中");
           const useablePeers = await this.peerService.getPeersLocal({ magic: await this.magic });
           const prepare_num = 10; // Math.max(57,Math.floor(useablePeers.length/2)+1); // 最多准备10个节点来选择
           const prepare_peer_list: LocalPeerModel[] = [];
@@ -415,6 +418,10 @@ export class BlockServiceProvider extends FLP_Tool {
           await this.peerService.linkPeer(prepare_peer_list[0]);
           this._updateHeight();
           dialog.dismiss();
+        });
+        this._reselect_peer_model = reselect_peer_model;
+        reselect_peer_model.onDidDismiss(() => {
+          this._reselect_peer_model = undefined;
         });
       }
       this._updateHeight(lastBlock);

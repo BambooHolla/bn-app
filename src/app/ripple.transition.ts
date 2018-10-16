@@ -53,6 +53,7 @@ export class RippleTransition extends PageTransition {
     const backDirection = opts.direction === "back";
 
     if (enteringView) {
+      this.easing("ease-in");
       const enteringPageEle: HTMLElement = enteringView.pageRef().nativeElement;
 
       const enteringContent = new Animation(this.plt, enteringPageEle);
@@ -97,6 +98,7 @@ export class RippleTransition extends PageTransition {
     }
 
     if (leavingView && leavingView.pageRef()) {
+      this.easing("ease-out");
       const leavingPageEle: HTMLElement = leavingView.pageRef().nativeElement;
 
       const leavingContent = new Animation(this.plt, leavingPageEle);
