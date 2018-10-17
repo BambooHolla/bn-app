@@ -4,6 +4,7 @@ import { AccountExportMyLocalContactsPage } from "./account-export-my-local-cont
 import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from "../../../pipes/pipes.module";
 import { TranslateModule } from "@ngx-translate/core";
+import { DirectivesModule } from "../../../directives/directives.module";
 
 @NgModule({
   declarations: [AccountExportMyLocalContactsPage],
@@ -12,6 +13,7 @@ import { TranslateModule } from "@ngx-translate/core";
     ComponentsModule,
     PipesModule,
     TranslateModule,
+    DirectivesModule
   ],
 })
 export class AccountExportMyLocalContactsPageModule {}

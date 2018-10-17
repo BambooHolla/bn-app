@@ -36,7 +36,9 @@ export class AccountMinerScorllListPage extends SecondLevelPage {
     this.auto_header_shadow_when_scroll_down = true;
   }
 
+  @AccountMinerScorllListPage.markForCheck
   cur_minter_rank_list?: DelegateModel[];
+  @AccountMinerScorllListPage.markForCheck
   can_minter_rank_list?: DelegateModel[];
   async loadMinterList() {
     const cur_minter_list = await this.minService.allMinersCurRound.getPromise();

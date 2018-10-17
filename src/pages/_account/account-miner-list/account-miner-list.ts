@@ -36,7 +36,9 @@ export class AccountMinerListPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
+  @AccountMinerListPage.markForCheck
   cur_minter_rank_list?: DelegateModel[];
+  @AccountMinerListPage.markForCheck
   can_minter_rank_list?: DelegateModel[];
   get show_cur_minter_rank_list() {
     return this.cur_minter_rank_list

@@ -76,6 +76,7 @@ export class AccountPeerListPage extends SecondLevelPage {
     this.event.off("fetch-peers-info", this._watchPeerInfoFetching);
   }
 
+  @asyncCtrlGenerator.success("节点信息刷新完成")
   async loopUpdatePeerList() {
     const min_wait_time = sleep(5000); // 至少每5秒要更新一次数据
     this._watchPeerInfoFetching = this._watchPeerInfoFetching.bind(this);
@@ -103,7 +104,7 @@ export class AccountPeerListPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.tttttap({ times: 1 })
   @asyncCtrlGenerator.success("开始刷新节点信息")
-  tryForceRefresh() {
-    return this.loopUpdatePeerList();
+  async tryForceRefresh() {
+    this.loopUpdatePeerList();
   }
 }

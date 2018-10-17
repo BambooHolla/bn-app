@@ -5,6 +5,7 @@ import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from "../../../pipes/pipes.module";
 import { TranslateModule } from "@ngx-translate/core";
 import { MatButtonModule } from "@angular/material";
+import { DirectivesModule } from "../../../directives/directives.module";
 
 @NgModule({
 	declarations: [AccountMyLocalContactsPage],
@@ -14,6 +15,7 @@ import { MatButtonModule } from "@angular/material";
 		PipesModule,
 		TranslateModule,
 		MatButtonModule,
+		DirectivesModule,
 	],
 })
 export class AccountMyLocalContactsPageModule {}
