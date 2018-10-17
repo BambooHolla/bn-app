@@ -6,23 +6,18 @@ const { spawn, spawnSync, exec } = require("child_process");
 // process.env.ComSpec = 'C: /Windows/System32/WindowsPowerShell/v1.0/powershell.exe';
 
 const now_date = new Date();
-const taskId = `.sign.${now_date.toLocaleDateString()}.${now_date
-	.toLocaleTimeString()
-	.replace(/:/g, "：")}`;
+const taskId = `.sign.${now_date.toLocaleDateString()}.${now_date.toLocaleTimeString().replace(/:/g, "：")}`;
 
-const outputs_apk_dir = path.join(
-	__dirname,
-	"../platforms/android/build/outputs/apk",
-);
-fs
-	.readdirSync(outputs_apk_dir)
+const outputs_apk_dir = path.join(__dirname, "../platforms/android/build/outputs/apk");
+
+const jks_filepath = path.join(__dirname, "./2018-10-17.jks/ifm-app-v2.jks");
+console.log(jks_filepath)
+
+fs.readdirSync(outputs_apk_dir)
 	.map(name => {
 		const file_path = path.join(outputs_apk_dir, name);
 		console.log("file_path", file_path);
-		if (
-			name.endsWith("-release-unsigned.apk") &&
-			fs.lstatSync(file_path).isFile()
-		) {
+		if (name.endsWith("-release-unsigned.apk") && fs.lstatSync(file_path).isFile()) {
 			console.log("找到未签名文件：", name);
 			return file_path;
 		}
@@ -33,28 +28,15 @@ fs
 
 function signAPK(file_path) {
 	console.log("开始签名", file_path);
-	const logStream = fs.createWriteStream(
-		__dirname + "/" + taskId + ".jarsigner.log",
-	);
+	const logStream = fs.createWriteStream(__dirname + "/" + taskId + ".jarsigner.log");
 
 	const jarsignerTask = spawn(
 		"./jarsigner.exe",
-		[
-			"-verbose",
-			"-sigalg",
-			"SHA1withRSA",
-			"-digestalg",
-			"SHA1",
-			"-keystore",
-			"./bnlc-release-key.jks",
-			file_path,
-			"bnlc-alias",
-			"-J-Dfile.encoding=UTF-8",
-		],
+		["-verbose", "-sigalg", "SHA1withRSA", "-digestalg", "SHA1", "-keystore", jks_filepath, file_path, "bnlc-alias", "-J-Dfile.encoding=UTF-8"],
 		{
 			stdio: ["pipe", "pipe", process.stderr],
-			cwd: "C:/Program Files/Java/jdk1.8.0_131/bin",
-		},
+			cwd: "C:/Program Files/Java/jdk1.8.0_181/bin",
+		}
 	);
 	fs.createReadStream(__dirname + "/.sign.pwd").pipe(jarsignerTask.stdin);
 	jarsignerTask.stdout.pipe(logStream);
@@ -68,27 +50,18 @@ function signAPK(file_path) {
 function reZip(file_path) {
 	console.log("开始zip对齐");
 
-	const logStream = fs.createWriteStream(
-		__dirname + "/" + taskId + ".zipalign.log",
-	);
+	const logStream = fs.createWriteStream(__dirname + "/" + taskId + ".zipalign.log");
 
-	const outputFile = file_path.replace(
-		"-release-unsigned.apk",
-		"-release-signed.apk",
-	);
+	const outputFile = file_path.replace("-release-unsigned.apk", "-release-signed.apk");
 	if (fs.existsSync(outputFile) && fs.lstatSync(outputFile).isFile()) {
 		console.log("覆盖输出文件", outputFile);
 		fs.unlinkSync(outputFile);
 	}
 
-	const zipalignTask = spawn(
-		"./zipalign.exe",
-		["-v", "4", file_path, outputFile],
-		{
-			stdio: ["pipe", "pipe", process.stderr],
-			cwd: "C:/Android/android-sdk/build-tools/26.0.0",
-		},
-	);
+	const zipalignTask = spawn("./zipalign.exe", ["-v", "4", file_path, outputFile], {
+		stdio: ["pipe", "pipe", process.stderr],
+		cwd: "D:\\Users\\kezhaofeng\\AppData\\Local\\Android\\Sdk\\build-tools\\28.0.3",
+	});
 	fs.createReadStream(__dirname + "/.sign.pwd").pipe(zipalignTask.stdin);
 	zipalignTask.stdout.pipe(logStream);
 
