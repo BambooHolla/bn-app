@@ -51,7 +51,7 @@
     <ng-container *ngFor="let letter_contacts of my_contact_list;trackBy:listTrackBy">
       <div class="divider">{{letter_contacts.letter}}</div>
       <ion-item-sliding *ngFor="let contact of letter_contacts.list">
-        <ion-item (click)="tryShowUserBalance(contact.address)"><!-- (click)="routeTo('account-contact-detail', {contact:contact})" -->
+        <ion-item (long-press)="tryShowUserBalance(contact.address)"><!-- (click)="routeTo('account-contact-detail', {contact:contact})" -->
           <div class="left">
             <div class="username" *ngIf="contact.username">{{contact.username}}</div>
             <div class="address" [innerHTML]="contact.address|mask:'@address'"></div>

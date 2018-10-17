@@ -223,7 +223,7 @@ export class AccountMyContactsPage extends SecondLevelPage {
   }
 
   /*隐藏功能*/
-  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   @asyncCtrlGenerator.loading("账户查询中")
   @asyncCtrlGenerator.error("账户查询失败")
   async tryShowUserBalance(address: string) {

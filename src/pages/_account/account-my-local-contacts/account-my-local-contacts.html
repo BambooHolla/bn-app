@@ -35,7 +35,7 @@
       <div class="divider">{{letter_contacts.letter}}</div>
       <ion-item-sliding *ngFor="let contact of letter_contacts.list">
         <ion-item class="contact-item" (click)="routeTo('account-contact-detail', {contact:contact})">
-          <!-- (click)="tryShowUserBalance(contact.address)" -->
+          <!-- (long-press)="tryShowUserBalance(contact.address)" -->
           <button mat-button class="contact-item-inner">
             <div class="username" *ngIf="contact.username">{{contact.username}}</div>
             <div class="nickname" *ngIf="contact.nickname">{{contact.nickname}}</div>

@@ -21,7 +21,7 @@
 </ion-header>
 <ion-content class="red-ripple">
   <div class="common-list">
-    <div class="base-info" (click)="tryShowAccountBalanceDetail()">
+    <div class="base-info" (long-press)="tryShowAccountBalanceDetail()">
       <div class="address" [click-to-copy]="contact?.address" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('ACCOUNT_IBT_ADRESS'|translate)}">
         <ali-icon name="ifm-account-detail"></ali-icon>
         {{contact?.address}}

@@ -262,7 +262,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     return 0;
   }
   /*隐藏功能*/
-  @asyncCtrlGenerator.tttttap() // 这个要放第一个
+  @asyncCtrlGenerator.tttttap({ times: 1 }) // 这个要放第一个
   @asyncCtrlGenerator.error()
   @asyncCtrlGenerator.loading()
   async tryShowAccountBalanceDetail() {
@@ -274,7 +274,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.is_show_extend_info = true;
     this.markForCheck();
   }
-  @asyncCtrlGenerator.tttttap() // 这个要放第一个
+  @asyncCtrlGenerator.tttttap({ times: 1 }) // 这个要放第一个
   @asyncCtrlGenerator.error()
   @asyncCtrlGenerator.loading("加载全部的交易中", undefined, {
     cssClass: "can-tap blockchain-loading",

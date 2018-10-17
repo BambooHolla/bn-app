@@ -42,7 +42,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   PAGE = PAGE;
   @ScanLinkPeerPage.markForCheck page_status = PAGE.scan;
 
-  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   forceGoInSignInPage() {
     return this.myapp.openPage(LoginPage, true, "强制进入");
   }
@@ -263,7 +263,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
   }
 
   @ScanLinkPeerPage.markForCheck can_select_by_myself = false;
-  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   @asyncCtrlGenerator.success("能选了")
   async toggleCanSelectByMyself() {
     this.can_select_by_myself = !this.can_select_by_myself;

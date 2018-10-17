@@ -4,9 +4,12 @@
   </ion-navbar>
 </ion-header>
 <ion-content class="red-ripple">
-  <ng-container *ngIf="!is_exporting;else Exporting">
-    <kjua-qrcode (click)="tryShowHiddenButtons()" class="qrcode" [text]="export_data" [size]="600" fill="#000" [rounded]="80"></kjua-qrcode>
+  <ng-container *ngIf="!is_exporting">
+    <kjua-qrcode (long-press)="tryShowHiddenButtons()" class="qrcode" [text]="export_data" [size]="600" fill="#000" [rounded]="80"></kjua-qrcode>
   </ng-container>
+  <!-- <textarea class="" (long-press)="tryShowHiddenButtons()">
+    {{export_data}}
+  </textarea> -->
   <div class="common-form" *ngIf="is_show_hidden_buttons">
   	<div class="buttons">
   		<button (click)="tryCopyText()">导出到剪切板</button>

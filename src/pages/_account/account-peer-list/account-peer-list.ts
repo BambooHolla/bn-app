@@ -101,7 +101,7 @@ export class AccountPeerListPage extends SecondLevelPage {
     }
   }
 
-  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   @asyncCtrlGenerator.success("开始刷新节点信息")
   tryForceRefresh() {
     return this.loopUpdatePeerList();

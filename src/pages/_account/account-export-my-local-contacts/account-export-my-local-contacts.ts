@@ -70,7 +70,7 @@ export class AccountExportMyLocalContactsPage extends SecondLevelPage {
 
   is_show_hidden_buttons = false;
   /*隐藏功能*/
-  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   tryShowHiddenButtons() {
     this.is_show_hidden_buttons = true;
   }
@@ -100,7 +100,7 @@ export class AccountExportMyLocalContactsPage extends SecondLevelPage {
       "@@LOCAL_CONTACTS_IMPORT_SUCCESS",
       "",
       `成功：${res.success_contacts.length}条；\n跳过：${
-        res.skip_contacts.length
+      res.skip_contacts.length
       }条；\n失败：${res.error_contacts.length}条；`
     );
   }

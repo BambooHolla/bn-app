@@ -3,7 +3,7 @@
     <ion-title>{{"SETTINGS-NET-VERSION"|translate}}</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content (tap)="trySuperImportLS()">
+<ion-content (long-press)="trySuperImportLS()">
   <div class="common-list">
     <div class="common-item checkbox" *ngFor="let peer of peer_list" (click)="changeNetVersion(peer)" [class.selected]="net_version==peer.net_version">
       <div class="left">{{peer.title}}</div>

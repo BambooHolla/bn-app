@@ -23,6 +23,9 @@
     "**/test/**/*.ts",
     "src/ifmchain-js-core/src/test/**/*.ts"
   ],
+  "plugins": [{
+    "name": "@angular/language-service"
+  }],
   "compileOnSave": false,
   "atom": {
     "rewriteTsconfig": false

@@ -60,7 +60,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
       if (ls_peer_list_json) {
         var ls_peer_list = JSON.parse(ls_peer_list_json);
       }
-    } catch (err) {}
+    } catch (err) { }
     if (!ls_peer_list) {
     }
     // 或者直接拿默认配置的
@@ -159,7 +159,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     }
   }
 
-  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   trySuperImportLS() {
     let ls_json = prompt("请输入配置");
     if (ls_json) {

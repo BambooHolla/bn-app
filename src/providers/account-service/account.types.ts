@@ -10,6 +10,7 @@ export type AccountModel = {
   username: string;
   votingReward: string;
   forgingReward: string;
+  paidFee?: string
 };
 export type AccountResModel = {
   account: AccountModel;

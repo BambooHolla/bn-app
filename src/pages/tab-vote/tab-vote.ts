@@ -174,7 +174,7 @@ export class TabVotePage extends FirstLevelPage {
 
     this.setBgTransparent(
       this.page_status === VotePage.Bootstrap ||
-        this.page_status === VotePage.Countdown
+      this.page_status === VotePage.Countdown
     );
   }
   @TabVotePage.willLeave
@@ -849,7 +849,7 @@ export class TabVotePage extends FirstLevelPage {
 
   /*隐藏功能*/
 
-  @asyncCtrlGenerator.tttttap()
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   tryEnterCountdown() {
     return this.routeTo("vote-list");
   }
