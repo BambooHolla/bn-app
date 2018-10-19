@@ -6,7 +6,7 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { AniBase, Easing } from "../AniBase";
-import { BlizzardHash } from "../../bnqkl-framework/BlizzardHash";
+import { BlizzardHash } from "../../bnqkl-framework/lib/BlizzardHash";
 
 import * as PIXI from "pixi.js";
 

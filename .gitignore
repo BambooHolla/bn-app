@@ -12,6 +12,7 @@ log.txt
 .vscode/
 .vs/
 .cache
+.angulardoc.json
 npm-debug.log*
 
 .idea/

@@ -1,26 +1,6 @@
 import EventEmitter from "eventemitter3";
-export type PromiseType<T extends Promise<any>> = T extends Promise<infer R>
-  ? R
-  : any;
-
-/**
- * 将resolve和reject暴露出来
- *
- * @export
- * @class PromiseOut
- * @template T
- */
-export class PromiseOut<T> {
-  resolve!: (value?: T | PromiseLike<T> | undefined) => void;
-  reject!: (reason?: any) => void;
-  promise: Promise<T>;
-  constructor(promiseCon: PromiseConstructor = Promise) {
-    this.promise = new promiseCon<T>((_resolve, _reject) => {
-      this.resolve = _resolve;
-      this.reject = _reject;
-    });
-  }
-}
+import { PromiseOut } from './lib/PromiseOut';
+export * from './lib/PromiseOut';
 /**
  * Why AbortError
  * 为了和其它的Error进行区分
@@ -87,7 +67,7 @@ export function autoAbort(
 ) {
   const fun = descriptor.value;
   let _lock: PromisePro<any> | undefined;
-  descriptor.value = function(...args) {
+  descriptor.value = function (...args) {
     if (_lock) {
       _lock.abort();
       _lock = undefined;
@@ -146,17 +126,17 @@ export const sleep = (ms: number) => {
 };
 
 export class ParallelPool<T = any> {
-  constructor(public max_parallel_num = 2) {}
+  constructor(public max_parallel_num = 2) { }
   private _tasks: Promise<
     | {
-        assets: T;
-        finally_rm: () => void;
-      }
+      assets: T;
+      finally_rm: () => void;
+    }
     | {
-        error: any;
-        finally_rm: () => void;
-      }
-  >[] = [];
+      error: any;
+      finally_rm: () => void;
+    }
+    >[] = [];
   private _tasks_executor: (() => Promise<T>)[] = [];
   addTaskExecutor(
     executor: () => Promise<T>,
