@@ -3,6 +3,7 @@ import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
 import { versionToNumber } from "../version-update-dialog/version-update-dialog";
 import { ModalController } from "ionic-angular/index";
+import { baseConfig } from "../../bnqkl-framework/helper";
 export async function getLatestVersionInfo(
   fetch: AppFetchProvider,
   lang: string
@@ -11,7 +12,7 @@ export async function getLatestVersionInfo(
     return;
   }
   return await fetch.get<LATEST_VERSION_INFO>(
-    AppSettingProvider.LATEST_APP_VERSION_URL,
+    baseConfig.LATEST_APP_VERSION_URL,
     {
       search: {
         lang,
@@ -51,7 +52,7 @@ export async function checkUpdate(
   }
   if (open_update_dialog) {
     if (
-      versionToNumber(version) > versionToNumber(AppSettingProvider.APP_VERSION)
+      versionToNumber(version) > versionToNumber(baseConfig.APP_VERSION)
     ) {
       if (opts.modalCtrl) {
         await opts.modalCtrl

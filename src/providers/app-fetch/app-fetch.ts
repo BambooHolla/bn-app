@@ -134,7 +134,7 @@ export class AppFetchProvider extends EventEmitter {
     tryRegisterGlobal("FETCH", this);
     // 向服务端发送安全的设备信息进行统计
     this.io.emit("app-start", {
-      version: AppSettingProvider.APP_VERSION,
+      version: baseConfig.APP_VERSION,
       ...device,
     });
     //
@@ -201,7 +201,7 @@ export class AppFetchProvider extends EventEmitter {
       }
     }
   }
-  private _catchData() {}
+  private _catchData() { }
   private _handlePromise<T>(promise: Promise<T>) {
     return promise
       .catch(this._handleResCatch.bind(this))
@@ -239,8 +239,8 @@ export class AppFetchProvider extends EventEmitter {
       const custom_api_config:
         | installApiCache<T>
         | undefined = this.dbCache.cache_api_map.get(
-        `${method}:${AppUrl.getPathName(url)}`
-      );
+          `${method}:${AppUrl.getPathName(url)}`
+        );
       if (custom_api_config) {
         const api_service = custom_api_config;
         const db = this.dbCache.dbMap.get(api_service.dbname);

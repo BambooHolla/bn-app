@@ -46,7 +46,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
 
   get app_version() {
-    return AppSettingProvider.APP_VERSION;
+    return this.baseConfig.APP_VERSION;
   }
   // @SignInAndSignUpPage.willEnter
   // fixStaturBug() {

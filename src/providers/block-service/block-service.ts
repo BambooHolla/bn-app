@@ -20,31 +20,37 @@ import { AppUrl, baseConfig } from "../../bnqkl-framework/helper";
 import { getJsonObjectByteSize, getUTF8ByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
 import { DbCacheProvider, HTTP_Method, RequestOptionsWithResult } from "../db-cache/db-cache";
 import { Mdb } from "../mdb";
-import io from "socket.io-client";
+import socketIoFactory from "socket.io-client";
 import { FangoDB, registerWorkerHandle } from "../../fangodb";
 import { BlockDBFactory } from "./helper";
 import { DBNumberIndex } from "../../fangodb/src/db-index-core";
 import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
 import { DownloadBlockChainMaster } from "./download-block-chain.fack-worker";
+import debug from "debug";
+const log = debug("IBT:block-service");
 import * as IDB_KV from "idb-keyval";
 self["IDB_KV"] = IDB_KV;
 
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
 type LocalPeerModel = import("../peer-service/peer-service").LocalPeerModel;
-tryRegisterGlobal("socketio", io);
+tryRegisterGlobal("socketio", socketIoFactory);
 
 export * from "./block.types";
 
 @Injectable()
 export class BlockServiceProvider extends FLP_Tool {
   private _io?: SocketIOClient.Socket;
+  @baseConfig.WatchPropChanged("SERVER_URL")
   get io() {
-    return (
-      this._io ||
-      (this._io = io(AppSettingProvider.SERVER_URL, {
-        transports: ["websocket"],
-      }))
-    );
+    if (this._io) {
+      this._io.disconnect();
+    }
+    log("初始化 SocketIOClient 对象",this.baseConfig.SERVER_URL);
+    this._io = socketIoFactory(this.baseConfig.SERVER_URL, {
+      transports: ["websocket"],
+    });
+    this._bindIOBlockChange(this._io);
+    return this._io;
   }
 
   private _blockDb_inited = new PromisePro<void>();
@@ -175,8 +181,8 @@ export class BlockServiceProvider extends FLP_Tool {
               cache.blocks instanceof Array
                 ? cache.blocks
                 : await this.blockDb.find({
-                    height: { $in: res_blocks.map(b => b.height) },
-                  });
+                  height: { $in: res_blocks.map(b => b.height) },
+                });
             const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
             const new_blocks = res_blocks
               .filter(block => {
@@ -333,7 +339,7 @@ export class BlockServiceProvider extends FLP_Tool {
       } while (true);
     }
     // 更新轮次计时器
-    this.round_end_time = new Date(Date.now() + this.appSetting.getBlockNumberToRoundEnd(last_block.height) * this.appSetting.BLOCK_UNIT_TIME);
+    this.round_end_time = new Date(Date.now() + this.appSetting.getBlockNumberToRoundEnd(last_block.height) * this.baseConfig.BLOCK_UNIT_TIME);
     // 如果同步进度是最新区块的话，那么继续跟进这个进度
     if (this.appSetting.share_settings.sync_progress_height === this.appSetting.getHeight()) {
       this.appSetting.share_settings.sync_progress_height = last_block.height;
@@ -342,15 +348,14 @@ export class BlockServiceProvider extends FLP_Tool {
     this.appSetting.setHeight(last_block.height);
   }
   private _reselect_peer_model;
-  bindIOBlockChange() {
-    const encoder = this.io.io["encoder"];
+  private _bindIOBlockChange(io = this.io) {
+    const encoder = io.io["encoder"];
     const ENCODE_SYMBOL = Symbol.for("encode");
     encoder[ENCODE_SYMBOL] = encoder.encode;
-    const peerService = this.peerService;
     const self = this;
-    const io_origin = AppSettingProvider.SERVER_URL;
+    const io_origin = this.baseConfig.SERVER_URL;
     // 不改原型链，只针对当前的这个链接对象进行修改
-    encoder.encode = function(obj, callback) {
+    encoder.encode = function (obj, callback) {
       this[ENCODE_SYMBOL](obj, (buffer_list, ...args) => {
         if (buffer_list instanceof Array) {
           let acc_flow = 0;
@@ -369,7 +374,7 @@ export class BlockServiceProvider extends FLP_Tool {
         callback(buffer_list, ...args);
       });
     };
-    this.io.io["engine"].on("data", data_item => {
+    io.io["engine"].on("data", data_item => {
       let acc_flow = 0;
       if (typeof data_item == "string") {
         acc_flow += getUTF8ByteSize(data_item);
@@ -381,7 +386,7 @@ export class BlockServiceProvider extends FLP_Tool {
         self.peerService.updatePeerFlow(io_origin, acc_flow);
       }
     });
-    this.io.on("blocks/change", async data => {
+    io.on("blocks/change", async data => {
       // 计算流量大小
       const flow = getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
       this.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
@@ -433,17 +438,16 @@ export class BlockServiceProvider extends FLP_Tool {
         this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
       });
     });
-    const io = this.io;
-    let ti = setInterval(() => {
-      if (io === this.io) {
-        this.peerService.updatePeerDuration(io_origin, 1);
-      } else {
-        clearInterval(ti);
-      }
-    }, 1000);
+    // // 更新区块使用时间
+    // let ti = setInterval(() => {
+    //   if (io === this.io) {
+    //     this.peerService.updatePeerDuration(io_origin, 1);
+    //   } else {
+    //     clearInterval(ti);
+    //   }
+    // }, 1000);
   }
   private async _listenGetAndSetHeight() {
-    this.bindIOBlockChange();
     this.fetch.on("ononline", () => {
       // 联网的时候，更新一下区块
       this._updateHeight();
@@ -496,7 +500,7 @@ export class BlockServiceProvider extends FLP_Tool {
     }
     download_worker.postMessage({
       cmd: "syncBlockChain",
-      NET_VERSION: AppSettingProvider.NET_VERSION,
+      NET_VERSION: this.baseConfig.NET_VERSION,
       webio_path: this.fetch.webio.io_url_path,
       magic: await this.magic.promise,
       max_end_height,
@@ -544,7 +548,7 @@ export class BlockServiceProvider extends FLP_Tool {
               let flow = (+msg.data.up || 0) + (+msg.data.down || 0);
               this.appSetting.share_settings.sync_data_flow += flow;
               /*更新数据库中的流量使用信息*/
-              this.peerService.updatePeerFlow(AppSettingProvider.SERVER_URL, flow);
+              this.peerService.updatePeerFlow(this.baseConfig.SERVER_URL, flow);
             }
             break;
           case "progress":
@@ -583,7 +587,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const req_id = this._download_req_id_acc++;
     let cg;
     download_worker.postMessage({
-      NET_VERSION: AppSettingProvider.NET_VERSION,
+      NET_VERSION: this.baseConfig.NET_VERSION,
       cmd: "download",
       webio_path: this.fetch.webio.io_url_path,
       magic: await this.magic.promise,
@@ -754,7 +758,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param timestamp
    */
   getFullTimestamp(timestamp: number) {
-    const fullTimestamp = (timestamp + AppSettingProvider.seedDateTimestamp) * 1000;
+    const fullTimestamp = (timestamp + this.baseConfig.seedDateTimestamp) * 1000;
     return fullTimestamp;
   }
 
@@ -851,7 +855,7 @@ export class BlockServiceProvider extends FLP_Tool {
    * @param list
    */
   blockListHandle(list: TYPE.BlockModel[], per_item?: TYPE.BlockModel, end_item?: TYPE.BlockModel): TYPE.BlockModel[] {
-    const { BLOCK_UNIT_TIME } = this.appSetting;
+    const { BLOCK_UNIT_TIME } = this.baseConfig;
     const BLOCK_UNIT_SECONED = BLOCK_UNIT_TIME / 1000;
     let i = -1;
     if (!per_item) {

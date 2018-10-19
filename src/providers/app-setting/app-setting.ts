@@ -1,17 +1,12 @@
 import { Injectable } from "@angular/core";
-import { Http } from "@angular/http";
-import "rxjs/add/operator/map";
 import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
-import { Platform } from "ionic-angular/index";
 import { AsyncBehaviorSubject, Executor } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
-import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { IsIOS } from "../../bnqkl-framework/helper";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
 import { TranslateService } from "@ngx-translate/core";
-import PIXI_SOUND from "pixi-sound";
 import { afCtrl, baseConfig, getQueryVariable } from "../../bnqkl-framework/helper";
 import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
@@ -20,20 +15,22 @@ import { IfmchainCore } from "../../ifmchain-js-core/src";
 
 @Injectable()
 export class AppSettingProvider extends CommonService {
-  static readonly APP_VERSION = baseConfig.APP_VERSION;
-  static SERVER_URL = baseConfig.SERVER_URL;
-  static readonly SEED_DATE = baseConfig.SEED_DATE;
-  static readonly MAGIC = baseConfig.MAGIC;
-  static readonly seedDateTimestamp = baseConfig.seedDateTimestamp;
-  static readonly seedDate = baseConfig.seedDate;
-  static readonly timezoneoffset = baseConfig.timezoneoffset;
-  static readonly SERVER_TIMEOUT = baseConfig.SERVER_TIMEOUT;
-  static readonly NET_VERSION = baseConfig.NET_VERSION;
-  static readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
-  readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
-  static readonly IFMJSCORE = new IfmchainCore(AppSettingProvider.NET_VERSION);
-  static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
-  static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
+  // static readonly APP_VERSION = baseConfig.APP_VERSION;
+  // static SERVER_URL = baseConfig.SERVER_URL;
+  // static readonly SEED_DATE = baseConfig.SEED_DATE;
+  // static readonly MAGIC = baseConfig.MAGIC;
+  // static readonly seedDateTimestamp = baseConfig.seedDateTimestamp;
+  // static readonly seedDate = baseConfig.seedDate;
+  // static readonly timezoneoffset = baseConfig.timezoneoffset;
+  // static readonly NET_VERSION = baseConfig.NET_VERSION;
+  // static readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
+  // readonly BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
+  // static readonly LATEST_APP_VERSION_URL = baseConfig.LATEST_APP_VERSION_URL;
+  // static readonly SETTING_KEY_PERFIX = baseConfig.SETTING_KEY_PERFIX;
+  @baseConfig.WatchPropChanged("NET_VERSION")
+  static get IFMJSCORE() {
+    return new IfmchainCore(baseConfig.NET_VERSION);
+  }
 
   isIOS = IsIOS();
 
@@ -41,7 +38,7 @@ export class AppSettingProvider extends CommonService {
     return new AppUrl(path);
   }
 
-  constructor(public http: Http, public user: UserInfoProvider, public translate: TranslateService) {
+  constructor(public user: UserInfoProvider, public translate: TranslateService) {
     super();
     console.log("Hello AppSettingProvider Provider");
 
@@ -76,7 +73,7 @@ export class AppSettingProvider extends CommonService {
       const get_settings_key = () => {
         return (
           this.user.address &&
-          `${AppSettingProvider.SETTING_KEY_PERFIX}${this.user.address}:${AppSettingProvider.NET_VERSION}|${AppSettingProvider.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
+          `${baseConfig.settingKeyPerfix}${this.user.address}:${baseConfig.NET_VERSION}|${baseConfig.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
         );
       };
       const getUserSettings = () => {
@@ -89,7 +86,7 @@ export class AppSettingProvider extends CommonService {
             try {
               settings = JSON.parse(settings_json); //JSON可用
               should_write_in = false;
-            } catch (e) {}
+            } catch (e) { }
           }
           // 进行初始化写入
           if (should_write_in) {
@@ -136,7 +133,7 @@ export class AppSettingProvider extends CommonService {
     {
       const default_share_settings = { ...this.share_settings };
       const get_share_settings_key = () => {
-        return `SHARE:${AppSettingProvider.SETTING_KEY_PERFIX}:${AppSettingProvider.NET_VERSION}|${AppSettingProvider.BLOCK_UNIT_TIME}`; //${AppSettingProvider.SERVER_URL}|;
+        return `SHARE:${baseConfig.settingKeyPerfix}:${baseConfig.NET_VERSION}|${baseConfig.BLOCK_UNIT_TIME}`; //${AppSettingProvider.SERVER_URL}|;
       };
       const shareSettingCtrl = (() => {
         const settings_key = get_share_settings_key();
@@ -201,7 +198,7 @@ export class AppSettingProvider extends CommonService {
     // 框架内置的AniBase
     {
       const _update = AniBase.prototype._update;
-      const noop = function(t, diff_t) {
+      const noop = function (t, diff_t) {
         if (this.force_update) {
           _update.call(this, t, diff_t);
         }
@@ -214,7 +211,7 @@ export class AppSettingProvider extends CommonService {
     }
     // PIXI框架的循环
     {
-      const noop = function(t) {
+      const noop = function (t) {
         if (this.force_update) {
           _update.call(this, t);
         }
@@ -229,7 +226,7 @@ export class AppSettingProvider extends CommonService {
     // 声音开关
     {
       const _play = PIXI.sound.play;
-      const noop = function(...args) {
+      const noop = function (...args) {
         if (this.force_play_sound) {
           _play.apply(this, args);
         }

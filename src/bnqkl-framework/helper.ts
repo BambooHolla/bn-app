@@ -6,6 +6,7 @@ export * from "./lib/queryVar";
 export * from "./lib/websocketIO";
 
 export * from "./lib/animateFrameCtrl";
+export * from "./lib/baseConfig";
 
 export * from "./lib/AppUrl";
 export * from './lib/fileInputEleFactory';

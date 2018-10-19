@@ -42,7 +42,7 @@ export class LinkedPeerListPage extends SecondLevelPage {
   @LinkedPeerListPage.willEnter
   async initPeerList() {
     const peer = await this.peerService.peerDb.findOne({
-      origin: AppSettingProvider.SERVER_URL,
+      origin: this.baseConfig.SERVER_URL,
     });
     if (peer) {
       if (!peer.acc_use_duration) {

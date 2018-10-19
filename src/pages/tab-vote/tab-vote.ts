@@ -248,7 +248,7 @@ export class TabVotePage extends FirstLevelPage {
           const satellite_css = this.satellite_pixi;
           satellite_css.resetProgress();
           this.blockService.getLastBlockRefreshInterval().then(diff_time => {
-            const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
+            const BLOCK_UNIT_TIME = this.baseConfig.BLOCK_UNIT_TIME;
             diff_time %= BLOCK_UNIT_TIME;
             // if (diff_time < BLOCK_UNIT_TIME) {
             if (can_run()) {
@@ -271,7 +271,7 @@ export class TabVotePage extends FirstLevelPage {
           const satellite_pixi = this.satellite_pixi;
           satellite_pixi.resetProgress();
           this.blockService.getLastBlockRefreshInterval().then(diff_time => {
-            const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
+            const BLOCK_UNIT_TIME = this.baseConfig.BLOCK_UNIT_TIME;
             diff_time %= BLOCK_UNIT_TIME;
             // if (diff_time < BLOCK_UNIT_TIME) {
             if (can_run()) {

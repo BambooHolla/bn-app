@@ -44,7 +44,7 @@ export class AssetsServiceProvider extends FLP_Tool {
     expectedIssuedAssets: "0",
     expectedIssuedBlockHeight: 0,
     status: TYPE.ASSETS_STATUS.SUCCESS,
-    dateCreated: AppSettingProvider.seedDateTimestamp,
+    dateCreated: this.baseConfig.seedDateTimestamp,
     applyAssetBlockHeight: 0,
     hodingAssets: "",
     destoryAssets: "",

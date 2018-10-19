@@ -1,7 +1,7 @@
 
 import EventEmitter from "eventemitter3";
 import { getQueryVariable, formatQueryVariable } from "./queryVar";
-import { global } from "./globalHelper";
+import { global, tryRegisterGlobal } from "./globalHelper";
 import debug from "debug";
 const log = debug("IBT:baseConfig");
 
@@ -22,8 +22,6 @@ class BaseConfig {
   APP_VERSION = global["APP_VERSION"];
   @AutoEmitPropChange()
   SERVER_URL = getQueryVariable("SERVER_URL") || "http://publish.ifmchain.org";
-  // @AutoEmitPropChange()
-  // SERVER_TIMEOUT = 1000;
   @AutoEmitPropChange()
   NET_VERSION = getQueryVariable("NET_VERSION") || "mainnet";
   @AutoEmitPropChange()
@@ -159,3 +157,5 @@ function WatchPropChanged(watch_prop_name: string, opts: WatchPropChangedOpts & 
 
 
 export const baseConfig = new BaseConfig();
+
+tryRegisterGlobal("baseConfig", baseConfig);

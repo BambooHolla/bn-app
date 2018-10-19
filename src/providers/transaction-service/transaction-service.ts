@@ -12,6 +12,7 @@ import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import { Mdb } from "../mdb";
+import { baseConfig } from "../../bnqkl-framework/helper";
 export * from "./transaction.types";
 
 @Injectable()
@@ -139,7 +140,7 @@ export class TransactionServiceProvider {
    * 获取交易时间，交易所需
    */
   async getTimestamp() {
-    const t = AppSettingProvider.seedDateTimestamp;
+    const t = baseConfig.seedDateTimestamp;
 
     const now = Math.floor(Date.now() / 1000);
     return {
@@ -184,7 +185,7 @@ export class TransactionServiceProvider {
     txData.timestamp = (await this.getTimestamp()).timestamp;
     // 加入ip地址
     txData.sourceIP = await this.getSourceIp();
-    txData.magic = AppSettingProvider.MAGIC;
+    txData.magic = baseConfig.MAGIC;
 
     //生成转账        await上层包裹的函数需要async
     const transaction: TYPE.TransactionModel = await this.IFMJSCORE.createTransactionAsync(txData);

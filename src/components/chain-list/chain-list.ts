@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, Inp
 import { AniBase, ifmicon_font_ready } from "../AniBase";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
-import { afCtrl, IsIOS } from "../../bnqkl-framework/helper";
+import { afCtrl, IsIOS, baseConfig } from "../../bnqkl-framework/helper";
 import * as PIXI from "pixi.js";
 import * as PIXI_Filters from "pixi-filters";
 import { TranslateService } from "@ngx-translate/core";
@@ -439,7 +439,8 @@ export class ChainListComponent extends AniBase {
     const get30MinRangeBlockList = (height: number) => {
       if (_cahce_height !== height) {
         _cahce_height = height;
-        const unit_block_time = this.blockService.appSetting.BLOCK_UNIT_TIME;
+
+        const unit_block_time = baseConfig.BLOCK_UNIT_TIME;
         const block_num = Math.round((60 * 60 * 1000) / unit_block_time);
         cache_data = this.blockService.getBlocksByRange(
           Math.max(height - block_num, 1),

@@ -55,7 +55,7 @@ export class AccountSettingsPage extends SecondLevelPage {
       onNoNeedUpdate: () => {
         this.showSuccessDialog(
           this.getTranslateSync("APP_IS_NEWEST_VERSION"),
-          "v" + AppSettingProvider.APP_VERSION
+          "v" + this.baseConfig.APP_VERSION
         );
       },
     });

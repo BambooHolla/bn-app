@@ -38,7 +38,7 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     // this.auto_header_progress_when_scrol_down = true;
   }
   get version() {
-    return AppSettingProvider.APP_VERSION;
+    return this.baseConfig.APP_VERSION;
   }
 
   video_list: any[] = [];
@@ -66,7 +66,7 @@ export class AccountAboutIbtPage extends SecondLevelPage {
     this.markForCheck();
   }
   showVersionInfo() {
-    this.showConfirmDialog(`v${AppSettingProvider.APP_VERSION}`);
+    this.showConfirmDialog(`v${this.baseConfig.APP_VERSION}`);
   }
 
   private async _tipThenSendEmail(

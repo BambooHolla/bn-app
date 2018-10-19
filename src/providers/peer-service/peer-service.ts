@@ -24,26 +24,26 @@ const PEERS: TYPE.LocalPeerModel[] = (() => {
     if (PEERS_JSON) {
       return JSON.parse(PEERS_JSON);
     }
-  } catch (err) {}
+  } catch (err) { }
 })() || [
-  {
-    origin: "http://publish.ifmchain.org",
-    level: TYPE.PEER_LEVEL.TRUST,
-    webChannelLinkNum: 0,
-    netVersion: "mainnet",
-    netInterval: 128,
-    ip: "publish.ifmchain.org",
-    height: 0,
-    p2pPort: 9000,
-    magic: "",
-    webPort: 9002,
-    delay: -1,
-    acc_use_duration: 0,
-    latest_verify_fail_time: 0,
-    acc_verify_total_times: 0,
-    acc_verify_success_times: 0,
-  } as TYPE.LocalPeerModel,
-];
+    {
+      origin: "http://publish.ifmchain.org",
+      level: TYPE.PEER_LEVEL.TRUST,
+      webChannelLinkNum: 0,
+      netVersion: "mainnet",
+      netInterval: 128,
+      ip: "publish.ifmchain.org",
+      height: 0,
+      p2pPort: 9000,
+      magic: "",
+      webPort: 9002,
+      delay: -1,
+      acc_use_duration: 0,
+      latest_verify_fail_time: 0,
+      acc_verify_total_times: 0,
+      acc_verify_success_times: 0,
+    } as TYPE.LocalPeerModel,
+  ];
 
 @Injectable()
 export class PeerServiceProvider extends CommonService {
@@ -252,7 +252,7 @@ export class PeerServiceProvider extends CommonService {
       }
     }
     /*递归搜索代码片段*/
-    const recursiveSearch = async function*(skip_when_no_full?: boolean) {
+    const recursiveSearch = async function* (skip_when_no_full?: boolean) {
       for await (var _ps of parallel_pool.yieldResults({
         ignore_error: true, // 忽略错误（忽略不可用的节点）
         skip_when_no_full, // 在池子不填满的情况下是否返回
@@ -537,14 +537,14 @@ export class PeerServiceProvider extends CommonService {
     let finished_task_num = 0;
     const emit_progress = emiter
       ? (v = finished_task_num) => {
-          finished_task_num = v;
-          emiter.emit("fetch-peers-info", {
-            peer,
-            total_tasks_num: tasks.length,
-            finished_num: finished_task_num,
-          });
-        }
-      : () => {};
+        finished_task_num = v;
+        emiter.emit("fetch-peers-info", {
+          peer,
+          total_tasks_num: tasks.length,
+          finished_num: finished_task_num,
+        });
+      }
+      : () => { };
     const common_cache_handler = () => {
       peer.disabled = true;
     };
@@ -666,37 +666,36 @@ export class PeerServiceProvider extends CommonService {
    * 连接指定节点
    */
   async linkPeer(peer: TYPE.LocalPeerModel) {
+
     // await sleep(500);
-    localStorage.setItem("SERVER_URL", peer.origin);
-    localStorage.setItem("MAGIC", peer.magic);
+    // localStorage.setItem("SERVER_URL", peer.origin);
+    // localStorage.setItem("MAGIC", peer.magic);
     const BLOCK_UNIT_TIME = peer.netInterval * 1000 || 128000;
-    localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
-    localStorage.setItem("NET_VERSION", peer.netVersion || "mainnet");
+    // localStorage.setItem("BLOCK_UNIT_TIME", `${BLOCK_UNIT_TIME}`);
+    // localStorage.setItem("NET_VERSION", peer.netVersion || "mainnet");
     sessionStorage.setItem("LINK_PEER", "true");
+    baseConfig.SERVER_URL = peer.origin
+    baseConfig.MAGIC = peer.magic
+    baseConfig.BLOCK_UNIT_TIME = BLOCK_UNIT_TIME
+    baseConfig.NET_VERSION = peer.netVersion || "mainnet"
     // this.peerService.useablePeers(this.useable_peers);
 
     // 保存这次检测完成的时间，为了避免过度频繁的检测
     localStorage.setItem("LINK_PEER", Date.now().toString());
-    // location.hash = "";
-    // location.reload();
+    // if (
+    //   baseConfig.NET_VERSION !== peer.magic ||
+    //   baseConfig.NET_VERSION !== peer.netVersion ||
+    //   baseConfig.BLOCK_UNIT_TIME != baseConfig.BLOCK_UNIT_TIME
+    // ) {
+    //   location.hash = "";
+    //   location.reload();
+    //   return;
+    // }
 
-    if (
-      baseConfig.NET_VERSION !== peer.magic ||
-      baseConfig.NET_VERSION !== peer.netVersion ||
-      AppSettingProvider.BLOCK_UNIT_TIME != baseConfig.BLOCK_UNIT_TIME
-    ) {
-      location.hash = "";
-      location.reload();
-      return;
-    }
     // 只支持url动态重载
     if (baseConfig.SERVER_URL !== peer.origin) {
       baseConfig.SERVER_URL = peer.origin;
-      AppSettingProvider.SERVER_URL = baseConfig.SERVER_URL;
-      // 重新初始化io
-      this.blockService.io.disconnect();
-      delete this.blockService["_io"];
-      this.blockService.bindIOBlockChange();
+
       FLP_Tool.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
       this.fetch.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
       /// TODO: 重新登录

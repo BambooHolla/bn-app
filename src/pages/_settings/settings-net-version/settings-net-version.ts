@@ -31,7 +31,7 @@ export class SettingsNetVersionPage extends SecondLevelPage {
   private _net_version?: string;
   get net_version() {
     if (!this._net_version) {
-      this._net_version = `${AppSettingProvider.NET_VERSION}|${AppSettingProvider.SERVER_URL}|${AppSettingProvider.BLOCK_UNIT_TIME}`;
+      this._net_version = `${this.baseConfig.NET_VERSION}|${this.baseConfig.SERVER_URL}|${this.baseConfig.BLOCK_UNIT_TIME}`;
     }
     return this._net_version;
   }

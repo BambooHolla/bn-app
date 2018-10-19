@@ -32,7 +32,7 @@ export class AccountPeerListPage extends SecondLevelPage {
   @AccountPeerListPage.willEnter
   @asyncCtrlGenerator.loading()
   async initPeerList() {
-    this.cur_peer_list = await this.peerService.getPeersLocal({ magic: AppSettingProvider.MAGIC });
+    this.cur_peer_list = await this.peerService.getPeersLocal({ magic: this.baseConfig.MAGIC });
     this.cur_peer_list.map(peer => {
       this._cur_peer_map.set(peer.origin, peer);
     });

@@ -20,7 +20,7 @@ import { getErrorFromAsyncerror, isErrorFromAsyncerror } from "./const";
 import { Toast } from "@ionic-native/toast";
 
 export class FLP_Tool {
-  constructor() {}
+  constructor() { }
   UNIT = "IBT";
   // 全局弹出层控制器
   @FLP_Tool.FromGlobal actionSheetCtrl!: ActionSheetController;
@@ -32,6 +32,21 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal platform!: Platform;
   @FLP_Tool.FromGlobal translate!: TranslateService;
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
+
+  //#region BaseConfig
+  baseConfig = baseConfig;
+  // get BACKEND_VERSION() { return baseConfig.BACKEND_VERSION };
+  // get APP_VERSION() { return baseConfig.APP_VERSION };
+  // get SERVER_URL() { return baseConfig.SERVER_URL };
+  // get NET_VERSION() { return baseConfig.NET_VERSION };
+  // get MAGIC() { return baseConfig.MAGIC };
+  // get BLOCK_UNIT_TIME() { return baseConfig.BLOCK_UNIT_TIME };
+  // get SEED_DATE() { return baseConfig.SEED_DATE };
+  // get LATEST_APP_VERSION_URL() { return baseConfig.LATEST_APP_VERSION_URL };
+
+  //#endregion
+
+
   formatAndTranslateMessage = formatAndTranslateMessage;
   static formatAndTranslateMessage = formatAndTranslateMessage;
   translateMessage = translateMessage;

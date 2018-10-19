@@ -70,7 +70,7 @@ export class PayTransferReceiptPage extends SecondLevelPage {
         transfer.blockId
       )).timestamp;
     } else {
-      const BLOCK_UNIT_TIME = this.appSetting.BLOCK_UNIT_TIME;
+      const BLOCK_UNIT_TIME = this.baseConfig.BLOCK_UNIT_TIME;
       let diff_time = await this.blockService.getLastBlockRefreshInterval();
       diff_time %= BLOCK_UNIT_TIME;
 
