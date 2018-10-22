@@ -1,6 +1,6 @@
 import EventEmitter from "eventemitter3";
 import * as IDB_VK from "idb-keyval";
-import { AOT, AOT_Placeholder } from '../../src/bnqkl-framework/AOT';
+import { AOT, AOT_Placeholder } from '../../src/bnqkl-framework/lib/AOT';
 import { PromiseOut } from '../../src/bnqkl-framework/PromiseExtends';
 import { DB_Config, BlockModel, DB_Item_Index } from "./const";
 

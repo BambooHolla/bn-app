@@ -650,7 +650,7 @@ export class PeerServiceProvider extends CommonService {
 
   /**检测本地magic是否正确*/
   async checkCurrentMagic() {
-    const local_magic = localStorage.getItem("MAGIC");
+    const local_magic = baseConfig.MAGIC;
     if (!local_magic) {
       return false;
     }
@@ -696,12 +696,14 @@ export class PeerServiceProvider extends CommonService {
     if (baseConfig.SERVER_URL !== peer.origin) {
       baseConfig.SERVER_URL = peer.origin;
 
-      FLP_Tool.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
-      this.fetch.webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
-      /// TODO: 重新登录
-      if (this.userInfo.password) {
-        await this.loginService.doLogin(this.userInfo.password, true);
-      }
+      // /// TODO: 重新登录
+      // if (this.userInfo.password) {
+      //   await this.loginService.doLogin(this.userInfo.password, true);
+      // }
     }
+    this.restartAppPage();
+  }
+  restartAppPage() {
+    // will be inject code from app.component
   }
 }

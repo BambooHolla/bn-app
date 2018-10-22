@@ -34,7 +34,7 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
 
   //#region BaseConfig
-  get baseConfig(){
+  get baseConfig() {
     return baseConfig;
   }
   // get BACKEND_VERSION() { return baseConfig.BACKEND_VERSION };
@@ -149,7 +149,8 @@ export class FLP_Tool {
   static get isInCordova() {
     return window["cordova"] && !(window["cordova"] instanceof HTMLElement);
   }
-  static webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+  @baseConfig.WatchPropChanged("SERVER_URL")
+  static get webio() { return getSocketIOInstance(baseConfig.SERVER_URL, "/web"); }
   get webio() {
     return FLP_Tool.webio;
   }

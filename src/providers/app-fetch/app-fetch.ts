@@ -102,7 +102,8 @@ export class AppFetchProvider extends EventEmitter {
     });
   }
   ServerResError = ServerResError;
-  webio = getSocketIOInstance(baseConfig.SERVER_URL, "/web");
+  @baseConfig.WatchPropChanged("SERVER_URL")
+  get webio() { return getSocketIOInstance(baseConfig.SERVER_URL, "/web"); }
   get io() {
     return this.webio.io;
   }

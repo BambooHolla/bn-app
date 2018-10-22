@@ -150,7 +150,26 @@ export class MyApp implements OnInit {
 
     this.initTranslate();
 
-    const initPage = (async () => {
+    const initPage = this.getAppInitPage();
+
+    // this.openPage(LoginPage);
+
+    this.overlaysWebView();
+    statusBar.hide();
+    platform.ready().then(() => {
+      keyboard.disableScroll(true);
+      keyboard.hideKeyboardAccessoryBar(true);
+      statusBar.show();
+      this.overlaysWebView();
+      this.openInitPage(initPage);
+    });
+
+    peerService.restartAppPage = ()=>{
+      this.openInitPage(this.getAppInitPage());
+    }
+  }
+  async getAppInitPage() {
+    try {
       const lock_page = getQueryVariable("LOCK_PAGE");
       if (lock_page) {
         await this.openPage(lock_page);
@@ -180,44 +199,37 @@ export class MyApp implements OnInit {
 
         // return ScanLinkPeerPage
       }
-      const user_token = appSetting.getUserToken();
+      const user_token = this.appSetting.getUserToken();
       if (user_token && user_token.password) {
         // 自动登录
         await this.loginService.doLogin(user_token.password, true);
         return null;
       }
       return LoginPage;
-    })().catch(err => {
+    } catch (err) {
       console.error("get init page error:", err);
       return LoginPage;
-    });
-
-    // this.openPage(LoginPage);
-
-    this.overlaysWebView();
-    statusBar.hide();
-    platform.ready().then(() => {
-      keyboard.disableScroll(true);
-      keyboard.hideKeyboardAccessoryBar(true);
-      statusBar.show();
-      this.overlaysWebView();
-      initPage
-        .then(page => {
-          if (page) {
-            return this.openPage(page);
-          }
-        })
-        .catch(err => {
-          console.warn("INIT PAGE ERRROR", err);
-          return this.openPage(LoginPage);
-        })
-        .then(() => {
-          loginService.loginStatus.subscribe(isLogined => {
-            console.log("isLogined", isLogined);
-            this.openPage(isLogined ? MainPage : LoginPage);
-          });
+    }
+  }
+  openInitPage(
+    initPage: Promise<"sign-in-and-sign-up" | null>
+  ) {
+    initPage
+      .then(page => {
+        if (page) {
+          return this.openPage(page);
+        }
+      })
+      .catch(err => {
+        console.warn("INIT PAGE ERRROR", err);
+        return this.openPage(LoginPage);
+      })
+      .then(() => {
+        this.loginService.loginStatus.subscribe(isLogined => {
+          console.log("isLogined", isLogined);
+          this.openPage(isLogined ? MainPage : LoginPage);
         });
-    });
+      });
   }
   _isIOS?: boolean;
   get isIOS() {

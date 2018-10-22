@@ -23,22 +23,22 @@ class BaseConfig {
     return this._watchAbleKeySet || (this._watchAbleKeySet = new Set<string>())
   }
 
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "HIDE_FLAG" })
   HIDE_FLAG = getQueryVariable("HIDE_FLAG")
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "BACKEND_VERSION" })
   BACKEND_VERSION = getQueryVariable("BACKEND_VERSION") || "v3.1.3/";
   @AutoEmitPropChange()
   APP_VERSION = global["APP_VERSION"];
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "SERVER_URL" })
   SERVER_URL = getQueryVariable("SERVER_URL") || "http://publish.ifmchain.org";
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "NET_VERSION" })
   NET_VERSION = getQueryVariable("NET_VERSION") || "mainnet";
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "MAGIC" })
   MAGIC = getQueryVariable("MAGIC") || "";
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "BLOCK_UNIT_TIME" })
   BLOCK_UNIT_TIME = parseFloat(getQueryVariable("BLOCK_UNIT_TIME") || "") || 128e3;
 
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "SEED_DATA" })
   SEED_DATE = formatQueryVariable("SEED_DATA", seed_data_str => {
     let seed_data = [2017, 11, 27, 16, 0, 0, 0];
     if (seed_data_str) {
@@ -46,7 +46,7 @@ class BaseConfig {
     }
     return seed_data;
   });
-  @AutoEmitPropChange()
+  @AutoEmitPropChange({ save_to_ls: "LATEST_APP_VERSION_URL" })
   LATEST_APP_VERSION_URL = getQueryVariable("LATEST_APP_VERSION_URL") || "https://www.ifmchain.com/api/app/version/latest";
 
   @WatchPropChanged(["SEED_DATE"], { ignore_watch_for_getter: true })
@@ -89,7 +89,7 @@ class BaseConfig {
 }
 
 
-function AutoEmitPropChange() {
+function AutoEmitPropChange(opts: { save_to_ls?: string } = {}) {
   return function (target: BaseConfig, prop_name: string, descriptor?: PropertyDescriptor) {
     if (descriptor) {
       throw new TypeError("AutoEmitPropChange could only for primitive value.");
@@ -111,6 +111,9 @@ function AutoEmitPropChange() {
         }
         const old_val = cur_val;
         cur_val = new_val;
+        if (opts.save_to_ls) {
+          localStorage.setItem(opts.save_to_ls, cur_val);
+        }
         if (emit_lock) {
           emit_lock.old_val = old_val;
           return;
@@ -125,6 +128,7 @@ function AutoEmitPropChange() {
         }
       }
     }
+    Object.defineProperty(target, prop_name, descriptor);
   }
 };
 

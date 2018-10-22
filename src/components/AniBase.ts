@@ -106,6 +106,7 @@ export class AniBase extends EventEmitter {
     if (
       !(
         this.canvasNode &&
+        document.body.contains(this.canvasNode) &&
         this.canvasNode.clientHeight &&
         this.canvasNode.clientWidth
       )
@@ -537,9 +538,9 @@ export const Easing = {
     }
     return (
       a *
-        Math.pow(2, -10 * (k -= 1)) *
-        Math.sin(((k - s) * (2 * Math.PI)) / p) *
-        0.5 +
+      Math.pow(2, -10 * (k -= 1)) *
+      Math.sin(((k - s) * (2 * Math.PI)) / p) *
+      0.5 +
       1
     );
   },
