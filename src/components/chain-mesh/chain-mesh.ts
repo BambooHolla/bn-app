@@ -84,7 +84,7 @@ export class ChainMeshComponent extends AniBase {
     }
     if (!this.app) {
       this.app = this.PIXIAppbuilder({
-        forceCanvas: true,
+        // forceCanvas: true,
         antialias: true,
         transparent: true,
         view: canvasNode,

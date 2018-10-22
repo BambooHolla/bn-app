@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
 import { AsyncBehaviorSubject, Executor } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
-import { IsIOS, ReadToGenerate } from "../../bnqkl-framework/helper";
+import { IsIOS, ReadToGenerate, global } from "../../bnqkl-framework/helper";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
@@ -14,6 +14,7 @@ export { AppUrl };
 import { IfmchainCore } from "../../ifmchain-js-core/src";
 import { PromiseOut } from "../../fangodb/dist/src/const";
 
+const constructor_inited = new PromiseOut<AppSettingProvider>();
 @Injectable()
 export class AppSettingProvider extends CommonService {
   // static readonly APP_VERSION = baseConfig.APP_VERSION;
@@ -39,15 +40,10 @@ export class AppSettingProvider extends CommonService {
     return new AppUrl(path);
   }
 
-  @ReadToGenerate()
-  get constructor_inited() {
-    return new PromiseOut<void>();
-  }
-
   constructor(public user: UserInfoProvider, public translate: TranslateService) {
     super();
-    console.log("Hello AppSettingProvider Provider");
-    this.constructor_inited.resolve();
+
+    constructor_inited.resolve(this);
 
     const user_token = this.getUserToken();
 
@@ -443,8 +439,7 @@ export class AppSettingProvider extends CommonService {
   }
 
   @baseConfig.WatchPropChanged(["NET_VERSION", "HIDE_FLAG"])
-  testFlag() {
-
+  async testFlag() {
     let _testnet_flag = document.getElementById("testnetFlag");
     if (!_testnet_flag) {
       _testnet_flag = document.createElement("div");
@@ -456,10 +451,10 @@ export class AppSettingProvider extends CommonService {
       document.body.appendChild(testnet_flag_wrapper);
 
       // 测试网络角标内容
-      this.constructor_inited.promise.then(() => {
+      constructor_inited.promise.then((appSetting) => {
         let ani_flag_frame_id;
         let pre_flag_transform;
-        this.translate.stream(["TESTNET_FLAG"]).subscribe(values => {
+        appSetting.translate.stream(["TESTNET_FLAG"]).subscribe(values => {
           if (ani_flag_frame_id) {
             cancelAnimationFrame(ani_flag_frame_id);
             ani_flag_frame_id = null;

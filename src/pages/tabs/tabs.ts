@@ -65,10 +65,10 @@ export class TabsPage extends FLP_Lifecycle {
       this.navCtrl.setRoot(SetNetVersionPage);
       return;
     }
-    if (this.isIOS) {
-      await sleep(2000);
-    }
-    this.blockService.magic.resolve(magic);
+    // if (this.isIOS) {
+    //   await sleep(2000);
+    // }
+    // this.blockService.magic.resolve(magic);
   }
   // 与当前页面共享Ionic生命周期
   @TabsPage.willEnter

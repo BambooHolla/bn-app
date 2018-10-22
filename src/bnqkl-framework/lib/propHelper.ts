@@ -15,9 +15,10 @@ export function ReadToGenerate(opts: { dirty_key?: any } = {}) {
     if (dirty_key !== undefined) {
       descriptor.get = () => {
         if (target[dirty_key]) {
-          generated = true;
+          generated = false;
         }
         if (!generated) {
+          generated = true;
           cache_val = getter.call(target);
         }
         return cache_val;
@@ -25,6 +26,7 @@ export function ReadToGenerate(opts: { dirty_key?: any } = {}) {
     } else {
       descriptor.get = () => {
         if (!generated) {
+          generated = true;
           cache_val = getter.call(target);
         }
         return cache_val;

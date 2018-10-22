@@ -17,7 +17,7 @@ export * from "./transaction.types";
 
 @Injectable()
 export class TransactionServiceProvider {
-  IFMJSCORE = AppSettingProvider.IFMJSCORE;
+  get IFMJSCORE() { return AppSettingProvider.IFMJSCORE; }
   get addresssCheck() { return this.IFMJSCORE.address() }
   get keypair() { return this.IFMJSCORE.keypair() }
   // block: any;

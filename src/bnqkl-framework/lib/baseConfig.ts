@@ -9,6 +9,8 @@ const log = debug("IBT:baseConfig");
 type WatchPropChangedOpts = {
   ignore_watch_for_getter?: boolean;
   not_autoinit_for_getter?: boolean;
+  auto_run_once?: boolean
+  ctxGetter?: (target) => any
 }
 
 /*项目启动的基本环境变量配置参数*/
@@ -54,18 +56,20 @@ class BaseConfig {
     const { SEED_DATE } = this;
     return Date.UTC(SEED_DATE[0], SEED_DATE[1], SEED_DATE[2], SEED_DATE[3], SEED_DATE[4], SEED_DATE[5], SEED_DATE[6]);
   }
-  @WatchPropChanged(["SEED_DATE"], { ignore_watch_for_getter: true })
+  //#region 因为是依赖于seedDateUTC，也是一个计算属性，所以 not_autoinit_for_getter: true
+  @WatchPropChanged(["SEED_DATE"], { ignore_watch_for_getter: true, not_autoinit_for_getter: true })
   get seedDateTimestamp() {
     return Math.floor(this.seedDateUTC / 1000);
   }
-  @WatchPropChanged(["SEED_DATE"], { ignore_watch_for_getter: true })
+  @WatchPropChanged(["SEED_DATE"], { ignore_watch_for_getter: true, not_autoinit_for_getter: true })
   get seedDate() {
     return new Date(this.seedDateUTC);
   }
-  @WatchPropChanged(["SEED_DATE"], { ignore_watch_for_getter: true })
+  @WatchPropChanged(["SEED_DATE"], { ignore_watch_for_getter: true, not_autoinit_for_getter: true })
   get timezoneoffset() {
     return -this.seedDate.getTimezoneOffset() * 60;
   }
+  //#endregion
 
   @WatchPropChanged(["MAGIC"], { ignore_watch_for_getter: true })
   get settingKeyPerfix() {
@@ -95,6 +99,10 @@ function AutoEmitPropChange(opts: { save_to_ls?: string } = {}) {
       throw new TypeError("AutoEmitPropChange could only for primitive value.");
     }
     target.watchAbleKeySet.add(prop_name);
+    //强行激活event，确保event初始化在原型链上
+    target.event as any + 1.234567;
+    // log('effect baseConfig.__proto__._event %o', target.event);
+
     const CHANGE_EVENT_NAME = `${prop_name}:CHANGED`;
     let cur_val: any;
     let emit_lock: {
@@ -120,9 +128,10 @@ function AutoEmitPropChange(opts: { save_to_ls?: string } = {}) {
         }
         emit_lock = {
           p: Promise.resolve().then(() => {
-            target.event.emit(CHANGE_EVENT_NAME, cur_val, emit_lock!.old_val);
-            // target.event.emit("*:CHANGED", propName, cur_val, emit_lock.old_val);
+            const old_val = emit_lock!.old_val;
             emit_lock = undefined;
+            log(CHANGE_EVENT_NAME, cur_val, old_val);
+            target.event.emit(CHANGE_EVENT_NAME, cur_val, old_val);
           }),
           old_val,
         }
@@ -137,10 +146,16 @@ function WatchPropChanged(watch_prop_name_list: string[], opts: WatchPropChanged
 } = {}) {
   return function (target: any, prop_name: string, descriptor: PropertyDescriptor) {
     const baseConfig = opts.baseConfig_instance || target;
+    const ctx = opts.ctxGetter ? opts.ctxGetter(target) : target;
+    log("listen props changed %o => %s", watch_prop_name_list, prop_name);
     if (typeof descriptor.value === "function") {
       watch_prop_name_list.forEach(watch_prop_name => {
-        baseConfig.event.on(`${watch_prop_name}:CHANGED`, descriptor.value);
+        baseConfig.event.on(`${watch_prop_name}:CHANGED`, (new_val, old_val) =>
+          descriptor.value.call(ctx, watch_prop_name, new_val, old_val));
       });
+      if (opts.auto_run_once) {
+        descriptor.value.call(ctx);
+      }
     } else if (typeof descriptor.get === "function") {
       const { ignore_watch_for_getter, not_autoinit_for_getter } = opts;
       const source_getter = descriptor.get;
@@ -156,23 +171,17 @@ function WatchPropChanged(watch_prop_name_list: string[], opts: WatchPropChanged
           return;
         }
         cache_key_list = cur_val_list;
-        if (update_lock) {
-          return;
-        }
-        update_lock = Promise.resolve().then(() => {
-          cache_val = source_getter.call(target);
-          update_lock = undefined;
-          log("watch prop [%s] changed. [%s]: %O,", prop_name, watch_prop_name_list, cache_val);
-        });
+        // 计算属性需要立即进行更新
+        cache_val = source_getter.call(ctx);
+        log("watch prop [%s] changed. %o: %O,", prop_name, watch_prop_name_list, cache_val);
       };
       if (!not_autoinit_for_getter) {
         descriptor.get();
       }
 
       if (!ignore_watch_for_getter) {
-
         watch_prop_name_list.forEach(watch_prop_name => {
-          baseConfig.event.on(`${watch_prop_name}:CHANGED`, checkAndUpdateCache);
+          baseConfig.event.on(`${watch_prop_name}:CHANGED`, () => checkAndUpdateCache(watch_prop_name_list.map(watch_prop_name => baseConfig[watch_prop_name])));
         });
       }
     }

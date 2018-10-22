@@ -16,7 +16,7 @@ import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { DelegateModel, DelegateInfoResModel } from "../min-service/min.types";
 import { MinServiceProvider } from "../min-service/min-service";
-import { AppUrl, baseConfig, ReadToGenerate } from "../../bnqkl-framework/helper";
+import { AppUrl, baseConfig, ReadToGenerate, global } from "../../bnqkl-framework/helper";
 import { getJsonObjectByteSize, getUTF8ByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
 import { DbCacheProvider, HTTP_Method, RequestOptionsWithResult } from "../db-cache/db-cache";
 import { Mdb } from "../mdb";
@@ -37,10 +37,13 @@ tryRegisterGlobal("socketio", socketIoFactory);
 
 export * from "./block.types";
 
+/**TODO: fix */
+const constructor_inited = new PromiseOut<BlockServiceProvider>();
+
 @Injectable()
 export class BlockServiceProvider extends FLP_Tool {
   private _io?: SocketIOClient.Socket;
-  @baseConfig.WatchPropChanged("SERVER_URL")
+  @baseConfig.WatchPropChanged("SERVER_URL", { ctxGetter: (target) => global['blockService'] || target })
   get io() {
     if (this._io) {
       this._io.disconnect();
@@ -49,7 +52,7 @@ export class BlockServiceProvider extends FLP_Tool {
     this._io = socketIoFactory(this.baseConfig.SERVER_URL, {
       transports: ["websocket"],
     });
-    this.constructor_inited.promise.then(() => {
+    constructor_inited.promise.then(() => {
       this._bindIOBlockChange(this._io);
     });
     return this._io;
@@ -61,11 +64,11 @@ export class BlockServiceProvider extends FLP_Tool {
   get blockFangoDB() {
     return this.blockFangoDB_ready.promise;
   }
-  @baseConfig.WatchPropChanged("MAGIC")
-  get magic() {
-    const p = new PromiseOut<string>();
-    return p;
-  }
+  // @baseConfig.WatchPropChanged("MAGIC")
+  // get baseConfig.MAGIC() {
+  //   const p = new PromiseOut<string>();
+  //   return p;
+  // }
 
   /// 关于本地数据库的一些辅助函数
   // @AOT_Placeholder.Wait("isBlockDBInited")
@@ -97,7 +100,7 @@ export class BlockServiceProvider extends FLP_Tool {
   // private _init_block_aot = new AOT("init_block");
   @baseConfig.WatchPropChanged("MAGIC")
   private async _initService() {
-    const blockDb = await BlockDBFactory(await this.magic.promise);
+    const blockDb = await BlockDBFactory(this.baseConfig.MAGIC);
     await blockDb.afterInited();
     this.blockFangoDB_ready.resolve(blockDb);
     this._block_FangoDB = blockDb;
@@ -113,12 +116,6 @@ export class BlockServiceProvider extends FLP_Tool {
     return this;
   }
 
-  @ReadToGenerate()
-  get constructor_inited() {
-    return new PromiseOut();
-  }
-
-
   constructor(
     public http: HttpClient,
     public appSetting: AppSettingProvider,
@@ -133,7 +130,7 @@ export class BlockServiceProvider extends FLP_Tool {
     super();
 
     // this._init_block_aot.autoRegister(this);
-    this.constructor_inited.resolve();
+    constructor_inited.resolve(this);
 
     // 安装api服务
     this._blockDb = dbCache.installDatabase("blocks", []);
@@ -372,8 +369,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const encoder = io.io["encoder"];
     const ENCODE_SYMBOL = Symbol.for("encode");
     encoder[ENCODE_SYMBOL] = encoder.encode;
-    const self = this;
-    const io_origin = self.baseConfig.SERVER_URL;
+    const io_origin = baseConfig.SERVER_URL;
     // 不改原型链，只针对当前的这个链接对象进行修改
     encoder.encode = function (obj, callback) {
       this[ENCODE_SYMBOL](obj, (buffer_list, ...args) => {
@@ -388,13 +384,16 @@ export class BlockServiceProvider extends FLP_Tool {
           });
           if (acc_flow) {
             // console.log("上行流量", acc_flow);
-            self.peerService.updatePeerFlow(io_origin, acc_flow);
+            constructor_inited.promise.then(blockService => {
+              blockService.peerService.updatePeerFlow(io_origin, acc_flow);
+            });
           }
         }
         callback(buffer_list, ...args);
       });
     };
-    io.io["engine"].on("data", data_item => {
+    io.io["engine"].on("data", async data_item => {
+      const blockService = await constructor_inited.promise;
       let acc_flow = 0;
       if (typeof data_item == "string") {
         acc_flow += getUTF8ByteSize(data_item);
@@ -403,28 +402,29 @@ export class BlockServiceProvider extends FLP_Tool {
       }
       if (acc_flow) {
         // console.log("下行流量", acc_flow);
-        self.peerService.updatePeerFlow(io_origin, acc_flow);
+        blockService.peerService.updatePeerFlow(io_origin, acc_flow);
       }
     });
     io.on("blocks/change", async data => {
+      const blockService = await constructor_inited.promise;
       // 计算流量大小
       const flow = getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
-      this.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
-      this.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
+      blockService.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
+      blockService.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
       /*更新数据库中的流量使用信息*/
-      this.peerService.updatePeerFlow(io_origin, flow);
+      blockService.peerService.updatePeerFlow(io_origin, flow);
 
       console.log(`%c区块更新 ${new Date().toLocaleString()}`, "color:green;background-color:#eee;font-size:1.2rem");
 
       const lastBlock: TYPE.BlockModel = data.lastBlock;
-      const current_height = this.appSetting.getHeight();
-      if (lastBlock.height < current_height && !this._reselect_peer_model) {
-        const reselect_peer_model = await this.showConfirmDialog("所连的节点似乎脱离共识，是否选择自动连接新的节点？", async () => {
-          const dialog = await this.showLogoLoading("快速查询可用节点中");
-          const useablePeers = await this.peerService.getPeersLocal({ magic: await this.magic });
+      const current_height = blockService.appSetting.getHeight();
+      if (lastBlock.height < current_height && !blockService._reselect_peer_model) {
+        const reselect_peer_model = await blockService.showConfirmDialog("所连的节点似乎脱离共识，是否选择自动连接新的节点？", async () => {
+          const dialog = await blockService.showLogoLoading("快速查询可用节点中");
+          const useablePeers = await blockService.peerService.getPeersLocal({ magic: blockService.baseConfig.MAGIC });
           const prepare_num = 10; // Math.max(57,Math.floor(useablePeers.length/2)+1); // 最多准备10个节点来选择
           const prepare_peer_list: LocalPeerModel[] = [];
-          for await (var _peer of this.peerService.fastMatchUseablePeer(useablePeers)) {
+          for await (var _peer of blockService.peerService.fastMatchUseablePeer(useablePeers)) {
             const peer = _peer;
             if (peer.height > current_height) {
               prepare_peer_list.push(peer);
@@ -440,22 +440,22 @@ export class BlockServiceProvider extends FLP_Tool {
             }
             return h_dif;
           });
-          await this.peerService.linkPeer(prepare_peer_list[0]);
-          this._updateHeight();
+          await blockService.peerService.linkPeer(prepare_peer_list[0]);
+          blockService._updateHeight();
           dialog.dismiss();
         });
-        this._reselect_peer_model = reselect_peer_model;
+        blockService._reselect_peer_model = reselect_peer_model;
         reselect_peer_model.onDidDismiss(() => {
-          this._reselect_peer_model = undefined;
+          blockService._reselect_peer_model = undefined;
         });
       }
-      this._updateHeight(lastBlock);
+      blockService._updateHeight(lastBlock);
 
       // 更新预期交易区块
-      this._expectblock_uncommited = 0;
-      this._expectblock_fee_reward = 0;
-      this.getExpectBlockInfo().then(expect_block => {
-        this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
+      blockService._expectblock_uncommited = 0;
+      blockService._expectblock_fee_reward = 0;
+      blockService.getExpectBlockInfo().then(expect_block => {
+        blockService.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
       });
     });
     // // 更新区块使用时间
@@ -522,7 +522,7 @@ export class BlockServiceProvider extends FLP_Tool {
       cmd: "syncBlockChain",
       NET_VERSION: this.baseConfig.NET_VERSION,
       webio_path: this.fetch.webio.io_url_path,
-      magic: await this.magic.promise,
+      magic: this.baseConfig.MAGIC,
       max_end_height,
       req_id,
       need_verifier,
@@ -610,7 +610,7 @@ export class BlockServiceProvider extends FLP_Tool {
       NET_VERSION: this.baseConfig.NET_VERSION,
       cmd: "download",
       webio_path: this.fetch.webio.io_url_path,
-      magic: await this.magic.promise,
+      magic: this.baseConfig.MAGIC,
       startHeight,
       endHeight,
       max_end_height,
