@@ -33,5 +33,7 @@ bec74be9c8eebc4a3c42f5bf0f535b49742ce6cb5c14c5dadcb63c55d03c00a7
 33e41f40c1aa9c5c8712ea4253644a7583387bf3d7037d2d4af1e82085ddf17a
 
 {"LATEST_APP_VERSION_URL": "http://192.168.16.106:8180/api/app/version/latest"}
+{"BACKEND_VERSION":"v3.1.1/"}
 
 C:\Users\gaube\Documents\ifm\ifm-app-v2\src\app,C:\Users\gaube\Documents\ifm\ifm-app-v2\src\assets,C:\Users\gaube\Documents\ifm\ifm-app-v2\src\bnqkl-framework,C:\Users\gaube\Documents\ifm\ifm-app-v2\src\components,C:\Users\gaube\Documents\ifm\ifm-app-v2\src\directives,C:\Users\gaube\Documents\ifm\ifm-app-v2\src\pages,C:\Users\gaube\Documents\ifm\ifm-app-v2\src\pipes,C:\Users\gaube\Documents\ifm\ifm-app-v2\src\providers
+

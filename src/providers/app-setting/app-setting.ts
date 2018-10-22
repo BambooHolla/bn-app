@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, AsyncSubject, Observable } from "rxjs";
 import { AsyncBehaviorSubject, Executor } from "../../bnqkl-framework/RxExtends";
 export * from "../../bnqkl-framework/RxExtends";
-import { IsIOS } from "../../bnqkl-framework/helper";
+import { IsIOS, ReadToGenerate } from "../../bnqkl-framework/helper";
 import { AniBase } from "../../components/AniBase";
 import { UserInfoProvider } from "../user-info/user-info";
 import * as PIXI from "pixi.js";
@@ -12,6 +12,7 @@ import { MiningMachine } from "../../pages/_vote/types";
 import { AppUrl, CommonService } from "../commonService";
 export { AppUrl };
 import { IfmchainCore } from "../../ifmchain-js-core/src";
+import { PromiseOut } from "../../fangodb/dist/src/const";
 
 @Injectable()
 export class AppSettingProvider extends CommonService {
@@ -38,9 +39,15 @@ export class AppSettingProvider extends CommonService {
     return new AppUrl(path);
   }
 
+  @ReadToGenerate()
+  get constructor_inited() {
+    return new PromiseOut<void>();
+  }
+
   constructor(public user: UserInfoProvider, public translate: TranslateService) {
     super();
     console.log("Hello AppSettingProvider Provider");
+    this.constructor_inited.resolve();
 
     const user_token = this.getUserToken();
 
@@ -245,30 +252,6 @@ export class AppSettingProvider extends CommonService {
       }
     });
 
-    // 测试网络角标内容
-    let ani_flag_frame_id;
-    let pre_flag_transform;
-    translate.stream(["TESTNET_FLAG"]).subscribe(values => {
-      if (ani_flag_frame_id) {
-        cancelAnimationFrame(ani_flag_frame_id);
-        ani_flag_frame_id = null;
-      }
-      function setTran(transform: string | null) {
-        testnet_flag.style.transform = testnet_flag.style.webkitTransform = transform;
-      }
-      function setTranDur(transitionDuration: string | null) {
-        testnet_flag.style.transitionDuration = testnet_flag.style.webkitTransitionDuration = transitionDuration;
-      }
-      testnet_flag.innerHTML = values.TESTNET_FLAG;
-      setTran(null);
-      setTranDur("0ms"); // 确保下面计算出来的值是正确的
-      const bound_rect = testnet_flag.getBoundingClientRect(); //reflow
-      setTran(pre_flag_transform);
-      afCtrl.raf(() => {
-        setTranDur(null);
-        setTran((pre_flag_transform = `scale(${55 / bound_rect.width})`));
-      });
-    });
   }
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
   user_token: BehaviorSubject<string>;
@@ -458,22 +441,67 @@ export class AppSettingProvider extends CommonService {
 
     return new Promise(cb => this.once("changed@share_settings." + key, cb));
   }
+
+  @baseConfig.WatchPropChanged(["NET_VERSION", "HIDE_FLAG"])
+  testFlag() {
+
+    let _testnet_flag = document.getElementById("testnetFlag");
+    if (!_testnet_flag) {
+      _testnet_flag = document.createElement("div");
+
+      _testnet_flag.id = "testnetFlag";
+      _testnet_flag.innerHTML = `TESTNET`;
+      const testnet_flag_wrapper = document.createElement("div");
+      testnet_flag_wrapper.appendChild(_testnet_flag);
+      document.body.appendChild(testnet_flag_wrapper);
+
+      // 测试网络角标内容
+      this.constructor_inited.promise.then(() => {
+        let ani_flag_frame_id;
+        let pre_flag_transform;
+        this.translate.stream(["TESTNET_FLAG"]).subscribe(values => {
+          if (ani_flag_frame_id) {
+            cancelAnimationFrame(ani_flag_frame_id);
+            ani_flag_frame_id = null;
+          }
+          function setTran(transform: string | null) {
+            testnet_flag.style.transform = testnet_flag.style.webkitTransform = transform;
+          }
+          function setTranDur(transitionDuration: string | null) {
+            testnet_flag.style.transitionDuration = testnet_flag.style.webkitTransitionDuration = transitionDuration;
+          }
+          testnet_flag.innerHTML = values.TESTNET_FLAG;
+          setTran(null);
+          setTranDur("0ms"); // 确保下面计算出来的值是正确的
+          const bound_rect = testnet_flag.getBoundingClientRect(); //reflow
+          setTran(pre_flag_transform);
+          afCtrl.raf(() => {
+            setTranDur(null);
+            setTran((pre_flag_transform = `scale(${55 / bound_rect.width})`));
+          });
+        });
+      });
+    }
+
+    const testnet_flag = _testnet_flag;
+
+    const testnet_flag_wrapper = testnet_flag.parentElement;
+    if (!testnet_flag_wrapper) {
+      throw new Error("testnet_flag_wrapper not found. should not happed.")
+    }
+    /*显示测试网络flag*/
+    if (
+      (baseConfig.NET_VERSION === "testnet" && baseConfig.HIDE_FLAG !== "1") ||
+      baseConfig.HIDE_FLAG === "-1" // 强制显示flag
+    ) {
+      testnet_flag_wrapper.className = "testnet-flag";
+      testnet_flag_wrapper.style.visibility = "";
+    } else {
+      testnet_flag_wrapper.style.visibility = "hidden";
+    }
+  }
 }
 
-export const testnet_flag = document.createElement("div");
-testnet_flag.id = "testnetFlag";
-testnet_flag.innerHTML = `TESTNET`;
-/*显示测试网络flag*/
-const HIDE_FLAG = getQueryVariable("HIDE_FLAG");
-if (
-  (baseConfig.NET_VERSION === "testnet" && HIDE_FLAG !== "1") ||
-  HIDE_FLAG === "-1" // 强制显示flag
-) {
-  const testnet_flag_wrapper = document.createElement("div");
-  testnet_flag_wrapper.appendChild(testnet_flag);
-  testnet_flag_wrapper.className = "testnet-flag";
-  document.body.appendChild(testnet_flag_wrapper);
-}
 
 /**
  * 基于token的AsyncBehaviorSubjuet类型的属性/方法生成器

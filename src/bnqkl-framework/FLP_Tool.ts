@@ -34,7 +34,9 @@ export class FLP_Tool {
   @FLP_Tool.FromGlobal clipboard!: Clipboard;
 
   //#region BaseConfig
-  baseConfig = baseConfig;
+  get baseConfig(){
+    return baseConfig;
+  }
   // get BACKEND_VERSION() { return baseConfig.BACKEND_VERSION };
   // get APP_VERSION() { return baseConfig.APP_VERSION };
   // get SERVER_URL() { return baseConfig.SERVER_URL };

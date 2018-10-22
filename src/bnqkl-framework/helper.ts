@@ -11,3 +11,5 @@ export * from "./lib/baseConfig";
 export * from "./lib/AppUrl";
 export * from './lib/fileInputEleFactory';
 export * from './lib/AOT';
+
+export  * from './lib/propHelper';

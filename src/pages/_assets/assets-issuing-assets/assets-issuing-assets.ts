@@ -247,7 +247,7 @@ export class AssetsIssuingAssetsPage extends SecondLevelPage {
 
     await this.assetsService.addAssets(
       {
-        sourceMagic: await this.blockService.magic.promise,
+        sourceMagic: this.baseConfig.MAGIC,
         logo: _cache_logo_base64[1],
         abbreviation: formData.abbreviation.toUpperCase(),
         genesisAddress: formData.genesisAddress,
