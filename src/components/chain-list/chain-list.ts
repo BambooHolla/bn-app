@@ -161,7 +161,7 @@ export class ChainListComponent extends AniBase {
   // // 以下两个参数是用来在max_chain_height变动后，尽可能保持当前的视觉中的元素位置不发生改变
   // private _pre_list_view_y = 0;
   // private _pre_max_view_height = 0;
-  private _scroll_config_host_reload = (no_refresh?: boolean) => {};
+  private _scroll_config_host_reload = (no_refresh?: boolean) => { };
   private _get_velocity = () => 0;
   private _inited_scroll = false;
   private _init_scroll(opts: { no_refresh?: boolean } = {}) {
@@ -450,18 +450,20 @@ export class ChainListComponent extends AniBase {
       }
       return cache_data;
     };
-    const get100BlockList = async (height: number) => {
+    const get100BlockList = (height: number) => {
       if (_cahce_height !== height) {
         _cahce_height = height;
         const block_num = 100;
         const startHeight = Math.max(height - block_num, 1);
         const endHeight = Math.max(height, startHeight + 1);
-        cache_data = this.blockService.getBlocksByRange(
-          startHeight,
-          endHeight,
-          1, //从小到大
-          await this.blockService.fetch.webio.getOnlineStatus()
-        );
+        cache_data = (async () => {
+          return this.blockService.getBlocksByRange(
+            startHeight,
+            endHeight,
+            1, //从小到大
+            await this.blockService.fetch.webio.getOnlineStatus()
+          )
+        })();
       }
       return cache_data;
     };
@@ -474,8 +476,12 @@ export class ChainListComponent extends AniBase {
           title_icon: "\ue653",
         },
         getData: () => {
-          return get100BlockList(this.max_chain_height).then(
-            block_list => block_list.map(block => [block.height, block.numberOfTransactions]) as [number, number][]
+          const { max_chain_height } = this;
+          return get100BlockList(max_chain_height).then(
+            block_list => {
+              // console.log(max_chain_height, block_list);
+              return block_list.map(block => [block.height, block.numberOfTransactions]) as [number, number][]
+            }
           );
         },
       },
@@ -492,8 +498,12 @@ export class ChainListComponent extends AniBase {
           },
         },
         getData: () => {
-          return get100BlockList(this.max_chain_height).then(
-            block_list => block_list.map(block => [block.height, parseFloat(block.totalAmount) / 1e8]) as [number, number][]
+          const { max_chain_height } = this;
+          return get100BlockList(max_chain_height).then(
+            block_list => {
+              // console.log(max_chain_height, block_list);
+              return block_list.map(block => [block.height, parseFloat(block.totalAmount) / 1e8]) as [number, number][]
+            }
           );
         },
       },
