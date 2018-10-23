@@ -77,14 +77,17 @@ export class TabPayPage extends FirstLevelPage {
       throw new Error("@@FREEZED_ACCOUNT_COULD_NOT_TRANFER");
     }
   }
-  get webio_onLine(){
+  get webio_onLine() {
     return this.webio.onLine && !localStorage.getItem("OFFLINE_TRS")
   }
 
   @asyncCtrlGenerator.error()
   async receiptOfflineTransaction(tran: TransactionModel) {
     if (tran.recipientId !== this.userInfo.address) {
-      throw new Error(this.getTranslateSync("THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT"));
+      throw new Error("@@THE_RECIPIENT_OF_THIS_TRANSACTION_VOUCHER_IS_NOT_THE_CURRENT_ACCOUNT");
+    }
+    if ((tran.timestamp + this.baseConfig.seedDateTimestamp + 5 /* 分钟 */ * 60) * 1000 < Date.now()) {
+      throw new Error("@@TRANSACTION_VOUCHER_IS_OUT_OF_TIME");
     }
     // todo: check voucher is my
     if (this.webio_onLine) {

@@ -613,6 +613,7 @@
   "LOADING_ASSETS": "载入中",
   "ASSETS_LIST_UPDATE_ERROR": "权益列表更新出错",
   "FREEZED_ACCOUNT_COULD_NOT_TRANFER": "您的IBT被冻结，无法完成交易",
+  "TRANSACTION_VOUCHER_IS_OUT_OF_TIME": "该交易凭证已过期",
 
   "//": "pay-transfer-receipt",
   "TRANSFER": "转账",
