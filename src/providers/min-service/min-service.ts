@@ -516,6 +516,17 @@ export class MinServiceProvider extends FLP_Tool {
     return promise_pro.follow(this.getMyRank(1, 2 /*如果自己是第一名，要确保第三名也拿到*/).then(list => list.slice(0, 3)));
   }
 
+  bigRankList!: AsyncBehaviorSubject<TYPE.RankModel[]>;
+  @ROUND_AB_Generator("bigRankList", true)
+  async bigRankList_Executor(promise_pro: PromisePro<TYPE.RankModel[]>) {
+    const myRank = await this.myRank.getPromise();
+    const rank = myRank.findIndex(r => r.address === this.userInfo.address);
+    const ext_num = 40;
+    const before = Math.max(rank, 0);
+    const after = ext_num - rank;
+    return promise_pro.follow(this.getMyRank(before, after));
+  }
+
   default_rank_list_pageSize = 20;
   async getRankList(page = 1, pageSize = this.default_rank_list_pageSize, force_get = false): Promise<TYPE.RankModel[]> {
     if (page === 1 && pageSize === this.default_rank_list_pageSize && !force_get) {

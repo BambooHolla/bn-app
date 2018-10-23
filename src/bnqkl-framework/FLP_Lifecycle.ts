@@ -166,8 +166,13 @@ export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit,
         /*microtask，把这个任务放到事件循环的最后面来做，避免重复工作*/
         one_lock = Promise.resolve().then(() => {
           one_lock = undefined;
-          this._before_detectChanges();
-          this.cdRef!.detectChanges();
+          try {
+            this._before_detectChanges();
+            this.cdRef!.detectChanges();
+          } catch (err) {
+            console.warn(err);
+            debugger
+          }
         });
       };
       this.detectChanges();
@@ -175,8 +180,8 @@ export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit,
     }
   }
   // 钩子函数
-  _before_markForCheck() {}
-  _before_detectChanges() {}
+  _before_markForCheck() { }
+  _before_detectChanges() { }
 
   static markForCheck(target: any, name: string, descriptor?: PropertyDescriptor) {
     if (!descriptor) {
@@ -195,7 +200,7 @@ export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit,
       Object.defineProperty(target, name, descriptor);
     } else if (descriptor.set) {
       const srouce_set = descriptor.set;
-      descriptor.set = function(v) {
+      descriptor.set = function (v) {
         srouce_set.call(this, v);
         this.markForCheck();
       };
@@ -212,16 +217,16 @@ export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit,
         set(v) {
           if (v !== val) {
             val = v;
-            this.detectChanges();
+            (this as FLP_Lifecycle).detectChanges();
           }
         },
       };
       Object.defineProperty(target, name, descriptor);
     } else if (descriptor.set) {
       const srouce_set = descriptor.set;
-      descriptor.set = function(v) {
+      descriptor.set = function (v) {
         srouce_set.call(this, v);
-        this.detectChanges();
+        (this as FLP_Lifecycle).detectChanges();
       };
     }
     // return descriptor;
@@ -381,14 +386,14 @@ export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit,
   // 因为增加了addEventAfterDidEnter这类延迟注册的操作，所以需要实时计算onEvent
   @FLP_Lifecycle.fromProtoArray("onEvent") private _on_evnet_funs!: Set<{ handle_name: string; event_name: string }>;
   static addEvent(event_name: string) {
-    return function(target: any, handle_name: string, descriptor?: PropertyDescriptor) {
+    return function (target: any, handle_name: string, descriptor?: PropertyDescriptor) {
       FLP_Tool.addProtoArray(target, "onEvent", { handle_name, event_name });
       return descriptor;
     };
   }
   static addEventAfterDidEnter(event_name: string) {
     const after_did_enter = Symbol("addEventAfterDidEnter:" + event_name);
-    return function(target: any, handle_name: string, descriptor?: PropertyDescriptor) {
+    return function (target: any, handle_name: string, descriptor?: PropertyDescriptor) {
       if (!target[after_did_enter]) {
         // 只执行一次
         let added = false;
@@ -410,7 +415,7 @@ export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit,
     return (target: FLP_Lifecycle, name: string) => {
       const cache_key = `-AU-${name}-`;
       if (!target[cache_key]) {
-        target[cache_key] = function() {
+        target[cache_key] = function () {
           if (this[name]) {
             this[name].unsubscribe();
             this[name] = null;

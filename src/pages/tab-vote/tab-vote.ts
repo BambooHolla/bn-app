@@ -4,6 +4,7 @@ import {
   ElementRef,
   ChangeDetectorRef,
   HostBinding,
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
@@ -66,6 +67,7 @@ export enum ExtendsPanel {
 @Component({
   selector: "page-tab-vote",
   templateUrl: "tab-vote.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabVotePage extends FirstLevelPage {
   @HostBinding("class.power-saving-mode")

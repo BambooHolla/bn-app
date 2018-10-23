@@ -13,6 +13,8 @@ import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { VoteExtendsPanelComponent } from "../VoteExtendsPanelComponent";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
+import debug from "debug";
+const log = debug("IBT:vote-pre-round-income-ranking");
 
 @Component({
   selector: "vote-pre-round-income-ranking",
@@ -57,54 +59,19 @@ export class VotePreRoundIncomeRankingComponent extends VoteExtendsPanelComponen
   };
 
   pre_round_rank_blist: RankModel[] = [];
-  fetchd_round_info: number = 0;
   async refreshDetailData() {
-    const current_round = this.appSetting.getRound();
-    // 避免多余的数据刷新
-    if (this.fetchd_round_info === current_round) {
-      return;
-    }
-    this.fetchd_round_info = current_round;
-    // 重置分页信息
-    this.page_info = {
-      ...this._default_page_info,
-    };
-    this.pre_round_rank_blist = [];
-    await this._loadDetailData();
-  }
-  private async _loadDetailData(page = this.page_info.page) {
-    this.page_info.loading = true;
-    try {
-      const list = await this.minService.getRankList(
-        page,
-        this.page_info.pageSize
-      );
-      this.page_info.page = page;
-      this.pre_round_rank_blist.push(...list);
-      this.page_info.hasMore = list.length === this.page_info.pageSize;
-      return this.page_info.hasMore;
-    } finally {
-      this.page_info.loading = false;
-    }
-  }
-  private async _loadMoreRankList() {
-    return await this._loadDetailData(this.page_info.page + 1);
-  }
-  async onListChange(event: ChangeEvent) {
-    if (event.end !== this.pre_round_rank_blist.length) return;
-    if (this.page_info.loading || !this.page_info.hasMore) {
-      return;
-    }
-    if (await this._loadMoreRankList()) {
-      this.pre_round_rank_blist = this.pre_round_rank_blist.slice();
-      this.cdRef.markForCheck();
-    }
+    this.pre_round_rank_blist = await this.minService.bigRankList.getPromise();
   }
 
   async routeToDelegate(rank_item: RankModel) {
     const vote = await this.minService.getDelegateInfoByAddress(
       rank_item.address
     );
-    this.emit("routeTo", "vote-delegate-detail", { delegate_info: vote });
+    log("try to route to delegate: %o", vote);
+    if (vote.isDelegate) {
+      this.emit("routeTo", "vote-delegate-detail", { delegate_info: vote });
+    } else {
+      this.emit("routeTo", "account-contact-detail", { address: rank_item.address });
+    }
   }
 }

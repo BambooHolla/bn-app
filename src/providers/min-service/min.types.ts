@@ -47,6 +47,7 @@ export type DelegateModel = {
 
 export type RankModel = {
   _id: string;
+  username?: string;
   address: string;
   dateCreated: string;
   profit: string;
