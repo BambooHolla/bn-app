@@ -143,7 +143,7 @@ vote-pre-round-income-ranking {
   }
   .rank-list {
     flex-grow: 1;
-    overflow: hidden;
+    overflow: auto;
     width: 100%;
     display: none;
     position: relative;
@@ -154,7 +154,7 @@ vote-pre-round-income-ranking {
     }
     &.enter {
       display: block;
-      animation: fadeInUp 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
+      // animation: fadeInUp 0.8s cubic-bezier(0.11, 0.99, 0.18, 1);
     }
     .loading {
       font-size: 4rem;
@@ -170,15 +170,25 @@ vote-pre-round-income-ranking {
         height: 10rem;
       }
     }
-    .item {
-      height: auto;
+    .item{
+      padding: 0 2rem;
       width: 100%;
+    }
+    .item .mat-button-wrapper {
+      height: auto;
       display: flex;
       align-items: center;
-      padding: 0 2rem;
       border-bottom: 0.55px solid #eeeeee;
       height: 4.92rem;
 
+      text-align: unset;
+      line-height: unset;
+      align-items: center;
+      font-weight: normal;
+      line-height: normal;
+      word-spacing: normal;
+      white-space: normal;
+      font-size: unset;
       .rank-of-me {
         display: none;
       }
