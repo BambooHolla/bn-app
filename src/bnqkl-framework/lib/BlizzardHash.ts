@@ -43,4 +43,15 @@ export class BlizzardHash {
     const { hashRange } = BlizzardHash;
     return ((v - hashRange.min) / hashRange.dis) % 1;
   }
+
+  static hashToRandom(lpszString: string, dwHashType: number, min = 0, max = 1, parseToInt?: boolean) {
+    const num_hash = BlizzardHash.hashString(lpszString, dwHashType);
+    const num_rate = (num_hash - BlizzardHash.hashRange.min) / BlizzardHash.hashRange.dis;
+    const num_random = num_rate * (max - min) + min;
+    if (parseToInt) {
+      return Math.floor(num_random);
+    } else {
+      return num_random;
+    }
+  }
 }

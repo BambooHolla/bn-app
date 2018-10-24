@@ -57,7 +57,7 @@ if (global["cordova"] && global["cordova"].plugins && global["cordova"].plugins.
   }
 }
 // 强行让SecondLevelPage编译进来
-(function noop(x) { })(SecondLevelPage);
+(function noop(x) {})(SecondLevelPage);
 
 enum FAIO_CHECK {
   Login,
@@ -164,9 +164,9 @@ export class MyApp implements OnInit {
       this.openInitPage(initPage);
     });
 
-    peerService.restartAppPage = ()=>{
+    peerService.restartAppPage = () => {
       this.openInitPage(this.getAppInitPage());
-    }
+    };
   }
   async getAppInitPage() {
     try {
@@ -211,9 +211,7 @@ export class MyApp implements OnInit {
       return LoginPage;
     }
   }
-  openInitPage(
-    initPage: Promise<"sign-in-and-sign-up" | null>
-  ) {
+  openInitPage(initPage: Promise<"sign-in-and-sign-up" | null>) {
     initPage
       .then(page => {
         if (page) {
@@ -334,10 +332,10 @@ export class MyApp implements OnInit {
         return;
       }
     }
-    return this._openPage(page, loading_content);
+    return this._openPage(page, loading_content, force);
   }
-  async _openPage(page: string, loading_content?: string | null | false) {
-    if (this.currentPage === page || this._currentOpeningPage === page) {
+  async _openPage(page: string, loading_content?: string | null | false, force?: boolean) {
+    if (!force && (this.currentPage === page || this._currentOpeningPage === page)) {
       return;
     }
     try {
@@ -358,13 +356,13 @@ export class MyApp implements OnInit {
         loading_content !== false &&
         (loading_content
           ? this.loadingCtrl.create(
-            Object.assign(
-              {
-                content: loading_content || "",
-              },
-              loading_opts
+              Object.assign(
+                {
+                  content: loading_content || "",
+                },
+                loading_opts
+              )
             )
-          )
           : this.loadingCtrl.create(loading_opts));
       await (loadinger && loadinger.present());
       try {
@@ -518,7 +516,7 @@ function onresize() {
 }
 onresize();
 global.addEventListener("resize", onresize);
-global["importLS"] = function (o) {
+global["importLS"] = function(o) {
   for (var k in o) {
     localStorage.setItem(k, o[k]);
   }

@@ -68,5 +68,10 @@
     </button>
     <div class="divider"></div>
   </div>
-  <button class="quit-app" (click)="quitAccount()">{{'SIGNING_OUT'|translate}}</button>
+  <div class="account-handler">
+    <button mat-button class="quit-app" (click)="quitAccount()">{{'SIGNING_OUT'|translate}}</button>
+    <button mat-button class="toggle-account" (click)="toggleAccount()">
+      <ali-icon name="ifm-qiehuanzhanghu"></ali-icon>
+    </button>
+  </div>
 </ion-content>

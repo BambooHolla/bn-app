@@ -43,7 +43,6 @@ export class LoginServiceProvider extends FLP_Tool {
     public user: UserInfoProvider
   ) {
     super();
-    console.group("Hello LoginServiceProvider Provider");
     tryRegisterGlobal("loginService", this);
     this.loginStatus = this.appSetting.user_token.map(val => {
       // console.log("USER TOKEN:", val);
@@ -58,8 +57,6 @@ export class LoginServiceProvider extends FLP_Tool {
         this.unInstallUserInfoRefresher();
       }
     });
-
-    console.groupEnd();
   }
   private _user_info_refresher?: Subscription;
   installUserInfoRefresher() {
@@ -102,16 +99,6 @@ export class LoginServiceProvider extends FLP_Tool {
   }
   readonly LOGIN_URL = this.appSetting.APP_URL("/api/accounts/open");
   readonly SEARCH_ACCOUNT_URL = this.appSetting.APP_URL("/api/accounts/");
-
-  // loginerInfo!: AsyncBehaviorSubject<UserModel>;
-  // // 按需生成，否则直接生成的话发起请求，在返回的末端没有其它地方接手这个请求catch错误的话，会导致异常抛出到全局
-  // @TB_AB_Generator("loginerInfo")
-  // loginerInfo_Executor(promise_pro) {
-  //   return promise_pro.follow(
-  //     this.fetch.autoCache(true).get(this.LOGIN_URL, { search: { type: "1" } }),
-  //   );
-  // }
-  private USER_PWD_STORE_KEY = "IFM_USER_LOGIN_PWD";
   /**
    * 登录账户
    *

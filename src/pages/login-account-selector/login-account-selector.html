@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-navbar color="transparent">
+    <!-- <ion-title>login-account-selector</ion-title> -->
+    <ion-buttons right>
+      <button class="toggle-to-delete-accounts" ion-button (click)="toggleToDeleteAccounts()">
+        {{(is_delete_mode?'CANCEL':'REMOVE')|translate}}
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="no-margin">
+  <div class="login-account-select-panel">
+    <h1 class="title">IFMCHAIN</h1>
+    <div class="tip">{{'CLICK_CARD_TO_SELECT_ACCOUNT_TIP'|translate}}</div>
+    <div class="bg-mask"></div>
+    <div id="bg3"></div>
+    <div class="account-list-wrapper" #accountListWrapper>
+      <!-- <div class="selected-account-item-wrapper" *ngIf="selected_account">
+        <div class="account-item">
+          <div class="address">{{selected_account.address}}</div>
+        </div>
+      </div> -->
+      <div class="selectable-panel">
+        <ng-container *ngFor="let account of login_able_accounts;let i = index">
+          <div class="account-item-wrapper" [class.selected]="account==selected_account" [ngStyle]="style_list[i]">
+            <div class="account-item" >
+              <button class="delete-button" [class.show]="is_delete_mode" (click)="removeAccount(account)">
+              </button>
+              <div class="card-body" (click)="selectAccount(account)">
+                <div class="banner-header">
+                  IFMCHAIN
+                </div>
+                <div class="address">{{account.address}}</div>
+              </div>
+              <div class="banner-fooder">
+                <div class="left">
+                  <div class="username">{{account.username}}</div>
+                </div>
+                <div class="right">
+                  <button mat-button class="sign-in" (click)="doLogin(account)">
+                    {{(isLoginedAccount(account)?'CURRENT_ACCOUNT':'SIGN_IN')|translate}}
+                    <ali-icon name="ifm-jinru"></ali-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ion-content>

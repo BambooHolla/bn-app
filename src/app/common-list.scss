@@ -25,17 +25,19 @@
   }
   > .common-item,
   > .common-item > .mat-button-wrapper {
-    text-align: unset;
-    line-height: unset;
     width: 100%;
     display: flex;
     align-items: center;
+
+    text-align: unset;
+    line-height: unset;
+
     font-weight: normal;
     line-height: normal;
     word-spacing: normal;
     white-space: normal;
     font-size: unset;
-    
+
     ali-icon[name="ifm-arrow-to-right"] {
       font-size: 1.5rem;
       color: #989898;

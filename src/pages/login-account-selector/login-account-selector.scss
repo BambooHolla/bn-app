@@ -1,0 +1,221 @@
+page-login-account-selector {
+  > .content {
+    > .scroll-content {
+      overflow: hidden;
+    }
+  }
+
+  .no-margin {
+    .scroll-content {
+      margin-top: 0 !important;
+    }
+  }
+
+  @extend .header-no-border;
+
+  .toggle-to-delete-accounts {
+    .button-inner {
+      color: #fff !important;
+      font-weight: lighter;
+      font-size: 1.3rem;
+    }
+  }
+
+  .login-account-select-panel {
+    padding-top: 7rem;
+    padding-top: calc(7rem + #{constant(safe-area-inset-top)});
+    padding-top: calc(7rem + #{env(safe-area-inset-top)});
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    .title {
+      color: #fff;
+      font-size: 3.5rem;
+      font-weight: normal;
+      margin-bottom: 0.6rem;
+    }
+    .tip {
+      color: #fff;
+      font-size: 1.8rem;
+      padding-bottom: 4rem;
+    }
+  }
+
+  .bg-mask {
+    background-image: url("../assets/imgs/sign-in-up/bg.jpg");
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+  }
+
+  #bg3 {
+    position: fixed;
+    width: 120vh;
+    height: 120vh;
+    left: calc(50vw - 60vh);
+    top: 7vh;
+    background-image: url("../assets/imgs/net-circle.png");
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    z-index: -1;
+    animation-name: rotate-bg3;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: 280s;
+    mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 1) 100%);
+  }
+
+  .account-list-wrapper {
+    width: 0;
+    flex-grow: 1;
+    position: relative;
+    perspective: 100vw;
+
+    .selected-account-item-wrapper {
+      position: absolute;
+      top: 0;
+    }
+
+    .selectable-panel {
+      flex-grow: 1;
+      /* position: absolute; */
+      /* height: 40vh; */
+      margin-top: 5rem;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .account-item-wrapper {
+      transition-duration: 250ms;
+      transition-timing-function: ease-in-out;
+      position: absolute;
+      .account-item {
+        transition-duration: 250ms;
+        transition-timing-function: ease-in-out;
+        bottom: 0;
+      }
+      &.selected {
+        .account-item {
+          /* bottom: unset; */
+          /* top: 0; */
+        }
+      }
+    }
+
+    .account-item {
+      position: absolute;
+      display: inline-block;
+      left: -45vw;
+      width: 90vw;
+      height: 50vw;
+      background: inherit;
+      /* background: linear-gradient(to bottom, #ff0 0%, #0ff 100%); */
+      border-radius: 0.6rem;
+      box-shadow: 0 0 0.4rem rgba(0, 0, 0, 0.3);
+      padding: 1rem 1.4rem;
+      /* overflow: hidden; */
+      &::after {
+        content: " ";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-image: url("../assets/imgs/net-circle-full-white.png");
+        background-size: 140vw 140vw;
+        background-repeat: no-repeat;
+        background-position: center 16vw;
+        opacity: 0.4;
+        z-index: 1;
+        pointer-events: none;
+        border-radius: 0.6rem;
+      }
+      .card-body {
+        width: 100%;
+        height: 100%;
+      }
+      .banner-fooder {
+        position: absolute;
+        width: 100%;
+        height: 5rem;
+        bottom: 0;
+        left: 0;
+        z-index: 2;
+        background-color: rgba(#fff, 0.15);
+        border-radius: 0 0 0.6rem 0.6rem;
+        /* backdrop-filter: blur(2px); */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        .right {
+          height: 100%;
+          .sign-in {
+            height: 100%;
+            padding-right: 1.8rem;
+            .mat-button-wrapper {
+              color: #fff;
+              text-align: unset;
+              line-height: unset;
+
+              font-weight: lighter;
+              line-height: normal;
+              word-spacing: normal;
+              white-space: normal;
+              font-size: 1.3rem;
+
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              ali-icon {
+                font-weight: normal;
+                margin-left: 1rem;
+                font-size: 2.4rem;
+                line-height: 1;
+              }
+            }
+          }
+        }
+      }
+      .delete-button {
+        contain: strict;
+        background: url("../assets/imgs/login-account-selector/delete-button.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        position: absolute;
+        width: 2.2rem;
+        height: 2.2rem;
+        display: block;
+        top: -0.8rem;
+        right: -0.8rem;
+        pointer-events: none;
+        transform: scale(0);
+        opacity: 0.4;
+        transition-duration: 120ms;
+        transition-timing-function: ease-in-out;
+        &.show {
+          display: block;
+          transform: scale(1);
+          opacity: 1;
+          pointer-events: all;
+        }
+      }
+
+      .address {
+        font-size: 1.6rem;
+        color: #fff;
+        text-shadow: 0.55px 0.55px 0.55px #000, -0.55px -0.55px 0.55px #fff;
+      }
+    }
+  }
+}

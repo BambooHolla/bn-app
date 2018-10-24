@@ -45,6 +45,12 @@ export class AccountSettingsPage extends SecondLevelPage {
   async quitAccount() {
     return this.loginService.loginOut();
   }
+  /**
+   * 切换账户
+   */
+  toggleAccount(){
+    return this.routeTo("login-account-selector");
+  }
 
   checkUpdate() {
     return checkUpdate(this.fetch, {

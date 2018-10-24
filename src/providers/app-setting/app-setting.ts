@@ -13,6 +13,8 @@ import { AppUrl, CommonService } from "../commonService";
 export { AppUrl };
 import { IfmchainCore } from "../../ifmchain-js-core/src";
 import { PromiseOut } from "../../fangodb/dist/src/const";
+import * as IDB_VK from "idb-keyval";
+import * as TYPE from "./app-setting.type";
 
 const constructor_inited = new PromiseOut<AppSettingProvider>();
 @Injectable()
@@ -50,7 +52,7 @@ export class AppSettingProvider extends CommonService {
     // 初始化缓存中的user_info
     this.user.initUserInfo(user_token);
 
-    this.user_token = new BehaviorSubject<string>(user_token);
+    this.user_token = new BehaviorSubject(user_token);
     this.account_address = this.user_token
       .map(token => {
         const token_info = this.getUserToken();
@@ -249,37 +251,37 @@ export class AppSettingProvider extends CommonService {
     });
 
   }
+  private LOGINABLE_ACCOUNTS = "LOGINABLE_ACCOUNTS";
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
-  user_token: BehaviorSubject<string>;
+  user_token: BehaviorSubject<TYPE.UserTokenModel | null>;
   account_address: Observable<string>;
   secondPublicKey: Observable<string>;
   private _token_timeout_ti: any;
   getUserToken() {
     try {
-      // clearTimeout(this._token_timeout_ti);
-      var tokenJson = localStorage.getItem(this.USER_TOKEN_STORE_KEY);
+      const tokenJson = localStorage.getItem(this.USER_TOKEN_STORE_KEY);
       if (!tokenJson) {
         return null;
       }
-      var obj = JSON.parse(tokenJson);
-      // if (obj.expiredTime && obj.expiredTime < Date.now()) {
-      //   return "";
-      // }
-      // this._token_timeout_ti = setTimeout(() => {
-      //   console.log("User Token 过期：", obj);
-      //   this._setUserToken("");
-      // }, obj.expiredTime - Date.now());
-      return obj || null;
+      const obj: TYPE.UserTokenModel = JSON.parse(tokenJson);
+      return obj
     } catch (e) {
       return null;
     }
   }
-  setUserToken(obj: any) {
+  setUserToken(obj: TYPE.UserTokenModel | string) {
     if (typeof obj !== "string") {
       const old_token = this.getUserToken();
       if (old_token && old_token.address === obj.address) {
         obj.remember = old_token.remember;
         obj.password = old_token.password;
+      } else {// 登录
+        obj.lastest_login_time = Date.now();
+        if (obj.remember) {
+          this.addLoginAbleAccount(obj);
+        } else {
+          this.delLoginAbleAccount(obj.address);
+        }
       }
       this.user.initUserInfo(obj);
       obj = JSON.stringify(obj);
@@ -287,14 +289,34 @@ export class AppSettingProvider extends CommonService {
       throw new TypeError("user token must be an object:{address,password,balance,fee}");
     }
     localStorage.setItem(this.USER_TOKEN_STORE_KEY, obj);
+
     this._setUserToken(this.getUserToken());
   }
   clearUserToken() {
     localStorage.removeItem(this.USER_TOKEN_STORE_KEY);
     this._setUserToken(this.getUserToken());
   }
-  private _setUserToken(token: string) {
+  private _setUserToken(token: TYPE.UserTokenModel | null) {
     this.user_token.next(this.getUserToken());
+  }
+  async getLoginAbleAccounts(): Promise<Map<string, TYPE.UserTokenModel>> {
+    return (await IDB_VK.get<any>(this.LOGINABLE_ACCOUNTS)) || new Map();
+  }
+  async addLoginAbleAccount(account: TYPE.UserTokenModel) {
+    const accountMap = await this.getLoginAbleAccounts();
+    accountMap.set(account.address, account);
+    await IDB_VK.set(this.LOGINABLE_ACCOUNTS, accountMap);
+  }
+  async delLoginAbleAccount(address: string) {
+    const accountMap = await this.getLoginAbleAccounts();
+    if (accountMap.has(address)) {
+      accountMap.delete(address);
+      await IDB_VK.set(this.LOGINABLE_ACCOUNTS, accountMap);
+    }
+    const cur_logining_account = this.getUserToken();
+    if (cur_logining_account && cur_logining_account.address === address) {
+      this.clearUserToken();
+    }
   }
   /**高度*/
   height: BehaviorSubject<number> = new BehaviorSubject(1);

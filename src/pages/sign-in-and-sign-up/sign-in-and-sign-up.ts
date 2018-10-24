@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit } from "@angular/core";
+import { Component, ViewChild, ElementRef, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
@@ -6,10 +6,7 @@ import { ChainMeshComponent } from "../../components/chain-mesh/chain-mesh";
 import { FirstLevelPage } from "../../bnqkl-framework/FirstLevelPage";
 import { LoginServiceProvider } from "../../providers/login-service/login-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
-import {
-  TransactionServiceProvider,
-  TransactionTypes,
-} from "../../providers/transaction-service/transaction-service";
+import { TransactionServiceProvider, TransactionTypes } from "../../providers/transaction-service/transaction-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { PeerServiceProvider } from "../../providers/peer-service/peer-service";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
@@ -27,6 +24,7 @@ import { SocialSharing } from "@ionic-native/social-sharing";
 @Component({
   selector: "page-sign-in-and-sign-up",
   templateUrl: "sign-in-and-sign-up.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
   // animations: [LoginFormInOut, RegisterFormInOut],
 })
 export class SignInAndSignUpPage extends FirstLevelPage {
@@ -40,7 +38,8 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer,
     public socialSharing: SocialSharing,
-    public peerService: PeerServiceProvider
+    public peerService: PeerServiceProvider,
+    public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams);
   }
@@ -48,10 +47,6 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   get app_version() {
     return this.baseConfig.APP_VERSION;
   }
-  // @SignInAndSignUpPage.willEnter
-  // fixStaturBug() {
-  //   this.myapp.tryOverlaysWebView();
-  // }
 
   @ViewChild("passwordTextarear") passwordTextarear?: ElementRef;
   @ViewChild(ChainMeshComponent) cmesh?: ChainMeshComponent;
@@ -67,6 +62,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     return this.translate.currentLang;
   }
 
+  @SignInAndSignUpPage.propDetectChanges("*")
   formData = {
     email: "",
     phone: "",
@@ -75,7 +71,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     pwd: "",
     remember_pwd: true,
   };
-  is_agree_user_agreement = false;
+  @SignInAndSignUpPage.markForCheck is_agree_user_agreement = false;
   pwd_by_register = "";
   _ture_pwd = "";
   pwd_textarea_height = "";
@@ -95,7 +91,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     }
   }
 
-  show_pwd = false;
+  @SignInAndSignUpPage.markForCheck show_pwd = false;
   showPWD() {
     this.show_pwd = true;
   }
@@ -109,28 +105,15 @@ export class SignInAndSignUpPage extends FirstLevelPage {
     });
   }
 
-  font_name: SafeStyle = this.domSanitizer.bypassSecurityTrustStyle("PWD");
-  @ViewChild("fontCalc") fontCalcEle?: ElementRef;
-  calcFontWidth(c): number {
-    if (this.fontCalcEle) {
-      const ele = this.fontCalcEle.nativeElement;
-      ele.innerHTML = c;
-      return ele.getBoundingClientRect().width;
-    }
-    return 0;
-  }
-
-  page_status = "login";
+  @SignInAndSignUpPage.markForCheck page_status = "login";
   gotoLogin() {
     this.page_status = "login";
   }
 
   get canDoLogin() {
-    return this.formData.pwd;
+    return this.formData.pwd.trim().length > 0;
   }
-  @asyncCtrlGenerator.error(() =>
-    SignInAndSignUpPage.getTranslate("LOGIN_ERROR")
-  )
+  @asyncCtrlGenerator.error(() => SignInAndSignUpPage.getTranslate("LOGIN_ERROR"))
   // @asyncCtrlGenerator.loading("@@LOGINNG")
   async doLogin() {
     if (!this.is_agree_user_agreement) {
@@ -157,10 +140,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
       await this.copy(this.pwd_by_register);
       return await this.shareToSocial();
     }
-    const result = await this.loginService.doLogin(
-      this.formData.pwd.trim(),
-      this.formData.remember_pwd
-    );
+    const result = await this.loginService.doLogin(this.formData.pwd.trim(), this.formData.remember_pwd);
     if (result) {
       // this.routeTo("scan-nodes");
       await this.myapp.openPage(MainPage, undefined, null /*"@@LOGINNG"*/);
@@ -223,10 +203,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   }
   async copy(text) {
     await this.navigatorClipboard.writeText(text);
-    await this.showToast(
-      this.getTranslateSync("YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"),
-      2000
-    );
+    await this.showToast(this.getTranslateSync("YOUR_PASSWORD_HAS_BEEN_SAVED_TO_THE_CLIPBOARD"), 2000);
   }
   shareToSocial() {
     return this.socialSharing.share(this.pwd_by_register);

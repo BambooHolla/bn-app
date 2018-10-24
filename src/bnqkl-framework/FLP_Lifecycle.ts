@@ -136,7 +136,7 @@ export class FLP_Lifecycle extends FLP_Tool implements OnInit, AfterContentInit,
     this.tryEmit("willEnter");
   }
 
-  @FLP_Tool.FromGlobal myapp!: any;
+  @FLP_Tool.FromGlobal myapp!: import("../app/app.component").MyApp;
   cdRef?: ChangeDetectorRef;
   markForCheck() {
     if (this.cdRef) {
