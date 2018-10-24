@@ -376,6 +376,8 @@ export class AppSettingProvider extends CommonService {
     background_mining: false,
     /**缓存用户最后一次发送投票的轮次*/
     digRound: 0,
+    /**隐身模式*/
+    in_stealth_mode: false,
     /**挖矿收益通知*/
     mining_income_notice: false,
     /**默认手续费*/

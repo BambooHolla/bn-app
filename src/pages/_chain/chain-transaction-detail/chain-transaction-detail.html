@@ -77,7 +77,7 @@
         <ali-icon name="ifm-arrow-to-right"></ali-icon>
       </div>
     </div>
-    <div class="common-item sourceIP" *ngIf="transaction?.sourceIP">
+    <div class="common-item sourceIP" *ngIf="transaction?.sourceIP && !appSetting.settings.in_stealth_mode">
       <div class="left">
         {{'TRANSACTION_sourceIP'|translate}}
       </div>

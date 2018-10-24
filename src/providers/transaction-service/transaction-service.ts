@@ -17,9 +17,15 @@ export * from "./transaction.types";
 
 @Injectable()
 export class TransactionServiceProvider {
-  get IFMJSCORE() { return AppSettingProvider.IFMJSCORE; }
-  get addresssCheck() { return this.IFMJSCORE.address() }
-  get keypair() { return this.IFMJSCORE.keypair() }
+  get IFMJSCORE() {
+    return AppSettingProvider.IFMJSCORE;
+  }
+  get addresssCheck() {
+    return this.IFMJSCORE.address();
+  }
+  get keypair() {
+    return this.IFMJSCORE.keypair();
+  }
   // block: any;
   TransactionTypes = TYPE.TransactionTypes;
   unTxDb = new Mdb<TYPE.TransactionModel>("unconfirm_transaction");
@@ -183,8 +189,8 @@ export class TransactionServiceProvider {
 
     //时间戳加入转账对象
     txData.timestamp = (await this.getTimestamp()).timestamp;
-    // 加入ip地址
-    txData.sourceIP = await this.getSourceIp();
+    // 加入ip地址，隐身模式下不发送IP
+    txData.sourceIP = this.appSetting.settings.in_stealth_mode ? "" : await this.getSourceIp();
     txData.magic = baseConfig.MAGIC;
 
     //生成转账        await上层包裹的函数需要async
@@ -247,7 +253,7 @@ export class TransactionServiceProvider {
    * @param: secondPassphrase 输入的二次密码
    */
   verifySecondPassphrase(secret: string, secondSecret: string) {
-    return this.IFMJSCORE.keypair().validSecretPassphrase(secret, secondSecret, this.user.secondPublicKey)
+    return this.IFMJSCORE.keypair().validSecretPassphrase(secret, secondSecret, this.user.secondPublicKey);
   }
 
   /**
