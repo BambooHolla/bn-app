@@ -229,6 +229,9 @@
   "EXPENDITURE": "支出",
   "INCOME": "收入",
 
+  "//": "vote-current-block-income",
+  "REMAINING_BLOCK": "剩余区块",
+
   "//": "tab-chain",
   "SYNC_BLOCKCHAIN_ERROR": "区块链同步出错",
   "VERIFYING_BLOCK": "区块校验中",

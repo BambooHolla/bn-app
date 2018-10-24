@@ -1,22 +1,10 @@
-import {
-  Component,
-  Input,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+import { Component, Input, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
 import { RankModel } from "../../providers/min-service/min-service";
 import { NavController, NavParams } from "ionic-angular/index";
-import {
-  BlockServiceProvider,
-  BlockModel,
-  ForgingBlockModel,
-} from "../../providers/block-service/block-service";
+import { BlockServiceProvider, BlockModel, ForgingBlockModel } from "../../providers/block-service/block-service";
 import { BenefitServiceProvider } from "../../providers/benefit-service/benefit-service";
 
-import {
-  VoteExtendsPanelComponent,
-  DATA_REFRESH_FREQUENCY,
-} from "../VoteExtendsPanelComponent";
+import { VoteExtendsPanelComponent, DATA_REFRESH_FREQUENCY } from "../VoteExtendsPanelComponent";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { ChangeEvent, VirtualScrollComponent } from "angular2-virtual-scroll";
 
@@ -49,7 +37,7 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
 
   cur_round_income_info = {
     round: 0,
-    block_num: 0,
+    remaining_block_num: 0,
     cur_round_income_amount: 0,
     recent_income_amount: 0,
     loading: false,
@@ -64,27 +52,19 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
     }
     cur_round_income_info.round = new_round;
 
-    tasks[
-      tasks.length
-    ] = this.benefitService.benefitThisRound.getPromise().then(v => {
+    tasks[tasks.length] = this.benefitService.benefitThisRound.getPromise().then(v => {
       cur_round_income_info.cur_round_income_amount = v;
     });
-    tasks[tasks.length] = this.benefitService.recentBenefit
-      .getPromise()
-      .then(v => {
-        cur_round_income_info.recent_income_amount = v;
-      });
+    tasks[tasks.length] = this.benefitService.recentBenefit.getPromise().then(v => {
+      cur_round_income_info.recent_income_amount = v;
+    });
   }
   async refreshBaseData() {
     const tasks: Promise<any>[] = [];
     const { cur_round_income_info } = this;
     cur_round_income_info.loading = true;
     try {
-      tasks[tasks.length] = this.blockService.myForgingCount
-        .getPromise()
-        .then(v => {
-          cur_round_income_info.block_num = v;
-        });
+      cur_round_income_info.remaining_block_num = this.appSetting.getBlockNumberToRoundEnd(this.appSetting.getHeight());
       tasks[tasks.length] = this._refreshSameData();
       await Promise.all(tasks);
     } finally {
@@ -110,21 +90,16 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
       ...this._default_page_info,
     };
     try {
-      tasks[tasks.length] = this.blockService.myForgingCount
-        .getPromise()
-        .then(v => {
-          // 如果count没有变，就不需要更新列表
-          if (
-            v === cur_round_income_info.block_num &&
-            !(v !== 0 && this.my_forging_block_list.length === 0)
-          ) {
-            return false;
-          }
-          cur_round_income_info.block_num = v;
-          this.my_forging_block_list = [];
-          this.page_info.page = 1;
-          return this._loadDetailData();
-        });
+      tasks[tasks.length] = this.blockService.myForgingCount.getPromise().then(v => {
+        // 如果count没有变，就不需要更新列表
+        if (v === cur_round_income_info.block_num && !(v !== 0 && this.my_forging_block_list.length === 0)) {
+          return false;
+        }
+        cur_round_income_info.block_num = v;
+        this.my_forging_block_list = [];
+        this.page_info.page = 1;
+        return this._loadDetailData();
+      });
       tasks[tasks.length] = this._refreshSameData();
       await Promise.all(tasks);
     } finally {
@@ -134,9 +109,7 @@ export class VoteCurrentBlockIncomeComponent extends VoteExtendsPanelComponent {
   private async _loadDetailData(page = this.page_info.page) {
     this.page_info.loading = true;
     try {
-      const list = await this.blockService
-        .getMyForgingByPage(page, this.page_info.pageSize)
-        .then(data => data.blocks);
+      const list = await this.blockService.getMyForgingByPage(page, this.page_info.pageSize).then(data => data.blocks);
       this.page_info.page = page;
       this.my_forging_block_list.push(...list);
       this.page_info.hasMore = list.length === this.page_info.pageSize;
