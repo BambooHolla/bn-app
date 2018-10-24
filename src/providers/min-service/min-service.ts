@@ -12,7 +12,7 @@ import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "
 import { UserInfoProvider } from "../user-info/user-info";
 import { FLP_Form } from "../../../src/bnqkl-framework/FLP_Form";
 import { FLP_Tool } from "../../../src/bnqkl-framework/FLP_Tool";
-import { asyncCtrlGenerator } from "../../../src/bnqkl-framework/Decorator";
+import { asyncCtrlGenerator, getErrorFromAsyncerror } from "../../../src/bnqkl-framework/Decorator";
 import { PromiseOut, PromisePro, PromiseType } from "../../../src/bnqkl-framework/PromiseExtends";
 import * as TYPE from "./min.types";
 export * from "./min.types";
@@ -183,6 +183,10 @@ export class MinServiceProvider extends FLP_Tool {
       return;
     }
     if (parseFloat(fee) > parseFloat(this.userInfo.balance)) {
+      if (!this.appSetting.settings._is_first_no_enough_balance_to_vote) {
+        this.appSetting.settings._is_first_no_enough_balance_to_vote = await this.waitTipDialogConfirm("@@FIRST_NO_ENOUGH_BALANCE_TO_VOTE");
+        throw getErrorFromAsyncerror();
+      }
       throw new Error(this.getTranslateSync("NOT_ENOUGH_BALANCE_TO_VOTE"));
     }
     const voted_delegate_list = await this.voted_delegates_db.find({

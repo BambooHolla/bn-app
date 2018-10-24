@@ -77,8 +77,7 @@ export class AppSettingProvider extends CommonService {
       const default_settings = { ...this.settings };
       const get_settings_key = () => {
         return (
-          this.user.address &&
-          `${baseConfig.settingKeyPerfix}${this.user.address}:${baseConfig.NET_VERSION}|${baseConfig.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
+          this.user.address && `${baseConfig.settingKeyPerfix}${this.user.address}:${baseConfig.NET_VERSION}|${baseConfig.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
         );
       };
       const getUserSettings = () => {
@@ -91,7 +90,7 @@ export class AppSettingProvider extends CommonService {
             try {
               settings = JSON.parse(settings_json); //JSON可用
               should_write_in = false;
-            } catch (e) { }
+            } catch (e) {}
           }
           // 进行初始化写入
           if (should_write_in) {
@@ -203,7 +202,7 @@ export class AppSettingProvider extends CommonService {
     // 框架内置的AniBase
     {
       const _update = AniBase.prototype._update;
-      const noop = function (t, diff_t) {
+      const noop = function(t, diff_t) {
         if (this.force_update) {
           _update.call(this, t, diff_t);
         }
@@ -216,7 +215,7 @@ export class AppSettingProvider extends CommonService {
     }
     // PIXI框架的循环
     {
-      const noop = function (t) {
+      const noop = function(t) {
         if (this.force_update) {
           _update.call(this, t);
         }
@@ -231,7 +230,7 @@ export class AppSettingProvider extends CommonService {
     // 声音开关
     {
       const _play = PIXI.sound.play;
-      const noop = function (...args) {
+      const noop = function(...args) {
         if (this.force_play_sound) {
           _play.apply(this, args);
         }
@@ -249,7 +248,6 @@ export class AppSettingProvider extends CommonService {
         this.settings[k] = cur_setting[k];
       }
     });
-
   }
   private LOGINABLE_ACCOUNTS = "LOGINABLE_ACCOUNTS";
   private USER_TOKEN_STORE_KEY = "LOGIN_TOKEN";
@@ -264,7 +262,7 @@ export class AppSettingProvider extends CommonService {
         return null;
       }
       const obj: TYPE.UserTokenModel = JSON.parse(tokenJson);
-      return obj
+      return obj;
     } catch (e) {
       return null;
     }
@@ -275,7 +273,8 @@ export class AppSettingProvider extends CommonService {
       if (old_token && old_token.address === obj.address) {
         obj.remember = old_token.remember;
         obj.password = old_token.password;
-      } else {// 登录
+      } else {
+        // 登录
         obj.lastest_login_time = Date.now();
         if (obj.remember) {
           this.addLoginAbleAccount(obj);
@@ -420,6 +419,8 @@ export class AppSettingProvider extends CommonService {
     _is_first_put_into_voucher: false,
     /*是否显示过 IBT增加的提示*/
     _is_first_balance_grow_up_notice: false,
+    /*是否显示过第一次 挖矿手续费不足 显示的提示*/
+    _is_first_no_enough_balance_to_vote: false,
   };
   /*多个账户之间共享的数据*/
   share_settings = {
@@ -473,7 +474,7 @@ export class AppSettingProvider extends CommonService {
       document.body.appendChild(testnet_flag_wrapper);
 
       // 测试网络角标内容
-      constructor_inited.promise.then((appSetting) => {
+      constructor_inited.promise.then(appSetting => {
         let ani_flag_frame_id;
         let pre_flag_transform;
         appSetting.translate.stream(["TESTNET_FLAG"]).subscribe(values => {
@@ -504,7 +505,7 @@ export class AppSettingProvider extends CommonService {
 
     const testnet_flag_wrapper = testnet_flag.parentElement;
     if (!testnet_flag_wrapper) {
-      throw new Error("testnet_flag_wrapper not found. should not happed.")
+      throw new Error("testnet_flag_wrapper not found. should not happed.");
     }
     /*显示测试网络flag*/
     if (
@@ -518,7 +519,6 @@ export class AppSettingProvider extends CommonService {
     }
   }
 }
-
 
 /**
  * 基于token的AsyncBehaviorSubjuet类型的属性/方法生成器
