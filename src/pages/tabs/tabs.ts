@@ -132,7 +132,7 @@ export class TabsPage extends FLP_Lifecycle {
     this.selectedTabPageContainer = tabPageContainer;
     this.selectedTabPage = tabPage;
     this.selectedIndex = index;
-    this.markForCheck();
+    this.detectChanges();
   }
   @TabsPage.afterContentInit
   initTabView() {
@@ -163,7 +163,7 @@ export class TabsPage extends FLP_Lifecycle {
     } else {
       this._hidden_tabs.delete(key);
     }
-    this.markForCheck();
+    this.detectChanges();
   }
   getTabsHidden() {
     return this._hidden_tabs.size > 0;
@@ -176,7 +176,7 @@ export class TabsPage extends FLP_Lifecycle {
     } else {
       this._transparent_tabs.delete(key);
     }
-    this.markForCheck();
+    this.detectChanges();
   }
   getBgTransparent() {
     return this._transparent_tabs.size > 0;
