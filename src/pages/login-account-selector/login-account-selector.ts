@@ -41,18 +41,32 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
   async getLoginAbleAccounts() {
     const accountMap = await this.appSetting.getLoginAbleAccounts();
     this.login_able_accounts = [...accountMap.values()].sort((a, b) => b.lastest_login_time - a.lastest_login_time);
+    await this.refreshAccountsBalance();
     this.selected_account = this.login_able_accounts[0];
     this.generateStyleList();
   }
+  /**选中要登录的联系人*/
   selectAccount(account: UserTokenModel) {
     this.selected_account = account;
     this.generateStyleList();
+  }
+  /**刷新账户余额*/
+  @asyncCtrlGenerator.error()
+  async refreshAccountsBalance() {
+    await Promise.all(
+      this.login_able_accounts.map(async account => {
+        Object.assign(account, await this.accountService.getAccountByAddress(account.address));
+      })
+    );
+
+    this.appSetting.addLoginAbleAccountList(this.login_able_accounts);
   }
 
   private _selected_style = {
     top: 0,
     bottom: "unset",
-    backgroundColor: "#FFF",
+    backgroundColor: "#000",
+    background: "",
     zIndex: 100,
     transform: "scale(0.98)",
   };
@@ -64,7 +78,11 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
       return;
     }
     if (selected_account) {
-      this._selected_style.backgroundColor = this.addressToColor(selected_account.address);
+      // this._selected_style.backgroundColor = this.addressToColor(selected_account.address);
+      this._selected_style.background = `linear-gradient(to bottom, ${this.addressToColor(selected_account.address, 1)} 0%, ${this.addressToColor(
+        selected_account.address,
+        0.8
+      )} 100%)`;
     }
     if (this.accountListWrapperRef && "top" in this._selected_style) {
       const ele = this.accountListWrapperRef.nativeElement as HTMLElement;
@@ -89,7 +107,10 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
       const scale = ((max_scale - min_scale) * i) / num + min_scale;
       const backgroundColor = this.addressToColor(account.address);
       const style = {
-        backgroundColor,
+        background: `linear-gradient(to bottom, ${this.addressToColor(account.address, 1)} 0%, ${this.addressToColor(account.address, 0.8)} 100%)`,
+        backgroundColor: "#000",
+        // "--from-color": backgroundColor,
+        // "--to-color": this.addressToColor(account.address, 0.8),
         bottom: `-webkit-calc(-20vw + ${buttonRate}%)`,
         zIndex: _index,
         transform: `rotateX(-${rotateX}deg) scale(${scale})`,
@@ -99,8 +120,8 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
     });
   }
   private _color_base = ["ff0000", "ff8000", "ffff00", "80ff00", "00ff00", "00ff80", "00ffff", "0080ff", "0000ff", "7f00ff", "ff00ff", "ff007f", "808080"];
-  private _cache_address_color = new Map<string, string>();
-  addressToColor(address: string) {
+  private _cache_address_color = new Map<string, [number, number, number]>();
+  addressToColor(address: string, opacity = 1) {
     let color = this._cache_address_color.get(address);
     if (!color) {
       const rate = 0.8;
@@ -114,14 +135,14 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
       const r_num = BlizzardHash.hashToRandom(address, r_base, 0, color_rest, true);
       const g_num = BlizzardHash.hashToRandom(address, g_base, 0, color_rest, true);
       const b_num = BlizzardHash.hashToRandom(address, b_base, 0, color_rest, true);
-      color =
-        "#" +
-        (("0" + (r_base + r_num).toString(16)).substr(-2) + //R
-        ("0" + (g_base + g_num).toString(16)).substr(-2) + //G
-          ("0" + (b_base + b_num).toString(16)).substr(-2)); //B
+      color = [r_base + r_num, g_base + g_num, b_base + b_num];
+      // "#" +
+      // (("0" + (r_base + r_num).toString(16)).substr(-2) + //R
+      // ("0" + (g_base + g_num).toString(16)).substr(-2) + //G
+      //   ("0" + (b_base + b_num).toString(16)).substr(-2)); //B
       this._cache_address_color.set(address, color);
     }
-    return color;
+    return `rgba(${color},${opacity})`;
   }
 
   @LoginAccountSelectorPage.detectChanges is_delete_mode = false;

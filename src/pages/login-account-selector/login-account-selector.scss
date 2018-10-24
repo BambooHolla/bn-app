@@ -98,6 +98,7 @@ page-login-account-selector {
       transition-duration: 250ms;
       transition-timing-function: ease-in-out;
       position: absolute;
+      background: linear-gradient(to bottom, var(--from-color) 0%, var(--to-color) 100%);
       .account-item {
         transition-duration: 250ms;
         transition-timing-function: ease-in-out;
@@ -142,6 +143,13 @@ page-login-account-selector {
       .card-body {
         width: 100%;
         height: 100%;
+        .banner-header {
+          font-size: 1.6rem;
+          letter-spacing: 0.2rem;
+          color: #ccc;
+          // text-shadow:1px 1px 0px rgb(0, 0, 0),-1px 1px 0px rgb(0, 0, 0),-1px -1px 0px rgb(0, 0, 0),1px -1px 0px rgb(0, 0, 0);
+          text-shadow: 0.55px 0.55px 1px #000, -0.55px -0.55px 1px #fff;
+        }
       }
       .banner-fooder {
         position: absolute;
@@ -157,6 +165,10 @@ page-login-account-selector {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        .left {
+          padding-left: 1.8rem;
+          color: #fff;
+        }
         .right {
           height: 100%;
           .sign-in {
@@ -200,7 +212,7 @@ page-login-account-selector {
         right: -0.8rem;
         pointer-events: none;
         transform: scale(0);
-        opacity: 0.4;
+        opacity: 0.6;
         transition-duration: 120ms;
         transition-timing-function: ease-in-out;
         &.show {
@@ -213,8 +225,14 @@ page-login-account-selector {
 
       .address {
         font-size: 1.6rem;
-        color: #fff;
-        text-shadow: 0.55px 0.55px 0.55px #000, -0.55px -0.55px 0.55px #fff;
+        color: rgba(#fff, 0.96);
+        text-shadow: 0.55px 0.55px 1px #000, -0.55px -0.55px 1px #fff;
+      }
+      .balance {
+        font-size: 2rem;
+        color: #eee;
+        text-align: right;
+        margin-top: 1rem;
       }
     }
   }

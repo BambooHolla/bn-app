@@ -414,6 +414,11 @@
   "DELEGATE_VOTE_RATE": "得票率",
   "GET_FORGIN_BLOCK_ERROR": "获取委托人打造的区块出错",
   "LOADING_MORE_FOGIN_BLOCK_LIST": "加载更多区块中……",
+  "CHECKING_DELEGATE_VOTEABLE": "检查投票纪录中",
+  "VOTE_THIS_DELEGATE": "投TA一票",
+  "VOTED_THIS_DELEGATE": "本轮已经投过TA",
+  "VOTE_ONE_DELEGATE_TIP":
+    "在IFMChain中，所谓投票就是选举锻造区块的矿工，本质上是将区块链账务的处理权交给某人，选择在线率高、锻造区块多、交易处理能力强的矿工可以提高整个区块链网络的稳定性。",
 
   "//": "pay-receive",
   "PAY-RECEIVE": "接收",

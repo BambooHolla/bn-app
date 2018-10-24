@@ -306,6 +306,13 @@ export class AppSettingProvider extends CommonService {
     accountMap.set(account.address, account);
     await IDB_VK.set(this.LOGINABLE_ACCOUNTS, accountMap);
   }
+  async addLoginAbleAccountList(account_list: TYPE.UserTokenModel[]) {
+    const accountMap = await this.getLoginAbleAccounts();
+    account_list.forEach(account => {
+      accountMap.set(account.address, account);
+    });
+    await IDB_VK.set(this.LOGINABLE_ACCOUNTS, accountMap);
+  }
   async delLoginAbleAccount(address: string) {
     const accountMap = await this.getLoginAbleAccounts();
     if (accountMap.has(address)) {
