@@ -396,6 +396,7 @@
   "ACCOUNT-INFO": "地址信息",
   "ACCOUNT_IBT_ADRESS": "地址地址",
   "SET_ACCOUNT_USERNAME": "设置用户名",
+  "SET_USERNAME_TIP": "用户名一旦设置将无法修改，您依然要设置用户名吗？",
 
   "//": "account-miner-list",
   "ACCOUNT-MINER-LIST": "锻块矿工",
