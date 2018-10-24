@@ -166,6 +166,31 @@ export class MinServiceProvider extends FLP_Tool {
     });
     return data;
   }
+  /**
+   * 当前轮已经投票过的所有委托人
+   * TODO: REMOVE ME
+   */
+  allVotedDelegatesMap!: AsyncBehaviorSubject<Map<string, TYPE.DelegateModel>>;
+  @ROUND_AB_Generator("allVotedDelegatesMap", true)
+  allVotedDelegatesMap_Executor(promise_pro: PromisePro<Map<string, TYPE.DelegateModel>>) {
+    return promise_pro.follow(
+      (async () => {
+        let skip = 0;
+        const delegatesMap = new Map<string, TYPE.DelegateModel>();
+        do {
+          const res = await this.getVotedDelegates(skip, 57);
+          res.skip = skip;
+          res.delegates.forEach(delegate => {
+            delegatesMap.set(delegate.address, delegate);
+          });
+          if (res.done) {
+            break;
+          }
+        } while (true);
+        return delegatesMap;
+      })()
+    );
+  }
 
   /**
    * 投票
@@ -334,15 +359,16 @@ export class MinServiceProvider extends FLP_Tool {
   async tryVote(
     voteable_delegates: TYPE.DelegateModel[],
     round = this.appSetting.getRound(),
-    userPWD: { password: string; pay_pwd?: string },
+    userPWD: { password: string; pay_pwd?: string; fee?: string },
     from_page?: FLP_Form
   ) {
-    await this._vote(voteable_delegates, userPWD.password, userPWD.pay_pwd)
+    await this._vote(voteable_delegates, userPWD.password, userPWD.pay_pwd, userPWD.fee)
       .then(this._vote_success.bind(this))
       .catch(this._vote_error.bind(this));
   }
   private _vote_success() {
     this.tryEmit("vote-success");
+    this.allVotedDelegatesMap.refresh();
     this.vote_status_detail = null;
     this.vote_status.next(true);
   }

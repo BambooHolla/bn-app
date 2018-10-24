@@ -50,12 +50,14 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
     this.selected_account = account;
     this.generateStyleList();
   }
+
   /**刷新账户余额*/
+  @LoginAccountSelectorPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error()
   async refreshAccountsBalance() {
     await Promise.all(
       this.login_able_accounts.map(async account => {
-        Object.assign(account, await this.accountService.getAccountByAddress(account.address));
+        Object.assign(account, { balance: "0" /*找不到账户的情况下，将余额滞空*/ }, await this.accountService.getAccountByAddress(account.address));
       })
     );
 
@@ -136,10 +138,7 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
       const g_num = BlizzardHash.hashToRandom(address, g_base, 0, color_rest, true);
       const b_num = BlizzardHash.hashToRandom(address, b_base, 0, color_rest, true);
       color = [r_base + r_num, g_base + g_num, b_base + b_num];
-      // "#" +
-      // (("0" + (r_base + r_num).toString(16)).substr(-2) + //R
-      // ("0" + (g_base + g_num).toString(16)).substr(-2) + //G
-      //   ("0" + (b_base + b_num).toString(16)).substr(-2)); //B
+
       this._cache_address_color.set(address, color);
     }
     return `rgba(${color},${opacity})`;

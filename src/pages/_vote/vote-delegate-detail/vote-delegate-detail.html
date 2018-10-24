@@ -75,4 +75,9 @@
       </ion-infinite-scroll>
     </ion-content>
   </div>
+  <div class="footer-bar">
+    <button mat-button class="submit-button" (click)="voteDelegate()" [disabled]="checking_delegate_voteable||!delegate_voteable">
+      <text-mg [text]="voteButtonText|translate" from="#ffa279" to="#ff7070" direction="to bottom" fontSize="1.8rem"></text-mg>
+    </button>
+  </div>
 </ion-content>
