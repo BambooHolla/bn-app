@@ -1,21 +1,10 @@
-import {
-  Component,
-  Optional,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+import { Component, Optional, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
-import {
-  MinServiceProvider,
-  DelegateModel,
-} from "../../../providers/min-service/min-service";
-import {
-  PeerServiceProvider,
-  PeerModel,
-} from "../../../providers/peer-service/peer-service";
+import { MinServiceProvider, DelegateModel } from "../../../providers/min-service/min-service";
+import { PeerServiceProvider, PeerModel } from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-scorll-list" })
 @Component({
@@ -36,10 +25,8 @@ export class AccountMinerScorllListPage extends SecondLevelPage {
     this.auto_header_shadow_when_scroll_down = true;
   }
 
-  @AccountMinerScorllListPage.markForCheck
-  cur_minter_rank_list?: DelegateModel[];
-  @AccountMinerScorllListPage.markForCheck
-  can_minter_rank_list?: DelegateModel[];
+  @AccountMinerScorllListPage.markForCheck cur_minter_rank_list?: DelegateModel[];
+  @AccountMinerScorllListPage.markForCheck can_minter_rank_list?: DelegateModel[];
   async loadMinterList() {
     const cur_minter_list = await this.minService.allMinersCurRound.getPromise();
 
@@ -61,9 +48,7 @@ export class AccountMinerScorllListPage extends SecondLevelPage {
     this.cdRef.markForCheck();
   }
   @AccountMinerScorllListPage.addEvent("ROUND:CHANGED")
-  @asyncCtrlGenerator.error(() =>
-    AccountMinerScorllListPage.getTranslate("LOAD_ALL_MINER_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_ALL_MINER_LIST_ERROR")
   @asyncCtrlGenerator.retry()
   async watchRoundChange(height) {
     return this.loadMinterList();

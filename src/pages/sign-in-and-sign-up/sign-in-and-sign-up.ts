@@ -113,7 +113,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
   get canDoLogin() {
     return this.formData.pwd.trim().length > 0;
   }
-  @asyncCtrlGenerator.error(() => SignInAndSignUpPage.getTranslate("LOGIN_ERROR"))
+  @asyncCtrlGenerator.error("@@LOGIN_ERROR")
   // @asyncCtrlGenerator.loading("@@LOGINNG")
   async doLogin() {
     if (!this.is_agree_user_agreement) {

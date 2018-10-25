@@ -1,19 +1,11 @@
-import {
-  Component,
-  Optional,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-} from "@angular/core";
+import { Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular/index";
 import { MinServiceProvider } from "../../../providers/min-service/min-service";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
-import {
-  BenefitServiceProvider,
-  BenefitModel,
-} from "../../../providers/benefit-service/benefit-service";
+import { BenefitServiceProvider, BenefitModel } from "../../../providers/benefit-service/benefit-service";
 
 @IonicPage({ name: "vote-income-logs" })
 @Component({
@@ -47,9 +39,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     hasMore: true,
   };
   // @VoteIncomeLogsPage.willEnter
-  @asyncCtrlGenerator.error(() =>
-    VoteIncomeLogsPage.getTranslate("LOAD_VOTE_INCOME_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_VOTE_INCOME_LIST_ERROR")
   async loadIncomeLogList() {
     const { income_log_list_config } = this;
     // 重置分页
@@ -60,9 +50,7 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     });
     this.markForCheck();
   }
-  @asyncCtrlGenerator.error(() =>
-    VoteIncomeLogsPage.getTranslate("LOAD_MORE_VOTE_INCOME_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_MORE_VOTE_INCOME_LIST_ERROR")
   async loadMoreIncomeLogList() {
     await new Promise(cb => setTimeout(cb, 1000));
     const { income_log_list_config } = this;
@@ -76,12 +64,8 @@ export class VoteIncomeLogsPage extends SecondLevelPage {
     const { income_log_list_config } = this;
     income_log_list_config.loading = true;
     try {
-      const list = await this.benefitService.getBenefitsByPage(
-        income_log_list_config.page,
-        income_log_list_config.pageSize
-      );
-      income_log_list_config.hasMore =
-        list.length >= income_log_list_config.pageSize;
+      const list = await this.benefitService.getBenefitsByPage(income_log_list_config.page, income_log_list_config.pageSize);
+      income_log_list_config.hasMore = list.length >= income_log_list_config.pageSize;
       return list;
     } finally {
       income_log_list_config.loading = false;

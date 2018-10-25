@@ -11,12 +11,7 @@ import { AccountServiceProvider } from "../../../providers/account-service/accou
   templateUrl: "settings-set-pay-pwd.html",
 })
 export class SettingsSetPayPwdPage extends SecondLevelPage {
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    @Optional() public tabs: TabsPage,
-    public accountService: AccountServiceProvider
-  ) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, @Optional() public tabs: TabsPage, public accountService: AccountServiceProvider) {
     super(navCtrl, navParams, true, tabs);
   }
   formData = {
@@ -43,22 +38,11 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
     });
     return this._submit(password, this.formData.transfer_fee, pay_pwd);
   }
-  @asyncCtrlGenerator.loading(() =>
-    SettingsSetPayPwdPage.getTranslate("SET_PAY_PWD_SUBMITING")
-  )
-  @asyncCtrlGenerator.error(() =>
-    SettingsSetPayPwdPage.getTranslate("SET_PAY_PWD_SUBMIT_ERROR")
-  )
-  @asyncCtrlGenerator.success(() =>
-    SettingsSetPayPwdPage.getTranslate("SET_PAY_PWD_SUBMIT_SUCCESS")
-  )
+  @asyncCtrlGenerator.loading("@@SET_PAY_PWD_SUBMITING")
+  @asyncCtrlGenerator.error("@@SET_PAY_PWD_SUBMIT_ERROR")
+  @asyncCtrlGenerator.success("@@SET_PAY_PWD_SUBMIT_SUCCESS")
   async _submit(password: string, custom_fee?: number, old_pay_pwd?: string) {
-    await this.accountService.setSecondPassphrase(
-      password,
-      this.formData.pay_pwd,
-      old_pay_pwd,
-      custom_fee
-    );
+    await this.accountService.setSecondPassphrase(password, this.formData.pay_pwd, old_pay_pwd, custom_fee);
     await this.waitTipDialogConfirm("@@AFTER_SET_PAY_PWD_TIP");
 
     this.finishJob();

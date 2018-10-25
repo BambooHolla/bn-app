@@ -1,11 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  ElementRef,
-  ChangeDetectorRef,
-  HostBinding,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+import { Component, ViewChild, ElementRef, ChangeDetectorRef, HostBinding, ChangeDetectionStrategy } from "@angular/core";
 import { Subscription } from "rxjs/Subscription";
 import { SafeStyle, DomSanitizer } from "@angular/platform-browser";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
@@ -21,18 +14,11 @@ import { MiningPersonComponent } from "../../components/mining-person/mining-per
 import { CountdownComponent } from "../../components/countdown/countdown";
 import { EffectCountdownComponent } from "../../components/effect-countdown/effect-countdown";
 import { AniBase, Easing } from "../../components/AniBase";
-import {
-  MinServiceProvider,
-  RankModel,
-  RateOfReturnModel,
-} from "../../providers/min-service/min-service";
+import { MinServiceProvider, RankModel, RateOfReturnModel } from "../../providers/min-service/min-service";
 import { AccountServiceProvider } from "../../providers/account-service/account-service";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
 import { HEIGHT_AB_Generator } from "../../providers/app-setting/app-setting";
-import {
-  BenefitServiceProvider,
-  BenefitModel,
-} from "../../providers/benefit-service/benefit-service";
+import { BenefitServiceProvider, BenefitModel } from "../../providers/benefit-service/benefit-service";
 import { CoverTabsCtrlModelPage } from "../cover-tabs-ctrl-model/cover-tabs-ctrl-model";
 import { VotePreRoundIncomeRankingComponent } from "../../components/vote-pre-round-income-ranking/vote-pre-round-income-ranking";
 import { VoteCurrentBlockIncomeComponent } from "../../components/vote-current-block-income/vote-current-block-income";
@@ -100,10 +86,7 @@ export class TabVotePage extends FirstLevelPage {
         const err_message = err instanceof Error ? err.message : err;
         if (err_message === "you have already voted") {
           // 启动倒计时界面
-          console.log(
-            "%c已经投票，倒计时等待结果",
-            "font-size:3em;color:green;"
-          );
+          console.log("%c已经投票，倒计时等待结果", "font-size:3em;color:green;");
           return err;
         }
         this.showErrorDialog(err_message);
@@ -113,10 +96,7 @@ export class TabVotePage extends FirstLevelPage {
     });
   }
   get miningReward() {
-    return (
-      parseInt(this.userInfo.userInfo.votingReward) +
-      parseInt(this.userInfo.userInfo.forgingReward)
-    );
+    return parseInt(this.userInfo.userInfo.votingReward) + parseInt(this.userInfo.userInfo.forgingReward);
   }
 
   @TabVotePage.autoUnsubscribe({ ignore_did_leve: true })
@@ -130,18 +110,16 @@ export class TabVotePage extends FirstLevelPage {
           this.appSetting.settings.background_mining = true;
         }
         if (this.page_status === VotePage.Bootstrap) {
-          this.accountService.is_pre_round_has_vote
-            .getPromise()
-            .then(is_pre_round_has_vote => {
-              if (!this.appSetting.settings.background_mining) {
-                return;
-              }
-              if (is_pre_round_has_vote) {
-                this.routeToVoteDetail();
-              } else {
-                this.routeToCountdown();
-              }
-            });
+          this.accountService.is_pre_round_has_vote.getPromise().then(is_pre_round_has_vote => {
+            if (!this.appSetting.settings.background_mining) {
+              return;
+            }
+            if (is_pre_round_has_vote) {
+              this.routeToVoteDetail();
+            } else {
+              this.routeToCountdown();
+            }
+          });
         }
         // 在挖矿或者卡片详情中不用管。
       } else {
@@ -151,8 +129,7 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   toggleSoundEffect() {
-    this.appSetting.settings.sound_effect = !this.appSetting.settings
-      .sound_effect;
+    this.appSetting.settings.sound_effect = !this.appSetting.settings.sound_effect;
   }
   get show_mining_history() {
     return this.appSetting.settings._has_mining_income;
@@ -174,10 +151,7 @@ export class TabVotePage extends FirstLevelPage {
       }
     }
 
-    this.setBgTransparent(
-      this.page_status === VotePage.Bootstrap ||
-      this.page_status === VotePage.Countdown
-    );
+    this.setBgTransparent(this.page_status === VotePage.Bootstrap || this.page_status === VotePage.Countdown);
   }
   @TabVotePage.willLeave
   recoverTabBg() {
@@ -227,8 +201,7 @@ export class TabVotePage extends FirstLevelPage {
     if (this.fall_coin) {
       if (this.fall_coin.is_inited) {
         this.fall_coin.no_animate = is_no_ani;
-        this.fall_coin.auto_skip_animate =
-          this.page_status === VotePage.ExtendsPanel;
+        this.fall_coin.auto_skip_animate = this.page_status === VotePage.ExtendsPanel;
         this.fall_coin.progress = (this.appSetting.getHeight() / 57) % 1;
       } else {
         this.fall_coin.once("init-start", () => {
@@ -256,17 +229,9 @@ export class TabVotePage extends FirstLevelPage {
             if (can_run()) {
               if (immediate) {
                 // 立即更新现在的进度
-                satellite_css.setProgress(
-                  diff_time / BLOCK_UNIT_TIME,
-                  0,
-                  "ease-in-out"
-                );
+                satellite_css.setProgress(diff_time / BLOCK_UNIT_TIME, 0, "ease-in-out");
               }
-              satellite_css.setProgress(
-                1,
-                BLOCK_UNIT_TIME - diff_time + 2000 /*动画预留时间*/,
-                "linear"
-              );
+              satellite_css.setProgress(1, BLOCK_UNIT_TIME - diff_time + 2000 /*动画预留时间*/, "linear");
             }
           });
         } else {
@@ -335,16 +300,11 @@ export class TabVotePage extends FirstLevelPage {
   }
   @TabVotePage.detectChanges page_status = VotePage.None;
 
-  @ViewChild(EffectCountdownComponent)
-  effect_countdown!: EffectCountdownComponent;
+  @ViewChild(EffectCountdownComponent) effect_countdown!: EffectCountdownComponent;
 
   @TabVotePage.markForCheck private _countdown_round_end_time?: Date;
   get countdown_round_end_time() {
-    if (
-      !this._countdown_round_end_time &&
-      this.blockService.round_end_time &&
-      this.page_status === VotePage.Countdown
-    ) {
+    if (!this._countdown_round_end_time && this.blockService.round_end_time && this.page_status === VotePage.Countdown) {
       // 初始化赋值，区块高度变动的时候会进行校准
       this._countdown_round_end_time = this.blockService.round_end_time;
       this.effect_countdown.autoStartAnimation();
@@ -375,11 +335,7 @@ export class TabVotePage extends FirstLevelPage {
     this.benefitService.togglePlaySound(false);
 
     const { _earth_enabled_config, earth_config } = this;
-    this._doChainMeshPropAni(
-      earth_config,
-      _earth_enabled_config,
-      VotePage.VoteDetail
-    );
+    this._doChainMeshPropAni(earth_config, _earth_enabled_config, VotePage.VoteDetail);
   }
 
   /*由于多个异步竞争控制这个chain-mesh，所以每次动画前必须确保控制权的检测*/
@@ -394,8 +350,7 @@ export class TabVotePage extends FirstLevelPage {
       this._chain_mesh_ctrl.reject();
     }
     const chain_mesh_ctrl = (this._chain_mesh_ctrl = new PromiseOut());
-    const _ani_id =
-      "stopVoteAnimate_" + (Math.random() + Date.now()).toString(36);
+    const _ani_id = "stopVoteAnimate_" + (Math.random() + Date.now()).toString(36);
     /*检测控制权是否还在自身，需要在每一个异步中执行一次*/
     const check_ani_power = () => chain_mesh_ctrl === this._chain_mesh_ctrl;
     chain_mesh_ctrl.promise
@@ -466,19 +421,14 @@ export class TabVotePage extends FirstLevelPage {
 
     this.satellite_pixi.is_inited && this.satellite_pixi.stopAnimation();
 
-    this.mining_person.is_inited &&
-      this.mining_person.stopAnimation(opts.is_keep_mining_person_sound);
+    this.mining_person.is_inited && this.mining_person.stopAnimation(opts.is_keep_mining_person_sound);
 
     this.buddha_glow.is_inited && this.buddha_glow.stopAnimation();
     if (opts.is_force_stop_chain_mesh) {
       this._stopChainMeshPropAni();
     } else {
       const { _earth_disabled_config, earth_config } = this;
-      this._doChainMeshPropAni(
-        earth_config,
-        _earth_disabled_config,
-        VotePage.Bootstrap
-      );
+      this._doChainMeshPropAni(earth_config, _earth_disabled_config, VotePage.Bootstrap);
     }
   }
   routeToBootstrap() {
@@ -490,8 +440,7 @@ export class TabVotePage extends FirstLevelPage {
   }
   @ViewChild(CountdownComponent) countdown!: CountdownComponent;
   @ViewChild(FallCoinsComponent) fall_coin!: FallCoinsComponent;
-  @ViewChild(SatelliteCssComponent)
-  satellite_pixi!: SatellitePixiComponent | SatelliteCssComponent;
+  @ViewChild(SatelliteCssComponent) satellite_pixi!: SatellitePixiComponent | SatelliteCssComponent;
   @ViewChild(BuddhaGlowComponent) buddha_glow!: BuddhaGlowComponent;
   @ViewChild(ChainMeshComponent) chain_mesh!: ChainMeshComponent;
   @ViewChild(MiningPersonComponent) mining_person!: MiningPersonComponent;
@@ -529,9 +478,7 @@ export class TabVotePage extends FirstLevelPage {
   @TabVotePage.didEnter
   soundControlOnEnter() {
     // 如果不是挖矿详情页面，音效就要打开
-    this.benefitService.togglePlaySound(
-      this.page_status !== VotePage.VoteDetail
-    );
+    this.benefitService.togglePlaySound(this.page_status !== VotePage.VoteDetail);
   }
   @TabVotePage.didLeave
   soundControlOnLevel() {
@@ -551,8 +498,7 @@ export class TabVotePage extends FirstLevelPage {
       }
       if (ani_H > H) {
         // 动画先完成，想播放声音，放入预播放队列
-        sound_when_play_cache.indexOf(ani_H) === -1 &&
-          sound_when_play_cache.push(ani_H);
+        sound_when_play_cache.indexOf(ani_H) === -1 && sound_when_play_cache.push(ani_H);
       } else if (cur_t !== t) {
         // 同一帧的使用同一个声音
         playSound("coinSingle");
@@ -626,18 +572,13 @@ export class TabVotePage extends FirstLevelPage {
   private _user_agree_auto_mining_in_background = false;
 
   /** 开启挖矿*/
-  @asyncCtrlGenerator.error(() =>
-    TabVotePage.getTranslate("START_AUTO_VOTE_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@START_AUTO_VOTE_ERROR")
   async startMin() {
     if (this.min_starting) {
       return;
     }
     if (!this.appSetting.settings._is_show_first_mining_tip) {
-      this.appSetting.settings._is_show_first_mining_tip = await this.waitTipDialogConfirm(
-        "@@FIRST_MINGING_TIP",
-        { cancel_with_error: true }
-      );
+      this.appSetting.settings._is_show_first_mining_tip = await this.waitTipDialogConfirm("@@FIRST_MINGING_TIP", { cancel_with_error: true });
     }
     this._user_agree_auto_mining_in_background = true;
     this.min_starting = true;
@@ -646,9 +587,7 @@ export class TabVotePage extends FirstLevelPage {
         this.alertCtrl
           .create({
             title: this.translate.instant("DEFAULT_FEE_NOT_SETTED"),
-            message: this.translate.instant(
-              "DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE"
-            ),
+            message: this.translate.instant("DO_YOU_WANT_TO_SET_YOUER_DEFAULT_FEE"),
             buttons: [
               this.translate.instant("NO"),
               {
@@ -678,10 +617,7 @@ export class TabVotePage extends FirstLevelPage {
       //   this.userInfo.address,
       // );
       this.appSetting.settings.background_mining = true;
-      await this.minService.autoVote(
-        this.appSetting.getRound(),
-        "tab-vote-page"
-      );
+      await this.minService.autoVote(this.appSetting.getRound(), "tab-vote-page");
       // this.routeToVoteDetail();
     } catch (err) {
       this.min_starting = false;
@@ -692,9 +628,7 @@ export class TabVotePage extends FirstLevelPage {
     }
   }
   /** 关闭挖矿*/
-  @asyncCtrlGenerator.error(() =>
-    TabVotePage.getTranslate("STOP_AUTO_VOTE_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@STOP_AUTO_VOTE_ERROR")
   async stopMin() {
     this.minService.stopVote();
     this.routeToBootstrap();
@@ -703,10 +637,7 @@ export class TabVotePage extends FirstLevelPage {
   /**动画的进度监控*/
   @TabVotePage.addEventAfterDidEnter("HEIGHT:CHANGED")
   watchHeightChanged(height, is_init) {
-    if (
-      this.page_status === VotePage.VoteDetail ||
-      this.page_status === VotePage.ExtendsPanel
-    ) {
+    if (this.page_status === VotePage.VoteDetail || this.page_status === VotePage.ExtendsPanel) {
       this._set_fall_coin_progress();
       this._set_satellite_pixi_progress(is_init);
       // this.chain_mesh && this.chain_mesh.forceRenderOneFrame();
@@ -723,9 +654,7 @@ export class TabVotePage extends FirstLevelPage {
   }
 
   private get _pre_ani_round() {
-    return (
-      parseFloat(localStorage.getItem("@tab-vote-pre_ani_round") || "") || 0
-    );
+    return parseFloat(localStorage.getItem("@tab-vote-pre_ani_round") || "") || 0;
   }
   private set _pre_ani_round(v: number) {
     localStorage.setItem("@tab-vote-pre_ani_round", v.toString());
@@ -757,10 +686,7 @@ export class TabVotePage extends FirstLevelPage {
    */
   @TabVotePage.addEventAfterDidEnter("ROUND:CHANGED")
   async watchRoundChanged(cur_round) {
-    if (
-      this.page_status === VotePage.VoteDetail ||
-      this.page_status === VotePage.ExtendsPanel
-    ) {
+    if (this.page_status === VotePage.VoteDetail || this.page_status === VotePage.ExtendsPanel) {
       if (this._pre_ani_round && this._pre_ani_round === cur_round - 1) {
         this._whenRoundChangeAni(); // 执行动画
       }
@@ -784,8 +710,7 @@ export class TabVotePage extends FirstLevelPage {
 
   pre_notify_height = 0;
 
-  @ViewChild("extendsPanel1")
-  extendsPanel1?: VotePreRoundIncomeRankingComponent;
+  @ViewChild("extendsPanel1") extendsPanel1?: VotePreRoundIncomeRankingComponent;
   @ViewChild("extendsPanel2") extendsPanel2?: VoteCurrentBlockIncomeComponent;
   @ViewChild("extendsPanel3") extendsPanel3?: VoteIncomeTrendComponent;
   @ViewChild("extendsPanel4") extendsPanel4?: VoteMyContributionComponent;

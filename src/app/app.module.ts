@@ -37,16 +37,25 @@ import { IonicStorageModule, Storage } from "@ionic/storage";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ColorPickerModule } from "ngx-color-picker";
-import {
-  MatFormFieldModule,
-  MatInputModule,
-  MatAutocompleteModule,
-  MatMenuModule,
-  MatGridListModule,
-  MatButtonModule,
-  MatIconModule,
-  MatChipsModule,
-} from "@angular/material";
+// import {
+//   MatFormFieldModule,
+//   MatInputModule,
+//   MatAutocompleteModule,
+//   MatMenuModule,
+//   MatGridListModule,
+//   MatButtonModule,
+//   MatIconModule,
+//   MatChipsModule,
+// } from "@angular/material";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatGridListModule } from "@angular/material/grid-list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatFormFieldModule } from "@angular/material/form-field";
+
 import { IonicErrorHandler } from 'ionic-angular/util/ionic-error-handler'
 import { IonicModule } from 'ionic-angular/module'
 import { DeepLinkConfigToken, UrlSerializer } from 'ionic-angular/navigation/url-serializer'

@@ -78,7 +78,7 @@ export class TabPayPage extends FirstLevelPage {
     }
   }
   get webio_onLine() {
-    return this.webio.onLine && !localStorage.getItem("OFFLINE_TRS")
+    return this.webio.onLine && !localStorage.getItem("OFFLINE_TRS");
   }
 
   @asyncCtrlGenerator.error()
@@ -289,9 +289,9 @@ export class TabPayPage extends FirstLevelPage {
     delete this.formData.transfer_amount;
     this.markForCheck();
   }
-  @asyncCtrlGenerator.error(() => TabPayPage.getTranslate("TRANSFER_SUBMIT_ERROR"))
-  @asyncCtrlGenerator.loading(() => TabPayPage.getTranslate("TRANSFER_SUBMITING"))
-  @asyncCtrlGenerator.success(() => TabPayPage.getTranslate("TRANSFER_SUBMIT_SUCCESS"))
+  @asyncCtrlGenerator.error("@@TRANSFER_SUBMIT_ERROR")
+  @asyncCtrlGenerator.loading("@@TRANSFER_SUBMITING")
+  @asyncCtrlGenerator.success("@@TRANSFER_SUBMIT_SUCCESS")
   _submit(password: string, pay_pwd?: string, custom_fee?: number) {
     const { transfer_address, transfer_amount } = this.formData;
     return this.transactionService.transfer(
@@ -347,7 +347,7 @@ export class TabPayPage extends FirstLevelPage {
   }
 
   @TabPayPage.addEvent("HEIGHT:CHANGED")
-  @asyncCtrlGenerator.error(() => TabPayPage.getTranslate("TRANSFER_UPDATE_ERROR"))
+  @asyncCtrlGenerator.error("@@TRANSFER_UPDATE_ERROR")
   @asyncCtrlGenerator.retry()
   async watchHeightChange(height) {
     return this.loadRollOutLogs();

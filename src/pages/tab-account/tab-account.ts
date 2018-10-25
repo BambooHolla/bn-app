@@ -124,7 +124,7 @@ export class TabAccountPage extends FirstLevelPage {
 
   @TabAccountPage.onInit
   @asyncCtrlGenerator.single()
-  @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
+  // @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
   async checkAndroidUpdate() {
     this.app_version_info = await checkUpdate(
       this.fetch,
@@ -146,7 +146,7 @@ export class TabAccountPage extends FirstLevelPage {
   }
 
   /// 隐藏功能
-  @asyncCtrlGenerator.tttttap({times:1})
+  @asyncCtrlGenerator.tttttap({ times: 1 })
   tryTogglaHiddenItems() {
     this.force_show_hidden = !this.force_show_hidden;
   }

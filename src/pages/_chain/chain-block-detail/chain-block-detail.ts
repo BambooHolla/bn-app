@@ -3,22 +3,11 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
-import {
-  BlockServiceProvider,
-  BlockModel,
-  SingleBlockModel,
-} from "../../../providers/block-service/block-service";
-import {
-  TransactionModel,
-  TransactionTypes,
-  TransactionServiceProvider,
-} from "../../../providers/transaction-service/transaction-service";
+import { BlockServiceProvider, BlockModel, SingleBlockModel } from "../../../providers/block-service/block-service";
+import { TransactionModel, TransactionTypes, TransactionServiceProvider } from "../../../providers/transaction-service/transaction-service";
 import { LocalContactProvider } from "../../../providers/local-contact/local-contact";
 import { TimestampPipe } from "../../../pipes/timestamp/timestamp";
-import {
-  MinServiceProvider,
-  DelegateModel,
-} from "../../../providers/min-service/min-service";
+import { MinServiceProvider, DelegateModel } from "../../../providers/min-service/min-service";
 
 @IonicPage({ name: "chain-block-detail" })
 @Component({
@@ -48,13 +37,8 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   }
   show_all_remark = false;
   async toggleShowAllRemark() {
-    if (
-      !this.show_all_remark &&
-      !this.appSetting.settings._is_show_first_block_remark
-    ) {
-      this.appSetting.settings._is_show_first_block_remark = await this.waitTipDialogConfirm(
-        "@@FIRST_VIEW_BLOCK_REMARK_TIP"
-      );
+    if (!this.show_all_remark && !this.appSetting.settings._is_show_first_block_remark) {
+      this.appSetting.settings._is_show_first_block_remark = await this.waitTipDialogConfirm("@@FIRST_VIEW_BLOCK_REMARK_TIP");
     }
     this.show_all_remark = !this.show_all_remark;
   }
@@ -117,26 +101,17 @@ export class ChainBlockDetailPage extends SecondLevelPage {
   delegate_info?: DelegateModel;
   @asyncCtrlGenerator.error()
   async loadDelegateInfo() {
-    if (
-      this.block_info &&
-      this.block_info.height !== 1 /*创世块账户不是受托人*/
-    ) {
-      this.delegate_info = await this.minService.getDelegateInfo(
-        this.block_info.generatorPublicKey
-      );
+    if (this.block_info && this.block_info.height !== 1 /*创世块账户不是受托人*/) {
+      this.delegate_info = await this.minService.getDelegateInfo(this.block_info.generatorPublicKey);
     }
   }
 
   // 更新已经有的交易列表
   async updateTranLogs() {
-    this.tran_list = await this.localContact.formatTransactionWithLoclContactNickname(
-      this.tran_list
-    );
+    this.tran_list = await this.localContact.formatTransactionWithLoclContactNickname(this.tran_list);
   }
 
-  @asyncCtrlGenerator.error(() =>
-    ChainBlockDetailPage.getTranslate("LOAD_TRANSACTION_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_TRANSACTION_LIST_ERROR")
   // @asyncCtrlGenerator.loading(() =>
   //   ChainBlockDetailPage.getTranslate("LOADING_TRANSACTION_LIST"), undefined, {
   //     showBackdrop: false
@@ -157,16 +132,9 @@ export class ChainBlockDetailPage extends SecondLevelPage {
     tran_list_config.loading = true;
     try {
       // 重置page
-      const transaction_list = await this.blockService.getTransactionsInBlock(
-        block_info.id,
-        tran_list_config.page,
-        tran_list_config.pageSize
-      );
-      tran_list_config.has_more =
-        transaction_list.length === tran_list_config.pageSize;
-      return this.localContact.formatTransactionWithLoclContactNickname(
-        transaction_list
-      );
+      const transaction_list = await this.blockService.getTransactionsInBlock(block_info.id, tran_list_config.page, tran_list_config.pageSize);
+      tran_list_config.has_more = transaction_list.length === tran_list_config.pageSize;
+      return this.localContact.formatTransactionWithLoclContactNickname(transaction_list);
     } finally {
       tran_list_config.loading = false;
     }

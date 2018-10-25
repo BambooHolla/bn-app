@@ -1,22 +1,11 @@
-import {
-  Component,
-  Optional,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+import { Component, Optional, ChangeDetectorRef, ChangeDetectionStrategy } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { sleep } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
-import {
-  MinServiceProvider,
-  DelegateModel,
-} from "../../../providers/min-service/min-service";
-import {
-  PeerServiceProvider,
-  LocalPeerModel,
-} from "../../../providers/peer-service/peer-service";
+import { MinServiceProvider, DelegateModel } from "../../../providers/min-service/min-service";
+import { PeerServiceProvider, LocalPeerModel } from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-list" })
 @Component({
@@ -36,19 +25,13 @@ export class AccountMinerListPage extends SecondLevelPage {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
-  @AccountMinerListPage.markForCheck
-  cur_minter_rank_list?: DelegateModel[];
-  @AccountMinerListPage.markForCheck
-  can_minter_rank_list?: DelegateModel[];
+  @AccountMinerListPage.markForCheck cur_minter_rank_list?: DelegateModel[];
+  @AccountMinerListPage.markForCheck can_minter_rank_list?: DelegateModel[];
   get show_cur_minter_rank_list() {
-    return this.cur_minter_rank_list
-      ? this.cur_minter_rank_list.slice(0, 4)
-      : [];
+    return this.cur_minter_rank_list ? this.cur_minter_rank_list.slice(0, 4) : [];
   }
   get show_can_minter_rank_list() {
-    return this.can_minter_rank_list
-      ? this.can_minter_rank_list.slice(0, 4)
-      : [];
+    return this.can_minter_rank_list ? this.can_minter_rank_list.slice(0, 4) : [];
   }
 
   // @AccountMinerListPage.willEnter
@@ -73,9 +56,7 @@ export class AccountMinerListPage extends SecondLevelPage {
     this.cdRef.markForCheck();
   }
   @AccountMinerListPage.addEvent("ROUND:CHANGED")
-  @asyncCtrlGenerator.error(() =>
-    AccountMinerListPage.getTranslate("LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_ACCOUNT_MINER_LIST_AND_PEER_ERROR")
   @asyncCtrlGenerator.retry()
   async watchRoundChange(height) {
     return this.initMinterList();

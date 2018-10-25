@@ -2,12 +2,7 @@ import { Component, Optional } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  ViewController,
-} from "ionic-angular/index";
+import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { UserInfoProvider } from "../../../providers/user-info/user-info";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
 
@@ -50,12 +45,8 @@ export class AccountAddContactPage extends SecondLevelPage {
 
   adding_contact = false;
 
-  @asyncCtrlGenerator.error(() =>
-    AccountAddContactPage.getTranslate("ADD_CONTACT_ERROR")
-  )
-  @asyncCtrlGenerator.success(() =>
-    AccountAddContactPage.getTranslate("ADD_CONTACT_SUCCESS")
-  )
+  @asyncCtrlGenerator.error("@@ADD_CONTACT_ERROR")
+  @asyncCtrlGenerator.success("@@ADD_CONTACT_SUCCESS")
   @asyncCtrlGenerator.single({ lock_prop_key: "adding_contact" })
   async addContacts() {
     const { password, pay_pwd, custom_fee } = await this.getUserPassword({
@@ -63,12 +54,7 @@ export class AccountAddContactPage extends SecondLevelPage {
     });
     const address = this.formData.search_text;
     // 直接添加，暂时不支持搜索
-    const is_success = await this.contactService.addContact(
-      password,
-      address,
-      pay_pwd,
-      custom_fee
-    );
+    const is_success = await this.contactService.addContact(password, address, pay_pwd, custom_fee);
     this.finishJob();
   }
 }

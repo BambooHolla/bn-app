@@ -4,11 +4,7 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular/index";
 import { PAGE_STATUS } from "../../../bnqkl-framework/const";
-import {
-  MinServiceProvider,
-  DelegateModel,
-  RankModel,
-} from "../../../providers/min-service/min-service";
+import { MinServiceProvider, DelegateModel, RankModel } from "../../../providers/min-service/min-service";
 import SocketIO from "socket.io-client";
 
 enum InOutSubPage {
@@ -22,12 +18,7 @@ enum InOutSubPage {
   templateUrl: "vote-list.html",
 })
 export class VoteListPage extends SecondLevelPage {
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    @Optional() public tabs: TabsPage,
-    public minService: MinServiceProvider
-  ) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, @Optional() public tabs: TabsPage, public minService: MinServiceProvider) {
     super(navCtrl, navParams, true, tabs);
   }
   InOutSubPage = InOutSubPage;
@@ -70,27 +61,25 @@ export class VoteListPage extends SecondLevelPage {
     if (page) {
       this.gotoSubPage(page);
     }
-    this.my_mining_machine = this.appSetting.settings.my_mining_machine.map(
-      mac => {
-        const res = {
-          ...mac,
-          cpu_usage: 0,
-          connected: false,
-        };
+    this.my_mining_machine = this.appSetting.settings.my_mining_machine.map(mac => {
+      const res = {
+        ...mac,
+        cpu_usage: 0,
+        connected: false,
+      };
 
-        // 远程监听设备的CPU
-        const socket = listenMacStatus(mac, usage => {
-          res.cpu_usage = usage;
-        });
-        socket.on("connect", () => {
-          res.connected = true;
-        });
-        socket.on("disconnect", () => {
-          res.connected = false;
-        });
-        return res;
-      }
-    );
+      // 远程监听设备的CPU
+      const socket = listenMacStatus(mac, usage => {
+        res.cpu_usage = usage;
+      });
+      socket.on("connect", () => {
+        res.connected = true;
+      });
+      socket.on("disconnect", () => {
+        res.connected = false;
+      });
+      return res;
+    });
   }
   @VoteListPage.didLeave
   destorySockets() {
@@ -117,9 +106,7 @@ export class VoteListPage extends SecondLevelPage {
   initOutVoteList() {
     return this.loadOutVoteList();
   }
-  @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_OUT_VOTE_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_OUT_VOTE_LIST_ERROR")
   async loadOutVoteList(refresher?: Refresher) {
     const { out_vote_list_config } = this;
     out_vote_list_config.need_refresh = false;
@@ -129,9 +116,7 @@ export class VoteListPage extends SecondLevelPage {
       refresher.complete();
     }
   }
-  @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_MORE_OUT_VOTE_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_MORE_OUT_VOTE_LIST_ERROR")
   async loadMoreOutVoteList() {
     this.out_vote_list.push(...(await this._loadOutVoteList()));
   }
@@ -142,10 +127,7 @@ export class VoteListPage extends SecondLevelPage {
     try {
       out_vote_list_config.loading.add(load_id);
 
-      const { delegates, skip, done } = await this.minService.getVotedDelegates(
-        out_vote_list_config.skip,
-        out_vote_list_config.pageSize
-      );
+      const { delegates, skip, done } = await this.minService.getVotedDelegates(out_vote_list_config.skip, out_vote_list_config.pageSize);
       out_vote_list_config.skip = skip;
       out_vote_list_config.has_more = !done;
       return delegates;
@@ -161,9 +143,7 @@ export class VoteListPage extends SecondLevelPage {
   async initCanVoteList() {
     return this.loadCanVoteList();
   }
-  @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_CAN_VOTE_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_CAN_VOTE_LIST_ERROR")
   async loadCanVoteList(refresher?: Refresher) {
     const { can_vote_list_config } = this;
     can_vote_list_config.need_refresh = false;
@@ -175,9 +155,7 @@ export class VoteListPage extends SecondLevelPage {
       refresher.complete();
     }
   }
-  @asyncCtrlGenerator.error(() =>
-    VoteListPage.getTranslate("LOAD_MORE_CAN_VOTE_LIST_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@LOAD_MORE_CAN_VOTE_LIST_ERROR")
   async loadMoreCanVoteList() {
     this.can_vote_list.push(...(await this._getCanVoteList()));
   }
@@ -187,14 +165,7 @@ export class VoteListPage extends SecondLevelPage {
     const load_id = { t: performance.now() };
     try {
       can_vote_list_config.loading.add(load_id);
-      const {
-        skip,
-        done,
-        delegates,
-      } = await this.minService.getVoteAbleDelegates(
-        can_vote_list_config.skip,
-        can_vote_list_config.pageSize
-      );
+      const { skip, done, delegates } = await this.minService.getVoteAbleDelegates(can_vote_list_config.skip, can_vote_list_config.pageSize);
 
       can_vote_list_config.skip = skip;
       can_vote_list_config.has_more = !done;
@@ -238,33 +209,26 @@ export function listenMacStatus(
     reconnection: false,
   });
   let startMeasure;
-  socket.on(
-    "systemStatus",
-    ({ systemStatus: data }: { systemStatus: systemStatus }) => {
-      if (cpu_cb) {
-        if (!startMeasure) {
-          startMeasure = cpuAverage(data.cpusStatus);
-        } else {
-          const endMeasure = cpuAverage(data.cpusStatus);
-          //Calculate the difference in idle and total time between the measures
-          const idleDifference = endMeasure.idle - startMeasure.idle;
-          const totalDifference = endMeasure.total - startMeasure.total;
+  socket.on("systemStatus", ({ systemStatus: data }: { systemStatus: systemStatus }) => {
+    if (cpu_cb) {
+      if (!startMeasure) {
+        startMeasure = cpuAverage(data.cpusStatus);
+      } else {
+        const endMeasure = cpuAverage(data.cpusStatus);
+        //Calculate the difference in idle and total time between the measures
+        const idleDifference = endMeasure.idle - startMeasure.idle;
+        const totalDifference = endMeasure.total - startMeasure.total;
 
-          //Calculate the average percentage CPU usage
-          const usage = 1 - idleDifference / totalDifference;
-          cpu_cb(usage);
-          startMeasure = endMeasure;
-        }
-      }
-      if (memory_cb) {
-        memory_cb(
-          1 - data.memStatus.freeMem / data.memStatus.totalmem,
-          data.memStatus.totalmem,
-          data.memStatus.freeMem
-        );
+        //Calculate the average percentage CPU usage
+        const usage = 1 - idleDifference / totalDifference;
+        cpu_cb(usage);
+        startMeasure = endMeasure;
       }
     }
-  );
+    if (memory_cb) {
+      memory_cb(1 - data.memStatus.freeMem / data.memStatus.totalmem, data.memStatus.totalmem, data.memStatus.freeMem);
+    }
+  });
   socket.emit("systemStatus", {});
   return socket;
 }

@@ -6,24 +6,11 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { PAGE_STATUS } from "../../../bnqkl-framework/const";
 import { TabsPage } from "../../tabs/tabs";
 import "../../../llqrcode";
-import {
-  IonicPage,
-  NavController,
-  NavParams,
-  ViewController,
-  AlertOptions,
-} from "ionic-angular/index";
+import { IonicPage, NavController, NavParams, ViewController, AlertOptions } from "ionic-angular/index";
 import { playSound, addSound } from "../../../components/sound";
 import { ContactServiceProvider } from "../../../providers/contact-service/contact-service";
-import {
-  LocalContactProvider,
-  LocalContactModel,
-} from "../../../providers/local-contact/local-contact";
-import {
-  TransactionServiceProvider,
-  TransactionTypes,
-  TransactionModel,
-} from "../../../providers/transaction-service/transaction-service";
+import { LocalContactProvider, LocalContactModel } from "../../../providers/local-contact/local-contact";
+import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "../../../providers/transaction-service/transaction-service";
 
 @IonicPage({ name: "account-scan-add-contact" })
 @Component({
@@ -55,20 +42,12 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   private _current_stream?: MediaStream;
   videoDevices: MediaDeviceInfo[] = [];
   toggleVideoInput() {
-    this.useVideoDevice(
-      this.videoDevices[
-        (this.videoDevices.indexOf(this._cur_video_device as MediaDeviceInfo) +
-          1) %
-          this.videoDevices.length
-      ]
-    );
+    this.useVideoDevice(this.videoDevices[(this.videoDevices.indexOf(this._cur_video_device as MediaDeviceInfo) + 1) % this.videoDevices.length]);
   }
   private _cur_video_device?: MediaDeviceInfo;
 
   useNextVideoDevice() {
-    const index =
-      (this.videoDevices.indexOf(this._cur_video_device as any) + 1) %
-      this.videoDevices.length;
+    const index = (this.videoDevices.indexOf(this._cur_video_device as any) + 1) % this.videoDevices.length;
     return this.useVideoDevice(this.videoDevices[index]);
   }
   async useVideoDevice(videoDevice: MediaDeviceInfo) {
@@ -91,16 +70,14 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     // } else {
     //   getUserMedia = navigator.mediaDevices.getUserMedia;
     // }
-    const stream = (this._current_stream = await navigator.mediaDevices.getUserMedia(
-      {
-        video: {
-          width: this.innerWidth,
-          height: this.innerHeight,
-          deviceId: videoDevice.deviceId,
-        },
-        audio: false,
-      }
-    ));
+    const stream = (this._current_stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        width: this.innerWidth,
+        height: this.innerHeight,
+        deviceId: videoDevice.deviceId,
+      },
+      audio: false,
+    }));
     // video.src = window.URL.createObjectURL(stream);
     video.srcObject = stream;
     video.play();
@@ -112,9 +89,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   @ViewChild("video") video!: ElementRef;
   @ViewChild("canvas") canvas!: ElementRef;
   @AccountScanAddContactPage.willEnter
-  @asyncCtrlGenerator.error(() =>
-    AccountScanAddContactPage.getTranslate("SCAN_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@SCAN_ERROR")
   async openCameraMedia() {
     const image_url = this.navParams.get("image_url");
     if (image_url) {
@@ -130,22 +105,15 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
       // IOS 不用检测权限
     } else {
-      const permission = await this.androidPermissions
-        .checkPermission(this.androidPermissions.PERMISSION.CAMERA)
-        .then(
-          result => {
-            console.log("Has permission?", result.hasPermission);
-            if (!result.hasPermission) {
-              return this.androidPermissions.requestPermission(
-                this.androidPermissions.PERMISSION.CAMERA
-              );
-            }
-          },
-          err =>
-            this.androidPermissions.requestPermission(
-              this.androidPermissions.PERMISSION.CAMERA
-            )
-        );
+      const permission = await this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
+        result => {
+          console.log("Has permission?", result.hasPermission);
+          if (!result.hasPermission) {
+            return this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
+          }
+        },
+        err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
+      );
       // this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
     }
 
@@ -177,22 +145,19 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     this._handleScanRes(res);
   }
   @AccountScanAddContactPage.willEnter
-  @asyncCtrlGenerator.error(
-    () => AccountScanAddContactPage.getTranslate("SCAN_ERROR"),
-    async function(self: AccountScanAddContactPage) {
-      return {
-        closeButton: false,
-        buttons: [
-          {
-            text: await self.getTranslate("CONFIRM"),
-            handler() {
-              self.finishJob();
-            },
+  @asyncCtrlGenerator.error("@@SCAN_ERROR", async function(self: AccountScanAddContactPage) {
+    return {
+      closeButton: false,
+      buttons: [
+        {
+          text: await self.getTranslate("CONFIRM"),
+          handler() {
+            self.finishJob();
           },
-        ],
-      } as AlertOptions;
-    }
-  )
+        },
+      ],
+    } as AlertOptions;
+  })
   async parseSingleImage() {
     const image_url = this.navParams.get("image_url");
     if (!image_url) {
@@ -293,11 +258,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     };
     scanQrCode(performance.now());
   }
-  private _scanQrcodeFrame(
-    source: HTMLVideoElement | HTMLImageElement,
-    auto_size: boolean,
-    filter?: (res: string) => boolean
-  ) {
+  private _scanQrcodeFrame(source: HTMLVideoElement | HTMLImageElement, auto_size: boolean, filter?: (res: string) => boolean) {
     const canvas = this.canvas.nativeElement as HTMLCanvasElement;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
@@ -313,13 +274,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (auto_size) {
-      ctx.drawImage(
-        source,
-        (canvas.width - source_width) / 2,
-        (canvas.height - source_height) / 2,
-        source_width,
-        source_height
-      );
+      ctx.drawImage(source, (canvas.width - source_width) / 2, (canvas.height - source_height) / 2, source_width, source_height);
     } else {
       ctx.drawImage(source, 0, 0);
     }
@@ -375,20 +330,12 @@ export class AccountScanAddContactPage extends SecondLevelPage {
       });
   }
 
-  @asyncCtrlGenerator.error(() =>
-    AccountScanAddContactPage.getTranslate("ADD_CONTACT_ERROR")
-  )
-  @asyncCtrlGenerator.success(() =>
-    AccountScanAddContactPage.getTranslate("ADD_CONTACT_SUCCESS")
-  )
+  @asyncCtrlGenerator.error("@@ADD_CONTACT_ERROR")
+  @asyncCtrlGenerator.success("@@ADD_CONTACT_SUCCESS")
   private async _searchContacts(password, pay_pwd) {
     // 直接添加，暂时不支持搜索
     const address = this.formData.search_text;
-    const is_success = await this.contactService.addContact(
-      password,
-      address,
-      pay_pwd
-    );
+    const is_success = await this.contactService.addContact(password, address, pay_pwd);
     this.finishJob();
   }
   /// 自定义协议处理
@@ -412,10 +359,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
   @asyncCtrlGenerator.error("@LOCAL_CONTACTS_IMPORT_ERROR")
   @asyncCtrlGenerator.success("@LOCAL_CONTACTS_IMPORT_SUCCESS")
   @asyncCtrlGenerator.success()
-  async ["protocol:ifmchain-local-contacts"](
-    content: string,
-    export_data: string
-  ) {
+  async ["protocol:ifmchain-local-contacts"](content: string, export_data: string) {
     // var local_contacts: LocalContactModel[] | undefined;
     // try {
     //   local_contacts = JSON.parse(content).C;
@@ -470,9 +414,7 @@ export class AccountScanAddContactPage extends SecondLevelPage {
     //     }),
     //   );
     // }
-    const parse_result = await this.localContact.importLocalContacts(
-      export_data
-    );
+    const parse_result = await this.localContact.importLocalContacts(export_data);
     this.jobRes(parse_result);
     this.finishJob();
     return parse_result;
