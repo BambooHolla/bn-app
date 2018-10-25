@@ -36,7 +36,7 @@ export class TransactionServiceProvider {
     public translateService: TranslateService,
     public alertController: AlertController,
     public fetch: AppFetchProvider,
-    public user: UserInfoProvider
+    public userInfo: UserInfoProvider
   ) {
     tryRegisterGlobal("transactionService", this);
   }
@@ -190,7 +190,7 @@ export class TransactionServiceProvider {
     //时间戳加入转账对象
     txData.timestamp = (await this.getTimestamp()).timestamp;
     // 加入ip地址，隐身模式下不发送IP
-    txData.sourceIP = this.appSetting.settings.in_stealth_mode ? "" : await this.getSourceIp();
+    txData.sourceIP = this.userInfo.in_stealth_mode ? "" : await this.getSourceIp();
     txData.magic = baseConfig.MAGIC;
 
     //生成转账        await上层包裹的函数需要async
@@ -253,7 +253,7 @@ export class TransactionServiceProvider {
    * @param: secondPassphrase 输入的二次密码
    */
   verifySecondPassphrase(secret: string, secondSecret: string) {
-    return this.IFMJSCORE.keypair().validSecretPassphrase(secret, secondSecret, this.user.secondPublicKey);
+    return this.IFMJSCORE.keypair().validSecretPassphrase(secret, secondSecret, this.userInfo.secondPublicKey);
   }
 
   /**
@@ -268,11 +268,11 @@ export class TransactionServiceProvider {
   async getUserTransactions(address: string, page = 1, pageSize = 10, in_or_out?: "in" | "out" | "or", type?: TYPE.TransactionTypes | "all") {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
-    if (address === this.user.address && in_or_out === "in" && offset + limit <= this.default_user_in_transactions_pageSize) {
+    if (address === this.userInfo.address && in_or_out === "in" && offset + limit <= this.default_user_in_transactions_pageSize) {
       const list = await this.myInTransactions.getPromise();
       return list.slice(offset, offset + limit);
     }
-    if (address === this.user.address && in_or_out === "out" && offset + limit <= this.default_user_out_transactions_pageSize) {
+    if (address === this.userInfo.address && in_or_out === "out" && offset + limit <= this.default_user_out_transactions_pageSize) {
       const list = await this.myOutTransactions.getPromise();
       return list.slice(offset, offset + limit);
     }
@@ -352,7 +352,7 @@ export class TransactionServiceProvider {
   @HEIGHT_AB_Generator("myInTransactions", true)
   myInTransactions_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactions(this.user.address, 0, this.default_user_in_transactions_pageSize, "in", this.default_user_in_transactions_type)
+      this._getUserTransactions(this.userInfo.address, 0, this.default_user_in_transactions_pageSize, "in", this.default_user_in_transactions_type)
     );
   }
   default_user_out_transactions_pageSize = 10;
@@ -361,7 +361,7 @@ export class TransactionServiceProvider {
   @HEIGHT_AB_Generator("myOutTransactions", true)
   myOutTransactions_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactions(this.user.address, 0, this.default_user_out_transactions_pageSize, "out", this.default_user_out_transactions_type)
+      this._getUserTransactions(this.userInfo.address, 0, this.default_user_out_transactions_pageSize, "out", this.default_user_out_transactions_type)
     );
   }
 
@@ -370,7 +370,7 @@ export class TransactionServiceProvider {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
     if (
-      address === this.user.address &&
+      address === this.userInfo.address &&
       in_or_out === "in" &&
       offset + limit <= this.default_user_in_transactions_pageSize &&
       `${type}` == `${this.default_user_in_transactions_type}`
@@ -379,7 +379,7 @@ export class TransactionServiceProvider {
       return list.slice(offset, offset + limit);
     }
     if (
-      address === this.user.address &&
+      address === this.userInfo.address &&
       in_or_out === "out" &&
       offset + limit <= this.default_user_out_transactions_pageSize &&
       `${type}` == `${this.default_user_out_transactions_type}`
@@ -422,7 +422,7 @@ export class TransactionServiceProvider {
   @HEIGHT_AB_Generator("myInTransactionsPreRound", true)
   myInTransactionsPreRound_Executor(promise_pro) {
     return promise_pro.follow(
-      this._getUserTransactionsPreRound(this.user.address, 0, this.default_user_in_transactions_pageSize, "in", this.TransactionTypes.SEND)
+      this._getUserTransactionsPreRound(this.userInfo.address, 0, this.default_user_in_transactions_pageSize, "in", this.TransactionTypes.SEND)
     );
   }
   myOutTransactionsPreRound!: AsyncBehaviorSubject<TYPE.TransactionModel[]>;
@@ -431,9 +431,9 @@ export class TransactionServiceProvider {
     return promise_pro.follow(
       Promise.all([
         // 接收的转账
-        this._getUserTransactionsPreRound(this.user.address, 0, this.default_user_out_transactions_pageSize, "out", this.TransactionTypes.SEND),
+        this._getUserTransactionsPreRound(this.userInfo.address, 0, this.default_user_out_transactions_pageSize, "out", this.TransactionTypes.SEND),
         // 投票
-        this._getUserTransactionsPreRound(this.user.address, 0, this.default_user_out_transactions_pageSize, "in", this.TransactionTypes.VOTE),
+        this._getUserTransactionsPreRound(this.userInfo.address, 0, this.default_user_out_transactions_pageSize, "in", this.TransactionTypes.VOTE),
       ]).then(([get_trans, vote_trans]) => {
         return get_trans.concat(vote_trans);
       })
@@ -467,8 +467,8 @@ export class TransactionServiceProvider {
    */
   async getUnconfirmed(page = 1, limit = 10) {
     const query = {
-      address: this.user.address,
-      senderPublicKey: this.user.publicKey,
+      address: this.userInfo.address,
+      senderPublicKey: this.userInfo.publicKey,
       offset: (page - 1) * limit,
       limit: limit,
     };
@@ -477,7 +477,7 @@ export class TransactionServiceProvider {
     return data.transactions;
   }
 
-  getLocalUnconfirmed(offset = 0, pageSize = 10, sort?, senderId = this.user.address) {
+  getLocalUnconfirmed(offset = 0, pageSize = 10, sort?, senderId = this.userInfo.address) {
     return this.unTxDb.find(
       {
         senderId,
@@ -492,7 +492,7 @@ export class TransactionServiceProvider {
   /**
    * 获取本地的未确认交易，并确保已经被处理
    */
-  async getLocalUnconfirmedAndCheck(offset = 0, pageSize = 10, sort?, senderId = this.user.address) {
+  async getLocalUnconfirmedAndCheck(offset = 0, pageSize = 10, sort?, senderId = this.userInfo.address) {
     const res_checkd_tra_list: TYPE.TransactionModel[] = [];
 
     const ids = new Set<string>();
@@ -544,7 +544,7 @@ export class TransactionServiceProvider {
     password: string,
     secondSecret?: string,
     assetType?: string,
-    publicKey = this.user.publicKey
+    publicKey = this.userInfo.publicKey
   ) {
     amount = parseFloat(amount);
     // if (amount <= 0 || amount >= parseFloat(this.user.balance)) {
@@ -585,8 +585,8 @@ export class TransactionServiceProvider {
     const responseData = await this.putTransaction(txData);
     return {
       transfer: {
-        senderId: this.user.address,
-        senderUsername: this.user.username,
+        senderId: this.userInfo.address,
+        senderUsername: this.userInfo.username,
         dateCreated: Date.now(),
         id: responseData.transactionId,
         ...txData,
@@ -604,7 +604,7 @@ export class TransactionServiceProvider {
    */
   async verifyPassphrase(passphrase) {
     const publicKey = this.keypair.create(passphrase);
-    return this.user.publicKey === publicKey;
+    return this.userInfo.publicKey === publicKey;
   }
 
   /**

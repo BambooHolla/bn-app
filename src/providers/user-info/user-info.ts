@@ -2,10 +2,23 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Storage } from "@ionic/storage";
 import EventEmitter from "eventemitter3";
+import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 
 @Injectable()
 // 用户缓存用户的基本信息，相比getUserToken，速度更快
 export class UserInfoProvider extends EventEmitter {
+  @FLP_Tool.FromGlobal appSetting!: import("../app-setting/app-setting").AppSettingProvider;
+  get in_stealth_mode() {
+    return this.isDelegate ? this.appSetting.settings.delegate_in_stealth_mode : this.appSetting.settings.in_stealth_mode;
+  }
+  set in_stealth_mode(v) {
+    if (this.isDelegate) {
+      this.appSetting.settings.delegate_in_stealth_mode = v;
+    } else {
+      this.appSetting.settings.in_stealth_mode = v;
+    }
+  }
+
   private _userInfo: any;
   get userInfo() {
     return this._userInfo || {};
@@ -19,7 +32,7 @@ export class UserInfoProvider extends EventEmitter {
     return this._balance;
   }
   ibtToUSD(ibt: number) {
-    return (ibt * 50) || 0;
+    return ibt * 50 || 0;
   }
   get usd() {
     return this.ibtToUSD(parseFloat(this.balance));
@@ -64,10 +77,7 @@ export class UserInfoProvider extends EventEmitter {
   }
 
   get miningReward() {
-    return (
-      (parseFloat(this._userInfo.votingReward) || 0) +
-      (parseFloat(this._userInfo.forgingReward) || 0)
-    );
+    return (parseFloat(this._userInfo.votingReward) || 0) + (parseFloat(this._userInfo.forgingReward) || 0);
   }
 
   constructor(public storage: Storage) {

@@ -378,6 +378,8 @@ export class AppSettingProvider extends CommonService {
     digRound: 0,
     /**隐身模式*/
     in_stealth_mode: false,
+    /**矿工隐身模式*/
+    delegate_in_stealth_mode: true,
     /**挖矿收益通知*/
     mining_income_notice: false,
     /**默认手续费*/

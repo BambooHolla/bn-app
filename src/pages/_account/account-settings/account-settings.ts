@@ -39,19 +39,19 @@ export class AccountSettingsPage extends SecondLevelPage {
       return false;
     });
 
-  @asyncCtrlGenerator.error(() =>
-    AccountSettingsPage.getTranslate("SIGNING_OUT_ERROR")
-  )
+  @asyncCtrlGenerator.error("@@SIGNING_OUT_ERROR")
   async quitAccount() {
     return this.loginService.loginOut();
   }
   /**
    * 切换账户
    */
-  toggleAccount(){
+  toggleAccount() {
     return this.routeTo("login-account-selector");
   }
 
+  @asyncCtrlGenerator.single()
+  @asyncCtrlGenerator.error("@@GET_LATEST_APP_VERSION_INFO_ERROR")
   checkUpdate() {
     return checkUpdate(this.fetch, {
       isAndroid: this.isAndroid,
@@ -59,10 +59,7 @@ export class AccountSettingsPage extends SecondLevelPage {
       lang: this.translate.currentLang,
       modalCtrl: this.modalCtrl,
       onNoNeedUpdate: () => {
-        this.showSuccessDialog(
-          this.getTranslateSync("APP_IS_NEWEST_VERSION"),
-          "v" + this.baseConfig.APP_VERSION
-        );
+        this.showSuccessDialog(this.getTranslateSync("APP_IS_NEWEST_VERSION"), "v" + this.baseConfig.APP_VERSION);
       },
     });
   }
