@@ -6,6 +6,7 @@ import { UserInfoProvider } from "../../providers/user-info/user-info";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting";
 import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from "../../providers/assets-service/assets-service";
 
+import { sleep } from '../../bnqkl-framework/PromiseExtends';
 import { AppFetchProvider } from "../../providers/app-fetch/app-fetch";
 import { LATEST_VERSION_INFO } from "../version-update-dialog/version.types";
 import { checkUpdate } from "./checkUpdate";
@@ -56,6 +57,8 @@ export class TabAccountPage extends FirstLevelPage {
 
   @TabAccountPage.didEnter
   async isShowMiningIncomeNotice() {
+    await sleep(2000);
+    if (this.PAGE_STATUS !== this.PAGE_STATUS_ENUM.DID_ENTER) return;
     /// 开启收益提醒
     if (!this.appSetting.settings._is_first_balance_grow_up_notice) {
       this.appSetting.settings._is_first_balance_grow_up_notice = true;

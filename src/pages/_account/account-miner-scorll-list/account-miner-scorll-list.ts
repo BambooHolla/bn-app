@@ -4,7 +4,7 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { MinServiceProvider, DelegateModel } from "../../../providers/min-service/min-service";
-import { PeerServiceProvider, PeerModel } from "../../../providers/peer-service/peer-service";
+import { PeerServiceProvider } from "../../../providers/peer-service/peer-service";
 
 @IonicPage({ name: "account-miner-scorll-list" })
 @Component({
@@ -25,32 +25,39 @@ export class AccountMinerScorllListPage extends SecondLevelPage {
     this.auto_header_shadow_when_scroll_down = true;
   }
 
+  isPageCurrentList: boolean = false;
+  isPageCandidateList: boolean = false;
   @AccountMinerScorllListPage.markForCheck cur_minter_rank_list?: DelegateModel[];
   @AccountMinerScorllListPage.markForCheck can_minter_rank_list?: DelegateModel[];
   async loadMinterList() {
-    const cur_minter_list = await this.minService.allMinersCurRound.getPromise();
 
-    this.cur_minter_rank_list = cur_minter_list.map((cur_minter, i) => {
-      return {
-        No: i + 1,
-        ...cur_minter,
-      };
-    });
+    const params = this.navParams.get('from');
 
-    const can_minter_list = await this.minService.minersOut.getPromise();
-    this.can_minter_rank_list = can_minter_list.map((can_minter, i) => {
-      return {
-        No: i + cur_minter_list.length + 1,
-        ...can_minter,
-      };
-    });
-    // 更新页面
+    if (params === 'current') {
+      this.isPageCurrentList = true;
+      this.cur_minter_rank_list = await this.minService.allMinersCurRound.getPromise();
+    }else{
+      this.cur_minter_rank_list = [];
+      this.isPageCurrentList = false;
+    }
+
+    if (params === 'candidate') {
+      this.isPageCandidateList = true;
+      this.can_minter_rank_list = await this.minService.minersOut.getPromise();
+    }else{
+      this.can_minter_rank_list = [];
+      this.isPageCandidateList = false;
+    }
+
     this.cdRef.markForCheck();
   }
+
   @AccountMinerScorllListPage.addEvent("ROUND:CHANGED")
   @asyncCtrlGenerator.error("@@LOAD_ALL_MINER_LIST_ERROR")
   @asyncCtrlGenerator.retry()
-  async watchRoundChange(height) {
+
+  async watchRoundChange() {
     return this.loadMinterList();
   }
+
 }
