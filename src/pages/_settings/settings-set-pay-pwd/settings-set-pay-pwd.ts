@@ -4,6 +4,7 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
+import { PromiseOut } from "../../../peer-scanner/src/helper";
 
 @IonicPage({ name: "settings-set-pay-pwd" })
 @Component({
@@ -32,6 +33,10 @@ export class SettingsSetPayPwdPage extends SecondLevelPage {
 
   @asyncCtrlGenerator.error()
   async submit() {
+    // 检查一轮内是否已经有相关的交易， 一轮内只能重复一次
+    if (await this.accountService.hasSetPayPwdInCurrentRound.getPromise()) {
+      throw new Error("@@SET_PAY_PWD_COULD_LIMIT");
+    }
     const { password, pay_pwd } = await this.getUserPassword({
       title: "@@SET_PAY_PWD_TITLE",
       force_require_password: true,

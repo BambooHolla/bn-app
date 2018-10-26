@@ -18,6 +18,7 @@ import { Observable, BehaviorSubject } from "rxjs";
 import { Mdb } from "../mdb";
 import { DbCacheProvider } from "../db-cache/db-cache";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
+import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 
 @Injectable()
 export class AccountServiceProvider {
@@ -35,7 +36,7 @@ export class AccountServiceProvider {
     public appSetting: AppSettingProvider,
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
-    public user: UserInfoProvider,
+    public userInfo: UserInfoProvider,
     public dbCache: DbCacheProvider
   ) {
     // this.md5 = this.Crypto.createHash("md5"); //Crypto.createHash('md5');
@@ -133,7 +134,7 @@ export class AccountServiceProvider {
   is_pre_round_has_vote!: AsyncBehaviorSubject<boolean>;
   @ROUND_AB_Generator("is_pre_round_has_vote", true)
   is_pre_round_has_vote_Executor(promise_pro) {
-    return promise_pro.follow(this.isPreRoundHasVote(this.user.address));
+    return promise_pro.follow(this.isPreRoundHasVote(this.userInfo.address));
   }
 
   /**
@@ -185,7 +186,7 @@ export class AccountServiceProvider {
     secondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee)
   ) {
-    if (!!this.user.userInfo.username) {
+    if (!!this.userInfo.userInfo.username) {
       throw this.fetch.ServerResError.getI18nError(
         "account already has username"
       );
@@ -199,12 +200,12 @@ export class AccountServiceProvider {
     const accountData: any = {
       type: TransactionTypes.USERNAME,
       secret,
-      publicKey: this.user.userInfo.publicKey,
+      publicKey: this.userInfo.userInfo.publicKey,
       fee: fee.toString(),
       asset: {
         username: {
           alias: newUsername,
-          publicKey: this.user.userInfo.publicKey,
+          publicKey: this.userInfo.userInfo.publicKey,
         },
       },
     };
@@ -255,7 +256,7 @@ export class AccountServiceProvider {
     newSecondSecret: string,
     oldSecondSecret?: string,
     fee = parseFloat(this.appSetting.settings.default_fee),
-    publicKey = this.user.publicKey
+    publicKey = this.userInfo.publicKey
   ) {
     let txData = {
       type: this.TransactionTypes.SIGNATURE,
@@ -274,4 +275,18 @@ export class AccountServiceProvider {
     await this.transactionService.putTransaction(txData);
     return true;
   }
+
+  hasSetPayPwdInCurrentRound!: AsyncBehaviorSubject<boolean>
+  @ROUND_AB_Generator("hasSetPayPwdInCurrentRound")
+  hasSetPayPwdInCurrentRound_Exector(promise_pro: PromisePro<boolean>) {
+    return promise_pro.follow(this.transactionService.queryTransaction({
+      senderId: this.userInfo.address,
+      type: this.TransactionTypes.SIGNATURE,
+      height: {
+        $gte: this.appSetting.getRoundStartHeight(this.appSetting.getRound()),
+        $lt: this.appSetting.getRoundStartHeight(this.appSetting.getRound() + 1),
+      }
+    }, {}, 0, 1, {}).then(res => res.transactions.length > 0))
+  }
+
 }

@@ -11,10 +11,11 @@
       <!-- 生产区块量 -->
       <div class="cur-trans-num">{{delegate_info?.producedblocks}}</div>
       <div class="online-rate">
-        <div class="label">{{'DELEGATE_PRODUCTIVITY'|translate}}</div>{{delegate_info?.productivity|number:'1.2-2'}}%</div>
+        <div class="label">{{'DELEGATE_PRODUCTIVITY'|translate}}</div>{{delegate_info?.productivity|number:'1.2-2'}}%
+      </div>
     </div>
     <div class="right">
-      <div class="in-vote-rate">
+      <div class="in-vote-rate" (click)="routeTo('vote-delegate-get-vote-list',{delegate:delegate_info})">
         <div class="label">
           <ali-icon name="ifm-fapiao"></ali-icon>
           {{'DELEGATE_VOTE_RATE'|translate}}
