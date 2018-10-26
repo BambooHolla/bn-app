@@ -13,7 +13,6 @@ import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import { Mdb } from "../mdb";
 import { baseConfig } from "../../bnqkl-framework/helper";
-export * from "./transaction.types";
 
 @Injectable()
 export class TransactionServiceProvider {
@@ -73,21 +72,6 @@ export class TransactionServiceProvider {
       // 侧链应用
       case this.TransactionTypes.DAPP:
         return "dapps/tx";
-      // //转入Dapp资金
-      // case transactionTypes.IN_TRANSFER:
-      //     return "xxxxx"
-      // //转出Dapp资金
-      // case transactionTypes.OUT_TRANSFER:
-      // return "xxxxx"
-      //点赞
-      case this.TransactionTypes.FABULOUS:
-        return "fabulous/tx";
-      //打赏
-      case this.TransactionTypes.GRATUITY:
-        return "gratuities/tx";
-      //发送信息
-      case this.TransactionTypes.SENDMESSAGE:
-        return "messages/tx";
       //侧链数据存证
       case this.TransactionTypes.MARK:
         return "marks/tx";
