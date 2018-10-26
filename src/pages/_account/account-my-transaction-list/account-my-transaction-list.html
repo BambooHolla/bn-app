@@ -17,39 +17,12 @@
 <ion-content class="red-ripple">
   <ion-content class="confimed-page" [class.show]="TranSubPage.CONFIRMED===current_page" [ion-content-scroll-shadow]="{from_color:[252,139,104,0],to_color:[252,180,62,0.3]}">
     <button mat-button class="item" *ngFor="let tran of confirmed_transaction_list;trackBy:commonTrackBy('id')" (click)="routeToTransactionDetail(tran)">
-      <!--       <div class="left">
-        <div class="from-to">
-          <div class="sender" [innerHTML]="tran.senderName?tran.senderName:(tran.senderId|mask:'@address')"></div>
-          <ng-container *ngIf="transactionService.isTransferType(tran.type)">
-            <ali-icon name="ifm-chain-right-arrow"></ali-icon>
-            <div class="recipient" [innerHTML]="tran.recipientName?tran.recipientName:(tran.recipientId|mask:'@address')"></div>
-          </ng-container>
-        </div>
-        <div class="create-time">
-          {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
-        </div>
-      </div>
-      <div class="right">
-        <div class="tran-type">
-          {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
-        </div>
-        <div class="amount" *ngIf="transactionService.isShowAmountType(tran.type);else confirmed_showFeeOnly">
-          {{tran.senderId==userInfo.address?'-':'+'}} {{tran?.amount|amountEuler|number:"1.8-8"}}
-          <span class="unit">{{tran?.assetType||'IBT'}}</span>
-        </div>
-        <ng-template #confirmed_showFeeOnly>
-          <div class="amount">
-            - {{tran?.fee|amountEuler|number:"1.8-8"}}
-            <span class="unit">IBT</span>
-          </div>
-        </ng-template>
-      </div> -->
       <div class="left">
         <div class="tran-type">
           {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
         </div>
         <div class="create-time">
-          {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+          {{(tran.timestamp+timeago_clock)|timestamp|commonDurationHumainze}}
         </div>
       </div>
       <div class="right">
@@ -102,8 +75,7 @@
                 </ng-container>
               </div>
               <div class="create-time">
-                <!-- {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}} -->
-                {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+                {{(tran.timestamp+timeago_clock)|timestamp|commonDurationHumainze}}
               </div>
             </div>
             <div class="right">

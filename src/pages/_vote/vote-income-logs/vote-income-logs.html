@@ -18,7 +18,7 @@
     <button mat-button class="common-item" *ngFor="let log of income_log_list" (click)="routeToBlockDetail(log)">
       <div class="left">
         <div class="time-ago">
-          {{log.timestamp|timestamp|amLocale:localName|amTimeAgo}}
+          {{log.timestamp|timestamp|commonDurationHumainze}}
         </div>
         <div class="time-detail">
           {{log.timestamp|timestamp|amDateFormat:"YYYY.MM.DD HH:mm"}}

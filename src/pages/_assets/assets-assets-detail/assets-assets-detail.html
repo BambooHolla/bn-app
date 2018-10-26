@@ -183,7 +183,7 @@
           <div class="left">
             <div class="address" [innerHTML]="(income_item.name)?(income_item.name):(income_item.address|mask:'@address')"></div>
             <div class="time">
-              {{income_item.timestamp|timestamp|commonDurationHumainze:localName}}
+              {{income_item.timestamp|timestamp|commonDurationHumainze}}
             </div>
           </div>
           <div class="right">
@@ -211,7 +211,7 @@
         <div class="left">
           <div class="address" [innerHTML]="(tran.senderName)?(tran.senderName):(tran.senderId|mask:'@address')"></div>
           <div class="time">
-            {{tran.timestamp|timestamp|commonDurationHumainze:localName}}
+            {{tran.timestamp|timestamp|commonDurationHumainze}}
           </div>
         </div>
         <div class="right">

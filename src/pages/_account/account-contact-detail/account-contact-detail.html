@@ -80,7 +80,7 @@
             {{('TRAN_TYPE_NAME_'+tran.type) | translate}}
           </div>
           <div class="create-time">
-            {{(tran.timestamp+timeago_clock)|timestamp|amLocale:localName|amTimeAgo}}
+            {{(tran.timestamp+timeago_clock)|timestamp|commonDurationHumainze}}
           </div>
         </div>
         <div class="right">
