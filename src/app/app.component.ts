@@ -521,3 +521,8 @@ global["importLS"] = function(o) {
     localStorage.setItem(k, o[k]);
   }
 };
+
+/**FIX hight level style */
+if (typeof navigator === 'object' && navigator.appVersion.indexOf("Chrome/7")) {
+  document.body.classList.add("height-level-browser");
+}

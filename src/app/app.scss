@@ -22,17 +22,21 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include angular-material-theme($candy-app-theme);
+
 html,
 body {
   font-size: 2.5vw;
 }
+
 body {
   position: static !important;
+
   .app-root,
   ion-nav {
     position: static !important;
   }
 }
+
 // http://ionicframework.com/docs/v2/theming/
 .testnet-flag {
   z-index: 1000;
@@ -54,11 +58,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+
   #testnetFlag {
     transition-duration: 250ms;
     display: inline-block;
   }
 }
+
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -76,42 +82,51 @@ body {
   .toolbar-background {
     border: none !important;
   }
-  > ion-content {
-    > .scroll-content {
+
+  >ion-content {
+    >.scroll-content {
       top: -0.55px;
     }
   }
 }
+
 .clip-text {
   -webkit-background-clip: text !important;
   background-clip: text !important;
   // -webkit-text-fill-color: transparent;
   color: transparent !important;
+
   ali-icon {
     background-image: inherit;
     -webkit-background-clip: text !important;
     background-clip: text !important;
   }
 }
+
 // $toolbar-ios-height: 1.8rem;
 $navbar-height: 60px;
+
 ion-loading {
-  &.can-goback {
-  }
+  &.can-goback {}
+
   &.can-tap {
     pointer-events: none;
     background-color: transparent;
-    > ion-backdrop {
+
+    >ion-backdrop {
       background-color: transparent;
     }
+
     &.blockchain-loading {
+
       // filter: drop-shadow(0 0vw 4vw rgba(0, 0, 0, 0.2));
-      .loading-wrapper > .loading-content {
+      .loading-wrapper>.loading-content {
         color: #666;
       }
     }
+
     &:not(.blockchain-loading) {
-      > .loading-wrapper {
+      >.loading-wrapper {
         box-shadow: 0 0rem 0.2rem rgba(255, 255, 255, 0.3), 0 0.2rem 2rem rgba(0, 0, 0, 0.2), 0 0 5rem rgba(0, 0, 0, 0.1);
       }
     }
@@ -119,14 +134,17 @@ ion-loading {
 }
 
 ion-navbar.toolbar-ios {
+
   // min-height: $navbar-height; // padding: 0 1.1rem;
   .back-button {
     width: 3rem;
     transform: translateX(1.6vw);
+
     .button-inner {
       .back-button-icon {
         display: flex;
         align-items: flex-end;
+
         &::before {
           font-family: "ifmicon" !important;
           content: "\e607";
@@ -140,18 +158,22 @@ ion-navbar.toolbar-ios {
       }
     }
   }
+
   .toolbar-title-ios {
     color: #7a7a7a;
   }
+
   .bar-buttons {
     button {
       background-color: transparent;
       border: none;
       color: #7a7a7a;
+
       .button-inner {
         color: #7a7a7a;
       }
     }
+
     ali-icon {
       color: #7a7a7a;
       font-size: 1.95rem;
@@ -160,34 +182,40 @@ ion-navbar.toolbar-ios {
 }
 
 ion-content {
-  > .scroll-content {
+  >.scroll-content {
     ion-content {
-      > .scroll-content {
+      >.scroll-content {
         margin-bottom: 0 !important;
       }
     }
   }
 }
+
 @keyframes rotate-with-clock {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 @keyframes rotate-unwith-clock {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(-360deg);
   }
 }
+
 @font-face {
   font-family: monospace;
   src: local("Menlo");
 }
+
 .follow-parent-ani {
   animation-duration: inherit;
   animation-timing-function: inherit;
@@ -197,31 +225,37 @@ ion-content {
   animation-play-state: inherit;
   animation-direction: inherit;
 }
+
 .common-gradient {
-  > .button-inner {
+  >.button-inner {
     background: linear-gradient(bottom, #61ebde 0%, #44cfeb 100%) !important;
     @extend .clip-text;
   }
 }
+
 .disable-scroll .ion-page {
   pointer-events: all !important;
   -ms-touch-action: all !important;
   touch-action: all !important;
 }
+
 #ion-diagnostics-toast {
   opacity: 0.88;
   pointer-events: none;
-  > * {
+
+  >* {
     pointer-events: none !important;
   }
 }
+
 ion-loading.logo-loading {
   .loading-wrapper {
     background: transparent;
     display: flex;
     flex-direction: column;
     padding: 0;
-    > .loading-spinner {
+
+    >.loading-spinner {
       background-image: url("../assets/icon/loading-logo.png"); // width: 16vw; // height: 21vw; // background-size: 600%;
       // background-repeat: no-repeat;
       // background-position: center 45%;
@@ -234,11 +268,13 @@ ion-loading.logo-loading {
       animation-timing-function: linear;
       animation-iteration-count: infinite;
       animation-duration: 1.5s;
-      > .spinner {
+
+      >.spinner {
         display: none;
       }
     }
-    > .loading-content {
+
+    >.loading-content {
       font-weight: normal;
       color: #fff;
       margin: 0;
@@ -247,23 +283,28 @@ ion-loading.logo-loading {
       display: flex;
       flex-direction: column;
       align-items: center;
+
       &::after {
         content: ". . . . . .";
       }
     }
   }
 }
+
 @-webkit-keyframes fadeDownUp {
   0% {
     transform: translate3d(0, -20%, 0);
   }
+
   50% {
     transform: translate3d(0, 0, 0);
   }
+
   100% {
     transform: translate3d(0, -20%, 0);
   }
 }
+
 ion-loading.blockchain-loading {
   .loading-wrapper {
     background: transparent;
@@ -274,7 +315,8 @@ ion-loading.blockchain-loading {
     align-items: center;
     justify-content: center;
     padding: 0;
-    > .loading-spinner {
+
+    >.loading-spinner {
       position: absolute;
       background-image: url("../assets/icon/loading-blockchain.png");
       width: 100%;
@@ -288,11 +330,13 @@ ion-loading.blockchain-loading {
       animation-iteration-count: infinite;
       animation-timing-function: linear;
       animation-duration: 8s;
-      > .spinner {
+
+      >.spinner {
         display: none;
       }
     }
-    > .loading-content {
+
+    >.loading-content {
       font-weight: normal;
       color: #fff;
       margin: 0;
@@ -301,6 +345,7 @@ ion-loading.blockchain-loading {
       display: flex;
       flex-direction: column;
       align-items: center;
+
       &::after {
         content: ". . . . . .";
       }
@@ -311,20 +356,24 @@ ion-loading.blockchain-loading {
 ion-app.app-root {
   font-family: -apple-system, "SF Compact Display", "Helvetica Neue", "Roboto", sans-serif;
 }
+
 ion-app.app-root .blue-ripple,
 button.submit-button.blue-ripple {
   .mat-ripple-element {
     background-color: rgba(#76e5de, 0.1);
   }
+
   .mat-button-focus-overlay {
     background-color: rgba(#76e5de, 0.12);
   }
 }
+
 ion-app.app-root .red-ripple,
 button.submit-button.red-ripple {
   .mat-ripple-element {
     background-color: rgba(#ff5a5a, 0.1);
   }
+
   .mat-button-focus-overlay {
     background-color: rgba(#ff5a5a, 0.12);
   }
@@ -335,6 +384,7 @@ button.submit-button.white-ripple {
   .mat-ripple-element {
     background-color: rgba(#fff, 0.1);
   }
+
   .mat-button-focus-overlay {
     background-color: rgba(#fff, 0.12);
   }
@@ -347,22 +397,29 @@ button.submit-button.black-ripple {
   .mat-ripple-element {
     background-color: rgba(#000, 0.1);
   }
+
   .mat-button-focus-overlay {
     background-color: rgba(#000, 0.12);
   }
 }
 
 ion-app.app-root {
+
   .mat-button:hover,
   .mat-stroked-button:hover {
     .mat-button-focus-overlay {
       opacity: 0;
     }
   }
+
   .mat-button:active,
   .mat-stroked-button:active {
     .mat-button-focus-overlay {
       opacity: 1;
     }
   }
+}
+
+.height-level-browser .scroll-content {
+  contain: none !important;
 }
