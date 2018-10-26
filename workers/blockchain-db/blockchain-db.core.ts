@@ -3,6 +3,8 @@ import * as IDB_VK from "idb-keyval";
 import { AOT, AOT_Placeholder } from '../../src/bnqkl-framework/lib/AOT';
 import { PromiseOut } from '../../src/bnqkl-framework/PromiseExtends';
 import { DB_Config, BlockModel, DB_Item_Index } from "./const";
+import debug from "debug";
+const log = debug("blockchain-db");
 
 enum HAS_DATA {
     UNINIT,
@@ -100,9 +102,14 @@ export class BlockchainDBCore extends EventEmitter {
         }
         return this._getByHeightFromCache(height);
     }
-    private _getByHeightFromCache(height: number) {
+    /**获取指定高度的数据 */
+    private async _getByHeightFromCache(height: number) {
         const page = (height / this._dbconfig.page_size) | 0;
+        const offset = height % this._dbconfig.page_size;
+        const pageData = await this._getByPageFromCache(page);
+        return pageData[offset];
     }
+    /**获取指页也数据，从IndexedDB获取 */
     private __getByP(page_index: number) {
         const page_key = this.DB_PAGE_KEY(page_index);
         return IDB_VK.get<Array<BlockModel | undefined> | undefined>(page_key);
@@ -110,10 +117,15 @@ export class BlockchainDBCore extends EventEmitter {
 
 
     /// 缓存管理
+    /**检查CG的定时器间隔 */
     public CG_INTERVAL = 1e3;
-    public MAX_CACHE_PAGE_NUM = 10;// 默认最多缓存N个分页的数据
-    public AUTO_CG_HOT_LINE = 0.2;// 访问热度低于这个阈值自动释放
+    /**默认最多缓存N个分页的数据 */
+    public MAX_CACHE_PAGE_NUM = 10;
+    /**访问热度低于这个阈值自动释放 */
+    public AUTO_CG_HOT_LINE = 0.2;
+    /**缓存请求 */
     private _cache_page_data_req = new Map<number, Cached_Page_Data_Req>();
+    /**带数据的缓存 */
     private _cache_page_widthdata = new Map<number, Cached_Page_WithData>();
     public CG() {
         this._cache_page_widthdata.clear();
@@ -128,6 +140,7 @@ export class BlockchainDBCore extends EventEmitter {
         return cache_data_req.hot >= this.AUTO_CG_HOT_LINE;
         // this._cache_page_widthdata.delete(cache_data_req.page_index);
     }
+    /**获取指页也数据，存入缓存中*/
     private _getByPageFromCache(page_index: number) {
         let cache_data_req = this._cache_page_data_req.get(page_index);
         if (!cache_data_req) {
@@ -147,7 +160,8 @@ export class BlockchainDBCore extends EventEmitter {
         cache_data_req.lvt = NOW;
         return this._activeCachePageWidthData(cache_data_req);
     }
-    private async _activeCachePageWidthData(cache_data_req: Cached_Page_Data_Req) {
+    /**激活缓存对象，如果有数据，进入CG回收状态 */
+    private async _activeCachePageWidthData(cache_data_req: Cached_Page_Data_Req): Promise<(BlockModel | undefined)[]> {
         let cache_widthdata = this._cache_page_widthdata.get(cache_data_req.page_index)
         if (cache_widthdata) {
             return cache_widthdata.data;
@@ -184,5 +198,6 @@ export class BlockchainDBCore extends EventEmitter {
             await cache_data_req.data_req;
             return this._activeCachePageWidthData(cache_data_req);
         }
+        throw new Error("should not happend.")
     }
 }
