@@ -67,3 +67,8 @@ export type DelegatesResModel = {
 export type DelegateInfoResModel = {
   delegate: DelegateModel;
 };
+export enum DELEGATE_VOTEABLE {
+  UNABLE_VOTE = "unable-vote",
+  CHEKCING = "checking",
+  VOTEABLE = "voteable",
+}

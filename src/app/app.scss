@@ -83,9 +83,34 @@ body {
     border: none !important;
   }
 
-  >ion-content {
-    >.scroll-content {
+  > ion-content {
+    > .scroll-content {
       top: -0.55px;
+    }
+  }
+}
+.white-font-header {
+  > .header {
+    .toolbar-ios {
+      .back-button {
+        .button-inner {
+          .back-button-icon {
+            &::before {
+              color: #fff;
+            }
+          }
+        }
+      }
+
+      .toolbar-title-ios {
+        color: #fff;
+      }
+
+      .bar-buttons {
+        ali-icon {
+          color: #fff;
+        }
+      }
     }
   }
 }
@@ -107,26 +132,26 @@ body {
 $navbar-height: 60px;
 
 ion-loading {
-  &.can-goback {}
+  &.can-goback {
+  }
 
   &.can-tap {
     pointer-events: none;
     background-color: transparent;
 
-    >ion-backdrop {
+    > ion-backdrop {
       background-color: transparent;
     }
 
     &.blockchain-loading {
-
       // filter: drop-shadow(0 0vw 4vw rgba(0, 0, 0, 0.2));
-      .loading-wrapper>.loading-content {
+      .loading-wrapper > .loading-content {
         color: #666;
       }
     }
 
     &:not(.blockchain-loading) {
-      >.loading-wrapper {
+      > .loading-wrapper {
         box-shadow: 0 0rem 0.2rem rgba(255, 255, 255, 0.3), 0 0.2rem 2rem rgba(0, 0, 0, 0.2), 0 0 5rem rgba(0, 0, 0, 0.1);
       }
     }
@@ -134,7 +159,6 @@ ion-loading {
 }
 
 ion-navbar.toolbar-ios {
-
   // min-height: $navbar-height; // padding: 0 1.1rem;
   .back-button {
     width: 3rem;
@@ -182,9 +206,9 @@ ion-navbar.toolbar-ios {
 }
 
 ion-content {
-  >.scroll-content {
+  > .scroll-content {
     ion-content {
-      >.scroll-content {
+      > .scroll-content {
         margin-bottom: 0 !important;
       }
     }
@@ -227,7 +251,7 @@ ion-content {
 }
 
 .common-gradient {
-  >.button-inner {
+  > .button-inner {
     background: linear-gradient(bottom, #61ebde 0%, #44cfeb 100%) !important;
     @extend .clip-text;
   }
@@ -243,7 +267,7 @@ ion-content {
   opacity: 0.88;
   pointer-events: none;
 
-  >* {
+  > * {
     pointer-events: none !important;
   }
 }
@@ -255,7 +279,7 @@ ion-loading.logo-loading {
     flex-direction: column;
     padding: 0;
 
-    >.loading-spinner {
+    > .loading-spinner {
       background-image: url("../assets/icon/loading-logo.png"); // width: 16vw; // height: 21vw; // background-size: 600%;
       // background-repeat: no-repeat;
       // background-position: center 45%;
@@ -269,12 +293,12 @@ ion-loading.logo-loading {
       animation-iteration-count: infinite;
       animation-duration: 1.5s;
 
-      >.spinner {
+      > .spinner {
         display: none;
       }
     }
 
-    >.loading-content {
+    > .loading-content {
       font-weight: normal;
       color: #fff;
       margin: 0;
@@ -316,7 +340,7 @@ ion-loading.blockchain-loading {
     justify-content: center;
     padding: 0;
 
-    >.loading-spinner {
+    > .loading-spinner {
       position: absolute;
       background-image: url("../assets/icon/loading-blockchain.png");
       width: 100%;
@@ -331,12 +355,12 @@ ion-loading.blockchain-loading {
       animation-timing-function: linear;
       animation-duration: 8s;
 
-      >.spinner {
+      > .spinner {
         display: none;
       }
     }
 
-    >.loading-content {
+    > .loading-content {
       font-weight: normal;
       color: #fff;
       margin: 0;
@@ -404,7 +428,6 @@ button.submit-button.black-ripple {
 }
 
 ion-app.app-root {
-
   .mat-button:hover,
   .mat-stroked-button:hover {
     .mat-button-focus-overlay {

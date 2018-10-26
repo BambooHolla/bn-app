@@ -34,7 +34,7 @@ export class TabAccountPage extends FirstLevelPage {
       this.checkAndroidUpdate();
     });
   }
-  force_show_hidden = false;
+  @TabAccountPage.detectChanges force_show_hidden = false;
   get hasBalance() {
     if (this.force_show_hidden) {
       return true;

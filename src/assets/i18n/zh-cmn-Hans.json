@@ -316,6 +316,9 @@
   "TRANSCATION_SENDER": "发送者",
   "TRANSCATION_RECIPIENT": "接收者",
 
+  "//": "chain-vote-transaction-delegate-list",
+  "CHAIN_VOTE_TRANSACTION_DELEGATE_LIST": "投票明细",
+
   "//": "account-my-contacts",
   "ACCOUNT-MY-CONTACTS": "我的联系人",
   "CONFIRM_TO_IGNORE_THIS_CONTACT": "确定要将此联系人拉入黑名单？",
@@ -423,6 +426,11 @@
   "VOTED_THIS_DELEGATE": "本轮已经投过TA",
   "VOTE_ONE_DELEGATE_TIP":
     "在IFMChain中，所谓投票就是选举锻造区块的矿工，本质上是将区块链账务的处理权交给某人，选择在线率高、锻造区块多、交易处理能力强的矿工可以提高整个区块链网络的稳定性。",
+
+  "//": "vote-delegate-get-vote-list",
+  "THE_IN_VOTE_OF_#NAME#": "{{name}}的得票",
+  "VOTER": "投票人",
+  "VOTE_COUNT": "投票数",
 
   "//": "pay-receive",
   "PAY-RECEIVE": "接收",

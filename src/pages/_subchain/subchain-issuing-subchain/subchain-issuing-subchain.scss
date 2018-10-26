@@ -1,29 +1,14 @@
 page-subchain-issuing-subchain {
   @extend .header-no-border;
-
-  >.header {
-    .toolbar-ios {
-      .back-button {
-        .button-inner {
-          .back-button-icon {
-            &::before {
-              color: #fff;
-            }
-          }
-        }
-      }
-
-      .toolbar-title-ios {
-        color: #fff;
-      }
-
-      .bar-buttons {
-        ali-icon {
-          color: #fff;
-        }
-      }
+  @extend .white-font-header;
+  > .content {
+    > .scroll-content {
+      padding-top: 0 !important;
+      margin-top: 0 !important;
     }
   }
+
+
 
   .header-nav-bg {
     background-image: url("../assets/imgs/subchain/issuing/header-bg-fixed.png");
@@ -56,7 +41,7 @@ page-subchain-issuing-subchain {
       font-size: 1.3rem;
       line-height: 1.6rem;
 
-      >ali-icon {
+      > ali-icon {
         text-indent: 0;
         position: absolute;
         left: 0.1rem;
@@ -99,20 +84,19 @@ page-subchain-issuing-subchain {
         // padding-bottom: 1.3rem;
       }
 
-      >.mat-focused {
+      > .mat-focused {
         .mat-form-field-label {
           color: #fff;
         }
       }
 
-      >.mat-focused+.tip {
+      > .mat-focused + .tip {
         color: #fff;
 
         ali-icon {
           color: #5ae3e2;
         }
       }
-
     }
 
     .mat-input-placeholder {
@@ -171,7 +155,7 @@ page-subchain-issuing-subchain {
       background-color: rgba(#fff, 0.1);
       color: #fff;
 
-      >.form-title {
+      > .form-title {
         display: flex;
         align-items: center;
         font-size: 1.6rem;
@@ -232,7 +216,7 @@ page-subchain-issuing-subchain {
           }
         }
 
-        >.tip {
+        > .tip {
           margin-top: 1rem;
         }
       }
@@ -285,13 +269,13 @@ page-subchain-issuing-subchain {
         align-items: flex-start;
         justify-content: space-between;
 
-        >.block-height {
+        > .block-height {
           width: 60%;
           display: flex;
           align-items: center;
           justify-content: space-between;
 
-          >.range-item {
+          > .range-item {
             input {
               text-align: center;
             }
@@ -311,9 +295,9 @@ page-subchain-issuing-subchain {
               justify-content: space-between;
               align-items: center;
               padding: 0rem 0 0.5rem 0;
-              border-bottom: 1px dashed rgba(#FFF, 0.5);
+              border-bottom: 1px dashed rgba(#fff, 0.5);
 
-              >.from-value {
+              > .from-value {
                 flex: 1;
                 text-align: center;
               }
@@ -324,9 +308,9 @@ page-subchain-issuing-subchain {
               justify-content: space-between;
               align-items: center;
               padding: 0rem 0 0.5rem 0;
-              border-bottom: 1px dashed rgba(#FFF, 0.5);
+              border-bottom: 1px dashed rgba(#fff, 0.5);
 
-              >.end-value {
+              > .end-value {
                 flex: 1;
                 text-align: center;
               }
@@ -334,10 +318,10 @@ page-subchain-issuing-subchain {
           }
         }
 
-        >.reward-amount {
+        > .reward-amount {
           width: 30%;
 
-          >mat-form-field {
+          > mat-form-field {
             width: 100%;
 
             input {
@@ -346,12 +330,12 @@ page-subchain-issuing-subchain {
           }
         }
 
-        >.block-height,
-        >.reward-amount {
+        > .block-height,
+        > .reward-amount {
           padding-right: 5%;
         }
 
-        >.remove-reward-block-item-button {
+        > .remove-reward-block-item-button {
           width: 10%;
         }
       }
@@ -365,11 +349,11 @@ page-subchain-issuing-subchain {
         align-items: flex-start;
         justify-content: space-between;
 
-        >.delegate-secret {
+        > .delegate-secret {
           width: 90%;
           padding-right: 5%;
 
-          >mat-form-field {
+          > mat-form-field {
             width: 100%;
           }
 
@@ -380,19 +364,19 @@ page-subchain-issuing-subchain {
           }
         }
 
-        >button {
+        > button {
           width: 10%;
         }
       }
 
       .delegates-secret-toolbar {
         .button-list {
-
           display: flex;
           // align-items: center;
           justify-content: space-between;
 
-          >button {}
+          > button {
+          }
         }
 
         .mutil-add-delegates {
@@ -417,7 +401,7 @@ page-subchain-issuing-subchain {
 
     color: #fff;
 
-    >.agree-user-agreement {
+    > .agree-user-agreement {
       padding-left: 3rem;
       padding-bottom: 1.5rem;
       font-size: 1.16rem;
@@ -447,7 +431,7 @@ page-subchain-issuing-subchain {
       }
     }
 
-    >button {
+    > button {
       margin: 0 auto;
       background: linear-gradient(to bottom, rgba(#02e5f6, 1), rgba(#01acdd, 1));
 

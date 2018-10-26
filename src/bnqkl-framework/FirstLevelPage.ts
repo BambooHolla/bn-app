@@ -595,7 +595,7 @@ export class FirstLevelPage extends FLP_Data {
   toggleAmountView() {
     this.appSetting.settings.can_view_amount = !this.appSetting.settings
       .can_view_amount;
-    this.markForCheck();
+    this.detectChanges();
   }
   static TRACK_BY_CACHE = new Map<string, Function>();
   /**通用的 angular trackBy 生成器*/

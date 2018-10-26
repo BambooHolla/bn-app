@@ -5,7 +5,7 @@ import { PromisePro } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams, Refresher } from "ionic-angular/index";
 import { BlockServiceProvider, BlockModel, ForgingBlockModel } from "../../../providers/block-service/block-service";
-import { MinServiceProvider, DelegateModel } from "../../../providers/min-service/min-service";
+import { MinServiceProvider, DelegateModel, DELEGATE_VOTEABLE } from "../../../providers/min-service/min-service";
 
 @IonicPage({ name: "vote-delegate-detail" })
 @Component({
@@ -117,38 +117,25 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     }
   }
 
-  @VoteDelegateDetailPage.markForCheck checking_delegate_voteable = false;
-  @VoteDelegateDetailPage.markForCheck delegate_voteable = false;
+  readonly DELEGATE_VOTEABLE = DELEGATE_VOTEABLE;
+  /**委托人可投与否*/
+  @VoteDelegateDetailPage.markForCheck delegate_voteable = DELEGATE_VOTEABLE.UNABLE_VOTE;
 
-  @VoteDelegateDetailPage.addEvent("HEIGHT:CHANGED")
   /**查询委托人是否可被投票*/
+  @VoteDelegateDetailPage.addEvent("HEIGHT:CHANGED")
   @asyncCtrlGenerator.error()
+  @asyncCtrlGenerator.single()
   async checkCanVoteDelegate() {
     if (!this.delegate_info) {
       return;
     }
-    this.checking_delegate_voteable = true;
+    this.delegate_voteable = DELEGATE_VOTEABLE.CHEKCING;
     try {
-      const allVotedDelegatesMap = await this.minService.allVotedDelegatesMap.getPromise();
-      this.delegate_voteable = !allVotedDelegatesMap.has(this.delegate_info.address);
-    } finally {
-      this.checking_delegate_voteable = false;
+      const voteable = (await this.minService.checkDelegateVoteAble([this.delegate_info.address]))[0];
+      this.delegate_voteable = voteable ? DELEGATE_VOTEABLE.VOTEABLE : DELEGATE_VOTEABLE.UNABLE_VOTE;
+    } catch {
+      this.delegate_voteable = DELEGATE_VOTEABLE.VOTEABLE;
     }
-  }
-  /**
-   * 投票按钮的文本内容
-   * 检查投票中
-   * 投TA一票
-   * 不可投
-   */
-  get voteButtonText() {
-    if (this.checking_delegate_voteable) {
-      return "CHECKING_DELEGATE_VOTEABLE";
-    }
-    if (this.delegate_voteable) {
-      return "VOTE_THIS_DELEGATE";
-    }
-    return "VOTED_THIS_DELEGATE";
   }
 
   /**对当前委托人进行投票*/

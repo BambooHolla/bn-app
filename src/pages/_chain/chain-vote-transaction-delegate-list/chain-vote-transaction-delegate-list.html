@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{'CHAIN_VOTE_TRANSACTION_DELEGATE_LIST'|translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content>
+<div class="common-list">
+	<button mat-button class="common-item" *ngFor="let delegate of voted_delegate_list" (click)="routeToDelegateGetVoteList(delegate)">
+		<div class="left" [innerHTML]="delegate.username||(delegate.address|mask:'@address')"></div>
+		<div class="right">
+			<ali-icon name="ifm-arrow-to-right"></ali-icon>
+		</div>
+	</button>
+</div>
+</ion-content>

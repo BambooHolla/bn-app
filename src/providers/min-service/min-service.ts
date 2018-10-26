@@ -192,6 +192,12 @@ export class MinServiceProvider extends FLP_Tool {
     );
   }
 
+  /**检查委托人是否可投*/
+  async checkDelegateVoteAble(delegate_address_list: string[]) {
+    const allVotedDelegatesMap = await this.allVotedDelegatesMap.getPromise();
+    return delegate_address_list.map(delegate_address => allVotedDelegatesMap.has(delegate_address));
+  }
+
   /**
    * 投票
    * @param secret 主密码

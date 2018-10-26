@@ -9,10 +9,10 @@
     <button class="tool-item qr-scan" (click)="routeTo('account-scan-add-contact',{auto_return:true,mode:'scan-only'})">
       <ali-icon name="ifm-scan"></ali-icon>
     </button>
-    <button class="tool-item contact-book" (click)="rippleRouteTo($event,'pay-select-my-local-contacts',{auto_return:true,mode:'select-address'})">
+    <button class="tool-item contact-book" (click)="routeTo('pay-select-my-local-contacts',{auto_return:true,mode:'select-address'})">
       <ali-icon name="ifm-tongxunlu"></ali-icon>
     </button>
-    <button class="tool-item ibt" (click)="rippleRouteTo($event,'pay-receive')">
+    <button class="tool-item ibt" (click)="routeTo('pay-receive')">
       <ali-icon name="ifm-IBT"></ali-icon>
     </button>
   </div>

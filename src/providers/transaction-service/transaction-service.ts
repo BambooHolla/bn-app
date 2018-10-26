@@ -13,6 +13,7 @@ import * as TYPE from "./transaction.types";
 export * from "./transaction.types";
 import { Mdb } from "../mdb";
 import { baseConfig } from "../../bnqkl-framework/helper";
+import { DelegatesResModel } from "../../providers/min-service/min.types";
 
 @Injectable()
 export class TransactionServiceProvider {
@@ -444,6 +445,20 @@ export class TransactionServiceProvider {
    */
   queryTransactionsByPages(query, order, page = 1, pageSize = 10) {
     return this.queryTransaction(query, order, (page - 1) * pageSize, pageSize).then(data => data.transactions);
+  }
+
+  /**查询制定投票交易id对应的委托人详情列表*/
+  getVotedDelegateByTrsId(transaction_id: string, offset?: number, limit?: number) {
+    // TOOD:
+    return this.fetch
+      .get<DelegatesResModel>(this.GET______, {
+        search: {
+          transaction_id,
+          offset,
+          limit,
+        },
+      })
+      .then(res => res.delegates);
   }
 
   /**
