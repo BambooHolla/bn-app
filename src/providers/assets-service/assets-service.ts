@@ -127,7 +127,7 @@ export class AssetsServiceProvider extends FLP_Tool {
   @HEIGHT_AB_Generator("myAssetsList")
   myAssetsList_Executor(promise_pro) {
     // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
-    return promise_pro.follow(this.getAllPossessorAssets(this.appSetting.user.address));
+    return promise_pro.follow(this.getAllPossessorAssets(this.appSetting.userInfo.address));
   }
   /**查询指定账户的所有可用资产*/
   async getAllPossessorAssets(address: string, extends_query?) {
@@ -229,8 +229,8 @@ export class AssetsServiceProvider extends FLP_Tool {
     fee = parseFloat(this.appSetting.settings.default_fee),
     secret: string,
     secondSecret?: string,
-    publicKey = this.appSetting.user.publicKey,
-    address = this.appSetting.user.address
+    publicKey = this.appSetting.userInfo.publicKey,
+    address = this.appSetting.userInfo.address
   ) {
     const txData: any = {
       type: this.transactionService.TransactionTypes.ISSUE_ASSET,
@@ -258,8 +258,8 @@ export class AssetsServiceProvider extends FLP_Tool {
     fee = parseFloat(this.appSetting.settings.default_fee),
     secret: string,
     secondSecret?: string,
-    publicKey = this.appSetting.user.publicKey,
-    address = this.appSetting.user.address
+    publicKey = this.appSetting.userInfo.publicKey,
+    address = this.appSetting.userInfo.address
   ) {
     // TODO:等春那边出来
     const txData: any = {

@@ -39,8 +39,8 @@ export class SubchainServiceProvider {
     fee = parseFloat(this.appSetting.settings.default_fee),
     secret: string,
     secondSecret?: string,
-    publicKey = this.appSetting.user.publicKey,
-    address = this.appSetting.user.address
+    publicKey = this.appSetting.userInfo.publicKey,
+    address = this.appSetting.userInfo.address
   ) {
     const txData: any = {
       type: TransactionTypes.ISSUE_SUBCHAIN,

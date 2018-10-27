@@ -47,6 +47,7 @@ export class TransactionServiceProvider {
   readonly GET_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions/");
   readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions/query");
   readonly GET_SOURCE_IP = this.appSetting.APP_URL("/api/system/sourceIp");
+  readonly GET_VOTE_TRS_DELEGATE_LIST = this.appSetting.APP_URL("/api/accounts/voteDetails");
 
   getTransactionLink(type) {
     switch (type) {
@@ -451,9 +452,9 @@ export class TransactionServiceProvider {
   getVotedDelegateByTrsId(transaction_id: string, offset?: number, limit?: number) {
     // TOOD:
     return this.fetch
-      .get<DelegatesResModel>(this.GET______, {
+      .get<DelegatesResModel>(this.GET_VOTE_TRS_DELEGATE_LIST, {
         search: {
-          transaction_id,
+          id: transaction_id,
           offset,
           limit,
         },

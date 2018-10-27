@@ -20,11 +20,6 @@ import { AlertController } from "ionic-angular/index";
 import { AccountServiceProvider } from "../account-service/account-service";
 import { UserInfoProvider } from "../user-info/user-info";
 
-export type UserModel = {
-  name: string;
-  telephone: string;
-  email: string;
-};
 @Injectable()
 export class LoginServiceProvider extends FLP_Tool {
   loginStatus: Observable<boolean>;
@@ -50,7 +45,7 @@ export class LoginServiceProvider extends FLP_Tool {
     });
 
     // 当登录的用户发生变化的时候，安装用户数据更新
-    this.appSetting.user_token.distinctUntilChanged().subscribe(v => {
+    this.appSetting.user_token.map(val => val && val.address).distinctUntilChanged().subscribe(v => {
       if (v) {
         this.installUserInfoRefresher();
       } else {
@@ -61,7 +56,7 @@ export class LoginServiceProvider extends FLP_Tool {
   private _user_info_refresher?: Subscription;
   installUserInfoRefresher() {
     if (this._user_info_refresher) {
-      return;
+      this._user_info_refresher.unsubscribe();
     }
     // 高度发生变动的时候，更新用户信息
     this._user_info_refresher = this.appSetting.height.subscribe(

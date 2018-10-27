@@ -42,7 +42,7 @@ export class AppSettingProvider extends CommonService {
     return new AppUrl(path);
   }
 
-  constructor(public user: UserInfoProvider, public translate: TranslateService) {
+  constructor(public userInfo: UserInfoProvider, public translate: TranslateService) {
     super();
 
     constructor_inited.resolve(this);
@@ -50,7 +50,7 @@ export class AppSettingProvider extends CommonService {
     const user_token = this.getUserToken();
 
     // 初始化缓存中的user_info
-    this.user.initUserInfo(user_token);
+    this.userInfo.initUserInfo(user_token);
 
     this.user_token = new BehaviorSubject(user_token);
     this.account_address = this.user_token
@@ -77,7 +77,7 @@ export class AppSettingProvider extends CommonService {
       const default_settings = { ...this.settings };
       const get_settings_key = () => {
         return (
-          this.user.address && `${baseConfig.settingKeyPerfix}${this.user.address}:${baseConfig.NET_VERSION}|${baseConfig.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
+          this.userInfo.address && `${baseConfig.settingKeyPerfix}${this.userInfo.address}:${baseConfig.NET_VERSION}|${baseConfig.BLOCK_UNIT_TIME}` //${AppSettingProvider.SERVER_URL}|
         );
       };
       const getUserSettings = () => {
@@ -282,7 +282,7 @@ export class AppSettingProvider extends CommonService {
           this.delLoginAbleAccount(obj.address);
         }
       }
-      this.user.initUserInfo(obj);
+      this.userInfo.initUserInfo(obj);
       obj = JSON.stringify(obj);
     } else {
       throw new TypeError("user token must be an object:{address,password,balance,fee}");

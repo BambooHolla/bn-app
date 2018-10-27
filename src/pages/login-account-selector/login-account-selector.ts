@@ -182,6 +182,7 @@ export class LoginAccountSelectorPage extends FirstLevelPage {
 
   /**执行登陆*/
   @asyncCtrlGenerator.error("@@LOGIN_ERROR")
+  @asyncCtrlGenerator.single()
   async doLogin(account: UserTokenModel) {
     const result = await this.loginService.doLogin(account.password, account.remember);
     if (result) {

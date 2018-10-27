@@ -102,6 +102,7 @@ export class MinServiceProvider extends FLP_Tool {
   readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
   readonly SYSTEM_WEBSOCKETLINKNUM = this.appSetting.APP_URL("/api/system/websocketLink");
   readonly CHECK_DELEGATE_VOTEABLE = this.appSetting.APP_URL("/api/accounts/enableBeVoted");
+  readonly GET_DELEGATE_PREROUND_VOTED_DETAIL = this.appSetting.APP_URL("/api/accounts/beVotedDetails");
 
   getTotalVote() {
     return this.fetch.get<{ totalVoteByRound: number }>(this.TOTAL_VOTE).then(data => data.totalVoteByRound);
@@ -172,7 +173,7 @@ export class MinServiceProvider extends FLP_Tool {
     this._checked_voteable_delegate_cache = new Map();
   });
   /**检查一组委托人是否可投*/
-  async checkDelegateListVoteAble(delegate_pk_list: Iterable<string>, senderId = this.userInfo.addListener) {
+  async checkDelegateListVoteAble(delegate_pk_list: Iterable<string>, senderId = this.userInfo.address) {
     const check_result_map = new Map<string, boolean>();
     const { _checked_voteable_delegate_cache } = this;
     const need_check_delegate_pk_list: string[] = [];
@@ -201,7 +202,7 @@ export class MinServiceProvider extends FLP_Tool {
     return check_result_map;
   }
   /**检查指定委托人是否可投 */
-  checkDelegateVoteAble(delegate_pk: string, senderId = this.userInfo.addListener) {
+  checkDelegateVoteAble(delegate_pk: string, senderId = this.userInfo.address) {
     return this.checkDelegateListVoteAble([delegate_pk], senderId).then(map => map.get(delegate_pk));
   }
 
@@ -704,5 +705,16 @@ export class MinServiceProvider extends FLP_Tool {
   @HEIGHT_AB_Generator("myDelegateInfo", true)
   myDelegateInfo_Executor(promise_pro) {
     return promise_pro.follow(this.getDelegateInfo(this.userInfo.publicKey).catch(() => null));
+  }
+
+  /**获取指定委托人上一轮的投票用户详情与的权益分配 */
+  getPreRoundDelegateVotedDetail(delegate_publicKey: string, offset: number, limit: number) {
+    return this.fetch.get<{ voters: TYPE.AccountModelWithEquity[] }>(this.GET_DELEGATE_PREROUND_VOTED_DETAIL, {
+      search: {
+        publicKey: delegate_publicKey,
+        offset,
+        limit
+      }
+    }).then(res => res.voters)
   }
 }
