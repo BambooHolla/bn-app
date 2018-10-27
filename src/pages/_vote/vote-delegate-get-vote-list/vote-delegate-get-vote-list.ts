@@ -4,60 +4,67 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
 import { PromisePro } from "../../../bnqkl-framework/PromiseExtends";
-import { MinServiceProvider, DelegateModel, DELEGATE_VOTEABLE } from "../../../providers/min-service/min-service";
+import { MinServiceProvider, DelegateModel, DELEGATE_VOTEABLE, AccountModelWithEquity } from "../../../providers/min-service/min-service";
+import { VoteDelegateDetailBasePage } from "../vote-delegate-detail/vote-delegate-detail-base";
+import { LocalContactProvider, AccountWithNicknameModel } from "../../../providers/local-contact/local-contact";
 
 @IonicPage({ name: "vote-delegate-get-vote-list" })
 @Component({
-	selector: "page-vote-delegate-get-vote-list",
-	templateUrl: "vote-delegate-get-vote-list.html",
+  selector: "page-vote-delegate-get-vote-list",
+  templateUrl: "vote-delegate-get-vote-list.html",
 })
-export class VoteDelegateGetVoteListPage extends SecondLevelPage {
-	constructor(
-		public navCtrl: NavController,
-		public navParams: NavParams,
-		@Optional() public tabs: TabsPage,
-		public cdRef: ChangeDetectorRef,
-		public minService: MinServiceProvider
-	) {
-		super(navCtrl, navParams, true, tabs);
-	}
-	_wait_delegate_info?: PromisePro<DelegateModel>;
-	get wait_delegate_info() {
-		if (!this._wait_delegate_info) {
-			this._wait_delegate_info = new PromisePro();
-		}
-		return this._wait_delegate_info;
-	}
-	@VoteDelegateGetVoteListPage.markForCheck delegate_info?: DelegateModel;
+export class VoteDelegateGetVoteListPage extends VoteDelegateDetailBasePage {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    @Optional() public tabs: TabsPage,
+    public cdRef: ChangeDetectorRef,
+    public minService: MinServiceProvider,
+    public localContact: LocalContactProvider
+  ) {
+    super(navCtrl, navParams, tabs, minService, cdRef);
+  }
+  vote_list: AccountModelWithEquity[] = [];
+  @VoteDelegateGetVoteListPage.addEvent("HEIGHT:CHANGED")
+  watchHeightChanged() {
+    return this.initVoteDetails();
+  }
+  //#region 列表数据的加载
 
-	vote_list: any[] = [];
-	@VoteDelegateGetVoteListPage.willEnter
-	fakeData() {
-		this.vote_list = Array.from({ length: 60 }, (_, i) => {
-			return {
-				address: "cLJ8Z8bNz3Rif5PdYEzdq32v4M8RawmBnH",
-				vote_count: (i + Math.random() * 200) | 0,
-			};
-		});
-	}
+  voter_list: AccountWithNicknameModel<AccountModelWithEquity>[] = [];
+  page_info = {
+    page: 1,
+    pageSize: 20,
+    loading: false,
+    hasMore: true,
+  };
+  async initVoteDetails() {
+    // 重新开始分页加载
+    this.page_info.page = 1;
+    this.voter_list = await this._getVotedDetails();
+  }
+  async loadMoreVoteDetails() {
+    const { page_info } = this;
+    if (page_info.loading || !page_info.hasMore) {
+      return;
+    }
+    page_info.page += 1;
+    const voter_list = await this._getVotedDetails();
+    this.voter_list = this.voter_list.concat(voter_list);
+  }
 
-	readonly DELEGATE_VOTEABLE = DELEGATE_VOTEABLE;
-	/**委托人可投与否*/
-	@VoteDelegateGetVoteListPage.markForCheck delegate_voteable = DELEGATE_VOTEABLE.UNABLE_VOTE;
-	/**查询委托人是否可被投票*/
-	@VoteDelegateGetVoteListPage.addEvent("HEIGHT:CHANGED")
-	@asyncCtrlGenerator.error()
-	@asyncCtrlGenerator.single()
-	async checkCanVoteDelegate() {
-		if (!this.delegate_info) {
-			return;
-		}
-		this.delegate_voteable = DELEGATE_VOTEABLE.CHEKCING;
-		try {
-			const voteable = await this.minService.checkDelegateVoteAble(this.delegate_info.publicKey);
-			this.delegate_voteable = voteable ? DELEGATE_VOTEABLE.VOTEABLE : DELEGATE_VOTEABLE.UNABLE_VOTE;
-		} catch {
-			this.delegate_voteable = DELEGATE_VOTEABLE.VOTEABLE;
-		}
-	}
+  @asyncCtrlGenerator.error("@@GET_DELEGATE_VOTED_DETAIL_ERROR")
+  private async _getVotedDetails() {
+    const delegate_info = await this.wait_delegate_info.promise;
+    const { page_info } = this;
+    page_info.loading = true;
+    try {
+      const voter_list = await this.minService.getPreRoundDelegateVotedDetail(delegate_info.publicKey, page_info.page, page_info.pageSize);
+      page_info.hasMore = voter_list.length === page_info.pageSize;
+      return await this.localContact.formatAccountWidthLoclContactNickname(voter_list);
+    } finally {
+      page_info.loading = false;
+    }
+  }
+  //#endregion
 }

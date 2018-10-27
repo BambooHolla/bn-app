@@ -17,15 +17,19 @@ import EventEmitter from "eventemitter3";
 import * as TYPE from "./local-contact.types";
 export * from "./local-contact.types";
 
+export type AccountWithNicknameModel<T extends AccountModel = AccountModel> = T & {
+  nickname?: string;
+  name?: string;
+}
 export type TransactionModel = import("../transaction-service/transaction.types").TransactionModel;
-export type TransactionWithNicknameModel = TransactionModel & {
+export type TransactionWithNicknameModel<T extends TransactionModel = TransactionModel> = T & {
   senderNickname?: string;
   recipientNickname?: string;
   senderName?: string;
   recipientName?: string;
 };
 export type BenefitModel = import("../benefit-service/benefit.types").BenefitModel;
-export type BenefitWithNicknameModel = BenefitModel & {
+export type BenefitWithNicknameModel<T extends BenefitModel = BenefitModel> = T & {
   nickname?: string;
   name?: string;
 };
@@ -77,8 +81,31 @@ export class LocalContactProvider extends EventEmitter {
       })
       .then(list => list[0] as TYPE.LocalContactModel | undefined);
   }
-  formatTransactionWithLoclContactNickname(
-    transaction_list: TransactionModel[],
+  formatAccountWidthLoclContactNickname<T extends AccountModel>(
+    account_list: T[],
+    owner_publicKey = this.userInfo.publicKey
+  ) {
+
+    const findTask = new Map<
+      string,
+      ReturnType<typeof LocalContactProvider.prototype.findContact>
+      >();
+    return Promise.all(account_list.map(async account => {
+      let finder_task = findTask.get(account.address);
+      if (!finder_task) {
+        finder_task = this.findContact(account.address, owner_publicKey);
+        findTask.set(account.address, finder_task);
+      }
+      const local = await finder_task;
+      const res: AccountWithNicknameModel<T> = Object.assign({}, account, {
+        nickname: local && local.nickname,
+      });
+      res.name = res.nickname || res.username;
+      return res;
+    }))
+  }
+  formatTransactionWithLoclContactNickname<T extends TransactionModel>(
+    transaction_list: T[],
     owner_publicKey = this.userInfo.publicKey
   ) {
     const findTask = new Map<
@@ -117,19 +144,18 @@ export class LocalContactProvider extends EventEmitter {
           sender_finder_task,
           recipient_finder_task,
         ]);
-        const res: TransactionWithNicknameModel = {
-          ...trs,
+        const res: TransactionWithNicknameModel = Object.assign({}, trs, {
           senderNickname: contact_sender && contact_sender.nickname,
           recipientNickname: contact_recipient && contact_recipient.nickname,
-        };
+        });
         res.senderName = res.senderNickname || res.senderUsername;
         res.recipientName = res.recipientNickname || res.recipientUsername;
         return res;
       })
     );
   }
-  formatBenefitWithLoclContactNickname(
-    benefit_list: BenefitModel[],
+  formatBenefitWithLoclContactNickname<T extends BenefitModel>(
+    benefit_list: T[],
     owner_publicKey = this.userInfo.publicKey
   ) {
     const findTask = new Map<
@@ -144,10 +170,9 @@ export class LocalContactProvider extends EventEmitter {
           findTask.set(benefit.address, finder_task);
         }
         const local = await finder_task;
-        const res: BenefitWithNicknameModel = {
-          ...benefit,
+        const res: BenefitWithNicknameModel<T> = Object.assign({}, benefit, {
           nickname: local && local.nickname,
-        };
+        });
         res.name = res.nickname || res.username;
         return res;
       })

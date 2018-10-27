@@ -72,3 +72,6 @@ export enum DELEGATE_VOTEABLE {
   CHEKCING = "checking",
   VOTEABLE = "voteable",
 }
+export type AccountModelWithEquity = import("../account-service/account.types").AccountModel & {
+  equity: string
+}

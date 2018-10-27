@@ -1,51 +1,54 @@
 <ion-header>
   <ion-navbar color="transparent">
-    <ion-title>vote-delegate-get-vote-list</ion-title>
+    <ion-title>{{'THE_IN_VOTE_OF_#NAME#'|translate:({name:delegate_info?.username})}}</ion-title>
   </ion-navbar>
 </ion-header>
 <ion-content>
-	<div class="header-nav-bg">
-		<div class="header-content">
-			<div class="total-vote-count">2203</div>
-			<div class="in-vote-rate">
-				<div class="label">{{'DELEGATE_VOTE_RATE'|translate}}</div>
-				<div class="value">80%</div>
-			</div>
-			<div class="address">
-				<ali-icon name="ifm-account-detail"></ali-icon>
-				cLJ8Z8bNz3Rif5PdYEzdq32v4M8RawmBnH
-			</div>
-		</div>
-	</div>
-	<div class="list-wrapper">
-		<div class="list-header">
-			<div class="cel left voter">
-				<ali-icon name="ifm-account"></ali-icon>
-				<div class="label">{{'VOTER'|translate}}</div>
-			</div>
-			<div class="cel right vote-count">
-				<ali-icon name="ifm-fapiao"></ali-icon>
-				<div class="label">{{'VOTE_COUNT'|translate}}</div>
-			</div>
-		</div>
-		<ion-content class="list-container" [ion-content-scroll-shadow]="{from_color:[252, 165, 62,0],to_color:[252, 165, 62,0.3]}">
-			<div class="common-list">
-				<button mat-button class="common-item" *ngFor="let vote of vote_list">
-					<div class="cel voter">
-						<div class="address" [innerHTML]="vote.address|mask:'@address'"></div>
-						<div class="center-placeholder"></div>
-					</div>
-					<span class="cel vote-count">{{vote.vote_count}}</span>
-					<div class="right">
-						<ali-icon name="ifm-arrow-to-right"></ali-icon>
-					</div>
-				</button>
-			</div>
-		</ion-content>
-	</div>
-	<div class="footer-bar">
-		<button mat-button class="submit-button" (click)="voteDelegate()" [ngClass]="delegate_voteable">
-			<text-mg [text]="'VOTE_THIS_DELEGATE'|translate" from="#ffa279" to="#ff7070" direction="to bottom" fontSize="1.8rem"></text-mg>
-		</button>
-	</div>
+  <div class="header-nav-bg">
+    <div class="header-content">
+      <div class="total-vote-count">2203</div>
+      <div class="in-vote-rate">
+        <div class="label">{{'DELEGATE_VOTE_RATE'|translate}}</div>
+        <div class="value">80%</div>
+      </div>
+      <div class="address">
+        <ali-icon name="ifm-account-detail"></ali-icon>
+        cLJ8Z8bNz3Rif5PdYEzdq32v4M8RawmBnH
+      </div>
+    </div>
+  </div>
+  <div class="list-wrapper">
+    <div class="list-header">
+      <div class="cel left voter">
+        <ali-icon name="ifm-account"></ali-icon>
+        <div class="label">{{'VOTER'|translate}}</div>
+      </div>
+      <div class="cel right vote-count">
+        <ali-icon name="ifm-fapiao"></ali-icon>
+        <div class="label">{{'VOTE_COUNT'|translate}}</div>
+      </div>
+    </div>
+    <ion-content class="list-container" [ion-content-scroll-shadow]="{from_color:[252, 165, 62,0],to_color:[252, 165, 62,0.3]}">
+      <div class="common-list">
+        <button mat-button class="common-item" *ngFor="let voter of voter_list">
+          <div class="cel voter">
+            <div class="address" [innerHTML]="voter.name||(voter.address|mask:'@address')"></div>
+            <div class="center-placeholder"></div>
+          </div>
+          <span class="cel vote-count">{{voter.equity}}</span>
+          <div class="right">
+            <ali-icon name="ifm-arrow-to-right"></ali-icon>
+          </div>
+        </button>
+      </div>
+      <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreVoteDetails())" [enabled]="page_info.hasMore">
+        <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_VOTE_DETAILS_LIST'|translate"></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-content>
+  </div>
+  <div class="footer-bar">
+    <button mat-button class="submit-button" (click)="voteDelegate()" [ngClass]="delegate_voteable">
+      <text-mg [text]="'VOTE_THIS_DELEGATE'|translate" from="#ffa279" to="#ff7070" direction="to bottom" fontSize="1.8rem"></text-mg>
+    </button>
+  </div>
 </ion-content>

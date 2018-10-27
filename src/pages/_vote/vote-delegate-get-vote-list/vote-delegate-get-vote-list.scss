@@ -80,7 +80,8 @@ page-vote-delegate-get-vote-list {
 			width: 100%;
 			display: flex;
 			flex-direction: row;
-			padding-top: 4rem;
+      padding-top: 4rem;
+      padding-bottom: 0.5rem;
 			color: #666;
 			flex-grow: 0;
 			flex-shrink: 0;
@@ -128,7 +129,8 @@ page-vote-delegate-get-vote-list {
 						width: 26vw;
 						flex-shrink: 0;
 						flex-grow: 0;
-						text-align: center;
+            text-align: center;
+            font-size: 1.8rem;
 					}
 				}
 				.right {
