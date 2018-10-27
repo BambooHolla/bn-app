@@ -40,6 +40,11 @@
             <ali-icon name="ifm-arrow-to-right"></ali-icon>
           </div>
         </button>
+        <div class="empty-list" *ngIf="!page_info.loading&&voter_list.length==0">
+          <img src="assets/imgs/empty-list.png" [alt]="'EMPTY_LIST
+          '|translate">
+          <div class="message">{{'VOTE_DETAILS_LIST_IS_EMPTY'|translate}}</div>
+        </div>
       </div>
       <ion-infinite-scroll (ionInfinite)="$event.waitFor(loadMoreVoteDetails())" [enabled]="page_info.hasMore">
         <ion-infinite-scroll-content [loadingText]="'LOADING_MORE_VOTE_DETAILS_LIST'|translate"></ion-infinite-scroll-content>

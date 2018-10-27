@@ -136,7 +136,10 @@ page-vote-delegate-get-vote-list {
 				.right {
 					/* flex: 1; */
 				}
-			}
+      }
+      .empty-list{
+        top: 6vh;
+      }
 		}
 	}
 
