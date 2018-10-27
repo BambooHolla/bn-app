@@ -101,6 +101,7 @@ export class MinServiceProvider extends FLP_Tool {
   readonly TOTAL_VOTE = this.appSetting.APP_URL("/api/delegates/getTotalVote");
   readonly DELEGATE_INFO = this.appSetting.APP_URL("/api/delegates/get");
   readonly SYSTEM_WEBSOCKETLINKNUM = this.appSetting.APP_URL("/api/system/websocketLink");
+  readonly CHECK_DELEGATE_VOTEABLE = this.appSetting.APP_URL("/api/accounts/enableBeVoted");
 
   getTotalVote() {
     return this.fetch.get<{ totalVoteByRound: number }>(this.TOTAL_VOTE).then(data => data.totalVoteByRound);
@@ -166,36 +167,42 @@ export class MinServiceProvider extends FLP_Tool {
     });
     return data;
   }
-  /**
-   * 当前轮已经投票过的所有委托人
-   * TODO: REMOVE ME
-   */
-  allVotedDelegatesMap!: AsyncBehaviorSubject<Map<string, TYPE.DelegateModel>>;
-  @ROUND_AB_Generator("allVotedDelegatesMap", true)
-  allVotedDelegatesMap_Executor(promise_pro: PromisePro<Map<string, TYPE.DelegateModel>>) {
-    return promise_pro.follow(
-      (async () => {
-        let skip = 0;
-        const delegatesMap = new Map<string, TYPE.DelegateModel>();
-        do {
-          const res = await this.getVotedDelegates(skip, 57);
-          res.skip = skip;
-          res.delegates.forEach(delegate => {
-            delegatesMap.set(delegate.address, delegate);
-          });
-          if (res.done) {
-            break;
-          }
-        } while (true);
-        return delegatesMap;
-      })()
-    );
+  private _checked_voteable_delegate_cache!: Map<string, boolean>
+  private voteable_delegate_cache_refresher = this.appSetting.height.subscribe(() => {
+    this._checked_voteable_delegate_cache = new Map();
+  });
+  /**检查一组委托人是否可投*/
+  async checkDelegateListVoteAble(delegate_pk_list: Iterable<string>, senderId = this.userInfo.addListener) {
+    const check_result_map = new Map<string, boolean>();
+    const { _checked_voteable_delegate_cache } = this;
+    const need_check_delegate_pk_list: string[] = [];
+    for (var delegate_pk of delegate_pk_list) {
+      const voteable = _checked_voteable_delegate_cache.get(delegate_pk);
+      if (typeof voteable === "boolean") {
+        check_result_map.set(delegate_pk, voteable);
+      } else {
+        need_check_delegate_pk_list.push(delegate_pk);
+      }
+    }
+    if (need_check_delegate_pk_list.length) {
+      const { result: check_result } = await this.fetch.get<{ result: string }>(this.CHECK_DELEGATE_VOTEABLE, {
+        search: {
+          senderId,
+          delegatePublicKeyList: need_check_delegate_pk_list.join(",")
+        }
+      });
+      for (var i = 0; i < need_check_delegate_pk_list.length; i += 1) {
+        const voteable = check_result[i] === "1";
+        const delegate_pk = need_check_delegate_pk_list[i];
+        _checked_voteable_delegate_cache.set(delegate_pk, voteable);
+        check_result_map.set(delegate_pk, voteable);
+      }
+    }
+    return check_result_map;
   }
-
-  /**检查委托人是否可投*/
-  async checkDelegateVoteAble(delegate_address_list: string[]) {
-    const allVotedDelegatesMap = await this.allVotedDelegatesMap.getPromise();
-    return delegate_address_list.map(delegate_address => allVotedDelegatesMap.has(delegate_address));
+  /**检查指定委托人是否可投 */
+  checkDelegateVoteAble(delegate_pk: string, senderId = this.userInfo.addListener) {
+    return this.checkDelegateListVoteAble([delegate_pk], senderId).then(map => map.get(delegate_pk));
   }
 
   /**
@@ -374,7 +381,6 @@ export class MinServiceProvider extends FLP_Tool {
   }
   private _vote_success() {
     this.tryEmit("vote-success");
-    this.allVotedDelegatesMap.refresh();
     this.vote_status_detail = null;
     this.vote_status.next(true);
   }

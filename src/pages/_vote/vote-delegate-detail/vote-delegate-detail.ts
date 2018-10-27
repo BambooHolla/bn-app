@@ -131,7 +131,7 @@ export class VoteDelegateDetailPage extends SecondLevelPage {
     }
     this.delegate_voteable = DELEGATE_VOTEABLE.CHEKCING;
     try {
-      const voteable = (await this.minService.checkDelegateVoteAble([this.delegate_info.address]))[0];
+      const voteable = await this.minService.checkDelegateVoteAble(this.delegate_info.publicKey);
       this.delegate_voteable = voteable ? DELEGATE_VOTEABLE.VOTEABLE : DELEGATE_VOTEABLE.UNABLE_VOTE;
     } catch {
       this.delegate_voteable = DELEGATE_VOTEABLE.VOTEABLE;
