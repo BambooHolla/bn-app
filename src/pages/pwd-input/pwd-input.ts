@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -14,6 +14,7 @@ import { AccountServiceProvider } from "../../providers/account-service/account-
 @Component({
   selector: "page-pwd-input",
   templateUrl: "pwd-input.html",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PwdInputPage extends FirstLevelPage {
   constructor(
@@ -21,10 +22,18 @@ export class PwdInputPage extends FirstLevelPage {
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public transactionService: TransactionServiceProvider,
-    public c: AccountServiceProvider
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams);
   }
+  @PwdInputPage.propDetectChanges([
+    "password",
+    "have_password",
+    "pay_pwd",
+    "need_pay_pwd",
+    "need_custom_fee",
+    "custom_fee",
+  ])
   formData = this._initFormData();
   formDataKeyI18nMap = {
     password: "@@LOGIN_PASSPHRASE",
