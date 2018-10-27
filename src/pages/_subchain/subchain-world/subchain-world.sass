@@ -1,0 +1,152 @@
+page-subchain-world.ion-page
+  background-image: url("../assets/imgs/bg-home-page.png")
+  background-origin: content-box
+  background-position: center center
+  background-repeat: no-repeat
+  background-size: cover
+  & .toolbar-title-ios
+    color: #fff
+  & > ion-content
+    background-color: transparent
+  & > ion-footer
+    color: #fff
+  & img
+    display: block
+  & button
+    padding: 0
+    background-color: transparent
+  & .btn-footer
+    height: 3.5rem
+    background-color: rgba(255,255,255,0.5)
+    border-radius: 18px
+    padding:
+      left: 1.5rem
+      right: 1.5rem
+    color: #fff
+
+.wrapper
+  position: relative
+  display: grid
+  min-height: 100%
+  grid-template-columns: repeat(5, 1fr)
+  grid-template-rows: repeat(9, 1fr)
+  grid-gap: 1rem
+  align-items: center
+  padding: 2rem
+
+.radar-line
+  position: fixed
+  margin: auto
+  top: 0
+  right: 0
+  bottom: 55%
+  left: 0
+  will-change: transform
+  transform-origin: 50% 100%
+  animation-name: rotate360
+  animation-duration: 3s
+  animation-iteration-count: infinite
+  animation-timing-function: linear
+  z-index: 1
+  &::after
+    content: ""
+    position: absolute
+    bottom: -1px
+    width: 50%
+    border-top: 1px solid rgba(0, 231, 244, 0.50)
+    box-shadow: 0 -100px 210px 60px rgba(0, 231, 244, 0.6)
+
+@keyframes rotate360
+  from
+    transform: rotate(0deg)
+  to
+    transform: rotate(-360deg)
+
+.centered
+  position: relative
+  grid-column: 2/5
+  grid-row: 1/9
+  justify-self: center
+  align-self: center
+  align-content: center
+  margin-top: 1rem
+  @extend .img-radius
+  z-index: 2
+
+@keyframes zoomIn
+  from
+    opacity: 0
+    transform: scale3d(0.3, 0.3, 0.3)
+  50%
+    opacity: 1
+
+.child-circle
+  position: relative
+  justify-self: center
+  z-index: 1
+  animation-name: zoomIn
+  animation-duration: 1s
+  animation-iteration-count: 1
+  animation-fill-mode: forwards
+  animation-fill-mode: both
+  animation-timing-function: ease-in-out
+  & img
+    position: relative
+    z-index: 2
+
+$columns: ("1/1", "2/2", "3/3", "5/5", "5/5", "1/1", "1/1", "2/2", "3/3", "4/4", "5/5")
+$rows: ("2/2", "1/1", "2/2", "2/2", "4/4", "7/7", "7/7", "9/9", "7/7", "8/8", "7/7")
+
+@for $i from 1 through 11
+  .child-circle:nth-child(#{$i})
+    grid-column: unquote(nth($columns, $i))
+    grid-row: unquote(nth($rows, $i))
+    &::before
+      animation-delay: random(500) + ms
+
+.img-radius
+  border-radius: 50%
+
+.icon-svg
+  display: inline-block
+  width: 1em
+  height: 1em
+  vertical-align: middle
+
+.x3
+  font-size: 3rem
+
+@keyframes scanScale
+  from
+    transform: scale3d(0.3, 0.3, 0.3)
+    opacity: 1
+  to
+    transform: scale3d(1.1, 1.1, 1.1)
+    opacity: 0
+
+=circleShadow($shadowSize)
+  box-shadow: 0 0 0 $shadowSize rgba(255, 255, 255, 0.5), 0 0 0 ($shadowSize * 2) rgba(255, 255, 255, 0.5), 0 0 0 ($shadowSize * 3) rgba(255, 255, 255, 0.3)
+
+.circle
+  & .img-circle
+    +circleShadow(10px)
+.child-circle
+  &::before
+    content: ""
+    position: absolute
+    top: 0
+    left: 0
+    display: block
+    width: 100%
+    height: 92%
+    +circleShadow(5px)
+    animation-name: scanScale
+    animation-timing-function: linear
+    animation-duration: 3s
+    animation-fill-mode: forwards
+    animation-iteration-count: infinite
+    @extend .img-radius
+    z-index: 1
+
+.mr-half
+  margin-right: 0.5rem

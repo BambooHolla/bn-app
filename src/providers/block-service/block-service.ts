@@ -414,7 +414,8 @@ export class BlockServiceProvider extends FLP_Tool {
       /*更新数据库中的流量使用信息*/
       blockService.peerService.updatePeerFlow(io_origin, flow);
 
-      console.log(`%c区块更新 ${new Date().toLocaleString()}`, "color:green;background-color:#eee;font-size:1.2rem");
+      // Commented for performance
+      // console.log(`%c区块更新 ${new Date().toLocaleString()}`, "color:green;background-color:#eee;font-size:1.2rem");
 
       const lastBlock: TYPE.BlockModel = data.lastBlock;
       const current_height = blockService.appSetting.getHeight();

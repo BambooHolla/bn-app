@@ -1,0 +1,33 @@
+<ion-grid>
+  <ion-row aria-label="Modal header" align-items-center class="modal-header">
+    <ion-col>
+      {{'WORLD_LIST' | translate}}
+    </ion-col>
+    <ion-col text-center>
+      <svg class="icon-svg x3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="#4FC3F7" d="M375.923 432.003l136.827-78.997 136.827 78.997v157.994L512.75 668.994l-136.827-78.997zM672.908 432.003l136.827-78.997 136.827 78.997v157.994l-136.827 78.997-136.827-78.997zM77.438 432.003l136.827-78.997 136.827 78.997v157.994l-136.827 78.997-136.827-78.997zM524.416 175.516l136.826-78.997 136.827 78.997V333.51l-136.827 78.997-136.826-78.997zM228.931 175.516l136.826-78.997 136.827 78.997V333.51l-136.827 78.997-136.826-78.997zM524.416 690.49l136.826-78.997 136.827 78.997v157.994l-136.827 78.997-136.826-78.997zM228.931 690.49l136.826-78.997 136.827 78.997v157.994l-136.827 78.997-136.826-78.997z"/></svg>
+      {{'CREDIT_AGE' | translate}}
+    </ion-col>
+    <ion-col text-right>
+      <button (click)="dismiss()" ion-button clear class="btn-dismiss">
+        <ion-icon class="mr-half" name="arrow-dropdown"></ion-icon>
+        {{'EXPAND' | translate}}
+      </button>
+    </ion-col>
+  </ion-row>
+
+  <ion-row aria-label="Modal body" class="modal-body">
+
+    <ion-col *ngFor="let subchain of subchainList" class="modal-item slide-in-up" aria-label="Subchain loop" col-3>
+      <button title="{{subchain.name}}" class="btn-sub-chain" type="button" clear>
+        <img class="img-circle img-radius" width="50" height="50" [src]="subchain.logo_safe_url?.changingThisBreaksApplicationSecurity" alt="">
+        <p class="modal-item-text">
+          {{subchain.name}}
+        </p>
+        <small>
+          {{subchain.abbreviation}}
+        </small>
+      </button>
+    </ion-col>
+
+  </ion-row>
+</ion-grid>

@@ -1,4 +1,8 @@
 import { NgModule } from "@angular/core";
+import { IonicModule } from 'ionic-angular/index';
+
+import { TranslateModule } from "@ngx-translate/core";
+
 import { AliIconComponent } from "./ali-icon/ali-icon";
 import { RadioButtonComponent } from "./radio-button/radio-button";
 import { GoldCoinComponent } from "./gold-coin/gold-coin";
@@ -31,7 +35,9 @@ import { ChartComponent } from "./chart/chart.component";
 import { CommonModule } from '@angular/common';
 import { ClipSubchainLogoComponent } from './clip-subchain-logo/clip-subchain-logo';
 import { ClipSubchainBannerComponent } from './clip-subchain-banner/clip-subchain-banner';
-import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';  
+import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';
+import { ModalComponent } from './modal/modal';
+import { PopoverComponent } from './popover/popover';
 
 @NgModule({
     declarations: [
@@ -67,8 +73,10 @@ import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';
     ClipSubchainLogoComponent,
     ClipSubchainBannerComponent,
     SwirlGatewayComponent,
+    ModalComponent,
+    PopoverComponent,
     ],
-    imports: [CommonModule],
+    imports: [CommonModule,IonicModule,TranslateModule],
     exports: [
         AliIconComponent,
         RadioButtonComponent,
@@ -102,6 +110,8 @@ import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';
     ClipSubchainLogoComponent,
     ClipSubchainBannerComponent,
     SwirlGatewayComponent,
+    ModalComponent,
+    PopoverComponent,
     ],
 })
 export class ComponentsModule {}

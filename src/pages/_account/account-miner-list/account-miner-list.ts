@@ -48,7 +48,7 @@ export class AccountMinerListPage extends SecondLevelPage {
     const can_minter_list = await this.minService.minersOut.getPromise();
     this.can_minter_rank_list = can_minter_list.map((can_minter, i) => {
       return {
-        No: i + 1,
+        No: i + (cur_minter_list.length + 1),
         ...can_minter,
       };
     });
