@@ -116,6 +116,8 @@ import { VotePreRoundIncomeRankingComponent } from "../components/vote-pre-round
 import { ClipAssetsLogoComponent } from "../components/clip-assets-logo/clip-assets-logo";
 import { ClipSubchainLogoComponent } from "../components/clip-subchain-logo/clip-subchain-logo";
 import { ClipSubchainBannerComponent } from "../components/clip-subchain-banner/clip-subchain-banner";
+import { ModalComponent } from "../components/modal/modal";
+import { PopoverComponent } from "../components/popover/popover";
 
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
 import { DbCacheProvider } from "../providers/db-cache/db-cache";
@@ -210,7 +212,7 @@ const heightLevelModules = [
     MatChipsModule,
   ],
   bootstrap: [IonicApp],
-  entryComponents: [ClipAssetsLogoComponent, ClipSubchainLogoComponent, ClipSubchainBannerComponent, ...pages],
+  entryComponents: [ClipAssetsLogoComponent, ClipSubchainLogoComponent, ClipSubchainBannerComponent, ModalComponent, PopoverComponent, ...pages],
   providers: [
     AndroidPermissions,
     BarcodeScanner,
@@ -261,6 +263,7 @@ const heightLevelModules = [
     VoucherServiceProvider,
     LocalContactProvider,
     AssetsServiceProvider,
+    SubchainServiceProvider,
     SubchainServiceProvider,
   ],
 })

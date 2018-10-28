@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { AppSettingProvider, AppUrl, HEIGHT_AB_Generator } from "../app-setting/app-setting";
 import { TransactionServiceProvider, TransactionModel } from "../transaction-service/transaction-service";
 import { AppFetchProvider } from "../app-fetch/app-fetch";
-import { formatImage } from "../../components/AniBase";
+import { formatImage, logoImageUrlToJpegBase64 } from "../../components/AniBase";
 import * as TYPE from "./assets.types";
 export * from "./assets.types";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
@@ -196,19 +196,8 @@ export class AssetsServiceProvider extends FLP_Tool {
     var blob = new Blob(byteArrays, { type: contentType });
     return blob;
   }
-  /**将图片转成统一的格式,512*512的jpeg*/
-  imageUrlToJpegBase64(url: string, onlyBase64Content: boolean) {
-    return formatImage(url, {
-      format: "image/jpeg",
-      view_width: 128,
-      view_height: 128,
-      size: "cover",
-      position: "center",
-      target_encode: "base64",
-      encoderOptions: 0.8,
-      onlyBase64Content,
-    }) as Promise<string>;
-  }
+  /**将图片转成统一的格式,128*128的jpeg*/
+  imageUrlToJpegBase64 = logoImageUrlToJpegBase64
   /**获取资产拥有者的列表*/
   async getAssetsOwnerList(query) {
     const data = await this.fetch.get<{

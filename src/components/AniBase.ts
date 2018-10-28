@@ -758,6 +758,18 @@ export async function formatImage(
   }
 }
 tryRegisterGlobal("formatImage", formatImage);
+export function logoImageUrlToJpegBase64(url: string, onlyBase64Content: boolean) {
+  return formatImage(url, {
+    format: "image/jpeg",
+    view_width: 128,
+    view_height: 128,
+    size: "cover",
+    position: "center",
+    target_encode: "base64",
+    encoderOptions: 0.8,
+    onlyBase64Content,
+  }) as Promise<string>;
+}
 
 const _useable_image_list: HTMLImageElement[] = [];
 export function preLoadImages(assets_list: string[], base_url = "") {

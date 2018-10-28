@@ -31,23 +31,24 @@ export class AccountMinerScorllListPage extends SecondLevelPage {
   @AccountMinerScorllListPage.markForCheck can_minter_rank_list?: DelegateModel[];
   async loadMinterList() {
 
-    const params = this.navParams.get('from');
+    if (this.navParams.get('from')=== 'current') this.isPageCurrentList = true;
+    if (this.navParams.get('from')=== 'candidate') this.isPageCandidateList = true;
 
-    if (params === 'current') {
-      this.isPageCurrentList = true;
-      this.cur_minter_rank_list = await this.minService.allMinersCurRound.getPromise();
-    }else{
-      this.cur_minter_rank_list = [];
-      this.isPageCurrentList = false;
-    }
+    const cur_minter_list = await this.minService.allMinersCurRound.getPromise();
+    this.cur_minter_rank_list = cur_minter_list.map((cur_minter, i) => {
+      return {
+        No: i + 1,
+        ...cur_minter,
+      };
+    });
 
-    if (params === 'candidate') {
-      this.isPageCandidateList = true;
-      this.can_minter_rank_list = await this.minService.minersOut.getPromise();
-    }else{
-      this.can_minter_rank_list = [];
-      this.isPageCandidateList = false;
-    }
+    const can_minter_list = await this.minService.minersOut.getPromise();
+    this.can_minter_rank_list = can_minter_list.map((can_minter, i) => {
+      return {
+        No: i + cur_minter_list.length + 1,
+        ...can_minter,
+      };
+    });
 
     this.cdRef.markForCheck();
   }

@@ -895,6 +895,11 @@
   "ASSETS_GENESISADDRESS_TIP": "接收地址为您的资产生成成功后，用于接收全部资产的地址；这个地址至少需要给您的当前生成地址至少进行过一笔转账交易。",
   "ASSETS_EXPECTEDISSUEDASSETS_TIP": "生成数量为您的即将生成的数字权益总量；不能少于您冻结的IBT数量，也不能超过5000倍您冻结的IBT数量这个数量必须为正整数。",
 
+  "//": "subchain-world",
+  "WORLD_LIST": "世界列表",
+  "CREDIT_AGE": "信用时代",
+  "EXPAND": "展开",
+
   "//": "assets-logo-clip",
   "ASSETS-LOGO-CLIP": "图标裁剪",
 
