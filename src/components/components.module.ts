@@ -31,7 +31,8 @@ import { ChartComponent } from "./chart/chart.component";
 import { CommonModule } from '@angular/common';
 import { ClipSubchainLogoComponent } from './clip-subchain-logo/clip-subchain-logo';
 import { ClipSubchainBannerComponent } from './clip-subchain-banner/clip-subchain-banner';
-import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';  
+import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';
+import { TransferReceiptComponent } from './transfer-receipt/transfer-receipt';  
 
 @NgModule({
     declarations: [
@@ -67,6 +68,7 @@ import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';
     ClipSubchainLogoComponent,
     ClipSubchainBannerComponent,
     SwirlGatewayComponent,
+    TransferReceiptComponent,
     ],
     imports: [CommonModule],
     exports: [
@@ -102,6 +104,7 @@ import { SwirlGatewayComponent } from './swirl-gateway/swirl-gateway';
     ClipSubchainLogoComponent,
     ClipSubchainBannerComponent,
     SwirlGatewayComponent,
+    TransferReceiptComponent,
     ],
 })
 export class ComponentsModule {}

@@ -424,6 +424,7 @@
   "CHECKING_DELEGATE_VOTEABLE": "检查投票纪录中",
   "VOTE_THIS_DELEGATE": "投TA一票",
   "VOTED_THIS_DELEGATE": "本轮已经投过TA",
+  "VOTE_THIS_DELEGATE_SUCCESS": "投票成功",
   "VOTE_ONE_DELEGATE_TIP":
     "在IFMChain中，所谓投票就是选举锻造区块的矿工，本质上是将区块链账务的处理权交给某人，选择在线率高、锻造区块多、交易处理能力强的矿工可以提高整个区块链网络的稳定性。",
 
@@ -431,6 +432,9 @@
   "THE_IN_VOTE_OF_#NAME#": "{{name}}的得票",
   "VOTER": "投票人",
   "VOTE_COUNT": "投票数",
+  "VOTE_DETAILS_LIST_IS_EMPTY": "该委托人上一轮没有得票",
+  "GET_DELEGATE_VOTED_DETAIL_ERROR": "获取委托人的的票数失败",
+  "LOADING_MORE_VOTE_DETAILS_LIST": "获取更多投票中……",
 
   "//": "pay-receive",
   "PAY-RECEIVE": "接收",
@@ -650,6 +654,7 @@
 
   "//": "pay-transfer-receipt",
   "TRANSFER": "转账",
+  "TRANSFER_OF_#ASSETTYPE#": "{{assetType}}转账",
   "PAYER": "支付人",
   "TRANSACTION_ID": "交易号",
   "GENERATING_CAPTURE": "凭证图生成中",
