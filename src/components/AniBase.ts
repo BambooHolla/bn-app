@@ -38,6 +38,12 @@ export class AniBase extends EventEmitter {
   get app() {
     return this._app;
   }
+  get W() {
+    return this._app!.renderer.width;
+  }
+  get H() {
+    return this._app!.renderer.height;
+  }
   static PIXIAppbuilder(options?: PIXI.ApplicationOptions) {
     const app = new PIXI.Application(options);
     app.ticker["_tick"] = _tick;

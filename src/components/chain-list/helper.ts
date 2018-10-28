@@ -9,12 +9,4 @@ export function getLabelWidth(pixi_text: PIXI.Text) {
   }
   return width;
 }
-export const commonFontFamily = [
-  "-apple-system",
-  "SF Compact Display",
-  "Helvetica Neue",
-  "Roboto",
-  "sans-serif",
-];
-
-export const iconFontFamily = ["ifmicon", ...commonFontFamily];
+export { commonFontFamily, iconFontFamily } from '../CssLike';
