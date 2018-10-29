@@ -1,4 +1,4 @@
-import { Component, Optional, ViewChild, ElementRef } from "@angular/core";
+import { Component, Optional, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import {
   IonicPage,
   NavController,
@@ -17,6 +17,7 @@ import {
 } from "../../../providers/transaction-service/transaction-service";
 import { BlockServiceProvider } from "../../../providers/block-service/block-service";
 import { CommonWaveBgComponent } from "../../../components/common-wave-bg/common-wave-bg";
+import { TransferReceiptComponent } from "../../../components/transfer-receipt/transfer-receipt";
 
 import { Screenshot } from "@ionic-native/screenshot";
 import { SocialSharing } from "@ionic-native/social-sharing";
@@ -26,6 +27,7 @@ import domtoimage from "dom-to-image";
 @Component({
   selector: "page-pay-transfer-receipt",
   templateUrl: "pay-transfer-receipt.html",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PayTransferReceiptPage extends SecondLevelPage {
   constructor(
@@ -36,15 +38,16 @@ export class PayTransferReceiptPage extends SecondLevelPage {
     public screenshot: Screenshot,
     public socialSharing: SocialSharing,
     public viewCtrl: ViewController,
-    public blockService: BlockServiceProvider
+    public blockService: BlockServiceProvider,
+    public cdRef: ChangeDetectorRef,
   ) {
     super(navCtrl, navParams, true, tabs);
   }
   domtoimage = domtoimage;
-  @ViewChild("transferReceiptEle") transferReceiptEle!: ElementRef;
+  @ViewChild("transferReceiptEle") transferReceipt!: TransferReceiptComponent;
   @ViewChild(CommonWaveBgComponent) wages!: CommonWaveBgComponent;
   /* 回执 */
-  current_transfer?: TransactionModel;
+  @PayTransferReceiptPage.markForCheck current_transfer?: TransactionModel;
   @PayTransferReceiptPage.willEnter
   async initData() {
     const transfer = this.navParams.get("transfer") as TransactionModel;
@@ -52,56 +55,20 @@ export class PayTransferReceiptPage extends SecondLevelPage {
       return this.navCtrl.goToRoot({});
     }
     this.current_transfer = transfer;
-    await this._updateTransferTimeInfo();
-
-    // 从网络上获取这笔交易的最新信息
-    const net_transaction = await this.transactionService
-      .getTransactionById(transfer.id)
-      .catch(() => null);
-    if (net_transaction) {
-      this.current_transfer = net_transaction;
-      await this._updateTransferTimeInfo();
-    }
   }
-  private async _updateTransferTimeInfo() {
-    const transfer = this.current_transfer as TransactionModel;
-    if (transfer.blockId) {
-      this.confirmed_timestamp = (await this.blockService.getBlockById(
-        transfer.blockId
-      )).timestamp;
-    } else {
-      const BLOCK_UNIT_TIME = this.baseConfig.BLOCK_UNIT_TIME;
-      let diff_time = await this.blockService.getLastBlockRefreshInterval();
-      diff_time %= BLOCK_UNIT_TIME;
-
-      this.expected_confirmation_time =
-        Date.now() + BLOCK_UNIT_TIME - diff_time;
-    }
+  @PayTransferReceiptPage.detectChanges is_rendered = false;
+  onRendered(trs: TransactionModel) {
+    this.current_transfer = trs;
+    this.is_rendered = true;
   }
 
-  confirmed_timestamp = 0;
-  expected_confirmation_time = 0;
-
-  @asyncCtrlGenerator.loading(() =>
-    PayTransferReceiptPage.getTranslate("GENERATING_CAPTURE")
-  )
-  @asyncCtrlGenerator.success(() =>
-    PayTransferReceiptPage.getTranslate("CAPTURE_GENERATE_SUCCESS")
-  )
-  async capture() {
+  @asyncCtrlGenerator.loading("@@GENERATING_CAPTURE")
+  @asyncCtrlGenerator.success("@@CAPTURE_GENERATE_SUCCESS")
+  @asyncCtrlGenerator.single()
+  async  capture() {
     this.is_screenshotting = true;
     try {
-      const tr = this.transferReceiptEle.nativeElement;
-      const t = tr.style.transform;
-      tr.style.transform = "scale(1)";
-      const toimage_promise = this.domtoimage.toJpeg(tr, {
-        width: tr.clientWidth, // * window.devicePixelRatio,
-        height: tr.clientHeight, // * window.devicePixelRatio,
-      });
-      this.raf(() => {
-        tr.style.transform = t;
-      });
-      return toimage_promise;
+      return await this.transferReceipt.exportClipBolbUrl();
     } finally {
       this.is_screenshotting = false;
     }
@@ -113,10 +80,8 @@ export class PayTransferReceiptPage extends SecondLevelPage {
   async share() {
     if (!this.capture_uri) {
       console.time("capture");
-      // const res = await this.screenshot.URI(80);
       const res = await this.capture();
       console.timeEnd("capture");
-      // console.log(res);
       this.capture_uri = res;
     }
     const share_res = await this.socialSharing.share(

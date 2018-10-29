@@ -1,4 +1,4 @@
-import { Component, Optional } from "@angular/core";
+import { Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
@@ -12,6 +12,7 @@ import { City, translateCity } from "../../../datx";
 @Component({
   selector: "page-chain-transaction-detail",
   templateUrl: "chain-transaction-detail.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChainTransactionDetailPage extends SecondLevelPage {
   private static _city_data?: Promise<City>;
@@ -23,11 +24,17 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     }
     return this._city_data;
   }
-  constructor(public navCtrl: NavController, public navParams: NavParams, @Optional() public tabs: TabsPage, public localContact: LocalContactProvider) {
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
+    @Optional() public tabs: TabsPage,
+    public localContact: LocalContactProvider,
+    public cdRef: ChangeDetectorRef,
+  ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
 
+  @ChainTransactionDetailPage.detectChanges
   ripple_theme = "blue-ripple";
   @ChainTransactionDetailPage.willEnter
   initRippleTheme() {
@@ -37,7 +44,9 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     }
   }
 
+  @ChainTransactionDetailPage.markForCheck
   transaction?: TransactionModel;
+  @ChainTransactionDetailPage.markForCheck
   transaction_ip_country = "";
   @ChainTransactionDetailPage.willEnter
   setTransactionData() {
@@ -65,7 +74,9 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     this.matchMyContact();
   }
 
+  @ChainTransactionDetailPage.markForCheck
   recipient_contact?: LocalContactModel;
+  @ChainTransactionDetailPage.markForCheck
   sender_contact?: LocalContactModel;
   contact_metched_map = new Map<string, LocalContactModel>();
 

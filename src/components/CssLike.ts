@@ -26,6 +26,9 @@ export class CssLike extends AniBase {
     if (obj instanceof PIXI.Text) {
       this._effectFontStyle(obj, style, event);
     }
+    if (obj instanceof PIXI.extras.TilingSprite) {
+      this._effectTileStyle(obj, style, event);
+    }
     /// 根据顺序来对样式进行生效, 书写样式的时候需要注意顺序
     for (var key in style) {
       switch (key) {
@@ -35,9 +38,9 @@ export class CssLike extends AniBase {
         case "transform":
           this._effectTransformStyle(obj, style, event);
           break;
-        default:
-          console.warn(`csslike style :'${key}' not work`);
-          break;
+        // default:
+        //   console.warn(`csslike style :'${key}' not work`);
+        //   break;
       }
     }
   }
@@ -45,6 +48,9 @@ export class CssLike extends AniBase {
     const { font } = style;
     if (font) {
       const calced_font = this._calcStyle(font, event);
+      if (!('fontFamily' in calced_font)) {
+        calced_font.fontFamily = commonFontFamily;
+      }
       Object.assign(text.style, calced_font);
     }
   }
@@ -94,11 +100,52 @@ export class CssLike extends AniBase {
     }
   }
 
+  private _effectTileStyle<T extends PIXI.extras.TilingSprite>(tile: T, style: CssLikeStyle, event: CssLikeRenderEvent<T>) {
+    const { tileScale, tilePosition } = style;
+    if (tileScale) {
+      const calced_tileScale = this._calcStyle(tileScale, event);
+      this.__effetPointStyle(tile.tileScale, calced_tileScale, "tileScale");
+    }
+    if (tilePosition) {
+      const calced_tilePosition = this._calcStyle(tilePosition, event);
+      this.__effetPointStyle(tile.tilePosition, calced_tilePosition, "tilePosition");
+    }
+
+  }
+  private __effetPointStyle(point: PIXI.Point | PIXI.ObservablePoint, style, style_name: string) {
+    /// 根据顺序来对样式进行生效, 书写样式的时候需要注意顺序
+    for (var key in style) {
+      const val = style[key];
+      switch (key) {
+        case "x":
+          point.x = val;
+          break;
+        case "y":
+          point.y = val;
+          break;
+        case "scale":
+          point.set(val, val);
+          break;
+        default:
+          console.warn(`${style_name} style :'${key}' not work`);
+          break;
+      }
+    }
+  }
+
   static complieStyleFromScript(script: string) {
     const module = {
       exports: {}
     };
-    Function("module, exports", script)(module, module.exports);
+    // env
+    Function("commonFontFamily,iconFontFamily,translateX_center", `return function (module, exports){
+      ${
+      script
+        .replace(/`#common-font`/g, "commonFontFamily")
+        .replace(/`#icon-font`/g, "iconFontFamily")
+        .replace(/`#x-center`/g, "translateX_center")
+      }
+    }`)(commonFontFamily, iconFontFamily, translateX_center)(module, module.exports);
     return module.exports;
   }
   // 编译普通的JSobj成style对象
@@ -130,6 +177,12 @@ class CssLikeRenderEvent<T extends PIXI.Container = PIXI.Container>{
     public H = instance.H,
   ) {
   }
+  get width() {
+    return this.target.width;
+  }
+  get height() {
+    return this.target.height;
+  }
   get prevChild() {
     const parent = this.target.parent;
     const index = parent.children.indexOf(this.target);
@@ -140,13 +193,29 @@ class CssLikeRenderEvent<T extends PIXI.Container = PIXI.Container>{
     const index = parent.children.indexOf(this.target);
     return parent.children[index + 1];
   }
+  get prevChildLeft() {
+    const prevChild = this.prevChild as PIXI.Container;
+    return prevChild.x
+  }
   get prevChildRight() {
     const prevChild = this.prevChild as PIXI.Container;
     return prevChild.x + prevChild.width
   }
+  get prevChildCenterX() {
+    const prevChild = this.prevChild as PIXI.Container;
+    return prevChild.x + prevChild.width / 2
+  }
+  get prevChildTop() {
+    const prevChild = this.prevChild as PIXI.Container;
+    return prevChild.y
+  }
   get prevChildBottom() {
     const prevChild = this.prevChild as PIXI.Container;
     return prevChild.y + prevChild.height
+  }
+  get prevChildCenterY() {
+    const prevChild = this.prevChild as PIXI.Container;
+    return prevChild.y + prevChild.height / 2
   }
   get textureAspectRatio() {
     const { target } = this;
@@ -164,7 +233,10 @@ export const translateX_center: CssLikeStyleCalcer = function () {
   return this.W / 2 - this.target.width / 2
 }
 
-export type CssLikeStyle = CssLikeFontStyle & CssLikeTransformStyle & CssLikeScaleStyle;
+export type CssLikeStyle = CssLikeFontStyle
+  & CssLikeTransformStyle
+  & CssLikeScaleStyle
+  & CssLikeTileStyle;
 export type CssLikeFontStyle = {
   font?: {
     [P in keyof PIXI.TextStyle]?: PIXI.TextStyle[P] | CssLikeStyleCalcer<PIXI.TextStyle[P], PIXI.Text>;
@@ -180,6 +252,18 @@ export type CssLikeScaleStyle = {
   scale?: {
     maxWidth?: CssLikeStyleCalcer
   }
+}
+export type CssLikeTileStyle = {
+  tileScale?: {
+    x: CssLikeStyleCalcer | number,
+    y: CssLikeStyleCalcer | number,
+    scale: CssLikeStyleCalcer | number,
+  };
+  tilePosition?: {
+    x: CssLikeStyleCalcer | number,
+    y: CssLikeStyleCalcer | number,
+    scale: CssLikeStyleCalcer | number,
+  };
 }
 //#endregion
 
