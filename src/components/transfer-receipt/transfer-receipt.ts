@@ -3,10 +3,12 @@ import {
   ViewChild,
   ElementRef,
   Input,
+  OnInit,
+  OnDestroy,
 } from "@angular/core";
 import { AniBase } from '../AniBase';
 import { PromiseOut, DelayPromise } from "../../bnqkl-framework/PromiseExtends";
-import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
+import { tryRegisterGlobal, baseConfig } from "../../bnqkl-framework/helper";
 import { TransactionModel } from "../../providers/transaction-service/transaction.types";
 import debug from "debug";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
@@ -14,14 +16,31 @@ import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import * as moment from "moment";
 import { CssLike } from "../CssLike";
 import { transferReciptStyle } from "./transfer-receipt.style";
+import { AppSettingProvider } from "../../providers/app-setting/app-setting"
+import { Subscription } from "rxjs/Subscription";
+import { BlockServiceProvider } from "../../providers/block-service/block-service";
+import { TransactionServiceProvider } from "../../providers/transaction-service/transaction-service";
+import * as deepEqual from "fast-deep-equal";
 
 const log = debug("IBT:transfer-receipt");
 
 /// 加载资源
 export const loader = new PIXI.loaders.Loader();
+loader.use(function (resource: PIXI.loaders.Resource, next) {
+  if (resource.url.endsWith(".js")) {
+    // PIXI.loaders.Loader.
+    resource.data = CssLike.complieStyleFromScript(resource.data);
+  }
+  next();
+});
 loader.add("header_bg", "assets/imgs/pay-transfer-receipt/bg.jpg");
 loader.add("disbaled_progress_dot", "assets/imgs/pay-transfer-receipt/disbaled-progress-dot.png");
 loader.add("stamp", "assets/imgs/pay-transfer-receipt/章.png");
+loader.add("enable_light", "assets/imgs/pay-transfer-receipt/progress-dot.png");
+loader.add("disabled_light", "assets/imgs/pay-transfer-receipt/disbaled-progress-dot.png");
+loader.add("progress_dark_line", "assets/imgs/pay-transfer-receipt/progress-dark-line.png");
+loader.add("progress_light_line", "assets/imgs/pay-transfer-receipt/progress-light-line.png");
+loader.add("style", "assets/csslike/transfer-receipt.js");
 
 export const _load_resource_delaypromise = new DelayPromise<
   PIXI.loaders.ResourceDictionary
@@ -39,7 +58,7 @@ const RECEIPT_H = 841;
   selector: 'transfer-receipt',
   templateUrl: 'transfer-receipt.html'
 })
-export class TransferReceiptComponent extends CssLike {
+export class TransferReceiptComponent extends CssLike implements OnDestroy {
   @ViewChild("canvas") canvasRef!: ElementRef;
   _init() {
     this.canvasNode = this.canvasRef.nativeElement;
@@ -59,7 +78,11 @@ export class TransferReceiptComponent extends CssLike {
     return this._transaction;
   }
 
-  constructor() {
+  constructor(
+    public appSetting: AppSettingProvider,
+    public blockService: BlockServiceProvider,
+    public transactionService: TransactionServiceProvider,
+  ) {
     super();
     tryRegisterGlobal("transferReceiptDrawer", this);
     tryRegisterGlobal("tt", this);
@@ -97,22 +120,25 @@ export class TransferReceiptComponent extends CssLike {
   }
   /**绘制交易 */
   @asyncCtrlGenerator.queue()
-  async drawTransaction(tra?: TransactionModel) {
+  async drawTransaction(trs?: TransactionModel) {
     const resources = await _load_resource_delaypromise;
     const { app } = this;
     if (!app) {
       return;
     }
     const { stage, renderer } = app;
-    if (!tra) {
+    if (!trs) {
       return stage.visible = false
     }
     stage.visible = true;
+    // 获取相关的时间信息
+    await this._updateTransferTimeInfo(trs);
     // 开始绘制
-    this._drawRecipt(tra, stage, renderer, resources)
+    this._drawRecipt(trs, stage, renderer, resources)
   }
 
   private _drawRecipt(trs: TransactionModel, stage: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, resources: PIXI.loaders.ResourceDictionary) {
+    Object.assign(transferReciptStyle, resources.style.data);
     const { pt } = this;
     const { width: W, height: H } = renderer;
     // 销毁所有子元素，重新绘制
@@ -214,14 +240,14 @@ export class TransferReceiptComponent extends CssLike {
 
     /// 切割线
     const line_1 = new PIXI.Graphics();
-    line_1.lineStyle(this.pt(0.55), 0xeeeeee);
+    line_1.lineStyle(0.00115 * H/* 1.65 px */, 0xeeeeee);
     line_1.moveTo(W * 0.06, 0);
     line_1.lineTo(W * (1 - 0.06), 0);
     line_1.position.y = 0.4592 * H;
     bg.addChild(line_1);
 
     const line_2 = new PIXI.Graphics();
-    line_2.lineStyle(1, 0x020202);
+    line_2.lineStyle(0.00115 * H/* 1.65 px */, 0xeeeeee);
     line_2.moveTo(W * 0.06, 0);
     line_2.lineTo(W * (1 - 0.06), 0);
     line_2.position.y = 0.5827 * H;
@@ -294,8 +320,11 @@ export class TransferReceiptComponent extends CssLike {
 
     /// 印章
     const stamp = new PIXI.Sprite(resources.stamp.texture);
-
-    bg.addChild(stamp);
+    {
+      stamp.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+      this.effectStyle(stamp, transferReciptStyle.stamp_style);
+      bg.addChild(stamp);
+    }
 
     /// 分割线
     const line_3 = new PIXI.Graphics();
@@ -305,7 +334,98 @@ export class TransferReceiptComponent extends CssLike {
     line_3.position.y = 0.735 * this.H;
     bg.addChild(line_3);
 
+    /// 时间线
+
+    const f_submitd_expected_line = new PIXI.extras.TilingSprite(resources.progress_dark_line.texture);
+    {
+      // 0.5 * W,
+      // 0.005 * H,
+      // f_submitd_expected_line
+      this.effectStyle(f_submitd_expected_line, transferReciptStyle.f_submitd_expected_line_style);
+      bg.addChild(f_submitd_expected_line);
+    }
+
+    const f_submitd = new PIXI.Container();
+    {
+      const light = new PIXI.Sprite(resources.enable_light.texture);
+      const time = new PIXI.Text(moment(trs.dateCreated).format("HH:mm"));
+      const label = new PIXI.Text(FLP_Tool.getTranslateSync("CONFIRMED_TIME"));
+
+      f_submitd.addChild(light);
+      f_submitd.addChild(time);
+      f_submitd.addChild(label);
+      bg.addChild(f_submitd);
+
+      /// 绑定样式
+      this.effectStyle(light, transferReciptStyle.f_submitd_light_style);
+      this.effectStyle(time, transferReciptStyle.f_submitd_time_style);
+      this.effectStyle(label, transferReciptStyle.f_submitd_label_style);
+      this.effectStyle(f_submitd, transferReciptStyle.f_submitd_style);
+    }
+    const f_expected = new PIXI.Container();
+    {
+      const light = new PIXI.Sprite(trs.blockId ? resources.enable_light.texture : resources.disabled_light.texture);
+      const time = new PIXI.Text(moment(trs.blockId ? this.confirmed_timestamp : this.expected_confirmation_time).format("HH:mm"));
+      const label = new PIXI.Text(FLP_Tool.getTranslateSync(trs.blockId ? "CONFIRMED_TIME" : "EXPECTED_CONFIRMATION_TIME"));
+
+      f_submitd.addChild(light);
+      f_submitd.addChild(time);
+      f_submitd.addChild(label);
+      bg.addChild(f_expected);
+
+      /// 绑定样式
+      this.effectStyle(light, transferReciptStyle.f_expected_light_style);
+      this.effectStyle(time, transferReciptStyle.f_expected_time_style);
+      this.effectStyle(label, transferReciptStyle.f_expected_label_style);
+      this.effectStyle(f_expected, transferReciptStyle.f_expected_style);
+    }
+
     this.forceRenderOneFrame();
   }
 
+  ///
+  trs_sub?: Subscription
+  /**订单状态的监听 */
+  watchTransaction() {
+    this._destoryTransactionWatch();
+    this.trs_sub = this.appSetting.height.subscribe(async () => {
+      const old_trs = this._transaction;
+      if (old_trs) {
+        const new_trs = await this.transactionService.getTransactionById(old_trs.id);
+        if (!deepEqual(new_trs, old_trs)) {
+          this.transaction = new_trs;
+        }
+      }
+    });
+  }
+  private _destoryTransactionWatch() {
+    if (this.trs_sub) {
+      this.trs_sub.unsubscribe();
+      this.trs_sub = undefined;
+    }
+  }
+  /**已经确认的时间 */
+  confirmed_timestamp = 0;
+  /**预计确认时间 */
+  expected_confirmation_time = 0;
+
+  private async _updateTransferTimeInfo(transfer: TransactionModel) {
+    if (transfer.blockId) {
+      this.confirmed_timestamp = (await this.blockService.getBlockById(
+        transfer.blockId
+      )).timestamp;
+      this._destoryTransactionWatch();
+    } else {
+      const BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
+      let diff_time = await this.blockService.getLastBlockRefreshInterval();
+      diff_time %= BLOCK_UNIT_TIME;
+      this.expected_confirmation_time =
+        Date.now() + BLOCK_UNIT_TIME - diff_time;
+    }
+  }
+
+  /**销毁监听 */
+  ngOnDestroy() {
+    this._destoryTransactionWatch();
+  }
 }

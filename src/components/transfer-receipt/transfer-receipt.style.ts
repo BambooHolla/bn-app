@@ -1,7 +1,9 @@
 import { CssLikeStyle, translateX_center, commonFontFamily, iconFontFamily } from "../CssLike";
 
-export  const transferReciptStyle:{[key:string]:CssLikeStyle} = {
-
+// const style = {
+export const transferReciptStyle: {
+  [key: string]: CssLikeStyle
+} = {
   /* STYLE 样式 */
   //#region heade,r title
   h_title_style: {
@@ -202,9 +204,17 @@ export  const transferReciptStyle:{[key:string]:CssLikeStyle} = {
     scale: {
       maxWidth() { return this.W * 0.68 }
     }
-  }
+  },
   //#endregion
   //#region stamp 印章
-  // stamp_style =
+  stamp_style: {
+    transform: {
+
+    }
+  }
   //#endregion
 }
+
+// export const transferReciptStyle: {
+//   [key in keyof typeof style]: CssLikeStyle
+// } = style;

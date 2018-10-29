@@ -96,6 +96,7 @@
     "dom-to-image": "^2.6.0",
     "eventemitter3": "^3.1.0",
     "fangodb": "file:src/fangodb",
+    "fast-deep-equal": "^2.0.1",
     "fontfaceobserver": "^2.0.13",
     "gangodb_core": "file:src/gangodb_core",
     "idb.filesystem": "0.0.12",

@@ -483,7 +483,6 @@ export class SubchainIssuingSubchainPage extends SecondLevelPage {
 	@asyncCtrlGenerator.success()
 	async submit() {
 		const { formData } = this;
-		this.subchainService.transactionService.IFMJSCORE.keypair;
 		await this.subchainService.addSubchain(
 			{
 				name: formData.name,
