@@ -49,7 +49,7 @@ export class PromisePro<T> extends PromiseOut<T> {
     return this.promise;
   }
   static fromPromise<T>(promise: Promise<T>) {
-    const res = new PromisePro();
+    const res = new PromisePro<T>();
     if (promise instanceof DelayPromise) {
       promise.delayThen(res.resolve);
       promise.delayCatch(res.reject);

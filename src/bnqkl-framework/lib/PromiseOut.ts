@@ -1,6 +1,8 @@
 export type PromiseType<T extends Promise<any>> = T extends Promise<infer R>
   ? R
   : any;
+export type PromiseReturnType<T extends (...args: any[]) => Promise<any>> =
+  PromiseType<ReturnType<T>>;
 
 /**
  * 将resolve和reject暴露出来
