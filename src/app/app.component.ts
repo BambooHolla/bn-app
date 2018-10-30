@@ -43,7 +43,7 @@ import { UserInfoProvider } from "../providers/user-info/user-info";
 import { PeerServiceProvider } from "../providers/peer-service/peer-service";
 import { PromiseOut } from "../bnqkl-framework/PromiseExtends";
 import { SecondLevelPage } from "../bnqkl-framework/SecondLevelPage";
-import { global } from "../bnqkl-framework/helper";
+import { global, tryRegisterGlobal } from "../bnqkl-framework/helper";
 import { translateMessage } from "../bnqkl-framework/FLP_Tool";
 import { getQueryVariable } from "../bnqkl-framework/helper";
 
@@ -57,7 +57,7 @@ if (global["cordova"] && global["cordova"].plugins && global["cordova"].plugins.
   }
 }
 // 强行让SecondLevelPage编译进来
-(function noop(x) {})(SecondLevelPage);
+(function noop(x) { })(SecondLevelPage);
 
 enum FAIO_CHECK {
   Login,
@@ -175,7 +175,8 @@ export class MyApp implements OnInit {
         await this.openPage(lock_page);
         const page_base_name = lock_page.replace(/-([a-z])/g, (...args) => args[1].toUpperCase()).replace(/^([a-z])/, (...args) => args[1].toUpperCase());
         const pageInstance = window[`instanceOf${page_base_name}Page`];
-        if ((window["ii"] = pageInstance)) {
+        if (pageInstance) {
+          tryRegisterGlobal("ii", pageInstance);
           pageInstance.ionViewWillEnter();
           pageInstance.ionViewDidEnter();
         }
@@ -223,7 +224,7 @@ export class MyApp implements OnInit {
         return this.openPage(LoginPage);
       })
       .then(() => {
-        this.loginService.loginStatus.subscribe(isLogined => {
+        this.loginService.loginStatus.distinctUntilChanged().subscribe(isLogined => {
           console.log("isLogined", isLogined);
           this.openPage(isLogined ? MainPage : LoginPage);
         });
@@ -356,13 +357,13 @@ export class MyApp implements OnInit {
         loading_content !== false &&
         (loading_content
           ? this.loadingCtrl.create(
-              Object.assign(
-                {
-                  content: loading_content || "",
-                },
-                loading_opts
-              )
+            Object.assign(
+              {
+                content: loading_content || "",
+              },
+              loading_opts
             )
+          )
           : this.loadingCtrl.create(loading_opts));
       await (loadinger && loadinger.present());
       try {
@@ -516,7 +517,7 @@ function onresize() {
 }
 onresize();
 global.addEventListener("resize", onresize);
-global["importLS"] = function(o) {
+global["importLS"] = function (o) {
   for (var k in o) {
     localStorage.setItem(k, o[k]);
   }
