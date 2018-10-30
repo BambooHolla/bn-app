@@ -40,6 +40,12 @@ export class FLP_Route extends FLP_Lifecycle {
   // 页面A为了实现某个任务，打开页面B
   // 页面B完成任务后，返回页面A，触发任务完成的回调
   // 这个流程相关的API
+  private _setViewCtrlId_symbol = Symbol("viewctrl-id");
+  setViewCtrlId(id: string) {
+    if (this.viewCtrl) {
+      this.viewCtrl[this._setViewCtrlId_symbol] = id;
+    }
+  }
   viewCtrl?: ViewController;
   _job_res: any;
   jobRes(data: any) {
@@ -60,7 +66,7 @@ export class FLP_Route extends FLP_Lifecycle {
             this.navCtrl.removeView(viewCtrl);
             const com = preView.instance as FLP_Route;
             com.tryEmit("job-finished", {
-              id: viewCtrl.id,
+              id: viewCtrl[this._setViewCtrlId_symbol] || viewCtrl.id,
               data: this._job_res,
             });
           } else {

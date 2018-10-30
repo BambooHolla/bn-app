@@ -315,6 +315,7 @@
   "TRANSACTION_mark": "附加数据",
   "TRANSCATION_SENDER": "发送者",
   "TRANSCATION_RECIPIENT": "接收者",
+  "VIEW_VOTE_TRANSACTION_DELEGATE_LIST": "查看被投票的委托人列表",
 
   "//": "chain-vote-transaction-delegate-list",
   "CHAIN_VOTE_TRANSACTION_DELEGATE_LIST": "投票明细",

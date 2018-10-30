@@ -3,8 +3,9 @@ import {
   ViewChild,
   ElementRef,
   Input,
-  OnInit,
+  Output,
   OnDestroy,
+  EventEmitter,
 } from "@angular/core";
 import { AniBase } from '../AniBase';
 import { PromiseOut, DelayPromise } from "../../bnqkl-framework/PromiseExtends";
@@ -14,8 +15,7 @@ import debug from "debug";
 import { asyncCtrlGenerator } from "../../bnqkl-framework/Decorator";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import * as moment from "moment";
-import { CssLike } from "../CssLike";
-import { transferReciptStyle } from "./transfer-receipt.style";
+import { CssLike, CssLikeStyle } from "../CssLike";
 import { AppSettingProvider } from "../../providers/app-setting/app-setting"
 import { Subscription } from "rxjs/Subscription";
 import { BlockServiceProvider } from "../../providers/block-service/block-service";
@@ -72,11 +72,18 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
       this._transaction = v;
       log("draw tick %O", v);
       this.drawTransaction(v);
+      if (v && !v.blockId) {// 未确定的情况下，进行监听
+        this.watchTransaction();
+      } else {
+        this.unwatchTransaction();
+      }
     }
   }
   get transaction() {
     return this._transaction;
   }
+  @Output("rendered")
+  rendered = new EventEmitter<TransactionModel>();
 
   constructor(
     public appSetting: AppSettingProvider,
@@ -94,23 +101,25 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
       throw new Error("call init first");
     }
     if (!this.app) {
-      // todo:use parentElement width and height
-      let { clientWidth, clientHeight } = document.body;
-      // canvasNode.parentElement || canvasNode;
+      // // todo:use parentElement width and height
+      // let { clientWidth, clientHeight } = document.body;
+      // // canvasNode.parentElement || canvasNode;
 
-      // contain模式
-      if (clientWidth / clientHeight > RECEIPT_W / RECEIPT_H) {
-        clientWidth = (RECEIPT_W / RECEIPT_H) * clientHeight;
-      } else {
-        clientHeight = (RECEIPT_H / RECEIPT_W) * clientWidth;
-      }
+      // // contain模式
+      // if (clientWidth / clientHeight > RECEIPT_W / RECEIPT_H) {
+      //   clientWidth = (RECEIPT_W / RECEIPT_H) * clientHeight;
+      // } else {
+      //   clientHeight = (RECEIPT_H / RECEIPT_W) * clientWidth;
+      // }
       this.app = this.PIXIAppbuilder({
         antialias: true,
         transparent: false,
         backgroundColor: 0xffffff,
         view: canvasNode,
-        height: pt(clientHeight),
-        width: pt(clientWidth),
+        // height: pt(clientHeight),
+        // width: pt(clientWidth),
+        width: RECEIPT_W,
+        height: RECEIPT_H,
         autoStart: true,
       });
     }
@@ -131,15 +140,20 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
       return stage.visible = false
     }
     stage.visible = true;
+    // // 开始绘制
+    // this._drawRecipt(trs, stage, renderer, resources);
+
     // 获取相关的时间信息
     await this._updateTransferTimeInfo(trs);
     // 开始绘制
-    this._drawRecipt(trs, stage, renderer, resources)
+    this._drawRecipt(trs, stage, renderer, resources);
+    this.rendered.emit(trs);
   }
 
   private _drawRecipt(trs: TransactionModel, stage: PIXI.Container, renderer: PIXI.WebGLRenderer | PIXI.CanvasRenderer, resources: PIXI.loaders.ResourceDictionary) {
-    Object.assign(transferReciptStyle, resources.style.data);
-    const { pt } = this;
+    const transferReciptStyle: {
+      [key: string]: CssLikeStyle
+    } = resources.style.data;
     const { width: W, height: H } = renderer;
     // 销毁所有子元素，重新绘制
     stage.children.slice().forEach(c => c.destroy());
@@ -335,12 +349,8 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
     bg.addChild(line_3);
 
     /// 时间线
-
-    const f_submitd_expected_line = new PIXI.extras.TilingSprite(resources.progress_dark_line.texture);
+    const f_submitd_expected_line = new PIXI.extras.TilingSprite(resources.progress_light_line.texture);
     {
-      // 0.5 * W,
-      // 0.005 * H,
-      // f_submitd_expected_line
       this.effectStyle(f_submitd_expected_line, transferReciptStyle.f_submitd_expected_line_style);
       bg.addChild(f_submitd_expected_line);
     }
@@ -387,22 +397,29 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
   trs_sub?: Subscription
   /**订单状态的监听 */
   watchTransaction() {
-    this._destoryTransactionWatch();
+    this.unwatchTransaction();
     this.trs_sub = this.appSetting.height.subscribe(async () => {
       const old_trs = this._transaction;
       if (old_trs) {
-        const new_trs = await this.transactionService.getTransactionById(old_trs.id);
-        if (!deepEqual(new_trs, old_trs)) {
-          this.transaction = new_trs;
+        try {
+          const new_trs = await this.transactionService.getTransactionById(old_trs.id);
+          if (this._isNeedResetWatch(new_trs)) {
+            this.transaction = new_trs;
+          }
+        } catch (err) {
+          console.log("交易未确认", err)
         }
       }
     });
   }
-  private _destoryTransactionWatch() {
+  private unwatchTransaction() {
     if (this.trs_sub) {
       this.trs_sub.unsubscribe();
       this.trs_sub = undefined;
     }
+  }
+  private _isNeedResetWatch(trs: TransactionModel) {
+    return !!trs.blockId;
   }
   /**已经确认的时间 */
   confirmed_timestamp = 0;
@@ -414,7 +431,7 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
       this.confirmed_timestamp = (await this.blockService.getBlockById(
         transfer.blockId
       )).timestamp;
-      this._destoryTransactionWatch();
+      this.unwatchTransaction();
     } else {
       const BLOCK_UNIT_TIME = baseConfig.BLOCK_UNIT_TIME;
       let diff_time = await this.blockService.getLastBlockRefreshInterval();
@@ -426,6 +443,44 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
 
   /**销毁监听 */
   ngOnDestroy() {
-    this._destoryTransactionWatch();
+    this.unwatchTransaction();
+  }
+
+  /**导出成图片 */
+  exportBase64() {
+    const { app } = this;
+    if (!app) {
+      return
+    }
+    const export_base64 = app.renderer.extract.base64();
+    return export_base64;
+  }
+  exportBolb() {
+    const export_base64 = this.exportBase64();
+    if (!export_base64) {
+      return;
+    }
+    const contentType = "image/png";
+    const sliceSize = /*sliceSize || */ 512;
+    const b64Data = export_base64.split(",")[1];
+    const byteCharacters = atob(b64Data);
+    const byteArrays: Uint8Array[] = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      byteArrays.push(new Uint8Array(byteNumbers));
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  }
+  async exportClipBolbUrl() {
+    return URL.createObjectURL(this.exportBolb());
   }
 }

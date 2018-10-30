@@ -1,9 +1,9 @@
-import { Component, Optional } from "@angular/core";
+import { Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
-import { TransactionModel } from "../../../providers/transaction-service/transaction-service";
+import { TransactionModel, TransactionTypes } from "../../../providers/transaction-service/transaction-service";
 import { LocalContactProvider, LocalContactModel } from "../../../providers/local-contact/local-contact";
 import { Buffer } from "buffer";
 import { City, translateCity } from "../../../datx";
@@ -12,6 +12,7 @@ import { City, translateCity } from "../../../datx";
 @Component({
   selector: "page-chain-transaction-detail",
   templateUrl: "chain-transaction-detail.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChainTransactionDetailPage extends SecondLevelPage {
   private static _city_data?: Promise<City>;
@@ -23,11 +24,18 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     }
     return this._city_data;
   }
-  constructor(public navCtrl: NavController, public navParams: NavParams, @Optional() public tabs: TabsPage, public localContact: LocalContactProvider) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    @Optional() public tabs: TabsPage,
+    public localContact: LocalContactProvider,
+    public cdRef: ChangeDetectorRef,
+  ) {
     super(navCtrl, navParams, true, tabs);
     this.auto_header_shadow_when_scroll_down = true;
   }
 
+  @ChainTransactionDetailPage.detectChanges
   ripple_theme = "blue-ripple";
   @ChainTransactionDetailPage.willEnter
   initRippleTheme() {
@@ -37,7 +45,9 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     }
   }
 
+  @ChainTransactionDetailPage.markForCheck
   transaction?: TransactionModel;
+  @ChainTransactionDetailPage.markForCheck
   transaction_ip_country = "";
   @ChainTransactionDetailPage.willEnter
   setTransactionData() {
@@ -65,7 +75,22 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     this.matchMyContact();
   }
 
+  /**是否是投票交易 */
+  get is_vote_transaction() {
+    return this.transaction && this.transaction.type === TransactionTypes.VOTE;
+  }
+  /**跳转到投票交易详情 */
+  routeToVoteTransactionDelegateList() {
+    if (this.transaction) {
+      this.routeTo("chain-vote-transaction-delegate-list", {
+        transaction_id: this.transaction.id
+      });
+    }
+  }
+
+  @ChainTransactionDetailPage.markForCheck
   recipient_contact?: LocalContactModel;
+  @ChainTransactionDetailPage.markForCheck
   sender_contact?: LocalContactModel;
   contact_metched_map = new Map<string, LocalContactModel>();
 
