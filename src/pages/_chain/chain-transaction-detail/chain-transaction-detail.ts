@@ -3,7 +3,7 @@ import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
 import { IonicPage, NavController, NavParams } from "ionic-angular/index";
-import { TransactionModel } from "../../../providers/transaction-service/transaction-service";
+import { TransactionModel, TransactionTypes } from "../../../providers/transaction-service/transaction-service";
 import { LocalContactProvider, LocalContactModel } from "../../../providers/local-contact/local-contact";
 import { Buffer } from "buffer";
 import { City, translateCity } from "../../../datx";
@@ -24,7 +24,8 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
     }
     return this._city_data;
   }
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     public navParams: NavParams,
     @Optional() public tabs: TabsPage,
     public localContact: LocalContactProvider,
@@ -72,6 +73,19 @@ export class ChainTransactionDetailPage extends SecondLevelPage {
 
     // 匹配本地联系人信息
     this.matchMyContact();
+  }
+
+  /**是否是投票交易 */
+  get is_vote_transaction() {
+    return this.transaction && this.transaction.type === TransactionTypes.VOTE;
+  }
+  /**跳转到投票交易详情 */
+  routeToVoteTransactionDelegateList() {
+    if (this.transaction) {
+      this.routeTo("chain-vote-transaction-delegate-list", {
+        transaction_id: this.transaction.id
+      });
+    }
   }
 
   @ChainTransactionDetailPage.markForCheck
