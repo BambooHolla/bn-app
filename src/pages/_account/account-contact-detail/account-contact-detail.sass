@@ -1,0 +1,158 @@
+//
+// ### Color Defination
+
+$white: #fff
+$grey: #7B7B7B
+$red: rgba(255,94,90,1)
+$blue: #3E90FF
+$turquoise: #3E90FF
+
+//
+// ### Typography
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+  margin-top: 0
+  margin-bottom: 0.5rem
+
+p
+  margin-top: 0
+  margin-bottom: 1rem
+
+a
+  text-decoration: none
+
+//
+// ### Utilities
+
+ .padding-bottom-half
+  padding-bottom: 0.5rem
+
+.font-weight-400
+  font-weight: 400
+
+.font-weight-300
+  font-weight: 300
+
+.icon-svg
+  display: inline-block
+  width: 1em
+  height: 1em
+  vertical-align: middle
+  fill: currentColor
+
+@for $i from 1 through 5
+  .x#{($i)}
+    font-size: (($i)+rem)
+
+.color
+  &-white
+    color: $white
+  &-grey
+    color: $grey
+  &-grey-light
+    color: lighten($grey, 2%)
+  &-grey-dark
+    color: darken($grey, 30%)
+  &-red
+    color: $red
+  &-blue
+    color: $blue
+  &-turquoise
+    color: $turquoise
+
+.background
+  &-transparent
+    background-color: transparent
+  &-gradient
+    background-image: linear-gradient(180deg,rgba(255,94,90,1),rgba(255,164,119,1))
+  &-white
+    background-color: $white
+  &-image
+    background-image: url('../assets/imgs/background-image.png')
+    background-color: #fff
+    background-position: center top
+    background-repeat: no-repeat
+    background-size: cover
+
+.border
+  &-bottom
+    border-bottom: 1px solid lighten($grey,40%)
+
+.list-unstyled
+  list-style: none
+
+.list-inline
+  & > li
+    display: inline-block
+
+//
+// ### Page Specific Style
+
+page-account-contact-detail
+  &.ion-page.show-page
+    background-color: darken($white,5%)
+
+.img-polygon
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.1)
+
+.content-ios
+  background-color: inherit
+
+.card
+  &-body
+    padding: 6px 16px 6px 16px
+    margin:
+      right: -16px
+      left: -16px
+    &:not(:last-child)
+      @extend .border-bottom
+  &-title
+    color: darken($grey,30%)
+
+.list-section
+  display: inline-block
+  width: 100%
+  border:
+    top: 1px solid lighten($grey, 45%)
+    bottom: 1px solid lighten($grey, 45%)
+  & > li
+    position: relative
+    display: inline-block
+    padding: 1rem
+    &:not(:last-child)::after
+      content: ''
+      position: absolute
+      top: 20px
+      right: 0
+      display: inline-block
+      width: 1px
+      height: calc(100% - 4rem)
+      background-color: lighten($grey, 45%)
+
+.list-phone
+  & > li
+    margin:
+      right: 1rem
+      bottom: 0.5rem
+    &:not(:last-child):not(:first-child)::after
+      content: '/'
+      color: lighten($grey, 30%)
+      padding-left: 0.5rem
+
+.list-tags
+  & > li
+    margin:
+      right: 1rem
+      bottom: 1rem
+    &:not(:first-child)
+      padding: 0.5rem 1rem
+      border: 1px solid $turquoise
+      border-radius: 5rem
+      color: $turquoise
+      background-color: #fff

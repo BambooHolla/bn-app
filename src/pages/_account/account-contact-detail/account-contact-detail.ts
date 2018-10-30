@@ -1,3 +1,4 @@
+import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from './../../../providers/assets-service/assets-service';
 import { Component, Optional } from "@angular/core";
 import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
@@ -21,7 +22,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
     public accountService: AccountServiceProvider,
     public localContact: LocalContactProvider,
     public viewCtrl: ViewController,
-    public transactionService: TransactionServiceProvider
+    public transactionService: TransactionServiceProvider,
+    public assetsService: AssetsServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -96,7 +98,9 @@ export class AccountContactDetailPage extends SecondLevelPage {
       }
     }
     await this.getTransactionLogs();
+    await this.streamAssetsHolders(this.contact.address);
   }
+
   hide_navbar_tools = true;
   checking_is_my_contact = false;
   is_my_contact = false;
@@ -234,6 +238,12 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.transaction_config.page = 1;
     this.transaction_list = await this._getTransactionList();
     this.markForCheck();
+  }
+
+  assetsHoldersArray: AssetsPersonalModelWithLogoSafeUrl[] = [];
+  @asyncCtrlGenerator.error()
+  async streamAssetsHolders(address: string){
+    this.assetsHoldersArray = await this.assetsService.getAllPossessorAssets(address);
   }
 
   @asyncCtrlGenerator.error()
