@@ -41,7 +41,9 @@ export class AssetsLogoClipPage extends SecondLevelPage {
 		public assetsService: AssetsServiceProvider,
 		public resolver: ComponentFactoryResolver
 	) {
-		super(navCtrl, navParams, true, tabs);
+    super(navCtrl, navParams, true, tabs);
+    // lock page id
+    this.setViewCtrlId("assets-logo-clip" );
 	}
 	@ViewChild("clipComponent", { read: ViewContainerRef })
 	clipViewRef!: ViewContainerRef;
