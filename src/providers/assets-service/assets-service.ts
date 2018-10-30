@@ -1,3 +1,4 @@
+import { AccountModel } from './../account-service/account.types';
 import { Injectable } from "@angular/core";
 import { AppSettingProvider, AppUrl, HEIGHT_AB_Generator } from "../app-setting/app-setting";
 import { TransactionServiceProvider, TransactionModel } from "../transaction-service/transaction-service";
@@ -11,6 +12,7 @@ import { PromisePro } from "../../bnqkl-framework/PromiseExtends";
 import { tryRegisterGlobal } from "../../bnqkl-framework/helper";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { AccountServiceProvider } from "../account-service/account-service";
+import { UserInfoProvider } from '../user-info/user-info';
 
 @Injectable()
 export class AssetsServiceProvider extends FLP_Tool {
@@ -19,7 +21,8 @@ export class AssetsServiceProvider extends FLP_Tool {
     public fetch: AppFetchProvider,
     public transactionService: TransactionServiceProvider,
     public domSanitizer: DomSanitizer,
-    public accountService: AccountServiceProvider
+    public accountService: AccountServiceProvider,
+    public userInfo: UserInfoProvider
   ) {
     super();
     tryRegisterGlobal("assetsService", this);
@@ -144,6 +147,24 @@ export class AssetsServiceProvider extends FLP_Tool {
     } while (true);
     return all_assets_list;
   }
+
+  async getTransactionRecord(account_address:string, userAdress:string = this.userInfo.address) {
+    const transaction = await this.transactionService.queryTransaction({
+      type: this.transactionService.TransactionTypes.SEND,
+      $or: [
+        {
+          senderId: userAdress,
+          recipientId: account_address
+        },
+        {
+          senderId: userAdress,
+          recipientId: account_address
+        }
+      ]
+    }, { timestamp: -1 }, 0, 10, {});
+    return transaction.transactions;
+  }
+
   /**查询指定页的资产列表*/
   private async _getPossessorAssetsByPage(address: string, page: number, pageSize: number, extends_query?) {
     let query_condition = {

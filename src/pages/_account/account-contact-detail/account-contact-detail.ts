@@ -1,13 +1,14 @@
-import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from './../../../providers/assets-service/assets-service';
+import { transactionTypes } from './../../../ifmchain-js-core/src/lib/types/transactionsType';
 import { Component, Optional } from "@angular/core";
 import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
+import { asyncCtrlGenerator } from './../../../bnqkl-framework/Decorator';
+import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from './../../../providers/assets-service/assets-service';
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
-import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "../../../providers/transaction-service/transaction-service";
+import { TransactionServiceProvider, TransactionTypes, TransactionModel, transactionTypeModel } from "../../../providers/transaction-service/transaction-service";
 import { LocalContactModel, LocalContactProvider, TagModel } from "../../../providers/local-contact/local-contact";
 import { AccountModel } from "../../../providers/account-service/account-service";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
-import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 
 @IonicPage({ name: "account-contact-detail" })
 @Component({
@@ -99,6 +100,8 @@ export class AccountContactDetailPage extends SecondLevelPage {
     }
     await this.getTransactionLogs();
     await this.streamAssetsHolders(this.contact.address);
+    await this.streamTransactionRecord(this.contact.address);
+    await this.stremTransactionType(this.contact.address);
   }
 
   hide_navbar_tools = true;
@@ -244,6 +247,18 @@ export class AccountContactDetailPage extends SecondLevelPage {
   @asyncCtrlGenerator.error()
   async streamAssetsHolders(address: string){
     this.assetsHoldersArray = await this.assetsService.getAllPossessorAssets(address);
+  }
+
+  transactionRecordArray: TransactionModel[] = [];
+  @asyncCtrlGenerator.error()
+  async streamTransactionRecord(address: string){
+    this.transactionRecordArray = await this.assetsService.getTransactionRecord(address);
+  }
+
+  transactionTypeList: transactionTypeModel = {success: true,txCounts: {}};
+  @asyncCtrlGenerator.error()
+  async stremTransactionType(address: string){
+    this.transactionTypeList = await this.transactionService.getTransactionType(address);
   }
 
   @asyncCtrlGenerator.error()

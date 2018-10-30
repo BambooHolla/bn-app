@@ -48,6 +48,7 @@ export class TransactionServiceProvider {
   readonly QUERY_TRANSACTIONS = this.appSetting.APP_URL("/api/transactions/query");
   readonly GET_SOURCE_IP = this.appSetting.APP_URL("/api/system/sourceIp");
   readonly GET_VOTE_TRS_DELEGATE_LIST = this.appSetting.APP_URL("/api/accounts/voteDetails");
+  readonly GET_TRANSACTION_TYPE = this.appSetting.APP_URL("/api/transactions/txCountByType");
 
   getTransactionLink(type) {
     switch (type) {
@@ -112,8 +113,17 @@ export class TransactionServiceProvider {
         id: id,
       },
     });
-
     return data.transaction;
+  }
+
+  // txCountByType
+  async getTransactionType(senderId: any) {
+    let data = await this.fetch.get<{txCounts:TYPE.transactionTypeModel}>(this.GET_TRANSACTION_TYPE, {
+      search: {
+        senderId: senderId
+      }
+    });
+    return data.txCounts;
   }
 
   async getUnconfirmedById(id: string) {

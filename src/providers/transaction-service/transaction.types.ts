@@ -41,4 +41,9 @@ export type QueryTransactionsResModel = {
   transactions: TransactionModel[];
   count: number;
 };
+
+export type transactionTypeModel = {
+  success: boolean;
+  txCounts: object;
+};
 export { transactionTypes as TransactionTypes } from '../../ifmchain-js-core/src';
