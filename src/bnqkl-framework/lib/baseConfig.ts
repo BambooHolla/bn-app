@@ -28,7 +28,12 @@ class BaseConfig {
   @AutoEmitPropChange({ save_to_ls: "HIDE_FLAG" })
   HIDE_FLAG = getQueryVariable("HIDE_FLAG")
   @AutoEmitPropChange({ save_to_ls: "BACKEND_VERSION" })
-  BACKEND_VERSION = getQueryVariable("BACKEND_VERSION") || "v3.1.3/";
+  BACKEND_VERSION = formatQueryVariable("BACKEND_VERSION", (version) => {
+    if (typeof version !== "string") {
+      version = ""
+    }
+    return version;
+  });
   @AutoEmitPropChange()
   APP_VERSION = global["APP_VERSION"];
   @AutoEmitPropChange({ save_to_ls: "SERVER_URL" })

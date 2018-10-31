@@ -130,7 +130,7 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
   /**绘制交易 */
   @asyncCtrlGenerator.queue()
   async drawTransaction(trs?: TransactionModel) {
-    const resources = await _load_resource_delaypromise;
+    const resources = await _load_resource_delaypromise.promise;
     const { app } = this;
     if (!app) {
       return;

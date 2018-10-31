@@ -9,8 +9,8 @@ const log = debug("blockchain-db:cache-data-ref");
 /**
  * 缓存池子
  */
-export class CacheDataPool {
-  cacheDataRefMap = new Map<number, CacheDataRef>();
+export class CacheDataPool<T extends BlockBaseModel>  {
+  cacheDataRefMap = new Map<number, CacheDataRef<T>>();
   /**检查CG的定时器间隔 */
   public CG_INTERVAL = 1e3;
   /**默认最多缓存N个分页的数据 */
@@ -80,7 +80,7 @@ export class CacheDataPool {
   //   this.save_ticket_set.add((await this.getCacheDataRef(page_index)).generateSaveTicket());
   //   this._runSaveTicket();
   // }
-  async addCacheDataRefSaveQuene(cache_data_ref: CacheDataRef) {
+  async addCacheDataRefSaveQuene(cache_data_ref: CacheDataRef<T>) {
     this.save_ticket_set.add(cache_data_ref.generateSaveTicket());
     this._runSaveTicket();
   }
@@ -105,11 +105,11 @@ export class CacheDataPool {
 /**
  * 缓存的引用管理
  */
-export class CacheDataRef {
+export class CacheDataRef<T extends BlockBaseModel> {
   constructor(
     public page_index: number,
     public page_key: string,
-    public cacheDataPool: CacheDataPool,
+    public cacheDataPool: CacheDataPool<T>,
     opts?: {
       ref?: typeof CacheDataRef.prototype.ref;
       unref?: typeof CacheDataRef.prototype.unref;
@@ -139,12 +139,12 @@ export class CacheDataRef {
   /**检查CG的定时器间隔 */
   CG_INTERVAL = 1e3;
   /**数据请求任务 */
-  data_req?: PromisePro<CacheBlockList>
+  data_req?: PromisePro<CacheBlockList<T>>
   /**请求完成的数据对象 */
-  private _actived_data?: CacheBlockList
+  private _actived_data?: CacheBlockList<T>
 
   /**CG定时器的返回引用 */
-  cg_ti?: number
+  cg_ti?: any
   /**激活网络 */
   async active() {
     if (this.data_req) {
@@ -200,7 +200,7 @@ export class CacheDataRef {
     const data = await this.getData();
     return data.get(index);
   }
-  async setItem(index: number, block: BlockBaseModel) {
+  async setItem(index: number, block: T) {
     const data = await this.getData();
     data.set(index, block);
   }
@@ -216,7 +216,7 @@ export class CacheDataRef {
   }
   /**请求数据 */
   private _readDataFromDB() {
-    return IDB_VK.get<CacheBlockList | undefined>(this.page_key);
+    return IDB_VK.get<CacheBlockList<T> | undefined>(this.page_key);
   }
   /**保存数据 */
   private _writeDataToDB() {

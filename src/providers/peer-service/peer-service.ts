@@ -140,7 +140,15 @@ export class PeerServiceProvider extends CommonService {
       })
       .catch(() => 0);
   }
-  fetchPeerMagic(origin: string) {
+  /**新版本的fetchMagic */
+  fetchPeerMagic(origin: string, backend_version?: string) {
+    if (!baseConfig.BACKEND_VERSION) {
+      return this.fetchNewPeerMagic(origin, backend_version);
+    } else {
+      return this.fetchOldPeerMagic(origin, backend_version);
+    }
+  }
+  fetchNewPeerMagic(origin: string, backend_version?: string) {
     return this.fetch.get<{
       systemBaseInfo: {
         genesisNodeAddress: string;
@@ -151,7 +159,14 @@ export class PeerServiceProvider extends CommonService {
         timestamp: number;
         countSubchain: number;
       }
-    }>(this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true).SYSTEM_BASE_INFO).then(res => res.systemBaseInfo);
+    }>(this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true, backend_version).SYSTEM_BASE_INFO).then(res => res.systemBaseInfo);
+  }
+  /**旧版本的fetchMagic */
+  fetchOldPeerMagic(origin: string, backend_version?: string) {
+    return this.fetch.get<{
+      magic: string;
+      sourceIp: string;
+    }>(this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true, backend_version).SYSTEM_BASE_INFO);
   }
   private _getPeerMagic(peer: TYPE.LocalPeerModel) {
     return this.fetchPeerMagic(peer.origin)

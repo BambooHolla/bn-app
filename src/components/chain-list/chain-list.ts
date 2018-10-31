@@ -110,7 +110,7 @@ export class ChainListComponent extends AniBase {
     }
     this.app.stage.addChild(this.list_view);
     this.app.stage.addChild(this.chain_view);
-    const resource: PIXI.loaders.ResourceDictionary = await load_resource_promisedelay;
+    const resource: PIXI.loaders.ResourceDictionary = await load_resource_promisedelay.promise;
     BlockCard.bg_resource = resource.block_card_blue_bg.texture;
     GoldBlockCard.bg_resource = resource.block_card_gold_bg.texture;
     OverBlockCard.bg_resource = resource.block_card_over_bg.texture;

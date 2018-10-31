@@ -58,51 +58,36 @@ export class BlockServiceProvider extends FLP_Tool {
   }
 
   @baseConfig.WatchPropChanged("MAGIC")
-  private get blockFangoDB_ready() { return new PromisePro<FangoDB<TYPE.BlockModel>>(); }
-  private _block_FangoDB?: FangoDB<TYPE.BlockModel>;
-  get blockFangoDB() {
-    return this.blockFangoDB_ready.promise;
+  private get blockchaindbv3_ready() { return new PromisePro<BlockchainDB<TYPE.BlockModel>>(); }
+  private _blockchaindbv3?: BlockchainDB<TYPE.BlockModel>;
+  get blockchaindbv3() {
+    return this.blockchaindbv3_ready.promise;
   }
-  // @baseConfig.WatchPropChanged("MAGIC")
-  // get baseConfig.MAGIC() {
-  //   const p = new PromiseOut<string>();
-  //   return p;
-  // }
 
-  /// 关于本地数据库的一些辅助函数
-  // @AOT_Placeholder.Wait("isBlockDBInited")
-  private _getHeightIndex(db: FangoDB<TYPE.BlockModel>) {
-    return db.indexs.height.index as DBNumberIndex<string>;
-  }
   // @AOT_Placeholder.Wait("isBlockDBInited")
   async getLocalLastBlockHeight() {
-    const blockDB = await this.blockFangoDB;
-    return Promise.resolve(this._getHeightIndex(blockDB).maxInterge);
+    const blockDB = await this.blockchaindbv3;
+    return blockDB.getMaxHeight();
   }
   // @AOT_Placeholder.Wait("isBlockDBInited")
   async getLocalLastBlock() {
-    const blockDB = await this.blockFangoDB;
-    const height_index = this._getHeightIndex(blockDB);
-    const last_block_height = height_index.maxInterge;
-    const uid = await height_index.getIndex(last_block_height);
-    if (uid) {
-      return (await blockDB.getById(uid)) || this.empty_block;
-    }
-    return this.empty_block;
+    const blockDB = await this.blockchaindbv3;
+    const last_block_height = await blockDB.getMaxHeight();
+    return blockDB.getByHeight(last_block_height).then(block => block || this.empty_block);
   }
   // @AOT_Placeholder.Wait("isBlockDBInited")
   async checkBlockIdInBlockDB(block_id: string) {
-    const blockDB = await this.blockFangoDB;
+    const blockDB = await this.blockchaindbv3;
     return blockDB.hasId(block_id);
   }
   is_inited: Promise<any>;
   // private _init_block_aot = new AOT("init_block");
   @baseConfig.WatchPropChanged("MAGIC")
   private async _initService() {
-    const blockDb = await BlockDBFactory(this.baseConfig.MAGIC);
+    const blockDb = new BlockchainDB<TYPE.BlockModel>(this.baseConfig.MAGIC);
     await blockDb.afterInited();
-    this.blockFangoDB_ready.resolve(blockDb);
-    this._block_FangoDB = blockDb;
+    this.blockchaindbv3_ready.resolve(blockDb);
+    this._blockchaindbv3 = blockDb;
     await blockDb;
     // this._init_block_aot.compile(true);
   }
@@ -133,118 +118,121 @@ export class BlockServiceProvider extends FLP_Tool {
 
     // 安装api服务
     this._blockDb = dbCache.installDatabase("blocks", []);
-    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
-      "blocks",
-      "get",
-      this.GET_BLOCK_BY_QUERY,
-      async (_, request_opts) => {
-        const search = request_opts.reqOptions.search as any;
-        if (!search) {
-          throw new Error("Parameter verification failed.");
-        }
-        let { limit, orderBy, offset, startHeight, endHeight, ...query } = search;
-        let may_need_mix_reqs = false;
-        if (Number.isFinite(startHeight) && Number.isFinite(endHeight)) {
-          query.height = {
-            $gte: startHeight,
-            $lte: endHeight,
-          };
-          may_need_mix_reqs = true;
-          if (!limit) {
-            limit = Math.abs(endHeight - startHeight) + 1;
-          }
-        }
-        if (Number.isFinite(query.height)) {
-          limit = 1;
-        }
-        let sort;
-        if (typeof orderBy === "string") {
-          const sort_params = orderBy.split(":");
-          sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
-        }
-        // await this.blockFangoDB_ready;
-        const blocks = await (await this.blockFangoDB).find(query, {
-          sort,
-          limit,
-          skip: offset,
-        });
-        const cache = { blocks, count: blocks.length, success: true } as TYPE.BlockListResModel;
-        if (Number.isFinite(query.height) && blocks.length === 1) {
-          return { reqs: [], cache };
-        }
-        // TODO:blocks.length != limit
-        // TODO:要考虑request_opts中的范围大小不得超过100，需要做切割再多次获取
-        if (Number.isFinite(limit) && blocks.length == limit) {
-          return { reqs: [], cache };
-        }
-        if (this.fetch.onLine) {
-          return { reqs: [request_opts], cache };
-        } else {
-          return { reqs: [], cache };
-        }
-      },
-      async req_res_list => {
-        if (req_res_list.length > 0) {
-          return req_res_list[0].result;
-        }
-      },
-      async (_, mix_res, cache) => {
-        if (mix_res && mix_res.success) {
-          const res_blocks = mix_res.blocks;
-          if (res_blocks instanceof Array) {
-            await this.blockFangoDB_ready;
-            const old_blocks =
-              cache.blocks instanceof Array
-                ? cache.blocks
-                : await (await this.blockFangoDB).find({
-                  height: { $in: res_blocks.map(b => b.height) },
-                });
-            const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
-            const new_blocks = res_blocks
-              .filter(block => {
-                return !unique_height_set.has(block.height);
-              })
-              .map(b => this.formatBlockData(b));
-            await (await this.blockFangoDB).insertMany(new_blocks, { replace: true });
-          }
-          return mix_res;
-        }
-        return cache;
-      }
-    );
-    dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>(
-      "blocks",
-      "get",
-      this.GET_BLOCK_BY_ID,
-      async (_, request_opts) => {
-        const query = request_opts.reqOptions.search;
-        await this.blockFangoDB_ready;
-        const cache_block = await (await this.blockFangoDB).findOne(query);
-        const cache = {
-          block: cache_block,
-          success: true,
-        } as TYPE.BlockResModel;
-        if (cache_block) {
-          return { reqs: [], cache };
-        }
-        return { reqs: [request_opts], cache };
-      },
-      async req_res_list => {
-        if (req_res_list.length > 0) {
-          return req_res_list[0].result;
-        }
-      },
-      async (_, mix_res, cache) => {
-        if (mix_res) {
-          const new_block = mix_res.block;
-          if (!(await this.checkBlockIdInBlockDB(new_block.id))) {
-            await (await this.blockFangoDB).insert(this.formatBlockData(new_block), { replace: true });
-          }
-          cache.block = new_block;
-        }
-        return cache;
-      }
-    );
+    // dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
+    //   "blocks",
+    //   "get",
+    //   this.GET_BLOCK_BY_QUERY,
+    //   async (_, request_opts) => {
+    //     const search = request_opts.reqOptions.search as any;
+    //     if (!search) {
+    //       throw new Error("Parameter verification failed.");
+    //     }
+    //     let { limit, orderBy, offset, startHeight, endHeight, ...query } = search;
+    //     let may_need_mix_reqs = false;
+    //     if (Number.isFinite(startHeight) && Number.isFinite(endHeight)) {
+    //       query.height = {
+    //         $gte: startHeight,
+    //         $lte: endHeight,
+    //       };
+    //       may_need_mix_reqs = true;
+    //       if (!limit) {
+    //         limit = Math.abs(endHeight - startHeight) + 1;
+    //       }
+    //     }
+    //     if (Number.isFinite(query.height)) {
+    //       limit = 1;
+    //     }
+    //     let sort;
+    //     if (typeof orderBy === "string") {
+    //       const sort_params = orderBy.split(":");
+    //       sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
+    //     }
+    //     // await this.blockFangoDB_ready;
+    //     // TODO: 实现 by height, by id
+    //     const blocks:TYPE.BlockModel[] = [];
+    //     // if()
+    //     // await (await this.blockchaindbv3).find(query, {
+    //     //   sort,
+    //     //   limit,
+    //     //   skip: offset,
+    //     // });
+    //     const cache = { blocks, count: blocks.length, success: true } as TYPE.BlockListResModel;
+    //     if (Number.isFinite(query.height) && blocks.length === 1) {
+    //       return { reqs: [], cache };
+    //     }
+    //     // TODO:blocks.length != limit
+    //     // TODO:要考虑request_opts中的范围大小不得超过100，需要做切割再多次获取
+    //     if (Number.isFinite(limit) && blocks.length == limit) {
+    //       return { reqs: [], cache };
+    //     }
+    //     if (this.fetch.onLine) {
+    //       return { reqs: [request_opts], cache };
+    //     } else {
+    //       return { reqs: [], cache };
+    //     }
+    //   },
+    //   async req_res_list => {
+    //     if (req_res_list.length > 0) {
+    //       return req_res_list[0].result;
+    //     }
+    //   },
+    //   async (_, mix_res, cache) => {
+    //     if (mix_res && mix_res.success) {
+    //       const res_blocks = mix_res.blocks;
+    //       if (res_blocks instanceof Array) {
+    //         await this.blockchaindbv3_ready;
+    //         const old_blocks =
+    //           cache.blocks instanceof Array
+    //             ? cache.blocks
+    //             : await (await this.blockchaindbv3).find({
+    //               height: { $in: res_blocks.map(b => b.height) },
+    //             });
+    //         const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
+    //         const new_blocks = res_blocks
+    //           .filter(block => {
+    //             return !unique_height_set.has(block.height);
+    //           })
+    //           .map(b => this.formatBlockData(b));
+    //         await (await this.blockchaindbv3).insertMany(new_blocks, { replace: true });
+    //       }
+    //       return mix_res;
+    //     }
+    //     return cache;
+    //   }
+    // );
+    // dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>(
+    //   "blocks",
+    //   "get",
+    //   this.GET_BLOCK_BY_ID,
+    //   async (_, request_opts) => {
+    //     const query = request_opts.reqOptions.search;
+    //     await this.blockchaindbv3_ready;
+    //     const cache_block = await (await this.blockchaindbv3).findOne(query);
+    //     const cache = {
+    //       block: cache_block,
+    //       success: true,
+    //     } as TYPE.BlockResModel;
+    //     if (cache_block) {
+    //       return { reqs: [], cache };
+    //     }
+    //     return { reqs: [request_opts], cache };
+    //   },
+    //   async req_res_list => {
+    //     if (req_res_list.length > 0) {
+    //       return req_res_list[0].result;
+    //     }
+    //   },
+    //   async (_, mix_res, cache) => {
+    //     if (mix_res) {
+    //       const new_block = mix_res.block;
+    //       if (!(await this.checkBlockIdInBlockDB(new_block.id))) {
+    //         await (await this.blockchaindbv3).insert(this.formatBlockData(new_block), { replace: true });
+    //       }
+    //       cache.block = new_block;
+    //     }
+    //     return cache;
+    //   }
+    // );
 
     // 未连接上websocket前，先使用本地缓存来更新一下高度
     this.getLocalLastBlock().then(local_newest_block => {
@@ -333,12 +321,11 @@ export class BlockServiceProvider extends FLP_Tool {
     // 更新缓存中的最新区块
     if (!(await this.checkBlockIdInBlockDB(last_block.id))) {
       // 将最新区块插入到数据库中
-      await (await this.blockFangoDB).insert(this.formatBlockData(last_block), { replace: true }).catch(err => console.warn("更新最新区块失败", last_block, err));
+      await (await this.blockchaindbv3).upsert(this.formatBlockData(last_block)).catch(err => console.warn("更新最新区块失败", last_block, err));
     } else {
       // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
-      const heighter_blocks = await (await this.blockFangoDB).find({
-        height: { $gt: last_block },
-      });
+      const last_block_height = last_block.height;
+      const heighter_blocks = await (await this.blockchaindbv3).findList((block) => block.height > last_block_height);
       //整理出一条正确的长链，所用前一个块的id作为key
       const block_map = new Map<string, TYPE.BlockModel>();
       heighter_blocks.forEach(lock_block => {
@@ -512,7 +499,7 @@ export class BlockServiceProvider extends FLP_Tool {
     const req_id = this._download_req_id_acc++;
     let cg;
     const sync_progress_height = this.appSetting.share_settings.sync_progress_height;
-    const local_last_block = await (await this.blockFangoDB).getItemByIndexVal("height", sync_progress_height);
+    const local_last_block = await (await this.blockchaindbv3).getByHeight(sync_progress_height);
     let need_verifier = false;
     if (local_last_block) {
       const server_last_block = await this.getBlockByHeight(sync_progress_height, true);
@@ -690,7 +677,7 @@ export class BlockServiceProvider extends FLP_Tool {
       }
     }
 
-    await (await this.blockFangoDB).insert(block, { replace: true }).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
+    await (await this.blockchaindbv3).upsert(block).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
     // 新的输入插入后，就要通知更新区块链
     this.tryEmit("BLOCKCHAIN:CHANGED");
     if (cur_lastBlock) {
@@ -745,9 +732,8 @@ export class BlockServiceProvider extends FLP_Tool {
       let last_block = await this.fetch.get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL).then(res => res.block as TYPE.SingleBlockModel);
       if (await this.checkBlockIdInBlockDB(last_block.id)) {
         // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
-        const heighter_blocks = await (await this.blockFangoDB).find({
-          height: { $gt: last_block },
-        });
+        const last_block_height = last_block.height;
+        const heighter_blocks = await (await this.blockchaindbv3).findList((block)=>block.height>last_block_height);
         //整理出一条正确的长链，所用前一个块的id作为key
         const block_map = new Map<string, TYPE.BlockModel>();
         heighter_blocks.forEach(lock_block => {

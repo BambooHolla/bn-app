@@ -9,7 +9,7 @@ import debug from "debug";
 import { HeightList } from "./HeightList";
 const log = debug("blockchain-db:core");
 
-export class BlockchainDBCore extends EventEmitter {
+export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
   //#region 配置的初始化
   private _init_aot = new AOT();
   constructor(public readonly magic: string, opts: {
@@ -24,12 +24,12 @@ export class BlockchainDBCore extends EventEmitter {
 
   }
 
-  private readonly DB_CONFIG_KEY = this.magic + "-CONFIG";
-  private DB_PAGE_KEY(page: number) {
+  protected readonly DB_CONFIG_KEY = this.magic + "-CONFIG";
+  protected DB_PAGE_KEY(page: number) {
     return this.magic + "+PAGE-" + page;
   }
 
-  private _db_init = this._initConfig();
+  protected _db_init = this._initConfig();
   private async _initConfig() {
     const { DB_CONFIG_KEY } = this;
     let dbconfig = await IDB_VK.get<DB_Config | undefined>(DB_CONFIG_KEY);
@@ -113,12 +113,12 @@ export class BlockchainDBCore extends EventEmitter {
   }
   //#endregion
   //#region 索引
-  private _dbconfig!: DB_Config;
-  private _id_height_indexs!: Map<string, number>;
-  private _height_id_indexs!: Map<number, string>;
+  protected _dbconfig!: DB_Config;
+  protected _id_height_indexs!: Map<string, number>;
+  protected _height_id_indexs!: Map<number, string>;
 
   /// 所有区块的的height
-  private _height_list!: HeightList
+  protected _height_list!: HeightList
   get height_list() {
     return this._height_list.getSortedList();
   }
@@ -160,8 +160,8 @@ export class BlockchainDBCore extends EventEmitter {
    */
   @AOT_Placeholder.Wait("_db_init")
   async getByHeightRange(gte: number, lte: number) {
-    const pageDataRefCache = new Map<number, CacheDataRef>()
-    const res: (BlockBaseModel | undefined)[] = [];
+    const pageDataRefCache = new Map<number, CacheDataRef<T>>()
+    const res: (T | undefined)[] = [];
     for (var i = gte; i <= lte; i += 1) {
       const height = i;
       if (!this._height_id_indexs.has(height)) {
@@ -190,7 +190,7 @@ export class BlockchainDBCore extends EventEmitter {
    * 自动的页面缓存获取
    * @param height
    */
-  private async _getPageDataWithAutoCache(height: number, cache: Map<number, CacheDataRef>) {
+  private async _getPageDataWithAutoCache(height: number, cache: Map<number, CacheDataRef<T>>) {
     const page = (height / this._dbconfig.page_size) | 0;
     let pageData = cache.get(page);
     if (!pageData) {
@@ -207,8 +207,8 @@ export class BlockchainDBCore extends EventEmitter {
 
   //#region 插入数据
   @AOT_Placeholder.Wait("_db_init")
-  async upsertList(block_list: Iterable<BlockBaseModel>) {
-    const pageDataRefCache = new Map<number, CacheDataRef>();
+  async upsertList(block_list: Iterable<T>) {
+    const pageDataRefCache = new Map<number, CacheDataRef<T>>();
     let max_height = this._dbconfig.max_height;
     for (var block of block_list) {
       const pageData = await this._getPageDataWithAutoCache(block.height, pageDataRefCache);
@@ -225,7 +225,7 @@ export class BlockchainDBCore extends EventEmitter {
     this._compareMaxHeight(max_height);
   }
   @AOT_Placeholder.Wait("_db_init")
-  async upsert(block: BlockBaseModel) {
+  async upsert(block: T) {
     const pageDataRef = await this._getPageData(block.height);
     await pageDataRef.setItem(block.height, block);
     this._setIndexs(block);
@@ -235,7 +235,7 @@ export class BlockchainDBCore extends EventEmitter {
     // 尝试更新配置
     block.height > this._dbconfig.max_height && this._compareMaxHeight(block.height);
   }
-  private _setIndexs(block: BlockBaseModel) {
+  private _setIndexs(block: T) {
     const old_id = this._height_id_indexs.get(block.height);
     log("set Indexs:[%o] %o => %o", block.height, old_id, block.id);
     if (typeof old_id === "string") {
@@ -254,7 +254,7 @@ export class BlockchainDBCore extends EventEmitter {
   //#region 删除数据
   @AOT_Placeholder.Wait("_db_init")
   async removeByHeightList(height_list: Iterable<number>) {
-    const pageDataRefCache = new Map<number, CacheDataRef>();
+    const pageDataRefCache = new Map<number, CacheDataRef<T>>();
     for (var height of height_list) {
       const pageData = await this._getPageDataWithAutoCache(height, pageDataRefCache);
       const block = pageData.get(height);
@@ -290,7 +290,7 @@ export class BlockchainDBCore extends EventEmitter {
     // 尝试更新配置
     this._getMaxHeightFromHeightList();
   }
-  private _deleteIndexs(block: BlockBaseModel) {
+  private _deleteIndexs(block: T) {
     const old_id = this._height_id_indexs.get(block.height);
     log("del Indexs:[%o] %o", block.height, old_id);
     if (typeof old_id !== 'string') {
@@ -309,12 +309,12 @@ export class BlockchainDBCore extends EventEmitter {
   private _getTaskId() {
     return ++this._find_task_id_acc;
   }
-  private _qunue_query_task_list: Array<[number, BlockFilterWrapper]> = [];
+  private _qunue_query_task_list: Array<[number, BlockFilterWrapper<T>]> = [];
   /**增加查询到查询队列 */
-  _askQueryQuene(task_id: number, filter_base_wrapper: BlockFilterBaseWrapper) {
+  private _askQueryQuene(task_id: number, filter_base_wrapper: BlockFilterBaseWrapper<T>) {
     const filter_wrapper = {
       ...filter_base_wrapper,
-      task: new PromiseOut<BlockBaseModel[]>()
+      task: new PromiseOut<T[]>()
     }
     this._qunue_query_task_list.push([task_id, filter_wrapper]);
     if (!this.__curent_query_task) {
@@ -323,13 +323,13 @@ export class BlockchainDBCore extends EventEmitter {
     return filter_wrapper.task.promise;
   }
 
-  private __curent_query_task?: QueryTask
+  private __curent_query_task?: QueryTask<T>
   /**执行查询任务 */
   private __doQuery() {
     const do_query_time_log = debug("blockchain-db:core:do-query");
     const do_query_loop_log = debug("blockchain-db:core:do-query:loop");
 
-    const filter_wrapper_map = new Map<number, BlockFilterWrapper>();
+    const filter_wrapper_map = new Map<number, BlockFilterWrapper<T>>();
     this.__curent_query_task = {
       // cur_page_index: 0,
       filter_wrapper_map,
@@ -388,7 +388,7 @@ export class BlockchainDBCore extends EventEmitter {
     };
   }
   /**查询一个 */
-  async findOne(filter: BlockFilterFunction) {
+  async findOne(filter: BlockFilterFunction<T>) {
     const task_id = this._getTaskId();
     const result = await this._askQueryQuene(task_id, {
       filter,
@@ -399,7 +399,7 @@ export class BlockchainDBCore extends EventEmitter {
     return result[0];
   }
   /**查询数组，不支持排序查询，默认从高度1开始查询 */
-  async findList(filter: BlockFilterFunction, limit: number, skip = 0) {
+  async findList(filter: BlockFilterFunction<T>, limit = Infinity, skip = 0) {
     const task_id = this._getTaskId();
     const result = await this._askQueryQuene(task_id, {
       filter,
@@ -411,7 +411,7 @@ export class BlockchainDBCore extends EventEmitter {
   }
   //#endregion
   //#region 缓存管理
-  cacheDataPool = new CacheDataPool({
+  cacheDataPool = new CacheDataPool<T>({
     getPageKey: this.DB_PAGE_KEY.bind(this),
     max_cache_page_num: 10,
     cg_interval: 1e3,
@@ -420,7 +420,7 @@ export class BlockchainDBCore extends EventEmitter {
 
   private _readDataFromDB(page_index: number) {
     const page_key = this.DB_PAGE_KEY(page_index);
-    return IDB_VK.get<CacheBlockList | undefined>(page_key);
+    return IDB_VK.get<CacheBlockList<T> | undefined>(page_key);
   }
   //#endregion
 
