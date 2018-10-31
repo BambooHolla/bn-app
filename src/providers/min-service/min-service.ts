@@ -119,9 +119,6 @@ export class MinServiceProvider extends FLP_Tool {
    */
   async getRoundRemainTime() {
     let roundTimeUrl = this.ROUND_TIME;
-    let roundTimeReq = {
-      publicKey: this.userInfo.publicKey,
-    };
 
     let data = await this.fetch.get<{
       success: boolean;
@@ -211,7 +208,7 @@ export class MinServiceProvider extends FLP_Tool {
    * @param secret 主密码
    * @param secondSecret 支付密码
    */
-  private async _vote(
+  async _vote(
     voteable_delegates: TYPE.DelegateModel[],
     secret: string,
     secondSecret?: string,
@@ -228,11 +225,11 @@ export class MinServiceProvider extends FLP_Tool {
       }
       throw new Error(this.getTranslateSync("NOT_ENOUGH_BALANCE_TO_VOTE"));
     }
-    const voted_delegate_list = await this.voted_delegates_db.find({
-      publicKey: { $in: voteable_delegates.map(del => del.publicKey) },
-    });
+    // const voted_delegate_list = await this.voted_delegates_db.find({
+    //   publicKey: { $in: voteable_delegates.map(del => del.address) },
+    // });
 
-    const votes = voteable_delegates.map(delegate => "+" + delegate.publicKey);
+    const votes = voteable_delegates.map(delegate => "+" + delegate.address);
 
     //设置投票的参数
     const { timestamp } = await this.transactionService.getTimestamp();
@@ -395,7 +392,7 @@ export class MinServiceProvider extends FLP_Tool {
     }
   }
 
-  vote_status_detail: Error | string | null = null;
+  vote_status_detail: Error | string | null | { message: string } = null;
 
   /**
    * 取消自动投票
@@ -708,10 +705,10 @@ export class MinServiceProvider extends FLP_Tool {
   }
 
   /**获取指定委托人上一轮的投票用户详情与的权益分配 */
-  getPreRoundDelegateVotedDetail(delegate_publicKey: string, offset: number, limit: number) {
+  getPreRoundDelegateVotedDetail(delegate_address: string, offset: number, limit: number) {
     return this.fetch.get<{ voters: TYPE.AccountModelWithEquity[] }>(this.GET_DELEGATE_PREROUND_VOTED_DETAIL, {
       search: {
-        publicKey: delegate_publicKey,
+        address: delegate_address,
         offset,
         limit
       }
