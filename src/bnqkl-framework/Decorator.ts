@@ -80,6 +80,9 @@ export function asyncErrorWrapGenerator(
           return data;
         })
         .catch(err => {
+          if (err instanceof Array) {
+            err = err[0];
+          }
           if (isErrorFromAsyncerror(err)) {
             // 这个error已经弹出过了，就不在弹出了
             return keep_throw ? Promise.reject(err) : err;
@@ -87,6 +90,8 @@ export function asyncErrorWrapGenerator(
           var err_msg;
           if (err instanceof Error) {
             err_msg = err.message;
+          } else if (err.code) {
+            err_msg = err.code + "";
           } else if (err.message) {
             err_msg = err.message + "";
           } else if (err.exception) {
@@ -94,12 +99,7 @@ export function asyncErrorWrapGenerator(
           } else {
             err_msg = err + "";
           }
-          console.group("CATCH BY asyncErrorWrapGenerator:");
-          err &&
-            err.CODE &&
-            console.log(`%c${err.CODE}`, "color:red;background:pink");
-          console.warn(err);
-          console.groupEnd();
+          console.error("%cCATCH BY asyncErrorWrapGenerator:", "background-color:darkred;color:#FFF", err);
           if (hidden_when_page_leaved && page_leaved) {
             page_status_rm();// 移除页面事件监听
             console.log(

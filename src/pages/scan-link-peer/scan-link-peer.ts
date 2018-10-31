@@ -26,6 +26,7 @@ enum PAGE {
 @Component({
   selector: "page-scan-link-peer",
   templateUrl: "scan-link-peer.html",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScanLinkPeerPage extends FirstLevelPage {
   constructor(
@@ -58,7 +59,7 @@ export class ScanLinkPeerPage extends FirstLevelPage {
     return this.peer_list.map(p => p.ip);
   }
   peer_searcher!: ReturnType<typeof PeerServiceProvider.prototype.searchAndCheckPeers>;
-  calced_magic_peers_list: PromiseType<ReturnType<typeof PeerServiceProvider.prototype.calcPeersMagic>> = [];
+  @ScanLinkPeerPage.markForCheck calced_magic_peers_list: PromiseType<ReturnType<typeof PeerServiceProvider.prototype.calcPeersMagic>> = [];
   trust_magic = "";
 
   @ScanLinkPeerPage.willEnter

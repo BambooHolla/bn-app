@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, OnDestroy, Input, Output, ChangeDetectionStrategy, EventEmitter } from "@angular/core";
 import { AniBase, ifmicon_font_ready } from "../AniBase";
-import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
+import { PromiseOut, DelayPromise } from "../../bnqkl-framework/PromiseExtends";
 import { FLP_Tool } from "../../bnqkl-framework/FLP_Tool";
 import { afCtrl, IsIOS, baseConfig } from "../../bnqkl-framework/helper";
 import * as PIXI from "pixi.js";
@@ -24,24 +24,20 @@ type BlockItem = {
 };
 
 export const loader = new PIXI.loaders.Loader();
-export const _load_resource_promiseout = new PromiseOut<PIXI.loaders.ResourceDictionary>();
 export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 loader.add("block_card_blue_bg", "assets/imgs/tab-chain/block-card-blue.png");
 loader.add("block_card_gold_bg", "assets/imgs/tab-chain/block-card-gold.png");
 loader.add("block_card_over_bg", "assets/imgs/tab-chain/block-card-over.png");
 loader.add("chain_texture", "assets/imgs/tab-chain/chain-texture.png");
-
-loader.onError.add(err => {
-  _load_resource_promiseout.reject(err);
-});
-loader.load((loader, resources) => {
-  ifmicon_font_ready.catch(err => console.error("ifmicon font check error!", err)).then(() => {
-    _load_resource_promiseout.resolve(resources);
+const load_resource_promisedelay = new DelayPromise<PIXI.loaders.ResourceDictionary>((resolve, reject) => {
+  loader.onError.add(reject);
+  loader.load((_, resources) => {
+    ifmicon_font_ready
+      .catch(err => console.error("ifmicon font check error!", err))
+      .then(() => resolve(resources));
   });
 });
-
-import { commonFontFamily, iconFontFamily } from "./helper";
 
 @Component({
   selector: "chain-list",
@@ -114,7 +110,7 @@ export class ChainListComponent extends AniBase {
     }
     this.app.stage.addChild(this.list_view);
     this.app.stage.addChild(this.chain_view);
-    const resource: PIXI.loaders.ResourceDictionary = await _load_resource_promiseout.promise;
+    const resource: PIXI.loaders.ResourceDictionary = await load_resource_promisedelay;
     BlockCard.bg_resource = resource.block_card_blue_bg.texture;
     GoldBlockCard.bg_resource = resource.block_card_gold_bg.texture;
     OverBlockCard.bg_resource = resource.block_card_over_bg.texture;

@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, } from "@angular/core";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
-import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
+import { asyncCtrlGenerator, isErrorFromAsyncerror, getErrorFromAsyncerror } from "../../../bnqkl-framework/Decorator";
 import { PromisePro } from "../../../bnqkl-framework/PromiseExtends";
 import { TabsPage } from "../../tabs/tabs";
 import { NavController, NavParams, } from "ionic-angular/index";
@@ -15,6 +15,22 @@ export class VoteDelegateDetailBasePage extends SecondLevelPage {
     public cdRef: ChangeDetectorRef
   ) {
     super(navCtrl, navParams, true, tabs);
+
+    this.registerViewEvent(this.minService.event, "vote-error", () => {
+      const err = minService.vote_status_detail;
+      if (!err) {
+        return;
+      }
+      if (!isErrorFromAsyncerror(err)) {
+        const err_message = typeof err === "string" ? err : err.message;
+        if (err_message === "you have already voted") {
+          // 启动倒计时界面
+          console.log("%c已经投票，倒计时等待结果", "font-size:3em;color:green;");
+          return err;
+        }
+        this.showErrorDialog(err_message);
+      }
+    });
   }
   _wait_delegate_info?: PromisePro<DelegateModel>;
   get wait_delegate_info() {
@@ -78,21 +94,19 @@ export class VoteDelegateDetailBasePage extends SecondLevelPage {
     if (!delegate_info) {
       return;
     }
-    if (!(await this.waitTipDialogConfirm("@@VOTE_ONE_DELEGATE_TIP"))) {
-      return;
+    if (!this.appSetting.settings._is_show_vote_one_tip) {
+      if (!(this.appSetting.settings._is_show_vote_one_tip = await this.waitTipDialogConfirm("@@VOTE_ONE_DELEGATE_TIP"))) {
+        throw getErrorFromAsyncerror();
+      }
     }
     const form = await this.getUserPassword({
-      custom_fee: true,
+      // custom_fee: true,
     });
-    await this.minService.tryVote(
+    await this.minService._vote(
       [delegate_info],
-      undefined,
-      {
-        password: form.password,
-        pay_pwd: form.pay_pwd,
-        fee: form.custom_fee ? form.custom_fee.toString() : undefined,
-      },
-      this
+      form.password,
+      form.pay_pwd,
+      form.custom_fee ? form.custom_fee.toString() : undefined
     );
   }
 }
