@@ -1,8 +1,11 @@
-import { BlockModel } from "../../src/providers/block-service/block.types";
 import * as IDB_VK from "idb-keyval";
 import { PromisePro, PromiseOut } from "../../src/bnqkl-framework/PromiseExtends";
+import { BlockBaseModel, CacheBlockList } from "./const";
+// import { EventEmitter } from 'eventemitter3'
 
-export type CacheBlockList = Array<BlockModel | undefined>;
+import debug from "debug";
+const log = debug("blockchain-db:cache-data-ref");
+
 /**
  * 缓存池子
  */
@@ -41,6 +44,7 @@ export class CacheDataPool {
   getCacheDataRef(page_index: number) {
     let cacheDataRef = this.cacheDataRefMap.get(page_index);
     if (!cacheDataRef) {
+      log("创建缓存对象: %o", page_index);
       cacheDataRef = new CacheDataRef(
         page_index,
         this.getPageKey(page_index),
@@ -48,11 +52,13 @@ export class CacheDataPool {
         {
           auto_cg_hot_line: this.AUTO_CG_HOT_LINE,
           unref: () => {
+            log("释放缓存对象: %o", page_index);
             this.cacheDataRefMap.delete(page_index);
           }
         });
       this.cacheDataRefMap.set(page_index, cacheDataRef);
     }
+    cacheDataRef.active();
     return cacheDataRef;
   }
   /* 回收数据，忽略写入 */
@@ -70,8 +76,12 @@ export class CacheDataPool {
   }
 
   save_ticket_set = new Set<CacheDataSaveTicket>();
-  async addSaveQuene(page_index: number) {
-    this.save_ticket_set.add((await this.getCacheDataRef(page_index)).generateSaveTicket());
+  // async addSaveQuene(page_index: number) {
+  //   this.save_ticket_set.add((await this.getCacheDataRef(page_index)).generateSaveTicket());
+  //   this._runSaveTicket();
+  // }
+  async addCacheDataRefSaveQuene(cache_data_ref: CacheDataRef) {
+    this.save_ticket_set.add(cache_data_ref.generateSaveTicket());
     this._runSaveTicket();
   }
   private _current_runing_save_ticket?: CacheDataSaveTicket
@@ -136,32 +146,50 @@ export class CacheDataRef {
   /**CG定时器的返回引用 */
   cg_ti?: number
   /**激活网络 */
-  active() {
-    if (!this._actived_data) {
-      return this._actived_data;
-    }
-    if (!this.data_req) {
+  async active() {
+    if (this.data_req) {
+      const NOW = Date.now();
+      this.hot += Math.max(1, Math.min(1000 / (NOW - this.lvt), 512));
+      this.lvt = NOW;
+      log("cacheDataRef: %o hot激发至 %o", this.page_index, this.hot);
+    } else {
       this.data_req = PromisePro.fromPromise(this._readDataFromDB().then(data => {
-        this._actived_data = data || [];
+        this._actived_data = data || new Map();
         this.ref();// 激发引用
-
-        if (data) {
-          // 进入CG回收状态
-          const check_hot = () => {
-            this.hot /= 2;
-            if (this.__calcCacheCanKeep()) {
-              this.cg_ti = setTimeout(check_hot, this.CG_INTERVAL);
-            } else {
-              this.cg_ti = undefined;
-              this.unref();// 释放引用
-            }
-          }
-          this.cg_ti = setTimeout(check_hot, this.CG_INTERVAL);
-        }
         return this._actived_data;
       }));
+      await this.data_req;
     }
+    this._activeToCG();
   }
+  private _activeToCG() {
+    /// 空数据，停止回收的任务
+    if (this._actived_data && this._actived_data.size === 0) {
+      if (this.cg_ti !== undefined) {
+        clearTimeout(this.cg_ti);
+        this.cg_ti = undefined;
+      }
+      return;
+    }
+
+    // 已经有在回收任务中了。
+    if (this.cg_ti !== undefined) {
+      return;
+    }
+    // 进入CG回收状态
+    const check_hot = () => {
+      this.hot /= 2;
+      log(`cacheDataRef: %o hot衰退至 %o`, this.page_index, this.hot);
+      if (this.__calcCacheCanKeep()) {
+        this.cg_ti = setTimeout(check_hot, this.CG_INTERVAL);
+      } else {
+        this.cg_ti = undefined;
+        this.unref();// 释放引用
+      }
+    }
+    this.cg_ti = setTimeout(check_hot, this.CG_INTERVAL);
+  }
+
   getData() {
     if (!this.data_req) {
       throw new Error("cacheDataRef should be active.");
@@ -170,7 +198,11 @@ export class CacheDataRef {
   }
   async getItem(index: number) {
     const data = await this.getData();
-    return data[index];
+    return data.get(index);
+  }
+  async setItem(index: number, block: BlockBaseModel) {
+    const data = await this.getData();
+    data.set(index, block);
   }
   /**计算缓存是否可悲释放 */
   private __calcCacheCanKeep() {
@@ -188,14 +220,19 @@ export class CacheDataRef {
   }
   /**保存数据 */
   private _writeDataToDB() {
-    return IDB_VK.set(this.page_key, this._actived_data);
+    log("write Data To DB: %s", this.page_key);
+    return IDB_VK.set(this.page_key, this._actived_data).then(() => log("writed Data To DB: %s", this.page_key));
   }
   private _save_ticket?: CacheDataSaveTicket;
   getSaveTicket() {
     return this._save_ticket;
   }
   generateSaveTicket() {
-    if (!this._save_ticket) {
+    const { data_req } = this;
+    if (!data_req) {
+      throw new Error("cacheDataRef should be active.");
+    }
+    if (!this._save_ticket || this._save_ticket.runed) {
       const save_ticket = {
         save_task: new PromiseOut<void>(),
         runed: false,
@@ -209,6 +246,11 @@ export class CacheDataRef {
           return save_ticket.save_task.promise;
         }
       }
+      save_ticket.save_task.promise.then(() => {
+        if (this._save_ticket === save_ticket) {
+          this._save_ticket = undefined;
+        }
+      });
       this._save_ticket = save_ticket;
     }
     return this._save_ticket;
