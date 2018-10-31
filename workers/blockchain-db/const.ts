@@ -1,9 +1,35 @@
+import { PromiseOut } from "../../src/bnqkl-framework/lib/PromiseOut";
+
 export type DB_Config = {
-    total_num: number
-    page_size: number
+  max_height: number
+  page_size: number
 }
 export type DB_Item_Index = {
-    page_index: number,
-    arr_index: number
+  page_index: number,
+  arr_index: number
 }
-export type BlockModel = import('../../src/providers/block-service/block.types').BlockModel;
+export type BlockBaseModel = {
+  id: string;
+  height: number;
+}
+
+export type CacheBlockList = Map<number, BlockBaseModel>;
+
+export type BlockFilterFunction = (item: BlockBaseModel) => boolean;
+
+export type BlockFilterBaseWrapper = {
+  filter: BlockFilterFunction,
+  limit: number,
+  skip: number,
+  result: BlockBaseModel[],
+}
+
+export type BlockFilterWrapper = BlockFilterBaseWrapper & {
+  task: PromiseOut<BlockBaseModel[]>,
+}
+
+export type QueryTask = {
+  // cur_page_index: number
+  filter_wrapper_map: Map<number, BlockFilterWrapper>
+  task: Promise<void>
+}
