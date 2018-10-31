@@ -403,6 +403,17 @@ button.submit-button.red-ripple {
   }
 }
 
+ion-app.app-root .yellow-ripple,
+button.submit-button.yellow-ripple {
+  .mat-ripple-element {
+    background-color: rgba(#fca23d, 0.1);
+  }
+
+  .mat-button-focus-overlay {
+    background-color: rgba(#fca23d, 0.12);
+  }
+}
+
 ion-app.app-root .white-ripple,
 button.submit-button.white-ripple {
   .mat-ripple-element {

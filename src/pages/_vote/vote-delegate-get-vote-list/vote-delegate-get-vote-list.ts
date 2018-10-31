@@ -59,7 +59,7 @@ export class VoteDelegateGetVoteListPage extends VoteDelegateDetailBasePage {
     const { page_info } = this;
     page_info.loading = true;
     try {
-      const voter_list = await this.minService.getPreRoundDelegateVotedDetail(delegate_info.publicKey, page_info.page, page_info.pageSize);
+      const voter_list = await this.minService.getPreRoundDelegateVotedDetail(delegate_info.address, page_info.page, page_info.pageSize);
       page_info.hasMore = voter_list.length === page_info.pageSize;
       return await this.localContact.formatAccountWidthLoclContactNickname(voter_list);
     } finally {

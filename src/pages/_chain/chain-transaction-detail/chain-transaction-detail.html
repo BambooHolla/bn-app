@@ -22,14 +22,6 @@
         {{('TRAN_TYPE_NAME_'+transaction?.type) | translate}}
       </div>
     </div>
-    <div *ngIf="is_vote_transaction" class="common-item route-vote-detail" (click)="routeToVoteTransactionDelegateList()">
-      <div class="left">
-        {{'VIEW_VOTE_TRANSACTION_DELEGATE_LIST'|translate}}
-      </div>
-      <div class="right">
-        <ali-icon name="ifm-arrow-to-right"></ali-icon>
-      </div>
-    </div>
     <div class="common-item block-id" *ngIf="transaction?.blockId" (click)="smartRouteTo('chain-block-detail',{height:transaction?.height})">
       <!-- [click-to-copy]="transaction?.blockId" [copy-success-toast]="'#INFO#_COPY_SUCCESS'|translate:{info:('TRANSACTION_blockId'|translate)}" -->
       <div class="left">
@@ -98,6 +90,14 @@
         </div>
       </div>
     </div>
+    <button mat-button *ngIf="is_vote_transaction" class="common-item route-vote-detail" (click)="routeToVoteTransactionDelegateList()">
+      <div class="left">
+        {{'VIEW_VOTE_TRANSACTION_DELEGATE_LIST'|translate}}
+      </div>
+      <div class="right">
+        <ali-icon name="ifm-arrow-to-right"></ali-icon>
+      </div>
+    </button>
     <div class="common-item extend-data" *ngIf="transaction?.mark">
       <details>
         <summary>{{'TRANSACTION_mark'|translate}}</summary>
