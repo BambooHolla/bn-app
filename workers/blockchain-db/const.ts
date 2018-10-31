@@ -21,10 +21,10 @@ export type BlockFilterBaseWrapper<T extends BlockBaseModel>  = {
   filter: BlockFilterFunction<T>,
   limit: number,
   skip: number,
-  result: T[],
 }
 
 export type BlockFilterWrapper<T extends BlockBaseModel> = BlockFilterBaseWrapper<T> & {
+  result: T[],
   task: PromiseOut<T[]>,
 }
 
