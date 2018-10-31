@@ -13,23 +13,23 @@ export type BlockBaseModel = {
   height: number;
 }
 
-export type CacheBlockList = Map<number, BlockBaseModel>;
+export type CacheBlockList<T extends BlockBaseModel> = Map<number, T>;
 
-export type BlockFilterFunction = (item: BlockBaseModel) => boolean;
+export type BlockFilterFunction<T extends BlockBaseModel> = (item: T) => boolean;
 
-export type BlockFilterBaseWrapper = {
-  filter: BlockFilterFunction,
+export type BlockFilterBaseWrapper<T extends BlockBaseModel>  = {
+  filter: BlockFilterFunction<T>,
   limit: number,
   skip: number,
-  result: BlockBaseModel[],
+  result: T[],
 }
 
-export type BlockFilterWrapper = BlockFilterBaseWrapper & {
-  task: PromiseOut<BlockBaseModel[]>,
+export type BlockFilterWrapper<T extends BlockBaseModel> = BlockFilterBaseWrapper<T> & {
+  task: PromiseOut<T[]>,
 }
 
-export type QueryTask = {
+export type QueryTask<T extends BlockBaseModel> = {
   // cur_page_index: number
-  filter_wrapper_map: Map<number, BlockFilterWrapper>
-  task: Promise<void>
+  filter_wrapper_map: Map<number, BlockFilterWrapper<T>>;
+  task: Promise<void>;
 }

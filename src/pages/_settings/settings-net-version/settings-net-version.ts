@@ -107,7 +107,9 @@ export class SettingsNetVersionPage extends SecondLevelPage {
     } else {
       const aNode = document.createElement("a");
       aNode.href = net_version.config.SERVER_URL;
-      const { magic, sourceIp } = await this.peerService.fetchPeerMagic(net_version.config.SERVER_URL);
+      const { magic, sourceIp } = net_version.config.USE_OLD_FETCH_MAGIC
+        ? (await this.peerService.fetchOldPeerMagic(net_version.config.SERVER_URL, net_version.config.BACKEND_VERSION))
+        : (await this.peerService.fetchPeerMagic(net_version.config.SERVER_URL, net_version.config.BACKEND_VERSION));
       localStorage.setItem("sourceIp", sourceIp);
 
       localStorage.setItem(
