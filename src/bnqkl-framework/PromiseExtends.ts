@@ -83,7 +83,8 @@ export function autoAbort(
 /**
  * 在调用.then或者.catch的时候才会执行启动函数
  */
-export class DelayPromise<T> extends Promise<T> {
+export class DelayPromise<T> {
+  promise: Promise<T>
   constructor(
     executor: (
       resolve: (value?: T | PromiseLike<T>) => void,
@@ -92,7 +93,7 @@ export class DelayPromise<T> extends Promise<T> {
   ) {
     var _resolve: any;
     var _reject: any;
-    super((resolve, reject) => {
+    this.promise = new Promise<T>((resolve, reject) => {
       _resolve = resolve;
       _reject = reject;
     });
@@ -104,20 +105,22 @@ export class DelayPromise<T> extends Promise<T> {
       }
     };
 
-    this.then = (onfulfilled?: any, onrejected?: any) => {
+    this.promise.then = (onfulfilled?: any, onrejected?: any) => {
       run_executor();
       return this.delayThen(onfulfilled, onrejected) as any;
     };
-    this.catch = (onrejected?: any) => {
+    this.promise.catch = (onrejected?: any) => {
       run_executor();
       return this.delayCatch(onrejected) as any;
     };
   }
+  then(...args) { return this.promise.then(...args) }
+  catch(...args) { return this.promise.catch(...args) }
   delayThen(onfulfilled?: any, onrejected?: any) {
-    return super.then(onfulfilled, onrejected);
+    return this.promise.then(onfulfilled, onrejected);
   }
   delayCatch(onrejected?: any) {
-    return super.catch(onrejected);
+    return this.promise.catch(onrejected);
   }
 }
 
