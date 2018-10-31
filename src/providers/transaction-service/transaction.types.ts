@@ -7,7 +7,7 @@ export type TransactionModel = {
   id: string;
   height: number;
   blockId: string;
-  type: number;
+  type: string;
   timestamp: number;
   senderPublicKey: string;
   senderId: string;

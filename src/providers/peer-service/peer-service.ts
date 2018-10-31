@@ -141,7 +141,17 @@ export class PeerServiceProvider extends CommonService {
       .catch(() => 0);
   }
   fetchPeerMagic(origin: string) {
-    return this.fetch.get<{ magic: string; sourceIp: string }>(this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true).SYSTEM_BASE_INFO);
+    return this.fetch.get<{
+      systemBaseInfo: {
+        genesisNodeAddress: string;
+        genesisNodeWebPort: number;
+        magic: string;
+        assetType: string;
+        sourceIp: string;
+        timestamp: number;
+        countSubchain: number;
+      }
+    }>(this.oneTimeUrl(this.SYSTEM_BASE_INFO, origin, true).SYSTEM_BASE_INFO).then(res => res.systemBaseInfo);
   }
   private _getPeerMagic(peer: TYPE.LocalPeerModel) {
     return this.fetchPeerMagic(peer.origin)
@@ -150,7 +160,7 @@ export class PeerServiceProvider extends CommonService {
         localStorage.setItem("sourceIp", system_base_info.sourceIp);
         return peer.magic;
       })
-      .catch(() => 0);
+      .catch(() => "");
   }
   /*获取节点检查信息*/
   async _checkPeer(peer: TYPE.LocalPeerModel, trust_magic?: string) {

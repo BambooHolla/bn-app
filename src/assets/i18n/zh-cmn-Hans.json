@@ -315,7 +315,7 @@
   "TRANSACTION_mark": "附加数据",
   "TRANSCATION_SENDER": "发送者",
   "TRANSCATION_RECIPIENT": "接收者",
-  "VIEW_VOTE_TRANSACTION_DELEGATE_LIST": "查看被投票的委托人列表",
+  "VIEW_VOTE_TRANSACTION_DELEGATE_LIST": "投票明细",
 
   "//": "chain-vote-transaction-delegate-list",
   "CHAIN_VOTE_TRANSACTION_DELEGATE_LIST": "投票明细",
@@ -417,15 +417,15 @@
   "LOAD_ALL_MINER_LIST_ERROR": "获取所有锻块矿工出错",
 
   "//": "vote-delegate-detail",
-  "VOTE-DELEGATE-DETAIL": "委托人",
+  "VOTE-DELEGATE-DETAIL": "矿工",
   "DELEGATE_PRODUCTIVITY": "在线率",
   "DELEGATE_VOTE_RATE": "得票率",
-  "GET_FORGIN_BLOCK_ERROR": "获取委托人打造的区块出错",
+  "GET_FORGIN_BLOCK_ERROR": "获取矿工打造的区块出错",
   "LOADING_MORE_FOGIN_BLOCK_LIST": "加载更多区块中……",
   "CHECKING_DELEGATE_VOTEABLE": "检查投票纪录中",
   "VOTE_THIS_DELEGATE": "投TA一票",
   "VOTED_THIS_DELEGATE": "本轮已经投过TA",
-  "VOTE_THIS_DELEGATE_SUCCESS": "投票成功",
+  "VOTE_THIS_DELEGATE_SUCCESS": "已投出",
   "VOTE_ONE_DELEGATE_TIP":
     "在IFMChain中，所谓投票就是选举锻造区块的矿工，本质上是将区块链账务的处理权交给某人，选择在线率高、锻造区块多、交易处理能力强的矿工可以提高整个区块链网络的稳定性。",
 
@@ -433,8 +433,8 @@
   "THE_IN_VOTE_OF_#NAME#": "{{name}}的得票",
   "VOTER": "投票人",
   "VOTE_COUNT": "投票数",
-  "VOTE_DETAILS_LIST_IS_EMPTY": "该委托人上一轮没有得票",
-  "GET_DELEGATE_VOTED_DETAIL_ERROR": "获取委托人的的票数失败",
+  "VOTE_DETAILS_LIST_IS_EMPTY": "该矿工上一轮没有得票",
+  "GET_DELEGATE_VOTED_DETAIL_ERROR": "获取矿工的的票数失败",
   "LOADING_MORE_VOTE_DETAILS_LIST": "获取更多投票中……",
 
   "//": "pay-receive",
@@ -861,10 +861,10 @@
   "PLEASE_INPUT_SUBCHAIN_PORT_P2P": "请输入P2P端口",
   "PLEASE_INPUT_SUBCHAIN_PORT_P2PFORTRS": "请输入交易转发端口",
 
-  "SUBCHAIN_DELEGATES_SECRET_CONFIGURATION": "初始委托人密钥配置",
-  "PLEASE_INPUT_DELEGATESSECRET_SECRET": "请输入委托人密钥",
-  "ADD_DELEGATES_SECRET_ITEM": "增加新的委托人",
-  "ADD_DELEGATES_SECRET_LIST": "批量增加委托人",
+  "SUBCHAIN_DELEGATES_SECRET_CONFIGURATION": "初始矿工密钥配置",
+  "PLEASE_INPUT_DELEGATESSECRET_SECRET": "请输入矿工密钥",
+  "ADD_DELEGATES_SECRET_ITEM": "增加新的矿工",
+  "ADD_DELEGATES_SECRET_LIST": "批量增加矿工",
   "PLEASE_INPUT_DELEGATES_SECRET_NUM": "请输入批量增加的数量",
 
   "AGREE_TO_THE_USER_AGREEMENT_OF_SUBCHAIN": "同意《用户协议》",
@@ -987,7 +987,7 @@
   "change username error": "用户名设置出错",
   "this username has already exist": "用户名已存在",
   "Second passphrase verified error": "支付密码验证出错",
-  "NOT_MORE_VOTE_ABLE_DELEGATE": "没有可投的委托人",
+  "NOT_MORE_VOTE_ABLE_DELEGATE": "没有可投的矿工",
   "NOT_ENOUGH_BALANCE_TO_VOTE": "挖矿手续费不足",
   "Invalid passphrase": "主密码错误",
   "CONTACT_ALREADY_EXISTS": "联系人已经存在",
@@ -1349,7 +1349,7 @@
   "C_1101": "太多的请求",
   "C_1102": "设置错误代码",
   "C_1103": "旧公钥不匹配",
-  "C_1104": "委托人的公钥无效",
+  "C_1104": "矿工的公钥无效",
   "C_1105": "当前矿工准备休息，不再处理交易",
   "C_1106": "当您的IBT被冻结时，无法进行交易",
   "C_1107": "支付密码验证失败",
@@ -1361,5 +1361,7 @@
   "C_1113": "当前矿工拒绝接收投票，请稍后再试或使用其它节点",
 
   "C_7001": "未知的错误",
+
+  "INVALID_FORMAT": "格式错误",
   "//": "OVER"
 }

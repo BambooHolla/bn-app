@@ -90,7 +90,7 @@ export class AppSettingProvider extends CommonService {
             try {
               settings = JSON.parse(settings_json); //JSON可用
               should_write_in = false;
-            } catch (e) {}
+            } catch (e) { }
           }
           // 进行初始化写入
           if (should_write_in) {
@@ -202,7 +202,7 @@ export class AppSettingProvider extends CommonService {
     // 框架内置的AniBase
     {
       const _update = AniBase.prototype._update;
-      const noop = function(t, diff_t) {
+      const noop = function (t, diff_t) {
         if (this.force_update) {
           _update.call(this, t, diff_t);
         }
@@ -215,7 +215,7 @@ export class AppSettingProvider extends CommonService {
     }
     // PIXI框架的循环
     {
-      const noop = function(t) {
+      const noop = function (t) {
         if (this.force_update) {
           _update.call(this, t);
         }
@@ -230,7 +230,7 @@ export class AppSettingProvider extends CommonService {
     // 声音开关
     {
       const _play = PIXI.sound.play;
-      const noop = function(...args) {
+      const noop = function (...args) {
         if (this.force_play_sound) {
           _play.apply(this, args);
         }
@@ -432,6 +432,8 @@ export class AppSettingProvider extends CommonService {
     _is_first_balance_grow_up_notice: false,
     /*是否显示过第一次 挖矿手续费不足 显示的提示*/
     _is_first_no_enough_balance_to_vote: false,
+    /*是否先显示过给一个矿工投票时的提示*/
+    _is_show_vote_one_tip: false,
   };
   /*多个账户之间共享的数据*/
   share_settings = {

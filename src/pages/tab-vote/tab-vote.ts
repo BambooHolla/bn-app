@@ -83,7 +83,7 @@ export class TabVotePage extends FirstLevelPage {
         return;
       }
       if (!isErrorFromAsyncerror(err)) {
-        const err_message = err instanceof Error ? err.message : err;
+        const err_message = typeof err === "string" ? err : err.message;
         if (err_message === "you have already voted") {
           // 启动倒计时界面
           console.log("%c已经投票，倒计时等待结果", "font-size:3em;color:green;");
