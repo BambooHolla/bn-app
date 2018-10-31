@@ -144,7 +144,7 @@ export class CacheDataRef {
   private _actived_data?: CacheBlockList
 
   /**CG定时器的返回引用 */
-  cg_ti?: number
+  cg_ti?: any
   /**激活网络 */
   async active() {
     if (this.data_req) {
