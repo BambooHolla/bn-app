@@ -114,8 +114,6 @@ export class DelayPromise<T> {
       return this.delayCatch(onrejected) as any;
     };
   }
-  then(...args) { return this.promise.then(...args) }
-  catch(...args) { return this.promise.catch(...args) }
   delayThen(onfulfilled?: any, onrejected?: any) {
     return this.promise.then(onfulfilled, onrejected);
   }
