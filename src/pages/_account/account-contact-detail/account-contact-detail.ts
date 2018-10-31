@@ -1,3 +1,4 @@
+import { transactionSourceIpModel } from './../../../providers/transaction-service/transaction.types';
 import { transactionTypes } from './../../../ifmchain-js-core/src/lib/types/transactionsType';
 import { Component, Optional } from "@angular/core";
 import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
@@ -102,6 +103,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     await this.streamAssetsHolders(this.contact.address);
     await this.streamTransactionRecord(this.contact.address);
     await this.stremTransactionType(this.contact.address);
+    await this.stremTransactionSourceIp(this.contact.address);
   }
 
   hide_navbar_tools = true;
@@ -255,10 +257,17 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.transactionRecordArray = await this.assetsService.getTransactionRecord(address);
   }
 
-  transactionTypeList: transactionTypeModel = {success: true,txCounts: {}};
+  transactionTypeList: transactionTypeModel = {success: true, txCounts: {}};
   @asyncCtrlGenerator.error()
   async stremTransactionType(address: string){
     this.transactionTypeList = await this.transactionService.getTransactionType(address);
+  }
+
+  transactionSourceIpArray: transactionSourceIpModel = {success: true, sourceIps: []};
+  @asyncCtrlGenerator.error()
+  async stremTransactionSourceIp(address: string){
+    this.transactionSourceIpArray = await this.transactionService.getTransactionSourceIp(address,20,100);
+    console.log(this.transactionSourceIpArray);
   }
 
   @asyncCtrlGenerator.error()
