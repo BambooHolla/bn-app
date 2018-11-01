@@ -42,7 +42,7 @@ loader.add("progress_dark_line", "assets/imgs/pay-transfer-receipt/progress-dark
 loader.add("progress_light_line", "assets/imgs/pay-transfer-receipt/progress-light-line.png");
 loader.add("style", "assets/csslike/transfer-receipt.js");
 
-export const _load_resource_delaypromise = new DelayPromise<
+export const load_resource_delaypromise = new DelayPromise<
   PIXI.loaders.ResourceDictionary
   >((resolve, reject) => {
     loader.load((loader, resources) => resolve(resources));
@@ -130,7 +130,7 @@ export class TransferReceiptComponent extends CssLike implements OnDestroy {
   /**绘制交易 */
   @asyncCtrlGenerator.queue()
   async drawTransaction(trs?: TransactionModel) {
-    const resources = await _load_resource_delaypromise.promise;
+    const resources = await load_resource_delaypromise.promise;
     const { app } = this;
     if (!app) {
       return;

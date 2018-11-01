@@ -41,7 +41,7 @@ export class CacheDataPool<T extends BlockBaseModel>  {
   getPageKey(page_index: number) {
     return '' + page_index;
   }
-  getCacheDataRef(page_index: number) {
+  getCacheDataRef(page_index: number): CacheDataRef<T> {
     let cacheDataRef = this.cacheDataRefMap.get(page_index);
     if (!cacheDataRef) {
       log("创建缓存对象: %o", page_index);

@@ -314,6 +314,7 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
   private _askQueryQuene(task_id: number, filter_base_wrapper: BlockFilterBaseWrapper<T>) {
     const filter_wrapper = {
       ...filter_base_wrapper,
+      result: [],
       task: new PromiseOut<T[]>()
     }
     this._qunue_query_task_list.push([task_id, filter_wrapper]);
@@ -393,8 +394,7 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
     const result = await this._askQueryQuene(task_id, {
       filter,
       limit: 1,
-      skip: 0,
-      result: []
+      skip: 0
     });
     return result[0];
   }
@@ -404,8 +404,7 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
     const result = await this._askQueryQuene(task_id, {
       filter,
       limit,
-      skip,
-      result: []
+      skip
     });
     return result;
   }
@@ -425,7 +424,7 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
   //#endregion
 
   /**销毁数据库 */
-  async destroy(){
+  async destroy() {
     await this.cacheDataPool.CG();
     this._id_height_indexs.clear();
     this._height_id_indexs.clear();

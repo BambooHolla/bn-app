@@ -4,16 +4,11 @@ import {
   ElementRef,
   ChangeDetectionStrategy,
 } from "@angular/core";
-import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
+import { PromiseOut, DelayPromise } from "../../bnqkl-framework/PromiseExtends";
 import { AniBase } from "../AniBase";
 import * as PIXI from "pixi.js";
 
 export const loader = new PIXI.loaders.Loader();
-export const _load_resource_promiseout = new PromiseOut<
-  PIXI.loaders.ResourceDictionary
->();
-
-export const _is_load_resource = false;
 export const _coin_assets = [
   // "./assets/img/gold-coin/s36-114.png",
   // "./assets/img/gold-coin/s36-152.png",
@@ -30,11 +25,10 @@ export const _coin_assets = [
 _coin_assets.forEach(asset => {
   loader.add(asset.name, asset.url);
 });
-loader.onLoad.add(() => {
-  _load_resource_promiseout.resolve(loader.resources);
+const load_resource_promisedelay = new DelayPromise<PIXI.loaders.ResourceDictionary>((resolve, reject) => {
+  loader.onError.add(reject);
+  loader.load((_, resources) => resolve(resources));
 });
-loader.onError.add(err => _load_resource_promiseout.reject(err));
-loader.load();
 
 @Component({
   selector: "fall-coins",
@@ -94,7 +88,7 @@ export class FallCoinsComponent extends AniBase {
       });
     }
     const app = this.app;
-    const resources = await _load_resource_promiseout.promise;
+    const resources = await load_resource_promisedelay.promise;
     // 处理resource成动画帧
     const frames_list: Array<PIXI.Texture[]> = [];
     _coin_assets.forEach(asset => {
@@ -132,7 +126,7 @@ export class FallCoinsComponent extends AniBase {
         con = new PIXI.Container();
         con["zIndex"] = index;
         container.addChild(con);
-        container.children.sort(function(a, b) {
+        container.children.sort(function (a, b) {
           return b["zIndex"] - a["zIndex"];
         });
         indexContainerMap.set(key, con);
@@ -261,7 +255,7 @@ export class FallCoinsComponent extends AniBase {
   startPixiApp() {
     this.app && this.app.start();
   }
-  beforeFallDown(ani: PIXI.extras.AnimatedSprite) {}
+  beforeFallDown(ani: PIXI.extras.AnimatedSprite) { }
   private _fall_down_when_progress_added: any;
   private _progress = 0;
   set progress(v: number) {

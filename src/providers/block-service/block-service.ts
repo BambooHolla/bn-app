@@ -28,6 +28,7 @@ import { BlockchainDB } from '../../../workers/blockchain-db/index';
 import debug from "debug";
 const log = debug("IBT:block-service");
 import * as IDB_KV from "idb-keyval";
+import { BLOCK_QUERY_MODE } from "./api-cache";
 self["IDB_KV"] = IDB_KV;
 
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
@@ -733,7 +734,7 @@ export class BlockServiceProvider extends FLP_Tool {
       if (await this.checkBlockIdInBlockDB(last_block.id)) {
         // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
         const last_block_height = last_block.height;
-        const heighter_blocks = await (await this.blockchaindbv3).findList((block)=>block.height>last_block_height);
+        const heighter_blocks = await (await this.blockchaindbv3).findList((block) => block.height > last_block_height);
         //整理出一条正确的长链，所用前一个块的id作为key
         const block_map = new Map<string, TYPE.BlockModel>();
         heighter_blocks.forEach(lock_block => {
@@ -791,6 +792,7 @@ export class BlockServiceProvider extends FLP_Tool {
   async getBlockByHeight(height: number, force_network?: boolean): Promise<TYPE.BlockModel> {
     let data = await this.fetch.forceNetwork(force_network).get<any>(this.GET_BLOCK_BY_QUERY, {
       search: {
+        mode: BLOCK_QUERY_MODE.BY_HEIGHT,
         height: height,
       },
     });
@@ -798,50 +800,50 @@ export class BlockServiceProvider extends FLP_Tool {
     return data.blocks[0];
   }
 
-  /**
-   * 返回根据地址搜索的块，返回一个数组
-   * @param {string} address
-   * @returns {Promise<any>}
-   */
-  async getBlocksByAddress(address: string): Promise<TYPE.BlockModel> {
-    let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
-      search: {
-        generatorId: address,
-      },
-    });
+  // /**
+  //  * 返回根据地址搜索的块，返回一个数组
+  //  * @param {string} address
+  //  * @returns {Promise<any>}
+  //  */
+  // async getBlocksByAddress(address: string): Promise<TYPE.BlockModel> {
+  //   let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
+  //     search: {
+  //       generatorId: address,
+  //     },
+  //   });
 
-    return data.blocks[0];
-  }
+  //   return data.blocks[0];
+  // }
 
-  /**
-   * 搜索块，可以搜索高度、地址和ID任一
-   * @param {string} query
-   * @returns {Promise<any>}
-   */
-  async searchBlocks(query: string): Promise<TYPE.BlockModel[]> {
-    //如果是纯数字且不是以0开头就查高度
-    if (/[1-9][0-9]*/.test(query)) {
-      const query_num = parseFloat(query) * 1;
-      let data = await this.getBlockByHeight(query_num);
-      // if (data.length > 0) {
-      return [data];
-      // }
-    } else {
-      //首先查创块人
-      let data1 = await this.getBlocksByAddress(query);
-      if (data1) {
-        return [data1];
-      }
+  // /**
+  //  * 搜索块，可以搜索高度、地址和ID任一
+  //  * @param {string} query
+  //  * @returns {Promise<any>}
+  //  */
+  // async searchBlocks(query: string): Promise<TYPE.BlockModel[]> {
+  //   //如果是纯数字且不是以0开头就查高度
+  //   if (/[1-9][0-9]*/.test(query)) {
+  //     const query_num = parseFloat(query) * 1;
+  //     let data = await this.getBlockByHeight(query_num);
+  //     // if (data.length > 0) {
+  //     return [data];
+  //     // }
+  //   } else {
+  //     //首先查创块人
+  //     let data1 = await this.getBlocksByAddress(query);
+  //     if (data1) {
+  //       return [data1];
+  //     }
 
-      //不是创块人则搜索ID
-      let data2 = await this.getBlockById(query);
-      if (data2) {
-        return [data2];
-      }
+  //     //不是创块人则搜索ID
+  //     let data2 = await this.getBlockById(query);
+  //     if (data2) {
+  //       return [data2];
+  //     }
 
-      return [];
-    }
-  }
+  //     return [];
+  //   }
+  // }
 
   /**
    * 获取区块信息
