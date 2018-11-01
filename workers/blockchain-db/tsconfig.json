@@ -9,7 +9,6 @@
     "moduleResolution": "node",
     "sourceMap": false,
     "target": "es6",
-    "outFile": "../../assets/workers/blockchain-db.js",
     "typeRoots": ["../../../node_modules/@types", "../../typings"],
     "strictPropertyInitialization": true,
     "strictNullChecks": true

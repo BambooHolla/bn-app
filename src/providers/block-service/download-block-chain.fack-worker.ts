@@ -2,14 +2,17 @@ import socketio from "socket.io-client";
 import { BlockChainDownloader } from "./download-block-chain";
 import { BlockModel } from "./helper";
 // import { Mdb } from "../../src/providers/mdb";
-import { BlockDBFactory } from "../../providers/block-service/helper";
 import { IfmchainCore } from "../../ifmchain-js-core/src";
 import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
 import { EventEmitter } from "eventemitter3";
+import { BlockchainDB } from "../../../workers/blockchain-db";
 
 export class DownloadBlockChainMaster extends EventEmitter {
   constructor() {
     super();
+  }
+  getBlockDB(): Promise<BlockchainDB<BlockModel>> {
+    throw new Error("should implement getBlockDB");
   }
   worker = new DownloadBlockChainWorker(this);
   postMessage(data) {
@@ -56,10 +59,9 @@ class DownloadBlockChainWorker extends EventEmitter {
         const webio = socketio(webio_path, {
           transports: ["websocket"],
         });
-        const blockDb = await BlockDBFactory(magic);
-        blockDb["fast"] = () => blockDb;
+
         const ifmJs = new IfmchainCore(NET_VERSION);
-        blockChainDownloader = new BlockChainDownloader(webio, blockDb as any, ifmJs);
+        blockChainDownloader = new BlockChainDownloader(webio, await worker.master.getBlockDB(), ifmJs);
         BlockChainDownloader_task.resolve(blockChainDownloader);
       }
       return await blockChainDownloader;

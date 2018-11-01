@@ -12,8 +12,10 @@ const log = debug("blockchain-db:core");
 export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
   //#region 配置的初始化
   private _init_aot = new AOT();
+  private _default_page_size = 100;
   constructor(public readonly magic: string, opts: {
-    CACHE_NUM?: number
+    CACHE_NUM?: number,
+    PAGE_SIZE?: number
   } = {}) {
     super();
     this._init_aot.autoRegister(this);
@@ -21,7 +23,9 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
       this._init_aot.compile(true)
     });
     /// config
-
+    if (typeof opts.PAGE_SIZE === "number") {
+      this._default_page_size = opts.PAGE_SIZE;
+    }
   }
 
   protected readonly DB_CONFIG_KEY = this.magic + "-CONFIG";
@@ -36,7 +40,7 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
     if (!dbconfig) {
       dbconfig = {
         max_height: 0,
-        page_size: 60,//1e4,// 默认以 1W 条数据为一组
+        page_size: this._default_page_size,//1e4,// 默认以 1W 条数据为一组
       }
       await IDB_VK.set(DB_CONFIG_KEY, dbconfig);
     }
@@ -161,14 +165,14 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
   @AOT_Placeholder.Wait("_db_init")
   async getByHeightRange(gte: number, lte: number) {
     const pageDataRefCache = new Map<number, CacheDataRef<T>>()
-    const res: (T | undefined)[] = [];
+    const res: T[] = [];
     for (var i = gte; i <= lte; i += 1) {
       const height = i;
       if (!this._height_id_indexs.has(height)) {
-        return
+        continue
       }
       const pageData = await this._getPageDataWithAutoCache(height, pageDataRefCache);
-      res.push(pageData.get(height));
+      res.push(pageData.get(height) as T);
     }
     return res;
   }
@@ -272,10 +276,8 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
     // 尝试更新配置
     this._getMaxHeightFromHeightList();
   }
-  async removeByHeight(height: number) {
-    if (!this._height_id_indexs.has(height)) {
-      return;
-    }
+  private async _removeByHeight(height: number) {
+
     const pageDataRef = await this._getPageData(height);
     const pageData = await pageDataRef.getData();
     const block = pageData.get(height);
@@ -289,6 +291,19 @@ export class BlockchainDBCore<T extends BlockBaseModel> extends EventEmitter {
     this.cacheDataPool.addCacheDataRefSaveQuene(pageDataRef);
     // 尝试更新配置
     this._getMaxHeightFromHeightList();
+  }
+  removeByHeight(height: number) {
+    if (!this._height_id_indexs.has(height)) {
+      return;
+    }
+    return this._removeByHeight(height);
+  }
+  removeById(id: string) {
+    const height = this._id_height_indexs.get(id);
+    if (height === undefined) {
+      return;
+    }
+    return this._removeByHeight(height);
   }
   private _deleteIndexs(block: T) {
     const old_id = this._height_id_indexs.get(block.height);

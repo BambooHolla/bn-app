@@ -25,7 +25,7 @@
     <div class="row common-item" *ngFor="let peer of using_peer_list">
       <div class="item ip" [innerHTML]="peer.ip|mask:'@ip'"></div>
       <div class="item delay">{{peer.delay|number:"1.0-2"}}ms</div>
-      <div class="item acc-flow">{{peer.acc_flow|bytes}}</div>
+      <div class="item acc-flow">{{(peer.acc_up_flow + peer.acc_down_flow)|bytes}}</div>
       <!-- <div class="item acc-use-duraction">{{peer.acc_use_duration|amDuration:'seconds'}}</div> -->
       <div class="item acc-use-duraction">{{peer.acc_use_duration|amoment:['INIT','duration','seconds']:['locale',localName]:['humanize']}}</div>
     </div>
