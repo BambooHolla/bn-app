@@ -16,6 +16,8 @@ import { getQueryVariable, baseConfig, getSocketIOInstance } from "../../bnqkl-f
 import { sleep } from "../../bnqkl-framework/PromiseExtends";
 import { CommonService } from "../commonService";
 import { Mdb } from "../mdb";
+import debug from "debug";
+const log = debug("IBT:peer-service");
 import * as TYPE from "./peer.types";
 export * from "./peer.types";
 const PEERS: TYPE.LocalPeerModel[] = (() => {
@@ -181,18 +183,13 @@ export class PeerServiceProvider extends CommonService {
   async _checkPeer(peer: TYPE.LocalPeerModel, trust_magic?: string) {
     const tasks = [
       // 获取最后的六个区块
-      this.blockService
-        .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
-        .getBlocks({ orderBy: "height:desc", limit: 6 }, true)
-        .then(res => {
-          peer.height = res.blocks[0].height;
-          return res.blocks;
+      this.blockService.fetchBlockListFromPeer({ orderBy: "height:desc", limit: 6 }, peer.origin)
+        .then(blocks => {
+          peer.height = blocks[0].height;
+          return blocks;
         }),
       // 获取最前的六个区块
-      this.blockService
-        .oneTimeUrl(this.blockService.GET_BLOCK_BY_QUERY, peer.origin, true)
-        .getBlocks({ orderBy: "height:asc", limit: 6 }, true)
-        .then(res => res.blocks),
+      this.blockService.fetchBlockListFromPeer({ orderBy: "height:asc", limit: 6 }, peer.origin),
       this._getPeerWebsocketLinkNum(peer),
       this._getPeerMagic(peer),
     ];
@@ -547,7 +544,7 @@ export class PeerServiceProvider extends CommonService {
       parallel_pool.addTaskExecutor(async () => {
         const start_time = performance.now();
         try {
-          const lastBlock = await this.blockService.oneTimeUrl(this.blockService.GET_LAST_BLOCK_URL, peer.origin, true).getLastBlock();
+          const lastBlock = await this.blockService.fetchLastBlockFromPeer(peer.origin);
           peer.height = lastBlock.height;
         } catch (err) {
           const end_time = performance.now();
@@ -629,36 +626,38 @@ export class PeerServiceProvider extends CommonService {
     };
   }
 
-  private _update_peer_flow_lock = new Map<string, { acc_flow: number; lock: Promise<void> }>();
-  async updatePeerFlow(origin: string, flow: number) {
-    let lock_info = this._update_peer_flow_lock.get(origin);
-    if (!lock_info) {
+  private _update_peer_flow_lock = new Map<string, { acc_up_flow: number; acc_down_flow: number; lock: Promise<void> }>();
+  async updatePeerFlow(origin: string, up_flow: number, down_flow: number) {
+    // log(tag + " %o", flow);
+    const lock_info = this._update_peer_flow_lock.get(origin);
+    if (lock_info) {
+      lock_info.acc_up_flow += up_flow;
+      lock_info.acc_down_flow += down_flow;
+    } else {
       const interval_task = sleep(10000); //每10秒只能操作一次，不然数据库压力太大
-      const li = {
-        acc_flow: 0,
-        lock: this._updatePeerFlow(origin, flow)
-          .then(() => interval_task)
+      const lock_info = {
+        acc_up_flow: up_flow,
+        acc_down_flow: down_flow,
+        lock: interval_task
           .then(() => {
             // 解锁并合并更新
             this._update_peer_flow_lock.delete(origin);
-            if (li.acc_flow) {
-              this.updatePeerFlow(origin, li.acc_flow);
-            }
+            this._updatePeerFlow(origin, lock_info.acc_up_flow, lock_info.acc_down_flow)
           }),
       };
-      lock_info = li;
-    } else {
-      lock_info.acc_flow += flow;
+      this._update_peer_flow_lock.set(origin, lock_info);
     }
   }
 
-  private async _updatePeerFlow(origin: string, flow: number) {
+  private async _updatePeerFlow(origin: string, up_flow: number, down_flow: number) {
+    log("更新节点流量信息: [%s] (⬆%o) (⬇%o)", origin, up_flow, down_flow);
     const peer = await this.peerDb.findOne({ origin });
     if (!peer) {
       // console.error(new Error(`找不到本地节点信息: ${origin}`));
       return;
     }
-    peer.acc_flow = (peer.acc_flow || 0) + flow;
+    peer.acc_up_flow = (peer.acc_up_flow || 0) + up_flow;
+    peer.acc_down_flow = (peer.acc_down_flow || 0) + down_flow;
     await this.peerDb.update({ _id: peer["_id"] }, peer);
   }
 

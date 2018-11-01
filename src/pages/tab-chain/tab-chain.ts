@@ -127,9 +127,9 @@ export class TabChainPage extends FirstLevelPage {
   }
 
   /*下载进度的相关属性*/
-  @TabChainPage.markForCheck is_show_sync_loading = false;
-  @TabChainPage.markForCheck sync_progress_blocks = 0;
-  @TabChainPage.markForCheck sync_is_verifying_block = false;
+  @TabChainPage.detectChanges is_show_sync_loading = false;
+  @TabChainPage.detectChanges sync_progress_blocks = 0;
+  @TabChainPage.detectChanges sync_is_verifying_block = false;
 
   @TabChainPage.onInit
   bindSyncInfo() {
@@ -137,27 +137,21 @@ export class TabChainPage extends FirstLevelPage {
     this.registerViewEvent(
       this.appSetting,
       "changed@share_settings.is_syncing_blocks",
-      () => {
-        this.is_show_sync_loading = this.appSetting.share_settings.is_syncing_blocks;
-      },
+      (v) => this.is_show_sync_loading = v,
       true
     );
     // 是否在校验区块
     this.registerViewEvent(
       this.appSetting,
       "changed@share_settings.sync_is_verifying_block",
-      () => {
-        this.sync_is_verifying_block = this.appSetting.share_settings.sync_is_verifying_block;
-      },
+      (v) => this.sync_is_verifying_block = v,
       true
     );
     // 同步区块的进度
     this.registerViewEvent(
       this.appSetting,
       "changed@share_settings.sync_progress_blocks",
-      () => {
-        this.sync_progress_blocks = this.appSetting.share_settings.sync_progress_blocks;
-      },
+      (v) => this.sync_progress_blocks = v,
       true
     );
   }
@@ -172,7 +166,7 @@ export class TabChainPage extends FirstLevelPage {
     }
     let cg;
     try {
-      const { worker, req_id, task } = await this.blockService.syncBlockChain(max_end_height);
+      const { worker, req_id, task } = await this.blockService.blockchain_sync.syncBlockChain(max_end_height);
       this._download_task = task;
       // this._download_worker = worker;
       const onmessage = async e => {
@@ -271,5 +265,5 @@ export class TabChainPage extends FirstLevelPage {
   showVerifierLoading() {
     // this.loadingCtrl.create("")
   }
-  closeVerifierLoading() {}
+  closeVerifierLoading() { }
 }

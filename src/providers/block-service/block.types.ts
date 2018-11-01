@@ -62,3 +62,26 @@ export type UnconfirmBlockModel = {
   uncommited: number;
   height: number;
 };
+
+/**快速复制一个区块对象 */
+export function formatBlockData<T extends BlockModel>(block: T): BlockModel {
+  return {
+    magic: block.magic,
+    version: block.version,
+    timestamp: block.timestamp,
+    totalAmount: block.totalAmount,
+    totalFee: block.totalFee,
+    reward: block.reward,
+    numberOfTransactions: block.numberOfTransactions,
+    payloadLength: block.payloadLength,
+    payloadHash: block.payloadHash,
+    generatorId: block.generatorId,
+    generatorPublicKey: block.generatorPublicKey,
+    blockSignature: block.blockSignature,
+    previousBlock: block.previousBlock,
+    id: block.id,
+    height: block.height,
+    blockSize: block.blockSize,
+    remark: block.remark,
+  };
+}

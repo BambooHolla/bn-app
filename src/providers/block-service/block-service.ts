@@ -15,85 +15,44 @@ import * as TYPE from "./block.types";
 import { TransactionModel } from "../transaction-service/transaction.types";
 import { MinServiceProvider } from "../min-service/min-service";
 import { AppUrl, baseConfig, ReadToGenerate, global } from "../../bnqkl-framework/helper";
-import { getJsonObjectByteSize, getUTF8ByteSize } from "../../pages/_settings/settings-cache-manage/calcHelper";
-import { DbCacheProvider, HTTP_Method, RequestOptionsWithResult } from "../db-cache/db-cache";
-import { Mdb } from "../mdb";
-import socketIoFactory from "socket.io-client";
-import { FangoDB, registerWorkerHandle } from "../../fangodb";
-import { BlockDBFactory } from "./helper";
-import { DBNumberIndex } from "../../fangodb/src/db-index-core";
 // import { AOT_Placeholder, AOT } from "../../bnqkl-framework/helper";
 import { DownloadBlockChainMaster } from "./download-block-chain.fack-worker";
 import { BlockchainDB } from '../../../workers/blockchain-db/index';
 import debug from "debug";
 const log = debug("IBT:block-service");
-import * as IDB_KV from "idb-keyval";
-import { BLOCK_QUERY_MODE } from "./api-cache";
-self["IDB_KV"] = IDB_KV;
+import { BlockQuery } from "./block-query";
+import { P2PIO } from "./p2p-io";
+import { BlockChainSync } from "./blockchain-sync";
 
 type PeerServiceProvider = import("../peer-service/peer-service").PeerServiceProvider;
-type LocalPeerModel = import("../peer-service/peer-service").LocalPeerModel;
-tryRegisterGlobal("socketio", socketIoFactory);
 
 export * from "./block.types";
 
-/**TODO: fix */
-const constructor_inited = new PromiseOut<BlockServiceProvider>();
 
 @Injectable()
-export class BlockServiceProvider extends FLP_Tool {
-  private _io?: SocketIOClient.Socket;
-  @baseConfig.WatchPropChanged("SERVER_URL", { ctxGetter: (target) => global['blockService'] || target })
-  get io() {
-    if (this._io) {
-      this._io.disconnect();
-    }
-    log("初始化 SocketIOClient 对象", this.baseConfig.SERVER_URL);
-    this._io = socketIoFactory(this.baseConfig.SERVER_URL, {
-      transports: ["websocket"],
-    });
-    constructor_inited.promise.then(() => {
-      this._bindIOBlockChange(this._io);
-    });
-    return this._io;
-  }
+export class BlockServiceProvider extends BlockQuery {
+  private constructor_inited = new PromiseOut<BlockServiceProvider>();
+  p2p_io = new P2PIO(this.constructor_inited);
+  blockchain_sync = new BlockChainSync(this.constructor_inited);
 
   @baseConfig.WatchPropChanged("MAGIC")
   private get blockchaindbv3_ready() { return new PromisePro<BlockchainDB<TYPE.BlockModel>>(); }
   private _blockchaindbv3?: BlockchainDB<TYPE.BlockModel>;
-  get blockchaindbv3() {
+  getBlockDB() {
     return this.blockchaindbv3_ready.promise;
   }
 
-  // @AOT_Placeholder.Wait("isBlockDBInited")
-  async getLocalLastBlockHeight() {
-    const blockDB = await this.blockchaindbv3;
-    return blockDB.getMaxHeight();
-  }
-  // @AOT_Placeholder.Wait("isBlockDBInited")
-  async getLocalLastBlock() {
-    const blockDB = await this.blockchaindbv3;
-    const last_block_height = await blockDB.getMaxHeight();
-    return blockDB.getByHeight(last_block_height).then(block => block || this.empty_block);
-  }
-  // @AOT_Placeholder.Wait("isBlockDBInited")
-  async checkBlockIdInBlockDB(block_id: string) {
-    const blockDB = await this.blockchaindbv3;
-    return blockDB.hasId(block_id);
-  }
-  is_inited: Promise<any>;
-  // private _init_block_aot = new AOT("init_block");
+  /**初始化数据库 */
+  is_db_v3_inited = this._initDB_V3();
   @baseConfig.WatchPropChanged("MAGIC")
-  private async _initService() {
-    const blockDb = new BlockchainDB<TYPE.BlockModel>(this.baseConfig.MAGIC);
+  private async _initDB_V3() {
+    const blockDb = new BlockchainDB<TYPE.BlockModel>(this.baseConfig.MAGIC, {
+      PAGE_SIZE: 1e4
+    });
     await blockDb.afterInited();
     this.blockchaindbv3_ready.resolve(blockDb);
     this._blockchaindbv3 = blockDb;
-    await blockDb;
-    // this._init_block_aot.compile(true);
   }
-
-  _blockDb: Mdb<TYPE.BlockModel>;
 
   oneTimeUrl(app_url: AppUrl, server_url: string, force_network?: boolean) {
     app_url.disposableServerUrl(server_url);
@@ -110,134 +69,16 @@ export class BlockServiceProvider extends FLP_Tool {
     public transactionService: TransactionServiceProvider,
     public user: UserInfoProvider,
     public minService: MinServiceProvider,
-    public dbCache: DbCacheProvider
   ) {
-    super();
+    super(appSetting, fetch);
 
-    // this._init_block_aot.autoRegister(this);
-    constructor_inited.resolve(this);
-
-    // 安装api服务
-    this._blockDb = dbCache.installDatabase("blocks", []);
-    // dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockListResModel>(
-    //   "blocks",
-    //   "get",
-    //   this.GET_BLOCK_BY_QUERY,
-    //   async (_, request_opts) => {
-    //     const search = request_opts.reqOptions.search as any;
-    //     if (!search) {
-    //       throw new Error("Parameter verification failed.");
-    //     }
-    //     let { limit, orderBy, offset, startHeight, endHeight, ...query } = search;
-    //     let may_need_mix_reqs = false;
-    //     if (Number.isFinite(startHeight) && Number.isFinite(endHeight)) {
-    //       query.height = {
-    //         $gte: startHeight,
-    //         $lte: endHeight,
-    //       };
-    //       may_need_mix_reqs = true;
-    //       if (!limit) {
-    //         limit = Math.abs(endHeight - startHeight) + 1;
-    //       }
-    //     }
-    //     if (Number.isFinite(query.height)) {
-    //       limit = 1;
-    //     }
-    //     let sort;
-    //     if (typeof orderBy === "string") {
-    //       const sort_params = orderBy.split(":");
-    //       sort = { [sort_params[0]]: sort_params[1] == "desc" ? -1 : 1 };
-    //     }
-    //     // await this.blockFangoDB_ready;
-    //     // TODO: 实现 by height, by id
-    //     const blocks:TYPE.BlockModel[] = [];
-    //     // if()
-    //     // await (await this.blockchaindbv3).find(query, {
-    //     //   sort,
-    //     //   limit,
-    //     //   skip: offset,
-    //     // });
-    //     const cache = { blocks, count: blocks.length, success: true } as TYPE.BlockListResModel;
-    //     if (Number.isFinite(query.height) && blocks.length === 1) {
-    //       return { reqs: [], cache };
-    //     }
-    //     // TODO:blocks.length != limit
-    //     // TODO:要考虑request_opts中的范围大小不得超过100，需要做切割再多次获取
-    //     if (Number.isFinite(limit) && blocks.length == limit) {
-    //       return { reqs: [], cache };
-    //     }
-    //     if (this.fetch.onLine) {
-    //       return { reqs: [request_opts], cache };
-    //     } else {
-    //       return { reqs: [], cache };
-    //     }
-    //   },
-    //   async req_res_list => {
-    //     if (req_res_list.length > 0) {
-    //       return req_res_list[0].result;
-    //     }
-    //   },
-    //   async (_, mix_res, cache) => {
-    //     if (mix_res && mix_res.success) {
-    //       const res_blocks = mix_res.blocks;
-    //       if (res_blocks instanceof Array) {
-    //         await this.blockchaindbv3_ready;
-    //         const old_blocks =
-    //           cache.blocks instanceof Array
-    //             ? cache.blocks
-    //             : await (await this.blockchaindbv3).find({
-    //               height: { $in: res_blocks.map(b => b.height) },
-    //             });
-    //         const unique_height_set = new Set<number>(old_blocks.map(b => b.height));
-    //         const new_blocks = res_blocks
-    //           .filter(block => {
-    //             return !unique_height_set.has(block.height);
-    //           })
-    //           .map(b => this.formatBlockData(b));
-    //         await (await this.blockchaindbv3).insertMany(new_blocks, { replace: true });
-    //       }
-    //       return mix_res;
-    //     }
-    //     return cache;
-    //   }
-    // );
-    // dbCache.installApiCache<TYPE.BlockModel, TYPE.BlockResModel>(
-    //   "blocks",
-    //   "get",
-    //   this.GET_BLOCK_BY_ID,
-    //   async (_, request_opts) => {
-    //     const query = request_opts.reqOptions.search;
-    //     await this.blockchaindbv3_ready;
-    //     const cache_block = await (await this.blockchaindbv3).findOne(query);
-    //     const cache = {
-    //       block: cache_block,
-    //       success: true,
-    //     } as TYPE.BlockResModel;
-    //     if (cache_block) {
-    //       return { reqs: [], cache };
-    //     }
-    //     return { reqs: [request_opts], cache };
-    //   },
-    //   async req_res_list => {
-    //     if (req_res_list.length > 0) {
-    //       return req_res_list[0].result;
-    //     }
-    //   },
-    //   async (_, mix_res, cache) => {
-    //     if (mix_res) {
-    //       const new_block = mix_res.block;
-    //       if (!(await this.checkBlockIdInBlockDB(new_block.id))) {
-    //         await (await this.blockchaindbv3).insert(this.formatBlockData(new_block), { replace: true });
-    //       }
-    //       cache.block = new_block;
-    //     }
-    //     return cache;
-    //   }
-    // );
+    this.constructor_inited.resolve(this);
 
     // 未连接上websocket前，先使用本地缓存来更新一下高度
     this.getLocalLastBlock().then(local_newest_block => {
-      this._updateHeight(local_newest_block);
+      if (local_newest_block && this._last_update_height_block === undefined) {
+        this.updateHeight(local_newest_block);
+      }
     });
     // 启动websocket的监听更新
     this._listenGetAndSetHeight();
@@ -245,26 +86,16 @@ export class BlockServiceProvider extends FLP_Tool {
     /// 重新初始化一些同步区块链的状态
     this.appSetting.share_settings.is_syncing_blocks = false;
     this.appSetting.share_settings.sync_is_verifying_block = false;
-
-    // 初始化数据库
-    this.is_inited = this._initService();
   }
 
   @FLP_Tool.FromGlobal peerService!: PeerServiceProvider;
 
   /// TODO: 弃用
-  readonly GET_LAST_BLOCK_URL = this.appSetting.APP_URL("/api/blocks/getLastBlock");
-  readonly GET_BLOCK_BY_QUERY = this.appSetting.APP_URL("/api/blocks/");
-  readonly GET_BLOCK_BY_ID = this.appSetting.APP_URL("/api/blocks/get");
   readonly GET_POOL = this.appSetting.APP_URL("/api/system/pool");
   readonly GET_FORGING_BLOCK = this.appSetting.APP_URL("/api/blocks/getForgingBlocks");
   /**第二个块的timestamp*/
   // private _timestamp_from?: number;
   async getLastBlockRefreshInterval() {
-    // if (this._timestamp_from == undefined) {
-    //   const second_block = await this.secondBlock.getPromise();
-    //   this._timestamp_from = second_block.timestamp;
-    // }
     const last_block = await this.lastBlock.getPromise();
 
     const lastTime = this.getFullTimestamp(last_block.timestamp);
@@ -273,436 +104,43 @@ export class BlockServiceProvider extends FLP_Tool {
     return diff_time;
   }
 
-  secondBlock!: AsyncBehaviorSubject<TYPE.BlockModel>;
-  @HEIGHT_AB_Generator("secondBlock")
-  secondBlock_Executor(promise_pro) {
-    // 初始化缓存100条，后面每个块更新增量缓存1条，最大缓存1000条数据
-    return promise_pro.follow(
-      this.fetch
-        .get<TYPE.BlockListResModel>(this.GET_BLOCK_BY_QUERY, {
-          search: {
-            height: 2,
-          },
-        })
-        .then(res => res.blocks[0])
-    );
-  }
-  formatBlockData(block: TYPE.BlockModel): TYPE.BlockModel {
-    return {
-      magic: block.magic,
-      version: block.version,
-      timestamp: block.timestamp,
-      totalAmount: block.totalAmount,
-      totalFee: block.totalFee,
-      reward: block.reward,
-      numberOfTransactions: block.numberOfTransactions,
-      payloadLength: block.payloadLength,
-      payloadHash: block.payloadHash,
-      generatorId: block.generatorId,
-      generatorPublicKey: block.generatorPublicKey,
-      blockSignature: block.blockSignature,
-      previousBlock: block.previousBlock,
-      id: block.id,
-      height: block.height,
-      blockSize: block.blockSize,
-      remark: block.remark,
-    };
-  }
-
   round_end_time = new Date();
-  @asyncCtrlGenerator.queue({ can_mix_queue: 1 })
-  private async _updateHeight(last_block?: TYPE.BlockModel) {
+  /**最后一次应用于updateHeight的last_block参数 */
+  private _last_update_height_block?: TYPE.BlockModel
+  /**更新区块链的最新一个区块 */
+  // @asyncCtrlGenerator.queue({ can_mix_queue: 1 })
+  async updateHeight(last_block?: TYPE.BlockModel) {
     this.lastBlock.refresh("update Height");
     if (!last_block) {
-      last_block = await this.getBlockByHeight((await this.lastBlock.getPromise()).height);
+      last_block = await this.getLastBlock();
     }
-    if (this.appSetting.getHeight() === last_block.height && (await this.lastBlock.getPromise()).id === last_block.id) {
+    const cur_height = this.appSetting.getHeight();
+    if (cur_height === last_block.height) {
       return;
     }
-    // 更新缓存中的最新区块
-    if (!(await this.checkBlockIdInBlockDB(last_block.id))) {
-      // 将最新区块插入到数据库中
-      await (await this.blockchaindbv3).upsert(this.formatBlockData(last_block)).catch(err => console.warn("更新最新区块失败", last_block, err));
-    } else {
-      // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
-      const last_block_height = last_block.height;
-      const heighter_blocks = await (await this.blockchaindbv3).findList((block) => block.height > last_block_height);
-      //整理出一条正确的长链，所用前一个块的id作为key
-      const block_map = new Map<string, TYPE.BlockModel>();
-      heighter_blocks.forEach(lock_block => {
-        block_map.set(lock_block.previousBlock, lock_block);
-      });
-      let pre_block = last_block;
-      do {
-        const next_block = block_map.get(pre_block.id);
-        if (!next_block) {
-          last_block = pre_block;
-          break;
-        }
-        pre_block = next_block;
-      } while (true);
-    }
+    this._last_update_height_block = last_block;
+    //TODO: 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
+
     // 更新轮次计时器
     this.round_end_time = new Date(Date.now() + this.appSetting.getBlockNumberToRoundEnd(last_block.height) * this.baseConfig.BLOCK_UNIT_TIME);
     // 如果同步进度是最新区块的话，那么继续跟进这个进度
-    if (this.appSetting.share_settings.sync_progress_height === this.appSetting.getHeight()) {
+    if (this.appSetting.share_settings.sync_progress_height === cur_height) {
       this.appSetting.share_settings.sync_progress_height = last_block.height;
     }
     // 更新高度
     this.appSetting.setHeight(last_block.height);
   }
-  private _reselect_peer_model;
-  private _bindIOBlockChange(io = this.io) {
-    const encoder = io.io["encoder"];
-    const ENCODE_SYMBOL = Symbol.for("encode");
-    encoder[ENCODE_SYMBOL] = encoder.encode;
-    const io_origin = baseConfig.SERVER_URL;
-    // 不改原型链，只针对当前的这个链接对象进行修改
-    encoder.encode = function (obj, callback) {
-      this[ENCODE_SYMBOL](obj, (buffer_list, ...args) => {
-        if (buffer_list instanceof Array) {
-          let acc_flow = 0;
-          buffer_list.forEach(data_item => {
-            if (typeof data_item == "string") {
-              acc_flow += getUTF8ByteSize(data_item);
-            } else if (data_item instanceof ArrayBuffer) {
-              acc_flow += data_item.byteLength;
-            }
-          });
-          if (acc_flow) {
-            // console.log("上行流量", acc_flow);
-            constructor_inited.promise.then(blockService => {
-              blockService.peerService.updatePeerFlow(io_origin, acc_flow);
-            });
-          }
-        }
-        callback(buffer_list, ...args);
-      });
-    };
-    io.io["engine"].on("data", async data_item => {
-      const blockService = await constructor_inited.promise;
-      let acc_flow = 0;
-      if (typeof data_item == "string") {
-        acc_flow += getUTF8ByteSize(data_item);
-      } else if (data_item instanceof ArrayBuffer) {
-        acc_flow += data_item.byteLength;
-      }
-      if (acc_flow) {
-        // console.log("下行流量", acc_flow);
-        blockService.peerService.updatePeerFlow(io_origin, acc_flow);
-      }
-    });
-    io.on("blocks/change", async data => {
-      const blockService = await constructor_inited.promise;
-      // 计算流量大小
-      const flow = getJsonObjectByteSize(data) /*返回的JSON对象大小*/ + 19 /*基础消耗*/;
-      blockService.appSetting.share_settings.sync_data_flow += flow; // 同步的流量
-      blockService.appSetting.settings.contribution_flow += flow; // 同时也属于贡献的流量
-      /*更新数据库中的流量使用信息*/
-      blockService.peerService.updatePeerFlow(io_origin, flow);
-
-      // Commented for performance
-      // console.log(`%c区块更新 ${new Date().toLocaleString()}`, "color:green;background-color:#eee;font-size:1.2rem");
-
-      const lastBlock: TYPE.BlockModel = data.lastBlock;
-      const current_height = blockService.appSetting.getHeight();
-      if (lastBlock.height < current_height && !blockService._reselect_peer_model) {
-        const reselect_peer_model = await blockService.showConfirmDialog("所连的节点似乎脱离共识，是否选择自动连接新的节点？", async () => {
-          const dialog = await blockService.showLogoLoading("快速查询可用节点中");
-          const useablePeers = await blockService.peerService.getPeersLocal({ magic: blockService.baseConfig.MAGIC });
-          const prepare_num = 10; // Math.max(57,Math.floor(useablePeers.length/2)+1); // 最多准备10个节点来选择
-          const prepare_peer_list: LocalPeerModel[] = [];
-          for await (var _peer of blockService.peerService.fastMatchUseablePeer(useablePeers)) {
-            const peer = _peer;
-            if (peer.height > current_height) {
-              prepare_peer_list.push(peer);
-              if (prepare_peer_list.length > prepare_num) {
-                break;
-              }
-            }
-          }
-          prepare_peer_list.sort((a, b) => {
-            const h_dif = b.height - a.height;
-            if (h_dif === 0) {
-              return a.delay - b.delay;
-            }
-            return h_dif;
-          });
-          await blockService.peerService.linkPeer(prepare_peer_list[0]);
-          blockService._updateHeight();
-          dialog.dismiss();
-        });
-        blockService._reselect_peer_model = reselect_peer_model;
-        reselect_peer_model.onDidDismiss(() => {
-          blockService._reselect_peer_model = undefined;
-        });
-      }
-      blockService._updateHeight(lastBlock);
-
-      // 更新预期交易区块
-      blockService._expectblock_uncommited = 0;
-      blockService._expectblock_fee_reward = 0;
-      blockService.getExpectBlockInfo().then(expect_block => {
-        blockService.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
-      });
-    });
-    // // 更新区块使用时间
-    // let ti = setInterval(() => {
-    //   if (io === this.io) {
-    //     this.peerService.updatePeerDuration(io_origin, 1);
-    //   } else {
-    //     clearInterval(ti);
-    //   }
-    // }, 1000);
-  }
+  // private
   private async _listenGetAndSetHeight() {
     this.fetch.on("ononline", () => {
       // 联网的时候，更新一下区块
-      this._updateHeight();
-    });
-    this.io.on("connect", () => {
-      // websocket连接上的时候更新
-      this._updateHeight();
+      this.updateHeight();
     });
     this.fetch.on("onoffline", () => {
-      this._updateHeight();
+      this.updateHeight();
     });
-    // 安装未处理交易的预估
-    this._listenUnconfirmTransaction();
-  }
-  private _download_worker?: DownloadBlockChainMaster;
-  getDownloadWorker() {
-    if (!this._download_worker) {
-      const download_worker = (this._download_worker = new DownloadBlockChainMaster());
-      this.appSetting.on("changed@share_settings.enable_sync_progress_blocks", enable_sync_progress_blocks => {
-        const req_id = this._download_req_id_acc++;
-        download_worker.postMessage({
-          cmd: "toggleSyncBlocks",
-          toggle_sync_blocks: enable_sync_progress_blocks,
-          req_id,
-        });
-      });
-      // registerWorkerHandle(download_worker);
-    }
-    return this._download_worker;
-  }
-  private _download_req_id_acc = 0;
-  private _sync_lock?: {
-    worker: DownloadBlockChainMaster;
-    req_id: number;
-    task: PromiseOut<void>;
-  };
-  async syncBlockChain(max_end_height: number) {
-    if (this._sync_lock) {
-      return this._sync_lock;
-    }
-    const download_worker = this.getDownloadWorker();
-    const req_id = this._download_req_id_acc++;
-    let cg;
-    const sync_progress_height = this.appSetting.share_settings.sync_progress_height;
-    const local_last_block = await (await this.blockchaindbv3).getByHeight(sync_progress_height);
-    let need_verifier = false;
-    if (local_last_block) {
-      const server_last_block = await this.getBlockByHeight(sync_progress_height, true);
-      need_verifier = server_last_block.id !== local_last_block.id;
-    }
-    download_worker.postMessage({
-      cmd: "syncBlockChain",
-      NET_VERSION: this.baseConfig.NET_VERSION,
-      webio_path: this.fetch.webio.io_url_path,
-      magic: this.baseConfig.MAGIC,
-      max_end_height,
-      req_id,
-      need_verifier,
-      from_height: sync_progress_height,
-    });
-    const task_name = `同步区块链至:${max_end_height}`;
-    const task = new PromiseOut<void>();
-    const onmessage = e => {
-      const msg = e.data;
-      if (msg && msg.req_id === req_id) {
-        // console.log("bs", msg);
-        switch (msg.type) {
-          case "start-verifier":
-            this.appSetting.share_settings.is_syncing_blocks = true;
-            this.appSetting.share_settings.sync_is_verifying_block = true;
-            break;
-          case "end-verifier":
-            this.appSetting.share_settings.sync_is_verifying_block = false;
-            break;
-          case "start-sync":
-            this.appSetting.share_settings.is_syncing_blocks = true;
-            this.appSetting.share_settings.sync_progress_height = 1;
-            console.log("开始同步", task_name);
-            break;
-          case "start-download":
-            console.log("开始子任务", msg.data);
-            break;
-          case "end-download":
-            console.log("完成子任务", msg.data);
-            break;
-          case "end-sync":
-            this.appSetting.share_settings.sync_progress_height = this.appSetting.getHeight();
-            this.appSetting.share_settings.sync_progress_blocks = 100;
-            this.appSetting.share_settings.is_syncing_blocks = false;
-            console.log("结束同步", task_name);
-            task.resolve();
-            break;
-          case "process-height":
-            this.appSetting.share_settings.sync_progress_height = msg.data.cursorHeight;
-            break;
-          case "use-flow":
-            {
-              let flow = (+msg.data.up || 0) + (+msg.data.down || 0);
-              this.appSetting.share_settings.sync_data_flow += flow;
-              /*更新数据库中的流量使用信息*/
-              this.peerService.updatePeerFlow(this.baseConfig.SERVER_URL, flow);
-            }
-            break;
-          case "progress":
-            // console.log("下载中", task_name, msg.data);
-            this.appSetting.share_settings.sync_progress_blocks = msg.data;
-            this.tryEmit("BLOCKCHAIN:CHANGED");
-            break;
-          case "error":
-            this.appSetting.share_settings.sync_is_verifying_block = false;
-            this.appSetting.share_settings.is_syncing_blocks = false;
-            console.error(msg);
-            task.reject(msg.data);
-            break;
-          default:
-            console.warn("unhandle message:", msg);
-            break;
-        }
-      }
-    };
-    download_worker;
-    download_worker.addEventListener("message", onmessage);
-    cg = () => download_worker.removeEventListener("message", onmessage);
-    // 不论如何都将监听函数移除掉
-    task.promise.then(cg, cg);
-    const res = {
-      worker: download_worker,
-      req_id,
-      task,
-    };
-    this._sync_lock = res;
-    return res;
-  }
-  async downloadBlockInWorker(startHeight: number, endHeight: number, max_end_height: number) {
-    // 缺少最新区块，下载补全
-    const download_worker = this.getDownloadWorker();
-    const req_id = this._download_req_id_acc++;
-    let cg;
-    download_worker.postMessage({
-      NET_VERSION: this.baseConfig.NET_VERSION,
-      cmd: "download",
-      webio_path: this.fetch.webio.io_url_path,
-      magic: this.baseConfig.MAGIC,
-      startHeight,
-      endHeight,
-      max_end_height,
-      req_id,
-    });
-    const task_name = `补全区块数据${startHeight} ~ ${endHeight}`;
-    const task = new PromiseOut<void>();
-    const onmessage = e => {
-      const msg = e.data;
-      if (msg && msg.req_id === req_id) {
-        // console.log("bs", msg);
-        switch (msg.type) {
-          case "start-download":
-            console.log("开始", task_name);
-            break;
-          case "end-download":
-            console.log("完成", task_name);
-            task.resolve();
-            break;
-          case "use-flow":
-            this.appSetting.share_settings.sync_data_flow += (+msg.data.up || 0) + (+msg.data.down || 0);
-            break;
-          case "progress":
-            // console.log("下载中", task_name, msg.data);
-            this.tryEmit("BLOCKCHAIN:CHANGED");
-            break;
-          case "error":
-            task.reject(msg.data);
-            break;
-          default:
-            console.warn("unhandle message:", msg);
-            break;
-        }
-      }
-    };
-    download_worker.addEventListener("message", onmessage);
-    cg = () => download_worker.removeEventListener("message", onmessage);
-    // 不论如何都将监听函数移除掉
-    task.promise.then(cg, cg);
-    return {
-      worker: download_worker,
-      req_id,
-      task,
-    };
-  }
-  /**更新最新的区块，并尝试下载破损的区块链数据*/
-  async updateLastBlockAndTryDownloadDestoryBlocks(lastBlock: TYPE.BlockModel) {
-    const block: any = {};
-    [
-      "version",
-      "timestamp",
-      "totalAmount",
-      "totalFee",
-      "reward",
-      "numberOfTransactions",
-      "payloadLength",
-      "payloadHash",
-      "generatorPublicKey",
-      "blockSignature",
-      "previousBlock",
-      "id",
-      "height",
-      "blockSize",
-      "remark",
-    ].forEach(key => {
-      // 过滤字段，只用需要的
-      block[key] = lastBlock[key];
-    });
-
-    // 获取目前高度最高的区块
-    const cur_lastBlock = await this.getLocalLastBlock();
-    if (cur_lastBlock) {
-      if (cur_lastBlock.height >= lastBlock.height) {
-        // TOOD：拜占庭询问区块是否正确，然后进行更新或者拉黑名单的操作
-        console.error("区块数移除，存在比当前最新区块更高的区块");
-        return;
-      }
-    }
-
-    await (await this.blockchaindbv3).upsert(block).catch(err => console.warn(`[${lastBlock.height}]`, err.message));
-    // 新的输入插入后，就要通知更新区块链
-    this.tryEmit("BLOCKCHAIN:CHANGED");
-    if (cur_lastBlock) {
-      if (lastBlock.height - cur_lastBlock.height > 1) {
-        const startHeight = cur_lastBlock.height + 1;
-        const endHeight = lastBlock.height - 1;
-        // 缺少最新区块，下载补全
-        const { task } = await this.downloadBlockInWorker(startHeight, endHeight, lastBlock.height);
-        await task.promise;
-      }
-    }
   }
 
-  private _listenUnconfirmTransaction() {
-    this.io.on("transactions/unconfirm", data => {
-      const tran: TransactionModel = data.transaction;
-      this.appSetting.settings.detal_tran_num += 1;
-      this._expectblock_uncommited += 1;
-      this._expectblock_fee_reward += parseFloat(tran.fee);
-      this.getExpectBlockInfo().then(expect_block => {
-        this.tryEmit("EXPECTBLOCK:CHANGED", expect_block);
-      });
-    });
-  }
 
   empty_block: TYPE.BlockModel = {
     height: 0,
@@ -724,38 +162,7 @@ export class BlockServiceProvider extends FLP_Tool {
     remark: "",
   };
 
-  /**
-   * 获取当前区块链的块高度
-   * @returns {Promise<any>}
-   */
-  async getLastBlock() {
-    if (await this.fetch.webio.getOnlineStatus()) {
-      let last_block = await this.fetch.get<TYPE.BlockResModel>(this.GET_LAST_BLOCK_URL).then(res => res.block as TYPE.SingleBlockModel);
-      if (await this.checkBlockIdInBlockDB(last_block.id)) {
-        // 如果本地已经有这个区块，而且我本地的最高区块比他还高，那么应该使用我本地的作为正确的区块
-        const last_block_height = last_block.height;
-        const heighter_blocks = await (await this.blockchaindbv3).findList((block) => block.height > last_block_height);
-        //整理出一条正确的长链，所用前一个块的id作为key
-        const block_map = new Map<string, TYPE.BlockModel>();
-        heighter_blocks.forEach(lock_block => {
-          block_map.set(lock_block.previousBlock, lock_block);
-        });
-        let pre_block = last_block;
-        do {
-          const next_block = block_map.get(pre_block.id);
-          if (!next_block) {
-            last_block = pre_block;
-            break;
-          }
-          pre_block = next_block;
-        } while (true);
-      }
-      return last_block;
-    } else {
-      return this.getLocalLastBlock();
-    }
-  }
-
+  /**最后最新的区块，由updateHeight管理更新 */
   lastBlock = new AsyncBehaviorSubject<TYPE.SingleBlockModel>(promise_pro => {
     return promise_pro.follow(this.getLastBlock());
   });
@@ -769,94 +176,6 @@ export class BlockServiceProvider extends FLP_Tool {
     return fullTimestamp;
   }
 
-  /**
-   * 根据块ID获取块信息，返回一个对象
-   * @param {string} blockId
-   * @returns {Promise<any>}
-   */
-  async getBlockById(blockId: string) {
-    const data = await this.fetch.get<TYPE.BlockResModel>(this.GET_BLOCK_BY_ID, {
-      search: {
-        id: blockId,
-      },
-    });
-
-    return data.block;
-  }
-
-  /**
-   * 返回根据高度搜索到的块，返回一个对象
-   * @param {number} height
-   * @returns {Promise<any>}
-   */
-  async getBlockByHeight(height: number, force_network?: boolean): Promise<TYPE.BlockModel> {
-    let data = await this.fetch.forceNetwork(force_network).get<any>(this.GET_BLOCK_BY_QUERY, {
-      search: {
-        mode: BLOCK_QUERY_MODE.BY_HEIGHT,
-        height: height,
-      },
-    });
-
-    return data.blocks[0];
-  }
-
-  // /**
-  //  * 返回根据地址搜索的块，返回一个数组
-  //  * @param {string} address
-  //  * @returns {Promise<any>}
-  //  */
-  // async getBlocksByAddress(address: string): Promise<TYPE.BlockModel> {
-  //   let data = await this.fetch.get<any>(this.GET_BLOCK_BY_QUERY, {
-  //     search: {
-  //       generatorId: address,
-  //     },
-  //   });
-
-  //   return data.blocks[0];
-  // }
-
-  // /**
-  //  * 搜索块，可以搜索高度、地址和ID任一
-  //  * @param {string} query
-  //  * @returns {Promise<any>}
-  //  */
-  // async searchBlocks(query: string): Promise<TYPE.BlockModel[]> {
-  //   //如果是纯数字且不是以0开头就查高度
-  //   if (/[1-9][0-9]*/.test(query)) {
-  //     const query_num = parseFloat(query) * 1;
-  //     let data = await this.getBlockByHeight(query_num);
-  //     // if (data.length > 0) {
-  //     return [data];
-  //     // }
-  //   } else {
-  //     //首先查创块人
-  //     let data1 = await this.getBlocksByAddress(query);
-  //     if (data1) {
-  //       return [data1];
-  //     }
-
-  //     //不是创块人则搜索ID
-  //     let data2 = await this.getBlockById(query);
-  //     if (data2) {
-  //       return [data2];
-  //     }
-
-  //     return [];
-  //   }
-  // }
-
-  /**
-   * 获取区块信息
-   * @param {{}} query  查询的条件，对象存在
-   * @returns {Promise<{}>}
-   */
-  async getBlocks(query, force_network?: boolean): Promise<TYPE.BlockListResModel> {
-    let data = await this.fetch.forceNetwork(force_network).get<TYPE.BlockListResModel>(this.GET_BLOCK_BY_QUERY, {
-      search: query,
-    });
-
-    return data;
-  }
 
   /**
    * 判断当前的块是否延迟，返回块数组
@@ -898,49 +217,6 @@ export class BlockServiceProvider extends FLP_Tool {
   }
 
   /**
-   * 分页查询块数据，页数从1开始
-   * @param {number} page 从1开始
-   * @param {number} limit
-   * @returns {Promise<any>}
-   */
-  async getBlocksByPage(
-    page: number,
-    pageSize = 10,
-    sort: 1 | -1 = 1 // 默认增序
-  ): Promise<TYPE.BlockModel[]> {
-    const res = await this.getBlocks({
-      offset: (page - 1) * pageSize,
-      limit: pageSize,
-      orderBy: sort === 1 ? "height:asc" : "height:desc",
-    });
-
-    return res.blocks;
-  }
-  async getBlocksByRange(
-    startHeight: number,
-    endHeight: number,
-    sort: 1 | -1 = 1, // 默认增序
-    force_network?: boolean
-  ) {
-    const res = await this.getBlocks(
-      {
-        startHeight,
-        endHeight,
-        orderBy: sort === 1 ? "height:asc" : "height:desc",
-      },
-      force_network
-    );
-
-    return res.blocks;
-  }
-  /**
-   * 获取最新的几个区块，（默认顺序是倒序）
-   */
-  async getTopBlocks(amount = 10) {
-    return this.getBlocksByPage(1, amount, -1);
-  }
-
-  /**
    * 获取块中的交易，分页
    */
   async getTransactionsInBlock(blockId: string, page = 1, pageSize = 10): Promise<TransactionModel[]> {
@@ -978,40 +254,32 @@ export class BlockServiceProvider extends FLP_Tool {
     return data.Transactions.u;
   }
 
+  /**预期确认数量 */
   private _expectblock_uncommited = 0;
+  public get expectblock_uncommited() {
+    return this._expectblock_uncommited;
+  }
+  public set expectblock_uncommited(value) {
+    this._expectblock_uncommited = value;
+  }
+  /**预期手续费 */
   private _expectblock_fee_reward = 0;
+  public get expectblock_fee_reward() {
+    return this._expectblock_fee_reward;
+  }
+  public set expectblock_fee_reward(value) {
+    this._expectblock_fee_reward = value;
+  }
   /**
    * 获取未来一个块的预期信息
    * @param:amount 根据最近n个块来获取平均值
    * 返回平均收益、平均手续费、未确认交易数
    */
   async getExpectBlockInfo(amount: number = 5) {
-    // var data: TYPE.UnconfirmBlockModel;
-    // if (!navigator.onLine) {
-    //   data = {
-    //     reward: 3500000000 + this._expectblock_fee_reward,
-    //     fee: this._expectblock_fee_reward,
-    //     uncommited: this._expectblock_uncommited,
-    //     height: this.appSetting.getHeight() + 1,
-    //   };
-    // } else {
-    //   amount = amount < 57 ? amount : 57;
-    //   let uncommited = this._expectblock_uncommited; // await this.getPoolUnconfirmed();
-    //   let blockInfo = await this.getAvgInfo(amount);
-    //   blockInfo.reward =parseFloat(blockInfo.reward as any)+ this._expectblock_fee_reward
-    //   blockInfo.fee
-    //   data = {
-    //     ...blockInfo,
-    //     uncommited,
-    //     height: this.appSetting.getHeight() + 1,
-    //   };
-    // }
-
-    // return data;
     return {
-      reward: 3500000000 + this._expectblock_fee_reward,
-      fee: this._expectblock_fee_reward,
-      uncommited: this._expectblock_uncommited,
+      reward: 3500000000 + this.expectblock_fee_reward,
+      fee: this.expectblock_fee_reward,
+      uncommited: this.expectblock_uncommited,
       height: (await this.lastBlock.getPromise()).height + 1,
     };
   }

@@ -457,7 +457,6 @@ export class ChainListComponent extends AniBase {
             startHeight,
             endHeight,
             1, //从小到大
-            await this.blockService.fetch.webio.getOnlineStatus()
           )
         })();
       }

@@ -64,9 +64,9 @@ export class AccountMyLocalContactsPage extends SecondLevelPage {
     }
   }
   /*联系人列表*/
-  contact_list: LocalContactModel[] = [];
+  @AccountMyLocalContactsPage.markForCheck contact_list: LocalContactModel[] = [];
   /*分组列表*/
-  grouped_contact_list: LocalContactGroupList = [];
+  @AccountMyLocalContactsPage.markForCheck grouped_contact_list: LocalContactGroupList = [];
   listTrackBy(item, contact: LocalContactModel) {
     return contact.address;
   }

@@ -2,13 +2,14 @@ import shareProto from "../../shareProto";
 import EventEmitter from "eventemitter3";
 import { PromiseOut, sleep } from "../../bnqkl-framework/PromiseExtends";
 // import { Mdb } from "../../src/providers/mdb";
-import { FangoDB, FangoDBWorker } from "../../fangodb";
+// import { FangoDB, FangoDBWorker } from "../../fangodb";
+import { BlockchainDB } from '../../../workers/blockchain-db/index';
 import { BlockchainVerifier } from "./blockchain-verifier";
 
 import { buf2hex, BlockModel, RangeHelper } from "./helper";
 
 export class BlockChainDownloader extends EventEmitter {
-  constructor(public webio: SocketIOClient.Socket, public blockDb: FangoDBWorker<BlockModel>, public ifmJs: import("../../ifmchain-js-core/src").IfmchainCore) {
+  constructor(public webio: SocketIOClient.Socket, public blockDb: BlockchainDB<BlockModel>, public ifmJs: import("../../ifmchain-js-core/src").IfmchainCore) {
     super();
   }
   verifier = new BlockchainVerifier(this.webio, this.blockDb);
@@ -118,8 +119,7 @@ export class BlockChainDownloader extends EventEmitter {
 
     // 数据库插入出错的话，忽略错误，继续往下走
     await this.blockDb
-      .fast()
-      .insertMany(blocks)
+      .upsertList(blocks)
       .catch(console.warn);
 
     // 更改进度
@@ -217,7 +217,7 @@ export class BlockChainDownloader extends EventEmitter {
     }
 
     // 数据库插入出错的话，忽略错误，继续往下走
-    await this.blockDb.insertMany(blocks, { replace: true }).catch(console.warn);
+    await this.blockDb.upsertList(blocks).catch(console.warn);
 
     // 更改进度
     this.emit("progress", ((cur_end_height + 1) / total) * 100);
@@ -231,11 +231,11 @@ export class BlockChainDownloader extends EventEmitter {
 
   private _sync_id_acc = 0;
   /*同步截止高度的区块链*/
-  async syncFullBlockchain(/*range_list:Range[],*/ max_end_height: number,from_height =1, need_verifier?: boolean) {
+  async syncFullBlockchain(/*range_list:Range[],*/ max_end_height: number, from_height = 1, need_verifier?: boolean) {
     const sync_id = ++this._sync_id_acc;
     const rangeHelper = new RangeHelper(from_height, max_end_height - 1);
     // 因为现在区块是从1开始下载，所以必然要有1，才需要进行校验，否则直接从头下载到尾
-    if (need_verifier && (await this.blockDb.hasIndexKey("height", 1))) {
+    if (need_verifier && (await this.blockDb.hasHeight(1))) {
       this.emit("start-verifier", { ranges: rangeHelper.ranges });
       for await (var _ranges of this.verifier.useableLocalBlocksFinder()) {
         for (var _range of _ranges) {
