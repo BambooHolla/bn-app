@@ -192,7 +192,7 @@ export class SignInAndSignUpPage extends FirstLevelPage {
 
   /*打开用户协议*/
   openUserAgreementPage(params?: { auto_login?: boolean }) {
-    const model = this.modalCtrl.create("user-agreement");
+    const model = this.modalCtrl.create("user-agreement",{},{cssClass:'modal-user-agreement'});
     model.onWillDismiss(data => {
       this.is_agree_user_agreement = data;
       if (this.is_agree_user_agreement && params && params.auto_login) {

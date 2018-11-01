@@ -125,6 +125,7 @@ import { VoucherServiceProvider } from "../providers/voucher-service/voucher-ser
 import { LocalContactProvider } from "../providers/local-contact/local-contact";
 import { AssetsServiceProvider } from "../providers/assets-service/assets-service";
 import { SubchainServiceProvider } from "../providers/subchain-service/subchain-service";
+import { IpServiceProvider } from '../providers/ip-service/ip-service';
 
 export const MyDeepLinkConfigToken = new InjectionToken<any>("USERLINKS");
 
@@ -265,6 +266,7 @@ const heightLevelModules = [
     AssetsServiceProvider,
     SubchainServiceProvider,
     SubchainServiceProvider,
+    IpServiceProvider,
   ],
 })
 export class AppModule { }

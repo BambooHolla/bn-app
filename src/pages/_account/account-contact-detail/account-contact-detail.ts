@@ -1,12 +1,14 @@
+import { IpServiceProvider } from './../../../providers/ip-service/ip-service';
 import { Component, Optional } from "@angular/core";
 import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
+import { asyncCtrlGenerator } from './../../../bnqkl-framework/Decorator';
+import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl, AssetsDetailModelWithLogoSafeUrl } from './../../../providers/assets-service/assets-service';
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
-import { TransactionServiceProvider, TransactionTypes, TransactionModel } from "../../../providers/transaction-service/transaction-service";
+import { TransactionServiceProvider, TransactionTypes, TransactionModel, transactionTypeModel } from "../../../providers/transaction-service/transaction-service";
 import { LocalContactModel, LocalContactProvider, TagModel } from "../../../providers/local-contact/local-contact";
 import { AccountModel } from "../../../providers/account-service/account-service";
 import { AccountServiceProvider } from "../../../providers/account-service/account-service";
-import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 
 @IonicPage({ name: "account-contact-detail" })
 @Component({
@@ -14,6 +16,7 @@ import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
   templateUrl: "account-contact-detail.html",
 })
 export class AccountContactDetailPage extends SecondLevelPage {
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -21,7 +24,9 @@ export class AccountContactDetailPage extends SecondLevelPage {
     public accountService: AccountServiceProvider,
     public localContact: LocalContactProvider,
     public viewCtrl: ViewController,
-    public transactionService: TransactionServiceProvider
+    public transactionService: TransactionServiceProvider,
+    public assetsService: AssetsServiceProvider,
+    public ipService: IpServiceProvider
   ) {
     super(navCtrl, navParams, true, tabs);
     this.enable_timeago_clock = true;
@@ -40,6 +45,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
       }
     });
   }
+
   @AccountContactDetailPage.markForCheck contact?: LocalContactModel | AccountModel;
   @AccountContactDetailPage.markForCheck contact_tag_names: string[] = [];
   get mainname() {
@@ -96,7 +102,13 @@ export class AccountContactDetailPage extends SecondLevelPage {
       }
     }
     await this.getTransactionLogs();
+    await this.streamAssetsHolders(this.contact.address);
+    await this.streamTransactionRecord(this.contact.address);
+    await this.streamTransactionType(this.contact.address);
+    await this.streamTransactionSourceIp(this.contact.address);
+    await this.streamAssets(this.contact.address);
   }
+
   hide_navbar_tools = true;
   checking_is_my_contact = false;
   is_my_contact = false;
@@ -234,6 +246,106 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.transaction_config.page = 1;
     this.transaction_list = await this._getTransactionList();
     this.markForCheck();
+  }
+
+  assetsHoldersArray: AssetsPersonalModelWithLogoSafeUrl[] = [];
+  @asyncCtrlGenerator.error()
+  async streamAssetsHolders(address: string) {
+    this.assetsHoldersArray = await this.assetsService.getAllPossessorAssets(address);
+  }
+
+  assetsArray: AssetsDetailModelWithLogoSafeUrl[] = [];
+  @asyncCtrlGenerator.error()
+  async streamAssets(address: string) {
+    this.assetsArray = await this.assetsService.getAssets({address});
+  }
+
+  transactionRecordArray: TransactionModel[] = [];
+  @asyncCtrlGenerator.error()
+  async streamTransactionRecord(address: string) {
+    this.transactionRecordArray = await this.assetsService.getTransactionRecord(address);
+  }
+
+  transactionTypeList: transactionTypeModel = { success: true, txCounts: {} };
+  @asyncCtrlGenerator.error()
+  async streamTransactionType(address: string) {
+    this.transactionTypeList = await this.transactionService.getTransactionType(address);
+  }
+
+  transactionSourceIpArray: string[] = []
+  @asyncCtrlGenerator.error()
+  async streamTransactionSourceIp(address: string) {
+    this.transactionSourceIpArray = await this.transactionService.getTransactionSourceIp(address, 20, 100);
+    this.transactionSourceIpArray.forEach(element => {
+      this.streamIp(element);
+    });
+  }
+
+  countryName: string | any;
+  @asyncCtrlGenerator.error()
+  async streamIp(ip: string) {
+    this.countryName = await this.ipService.findCountry(ip);
+    this.getCountries(this.countryName);
+  }
+
+  svgElement?: SVGPathElement;
+  ipArray: any = [];
+  tooltipRects?: ArrayLike<SVGRectElement> = document.getElementsByTagName('rect');
+  private _tooltipText?: string;
+  public get tooltipText() {
+    return this._tooltipText;
+  }
+  public set tooltipText(value) {
+    this._tooltipText = value;
+    if (typeof value === 'string') {
+      const tooltipTextLength = value.length;
+      if(!this.tooltipRects){
+        return;
+      }
+      for (let i = 0; i < this.tooltipRects.length; i++) {
+        this.tooltipRects[i].setAttribute('width', ((tooltipTextLength * 12) + 8).toString());
+      }
+    }
+  }
+  async getCountries(country) {
+    const ISO2 = await this.ipService.fetchCountries(country);
+    if (ISO2 === undefined) return;
+    const svgElement: SVGPathElement = this.svgElement = document.getElementById(ISO2) as any;
+    svgElement.classList.add('active');
+    svgElement.setAttribute('fill', '#25b4f2');
+    const svg: SVGAElement = document.getElementById('map') as any;
+    const tooltip = document.getElementById('tooltip') as HTMLElement;
+    const paths: SVGPathElement[] = [];
+    Array.prototype.push.apply(paths, svg.getElementsByClassName('active'));
+    paths.forEach(path => {
+      if (path[Symbol.for('bind-mouse-event')]) return;
+      path[Symbol.for('bind-mouse-event')] = true;
+      path.addEventListener('mousemove', (event: MouseEvent|TouchEvent) => {
+        const CTM = svg.getScreenCTM();
+        if (!CTM) return;
+        let clientX = 0;
+        let clientY = 0;
+        if('touches' in event){
+          clientX = event.touches[0].clientX
+          clientY = event.touches[0].clientY
+        }else{
+          clientX = event.clientX
+          clientY = event.clientY
+        }
+        const x = (clientX - CTM.e + 6) / CTM.a;
+        const y = (clientY - CTM.f + 20) / CTM.d;
+        tooltip.setAttribute('transform', 'translate(' + x + ' ' + y + ')');
+        tooltip.setAttribute('visibility', 'visible');
+        const pathId = path.id;
+        if (pathId === ISO2) {
+          this.tooltipText = country;
+        }
+      });
+      const hide_tooltip = () => {
+        tooltip.setAttribute('visibility', 'hidden');
+      }
+      path.addEventListener('mouseout', hide_tooltip);
+    });
   }
 
   @asyncCtrlGenerator.error()

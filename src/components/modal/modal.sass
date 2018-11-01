@@ -1,53 +1,53 @@
-ion-modal
+.modal-subchain
   &.show-page
     background-color: rgba(57, 69, 80, 0.90)
 
-.modal-header
-  color: #fff
-  padding:
-    top: 1rem
-    bottom: 1rem
-  border-bottom: 1px solid #9B9EA1
+  .modal-header
+    color: #fff
+    padding:
+      top: 1rem
+      bottom: 1rem
+    border-bottom: 1px solid #9B9EA1
 
-.modal-body
-  padding: 1rem
+  .modal-body
+    padding: 1rem
 
-.modal-item-text
-  width: calc(100% - 1rem)
-  text-overflow: ellipsis
-  white-space: nowrap
-  overflow: hidden
+  .modal-item-text
+    width: calc(100% - 1rem)
+    text-overflow: ellipsis
+    white-space: nowrap
+    overflow: hidden
 
-.btn-sub-chain
-  display: inline-block
-  width: 100%
-  background-color: transparent
-  padding: 0.8rem
-  text-align: center
-  color: #fff
-  & p
-    margin:
-      top: 0.5rem
-      bottom: 0
+  .btn-sub-chain
+    display: inline-block
+    width: 100%
+    background-color: transparent
+    padding: 0.8rem
+    text-align: center
+    color: #fff
+    & p
+      margin:
+        top: 0.5rem
+        bottom: 0
 
-.btn-dismiss
-  height: 3.5rem
-  background-color: rgba(255,255,255,0.5)
-  border-radius: 18px
-  color: #fff
+  .btn-dismiss
+    height: 3.5rem
+    background-color: rgba(255,255,255,0.5)
+    border-radius: 18px
+    color: #fff
 
-@keyframes slideInUp
-  from
-    transform: translate3d(0, 100%, 0)
-    visibility: visible
-  to
-    transform: translate3d(0, 0, 0)
+  @keyframes slideInUp
+    from
+      transform: translate3d(0, 100%, 0)
+      visibility: visible
+    to
+      transform: translate3d(0, 0, 0)
 
-.slide-in-up
-  animation-name: slideInUp
-  animation-duration: 1s
-  animation-fill-mode: both
+  .slide-in-up
+    animation-name: slideInUp
+    animation-duration: 1s
+    animation-fill-mode: both
 
-@for $i from 1 through 20
-  .modal-item:nth-child(#{$i})
-    animation-delay: 100ms + ($i*50)
+  @for $i from 1 through 20
+    .modal-item:nth-child(#{$i})
+      animation-delay: 100ms + ($i*50)
