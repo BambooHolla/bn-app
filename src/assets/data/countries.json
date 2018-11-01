@@ -1,0 +1,1252 @@
+[
+  {
+    "ISO2": "AD",
+    "Chinese": "安道尔",
+    "English": "Andorra"
+  },
+  {
+    "ISO2": "AE",
+    "Chinese": "阿联酋",
+    "English": "United Arab Emirates"
+  },
+  {
+    "ISO2": "AF",
+    "Chinese": "阿富汗",
+    "English": "Afghanistan"
+  },
+  {
+    "ISO2": "AG",
+    "Chinese": "安提瓜和巴布达",
+    "English": "Antigua and Barbuda"
+  },
+  {
+    "ISO2": "AI",
+    "Chinese": "安圭拉",
+    "English": "Anguilla"
+  },
+  {
+    "ISO2": "AL",
+    "Chinese": "阿尔巴尼亚",
+    "English": "Albania"
+  },
+  {
+    "ISO2": "AM",
+    "Chinese": "亚美尼亚",
+    "English": "Armenia"
+  },
+  {
+    "ISO2": "AO",
+    "Chinese": "安哥拉",
+    "English": "Angola"
+  },
+  {
+    "ISO2": "AQ",
+    "Chinese": "南极洲",
+    "English": "Antarctica"
+  },
+  {
+    "ISO2": "AR",
+    "Chinese": "阿根廷",
+    "English": "Argentina"
+  },
+  {
+    "ISO2": "AS",
+    "Chinese": "美属萨摩亚",
+    "English": "American Samoa"
+  },
+  {
+    "ISO2": "AT",
+    "Chinese": "奥地利",
+    "English": "Austria"
+  },
+  {
+    "ISO2": "AU",
+    "Chinese": "澳大利亚",
+    "English": "Australia"
+  },
+  {
+    "ISO2": "AW",
+    "Chinese": "阿鲁巴",
+    "English": "Aruba"
+  },
+  {
+    "ISO2": "AX",
+    "Chinese": "奥兰群岛",
+    "English": "Åaland Islands"
+  },
+  {
+    "ISO2": "AZ",
+    "Chinese": "阿塞拜疆",
+    "English": "Azerbaijan"
+  },
+  {
+    "ISO2": "BA",
+    "Chinese": "波黑",
+    "English": "Bosnia and Herzegovina"
+  },
+  {
+    "ISO2": "BB",
+    "Chinese": "巴巴多斯",
+    "English": "Barbados"
+  },
+  {
+    "ISO2": "BD",
+    "Chinese": "孟加拉",
+    "English": "Bangladesh"
+  },
+  {
+    "ISO2": "BE",
+    "Chinese": "比利时",
+    "English": "Belgium"
+  },
+  {
+    "ISO2": "BF",
+    "Chinese": "布基纳法索",
+    "English": "Burkina Faso"
+  },
+  {
+    "ISO2": "BG",
+    "Chinese": "保加利亚",
+    "English": "Bulgaria"
+  },
+  {
+    "ISO2": "BH",
+    "Chinese": "巴林",
+    "English": "Bahrain"
+  },
+  {
+    "ISO2": "BI",
+    "Chinese": "布隆迪",
+    "English": "Burundi"
+  },
+  {
+    "ISO2": "BJ",
+    "Chinese": "贝宁",
+    "English": "Benin"
+  },
+  {
+    "ISO2": "BL",
+    "Chinese": "圣巴泰勒米岛",
+    "English": "Saint Barthélemy"
+  },
+  {
+    "ISO2": "BM",
+    "Chinese": "百慕大",
+    "English": "Bermuda"
+  },
+  {
+    "ISO2": "BN",
+    "Chinese": "文莱",
+    "English": "Brunei Darussalam"
+  },
+  {
+    "ISO2": "BO",
+    "Chinese": "玻利维亚",
+    "English": "Bolivia (Plurinational State of)"
+  },
+  {
+    "ISO2": "BQ",
+    "Chinese": "荷兰加勒比",
+    "English": "Bonaire, Sint Eustatius and Saba"
+  },
+  {
+    "ISO2": "BR",
+    "Chinese": "巴西",
+    "English": "Brazil"
+  },
+  {
+    "ISO2": "BS",
+    "Chinese": "巴哈马",
+    "English": "Bahamas"
+  },
+  {
+    "ISO2": "BT",
+    "Chinese": "不丹",
+    "English": "Bhutan"
+  },
+  {
+    "ISO2": "BV",
+    "Chinese": "布韦岛",
+    "English": "Bouvet Island"
+  },
+  {
+    "ISO2": "BW",
+    "Chinese": "博茨瓦纳",
+    "English": "Botswana"
+  },
+  {
+    "ISO2": "BY",
+    "Chinese": "白俄罗斯",
+    "English": "Belarus"
+  },
+  {
+    "ISO2": "BZ",
+    "Chinese": "伯利兹",
+    "English": "Belize"
+  },
+  {
+    "ISO2": "CA",
+    "Chinese": "加拿大",
+    "English": "Canada"
+  },
+  {
+    "ISO2": "CC",
+    "Chinese": "科科斯群岛",
+    "English": "Cocos (Keeling) Islands"
+  },
+  {
+    "ISO2": "CD",
+    "Chinese": "刚果民主共和国",
+    "English": "Congo (Democratic Republic of the)"
+  },
+  {
+    "ISO2": "CF",
+    "Chinese": "中非",
+    "English": "Central African Republic"
+  },
+  {
+    "ISO2": "CG",
+    "Chinese": "刚果共和国",
+    "English": "Congo"
+  },
+  {
+    "ISO2": "CH",
+    "Chinese": "瑞士",
+    "English": "Switzerland"
+  },
+  {
+    "ISO2": "CI",
+    "Chinese": "科特迪瓦",
+    "English": "Côte d'Ivoire"
+  },
+  {
+    "ISO2": "CK",
+    "Chinese": "库克群岛",
+    "English": "Cook Islands"
+  },
+  {
+    "ISO2": "CL",
+    "Chinese": "智利",
+    "English": "Chile"
+  },
+  {
+    "ISO2": "CM",
+    "Chinese": "喀麦隆",
+    "English": "Cameroon"
+  },
+  {
+    "ISO2": "CN",
+    "Chinese": "中国",
+    "English": "People's Republic of China"
+  },
+  {
+    "ISO2": "CO",
+    "Chinese": "哥伦比亚",
+    "English": "Colombia"
+  },
+  {
+    "ISO2": "CR",
+    "Chinese": "哥斯达黎加",
+    "English": "Costa Rica"
+  },
+  {
+    "ISO2": "CU",
+    "Chinese": "古巴",
+    "English": "Cuba"
+  },
+  {
+    "ISO2": "CV",
+    "Chinese": "佛得角",
+    "English": "Cape Verde"
+  },
+  {
+    "ISO2": "CW",
+    "Chinese": "库拉索",
+    "English": "Curaçao"
+  },
+  {
+    "ISO2": "CX",
+    "Chinese": "圣诞岛",
+    "English": "Christmas Island"
+  },
+  {
+    "ISO2": "CY",
+    "Chinese": "塞浦路斯",
+    "English": "Cyprus"
+  },
+  {
+    "ISO2": "CZ",
+    "Chinese": "捷克",
+    "English": "Czech Republic"
+  },
+  {
+    "ISO2": "DE",
+    "Chinese": "德国",
+    "English": "Germany"
+  },
+  {
+    "ISO2": "DJ",
+    "Chinese": "吉布提",
+    "English": "Djibouti"
+  },
+  {
+    "ISO2": "DK",
+    "Chinese": "丹麦",
+    "English": "Denmark"
+  },
+  {
+    "ISO2": "DM",
+    "Chinese": "多米尼克",
+    "English": "Dominica"
+  },
+  {
+    "ISO2": "DO",
+    "Chinese": "多米尼加",
+    "English": "Dominican Republic"
+  },
+  {
+    "ISO2": "DZ",
+    "Chinese": "阿尔及利亚",
+    "English": "Algeria"
+  },
+  {
+    "ISO2": "EC",
+    "Chinese": "厄瓜多尔",
+    "English": "Ecuador"
+  },
+  {
+    "ISO2": "EE",
+    "Chinese": "爱沙尼亚",
+    "English": "Estonia"
+  },
+  {
+    "ISO2": "EG",
+    "Chinese": "埃及",
+    "English": "Egypt"
+  },
+  {
+    "ISO2": "EH",
+    "Chinese": "西撒哈拉",
+    "English": "Western Sahara"
+  },
+  {
+    "ISO2": "ER",
+    "Chinese": "厄立特里亚",
+    "English": "Eritrea"
+  },
+  {
+    "ISO2": "ES",
+    "Chinese": "西班牙",
+    "English": "Spain"
+  },
+  {
+    "ISO2": "ET",
+    "Chinese": "埃塞俄比亚",
+    "English": "Ethiopia"
+  },
+  {
+    "ISO2": "FI",
+    "Chinese": "芬兰",
+    "English": "Finland"
+  },
+  {
+    "ISO2": "FJ",
+    "Chinese": "斐济",
+    "English": "Fiji"
+  },
+  {
+    "ISO2": "FK",
+    "Chinese": "马尔维纳斯群岛（福克兰）",
+    "English": "Falkland Islands (Malvinas)"
+  },
+  {
+    "ISO2": "FM",
+    "Chinese": "密克罗尼西亚联邦",
+    "English": "Micronesia (Federated States of)"
+  },
+  {
+    "ISO2": "FO",
+    "Chinese": "法罗群岛",
+    "English": "Faroe Islands"
+  },
+  {
+    "ISO2": "FR",
+    "Chinese": "法国",
+    "English": "France"
+  },
+  {
+    "ISO2": "GA",
+    "Chinese": "加蓬",
+    "English": "Gabon"
+  },
+  {
+    "ISO2": "GB",
+    "Chinese": "英国",
+    "English": "United Kingdom"
+  },
+  {
+    "ISO2": "GD",
+    "Chinese": "格林纳达",
+    "English": "Grenada"
+  },
+  {
+    "ISO2": "GE",
+    "Chinese": "格鲁吉亚",
+    "English": "Georgia"
+  },
+  {
+    "ISO2": "GF",
+    "Chinese": "法属圭亚那",
+    "English": "French Guiana"
+  },
+  {
+    "ISO2": "GG",
+    "Chinese": "根西岛",
+    "English": "Guernsey"
+  },
+  {
+    "ISO2": "GH",
+    "Chinese": "加纳",
+    "English": "Ghana"
+  },
+  {
+    "ISO2": "GI",
+    "Chinese": "直布罗陀",
+    "English": "Gibraltar"
+  },
+  {
+    "ISO2": "GL",
+    "Chinese": "格陵兰",
+    "English": "Greenland"
+  },
+  {
+    "ISO2": "GM",
+    "Chinese": "冈比亚",
+    "English": "Gambia"
+  },
+  {
+    "ISO2": "GN",
+    "Chinese": "几内亚",
+    "English": "Guinea"
+  },
+  {
+    "ISO2": "GP",
+    "Chinese": "瓜德罗普",
+    "English": "Guadeloupe"
+  },
+  {
+    "ISO2": "GQ",
+    "Chinese": "赤道几内亚",
+    "English": "Equatorial Guinea"
+  },
+  {
+    "ISO2": "GR",
+    "Chinese": "希腊",
+    "English": "Greece"
+  },
+  {
+    "ISO2": "GS",
+    "Chinese": "南乔治亚岛和南桑威奇群岛",
+    "English": "South Georgia and the South Sandwich Islands"
+  },
+  {
+    "ISO2": "GT",
+    "Chinese": "危地马拉",
+    "English": "Guatemala"
+  },
+  {
+    "ISO2": "GU",
+    "Chinese": "关岛",
+    "English": "Guam"
+  },
+  {
+    "ISO2": "GW",
+    "Chinese": "几内亚比绍",
+    "English": "Guinea-Bissau"
+  },
+  {
+    "ISO2": "GY",
+    "Chinese": "圭亚那",
+    "English": "Guyana"
+  },
+  {
+    "ISO2": "HK",
+    "Chinese": "香港",
+    "English": "Hong Kong"
+  },
+  {
+    "ISO2": "HM",
+    "Chinese": "赫德岛和麦克唐纳群岛",
+    "English": "Heard Island and McDonald Islands"
+  },
+  {
+    "ISO2": "HN",
+    "Chinese": "洪都拉斯",
+    "English": "Honduras"
+  },
+  {
+    "ISO2": "HR",
+    "Chinese": "克罗地亚",
+    "English": "Croatia"
+  },
+  {
+    "ISO2": "HT",
+    "Chinese": "海地",
+    "English": "Haiti"
+  },
+  {
+    "ISO2": "HU",
+    "Chinese": "匈牙利",
+    "English": "Hungary"
+  },
+  {
+    "ISO2": "ID",
+    "Chinese": "印度尼西亚",
+    "English": "Indonesia"
+  },
+  {
+    "ISO2": "IE",
+    "Chinese": "爱尔兰",
+    "English": "Ireland"
+  },
+  {
+    "ISO2": "IL",
+    "Chinese": "以色列",
+    "English": "Israel"
+  },
+  {
+    "ISO2": "IM",
+    "Chinese": "马恩岛",
+    "English": "Isle of Man"
+  },
+  {
+    "ISO2": "IN",
+    "Chinese": "印度",
+    "English": "India"
+  },
+  {
+    "ISO2": "IO",
+    "Chinese": "英属印度洋领地",
+    "English": "British Indian Ocean Territory"
+  },
+  {
+    "ISO2": "IQ",
+    "Chinese": "伊拉克",
+    "English": "Iraq"
+  },
+  {
+    "ISO2": "IR",
+    "Chinese": "伊朗",
+    "English": "Iran (Islamic Republic of)"
+  },
+  {
+    "ISO2": "IS",
+    "Chinese": "冰岛",
+    "English": "Iceland"
+  },
+  {
+    "ISO2": "IT",
+    "Chinese": "意大利",
+    "English": "Italy"
+  },
+  {
+    "ISO2": "JE",
+    "Chinese": "泽西岛",
+    "English": "Jersey"
+  },
+  {
+    "ISO2": "JM",
+    "Chinese": "牙买加",
+    "English": "Jamaica"
+  },
+  {
+    "ISO2": "JO",
+    "Chinese": "约旦",
+    "English": "Jordan"
+  },
+  {
+    "ISO2": "JP",
+    "Chinese": "日本",
+    "English": "Japan"
+  },
+  {
+    "ISO2": "KE",
+    "Chinese": "肯尼亚",
+    "English": "Kenya"
+  },
+  {
+    "ISO2": "KG",
+    "Chinese": "吉尔吉斯斯坦",
+    "English": "Kyrgyzstan"
+  },
+  {
+    "ISO2": "KH",
+    "Chinese": "柬埔寨",
+    "English": "Cambodia"
+  },
+  {
+    "ISO2": "KI",
+    "Chinese": "基里巴斯",
+    "English": "Kiribati"
+  },
+  {
+    "ISO2": "KM",
+    "Chinese": "科摩罗",
+    "English": "Comoros"
+  },
+  {
+    "ISO2": "KN",
+    "Chinese": "圣基茨和尼维斯",
+    "English": "Saint Kitts and Nevis"
+  },
+  {
+    "ISO2": "KP",
+    "Chinese": "朝鲜",
+    "English": "Korea (Democratic People's Republic of)"
+  },
+  {
+    "ISO2": "KR",
+    "Chinese": "韩国",
+    "English": "Korea (Republic of)"
+  },
+  {
+    "ISO2": "KW",
+    "Chinese": "科威特",
+    "English": "Kuwait"
+  },
+  {
+    "ISO2": "KY",
+    "Chinese": "开曼群岛",
+    "English": "Cayman Islands"
+  },
+  {
+    "ISO2": "KZ",
+    "Chinese": "哈萨克斯坦",
+    "English": "Kazakhstan"
+  },
+  {
+    "ISO2": "LA",
+    "Chinese": "老挝",
+    "English": "Lao People's Democratic Republic"
+  },
+  {
+    "ISO2": "LB",
+    "Chinese": "黎巴嫩",
+    "English": "Lebanon"
+  },
+  {
+    "ISO2": "LC",
+    "Chinese": "圣卢西亚",
+    "English": "Saint Lucia"
+  },
+  {
+    "ISO2": "LI",
+    "Chinese": "列支敦士登",
+    "English": "Liechtenstein"
+  },
+  {
+    "ISO2": "LK",
+    "Chinese": "斯里兰卡",
+    "English": "Sri Lanka"
+  },
+  {
+    "ISO2": "LR",
+    "Chinese": "利比里亚",
+    "English": "Liberia"
+  },
+  {
+    "ISO2": "LS",
+    "Chinese": "莱索托",
+    "English": "Lesotho"
+  },
+  {
+    "ISO2": "LT",
+    "Chinese": "立陶宛",
+    "English": "Lithuania"
+  },
+  {
+    "ISO2": "LU",
+    "Chinese": "卢森堡",
+    "English": "Luxembourg"
+  },
+  {
+    "ISO2": "LV",
+    "Chinese": "拉脱维亚",
+    "English": "Latvia"
+  },
+  {
+    "ISO2": "LY",
+    "Chinese": "利比亚",
+    "English": "Libya"
+  },
+  {
+    "ISO2": "MA",
+    "Chinese": "摩洛哥",
+    "English": "Morocco"
+  },
+  {
+    "ISO2": "MC",
+    "Chinese": "摩纳哥",
+    "English": "Monaco"
+  },
+  {
+    "ISO2": "MD",
+    "Chinese": "摩尔多瓦",
+    "English": "Moldova (Republic of)"
+  },
+  {
+    "ISO2": "ME",
+    "Chinese": "黑山",
+    "English": "Montenegro"
+  },
+  {
+    "ISO2": "MF",
+    "Chinese": "法属圣马丁",
+    "English": "Saint Martin (French part)"
+  },
+  {
+    "ISO2": "MG",
+    "Chinese": "马达加斯加",
+    "English": "Madagascar"
+  },
+  {
+    "ISO2": "MH",
+    "Chinese": "马绍尔群岛",
+    "English": "Marshall islands"
+  },
+  {
+    "ISO2": "MK",
+    "Chinese": "马其顿",
+    "English": "Macedonia (the former Yugoslav Republic of)"
+  },
+  {
+    "ISO2": "ML",
+    "Chinese": "马里",
+    "English": "Mali"
+  },
+  {
+    "ISO2": "MM",
+    "Chinese": "缅甸",
+    "English": "Myanmar"
+  },
+  {
+    "ISO2": "MN",
+    "Chinese": "蒙古",
+    "English": "Mongolia"
+  },
+  {
+    "ISO2": "MO",
+    "Chinese": "澳门",
+    "English": "Macao"
+  },
+  {
+    "ISO2": "MP",
+    "Chinese": "北马里亚纳群岛",
+    "English": "Northern Mariana Islands"
+  },
+  {
+    "ISO2": "MQ",
+    "Chinese": "马提尼克岛",
+    "English": "Martinique"
+  },
+  {
+    "ISO2": "MR",
+    "Chinese": "毛里塔尼亚",
+    "English": "Mauritania"
+  },
+  {
+    "ISO2": "MS",
+    "Chinese": "蒙塞拉特岛",
+    "English": "Montserrat"
+  },
+  {
+    "ISO2": "MT",
+    "Chinese": "马耳他",
+    "English": "Malta"
+  },
+  {
+    "ISO2": "MU",
+    "Chinese": "毛里求斯",
+    "English": "Mauritius"
+  },
+  {
+    "ISO2": "MV",
+    "Chinese": "马尔代夫",
+    "English": "Maldives"
+  },
+  {
+    "ISO2": "MW",
+    "Chinese": "马拉维",
+    "English": "Malawi"
+  },
+  {
+    "ISO2": "MX",
+    "Chinese": "墨西哥",
+    "English": "Mexico"
+  },
+  {
+    "ISO2": "MY",
+    "Chinese": "马来西亚",
+    "English": "Malaysia"
+  },
+  {
+    "ISO2": "MZ",
+    "Chinese": "莫桑比克",
+    "English": "Mozambique"
+  },
+  {
+    "ISO2": "NA",
+    "Chinese": "纳米比亚",
+    "English": "Namibia"
+  },
+  {
+    "ISO2": "NC",
+    "Chinese": "新喀里多尼亚",
+    "English": "New Caledonia"
+  },
+  {
+    "ISO2": "NE",
+    "Chinese": "尼日尔",
+    "English": "Niger"
+  },
+  {
+    "ISO2": "NF",
+    "Chinese": "诺福克岛",
+    "English": "Norfolk Island"
+  },
+  {
+    "ISO2": "NG",
+    "Chinese": "尼日利亚",
+    "English": "Nigeria"
+  },
+  {
+    "ISO2": "NI",
+    "Chinese": "尼加拉瓜",
+    "English": "Nicaragua"
+  },
+  {
+    "ISO2": "NK",
+    "Chinese": "纳戈尔诺-卡拉巴赫",
+    "English": "Nagorno-Karabakh"
+  },
+  {
+    "ISO2": "NL",
+    "Chinese": "荷兰",
+    "English": "Netherlands"
+  },
+  {
+    "ISO2": "NO",
+    "Chinese": "挪威",
+    "English": "Norway"
+  },
+  {
+    "ISO2": "NP",
+    "Chinese": "尼泊尔",
+    "English": "Nepal"
+  },
+  {
+    "ISO2": "NR",
+    "Chinese": "瑙鲁",
+    "English": "Nauru"
+  },
+  {
+    "ISO2": "NU",
+    "Chinese": "纽埃岛",
+    "English": "Niue"
+  },
+  {
+    "ISO2": "NZ",
+    "Chinese": "新西兰",
+    "English": "New Zealand"
+  },
+  {
+    "ISO2": "OM",
+    "Chinese": "阿曼",
+    "English": "Oman"
+  },
+  {
+    "ISO2": "PA",
+    "Chinese": "巴拿马",
+    "English": "Panama"
+  },
+  {
+    "ISO2": "PE",
+    "Chinese": "秘鲁",
+    "English": "Peru"
+  },
+  {
+    "ISO2": "PF",
+    "Chinese": "法属波利尼西亚",
+    "English": "French Polynesia"
+  },
+  {
+    "ISO2": "PG",
+    "Chinese": "巴布亚新几内亚",
+    "English": "Papua New Guinea"
+  },
+  {
+    "ISO2": "PH",
+    "Chinese": "菲律宾",
+    "English": "Philippines"
+  },
+  {
+    "ISO2": "PK",
+    "Chinese": "巴基斯坦",
+    "English": "Pakistan"
+  },
+  {
+    "ISO2": "PL",
+    "Chinese": "波兰",
+    "English": "Poland"
+  },
+  {
+    "ISO2": "PM",
+    "Chinese": "圣皮埃尔和密克隆群岛",
+    "English": "Saint Pierre and Miquelon"
+  },
+  {
+    "ISO2": "PN",
+    "Chinese": "皮特凯恩群岛",
+    "English": "Pitcairn Islands"
+  },
+  {
+    "ISO2": "PR",
+    "Chinese": "波多黎各",
+    "English": "Puerto Rico"
+  },
+  {
+    "ISO2": "PS",
+    "Chinese": "巴勒斯坦",
+    "English": "Palestine, State of"
+  },
+  {
+    "ISO2": "PT",
+    "Chinese": "葡萄牙",
+    "English": "Portugal"
+  },
+  {
+    "ISO2": "PW",
+    "Chinese": "帕劳",
+    "English": "Palau"
+  },
+  {
+    "ISO2": "PY",
+    "Chinese": "巴拉圭",
+    "English": "Paraguay"
+  },
+  {
+    "ISO2": "QA",
+    "Chinese": "卡塔尔",
+    "English": "Qatar"
+  },
+  {
+    "ISO2": "RE",
+    "Chinese": "留尼汪岛",
+    "English": "Réunion"
+  },
+  {
+    "ISO2": "RO",
+    "Chinese": "罗马尼亚",
+    "English": "Romania"
+  },
+  {
+    "ISO2": "RS",
+    "Chinese": "塞尔维亚",
+    "English": "Serbia"
+  },
+  {
+    "ISO2": "RU",
+    "Chinese": "俄罗斯",
+    "English": "Russian Federation"
+  },
+  {
+    "ISO2": "RW",
+    "Chinese": "卢旺达",
+    "English": "Rwanda"
+  },
+  {
+    "ISO2": "SA",
+    "Chinese": "沙特阿拉伯",
+    "English": "Saudi Arabia"
+  },
+  {
+    "ISO2": "SB",
+    "Chinese": "所罗门群岛",
+    "English": "Solomon Islands"
+  },
+  {
+    "ISO2": "SC",
+    "Chinese": "塞舌尔",
+    "English": "Seychelles"
+  },
+  {
+    "ISO2": "SD",
+    "Chinese": "苏丹",
+    "English": "Sudan"
+  },
+  {
+    "ISO2": "SE",
+    "Chinese": "瑞典",
+    "English": "Sweden"
+  },
+  {
+    "ISO2": "SG",
+    "Chinese": "新加坡",
+    "English": "Singapore"
+  },
+  {
+    "ISO2": "SH",
+    "Chinese": "圣赫勒拿",
+    "English": "Saint Helena, Ascension and Tristan da Cunha"
+  },
+  {
+    "ISO2": "SI",
+    "Chinese": "斯洛文尼亚",
+    "English": "Slovenia"
+  },
+  {
+    "ISO2": "SJ",
+    "Chinese": "斯瓦尔巴群岛和扬马延岛",
+    "English": "Svalbard and Jan Mayen"
+  },
+  {
+    "ISO2": "SK",
+    "Chinese": "斯洛伐克",
+    "English": "Slovakia"
+  },
+  {
+    "ISO2": "SL",
+    "Chinese": "塞拉利昂",
+    "English": "Sierra Leone"
+  },
+  {
+    "ISO2": "SM",
+    "Chinese": "圣马力诺",
+    "English": "San Marino"
+  },
+  {
+    "ISO2": "SN",
+    "Chinese": "塞内加尔",
+    "English": "Senegal"
+  },
+  {
+    "ISO2": "SO",
+    "Chinese": "索马里",
+    "English": "Somalia"
+  },
+  {
+    "ISO2": "SR",
+    "Chinese": "苏里南",
+    "English": "Suriname"
+  },
+  {
+    "ISO2": "SS",
+    "Chinese": "南苏丹",
+    "English": "South Sudan"
+  },
+  {
+    "ISO2": "ST",
+    "Chinese": "圣多美和普林西比",
+    "English": "Sao Tome and Principe"
+  },
+  {
+    "ISO2": "SV",
+    "Chinese": "萨尔瓦多",
+    "English": "El Salvador"
+  },
+  {
+    "ISO2": "SX",
+    "Chinese": "荷属圣马丁",
+    "English": "Sint Maarten (Dutch part)"
+  },
+  {
+    "ISO2": "SY",
+    "Chinese": "叙利亚",
+    "English": "Syrian Arab Republic"
+  },
+  {
+    "ISO2": "SZ",
+    "Chinese": "斯威士兰",
+    "English": "Swaziland"
+  },
+  {
+    "ISO2": "TC",
+    "Chinese": "特克斯和凯科斯群岛",
+    "English": "Turks and Caicos Islands"
+  },
+  {
+    "ISO2": "TD",
+    "Chinese": "乍得",
+    "English": "Chad"
+  },
+  {
+    "ISO2": "TF",
+    "Chinese": "法属南部领地",
+    "English": "French Southern Territories"
+  },
+  {
+    "ISO2": "TG",
+    "Chinese": "多哥",
+    "English": "Togo"
+  },
+  {
+    "ISO2": "TH",
+    "Chinese": "泰国",
+    "English": "Thailand"
+  },
+  {
+    "ISO2": "TJ",
+    "Chinese": "塔吉克斯坦",
+    "English": "Tajikistan"
+  },
+  {
+    "ISO2": "TK",
+    "Chinese": "托克劳群岛",
+    "English": "Tokelau"
+  },
+  {
+    "ISO2": "TL",
+    "Chinese": "东帝汶",
+    "English": "Timor-Leste"
+  },
+  {
+    "ISO2": "TM",
+    "Chinese": "土库曼斯坦",
+    "English": "Turkmenistan"
+  },
+  {
+    "ISO2": "TN",
+    "Chinese": "突尼斯",
+    "English": "Tunisia"
+  },
+  {
+    "ISO2": "TO",
+    "Chinese": "汤加",
+    "English": "Tonga"
+  },
+  {
+    "ISO2": "TR",
+    "Chinese": "土耳其",
+    "English": "Turkey"
+  },
+  {
+    "ISO2": "TT",
+    "Chinese": "特立尼达和多巴哥",
+    "English": "Trinidad and Tobago"
+  },
+  {
+    "ISO2": "TV",
+    "Chinese": "图瓦卢",
+    "English": "Tuvalu"
+  },
+  {
+    "ISO2": "TW",
+    "Chinese": "台湾",
+    "English": "Taiwan, Province of China"
+  },
+  {
+    "ISO2": "TZ",
+    "Chinese": "坦桑尼亚",
+    "English": "Tanzania, United Republic of"
+  },
+  {
+    "ISO2": "UA",
+    "Chinese": "乌克兰",
+    "English": "Ukraine"
+  },
+  {
+    "ISO2": "UG",
+    "Chinese": "乌干达",
+    "English": "Uganda"
+  },
+  {
+    "ISO2": "UM",
+    "Chinese": "美国本土外小岛屿",
+    "English": "United States Minor Outlying Islands"
+  },
+  {
+    "ISO2": "US",
+    "Chinese": "美国",
+    "English": "United States"
+  },
+  {
+    "ISO2": "UY",
+    "Chinese": "乌拉圭",
+    "English": "Uruguay"
+  },
+  {
+    "ISO2": "UZ",
+    "Chinese": "乌兹别克斯坦",
+    "English": "Uzbekistan"
+  },
+  {
+    "ISO2": "VA",
+    "Chinese": "梵蒂冈",
+    "English": "Holy See (Vatican City State)"
+  },
+  {
+    "ISO2": "VC",
+    "Chinese": "圣文森特和格林纳丁斯",
+    "English": "Saint Vincent and the Grenadines"
+  },
+  {
+    "ISO2": "VE",
+    "Chinese": "委内瑞拉",
+    "English": "Venezuela (Bolivarian Republic of)"
+  },
+  {
+    "ISO2": "VG",
+    "Chinese": "英属维尔京群岛",
+    "English": "Virgin Islands (British)"
+  },
+  {
+    "ISO2": "VI",
+    "Chinese": "美属维尔京群岛",
+    "English": "Virgin Islands (U.S.)"
+  },
+  {
+    "ISO2": "VN",
+    "Chinese": "越南",
+    "English": "Vietnam"
+  },
+  {
+    "ISO2": "VU",
+    "Chinese": "瓦努阿图",
+    "English": "Vanuatu"
+  },
+  {
+    "ISO2": "WF",
+    "Chinese": "瓦利斯和富图纳群岛",
+    "English": "Wallis and Futuna"
+  },
+  {
+    "ISO2": "WS",
+    "Chinese": "萨摩亚",
+    "English": "Samoa"
+  },
+  {
+    "ISO2": "YE",
+    "Chinese": "也门",
+    "English": "Yemen"
+  },
+  {
+    "ISO2": "YT",
+    "Chinese": "马约特",
+    "English": "Mayotte"
+  },
+  {
+    "ISO2": "ZA",
+    "Chinese": "南非",
+    "English": "South Africa"
+  },
+  {
+    "ISO2": "ZM",
+    "Chinese": "赞比亚",
+    "English": "Zambia"
+  },
+  {
+    "ISO2": "ZW",
+    "Chinese": "津巴布韦",
+    "English": "Zimbabwe"
+  }
+]

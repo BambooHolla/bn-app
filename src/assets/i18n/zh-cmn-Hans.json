@@ -360,6 +360,14 @@
   "TRANSACTION_LOGS": "转账记录",
   "CONTACT_TRANSACTION_LIST_IS_EMPTY": "没有交易记录",
   "LOADING_MOREC_CONTACT_TRANSACTION_LIST": "加载更多交易中……",
+  "FREQUENT_AREA": "常去区域",
+  "HOLDING_ASSETS": "持有资产",
+  "HAVE_NO_DATA": "没有数据",
+  "NUMBER_OF_TRANSACTION_TYPES": "交易类型数量",
+  "SET_UP_PAYMENT_PASSWORD": "设置支付密码",
+  "VOTE": "投票",
+  "MY_TRANSACTION_RECORD_WITH_THE_PERSON":"我与该人员的往来交易记录"
+
 
   "//": "account-remark-contact",
   "ACCOUNT-REMARK-CONTACT": "设置备注及标签",

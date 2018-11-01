@@ -1,5 +1,5 @@
 import { Component, Optional, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
-import { IonicPage, NavController, NavParams, ViewController, ModalController,  PopoverController } from "ionic-angular/index";
+import { IonicPage, NavController, NavParams, ViewController, ModalController, PopoverController } from "ionic-angular/index";
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { asyncCtrlGenerator } from "../../../bnqkl-framework/Decorator";
 import { TabsPage } from "../../tabs/tabs";
@@ -30,14 +30,14 @@ export class SubchainWorldPage extends SecondLevelPage {
   }
 
   presentPopover(event) {
-    let popover = this.popoverCtrl.create(PopoverComponent,{},{cssClass:'popover'});
+    let popover = this.popoverCtrl.create(PopoverComponent, {}, { cssClass: 'popover' });
     popover.present({
       ev: event
     });
   }
 
   presentModal() {
-    let subchainModal = this.modalCtrl.create(ModalComponent,{subchainList:this.subchain_list});
+    let subchainModal = this.modalCtrl.create(ModalComponent, { subchainList: this.subchain_list }, { cssClass: 'modal-subchain' });
     subchainModal.present();
   }
 

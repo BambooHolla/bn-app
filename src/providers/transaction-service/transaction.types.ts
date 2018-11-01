@@ -47,8 +47,8 @@ export type transactionTypeModel = {
   txCounts: object;
 };
 
-export type transactionSourceIpModel = {
+export type transactionSourceIpResModel = {
   success: boolean;
-  sourceIps: Array<[]>;
+  sourceIPs: string[];
 };
 export { transactionTypes as TransactionTypes } from '../../ifmchain-js-core/src';

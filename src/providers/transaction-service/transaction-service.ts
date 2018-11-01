@@ -130,7 +130,7 @@ export class TransactionServiceProvider {
   // txSourceIP
   // limit=20&maxQueryLimit=100
   async getTransactionSourceIp(senderId: string, limit:number, maxQueryLimit:number) {
-    const data = await this.fetch.get<{sourceIPs:TYPE.transactionSourceIpModel}>(this.GET_TRANSACTION_SOURCE_IP, {
+    const data = await this.fetch.get<TYPE.transactionSourceIpResModel>(this.GET_TRANSACTION_SOURCE_IP, {
       search: {
         senderId: senderId,
         limit: limit,
