@@ -2,7 +2,7 @@ import { IpServiceProvider } from './../../../providers/ip-service/ip-service';
 import { Component, Optional } from "@angular/core";
 import { IonicPage, NavController, NavParams, ViewController } from "ionic-angular/index";
 import { asyncCtrlGenerator } from './../../../bnqkl-framework/Decorator';
-import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl } from './../../../providers/assets-service/assets-service';
+import { AssetsServiceProvider, AssetsPersonalModelWithLogoSafeUrl, AssetsDetailModelWithLogoSafeUrl } from './../../../providers/assets-service/assets-service';
 import { SecondLevelPage } from "../../../bnqkl-framework/SecondLevelPage";
 import { TabsPage } from "../../tabs/tabs";
 import { TransactionServiceProvider, TransactionTypes, TransactionModel, transactionTypeModel } from "../../../providers/transaction-service/transaction-service";
@@ -106,6 +106,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
     await this.streamTransactionRecord(this.contact.address);
     await this.streamTransactionType(this.contact.address);
     await this.streamTransactionSourceIp(this.contact.address);
+    await this.streamAssets(this.contact.address);
   }
 
   hide_navbar_tools = true;
@@ -253,6 +254,12 @@ export class AccountContactDetailPage extends SecondLevelPage {
     this.assetsHoldersArray = await this.assetsService.getAllPossessorAssets(address);
   }
 
+  assetsArray: AssetsDetailModelWithLogoSafeUrl[] = [];
+  @asyncCtrlGenerator.error()
+  async streamAssets(address: string) {
+    this.assetsArray = await this.assetsService.getAssets({address});
+  }
+
   transactionRecordArray: TransactionModel[] = [];
   @asyncCtrlGenerator.error()
   async streamTransactionRecord(address: string) {
@@ -283,7 +290,7 @@ export class AccountContactDetailPage extends SecondLevelPage {
 
   svgElement?: SVGPathElement;
   ipArray: any = [];
-  tooltipRects?: HTMLCollectionOf<SVGRectElement> = document.getElementsByTagName('rect');
+  tooltipRects?: ArrayLike<SVGRectElement> = document.getElementsByTagName('rect');
   private _tooltipText?: string;
   public get tooltipText() {
     return this._tooltipText;

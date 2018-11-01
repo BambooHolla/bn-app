@@ -11,6 +11,7 @@ $turquoise: #3E90FF
 // ### Page ShadowDOM Style
 
 page-account-contact-detail
+
   h1, h2, h3, h4, h5, h6
     margin-top: 0
     margin-bottom: 0
@@ -45,7 +46,7 @@ page-account-contact-detail
   .tooltip-text
     font-size: 12px
 
-  @for $i from 1 through 5
+  @for $i from 2 through 4
     .x#{($i)}
       font-size: (($i)+rem)
 
@@ -79,8 +80,8 @@ page-account-contact-detail
       background-repeat: no-repeat
       background-size: cover
 
-  .border
-    &-bottom
+  .border-bottom:not(:last-child),
+  .title-border-bottom
       border-bottom: 1px solid lighten($grey,40%)
 
   .list-unstyled
