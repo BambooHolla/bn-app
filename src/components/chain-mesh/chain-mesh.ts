@@ -10,28 +10,25 @@ import {
   ChangeDetectionStrategy,
 } from "@angular/core";
 import { AniBase } from "../AniBase";
-import { PromiseOut } from "../../bnqkl-framework/PromiseExtends";
+import { PromiseOut, DelayPromise } from "../../bnqkl-framework/PromiseExtends";
 
 export const loader = new PIXI.loaders.Loader();
-export const _load_resource_promiseout = new PromiseOut<
-  PIXI.loaders.ResourceDictionary
-  >();
 export const FRAMES_NUM = 60;
 export const frames_list: PIXI.Texture[] = [];
 for (var i = 0; i < FRAMES_NUM; i += 1) {
   const i_str = ("00000" + i).substr(-5);
   loader.add("img" + i_str, "assets/imgs/400-60/earth-" + i_str + ".png");
 }
-loader.onError.add(err => {
-  _load_resource_promiseout.reject(err);
-});
-loader.load((loader, resources) => {
-  for (var i = 0; i < FRAMES_NUM; i += 1) {
-    const i_str = ("00000" + i).substr(-5);
-    const resource = resources["img" + i_str] as PIXI.loaders.Resource;
-    frames_list.push(resource.texture);
-  }
-  _load_resource_promiseout.resolve(resources);
+const load_resource_promisedelay = new DelayPromise<PIXI.loaders.ResourceDictionary>((resolve, reject) => {
+  loader.onError.add(reject);
+  loader.load((_, resources) => {
+    for (var i = 0; i < FRAMES_NUM; i += 1) {
+      const i_str = ("00000" + i).substr(-5);
+      const resource = resources["img" + i_str] as PIXI.loaders.Resource;
+      frames_list.push(resource.texture);
+    }
+    resolve(resources)
+  });
 });
 
 @Component({
@@ -95,7 +92,7 @@ export class ChainMeshComponent extends AniBase {
     }
     const app = this.app;
 
-    const resources = await _load_resource_promiseout.promise;
+    const resources = await load_resource_promisedelay.promise;
     // 处理resource成动画帧
     const { stage, renderer, ticker } = app;
     const wh_size = Math.min(renderer.width, renderer.height);
