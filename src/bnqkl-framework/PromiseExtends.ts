@@ -83,7 +83,12 @@ export function autoAbort(
 /**
  * 在调用.then或者.catch的时候才会执行启动函数
  */
+
+const THEN_SYMBOL = Symbol("then");
+const CATCH_SYMBOL = Symbol("catch");
 export class DelayPromise<T> {
+  static THEN_SYMBOL = THEN_SYMBOL
+  static CATCH_SYMBOL = CATCH_SYMBOL
   promise: Promise<T>
   constructor(
     executor: (
@@ -93,7 +98,7 @@ export class DelayPromise<T> {
   ) {
     var _resolve: any;
     var _reject: any;
-    this.promise = new Promise<T>((resolve, reject) => {
+    const promise = this.promise = new Promise<T>((resolve, reject) => {
       _resolve = resolve;
       _reject = reject;
     });
@@ -104,23 +109,22 @@ export class DelayPromise<T> {
         is_runed = true;
       }
     };
-
-    this.promise.then = (onfulfilled?: any, onrejected?: any) => {
+    promise[THEN_SYMBOL] = promise.then;
+    promise[CATCH_SYMBOL] = promise.catch;
+    promise.then = (onfulfilled?: any, onrejected?: any) => {
       run_executor();
       return this.delayThen(onfulfilled, onrejected) as any;
     };
-    this.promise.catch = (onrejected?: any) => {
+    promise.catch = (onrejected?: any) => {
       run_executor();
       return this.delayCatch(onrejected) as any;
     };
   }
-  then(...args) { return this.promise.then(...args) }
-  catch(...args) { return this.promise.catch(...args) }
-  delayThen(onfulfilled?: any, onrejected?: any) {
-    return this.promise.then(onfulfilled, onrejected);
+  delayThen<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2> {
+    return this.promise[THEN_SYMBOL](onfulfilled, onrejected);
   }
-  delayCatch(onrejected?: any) {
-    return this.promise.catch(onrejected);
+  delayCatch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult> {
+    return this.promise[CATCH_SYMBOL](onrejected);
   }
 }
 
